@@ -14,6 +14,7 @@ export function TaskLogProvider({ children }) {
           id
           assistantTimestamp
           userTimestamp
+          userResponse
           command
           agent {
             id
@@ -41,15 +42,14 @@ export function useTaskLogMessages() {
 }
 
 export const useLatestTaskLog = () => {
-  const taskLogMessages  = useContext(TaskLogContext);
+  const taskLogMessages = useContext(TaskLogContext);
 
   if (!taskLogMessages || !taskLogMessages.taskLogMessages) {
     return null;
   }
 
-  console.log("taskLogMessages: ", taskLogMessages)
-
-  const latestTaskLogMessage = taskLogMessages.taskLogMessages.slice()
+  const latestTaskLogMessage = taskLogMessages.taskLogMessages
+    .slice()
     .sort((a, b) => b.assistantTimestamp.localeCompare(a.assistantTimestamp))
     .shift();
 

@@ -16,7 +16,6 @@ class Agent(models.Model):
 class Task(models.Model):
     user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     goals = models.JSONField(null=True, blank=True)
-    goals_complete = models.JSONField(null=True, blank=True)
     is_complete = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     complete_at = models.DateTimeField(null=True, blank=True)

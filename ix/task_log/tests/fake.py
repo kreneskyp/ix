@@ -22,9 +22,15 @@ def fake_user(**kwargs):
     return user
 
 
+def fake_goal(**kwargs):
+    data = {"name": fake.word(), "description": fake.text()[:50], "complete": False}
+    data.update(kwargs)
+    return data
+
+
 def fake_task(**kwargs):
     user = kwargs.get("user", fake_user())
-    goals = kwargs.get("goals", [fake.text() for _ in range(fake.random.randint(1, 5))])
+    goals = kwargs.get("goals", [fake_goal() for _ in range(fake.random.randint(1, 5))])
 
     task = Task.objects.create(user=user, goals=goals)
     return task

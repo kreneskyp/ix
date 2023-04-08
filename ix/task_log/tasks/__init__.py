@@ -1,0 +1,1 @@
+from ix.task_log.tasks.auto_gpt import *

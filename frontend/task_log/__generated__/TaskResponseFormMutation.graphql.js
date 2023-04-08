@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b1a4cecb5b9f391d27d9806fac9be38c>>
+ * @generated SignedSource<<1cce59712b47f323309152c53412110d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,57 +18,69 @@ var v0 = [
 ],
 v1 = [
   {
-    "kind": "Variable",
-    "name": "input",
-    "variableName": "input"
+    "alias": null,
+    "args": [
+      {
+        "kind": "Variable",
+        "name": "input",
+        "variableName": "input"
+      }
+    ],
+    "concreteType": "TaskLogResponse",
+    "kind": "LinkedField",
+    "name": "respondToTaskMsg",
+    "plural": false,
+    "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "TaskLog",
+        "kind": "LinkedField",
+        "name": "taskLogMessage",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "id",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "userResponse",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "authorized",
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "errors",
+        "storageKey": null
+      }
+    ],
+    "storageKey": null
   }
-],
-v2 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "userResponse",
-  "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "authorized",
-  "storageKey": null
-};
+];
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "TaskResponseFormMutation",
-    "selections": [
-      {
-        "alias": null,
-        "args": (v1/*: any*/),
-        "concreteType": "TaskLogResponse",
-        "kind": "LinkedField",
-        "name": "respondToTaskMsg",
-        "plural": false,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "TaskLog",
-            "kind": "LinkedField",
-            "name": "taskLogMessage",
-            "plural": false,
-            "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/)
-            ],
-            "storageKey": null
-          }
-        ],
-        "storageKey": null
-      }
-    ],
+    "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
@@ -77,51 +89,19 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "TaskResponseFormMutation",
-    "selections": [
-      {
-        "alias": null,
-        "args": (v1/*: any*/),
-        "concreteType": "TaskLogResponse",
-        "kind": "LinkedField",
-        "name": "respondToTaskMsg",
-        "plural": false,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "TaskLog",
-            "kind": "LinkedField",
-            "name": "taskLogMessage",
-            "plural": false,
-            "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "id",
-                "storageKey": null
-              }
-            ],
-            "storageKey": null
-          }
-        ],
-        "storageKey": null
-      }
-    ]
+    "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "49635ae15fd366be76e03521c7ced55c",
+    "cacheID": "fbdb45e29d56337d85fdd17fb7974ef0",
     "id": null,
     "metadata": {},
     "name": "TaskResponseFormMutation",
     "operationKind": "mutation",
-    "text": "mutation TaskResponseFormMutation(\n  $input: TaskLogResponseInput!\n) {\n  respondToTaskMsg(input: $input) {\n    taskLogMessage {\n      userResponse\n      authorized\n      id\n    }\n  }\n}\n"
+    "text": "mutation TaskResponseFormMutation(\n  $input: TaskLogResponseInput!\n) {\n  respondToTaskMsg(input: $input) {\n    taskLogMessage {\n      id\n      userResponse\n      authorized\n    }\n    errors\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "9e0ef3c349135a66900fe6734c118931";
+node.hash = "63b9285df89c9ba19199dc9d60149611";
 
 module.exports = node;
