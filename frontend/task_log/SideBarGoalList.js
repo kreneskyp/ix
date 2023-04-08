@@ -13,7 +13,7 @@ const SideBarGoalList = () => {
       </Text>
       <VStack align="flex-start" spacing={2} px={5}>
         {task.goals?.map((goal) => (
-          <VStack key={goal.id} align="flex-start" spacing={0}>
+          <VStack key={goal.name} align="flex-start" spacing={0}>
             {goal.complete ? <CheckIcon mr={2} /> : <CloseIcon mr={2} />}
             <Text color="white" fontWeight="bold">
               {goal.name}
