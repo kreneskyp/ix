@@ -1,18 +1,20 @@
 import React from "react";
-import { VStack, StackDivider } from "@chakra-ui/react";
-import TaskGoals from "task_log/TaskGoals";
+import { VStack, StackDivider, Box } from "@chakra-ui/react";
 import TaskPlan from "task_log/TaskPlan";
+import SideBarGoalList from "task_log/SideBarGoalList";
 
 export const TaskLogLeftPane = () => {
   return (
-    <VStack
-      divider={<StackDivider borderColor="gray.200" />}
-      spacing={4}
-      align="stretch"
-    >
-      <TaskGoals />
-      <TaskPlan />
-    </VStack>
+    <Box pl={4} pr={4}>
+      <VStack
+        divider={<StackDivider borderColor="gray.200" />}
+        spacing={4}
+        align="stretch"
+      >
+        <SideBarGoalList />
+        <TaskPlan />
+      </VStack>
+    </Box>
   );
 };
 
