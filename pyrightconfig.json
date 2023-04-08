@@ -1,0 +1,1 @@
+{"include": ["."], "exclude": ["**/node_modules"], "strict": true, "useLibraryCodeForTypes": true, "reportMissingImports": true}

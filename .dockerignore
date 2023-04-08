@@ -1,0 +1,5 @@
+auto
+.venv
+.node_modules
+node_modules
+.git

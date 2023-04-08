@@ -1,0 +1,2 @@
+exclude = "node_modules"
+ignore = "E501"

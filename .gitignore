@@ -1,0 +1,13 @@
+.venv
+venv
+node_modules
+.node_modules
+.sentinel
+.compiled-static
+
+# tmp
+auto
+public
+react-app-unused
+tmp
+workspace
