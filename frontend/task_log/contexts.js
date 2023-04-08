@@ -14,6 +14,7 @@ export function TaskLogProvider({ children }) {
           id
           assistantTimestamp
           userTimestamp
+          userResponse
           command
           agent {
             id

@@ -59,6 +59,7 @@ class TaskLogResponseInput(graphene.InputObjectType):
 
 class TaskLogMessageResponse(graphene.ObjectType):
     task_log_message = graphene.Field(TaskLogMessage)
+    errors = graphene.List(graphene.String)
 
     def resolve_task_log(root, info):
         return root.task_log
@@ -68,19 +69,21 @@ class RespondToTaskLogMutation(graphene.Mutation):
     class Arguments:
         input = TaskLogResponseInput(required=True)
 
-    task_log_message = graphene.Field(lambda: TaskLogMessageType)
+    task_log_message = graphene.Field(TaskLogMessageType)
+    errors = graphene.Field(graphene.List(graphene.String))
 
-    def mutate(self, info, input):
+    @staticmethod
+    def mutate(root, info, input):
         message_id = input.id
         response = input.response
         is_authorized = input.is_authorized
 
         message = TaskLogMessage.objects.get(id=message_id)
-        message.response = response
+        message.user_response = response
         message.is_authorized = is_authorized
         message.save()
 
-        return TaskLogMessageType(task_log_message=message)
+        return TaskLogMessageResponse(task_log_message=message)
 
 
 class Mutation(graphene.ObjectType):

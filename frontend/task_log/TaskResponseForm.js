@@ -18,9 +18,11 @@ const responseMutation = graphql`
   mutation TaskResponseFormMutation($input: TaskLogResponseInput!) {
     respondToTaskMsg(input: $input) {
       taskLogMessage {
+        id
         userResponse
         authorized
       }
+      errors
     }
   }
 `;
@@ -55,7 +57,7 @@ export const TaskResponseForm = ({ onRespond }) => {
               isClosable: true,
             });
           } else {
-            onRespond(response.respondToTaskLog.taskLog);
+            onRespond(response.respondToTaskLog.taskLogMessage);
             toast({
               title: "Success",
               description: "Your response has been recorded.",

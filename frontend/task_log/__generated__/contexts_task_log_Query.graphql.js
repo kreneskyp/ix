@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5663750f1433a3ee6ca2a6aaef2b24ab>>
+ * @generated SignedSource<<c4e2ec0350af9102a7af8c39562b6cdb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -57,6 +57,13 @@ v2 = [
         "alias": null,
         "args": null,
         "kind": "ScalarField",
+        "name": "userResponse",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
         "name": "command",
         "storageKey": null
       },
@@ -101,16 +108,16 @@ return {
     "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "b8da65e4eea92098ca071fad75eed178",
+    "cacheID": "56ceca7e8eb81cc0a03d1746ecdd350d",
     "id": null,
     "metadata": {},
     "name": "contexts_task_log_Query",
     "operationKind": "query",
-    "text": "query contexts_task_log_Query(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    assistantTimestamp\n    userTimestamp\n    command\n    agent {\n      id\n      name\n    }\n  }\n}\n"
+    "text": "query contexts_task_log_Query(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    assistantTimestamp\n    userTimestamp\n    userResponse\n    command\n    agent {\n      id\n      name\n    }\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "cc67737d5cf0127fae13f437607b385d";
+node.hash = "cb97356c78e2eb1b1f60cc89195f0d78";
 
 module.exports = node;
