@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { ArrowForwardIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import { useMutation, graphql } from "react-relay/hooks";
-import {useLatestTaskLog} from "task_log/contexts";
+import { useLatestTaskLog } from "task_log/contexts";
 
 const responseMutation = graphql`
   mutation TaskResponseFormMutation($input: TaskLogResponseInput!) {
@@ -26,7 +26,7 @@ const responseMutation = graphql`
 `;
 
 export const TaskResponseForm = ({ onRespond }) => {
-  const message = useLatestTaskLog()
+  const message = useLatestTaskLog();
   const [response, setResponse] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(true); // defaults to "Yes" button
 
