@@ -4,6 +4,11 @@ node_modules
 .node_modules
 .sentinel
 .compiled-static
+.idea
+.env
+.pyc
+
+__pycache__
 
 # tmp
 auto
