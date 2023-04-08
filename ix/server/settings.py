@@ -155,3 +155,5 @@ CHANNEL_LAYERS = {
 
 # Celery settings
 CELERY_BROKER_URL = "redis://localhost:6379"
+
+SHELL_PLUS_PRE_IMPORTS = (("ix.task_log.models", "*"), ("ix.task_log.tests.fake", "*"))
