@@ -1,6 +1,8 @@
 import graphene
 from graphene_django import DjangoObjectType
+
 from ix.task_log.models import Agent, Task, TaskLogMessage
+
 
 class AgentType(DjangoObjectType):
     class Meta:
@@ -8,10 +10,18 @@ class AgentType(DjangoObjectType):
         fields = "__all__"
 
 
+class GoalType(graphene.ObjectType):
+    name = graphene.String(required=True)
+    description = graphene.String(required=True)
+    complete = graphene.Boolean(required=True)
+
+
 class TaskType(DjangoObjectType):
     class Meta:
         model = Task
         fields = "__all__"
+
+    goals = graphene.List(GoalType)
 
 
 class TaskLogMessageType(DjangoObjectType):

@@ -33,7 +33,11 @@ export function TaskProvider({ children, taskId }) {
           id
           isComplete
           completeAt
-          goals
+          goals {
+            name
+            description
+            complete
+          }
         }
       }
     `,

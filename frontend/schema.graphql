@@ -14,13 +14,19 @@ type Agent {
   status: String!
 }
 
+type Goal {
+  name: String!
+  description: String!
+  complete: Boolean!
+}
+
 type Task {
   id: ID!
   user: User!
+  goals: [Goal]
   isComplete: Boolean!
   createdAt: String!
   completeAt: String!
-  goals: JSON
 }
 
 type Query {

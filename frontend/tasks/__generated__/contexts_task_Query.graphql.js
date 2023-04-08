@@ -55,8 +55,33 @@ v1 = [
       {
         "alias": null,
         "args": null,
-        "kind": "ScalarField",
+        "concreteType": "Goal",
+        "kind": "LinkedField",
         "name": "goals",
+        "plural": true,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "name",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "description",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "complete",
+            "storageKey": null
+          }
+        ],
         "storageKey": null
       }
     ],
@@ -81,16 +106,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "c1f12ffe1832f82af1b28fc608ca96d2",
+    "cacheID": "a8d8544e00c3bfe073d526ddc3a9ae53",
     "id": null,
     "metadata": {},
     "name": "contexts_task_Query",
     "operationKind": "query",
-    "text": "query contexts_task_Query(\n  $id: ID!\n) {\n  task(id: $id) {\n    id\n    isComplete\n    completeAt\n    goals\n  }\n}\n"
+    "text": "query contexts_task_Query(\n  $id: ID!\n) {\n  task(id: $id) {\n    id\n    isComplete\n    completeAt\n    goals {\n      name\n      description\n      complete\n    }\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "68e614c005e4f1b62b1b97e0bff2ba16";
+node.hash = "1a150ee33c5c0c9248a0c423fe9cf1d5";
 
 module.exports = node;
