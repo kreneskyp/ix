@@ -1,7 +1,6 @@
 import graphene
 from graphene_django import DjangoObjectType
-from .models import Agent, Task, TaskLogMessage
-
+from ix.task_log.models import Agent, Task, TaskLogMessage
 
 class AgentType(DjangoObjectType):
     class Meta:
@@ -42,4 +41,40 @@ class Query(graphene.ObjectType):
         return TaskLogMessage.objects.filter(task_id=task_id).select_related("agent")
 
 
-schema = graphene.Schema(query=Query)
+class TaskLogResponseInput(graphene.InputObjectType):
+    id = graphene.String(required=True)
+    response = graphene.String(required=True)
+    is_authorized = graphene.Boolean(required=True)
+
+
+class TaskLogMessageResponse(graphene.ObjectType):
+    task_log_message = graphene.Field(TaskLogMessage)
+
+    def resolve_task_log(root, info):
+        return root.task_log
+
+
+class RespondToTaskLogMutation(graphene.Mutation):
+    class Arguments:
+        input = TaskLogResponseInput(required=True)
+
+    task_log_message = graphene.Field(lambda: TaskLogMessageType)
+
+    def mutate(self, info, input):
+        message_id = input.id
+        response = input.response
+        is_authorized = input.is_authorized
+
+        message = TaskLogMessage.objects.get(id=message_id)
+        message.response = response
+        message.is_authorized = is_authorized
+        message.save()
+
+        return TaskLogMessageType(task_log_message=message)
+
+
+class Mutation(graphene.ObjectType):
+    respond_to_task_msg = RespondToTaskLogMutation.Field()
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)

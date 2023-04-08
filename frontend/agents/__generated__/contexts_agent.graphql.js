@@ -6,54 +6,54 @@
 
 /* eslint-disable */
 
-"use strict";
+'use strict';
 
 var node = {
-  argumentDefinitions: [
+  "argumentDefinitions": [
     {
-      defaultValue: null,
-      kind: "LocalArgument",
-      name: "agentId",
-    },
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "agentId"
+    }
   ],
-  kind: "Fragment",
-  metadata: null,
-  name: "contexts_agent",
-  selections: [
+  "kind": "Fragment",
+  "metadata": null,
+  "name": "contexts_agent",
+  "selections": [
     {
-      alias: null,
-      args: [
+      "alias": null,
+      "args": [
         {
-          kind: "Variable",
-          name: "id",
-          variableName: "agentId",
-        },
+          "kind": "Variable",
+          "name": "id",
+          "variableName": "agentId"
+        }
       ],
-      concreteType: "Agent",
-      kind: "LinkedField",
-      name: "agent",
-      plural: false,
-      selections: [
+      "concreteType": "Agent",
+      "kind": "LinkedField",
+      "name": "agent",
+      "plural": false,
+      "selections": [
         {
-          alias: null,
-          args: null,
-          kind: "ScalarField",
-          name: "id",
-          storageKey: null,
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "id",
+          "storageKey": null
         },
         {
-          alias: null,
-          args: null,
-          kind: "ScalarField",
-          name: "name",
-          storageKey: null,
-        },
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "name",
+          "storageKey": null
+        }
       ],
-      storageKey: null,
-    },
+      "storageKey": null
+    }
   ],
-  type: "Query",
-  abstractKey: null,
+  "type": "Query",
+  "abstractKey": null
 };
 
 node.hash = "5085bb2d8986087fbf5614bf9bfa1c55";

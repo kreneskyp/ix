@@ -50,16 +50,16 @@ type Query {
 }
 
 type Mutation {
-  respondToTaskLogMessage(input: TaskLogMessageResponseInput!): TaskLogResponse
+  respondToTaskMsg(input: TaskLogResponseInput!): TaskLogResponse
 }
 
-input TaskLogMessageResponseInput {
+input TaskLogResponseInput {
   id: ID!
   response: String
   authorized: Boolean!
 }
 
 type TaskLogResponse {
-  taskLog: TaskLog
+  taskLogMessage: TaskLog
   errors: [String!]
 }

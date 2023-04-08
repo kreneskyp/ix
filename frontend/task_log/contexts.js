@@ -1,6 +1,5 @@
 import React, { createContext, useContext } from "react";
 import { graphql } from "react-relay";
-import { AgentContext } from "agents/contexts";
 import { TaskContext } from "tasks/contexts";
 import { useLazyLoadQuery } from "react-relay/hooks";
 
@@ -42,17 +41,17 @@ export function useTaskLogMessages() {
 }
 
 export const useLatestTaskLog = () => {
-  const task = useContext(TaskContext);
-  const taskLogs = useContext(TaskLogContext);
+  const taskLogMessages  = useContext(TaskLogContext);
 
-  if (!task || !taskLogs) {
+  if (!taskLogMessages || !taskLogMessages.taskLogMessages) {
     return null;
   }
 
-  const latestTaskLog = taskLogs
-    .filter((log) => log.taskId === task.id)
-    .sort((a, b) => b.startedAt.localeCompare(a.startedAt))
+  console.log("taskLogMessages: ", taskLogMessages)
+
+  const latestTaskLogMessage = taskLogMessages.taskLogMessages.slice()
+    .sort((a, b) => b.assistantTimestamp.localeCompare(a.assistantTimestamp))
     .shift();
 
-  return latestTaskLog;
+  return latestTaskLogMessage;
 };

@@ -11,13 +11,13 @@ export const TaskLogCenterPane = () => {
   return (
     <TaskLogProvider taskId={task.id}>
       <Flex direction="column" h="100vh">
-        <Box flex="1">
-          <VStack spacing={4} align="stretch">
+        <Box  flex="1" overflowY="auto" display="flex" flexDirection="column" justifyContent="flex-end">
+          <VStack spacing={4} align="stretch" p={4}>
             <TaskLogMessageStream />
           </VStack>
         </Box>
-        <Box p={4}>
-          <Center>
+        <Box>
+          <Center py={4}>
             <Box maxW="lg" w="100%" mx={2} my={8}>
               <TaskResponseForm />
             </Box>
