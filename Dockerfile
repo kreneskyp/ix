@@ -29,6 +29,7 @@ ENV NODE_MODULES_BIN=$NPM_DIR/node_modules/.bin
 ENV PATH $PATH:$NODE_MODULES_BIN
 
 # NPM package installs
+RUN echo "[$NPM_DIR]"
 WORKDIR $NPM_DIR
 COPY package.json $NPM_DIR
 RUN npm install
