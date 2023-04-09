@@ -1,1 +1,1 @@
-from ix.task_log.tasks.auto_gpt import *
+from ix.task_log.tasks.agent_runner import *

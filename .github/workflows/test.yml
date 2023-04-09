@@ -30,6 +30,7 @@ jobs:
         id: build
         if: steps.restore_cache.outputs.cache-hit != 'true'
         run: |
+          mkdir -p .sentinel
           IMAGE_URL=`make image-url`
           echo "Building Docker image: $IMAGE_URL"
           make image

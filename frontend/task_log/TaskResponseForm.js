@@ -19,8 +19,8 @@ const responseMutation = graphql`
     respondToTaskMsg(input: $input) {
       taskLogMessage {
         id
-        userResponse
-        authorized
+        role
+        content
       }
       errors
     }

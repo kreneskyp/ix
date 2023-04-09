@@ -12,12 +12,9 @@ const SideBarGoalList = () => {
         Goals
       </Text>
       <VStack align="flex-start" spacing={2} px={5}>
-        {task.goals?.map((goal) => (
-          <VStack key={goal.name} align="flex-start" spacing={0}>
+        {task.goals?.map((goal, i) => (
+          <VStack key={i} align="flex-start" spacing={0}>
             {goal.complete ? <CheckIcon mr={2} /> : <CloseIcon mr={2} />}
-            <Text color="white" fontWeight="bold">
-              {goal.name}
-            </Text>
             <Text color="whitesmoke" fontSize="sm">
               {goal.description}
             </Text>

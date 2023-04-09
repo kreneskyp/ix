@@ -1,71 +1,135 @@
-scalar JSON
+type Query {
+  users: [UserType]
+  agents: [AgentType]
+  tasks: [TaskType]
+  taskLogMessages(taskId: ID!): [TaskLogMessageType]
+  user(id: ID!): UserType
+  agent(id: ID!): AgentType
+  task(id: ID!): TaskType
+}
 
-type User {
+type UserType {
   id: ID!
+  password: String!
+  lastLogin: DateTime
+
+  """
+  Designates that this user has all permissions without explicitly assigning them.
+  """
+  isSuperuser: Boolean!
+
+  """
+  Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+  """
   username: String!
+  firstName: String!
+  lastName: String!
   email: String!
-  first_name: String!
-  last_name: String!
+
+  """
+  Designates whether the user can log into this admin site.
+  """
+  isStaff: Boolean!
+
+  """
+  Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+  """
+  isActive: Boolean!
+  dateJoined: DateTime!
+  taskSet: [TaskType!]!
 }
 
-type Agent {
+"""
+The `DateTime` scalar type represents a DateTime
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar DateTime
+
+type TaskType {
   id: ID!
   name: String!
-  status: String!
+  user: UserType!
+  goals: [GoalType]
+  agent: AgentType!
+  isComplete: Boolean!
+  createdAt: DateTime!
+  completeAt: DateTime
+  tasklogmessageSet: [TaskLogMessageType!]!
 }
 
-type Goal {
-  name: String!
+type GoalType {
   description: String!
   complete: Boolean!
 }
 
-type Task {
+type AgentType {
   id: ID!
-  user: User!
-  goals: [Goal]
-  isComplete: Boolean!
-  createdAt: String!
-  completeAt: String!
+  name: String!
+  purpose: String!
+  taskSet: [TaskType!]!
+  tasklogmessageSet: [TaskLogMessageType!]!
 }
 
-type Query {
-  task(id: ID!): Task
-}
-
-type TaskLog {
+type TaskLogMessageType {
   id: ID!
-  task: Task!
-  agent: Agent!
-  assistantTimestamp: String!
-  userTimestamp: String
-  command: JSON!
-  authorized: Boolean
-  userResponse: String
+  task: TaskType!
+  agent: AgentType
+  createdAt: DateTime!
+  role: TaskLogTaskLogMessageRoleChoices!
+  content: JSONString!
 }
 
-type Query {
-  agents: [Agent!]!
-  agent(id: ID!): Agent
-  tasks: [Task!]!
-  task(id: ID!): Task
-  taskLogMessages(taskId: ID!): [TaskLog!]!
-  taskLog(id: ID!): TaskLog
-  users: [User!]!
-  user(id: ID!): User
+enum TaskLogTaskLogMessageRoleChoices {
+  """
+  system
+  """
+  SYSTEM
+
+  """
+  assistant
+  """
+  ASSISTANT
+
+  """
+  user
+  """
+  USER
 }
+
+"""
+Allows use of a JSON String for input / output from the GraphQL schema.
+
+Use of this type is *not recommended* as you lose the benefits of having a defined, static
+schema (one of the key benefits of GraphQL).
+"""
+scalar JSONString
 
 type Mutation {
-  respondToTaskMsg(input: TaskLogResponseInput!): TaskLogResponse
+  createTask(input: CreateTaskInput!): CreateTaskResponse
+  respondToTaskMsg(input: TaskLogResponseInput!): RespondToTaskLogMutation
+}
+
+type CreateTaskResponse {
+  task: TaskType
+}
+
+input CreateTaskInput {
+  name: String!
+  goals: [GoalInput]!
+}
+
+input GoalInput {
+  description: String!
+}
+
+type RespondToTaskLogMutation {
+  taskLogMessage: TaskLogMessageType
+  errors: [String]
 }
 
 input TaskLogResponseInput {
-  id: ID!
-  response: String
-  authorized: Boolean!
-}
-
-type TaskLogResponse {
-  taskLogMessage: TaskLog
-  errors: [String!]
+  id: String!
+  response: String!
+  isAuthorized: Boolean!
 }

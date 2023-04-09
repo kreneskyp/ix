@@ -2,8 +2,8 @@ DOCKER_COMPOSE=docker-compose.yml
 DOCKERFILE=Dockerfile
 DOCKER_REGISTRY=ghcr.io
 DOCKER_REPOSITORY=${DOCKER_REGISTRY}/ix
-PYTHON_DEPENDENCIES=requirements*.txt
-IMAGE_TAG=$(shell cat $(DOCKERFILE) $(PYTHON_DEPENDENCIES) | md5sum | cut -d ' ' -f 1)
+HASH_FILES=requirements*.txt package.json Dockerfile
+IMAGE_TAG=$(shell cat $(HASH_FILES) | md5sum | cut -d ' ' -f 1)
 IMAGE_URL=$(DOCKER_REPOSITORY):$(IMAGE_TAG)
 IMAGE_SENTINEL=.sentinel/image
 
@@ -24,7 +24,7 @@ image-url:
 .sentinel:
 	mkdir -p .sentinel
 
-${IMAGE_SENTINEL}: .sentinel $(DOCKERFILE) $(PYTHON_DEPENDENCIES)
+${IMAGE_SENTINEL}: .sentinel $(HASH_FILES)
 ifneq (${NO_IMAGE_BUILD}, 1)
 	echo building ${IMAGE_URL}
 	docker build -t ${IMAGE_URL} -f $(DOCKERFILE) .

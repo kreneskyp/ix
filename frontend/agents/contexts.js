@@ -6,15 +6,14 @@ export const AgentContext = createContext(null);
 export function AgentProvider({ children, agentId }) {
   const data = useFragment(
     graphql`
-      fragment contexts_agent on Query
-      @argumentDefinitions(agentId: { type: "ID!" }) {
-        agent(id: $agentId) {
+      query contexts_agent_Query($id: ID!) {
+        agent(id: $id) {
           id
           name
         }
       }
     `,
-    { agentId }
+    { id: agentId }
   );
   return (
     <AgentContext.Provider value={{ agent: data.agent }}>

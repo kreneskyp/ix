@@ -1,4 +1,3 @@
-// UserContext.js
 import React, { createContext, useContext } from "react";
 import { useFragment, graphql } from "react-relay";
 
@@ -8,13 +7,13 @@ export const UsersContext = createContext(null);
 export function UsersProvider({ children }) {
   const data = useFragment(
     graphql`
-      fragment contexts_users on Query {
+      query contexts_users_Query {
         users {
           id
           username
           email
-          first_name
-          last_name
+          firstName
+          lastName
         }
       }
     `,
@@ -38,18 +37,17 @@ export function useUsers() {
 export function UserProvider({ children, userId }) {
   const data = useFragment(
     graphql`
-      fragment contexts_user on Query
-      @argumentDefinitions(userId: { type: "ID!" }) {
-        user(id: $userId) {
+      query contexts_user_Query($id: ID!) {
+        user(id: $id) {
           id
           username
           email
-          first_name
-          last_name
+          firstName
+          lastName
         }
       }
     `,
-    { userId }
+    { id: userId }
   );
   return (
     <UserContext.Provider value={{ user: data.user }}>

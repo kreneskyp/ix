@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<48a62ab742a82c6492749edebc7843b8>>
+ * @generated SignedSource<<375a053825c4ba7dc753c6a60b4002bf>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,9 +13,9 @@ var v0 = [
   {
     "alias": null,
     "args": null,
-    "concreteType": "TaskType",
+    "concreteType": "UserType",
     "kind": "LinkedField",
-    "name": "tasks",
+    "name": "users",
     "plural": true,
     "selections": [
       {
@@ -29,21 +29,28 @@ var v0 = [
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "isComplete",
+        "name": "username",
         "storageKey": null
       },
       {
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "createdAt",
+        "name": "email",
         "storageKey": null
       },
       {
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "completeAt",
+        "name": "firstName",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "lastName",
         "storageKey": null
       }
     ],
@@ -55,7 +62,7 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "contexts_tasks_Query",
+    "name": "contexts_users_Query",
     "selections": (v0/*: any*/),
     "type": "Query",
     "abstractKey": null
@@ -64,20 +71,20 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "contexts_tasks_Query",
+    "name": "contexts_users_Query",
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "426db914a7d56b540cf6337ff9b2922d",
+    "cacheID": "22b3f0c39872c7f742497f50329e6283",
     "id": null,
     "metadata": {},
-    "name": "contexts_tasks_Query",
+    "name": "contexts_users_Query",
     "operationKind": "query",
-    "text": "query contexts_tasks_Query {\n  tasks {\n    id\n    isComplete\n    createdAt\n    completeAt\n  }\n}\n"
+    "text": "query contexts_users_Query {\n  users {\n    id\n    username\n    email\n    firstName\n    lastName\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "809fd82770b058b6c0fe1b0634356ea9";
+node.hash = "6956e50c42719533d00fe8c6d4be6027";
 
 module.exports = node;
