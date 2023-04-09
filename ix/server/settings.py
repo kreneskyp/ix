@@ -129,6 +129,7 @@ STATIC_URL = "static/"
 
 STATICFILES_DIRS = [
     # BASE_DIR / "static",
+    "/var/app/frontend/static/",
     "/var/app/.compiled-static/",
 ]
 
