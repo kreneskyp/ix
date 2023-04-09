@@ -1,9 +1,23 @@
 import graphene
+from functools import wraps
+from graphql import GraphQLError
 from graphene_django import DjangoObjectType
 from django.contrib.auth.models import User
 
 from ix.task_log.models import Agent, Task, TaskLogMessage
 from ix.task_log.tasks.agent_runner import resume_agent_loop_with_feedback, start_agent_loop
+
+
+def handle_exceptions(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            print(e, str(e))
+            raise GraphQLError(str(e))
+    return wrapper
+
 
 class UserType(DjangoObjectType):
     class Meta:
