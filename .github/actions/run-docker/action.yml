@@ -34,4 +34,6 @@ runs:
       shell: bash
       env:
         NO_IMAGE_BUILD: 1
-      run: ${{ inputs.command }}
+      run: |
+        touch .env
+        ${{ inputs.command }}
