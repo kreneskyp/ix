@@ -28,10 +28,11 @@ class TaskLogMessage(models.Model):
     TaskLog model represents a log entry containing agent, user, goals, user response,
     command, and timestamps for the assistant and user interactions.
     """
+
     ROLE_CHOICES = [
-        ('system', 'system'),
-        ('assistant', 'assistant'),
-        ('user', 'user'),
+        ("system", "system"),
+        ("assistant", "assistant"),
+        ("user", "user"),
     ]
 
     # message metadata
@@ -50,7 +51,4 @@ class TaskLogMessage(models.Model):
         return f"TaskLogMessage {self.id} ({self.role})"
 
     def as_dict(self):
-        return {
-            "role": self.role,
-            "content": self.content
-        }
+        return {"role": self.role, "content": self.content}

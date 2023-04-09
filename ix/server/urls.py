@@ -12,5 +12,4 @@ urlpatterns = [
     path("task_log>/", include("ix.task_log.urls")),
     path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True))),
     re_path(r"tasks/chat/(?:.*)", index, name="index"),
-
 ]

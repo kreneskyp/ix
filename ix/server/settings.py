@@ -155,8 +155,8 @@ CHANNEL_LAYERS = {
 }
 
 # Celery configuration
-CELERY_BROKER_URL = 'redis://redis:6379/0'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 
 
 SHELL_PLUS_PRE_IMPORTS = (("ix.task_log.models", "*"), ("ix.task_log.tests.fake", "*"))

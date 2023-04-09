@@ -19,7 +19,7 @@ class UserInput(TypedDict):
 
 class AgentProcess:
     INITIAL_INPUT = "Determine which next command to use, and respond using the format specified above:"
-    NEXT_COMMAND = 'GENERATE NEXT COMMAND JSON'
+    NEXT_COMMAND = "GENERATE NEXT COMMAND JSON"
 
     def __init__(self, task_id, message_id: int = None):
         self.task_id = task_id
@@ -47,7 +47,9 @@ class AgentProcess:
         return self.task.agent
 
     def load_message_history(self):
-        messages = TaskLogMessage.objects.filter(task_id=self.task_id).order_by("-created_at")
+        messages = TaskLogMessage.objects.filter(task_id=self.task_id).order_by(
+            "-created_at"
+        )
         self.message_history = [message.as_dict() for message in messages]
 
     def initialize_memory(self):
@@ -59,11 +61,11 @@ class AgentProcess:
     def init_commands(self):
         """Load commands for this agent"""
         self.command_registry = CommandRegistry()
-        self.command_registry.import_commands('auto_gpt.ai_functions')
-        self.command_registry.import_commands('auto_gpt.commands')
-        self.command_registry.import_commands('auto_gpt.execute_code')
-        self.command_registry.import_commands('auto_gpt.agent_manager')
-        self.command_registry.import_commands('auto_gpt.file_operations')
+        self.command_registry.import_commands("auto_gpt.ai_functions")
+        self.command_registry.import_commands("auto_gpt.commands")
+        self.command_registry.import_commands("auto_gpt.execute_code")
+        self.command_registry.import_commands("auto_gpt.agent_manager")
+        self.command_registry.import_commands("auto_gpt.file_operations")
 
     def start(self, n: int = 1, user_input_msg: TaskLogMessage = None) -> None:
         """
@@ -98,9 +100,7 @@ class AgentProcess:
             command = self.command_registry(response.command)
             if execute:
                 result = self.execute(command)
-                self.message_history.append(
-                    create_chat_message("system", result)
-                )
+                self.message_history.append(create_chat_message("system", result))
             else:
                 self.request_user_input()
 
@@ -115,14 +115,16 @@ class AgentProcess:
             input,
             full_message_history=self.message_history,
             permanent_memory=self.memory,
-            token_limit=self.auto_gpt_cfg.fast_token_limit
+            token_limit=self.auto_gpt_cfg.fast_token_limit,
         )
 
     def request_user_input(self):
         """
         Request user input to complete task.
         """
-        TaskLogMessage.objects.create(role="system", content="requesting user authorization and input")
+        TaskLogMessage.objects.create(
+            role="system", content="requesting user authorization and input"
+        )
         # TODO: notify pubsub
 
     def execute(self, command: Command, **kwargs):

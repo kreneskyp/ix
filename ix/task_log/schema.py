@@ -5,7 +5,10 @@ from graphene_django import DjangoObjectType
 from django.contrib.auth.models import User
 
 from ix.task_log.models import Agent, Task, TaskLogMessage
-from ix.task_log.tasks.agent_runner import resume_agent_loop_with_feedback, start_agent_loop
+from ix.task_log.tasks.agent_runner import (
+    resume_agent_loop_with_feedback,
+    start_agent_loop,
+)
 
 
 def handle_exceptions(func):
@@ -16,6 +19,7 @@ def handle_exceptions(func):
         except Exception as e:
             print(e, str(e))
             raise GraphQLError(str(e))
+
     return wrapper
 
 
@@ -23,6 +27,7 @@ class UserType(DjangoObjectType):
     class Meta:
         model = User
         fields = "__all__"
+
 
 class AgentType(DjangoObjectType):
     class Meta:
@@ -115,10 +120,10 @@ class CreateTaskMutation(graphene.Mutation):
     @staticmethod
     @handle_exceptions
     def mutate(root, info, input):
-        user = User.objects.latest('id')
+        user = User.objects.latest("id")
 
         # TODO: turn this on once auth is setup for UI
-        #user = info.context.user
+        # user = info.context.user
         if user.is_anonymous:
             raise Exception("Authentication is required to create a task.")
 
@@ -126,8 +131,7 @@ class CreateTaskMutation(graphene.Mutation):
         name = "iX test bot"
         purpose = "to write python apps"
         agent, _ = Agent.objects.get_or_create(
-            name=name,
-            defaults=dict(purpose=purpose)
+            name=name, defaults=dict(purpose=purpose)
         )
 
         for goal in input.goals:
@@ -142,7 +146,7 @@ class CreateTaskMutation(graphene.Mutation):
         )
 
         # start task loop
-        #start_agent_loop.apply_async()
+        # start_agent_loop.apply_async()
 
         return CreateTaskResponse(task=task)
 

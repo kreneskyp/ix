@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import { useMutation, graphql } from 'react-relay';
+import React, { useState } from "react";
+import { useMutation, graphql } from "react-relay";
 import {
   Box,
-  Button, Center,
+  Button,
+  Center,
   FormControl,
-  FormLabel, HStack,
+  FormLabel,
+  HStack,
   Input,
   VStack,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
 const CreateTaskMutation = graphql`
   mutation TaskCreateFormMutation($input: CreateTaskInput!) {
@@ -28,9 +30,9 @@ const CreateTaskMutation = graphql`
   }
 `;
 
-export const TaskCreateForm = ({onMutationSuccess}) => {
-  const [name, setName] = useState('');
-  const [goals, setGoals] = useState(Array(5).fill(''));
+export const TaskCreateForm = ({ onMutationSuccess }) => {
+  const [name, setName] = useState("");
+  const [goals, setGoals] = useState(Array(5).fill(""));
   const [commit, isInFlight] = useMutation(CreateTaskMutation);
 
   const handleGoalChange = (index, value) => {
@@ -53,7 +55,7 @@ export const TaskCreateForm = ({onMutationSuccess}) => {
         }
       },
       onError: (error) => {
-        console.error('Error creating task:', error);
+        console.error("Error creating task:", error);
       },
     });
   };
@@ -61,18 +63,18 @@ export const TaskCreateForm = ({onMutationSuccess}) => {
   const loadExample = () => {
     // Customize this example data as needed
     const exampleData = {
-      name: 'Create a Django model for a car',
+      name: "Create a Django model for a car",
       goals: [
-        { description: 'Define a Car model' },
-        { description: 'Add fields for make, model, and year' },
-        { description: 'Create a migration file' },
-        { description: 'Apply the migration' },
-        { description: 'Write unit tests' },
+        { description: "Define a Car model" },
+        { description: "Add fields for make, model, and year" },
+        { description: "Create a migration file" },
+        { description: "Apply the migration" },
+        { description: "Write unit tests" },
       ],
     };
 
     setName(exampleData.name);
-    setGoals(exampleData.goals.map(({description}) => description));
+    setGoals(exampleData.goals.map(({ description }) => description));
   };
 
   return (
@@ -104,18 +106,21 @@ export const TaskCreateForm = ({onMutationSuccess}) => {
         </VStack>
       </FormControl>
       <Center>
-      <HStack mt={4} spacing={5}>
-        <Button onClick={handleSubmit} isLoading={isInFlight} colorScheme="blue">
-          Create Task
-        </Button>
-        <Button onClick={loadExample} variant="outline">
-          Load Example
-        </Button>
-    </HStack>
+        <HStack mt={4} spacing={5}>
+          <Button
+            onClick={handleSubmit}
+            isLoading={isInFlight}
+            colorScheme="blue"
+          >
+            Create Task
+          </Button>
+          <Button onClick={loadExample} variant="outline">
+            Load Example
+          </Button>
+        </HStack>
       </Center>
-
     </VStack>
   );
-}
+};
 
 export default TaskCreateForm;

@@ -37,7 +37,7 @@ export function useUsers() {
 export function UserProvider({ children, userId }) {
   const data = useFragment(
     graphql`
-      query contexts_user_Query ($id: ID!) {
+      query contexts_user_Query($id: ID!) {
         user(id: $id) {
           id
           username

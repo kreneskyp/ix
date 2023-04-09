@@ -1,7 +1,7 @@
-import React from 'react';
-import { Box, Center, Heading, VStack, Button } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
-import TaskCreateForm from 'tasks/TaskCreateForm';
+import React from "react";
+import { Box, Center, Heading, VStack, Button } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import TaskCreateForm from "tasks/TaskCreateForm";
 
 export const TaskCreateView = () => {
   const navigate = useNavigate();

@@ -18,8 +18,8 @@ const responseMutation = graphql`
   mutation TaskResponseFormMutation($input: TaskLogResponseInput!) {
     respondToTaskMsg(input: $input) {
       taskLogMessage {
-        id,
-        role,
+        id
+        role
         content
       }
       errors
