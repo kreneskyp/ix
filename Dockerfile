@@ -1,10 +1,10 @@
 FROM python:3.11
 
 ENV HOME=/root
-ADD .bash_profile $HOME
-RUN mkdir -p /usr/bin/ix
-COPY bin/* /usr/bin/ix
 ENV PATH=$PATH:/usr/bin/ix
+RUN mkdir -p /usr/bin/ix
+COPY bin/* /usr/bin/ix/
+ADD .bash_profile $HOME
 
 RUN apt update -y && apt install -y curl postgresql-client
 
