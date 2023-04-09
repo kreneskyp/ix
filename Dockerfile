@@ -6,32 +6,28 @@ RUN mkdir -p /usr/bin/ix
 COPY bin/* /usr/bin/ix
 ENV PATH=$PATH:/usr/bin/ix
 
-RUN apt update -y && apt install -y postgresql-client
+RUN apt update -y && apt install -y curl postgresql-client
 
-# Install Node.js via NVM
-ENV NPM_DIR=/var/app
-ENV NVM_DIR=/var/nvm
-ENV NODE_MODULES=$NPM_DIR/node_modules
-ENV NODE_MODULES_BIN=$NPM_DIR/node_modules/.bin
-ENV PATH $PATH:$NODE_MODULES_BIN
+
+ENV NVM_DIR=/var/app
+ENV NVM_DIR=/usr/local/nvm
 ENV NODE_VERSION=18.15.0
+RUN mkdir -p $NVM_DIR
 
-RUN mkdir -p NPM_DIR
-RUN mkdir -p NVM_DIR
-WORKDIR $NVM_DIR
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash && \
+    . $NVM_DIR/nvm.sh && \
+    nvm install $NODE_VERSION && \
+    nvm alias default $NODE_VERSION && \
+    nvm use default
 
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash \
-  && . $NVM_DIR/nvm.sh \
-  && nvm install $NODE_VERSION \
-  && nvm alias default $NODE_VERSION \
-  && nvm use default
-
+# Set environment variables
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/v$NODE_VERSION/bin:$PATH
+ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
 
 WORKDIR $NPM_DIR
 COPY package.json $NPM_DIR
-
+RUN npm install
 
 ENV WEBPACK_OUTPUT=/var/compiled-static
 
