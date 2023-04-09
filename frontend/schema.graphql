@@ -96,11 +96,11 @@ schema (one of the key benefits of GraphQL).
 scalar JSONString
 
 type Mutation {
-  createTask(input: CreateTaskInput!): CreateTaskMutation
+  createTask(input: CreateTaskInput!): CreateTaskResponse
   respondToTaskMsg(input: TaskLogResponseInput!): RespondToTaskLogMutation
 }
 
-type CreateTaskMutation {
+type CreateTaskResponse {
   task: TaskType
 }
 

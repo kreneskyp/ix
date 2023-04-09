@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ccf2ff6dd0705da2a3d495b90b78b1da>>
+ * @generated SignedSource<<89c40cd9f6cd1a81c432afe97e768ba9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -40,7 +40,7 @@ v3 = [
         "variableName": "input"
       }
     ],
-    "concreteType": "CreateTaskMutation",
+    "concreteType": "CreateTaskResponse",
     "kind": "LinkedField",
     "name": "createTask",
     "plural": false,

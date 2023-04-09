@@ -90,36 +90,35 @@ class CreateTaskInput(graphene.InputObjectType):
 
 class CreateTaskResponse(graphene.ObjectType):
     task = graphene.Field(TaskType)
-    errors = graphene.List(graphene.String)
+
+
 class CreateTaskMutation(graphene.Mutation):
-    task = graphene.Field(TaskType)
+    Output = CreateTaskResponse
 
     class Arguments:
         input = CreateTaskInput(required=True)
 
     @staticmethod
+    @handle_exceptions
     def mutate(root, info, input):
-
-        print ("ASDFASDFASDF")
-
         user = User.objects.latest('id')
-        print("ASasdfasdfasdfasdfDFASDFASDF")
+
         # TODO: turn this on once auth is setup for UI
         #user = info.context.user
         if user.is_anonymous:
             raise Exception("Authentication is required to create a task.")
-        print("222ASDFASDFASDF")
+
         # TODO: replace with real agent
         name = "iX test bot"
         purpose = "to write python apps"
-        agent = Agent.objects.create(
+        agent, _ = Agent.objects.get_or_create(
             name=name,
-            purpose=purpose,
+            defaults=dict(purpose=purpose)
         )
 
-        print("124312341234ASDFASDFASDF")
+        for goal in input.goals:
+            goal["complete"] = False
 
-        print("111ASDFASDFASDF")
         # save to persistence layer
         task = Task.objects.create(
             user=user,
@@ -127,12 +126,11 @@ class CreateTaskMutation(graphene.Mutation):
             name=input.name,
             agent=agent,
         )
-        print("123ASDFASDFASDF")
+
         # start task loop
         #start_agent_loop.apply_async()
 
-        wtf = CreateTaskResponse(task=task)
-        return wtf
+        return CreateTaskResponse(task=task)
 
 
 class RespondToTaskLogMutation(graphene.Mutation):
@@ -166,4 +164,3 @@ class Mutation(graphene.ObjectType):
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
-
