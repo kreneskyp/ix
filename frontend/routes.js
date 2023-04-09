@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom";
 import { TasksListView } from "tasks/TasksListView";
 //import { TaskDetailView } from 'tasks/TaskDetailView';
 import { TaskLogView } from "task_log/TaskLogView";
+import { TaskCreateView } from "tasks/TaskCreateView";
 //import { AgentsListView } from 'agents/AgentsListView';
 //import { AgentDetailView } from 'agents/AgentDetailView';
 //import { TaskLogView } from 'task_log/TaskLogView';
@@ -21,7 +22,7 @@ export const routes = [
       </Suspense>
     ),
   },
-  { path: "*", element: <TasksListView /> },
+  { path: "*", element: <TaskCreateView /> },
 ];
 
 //  <Route exact path='/tasks/:id' component={TaskDetailView} />
