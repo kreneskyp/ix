@@ -10,8 +10,6 @@ export const TaskCreateView = () => {
     navigate(`/tasks/chat/${task.id}`);
   };
 
-
-
   return (
     <Center minHeight="100vh" minWidth="100vw">
       <Box
@@ -26,7 +24,6 @@ export const TaskCreateView = () => {
             Define the task you would like me to accomplish.
           </Heading>
           <TaskCreateForm onMutationSuccess={handleMutationSuccess} />
-
         </VStack>
       </Box>
     </Center>
