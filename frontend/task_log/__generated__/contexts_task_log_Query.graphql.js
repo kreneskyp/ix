@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c4e2ec0350af9102a7af8c39562b6cdb>>
+ * @generated SignedSource<<c91b4cc2d0c0cac461bf1ec56d37d443>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -33,7 +33,7 @@ v2 = [
         "variableName": "taskId"
       }
     ],
-    "concreteType": "TaskLog",
+    "concreteType": "TaskLogMessageType",
     "kind": "LinkedField",
     "name": "taskLogMessages",
     "plural": true,
@@ -43,34 +43,27 @@ v2 = [
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "assistantTimestamp",
+        "name": "role",
         "storageKey": null
       },
       {
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "userTimestamp",
+        "name": "createdAt",
         "storageKey": null
       },
       {
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "userResponse",
+        "name": "content",
         "storageKey": null
       },
       {
         "alias": null,
         "args": null,
-        "kind": "ScalarField",
-        "name": "command",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": "Agent",
+        "concreteType": "AgentType",
         "kind": "LinkedField",
         "name": "agent",
         "plural": false,
@@ -108,16 +101,16 @@ return {
     "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "56ceca7e8eb81cc0a03d1746ecdd350d",
+    "cacheID": "4c68f687087286aa6edee2783a7bf3d9",
     "id": null,
     "metadata": {},
     "name": "contexts_task_log_Query",
     "operationKind": "query",
-    "text": "query contexts_task_log_Query(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    assistantTimestamp\n    userTimestamp\n    userResponse\n    command\n    agent {\n      id\n      name\n    }\n  }\n}\n"
+    "text": "query contexts_task_log_Query(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    role\n    createdAt\n    content\n    agent {\n      id\n      name\n    }\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "cb97356c78e2eb1b1f60cc89195f0d78";
+node.hash = "4cf4567551b321e9a38ffac5f5477d19";
 
 module.exports = node;

@@ -12,10 +12,9 @@ export function TaskLogProvider({ children }) {
       query contexts_task_log_Query($taskId: ID!) {
         taskLogMessages(taskId: $taskId) {
           id
-          assistantTimestamp
-          userTimestamp
-          userResponse
-          command
+          role
+          createdAt
+          content
           agent {
             id
             name

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1649b76e79cb37ccd1bfc169eee173e7>>
+ * @generated SignedSource<<16358170351aa6898c20fe58468fdfee>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -26,9 +26,9 @@ v1 = [
         "variableName": "id"
       }
     ],
-    "concreteType": "TaskType",
+    "concreteType": "UserType",
     "kind": "LinkedField",
-    "name": "task",
+    "name": "user",
     "plural": false,
     "selections": [
       {
@@ -42,39 +42,28 @@ v1 = [
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "isComplete",
+        "name": "username",
         "storageKey": null
       },
       {
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "completeAt",
+        "name": "email",
         "storageKey": null
       },
       {
         "alias": null,
         "args": null,
-        "concreteType": "GoalType",
-        "kind": "LinkedField",
-        "name": "goals",
-        "plural": true,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "description",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "complete",
-            "storageKey": null
-          }
-        ],
+        "kind": "ScalarField",
+        "name": "firstName",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "lastName",
         "storageKey": null
       }
     ],
@@ -86,7 +75,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "contexts_task_Query",
+    "name": "contexts_user_Query",
     "selections": (v1/*: any*/),
     "type": "Query",
     "abstractKey": null
@@ -95,20 +84,20 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "contexts_task_Query",
+    "name": "contexts_user_Query",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "c0f86426550089152b13eca99e465356",
+    "cacheID": "620084a004458353d6fe96ea854d05d1",
     "id": null,
     "metadata": {},
-    "name": "contexts_task_Query",
+    "name": "contexts_user_Query",
     "operationKind": "query",
-    "text": "query contexts_task_Query(\n  $id: ID!\n) {\n  task(id: $id) {\n    id\n    isComplete\n    completeAt\n    goals {\n      description\n      complete\n    }\n  }\n}\n"
+    "text": "query contexts_user_Query(\n  $id: ID!\n) {\n  user(id: $id) {\n    id\n    username\n    email\n    firstName\n    lastName\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "7fcf897c6707d5a1e82f90ad7fe40d62";
+node.hash = "f710f8ea7b23fdc9d8390c5dbb6fd015";
 
 module.exports = node;

@@ -34,7 +34,6 @@ export function TaskProvider({ children, taskId }) {
           isComplete
           completeAt
           goals {
-            name
             description
             complete
           }
