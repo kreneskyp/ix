@@ -28,7 +28,7 @@ const CreateTaskMutation = graphql`
   }
 `;
 
-function TaskCreateForm() {
+export const TaskCreateForm = ({onMutationSuccess}) => {
   const [name, setName] = useState('');
   const [goals, setGoals] = useState(Array(5).fill(''));
   const [commit, isInFlight] = useMutation(CreateTaskMutation);
@@ -39,7 +39,7 @@ function TaskCreateForm() {
     setGoals(newGoals);
   };
 
-  const handleSubmit = ({onMutationSuccess}) => {
+  const handleSubmit = () => {
     const input = {
       name,
       goals: goals.map((description) => ({ description })),
