@@ -146,7 +146,7 @@ class CreateTaskMutation(graphene.Mutation):
         )
 
         # start task loop
-        # start_agent_loop.apply_async()
+        start_agent_loop.delay(task_id=task.id)
 
         return CreateTaskResponse(task=task)
 
