@@ -1,6 +1,7 @@
 import React from "react";
-import { VStack, Text, Box } from "@chakra-ui/react";
-import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
+import { HStack, VStack, Text, Box } from "@chakra-ui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSquare, faSquareCheck } from "@fortawesome/free-regular-svg-icons";
 import { useTask } from "tasks/contexts";
 
 const SideBarGoalList = () => {
@@ -14,9 +15,12 @@ const SideBarGoalList = () => {
       <VStack align="flex-start" spacing={2} px={5}>
         {task.goals?.map((goal, i) => (
           <VStack key={i} align="flex-start" spacing={0}>
-            {goal.complete ? <CheckIcon mr={2} /> : <CloseIcon mr={2} />}
             <Text color="whitesmoke" fontSize="sm">
-              {goal.description}
+              <FontAwesomeIcon
+                icon={goal.complete ? faSquareCheck : faSquare}
+                marginRight={5}
+              />
+              <span style={{ marginLeft: 5 }}>{goal.description}</span>
             </Text>
           </VStack>
         ))}
