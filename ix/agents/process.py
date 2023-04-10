@@ -6,7 +6,7 @@ from typing import TypedDict, Optional
 # AUTO GPT
 from auto_gpt.chat import chat_with_ai
 from auto_gpt.memory import PineconeMemory
-from auto_gpt import commands as auto_gpt_commands
+from auto_gpt.json_parser import fix_and_parse_json
 
 
 from ix.task_log.models import Task, TaskLogMessage
@@ -59,7 +59,9 @@ class AgentProcess:
             "-created_at"
         )
         self.message_history = [message.as_dict() for message in messages]
-        logger.info(f"AgentProcess loaded n={len(self.message_history)} chat messages from history")
+        logger.info(
+            f"AgentProcess loaded n={len(self.message_history)} chat messages from history"
+        )
 
     def initialize_memory(self):
         # api key set via env variables
