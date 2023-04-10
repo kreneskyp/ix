@@ -7,8 +7,10 @@ IMAGE_TAG=$(shell cat $(HASH_FILES) | md5sum | cut -d ' ' -f 1)
 IMAGE_URL=$(DOCKER_REPOSITORY):$(IMAGE_TAG)
 IMAGE_SENTINEL=.sentinel/image
 
-DOCKER_COMPOSE_RUN=docker-compose run -p 8000:8000 --rm sandbox
+DOCKER_COMPOSE_RUN=docker-compose run --rm sandbox
+DOCKER_COMPOSE_RUN_WITH_PORT=docker-compose run -p 8000:8000 --rm sandbox
 
+# set to skip build, primarily used by github workflows to skip builds when image is cached
 NO_IMAGE_BUILD?=0
 
 
@@ -16,14 +18,17 @@ NO_IMAGE_BUILD?=0
 image-tag:
 	@echo ${IMAGE_TAG}
 
+
 .PHONY: image-url
 image-url:
 	@echo ${IMAGE_URL}
 
 
+# build existence check
 .sentinel:
 	mkdir -p .sentinel
 
+# inner build target for image
 ${IMAGE_SENTINEL}: .sentinel $(HASH_FILES)
 ifneq (${NO_IMAGE_BUILD}, 1)
 	echo building ${IMAGE_URL}
@@ -32,15 +37,67 @@ ifneq (${NO_IMAGE_BUILD}, 1)
 	touch $@
 endif
 
-.PHONY: image
-image: ${IMAGE_SENTINEL}
-
+# setup target for docker-compose, add deps here to apply to all compose sessions
 .PHONY: compose
 compose: image
 
-.PHONY: shell
+# =========================================================
+# Build
+# =========================================================
+
+# build image
+.PHONY: image
+image: ${IMAGE_SENTINEL}
+
+# full frontend build
+.PHONY: frontend
+frontend: compose graphene_to_graphql compile_relay webpack
+
+# compile javascript
+.PHONY: webpack
+webpack: compose
+	docker-compose run --rm sandbox webpack --progress
+
+# compile javascript in watcher mode
+.PHONY: webpack-watch
+webpack-watch: compose
+	${DOCKER_COMPOSE_RUN} webpack --progress --watch
+
+# compile graphene graphql classes into schema.graphql for javascript
+.PHONY: graphene_to_graphql
+graphene_to_graphql: compose
+	docker-compose run --rm sandbox ./manage.py graphql_schema --out ./frontend/schema.graphql
+
+# compile javascript
+.PHONY: compile_relay
+compile_relay: compose
+	docker-compose run --rm sandbox npm run relay
+
+
+# =========================================================
+# Run
+# =========================================================
+
+.PHONY: runserver
+runserver: compose
+	${DOCKER_COMPOSE_RUN_WITH_PORT} ./manage.py runserver 0.0.0.0:8000
+
+# =========================================================
+# Shells
+# =========================================================
+
+.PHONY: bash
 shell: compose
 	${DOCKER_COMPOSE_RUN} /bin/bash
+
+.PHONY: bash
+shell: compose
+	${DOCKER_COMPOSE_RUN} /bin/bash
+
+
+# =========================================================
+# Testing
+# =========================================================
 
 .PHONY: test
 test: compose pytest
@@ -76,15 +133,10 @@ pyright: compose
 	${DOCKER_COMPOSE_RUN} pyright
 
 
-.PHONY: webpack
-webpack: compose
-	docker-compose run --rm sandbox /bin/bash
 
-
-.PHONY: webpack-watch
-webpack-watch: compose
-	${DOCKER_COMPOSE_RUN} webpack --watch
-
+# =========================================================
+# Cleanup
+# =========================================================
 
 .PHONY: clean
 clean:
