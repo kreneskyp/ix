@@ -2,7 +2,13 @@
 
 <div>
 <img align="left" src="ix_350.png" alt="The ninth planet around the sun">
-<span>some text</span>
+<pre>
+"Amidst the swirling sands of the cosmos, Ix stands as an enigmatic jewel, 
+where the brilliance of human ingenuity dances on the edge of forbidden 
+knowledge, casting a shadow of intrigue over the galaxy." 
+
+      - Atreides Scribe, The Chronicles of Ixian Innovation
+</pre>
 </div>
 
 ## About
