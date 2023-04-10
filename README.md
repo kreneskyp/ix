@@ -5,7 +5,8 @@
 <span>some text</span>
 </div>
 
-<p>
+<br>
+
 _iX_ is a platform designed to run autonomous GPT-4 agents, providing a scalable and responsive solution for 
 delegating tasks and executing them through an intuitive user interface. Agents can be spawned as individual processes 
 to research and complete tasks, while the backend architecture efficiently manages message queues and inter-agent 
@@ -13,7 +14,7 @@ communication.
 
 The platform supports deployment using Docker containers, ensuring a consistent environment and enabling easy scaling 
 with multiple worker containers.
-</p>
+
 ## Key Features
 
 - Spawns GPT-4 agents for autonomous task execution
