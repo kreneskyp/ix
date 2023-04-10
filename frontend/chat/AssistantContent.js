@@ -6,6 +6,8 @@ import {
   Tr,
   Th,
   Td,
+  Box,
+  Flex,
   Button,
   Icon,
   GridItem,
@@ -87,14 +89,15 @@ const AssistantContent = ({ content }) => {
           </Tbody>
         </Table>
       )}
-
       {thoughts.speak && (
-        <Button
-          leftIcon={<Icon as={FontAwesomeIcon} icon={faVolumeUp} />}
-          onClick={handleSpeak}
-        >
-          Speak
-        </Button>
+        <Flex justifyContent="flex-end" alignItems="center">
+          <Button
+            leftIcon={<Icon as={FontAwesomeIcon} icon={faVolumeUp} />}
+            onClick={handleSpeak}
+          >
+            Speak
+          </Button>
+        </Flex>
       )}
     </VStack>
   );

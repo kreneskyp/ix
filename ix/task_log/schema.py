@@ -99,7 +99,6 @@ class MessageContentType(graphene.Union):
 
     @classmethod
     def resolve_type(cls, instance, info):
-        print("instance: ", instance)
         message_type = instance.get("type")
         if message_type == "ASSISTANT":
             return AssistantContentType
