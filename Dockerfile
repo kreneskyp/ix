@@ -10,6 +10,13 @@ ADD .bash_profile $HOME
 RUN mkdir -p $APP
 RUN apt update -y && apt install -y curl postgresql-client
 
+# XXX: hacky way of generating a unique key on build, needs to be removed prior to deploy readiness
+# Generate a Django secret key
+# Set the Django secret key
+ENV DJANGO_SECRET_KEY $(date +%s | sha256sum | base64 | head -c 32)
+RUN echo "export DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}" >> /etc/profile
+
+
 # NVM / NPM Setup
 ENV NVM_DIR=/usr/local/nvm
 ENV NPM_DIR=$APP
