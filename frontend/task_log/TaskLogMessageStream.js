@@ -7,11 +7,12 @@ import ChatMessage from "chat/ChatMessage";
 export const TaskLogMessageStream = () => {
   const { taskLogMessages } = useTaskLogMessages();
 
+  // XXX: just using reverse for now because sorting in graphql is a pain
   let messages;
   if (taskLogMessages !== undefined && taskLogMessages !== null) {
-    messages = taskLogMessages.map((message) => (
-      <ChatMessage key={message.id} message={message} />
-    ));
+    messages = taskLogMessages
+      .toReversed()
+      .map((message) => <ChatMessage key={message.id} message={message} />);
   }
 
   return <VStack>{messages}</VStack>;
