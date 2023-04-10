@@ -1,8 +1,8 @@
 # iX - Autonomous GPT-4 Agent Platform
 
 
-<div style="display: flex; width: 100%;">
-  <img src="ix_350.png" alt="The ninth planet around the sun" width="30%" height="auto">
+<div style="display: flex; flex-direction: row; align-items: center;">
+  <img src="ix_350.png" alt="The ninth planet around the sun" width="100px" height="auto">
   <p style="margin-left: 20px;">
   "Amidst the swirling sands of the cosmos, Ix stands as an enigmatic jewel, where the brilliance of human ingenuity 
    dances on the edge of forbidden knowledge, casting a shadow of intrigue over the galaxy." - Atreides Scribe, The 
