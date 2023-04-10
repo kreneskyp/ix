@@ -38,8 +38,7 @@ cd ix
 Build and run the dev image:
 
 ```
-make image
-make frontend
+make dev_setup
 ```
 
 Run the dev server
@@ -67,11 +66,12 @@ docker-compose up --scale worker=N
 Here are some helpful commands for developers to set up and manage the development environment:
 
 - `make runserver`: Start the application in development mode on `0.0.0.0:8000`.
+- `make worker`: Start an Agent worker.
 - `make image`: Build the Docker image.
 - `make bash`: Open a bash shell in the docker container.
 - `make shell`: Open a Django shell_plus session.
 - `make migrate`: Run Django migrations.
-- `make makemigrations`: Generate Django migration files.
+- `make migrations`: Generate Django migration files.
 - `make frontend`: Rebuild the front end.
 
 To use these commands, ensure you have the appropriate `Makefile` set up in your project directory.

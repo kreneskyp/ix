@@ -45,6 +45,10 @@ compose: image
 # Build
 # =========================================================
 
+# dev setup - runs all initial setup steps in one go
+.PHONY: dev_setup
+dev_setup: image frontend migrate dev_fixtures
+
 # build image
 .PHONY: image
 image: ${IMAGE_SENTINEL}
@@ -93,6 +97,25 @@ shell: compose
 .PHONY: bash
 shell: compose
 	${DOCKER_COMPOSE_RUN} /bin/bash
+
+# =========================================================
+# Dev tools
+# =========================================================
+
+# shortcut to run django migrations
+.PHONY: migrate
+migrate: compose
+	${DOCKER_COMPOSE_RUN} ./manage.py migrate
+
+# shortcut to generate django migrations
+.PHONY: migrations
+migrations: compose
+	${DOCKER_COMPOSE_RUN} ./manage.py makemigrations
+
+# load initial data needed for dev environment
+.PHONY: dev_fixtures
+migrations: compose
+	${DOCKER_COMPOSE_RUN} ./manage.py loaddata dev_data.json
 
 
 # =========================================================
