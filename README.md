@@ -16,6 +16,7 @@ knowledge, casting a shadow of intrigue over the galaxy.
 </div>
 <div>
 <br>
+<br>
 </div>
 <div>
 _iX_ is a platform designed to run autonomous GPT-4 agents, providing a scalable and responsive solution for 
