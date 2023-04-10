@@ -14,12 +14,13 @@ knowledge, casting a shadow of intrigue over the galaxy.
 \- Atreides Scribe, The Chronicles of Ixian Innovation
 <p>
 </div>
+<div>
 <br>
 <br>
 <br>
 <br>
-
-<p>
+</div>
+<div>
 _iX_ is a platform designed to run autonomous GPT-4 agents, providing a scalable and responsive solution for 
 delegating tasks and executing them through an intuitive user interface. Agents can be spawned as individual processes 
 to research and complete tasks, while the backend architecture efficiently manages message queues and inter-agent 
@@ -27,7 +28,8 @@ communication.
 
 The platform supports deployment using Docker containers, ensuring a consistent environment and enabling easy scaling 
 with multiple worker containers.
-</p>
+</div>
+
 
 ## Key Features
 
