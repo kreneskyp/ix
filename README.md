@@ -7,19 +7,17 @@
 <br>
 <br>
 <br>
-"Amidst the swirling sands of the cosmos, Ix stands as an enigmatic jewel, 
+Amidst the swirling sands of the cosmos, Ix stands as an enigmatic jewel, 
 where the brilliance of human ingenuity dances on the edge of forbidden 
-knowledge, casting a shadow of intrigue over the galaxy." 
+knowledge, casting a shadow of intrigue over the galaxy.
 
-   - Atreides Scribe, The Chronicles of Ixian Innovation
+\- Atreides Scribe, The Chronicles of Ixian Innovation
 <p>
 </div>
 <br>
 <br>
 <br>
 
-
-## About
 
 _iX_ is a platform designed to run autonomous GPT-4 agents, providing a scalable and responsive solution for 
 delegating tasks and executing them through an intuitive user interface. Agents can be spawned as individual processes 
