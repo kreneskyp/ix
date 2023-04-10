@@ -1,6 +1,6 @@
 # iX - Autonomous GPT-4 Agent Platform
 
-![ix_350.png](ix_350.png)
+![The ninth planet around the sun](ix_350.png)
 
 _iX_ is a powerful platform designed to run autonomous GPT-4 agents, providing a scalable and responsive solution for 
 delegating tasks and executing them through an intuitive user interface. Agents can be spawned as individual processes 
