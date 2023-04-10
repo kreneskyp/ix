@@ -24,7 +24,17 @@ module.exports = {
         path.resolve('/var/app/frontend'),
         'node_modules'
         //path.resolve('/var/npm/node_modules')
-    ]
+    ],
+    aliasFields: ['browser'],
+    fallback: {
+      path: (() => {
+        try {
+          return require.resolve('path-browserify');
+        } catch (err) {
+          return false;
+        }
+      })(),
+    },
   },
   output: {
     path: path.resolve('/var/app/.compiled-static'),

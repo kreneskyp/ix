@@ -7,6 +7,9 @@
     "test": "tests"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "package.json": "^2.0.1"
   },
   "devDependencies": {
@@ -26,6 +29,7 @@
     "graphql": "^16.6.0",
     "html-webpack-plugin": "^5.5.0",
     "jest": "^27.5.1",
+    "path-browserify": "^1.0.1",
     "prettier": "^2.8.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
