@@ -60,7 +60,7 @@ class MessageContentType(graphene.ObjectType):
 class ThoughtsType(graphene.ObjectType):
     text = graphene.String(required=True)
     reasoning = graphene.String(required=True)
-    plan = graphene.String(required=True)
+    plan = graphene.List(graphene.String, required=True)
     criticism = graphene.String(required=True)
     speak = graphene.String()
 
@@ -71,7 +71,8 @@ class CommandType(graphene.ObjectType):
 
 
 class AssistantContentType(MessageContentType):
-    message = graphene.String(required=True)
+    thoughts = graphene.Field(ThoughtsType, required=True)
+    command = graphene.Field(CommandType, required=True)
 
 
 class FeedbackContentType(MessageContentType):
@@ -89,22 +90,29 @@ class FeedbackRequestContentType(MessageContentType):
 
 class MessageContentType(graphene.Union):
     class Meta:
-        types = (AssistantContentType, FeedbackRequestContentType, FeedbackContentType, SystemContentType)
-        name = "Content"
-    @staticmethod
-    def resolve_type(instance, info):
-        message_type = instance.get('type')
-        if message_type == 'ASSISTANT':
+        types = (
+            AssistantContentType,
+            FeedbackRequestContentType,
+            FeedbackContentType,
+            SystemContentType,
+        )
+
+    @classmethod
+    def resolve_type(cls, instance, info):
+        print("instance: ", instance)
+        message_type = instance.get("type")
+        if message_type == "ASSISTANT":
             return AssistantContentType
-        elif message_type == 'FEEDBACK_REQUEST':
+        elif message_type == "FEEDBACK_REQUEST":
             return FeedbackRequestContentType
-        elif message_type == 'FEEDBACK':
+        elif message_type == "FEEDBACK":
             return FeedbackContentType
-        elif message_type == 'SYSTEM':
+        elif message_type == "SYSTEM":
             return SystemContentType
         else:
             # Raise an exception if the message_type is not recognized.
-            raise Exception("Unknown message_type for ContentUnion.")
+            raise Exception("Unknown message_type for MessageContentType.")
+
 
 class TaskLogMessageType(DjangoObjectType):
     class Meta:
@@ -229,8 +237,8 @@ class RespondToTaskLogMutation(graphene.Mutation):
             content=UserFeedback(
                 type="FEEDBACK",
                 authorized_for=1 if input.is_authorized else 0,
-                feedback=input.response
-            )
+                feedback=input.response,
+            ),
         )
 
         # resume task loop

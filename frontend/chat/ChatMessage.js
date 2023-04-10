@@ -12,7 +12,7 @@ const ChatMessage = ({ message }) => {
 
   let contentComponent = null;
   switch (content.type) {
-    case "zzASSISTANT":
+    case "ASSISTANT":
       contentComponent = <AssistantContent content={content} />;
       break;
     case "FEEDBACK":
@@ -31,7 +31,9 @@ const ChatMessage = ({ message }) => {
 
   return (
     <Flex alignItems="flex-start" mb={4}>
-      <ChatMessageAvatar message={message} mr={2} />
+      <Box mt={5} mr={3}>
+        <ChatMessageAvatar message={message} />
+      </Box>
       <Box bg="gray.100" borderRadius={8} p={3}>
         {contentComponent}
       </Box>
@@ -41,7 +43,6 @@ const ChatMessage = ({ message }) => {
 
 ChatMessage.propTypes = {
   message: PropTypes.shape({
-    messageType: PropTypes.string.isRequired,
     role: PropTypes.string.isRequired,
     content: PropTypes.any.isRequired,
   }).isRequired,

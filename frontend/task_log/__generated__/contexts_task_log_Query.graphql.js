@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<86c466e971a9d0b3926121197a0af40e>>
+ * @generated SignedSource<<68dad198dc99d830ce02c7375000936c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -30,7 +30,14 @@ v2 = {
   "name": "type",
   "storageKey": null
 },
-v3 = [
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "name",
+  "storageKey": null
+},
+v4 = [
   (v2/*: any*/),
   {
     "alias": null,
@@ -40,7 +47,7 @@ v3 = [
     "storageKey": null
   }
 ],
-v4 = [
+v5 = [
   {
     "alias": null,
     "args": [
@@ -87,13 +94,80 @@ v4 = [
           },
           {
             "kind": "InlineFragment",
-            "selections": (v3/*: any*/),
+            "selections": [
+              (v2/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "ThoughtsType",
+                "kind": "LinkedField",
+                "name": "thoughts",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "text",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "reasoning",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "plan",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "criticism",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "speak",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "CommandType",
+                "kind": "LinkedField",
+                "name": "command",
+                "plural": false,
+                "selections": [
+                  (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "args",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              }
+            ],
             "type": "AssistantContentType",
             "abstractKey": null
           },
           {
             "kind": "InlineFragment",
-            "selections": (v3/*: any*/),
+            "selections": (v4/*: any*/),
             "type": "FeedbackRequestContentType",
             "abstractKey": null
           },
@@ -114,7 +188,7 @@ v4 = [
           },
           {
             "kind": "InlineFragment",
-            "selections": (v3/*: any*/),
+            "selections": (v4/*: any*/),
             "type": "SystemContentType",
             "abstractKey": null
           }
@@ -130,13 +204,7 @@ v4 = [
         "plural": false,
         "selections": [
           (v1/*: any*/),
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "name",
-            "storageKey": null
-          }
+          (v3/*: any*/)
         ],
         "storageKey": null
       }
@@ -150,7 +218,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "contexts_task_log_Query",
-    "selections": (v4/*: any*/),
+    "selections": (v5/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -159,19 +227,19 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "contexts_task_log_Query",
-    "selections": (v4/*: any*/)
+    "selections": (v5/*: any*/)
   },
   "params": {
-    "cacheID": "ce4163b5ca638f0c5d35b8484e743de3",
+    "cacheID": "b8e3c59f6fce630c478ac67e8bac45cc",
     "id": null,
     "metadata": {},
     "name": "contexts_task_log_Query",
     "operationKind": "query",
-    "text": "query contexts_task_log_Query(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    role\n    createdAt\n    content {\n      __typename\n      ... on AssistantContentType {\n        type\n        message\n      }\n      ... on FeedbackRequestContentType {\n        type\n        message\n      }\n      ... on FeedbackContentType {\n        type\n        feedback\n      }\n      ... on SystemContentType {\n        type\n        message\n      }\n    }\n    agent {\n      id\n      name\n    }\n  }\n}\n"
+    "text": "query contexts_task_log_Query(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    role\n    createdAt\n    content {\n      __typename\n      ... on AssistantContentType {\n        type\n        thoughts {\n          text\n          reasoning\n          plan\n          criticism\n          speak\n        }\n        command {\n          name\n          args\n        }\n      }\n      ... on FeedbackRequestContentType {\n        type\n        message\n      }\n      ... on FeedbackContentType {\n        type\n        feedback\n      }\n      ... on SystemContentType {\n        type\n        message\n      }\n    }\n    agent {\n      id\n      name\n    }\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "258f689d6cb2d221171f50057e7293bd";
+node.hash = "3cee58af0ef729bdc705dd632676ae19";
 
 module.exports = node;

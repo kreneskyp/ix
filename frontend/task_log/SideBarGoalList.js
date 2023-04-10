@@ -18,7 +18,6 @@ const SideBarGoalList = () => {
             <Text color="whitesmoke" fontSize="sm">
               <FontAwesomeIcon
                 icon={goal.complete ? faSquareCheck : faSquare}
-                marginRight={5}
               />
               <span style={{ marginLeft: 5 }}>{goal.description}</span>
             </Text>

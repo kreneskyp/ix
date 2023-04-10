@@ -66,7 +66,7 @@ class TaskLogMessage(models.Model):
 
     def as_dict(self):
         content = self.content
-        if content['type'] == 'FEEDBACK':
-            return {"role": self.role.lower(), "content": self.content['feedback']}
+        if content["type"] == "FEEDBACK":
+            return {"role": self.role.lower(), "content": self.content["feedback"]}
         else:
-            return {"role": self.role.lower(), "content": self.content['message']}
+            return {"role": self.role.lower(), "content": self.content["message"]}

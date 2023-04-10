@@ -7,7 +7,7 @@ const SystemContent = ({ content }) => {
 };
 
 SystemContent.propTypes = {
-  content: PropTypes.string.isRequired,
+  content: PropTypes.object.isRequired,
 };
 
 export default SystemContent;

@@ -18,13 +18,17 @@ type UserType {
   """
   isSuperuser: Boolean!
 
-  """Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."""
+  """
+  Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+  """
   username: String!
   firstName: String!
   lastName: String!
   email: String!
 
-  """Designates whether the user can log into this admin site."""
+  """
+  Designates whether the user can log into this admin site.
+  """
   isStaff: Boolean!
 
   """
@@ -73,26 +77,58 @@ type TaskLogMessageType {
   agent: AgentType
   createdAt: DateTime!
   role: TaskLogTaskLogMessageRoleChoices!
-  content: Content
+  content: MessageContentType
 }
 
 enum TaskLogTaskLogMessageRoleChoices {
-  """system"""
+  """
+  system
+  """
   SYSTEM
 
-  """assistant"""
+  """
+  assistant
+  """
   ASSISTANT
 
-  """user"""
+  """
+  user
+  """
   USER
 }
 
-union Content = AssistantContentType | FeedbackRequestContentType | FeedbackContentType | SystemContentType
+union MessageContentType =
+    AssistantContentType
+  | FeedbackRequestContentType
+  | FeedbackContentType
+  | SystemContentType
 
 type AssistantContentType {
   type: String!
-  message: String!
+  thoughts: ThoughtsType!
+  command: CommandType!
 }
+
+type ThoughtsType {
+  text: String!
+  reasoning: String!
+  plan: [String]!
+  criticism: String!
+  speak: String
+}
+
+type CommandType {
+  name: String!
+  args: JSONString!
+}
+
+"""
+Allows use of a JSON String for input / output from the GraphQL schema.
+
+Use of this type is *not recommended* as you lose the benefits of having a defined, static
+schema (one of the key benefits of GraphQL).
+"""
+scalar JSONString
 
 type FeedbackRequestContentType {
   type: String!

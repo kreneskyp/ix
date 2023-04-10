@@ -12,7 +12,6 @@ export const TaskLogLeftPane = () => {
         align="stretch"
       >
         <SideBarGoalList />
-        <TaskPlan />
       </VStack>
     </Box>
   );

@@ -18,14 +18,24 @@ export function TaskLogProvider({ children }) {
             __typename
             ... on AssistantContentType {
               type
-              message
+              thoughts {
+                text
+                reasoning
+                plan
+                criticism
+                speak
+              }
+              command {
+                name
+                args
+              }
             }
             ... on FeedbackRequestContentType {
               type
               message
             }
             ... on FeedbackContentType {
-              type  
+              type
               feedback
             }
             ... on SystemContentType {

@@ -2,11 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Box, Tooltip, useColorModeValue } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUser,
-  faRobot,
-  faCog,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUser, faRobot, faCog } from "@fortawesome/free-solid-svg-icons";
 
 const ChatMessageAvatar = ({ message }) => {
   const avatarSize = "40px";

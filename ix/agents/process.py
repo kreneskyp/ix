@@ -86,7 +86,7 @@ class AgentProcess:
         tick_input = None
         if user_input_msg:
             logger.info(f"resuming with user input for task_id={self.task_id}")
-            tick_input = user_input_msg.content['feedback']
+            tick_input = user_input_msg.content["feedback"]
         elif len(self.message_history) == 0:
             # special first input for loop start
             logger.info(f"first tick for task_id={self.task_id}")
@@ -111,19 +111,20 @@ class AgentProcess:
         logger.info(f"ticking task_id={self.task_id}")
         response = self.chat_with_ai(user_input)
         logger.debug(f"Response from model, task_id={self.task_id} response={response}")
+        data = self.handle_response(response)
 
         # save to persistent storage
         TaskLogMessage.objects.create(
             task_id=self.task_id,
             role="assistant",
-            content={
-                'type': "ASSISTANT",
-                'message': response
-            }
+            content=dict(type="ASSISTANT", **data),
         )
 
         # process command and then execute or seek feedback
-        command, command_kwargs = self.handle_response(response)
+
+        command_name = data["command"]["name"]
+        command_kwargs = data["command"].get("args", {})
+        command = self.command_registry.get(command_name)
         logger.info(f"model returned task_id={self.task_id} command={command.name}")
         if command:
             if execute:
@@ -161,9 +162,10 @@ class AgentProcess:
             """
 
     def handle_response(self, message):
-        command_name, arguments = auto_gpt_commands.parse_command(message)
-        command = self.command_registry.get(command_name)
-        return command, arguments
+        data = fix_and_parse_json(message)
+        logger.debug(f"parsed message={data}")
+        command_name = data["command"]["name"]
+        return data
 
     def chat_with_ai(self, input):
         return chat_with_ai(
@@ -184,7 +186,7 @@ class AgentProcess:
             content={
                 "type": "FEEDBACK_REQUEST",
                 "message": "requesting user authorization and input",
-            }
+            },
         )
         # TODO: notify pubsub
 
