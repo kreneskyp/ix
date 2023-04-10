@@ -5,7 +5,7 @@
 <span>some text</span>
 </div>
 
-<br>
+## About
 
 _iX_ is a platform designed to run autonomous GPT-4 agents, providing a scalable and responsive solution for 
 delegating tasks and executing them through an intuitive user interface. Agents can be spawned as individual processes 
