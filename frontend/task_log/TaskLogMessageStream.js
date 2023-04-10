@@ -15,7 +15,12 @@ export const TaskLogMessageStream = () => {
       .map((message) => <ChatMessage key={message.id} message={message} />);
   }
 
-  return <VStack>{messages}</VStack>;
+  return (
+    <>
+      {/* Scrollable content */}
+      {messages}
+    </>
+  );
 };
 
 export default TaskLogMessageStream;
