@@ -1,14 +1,19 @@
+import logging
+
 import graphene
 from functools import wraps
 from graphql import GraphQLError
 from graphene_django import DjangoObjectType
 from django.contrib.auth.models import User
 
-from ix.task_log.models import Agent, Task, TaskLogMessage
+from ix.task_log.models import Agent, Task, TaskLogMessage, UserFeedback
 from ix.task_log.tasks.agent_runner import (
     resume_agent_loop_with_feedback,
     start_agent_loop,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 def handle_exceptions(func):
@@ -48,10 +53,65 @@ class TaskType(DjangoObjectType):
     goals = graphene.List(GoalType)
 
 
+class MessageContentType(graphene.ObjectType):
+    type = graphene.String(required=True)
+
+
+class ThoughtsType(graphene.ObjectType):
+    text = graphene.String(required=True)
+    reasoning = graphene.String(required=True)
+    plan = graphene.String(required=True)
+    criticism = graphene.String(required=True)
+    speak = graphene.String()
+
+
+class CommandType(graphene.ObjectType):
+    name = graphene.String(required=True)
+    args = graphene.JSONString(required=True)
+
+
+class AssistantContentType(MessageContentType):
+    message = graphene.String(required=True)
+
+
+class FeedbackContentType(MessageContentType):
+    authorized = graphene.Int()
+    feedback = graphene.String()
+
+
+class SystemContentType(MessageContentType):
+    message = graphene.String(required=True)
+
+
+class FeedbackRequestContentType(MessageContentType):
+    message = graphene.String(required=True)
+
+
+class MessageContentType(graphene.Union):
+    class Meta:
+        types = (AssistantContentType, FeedbackRequestContentType, FeedbackContentType, SystemContentType)
+        name = "Content"
+    @staticmethod
+    def resolve_type(instance, info):
+        message_type = instance.get('type')
+        if message_type == 'ASSISTANT':
+            return AssistantContentType
+        elif message_type == 'FEEDBACK_REQUEST':
+            return FeedbackRequestContentType
+        elif message_type == 'FEEDBACK':
+            return FeedbackContentType
+        elif message_type == 'SYSTEM':
+            return SystemContentType
+        else:
+            # Raise an exception if the message_type is not recognized.
+            raise Exception("Unknown message_type for ContentUnion.")
+
 class TaskLogMessageType(DjangoObjectType):
     class Meta:
         model = TaskLogMessage
         fields = "__all__"
+
+    content = MessageContentType()
 
 
 class Query(graphene.ObjectType):
@@ -159,19 +219,25 @@ class RespondToTaskLogMutation(graphene.Mutation):
     errors = graphene.Field(graphene.List(graphene.String))
 
     @staticmethod
+    @handle_exceptions
     def mutate(root, info, input):
-        message_id = input.id
-        response = input.response
-        is_authorized = input.is_authorized
-
         # save to persistent storage
-        message = TaskLogMessage.objects.get(id=message_id)
-        message.user_response = response
-        message.is_authorized = is_authorized
-        message.save()
+        responding_to = TaskLogMessage.objects.get(pk=input.id)
+        message = TaskLogMessage.objects.create(
+            task_id=responding_to.task_id,
+            role="USER",
+            content=UserFeedback(
+                type="FEEDBACK",
+                authorized_for=1 if input.is_authorized else 0,
+                feedback=input.response
+            )
+        )
 
         # resume task loop
-        resume_agent_loop_with_feedback.apply_async(message_id=message_id)
+        logger.info(
+            f"Requesting agent loop resume task_id={message.task_id} message_id={message.pk}"
+        )
+        resume_agent_loop_with_feedback.delay(message_id=message.pk)
 
         return TaskLogMessageResponse(task_log_message=message)
 

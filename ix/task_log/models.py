@@ -1,3 +1,5 @@
+from typing import TypedDict, Optional
+
 from django.db import models
 
 
@@ -23,6 +25,11 @@ class Task(models.Model):
     complete_at = models.DateTimeField(null=True, blank=True)
 
 
+class UserFeedback(TypedDict):
+    authorized_for: int
+    feedback: Optional[str]
+
+
 class TaskLogMessage(models.Model):
     """
     TaskLog model represents a log entry containing agent, user, goals, user response,
@@ -33,6 +40,13 @@ class TaskLogMessage(models.Model):
         ("system", "system"),
         ("assistant", "assistant"),
         ("user", "user"),
+    ]
+
+    TYPE_CHOICES = [
+        ("system", "system"),
+        ("assistant", "assistant"),
+        ("feedback_request", "feedback_request"),
+        ("feedback", "feedback"),
     ]
 
     # message metadata
@@ -51,4 +65,8 @@ class TaskLogMessage(models.Model):
         return f"TaskLogMessage {self.id} ({self.role})"
 
     def as_dict(self):
-        return {"role": self.role, "content": self.content}
+        content = self.content
+        if content['type'] == 'FEEDBACK':
+            return {"role": self.role.lower(), "content": self.content['feedback']}
+        else:
+            return {"role": self.role.lower(), "content": self.content['message']}

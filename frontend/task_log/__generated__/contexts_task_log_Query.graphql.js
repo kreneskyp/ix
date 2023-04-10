@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c91b4cc2d0c0cac461bf1ec56d37d443>>
+ * @generated SignedSource<<86c466e971a9d0b3926121197a0af40e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -23,7 +23,24 @@ v1 = {
   "name": "id",
   "storageKey": null
 },
-v2 = [
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "type",
+  "storageKey": null
+},
+v3 = [
+  (v2/*: any*/),
+  {
+    "alias": null,
+    "args": null,
+    "kind": "ScalarField",
+    "name": "message",
+    "storageKey": null
+  }
+],
+v4 = [
   {
     "alias": null,
     "args": [
@@ -56,8 +73,52 @@ v2 = [
       {
         "alias": null,
         "args": null,
-        "kind": "ScalarField",
+        "concreteType": null,
+        "kind": "LinkedField",
         "name": "content",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "__typename",
+            "storageKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": (v3/*: any*/),
+            "type": "AssistantContentType",
+            "abstractKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": (v3/*: any*/),
+            "type": "FeedbackRequestContentType",
+            "abstractKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v2/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "feedback",
+                "storageKey": null
+              }
+            ],
+            "type": "FeedbackContentType",
+            "abstractKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": (v3/*: any*/),
+            "type": "SystemContentType",
+            "abstractKey": null
+          }
+        ],
         "storageKey": null
       },
       {
@@ -89,7 +150,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "contexts_task_log_Query",
-    "selections": (v2/*: any*/),
+    "selections": (v4/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -98,19 +159,19 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "contexts_task_log_Query",
-    "selections": (v2/*: any*/)
+    "selections": (v4/*: any*/)
   },
   "params": {
-    "cacheID": "4c68f687087286aa6edee2783a7bf3d9",
+    "cacheID": "ce4163b5ca638f0c5d35b8484e743de3",
     "id": null,
     "metadata": {},
     "name": "contexts_task_log_Query",
     "operationKind": "query",
-    "text": "query contexts_task_log_Query(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    role\n    createdAt\n    content\n    agent {\n      id\n      name\n    }\n  }\n}\n"
+    "text": "query contexts_task_log_Query(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    role\n    createdAt\n    content {\n      __typename\n      ... on AssistantContentType {\n        type\n        message\n      }\n      ... on FeedbackRequestContentType {\n        type\n        message\n      }\n      ... on FeedbackContentType {\n        type\n        feedback\n      }\n      ... on SystemContentType {\n        type\n        message\n      }\n    }\n    agent {\n      id\n      name\n    }\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "4cf4567551b321e9a38ffac5f5477d19";
+node.hash = "258f689d6cb2d221171f50057e7293bd";
 
 module.exports = node;

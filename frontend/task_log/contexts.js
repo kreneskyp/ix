@@ -14,7 +14,25 @@ export function TaskLogProvider({ children }) {
           id
           role
           createdAt
-          content
+          content {
+            __typename
+            ... on AssistantContentType {
+              type
+              message
+            }
+            ... on FeedbackRequestContentType {
+              type
+              message
+            }
+            ... on FeedbackContentType {
+              type  
+              feedback
+            }
+            ... on SystemContentType {
+              type
+              message
+            }
+          }
           agent {
             id
             name
@@ -49,7 +67,7 @@ export const useLatestTaskLog = () => {
 
   const latestTaskLogMessage = taskLogMessages.taskLogMessages
     .slice()
-    .sort((a, b) => b.assistantTimestamp.localeCompare(a.assistantTimestamp))
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .shift();
 
   return latestTaskLogMessage;

@@ -12,8 +12,8 @@ from auto_gpt import commands as auto_gpt_commands
 from ix.task_log.models import Task, TaskLogMessage
 from ix.commands.registry import CommandRegistry, Command
 
-FORMAT = '%(asctime)s %(levelname)s %(message)s'
-logging.basicConfig(format=FORMAT, level="INFO")
+FORMAT = "%(asctime)s %(levelname)s %(message)s"
+logging.basicConfig(format=FORMAT, level="DEBUG")
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +59,7 @@ class AgentProcess:
             "-created_at"
         )
         self.message_history = [message.as_dict() for message in messages]
+        logger.info(f"AgentProcess loaded n={len(self.message_history)} chat messages from history")
 
     def initialize_memory(self):
         # api key set via env variables
@@ -85,15 +86,17 @@ class AgentProcess:
         tick_input = None
         if user_input_msg:
             logger.info(f"resuming with user input for task_id={self.task_id}")
-            tick_input = user_input_msg.content
+            tick_input = user_input_msg.content['feedback']
         elif len(self.message_history) == 0:
             # special first input for loop start
             logger.info(f"first tick for task_id={self.task_id}")
             tick_input = self.INITIAL_INPUT
 
-        # if there is initial input, tick once
+        # if there is input, tick once
         if tick_input:
             self.tick(tick_input)
+
+        return
 
         # run the remainder of authorized ticks in a loop
         # set auto-execute here.
@@ -101,16 +104,27 @@ class AgentProcess:
             for i in range(1, n):
                 self.tick(execute=True)
 
-    def tick(self, input=NEXT_COMMAND, execute=False):
+    def tick(self, user_input=NEXT_COMMAND, execute=False):
         """
         "tick" the agent loop letting it chat and run commands
         """
         logger.info(f"ticking task_id={self.task_id}")
-        response = self.chat_with_ai(input)
+        response = self.chat_with_ai(user_input)
         logger.debug(f"Response from model, task_id={self.task_id} response={response}")
+
+        # save to persistent storage
+        TaskLogMessage.objects.create(
+            task_id=self.task_id,
+            role="assistant",
+            content={
+                'type': "ASSISTANT",
+                'message': response
+            }
+        )
+
+        # process command and then execute or seek feedback
         command, command_kwargs = self.handle_response(response)
         logger.info(f"model returned task_id={self.task_id} command={command.name}")
-
         if command:
             if execute:
                 logger.info(f"executing task_id={self.task_id} command={command.name}")
@@ -121,15 +135,17 @@ class AgentProcess:
                 self.request_user_input()
 
     def construct_prompt(self):
-        goals_clause = '\n'.join([f"{i+1}. {goal['description']}" for i, goal in enumerate(self.task.goals)])
+        goals_clause = "\n".join(
+            [f"{i+1}. {goal['description']}" for i, goal in enumerate(self.task.goals)]
+        )
         commands_clause = self.command_registry.command_prompt()
         agent = self.agent
         from ix.agents.prompts import CONSTRAINTS_CLAUSE
         from ix.agents.prompts import RESOURCES_CLAUSE
         from ix.agents.prompts import SELF_EVALUATION_CLAUSE
         from ix.agents.prompts import FORMAT_CLAUSE
-        return (
-            f"""
+
+        return f"""
             You are {agent.name}, {agent.purpose}
             {goals_clause}
 
@@ -143,7 +159,6 @@ class AgentProcess:
 
             {FORMAT_CLAUSE}
             """
-        )
 
     def handle_response(self, message):
         command_name, arguments = auto_gpt_commands.parse_command(message)
@@ -164,7 +179,12 @@ class AgentProcess:
         Request user input to complete task.
         """
         TaskLogMessage.objects.create(
-            task_id=self.task_id, role="system", content="requesting user authorization and input"
+            task_id=self.task_id,
+            role="system",
+            content={
+                "type": "FEEDBACK_REQUEST",
+                "message": "requesting user authorization and input",
+            }
         )
         # TODO: notify pubsub
 

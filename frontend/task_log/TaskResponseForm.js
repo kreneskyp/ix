@@ -20,7 +20,12 @@ const responseMutation = graphql`
       taskLogMessage {
         id
         role
-        content
+        content {
+          ... on FeedbackContentType {
+            authorized
+            feedback
+          }
+        }
       }
       errors
     }

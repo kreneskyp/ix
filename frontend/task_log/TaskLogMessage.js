@@ -12,15 +12,12 @@ export const TaskLogMessage = ({ message }) => {
           mb={2}
         >
           <Text fontWeight="bold">Agent:</Text>
-          <Text>{message.agent.name}</Text>
+          <Text>{message?.agent?.name}</Text>
+          <Text>{message?.role}</Text>
           <Text fontWeight="bold">Timestamp:</Text>
-          <Text>{message.assistantTimestamp}</Text>
-          <Text fontWeight="bold">Command:</Text>
-          <Text>{message.command}</Text>
-          <Text fontWeight="bold">UserResponseAt:</Text>
-          <Text>{message.userTimestamp}</Text>
-          <Text fontWeight="bold">User Response</Text>
-          <Text>{message.userResponse}</Text>
+          <Text>{message.createdAt}</Text>
+          <Text fontWeight="bold">Content:</Text>
+          <Text>{message.content}</Text>
         </Grid>
       </CardBody>
     </Card>

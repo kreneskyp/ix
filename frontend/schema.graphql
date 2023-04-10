@@ -18,17 +18,13 @@ type UserType {
   """
   isSuperuser: Boolean!
 
-  """
-  Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-  """
+  """Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."""
   username: String!
   firstName: String!
   lastName: String!
   email: String!
 
-  """
-  Designates whether the user can log into this admin site.
-  """
+  """Designates whether the user can log into this admin site."""
   isStaff: Boolean!
 
   """
@@ -77,33 +73,42 @@ type TaskLogMessageType {
   agent: AgentType
   createdAt: DateTime!
   role: TaskLogTaskLogMessageRoleChoices!
-  content: JSONString!
+  content: Content
 }
 
 enum TaskLogTaskLogMessageRoleChoices {
-  """
-  system
-  """
+  """system"""
   SYSTEM
 
-  """
-  assistant
-  """
+  """assistant"""
   ASSISTANT
 
-  """
-  user
-  """
+  """user"""
   USER
 }
 
-"""
-Allows use of a JSON String for input / output from the GraphQL schema.
+union Content = AssistantContentType | FeedbackRequestContentType | FeedbackContentType | SystemContentType
 
-Use of this type is *not recommended* as you lose the benefits of having a defined, static
-schema (one of the key benefits of GraphQL).
-"""
-scalar JSONString
+type AssistantContentType {
+  type: String!
+  message: String!
+}
+
+type FeedbackRequestContentType {
+  type: String!
+  message: String!
+}
+
+type FeedbackContentType {
+  type: String!
+  authorized: Int
+  feedback: String
+}
+
+type SystemContentType {
+  type: String!
+  message: String!
+}
 
 type Mutation {
   createTask(input: CreateTaskInput!): CreateTaskResponse
