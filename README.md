@@ -47,6 +47,11 @@ Run the dev server
 make runserver
 ```
 
+Start a worker
+```bash
+make worker
+```
+
 
 ## Usage
 
@@ -55,11 +60,8 @@ The platform will automatically spawn agent processes to research and complete t
 
 
 ### Scaling workers
-To scale the number of worker containers, use the following command:
+Run as many worker processes as you want with `make worker`.
 
-```bash
-docker-compose up --scale worker=N
-```
 
 ## Developer Setup
 

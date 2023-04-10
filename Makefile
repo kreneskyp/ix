@@ -82,21 +82,27 @@ compile_relay: compose
 # Run
 # =========================================================
 
+# run backend and frontend
 .PHONY: runserver
 runserver: compose
 	${DOCKER_COMPOSE_RUN_WITH_PORT} ./manage.py runserver 0.0.0.0:8000
+
+# run worker
+.PHONY: worker
+worker: compose
+	${DOCKER_COMPOSE_RUN} celery.sh
 
 # =========================================================
 # Shells
 # =========================================================
 
 .PHONY: bash
-shell: compose
+bash: compose
 	${DOCKER_COMPOSE_RUN} /bin/bash
 
-.PHONY: bash
+.PHONY: shell
 shell: compose
-	${DOCKER_COMPOSE_RUN} /bin/bash
+	${DOCKER_COMPOSE_RUN} ./manage.py shell_plus
 
 # =========================================================
 # Dev tools
@@ -114,7 +120,7 @@ migrations: compose
 
 # load initial data needed for dev environment
 .PHONY: dev_fixtures
-migrations: compose
+dev_fixtures: compose
 	${DOCKER_COMPOSE_RUN} ./manage.py loaddata dev_data.json
 
 
