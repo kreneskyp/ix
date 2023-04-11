@@ -17,3 +17,4 @@ daphne==4.0.0
 psycopg2
 ipython==8.12.0
 django_extensions==3.2.1
+pinecone-client==2.2.1
