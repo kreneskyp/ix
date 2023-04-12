@@ -18,13 +18,17 @@ type UserType {
   """
   isSuperuser: Boolean!
 
-  """Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."""
+  """
+  Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+  """
   username: String!
   firstName: String!
   lastName: String!
   email: String!
 
-  """Designates whether the user can log into this admin site."""
+  """
+  Designates whether the user can log into this admin site.
+  """
   isStaff: Boolean!
 
   """
@@ -77,17 +81,27 @@ type TaskLogMessageType {
 }
 
 enum TaskLogTaskLogMessageRoleChoices {
-  """system"""
+  """
+  system
+  """
   SYSTEM
 
-  """assistant"""
+  """
+  assistant
+  """
   ASSISTANT
 
-  """user"""
+  """
+  user
+  """
   USER
 }
 
-union MessageContentType = AssistantContentType | FeedbackRequestContentType | FeedbackContentType | SystemContentType
+union MessageContentType =
+    AssistantContentType
+  | FeedbackRequestContentType
+  | FeedbackContentType
+  | SystemContentType
 
 type AssistantContentType {
   type: String!

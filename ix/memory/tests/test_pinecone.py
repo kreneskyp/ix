@@ -36,7 +36,7 @@ class TestPineconeMemory:
         assert results[1]["data"] == text1
         assert results[0]["key"] == key2
         assert results[0]["data"] == text2
-        assert results[0]['score'] > results[1]['score']
+        assert results[0]["score"] > results[1]["score"]
 
     def test_delete_vector(self, pinecone_memory):
         key = "3"
