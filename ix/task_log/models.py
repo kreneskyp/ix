@@ -59,7 +59,7 @@ class TaskLogMessage(models.Model):
     content = models.JSONField()
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering = ["created_at"]
 
     def __str__(self) -> str:
         return f"TaskLogMessage {self.id} ({self.role})"
