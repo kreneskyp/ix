@@ -1,5 +1,4 @@
 import pytest
-import pinecone
 from ix.memory.pinecone import PineconeMemory
 
 
@@ -48,4 +47,4 @@ class TestPineconeMemory:
 
         pinecone_memory.delete_vector(key)
         with pytest.raises(KeyError):
-            vector = pinecone_memory.get_vector(key)
+            pinecone_memory.get_vector(key)
