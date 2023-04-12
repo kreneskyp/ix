@@ -20,28 +20,53 @@ knowledge, casting a shadow of intrigue over the galaxy.
 <br>
 <br>
 <br>
+<br>
 </div>
 
+
 <div>
-iX is a platform to run autonomous GPT-4 agents, providing a scalable and responsive solution for 
-delegating tasks and executing them through an intuitive user interface. Agents can be spawned as individual processes 
-to research and complete tasks, while the backend architecture efficiently manages message queues and inter-agent 
-communication.
+## About
+iX is a platform to run semi-autonomous GPT-4 agents, providing a scalable and responsive solution for delegating tasks.
+Agents can be spawned as individual processes to research and complete tasks through a web based interface while the 
+backend architecture efficiently manages message queues and inter-agent communication between a fleet of workers.
 <br>
 <br>
 The platform supports deployment using Docker containers, ensuring a consistent environment and enabling easy scaling 
-with multiple worker containers.
+to multiple worker containers.
 </div>
 
+## How does it work
+
+You provide a task and goals and an agent uses that direction to investigate, plan, and complete tasks. The agents are
+capable of searching the web, writing code, creating images, interacting with other APIs and services. If it can be 
+coded, it's within the realm of possibility for an agent to assist.
+
+![Dialog for entering task name and goals](docs/create_task.png)
+![chat interface displaying log](docs/chat.png)
+
+**Note that this is an early version and should NOT be used in production. Agents require a human in the loop to provide
+direction and halt the process if it goes off the rails.**
 
 ## Key Features
 
-- Spawns GPT-4 agents for autonomous task execution
-- Intuitive user interface built with React 18
-- Scalable backend architecture for handling multiple agents
+- Scalable model for running a fleet of GPT agents.
+- Persistent storage of interactions, processes, and metrics
+- Responsive user interface.
 - Message queue for agent jobs and inter-agent communication
-- Built using Django 4.2, Postgresql 14, GraphQL API, and Redis
-- Deployment using Docker containers with support for multiple worker containers
+- Deployment using Docker containers.
+
+## Technologies:
+- Python 3.11
+- Django 4.2
+- PostgreSQL 14.4
+- Graphql
+- React 18
+- Langchain support for running queries against remote and local models
+- Generic vector memory model for short term memory
+    - Pinecone
+    - Redis
+    - Milvus (soon)
+    - FAISS (soon)
 
 ## Prerequisites
 
