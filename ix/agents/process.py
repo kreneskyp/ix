@@ -56,11 +56,11 @@ class AgentProcess:
 
     def query_message_history(self, since=None):
         """Fetch message history from persistent store for context relevant messages"""
-        excluded_content_types = [
-            'FEEDBACK_REQUEST'
-        ]
+        excluded_content_types = ["FEEDBACK_REQUEST"]
         query = (
-            TaskLogMessage.objects.filter(task_id=self.task_id).exclude(content__type=excluded_content_types).order_by('created_at')
+            TaskLogMessage.objects.filter(task_id=self.task_id)
+            .exclude(content__type__in=excluded_content_types)
+            .order_by("created_at")
         )
 
         # filter to only new messages
@@ -74,14 +74,13 @@ class AgentProcess:
         Update message history for the most recent messages. Will query only new messages
         if agent already contains messages
         """
-        since = None
-        if self.message_history:
-            latest = self.message_history[-1]
-            since = latest.created_at
+        messages = list(self.query_message_history(self.last_message_at))
 
-        messages = self.query_message_history(since)
+        # save last message for next iteration
+        if messages:
+            self.last_message_at = messages[0].created_at
         formatted_messages = [message.as_dict() for message in messages]
-        messages.append(messages)
+        self.message_history.extend(formatted_messages)
         logger.info(
             f"AgentProcess loaded n={len(self.message_history)} chat messages from persistence"
         )
@@ -107,7 +106,6 @@ class AgentProcess:
         start agent loop and process `n` ticks. Pass `input` to resume from user feedback.
         """
         logger.info(f"starting process loop task_id={self.task_id}")
-
         tick_input = None
         if user_input_msg:
             logger.info(f"resuming with user input for task_id={self.task_id}")
@@ -120,8 +118,6 @@ class AgentProcess:
         # if there is input, tick once
         if tick_input:
             self.tick(tick_input)
-
-        return
 
         # run the remainder of authorized ticks in a loop
         # set auto-execute here.
