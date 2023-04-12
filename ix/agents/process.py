@@ -32,10 +32,10 @@ class AgentProcess:
     INITIAL_INPUT = "Determine which next command to use, and respond using the format specified above:"
     NEXT_COMMAND = "GENERATE NEXT COMMAND JSON"
 
-    def __init__(self, task_id, message_id: int = None):
+    def __init__(self, task_id, message_id: int = None, memory_class=PineconeMemory):
         logger.info(f"AgentProcess initializing task_id={task_id}")
         self.task_id = task_id
-        self.message_history = None
+        self.message_history = []
         self.memory = None
 
         # agent init
@@ -54,13 +54,36 @@ class AgentProcess:
     def agent(self):
         return self.task.agent
 
-    def load_message_history(self):
-        messages = TaskLogMessage.objects.filter(task_id=self.task_id).order_by(
-            "-created_at"
+    def query_message_history(self, since=None):
+        """Fetch message history from persistent store for context relevant messages"""
+        excluded_content_types = [
+            'FEEDBACK_REQUEST'
+        ]
+        query = (
+            TaskLogMessage.objects.filter(task_id=self.task_id).exclude(content__type=excluded_content_types).order_by('created_at')
         )
-        self.message_history = [message.as_dict() for message in messages]
+
+        # filter to only new messages
+        if since:
+            query = query.filter(created_at__gt=since)
+
+        return query
+
+    def update_message_history(self):
+        """
+        Update message history for the most recent messages. Will query only new messages
+        if agent already contains messages
+        """
+        since = None
+        if self.message_history:
+            latest = self.message_history[-1]
+            since = latest.created_at
+
+        messages = self.query_message_history(since)
+        formatted_messages = [message.as_dict() for message in messages]
+        messages.append(messages)
         logger.info(
-            f"AgentProcess loaded n={len(self.message_history)} chat messages from history"
+            f"AgentProcess loaded n={len(self.message_history)} chat messages from persistence"
         )
 
     def initialize_memory(self):
