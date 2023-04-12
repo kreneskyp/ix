@@ -8,7 +8,6 @@ const ChatMessageAvatar = ({ message }) => {
   const avatarSize = "40px";
   const iconSize = "lg";
   const bgColor = useColorModeValue("gray.200", "gray.700");
-  const timestamp = new Date(message.timestamp).toLocaleString();
   const getAvatarByRole = (role) => {
     switch (role) {
       case "USER":
@@ -23,7 +22,7 @@ const ChatMessageAvatar = ({ message }) => {
   };
 
   return (
-    <Tooltip label={timestamp} aria-label="Timestamp">
+    <Tooltip label={message.timestamp} aria-label="Timestamp">
       <Box
         display="flex"
         alignItems="center"
