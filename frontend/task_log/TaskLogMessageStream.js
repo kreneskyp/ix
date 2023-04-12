@@ -1,24 +1,88 @@
-import React from "react";
-import { useTaskLogMessages } from "task_log/contexts";
-import { TaskLogMessage } from "task_log/TaskLogMessage";
-import { VStack, Flex } from "@chakra-ui/react";
+import React, { useState, useEffect } from "react";
 import ChatMessage from "chat/ChatMessage";
+import { fetchQuery, graphql } from "relay-runtime";
+import { useTask } from "tasks/contexts";
+import environment from "relay-environment";
 
-export const TaskLogMessageStream = () => {
-  const { taskLogMessages } = useTaskLogMessages();
+const TaskLogMessageStream = () => {
+  const [taskLogMessages, setMessages] = useState([]);
+  const {task} = useTask();
 
-  // XXX: just using reverse for now because sorting in graphql is a pain
-  let messages;
-  if (taskLogMessages !== undefined && taskLogMessages !== null) {
-    messages = taskLogMessages
-      .toReversed()
-      .map((message) => <ChatMessage key={message.id} message={message} />);
-  }
+  useEffect(() => {
+    const fetchTaskLogMessages = async () => {
+      const variables = {
+        taskId: task.id,
+      };
+      const observable = fetchQuery(
+        environment,
+        graphql`
+          query TaskLogMessageStreamQuery($taskId: ID!) {
+            taskLogMessages(taskId: $taskId) {
+              id
+              role
+              createdAt
+              content {
+                __typename
+                ... on AssistantContentType {
+                  type
+                  thoughts {
+                    text
+                    reasoning
+                    plan
+                    criticism
+                    speak
+                  }
+                  command {
+                    name
+                    args
+                  }
+                }
+                ... on FeedbackRequestContentType {
+                  type
+                  message
+                }
+                ... on FeedbackContentType {
+                  type
+                  feedback
+                }
+                ... on SystemContentType {
+                  type
+                  message
+                }
+              }
+              agent {
+                id
+                name
+              }
+            }
+          }
+        `,
+        variables
+      );
+
+      const subscription = observable.subscribe({
+        next: (response) => {
+          if (response.taskLogMessages) {
+            setMessages(response.taskLogMessages);
+          }
+        },
+        error: (error) => console.error(error),
+      });
+
+      return () => subscription.unsubscribe();
+    };
+
+    const interval = setInterval(() => {
+      fetchTaskLogMessages();
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [task]);
 
   return (
     <>
-      {/* Scrollable content */}
-      {messages}
+      {taskLogMessages.map((message) => (
+        <ChatMessage key={message.id} message={message} />
+      ))}
     </>
   );
 };

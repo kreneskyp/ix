@@ -17,7 +17,6 @@ export const TaskLogView = () => {
         <VStack bg="blackAlpha.800" w="20%" p={4} minH="100vh">
           <TaskLogLeftPane />
         </VStack>
-        <TaskLogProvider taskId={id}>
           <Flex direction="column" flex="1" h="100%">
             <Box flexGrow="1" overflowY="auto">
               <Grid h="100%" templateRows="1fr auto" alignItems="end" gap={4}>
@@ -32,7 +31,6 @@ export const TaskLogView = () => {
               <TaskResponseForm />
             </Center>
           </Flex>
-        </TaskLogProvider>
       </Flex>
     </TaskProvider>
   );
