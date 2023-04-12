@@ -34,7 +34,7 @@ class VectorMemory:
         raise NotImplementedError
 
     def find_nearest(
-        self, query_vector: List[float], num_results: int = 1
+        self, query: str, num_results: int = 1
     ) -> List[NearestResult]:
         raise NotImplementedError
 
