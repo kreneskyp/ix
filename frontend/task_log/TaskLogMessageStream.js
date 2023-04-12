@@ -6,7 +6,7 @@ import environment from "relay-environment";
 
 const TaskLogMessageStream = () => {
   const [taskLogMessages, setMessages] = useState([]);
-  const {task} = useTask();
+  const { task } = useTask();
 
   useEffect(() => {
     const fetchTaskLogMessages = async () => {
