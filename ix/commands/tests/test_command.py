@@ -1,5 +1,5 @@
 import unittest
-from command import Command
+from ix.commands import Command
 
 
 class TestCommand(unittest.TestCase):
