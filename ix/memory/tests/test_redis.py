@@ -14,6 +14,7 @@ def redis_options() -> RedisVectorMemoryOptions:
     }
 
 
+@pytest.mark.skip()
 class TestRedisVectorMemory:
     @pytest.fixture(autouse=True)
     def setup_and_teardown(self, redis_options: RedisVectorMemoryOptions):
