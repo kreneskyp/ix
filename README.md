@@ -24,8 +24,8 @@ knowledge, casting a shadow of intrigue over the galaxy.
 </div>
 
 
+## Abuot
 <div>
-## About
 iX is a platform to run semi-autonomous GPT-4 agents, providing a scalable and responsive solution for delegating tasks.
 Agents can be spawned as individual processes to research and complete tasks through a web based interface while the 
 backend architecture efficiently manages message queues and inter-agent communication between a fleet of workers.
