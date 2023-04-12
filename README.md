@@ -53,7 +53,7 @@ direction and halt the process if it goes off the rails.**
 - Persistent storage of interactions, processes, and metrics
 - Responsive user interface.
 - Message queue for agent jobs and inter-agent communication
-- Deployment using Docker containers.
+- Deployment using Docker.
 
 ## Technologies:
 - Python 3.11
@@ -61,8 +61,9 @@ direction and halt the process if it goes off the rails.**
 - PostgreSQL 14.4
 - Graphql
 - React 18
-- Langchain support for running queries against remote and local models
-- Generic vector memory model for short term memory
+- Framework to support remote and local AI models including GPT-4
+- Plugin architecture to support extending agent functionality (e.g. web browsing, debugging code, etc)
+- Generic framework for vector database based agent memory
     - Pinecone
     - Redis
     - Milvus (soon)
