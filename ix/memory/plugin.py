@@ -44,8 +44,8 @@ class VectorMemory:
     - get_vector(self, key: IndexKey) -> List[float]:
         This method should return the vector representation for the given key.
 
-    - find_nearest(self, query_vector: List[float], num_results: int = 1) -> List[NearestResult]:
-        This method should find and return the nearest vectors to the given query_vector, based on
+    - find_nearest(self, query: str, num_results: int = 1) -> List[NearestResult]:
+        This method should find and return the nearest vectors to the given string, based on
         the similarity metric of choice (e.g., cosine similarity). It should return a list of
         NearestResult dictionaries containing the keys, similarity scores, and text data of the
         nearest vectors.
@@ -77,13 +77,11 @@ class VectorMemory:
     def get_vector(self, key: IndexKey) -> List[float]:
         raise NotImplementedError
 
-    def find_nearest(
-        self, query: str, num_results: int = 1
-    ) -> List[NearestResult]:
+    def find_nearest(self, query: str, num_results: int = 1) -> List[NearestResult]:
         raise NotImplementedError
 
     def delete_vector(self, key: IndexKey) -> None:
         raise NotImplementedError
 
-    def clear_vectors(self) -> None:
+    def clear(self) -> None:
         raise NotImplementedError

@@ -81,7 +81,7 @@ class RedisVectorMemory(VectorMemory):
             pipe.delete(text_key)
             pipe.execute()
 
-    def clear_vectors(self) -> None:
+    def clear(self) -> None:
         keys = self.redis.keys(f"{self.index_name}:*")
         if keys:
             self.redis.delete(*keys)

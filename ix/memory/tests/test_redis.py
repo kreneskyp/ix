@@ -22,7 +22,7 @@ class TestRedisVectorMemory:
         self.memory = RedisVectorMemory(self.index_name, redis_options)
         self.memory.create_index()
         yield
-        self.memory.clear_vectors()
+        self.memory.clear()
 
     def test_add_vector_and_find_nearest(self):
         # Add vectors to the index
@@ -61,7 +61,7 @@ class TestRedisVectorMemory:
         self.memory.add_vector("key1", "This is a test sentence.")
         self.memory.add_vector("key2", "Another test sentence is here.")
 
-        self.memory.clear_vectors()
+        self.memory.clear()
 
         keys = self.memory.redis.keys(f"{self.index_name}:*")
         assert len(keys) == 0  # No keys should remain after clearing the vectors
