@@ -80,7 +80,7 @@ const AssistantContent = ({ content }) => {
             </Tr>
           </Thead>
           <Tbody>
-            {Object.entries(args).map(([name, value]) => (
+            {Object.entries(args || []).map(([name, value]) => (
               <Tr key={name}>
                 <Td px={2}>{name}</Td>
                 <Td px={2}>{value}</Td>

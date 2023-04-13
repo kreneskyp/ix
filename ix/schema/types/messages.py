@@ -22,7 +22,7 @@ class ThoughtsType(graphene.ObjectType):
 
 class CommandType(graphene.ObjectType):
     name = graphene.String(required=True)
-    args = graphene.JSONString(required=True)
+    args = graphene.JSONString(required=False)
 
 
 class AssistantContentType(MessageContentType):

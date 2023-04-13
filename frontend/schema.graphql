@@ -106,7 +106,7 @@ type ThoughtsType {
 
 type CommandType {
   name: String!
-  args: JSONString!
+  args: JSONString
 }
 
 """

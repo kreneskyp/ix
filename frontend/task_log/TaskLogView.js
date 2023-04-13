@@ -20,7 +20,7 @@ export const TaskLogView = () => {
         <Flex direction="column" flex="1" h="100%">
           <Box flexGrow="1" overflowY="auto">
             <Grid h="100%" templateRows="1fr auto" alignItems="end" gap={4}>
-              <VStack spacing={4}>
+              <VStack spacing={4} ml={4} mr={4}>
                 {/* Scrollable content */}
                 <TaskLogMessageStream />
               </VStack>
