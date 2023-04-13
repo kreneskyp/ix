@@ -9,8 +9,6 @@ import openai
 from auto_gpt.json_parser import fix_and_parse_json
 
 from ix.agents.prompt_builder import PromptBuilder
-from ix.chat_memory.langchain import LANGCHAIN_CONV_BUFFER_MEMORY
-from ix.chat_memory.types import ChatMemoryConfig
 from ix.memory.plugin import VectorMemory
 from ix.task_log.models import Task, TaskLogMessage
 from ix.commands.registry import CommandRegistry, Command
@@ -43,9 +41,6 @@ class ChatMessage(TypedDict):
     content: str
 
 
-DEFAULT_CHAT_MEMORY = LANGCHAIN_CONV_BUFFER_MEMORY
-
-
 class AgentProcess:
     INITIAL_INPUT = "Determine which next command to use, and respond using the format specified above:"
     NEXT_COMMAND = "GENERATE NEXT COMMAND JSON"
@@ -55,14 +50,12 @@ class AgentProcess:
     def __init__(
         self,
         task_id: int,
-        history_config: ChatMemoryConfig = DEFAULT_CHAT_MEMORY,
         memory_class: ClassPath = "ix.memory.pinecone.PineconeMemory",
         command_classes: List[ClassPath] = AUTO_GPT_COMMANDS,
     ):
         logger.info(f"AgentProcess initializing task_id={task_id}")
 
         # agent config
-        self.history_config = history_config
         self.memory_class = memory_class
         self.command_classes = command_classes
 
