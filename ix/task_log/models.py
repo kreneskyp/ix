@@ -1,3 +1,4 @@
+import json
 from typing import TypedDict, Optional
 
 from django.db import models
@@ -64,9 +65,13 @@ class TaskLogMessage(models.Model):
     def __str__(self) -> str:
         return f"TaskLogMessage {self.id} ({self.role})"
 
-    def as_dict(self):
+    def as_message(self):
         content = self.content
-        if content["type"] == "FEEDBACK":
-            return {"role": self.role.lower(), "content": self.content["feedback"]}
+        content_type = content.pop("type")
+        if content_type == "FEEDBACK":
+            return {
+                "role": self.role.lower(),
+                "content": json.dumps(self.content["message"]),
+            }
         else:
-            return {"role": self.role.lower(), "content": self.content["message"]}
+            return {"role": self.role.lower(), "content": json.dumps(self.content)}
