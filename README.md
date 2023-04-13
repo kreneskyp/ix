@@ -49,10 +49,12 @@ direction and halt the process if it goes off the rails.**
 ## Key Features
 
 - Scalable model for running a fleet of GPT agents.
-- Persistent storage of interactions, processes, and metrics
+- Persistent storage of interactions, processes, and metrics.
 - Responsive user interface.
-- Message queue for agent jobs and inter-agent communication
+- Message queue for agent jobs and inter-agent communication.
+- Extensible model for customizing agents.
 - Deployment using Docker.
+
 
 ## Technologies:
 - Python 3.11
@@ -61,7 +63,7 @@ direction and halt the process if it goes off the rails.**
 - Graphql
 - React 18
 - Integrated with OpenAI GPT models
-- Plugin architecture to support extending agent functionality (e.g. web browsing, debugging code, etc)
+- Plugin architecture to support extending agent functionality (e.g. web browsing, writing code, etc)
 - Generic framework for vector database based agent memory
     - Pinecone
     - Redis
