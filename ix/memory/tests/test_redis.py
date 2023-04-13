@@ -45,7 +45,9 @@ class TestRedisVectorMemory:
         self.memory.delete_vector("key1")
 
         keys = self.memory.redis.keys(f"{self.index_name}:*")
-        assert len(keys) == 2  # Only the keys for the "key2" vector and its text should remain
+        assert (
+            len(keys) == 2
+        )  # Only the keys for the "key2" vector and its text should remain
 
     def test_get_vector(self):
         sentence = "This is a test sentence."
@@ -55,7 +57,9 @@ class TestRedisVectorMemory:
         retrieved_vector = self.memory.get_vector("key1")
 
         assert len(vector) == len(retrieved_vector)
-        assert pytest.approx(vector, rel=1e-6) == retrieved_vector  # Compare the vectors considering a small tolerance
+        assert (
+            pytest.approx(vector, rel=1e-6) == retrieved_vector
+        )  # Compare the vectors considering a small tolerance
 
     def test_clear_vectors(self):
         self.memory.add_vector("key1", "This is a test sentence.")

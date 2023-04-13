@@ -1,6 +1,12 @@
 import pytest
 
-from ix.commands.filesystem import write_to_file, append_to_file, delete_file, read_file, find_files
+from ix.commands.filesystem import (
+    write_to_file,
+    append_to_file,
+    delete_file,
+    read_file,
+    find_files,
+)
 
 
 class TestWriteToFile:
