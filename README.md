@@ -60,7 +60,7 @@ direction and halt the process if it goes off the rails.**
 - PostgreSQL 14.4
 - Graphql
 - React 18
-- Framework to support remote and local AI models including GPT-4
+- Integrated with OpenAI GPT models
 - Plugin architecture to support extending agent functionality (e.g. web browsing, debugging code, etc)
 - Generic framework for vector database based agent memory
     - Pinecone
@@ -83,6 +83,26 @@ Clone the repository:
 git clone https://github.com/kreneskyp/ix.git
 cd ix
 ```
+
+Setup config in `.env`
+
+```bash
+cp .env.template .env
+```
+
+```
+OPENAI_API_KEY=YOUR_KEY_HERE
+
+# Pinecone
+PINECONE_API_KEY=
+PINECONE_ENV=
+
+# search
+GOOGLE_API_KEY=
+GOOGLE_CX_ID=
+WOLFRAM_APP_ID=
+```
+
 
 Build and run the dev image:
 
