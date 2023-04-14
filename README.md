@@ -106,7 +106,7 @@ WOLFRAM_APP_ID=
 ```
 
 
-Build and run the dev image:
+Build and run the dev image.
 
 ```
 make dev_setup
@@ -134,17 +134,24 @@ The platform will automatically spawn agent processes to research and complete t
 Run as many worker processes as you want with `make worker`.
 
 
-## Developer Setup
+## Developer Tools
 
 Here are some helpful commands for developers to set up and manage the development environment:
 
+### Running:
 - `make runserver`: Start the application in development mode on `0.0.0.0:8000`.
 - `make worker`: Start an Agent worker.
+
+### Building:
 - `make image`: Build the Docker image.
+- `make frontend`: Rebuild the front end (graphql, relay, webpack).
+- `make webpack`: Rebuild javascript only
+- `make webpack-watch`: Rebuild javascript on file changes
+
+### Database
+- `make migrate`: Run Django database migrations.
+- `make migrations`: Generate new Django database migration files.
+
+### Utility
 - `make bash`: Open a bash shell in the docker container.
 - `make shell`: Open a Django shell_plus session.
-- `make migrate`: Run Django migrations.
-- `make migrations`: Generate Django migration files.
-- `make frontend`: Rebuild the front end.
-
-To use these commands, ensure you have the appropriate `Makefile` set up in your project directory.

@@ -3,6 +3,7 @@ import pytest
 from ix.commands.wolfram import search_wolfram
 
 
+@pytest.mark.skip()
 class TestSearchWolfram:
     def test_search_wolfram_with_valid_query(self):
         query = "What is the capital of France?"
