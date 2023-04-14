@@ -108,8 +108,9 @@ class CommandRegistry:
         for attr_name in dir(module):
             attr = getattr(module, attr_name)
             # Register decorated functions
-            if hasattr(attr, IX_COMMAND_IDENTIFIER) and getattr(
-                attr, IX_COMMAND_IDENTIFIER
+            if (
+                hasattr(attr, IX_COMMAND_IDENTIFIER)
+                and getattr(attr, IX_COMMAND_IDENTIFIER) is True
             ):
                 self.register(attr.command)
             # Register command classes
