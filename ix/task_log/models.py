@@ -48,6 +48,10 @@ class TaskLogMessage(models.Model):
         ("assistant", "assistant"),
         ("feedback_request", "feedback_request"),
         ("feedback", "feedback"),
+        ("authorize", "authorize"),
+        ("continuous", "continuous"),
+        ("auth_request", "auth_request"),
+        ("execute", "execute"),
     ]
 
     # message metadata
@@ -63,15 +67,12 @@ class TaskLogMessage(models.Model):
         ordering = ["created_at"]
 
     def __str__(self) -> str:
-        return f"TaskLogMessage {self.id} ({self.role})"
+        return f"TaskLogMessage {self.id} ({self.role}, {self.content['type']})"
 
     def as_message(self):
-        content = self.content
-        content_type = content.pop("type")
-        if content_type == "FEEDBACK":
-            return {
-                "role": self.role.lower(),
-                "content": json.dumps(self.content["message"]),
-            }
-        else:
-            return {"role": self.role.lower(), "content": json.dumps(self.content)}
+        content = self.content.copy()
+        content.pop("type")
+        return {
+            "role": self.role.lower(),
+            "content": json.dumps(content, sort_keys=True),
+        }

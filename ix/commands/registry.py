@@ -76,6 +76,7 @@ class CommandRegistry:
         if command_name not in self.commands:
             raise KeyError(f"Command '{command_name}' not found in registry.")
         command = self.commands[command_name]
+
         return command(**kwargs)
 
     def command_prompt(self) -> str:
