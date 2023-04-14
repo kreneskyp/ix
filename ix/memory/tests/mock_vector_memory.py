@@ -53,5 +53,5 @@ class MockMemory(VectorMemory):
     def delete_vector(self, key: IndexKey) -> None:
         del self.memory[key]
 
-    def clear_vectors(self) -> None:
+    def clear(self) -> None:
         self.memory.clear()

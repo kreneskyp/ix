@@ -60,7 +60,7 @@ def test_delete_vector(mock_memory):
 def test_clear_vectors(mock_memory):
     mock_memory.add_vector(key="key1", text="text1")
     mock_memory.add_vector(key="key2", text="text2")
-    mock_memory.clear_vectors()
+    mock_memory.clear()
     with pytest.raises(KeyError):
         mock_memory.get_vector("key1")
     with pytest.raises(KeyError):

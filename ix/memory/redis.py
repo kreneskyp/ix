@@ -7,22 +7,23 @@ from ix.memory.plugin import VectorMemory, IndexKey, NearestResult, get_embeddin
 
 
 class RedisVectorMemoryOptions(TypedDict):
-    redis_host: str
-    redis_port: int
-    redis_password: Optional[str]
-    redis_db: int
+    host: Optional[str]
+    port: Optional[int]
+    password: Optional[str]
+    db: Optional[int]
 
 
 class RedisVectorMemory(VectorMemory):
     def __init__(
         self, index_name: str, options: Optional[RedisVectorMemoryOptions] = None
     ):
+        options = options or {}
         super().__init__(index_name, options)
         self.redis = redis.StrictRedis(
-            host=options["redis_host"],
-            port=options["redis_port"],
-            password=options["redis_password"],
-            db=options["redis_db"],
+            host=options.pop("host", "redis"),
+            port=options.pop("port", 6379),
+            db=options.pop("db", 15),
+            **options,
         )
 
     def _vector_key(self, key: IndexKey) -> str:
