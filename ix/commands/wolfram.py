@@ -14,7 +14,6 @@ def search_wolfram(search_string: str) -> List[Tuple[str, str]]:
     if not search_string:
         raise ValueError("search_string is required")
     client = wolframalpha.Client(app_id)
-    print(search_string)
     res = client.query(search_string)
     results = []
     for pod in res.pods:

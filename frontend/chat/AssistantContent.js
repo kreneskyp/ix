@@ -6,7 +6,6 @@ import {
   Tr,
   Th,
   Td,
-  Box,
   Flex,
   Button,
   Icon,
