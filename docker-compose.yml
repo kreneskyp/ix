@@ -21,6 +21,8 @@ services:
       - .bash_profile:/root/.bash_profile
     env_file:
       - .env
+    environment:
+      DJANGO_SETTINGS_MODULE: "ix.server.settings"
     ports:
       - "8000:8000"
 
