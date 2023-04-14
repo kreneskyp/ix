@@ -12,7 +12,7 @@ from ix.task_log.tests.fake import (
     fake_authorize,
     fake_feedback_request,
     fake_feedback,
-    fake_continuous_toggle,
+    fake_autonomous_toggle,
     fake_task_log_msg_type,
 )
 
@@ -145,75 +145,75 @@ class TestAgentProcessHistory(MessageTeardown):
         assert agent_process.history[3] == msg4
 
     def test_continuous_toggle(self, task, mock_openai, command_output):
-        """Can enable/disable continuous mode"""
+        """Can enable/disable autonomous mode"""
         assert not TaskLogMessage.objects.all().exists()
         fake_task_log_msg(task=task, content=self.MSG_1)
         fake_task_log_msg(task=task, content=self.MSG_2)
         agent_process = AgentProcess(task_id=task.id)
         agent_process.update_message_history()
-        assert not agent_process.continuous
+        assert not agent_process.autonomous
 
-        # toggle continuous to enabled
-        fake_continuous_toggle(enabled=1)
+        # toggle autonomous to enabled
+        fake_autonomous_toggle(enabled=1)
         agent_process.update_message_history()
-        assert agent_process.continuous
+        assert agent_process.autonomous
 
-        # toggle continuous to disabled
-        fake_continuous_toggle(enabled=0)
+        # toggle autonomous to disabled
+        fake_autonomous_toggle(enabled=0)
         agent_process.update_message_history()
-        assert not agent_process.continuous
+        assert not agent_process.autonomous
 
-        # toggle continuous to enabled
-        fake_continuous_toggle(enabled=1)
+        # toggle autonomous to enabled
+        fake_autonomous_toggle(enabled=1)
         agent_process.update_message_history()
-        assert agent_process.continuous
+        assert agent_process.autonomous
 
-        # toggle continuous to disabled
-        fake_continuous_toggle(enabled=0)
+        # toggle autonomous to disabled
+        fake_autonomous_toggle(enabled=0)
         agent_process.update_message_history()
-        assert not agent_process.continuous
+        assert not agent_process.autonomous
 
-    def test_continuous_toggle_latest(self, task):
+    def test_autonomous_toggle_latest(self, task):
         """only latest toggle is used"""
         assert not TaskLogMessage.objects.all().exists()
         fake_task_log_msg(task=task, content=self.MSG_1)
         fake_task_log_msg(task=task, content=self.MSG_2)
         agent_process = AgentProcess(task_id=task.id)
         agent_process.update_message_history()
-        assert not agent_process.continuous
+        assert not agent_process.autonomous
 
-        fake_continuous_toggle(enabled=1)
-        fake_continuous_toggle(enabled=0)
-        fake_continuous_toggle(enabled=1)
-        fake_continuous_toggle(enabled=1)
-        fake_continuous_toggle(enabled=0)
+        fake_autonomous_toggle(enabled=1)
+        fake_autonomous_toggle(enabled=0)
+        fake_autonomous_toggle(enabled=1)
+        fake_autonomous_toggle(enabled=1)
+        fake_autonomous_toggle(enabled=0)
         agent_process.update_message_history()
-        assert not agent_process.continuous
+        assert not agent_process.autonomous
 
-        fake_continuous_toggle(enabled=0)
-        fake_continuous_toggle(enabled=1)
-        fake_continuous_toggle(enabled=1)
-        fake_continuous_toggle(enabled=0)
-        fake_continuous_toggle(enabled=1)
+        fake_autonomous_toggle(enabled=0)
+        fake_autonomous_toggle(enabled=1)
+        fake_autonomous_toggle(enabled=1)
+        fake_autonomous_toggle(enabled=0)
+        fake_autonomous_toggle(enabled=1)
         agent_process.update_message_history()
-        assert agent_process.continuous
+        assert agent_process.autonomous
 
-    def test_continuous_toggle_interspersed(self, task, mock_openai, command_output):
+    def test_autonomous_toggle_interspersed(self, task, mock_openai, command_output):
         """Doesn't have to be the latest of all messages"""
         assert not TaskLogMessage.objects.all().exists()
         fake_task_log_msg(task=task, content=self.MSG_1)
         fake_task_log_msg(task=task, content=self.MSG_2)
         agent_process = AgentProcess(task_id=task.id)
         agent_process.update_message_history()
-        assert not agent_process.continuous
+        assert not agent_process.autonomous
 
         fake_task_log_msg(task=task, content=self.MSG_1)
-        fake_continuous_toggle(enabled=1)
-        fake_continuous_toggle(enabled=0)
-        fake_continuous_toggle(enabled=1)
+        fake_autonomous_toggle(enabled=1)
+        fake_autonomous_toggle(enabled=0)
+        fake_autonomous_toggle(enabled=1)
         fake_task_log_msg(task=task, content=self.MSG_1)
         agent_process.update_message_history()
-        assert agent_process.continuous
+        assert agent_process.autonomous
 
 
 @pytest.mark.django_db
@@ -486,7 +486,7 @@ class TestAgentProcessStart:
         assert msg_2.content["type"] == "AUTH_REQUEST"
         assert msg_2.content["message_id"] == msg_1.id
 
-    def test_loop_continuous(self, task, mock_openai):
+    def test_loop_autonomous(self, task, mock_openai):
         class Ticker:
             def __init__(self, agent):
                 # limit runs to less than loop n
@@ -499,17 +499,17 @@ class TestAgentProcessStart:
             ):
                 self.executes.append(execute)
                 self.remaining -= 1
-                # use toggle to stop continuous mode
+                # use toggle to stop autonomous mode
                 if not self.remaining:
-                    fake_continuous_toggle(task=task, enabled=0)
+                    fake_autonomous_toggle(task=task, enabled=0)
                     self.agent.update_message_history()
 
-        fake_continuous_toggle(task=task, enabled=1)
+        fake_autonomous_toggle(task=task, enabled=1)
         agent_process = AgentProcess(task_id=task.id)
         agent_process.tick = Ticker(agent_process)
         agent_process.start(n=3)
 
-        # the last item will not be authorized because continuous mode is disabled
+        # the last item will not be authorized because autonomous mode is disabled
         assert all(agent_process.tick.executes[:-1])
         assert not agent_process.tick.executes[-1]
 
