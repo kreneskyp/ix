@@ -2,10 +2,14 @@ import React from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import AssistantContent from "chat/AssistantContent";
-import UserFeedbackContent from "chat/UserFeedbackContent";
+import FeedbackContent from "chat/FeedbackContent";
 import FeedbackRequestContent from "chat/FeedbackRequestContent";
 import SystemContent from "chat/SystemContent";
 import ChatMessageAvatar from "chat/ChatMessageAvatar";
+import AutonomousModeContent from "chat/AutonomousModeContent";
+import AuthorizeContent from "chat/AuthorizeContent";
+import AuthRequestContent from "chat/AuthRequestContent";
+import ExecuteContent from "chat/ExecuteContent";
 
 const ChatMessage = ({ message }) => {
   const { content } = message;
@@ -15,8 +19,20 @@ const ChatMessage = ({ message }) => {
     case "ASSISTANT":
       contentComponent = <AssistantContent content={content} />;
       break;
+    case "AUTONOMOUS":
+      contentComponent = <AutonomousModeContent content={content} />;
+      break;
+    case "AUTHORIZE":
+      contentComponent = <AuthorizeContent content={content} />;
+      break;
+    case "AUTH_REQUEST":
+      contentComponent = <AuthRequestContent content={content} />;
+      break;
+    case "EXECUTE":
+      contentComponent = <ExecuteContent content={content} />;
+      break;
     case "FEEDBACK":
-      contentComponent = <UserFeedbackContent content={content} />;
+      contentComponent = <FeedbackContent content={content} />;
       break;
     case "FEEDBACK_REQUEST":
       contentComponent = <FeedbackRequestContent content={content} />;
