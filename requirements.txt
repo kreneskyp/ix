@@ -1,22 +1,24 @@
-openai==0.27.2
-django==4.2
+# psycopg==3.1.8
 black==23.3.0
-isort==5.12.0
-pytest==7.2.2
-flake8==6.0.0
-pyright==1.1.301
-pytest-cov==4.0.0
-Faker==18.4.0
-graphene-django==3.0.0
-redis==4.5.4
 celery==5.2.7
 channels==4.0.0
 channels_redis==4.1.0
 daphne==4.0.0
-# psycopg==3.1.8
-psycopg2
-ipython==8.12.0
+django==4.2
 django_extensions==3.2.1
+Faker==18.4.0
+flake8==6.0.0
+graphene-django==3.0.0
+ipython==8.12.0
+isort==5.12.0
+openai==0.27.2
 pinecone-client==2.2.1
+pyright==1.1.301
+psycopg2
+pytest==7.2.2
+pytest-cov==4.0.0
+pytest-django==4.5.2
+pytest-mock==3.10.0
+redis==4.5.4
 tiktoken==0.3.3
 wolframalpha==5.0.0
