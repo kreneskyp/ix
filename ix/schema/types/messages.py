@@ -9,10 +9,21 @@ logger = logging.getLogger(__name__)
 
 
 class MessageContentType(graphene.ObjectType):
+    """
+    Base type for all messages.
+
+    This class exists largely to unify the `type` property. It's not great that this lives
+    here rather than on the parent `MessageContentType` that unions all message types into
+    a single type. `MessageContentType` didn't have access to the parent class
+    `TaskLogMessageType`
+    """
+
     type = graphene.String(required=True)
 
 
 class ThoughtsType(graphene.ObjectType):
+    """Assistant thoughts"""
+
     text = graphene.String(required=True)
     reasoning = graphene.String(required=True)
     plan = graphene.List(graphene.String, required=True)
@@ -21,32 +32,79 @@ class ThoughtsType(graphene.ObjectType):
 
 
 class CommandType(graphene.ObjectType):
+    """Assistant command"""
+
     name = graphene.String(required=True)
     args = graphene.JSONString(required=False)
 
 
 class AssistantContentType(MessageContentType):
+    """
+    Assistant reply with thoughts and command. Sent in response to prompt
+    requesting the next command
+    """
+
     thoughts = graphene.Field(ThoughtsType, required=True)
     command = graphene.Field(CommandType, required=True)
 
 
 class FeedbackContentType(MessageContentType):
-    authorized = graphene.Int()
-    feedback = graphene.String()
+    """User feedback sent to agent"""
+
+    feedback = graphene.String(required=True)
+
+
+class AuthorizeContentType(MessageContentType):
+    """User granting permission for agent to run a command"""
+
+    message_id = graphene.String(required=True)
 
 
 class SystemContentType(MessageContentType):
+    """All system messages"""
+
     message = graphene.String(required=True)
+
+
+class ExecuteContentType(MessageContentType):
+    """Sent when the agent requests user feedback on a command or output"""
+
+    message_id = graphene.String(required=True)
 
 
 class FeedbackRequestContentType(MessageContentType):
-    message = graphene.String(required=True)
+    """Sent when the agent requests user feedback on a command or output"""
+
+    message_id = graphene.String(required=True)
+
+
+class AuthRequestContentType(MessageContentType):
+    """Sent when the agent requires permission to run a command"""
+
+    message_id = graphene.String(required=True)
+
+
+class AutonomousModeContentType(MessageContentType):
+    """
+    Instructs the agent to enable/disable autonomous mode. Mode
+    change takes effect starting with the next agent process loop tick.
+    """
+
+    enabled = graphene.Int(required=True)
 
 
 class MessageContentType(graphene.Union):
+    """
+    Union of all message types sent to the task log API.
+    """
+
     class Meta:
         types = (
             AssistantContentType,
+            AutonomousModeContentType,
+            AuthorizeContentType,
+            AuthRequestContentType,
+            ExecuteContentType,
             FeedbackRequestContentType,
             FeedbackContentType,
             SystemContentType,
@@ -57,10 +115,16 @@ class MessageContentType(graphene.Union):
         message_type = instance.get("type")
         if message_type == "ASSISTANT":
             return AssistantContentType
+        elif message_type == "AUTH_REQUEST":
+            return AuthRequestContentType
         elif message_type == "FEEDBACK_REQUEST":
             return FeedbackRequestContentType
         elif message_type == "FEEDBACK":
             return FeedbackContentType
+        elif message_type == "AUTHORIZE":
+            return AuthorizeContentType
+        elif message_type == "AUTONOMOUS":
+            return AutonomousModeContentType
         elif message_type == "SYSTEM":
             return SystemContentType
         else:
