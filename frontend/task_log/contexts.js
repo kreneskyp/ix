@@ -2,56 +2,15 @@ import React, { createContext, useContext } from "react";
 import { graphql } from "react-relay";
 import { TaskContext } from "tasks/contexts";
 import { useLazyLoadQuery } from "react-relay/hooks";
+import { TaskLogMessagesQuery } from "task_log/graphql/TaskLogMessages";
 
 export const TaskLogContext = createContext(null);
 
 export function TaskLogProvider({ children }) {
   const { task } = useContext(TaskContext);
-  const { taskLogMessages } = useLazyLoadQuery(
-    graphql`
-      query contexts_task_log_Query($taskId: ID!) {
-        taskLogMessages(taskId: $taskId) {
-          id
-          role
-          createdAt
-          content {
-            __typename
-            ... on AssistantContentType {
-              type
-              thoughts {
-                text
-                reasoning
-                plan
-                criticism
-                speak
-              }
-              command {
-                name
-                args
-              }
-            }
-            ... on FeedbackRequestContentType {
-              type
-              message
-            }
-            ... on FeedbackContentType {
-              type
-              feedback
-            }
-            ... on SystemContentType {
-              type
-              message
-            }
-          }
-          agent {
-            id
-            name
-          }
-        }
-      }
-    `,
-    { taskId: task.id }
-  );
+  const { taskLogMessages } = useLazyLoadQuery(TaskLogMessagesQuery, {
+    taskId: task.id,
+  });
 
   return (
     <TaskLogContext.Provider value={{ taskLogMessages }}>

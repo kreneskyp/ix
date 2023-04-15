@@ -3,7 +3,7 @@ import { Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 
 const SystemFeedbackRequestContent = ({ content }) => {
-  return <Text mt="4">{content.message}</Text>;
+  return <Text mt="4">Please provide feedback for {content.messageId}</Text>;
 };
 
 SystemFeedbackRequestContent.propTypes = {
