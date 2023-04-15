@@ -57,25 +57,25 @@ def fake_feedback_request(task: Task = None, message_id: int = None, **kwargs):
     if not message_id:
         message_id = fake_command_reply(task=task).id
     content = {"type": "FEEDBACK_REQUEST", "message_id": message_id}
-    return fake_task_log_msg(role="assistant", content=content, **kwargs)
+    return fake_task_log_msg(role="assistant", content=content, task=task, **kwargs)
 
 
 def fake_auth_request(
-    task: Task = None, message_id: int = None, feedback: str = None, **kwargs
+    task: Task = None, message_id: int = None, **kwargs
 ):
     if not message_id:
         message_id = fake_feedback_request(task=task).id
     content = {"type": "AUTH_REQUEST", "message_id": message_id}
-    return fake_task_log_msg(role="assistant", content=content, **kwargs)
+    return fake_task_log_msg(role="assistant", content=content, task=task, **kwargs)
 
 
 def fake_execute(
-    task: Task = None, message_id: int = None, feedback: str = None, **kwargs
+    task: Task = None, message_id: int = None, **kwargs
 ):
     if not message_id:
         message_id = fake_feedback_request(task=task).id
     content = {"type": "EXECUTED", "message_id": message_id}
-    return fake_task_log_msg(role="assistant", content=content, **kwargs)
+    return fake_task_log_msg(role="assistant", content=content, task=task, **kwargs)
 
 
 def fake_feedback(
@@ -85,7 +85,7 @@ def fake_feedback(
         feedback_request = fake_feedback_request(task=task)
         message_id = feedback_request.id
     content = {"type": "FEEDBACK", "message_id": message_id, "feedback": feedback}
-    return fake_task_log_msg(role="user", content=content, **kwargs)
+    return fake_task_log_msg(role="user", content=content, task=task, **kwargs)
 
 
 def fake_authorize(task: Task = None, message_id: int = None, **kwargs):
