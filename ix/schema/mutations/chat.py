@@ -2,11 +2,10 @@ import logging
 import graphene
 
 from ix.schema.types.messages import TaskLogMessageType
-from ix.schema.types.tasks import TaskType
 from ix.schema.utils import handle_exceptions
 from ix.task_log.models import TaskLogMessage, UserFeedback
 from ix.task_log.tasks.agent_runner import (
-    resume_agent_loop_with_feedback,
+    start_agent_loop,
 )
 
 
@@ -25,10 +24,6 @@ class TaskLogMessageResponse(graphene.ObjectType):
 
     def resolve_task_log(root, info):
         return root.task_log
-
-
-class CreateTaskResponse(graphene.ObjectType):
-    task = graphene.Field(TaskType)
 
 
 class RespondToTaskLogMutation(graphene.Mutation):
@@ -57,6 +52,9 @@ class RespondToTaskLogMutation(graphene.Mutation):
         logger.info(
             f"Requesting agent loop resume task_id={message.task_id} message_id={message.pk}"
         )
-        resume_agent_loop_with_feedback.delay(message_id=message.pk)
+
+        # Start agent loop. This does NOT check if the loop is already running
+        # the agent_runner task is responsible for blocking duplicate runners
+        start_agent_loop.delay(responding_to.task_id)
 
         return TaskLogMessageResponse(task_log_message=message)
