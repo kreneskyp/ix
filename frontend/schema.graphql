@@ -173,7 +173,9 @@ type SystemContentType {
 """Aggregation of graphql queries"""
 type Mutation {
   createTask(input: CreateTaskInput!): CreateTaskResponse
-  respondToTaskMsg(input: TaskLogResponseInput!): RespondToTaskLogMutation
+  sendFeedback(input: TaskFeedbackInput!): TaskFeedbackMutation
+  authorizeCommand(input: CommandAuthorizeInput!): AuthorizeCommandMutation
+  setTaskAutonomous(autonomous: Boolean!, taskId: ID!): SetTaskAutonomousMutation
 }
 
 type CreateTaskResponse {
