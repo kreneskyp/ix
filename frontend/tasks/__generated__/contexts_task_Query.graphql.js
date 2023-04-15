@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1649b76e79cb37ccd1bfc169eee173e7>>
+ * @generated SignedSource<<03714335cbff7344062082b700cfe062>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -55,6 +55,13 @@ v1 = [
       {
         "alias": null,
         "args": null,
+        "kind": "ScalarField",
+        "name": "autonomous",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
         "concreteType": "GoalType",
         "kind": "LinkedField",
         "name": "goals",
@@ -99,16 +106,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "c0f86426550089152b13eca99e465356",
+    "cacheID": "2a39acef6e49aa7c676cd5a6aba74fe7",
     "id": null,
     "metadata": {},
     "name": "contexts_task_Query",
     "operationKind": "query",
-    "text": "query contexts_task_Query(\n  $id: ID!\n) {\n  task(id: $id) {\n    id\n    isComplete\n    completeAt\n    goals {\n      description\n      complete\n    }\n  }\n}\n"
+    "text": "query contexts_task_Query(\n  $id: ID!\n) {\n  task(id: $id) {\n    id\n    isComplete\n    completeAt\n    autonomous\n    goals {\n      description\n      complete\n    }\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "7fcf897c6707d5a1e82f90ad7fe40d62";
+node.hash = "49ea9f7bd475f3345266ed0abadaf262";
 
 module.exports = node;

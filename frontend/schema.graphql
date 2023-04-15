@@ -58,6 +58,7 @@ type TaskType {
   isComplete: Boolean!
   createdAt: DateTime!
   completeAt: DateTime
+  autonomous: Boolean!
   tasklogmessageSet: [TaskLogMessageType!]!
 }
 
@@ -164,7 +165,7 @@ User granting permission for agent to run a command
 """
 type AuthorizeContentType {
   type: String!
-  messageId: String!
+  messageId: ID!
 }
 
 """
@@ -172,7 +173,7 @@ Sent when the agent requires permission to run a command
 """
 type AuthRequestContentType {
   type: String!
-  messageId: String!
+  messageId: ID!
 }
 
 """
@@ -180,7 +181,7 @@ Sent when the agent requests user feedback on a command or output
 """
 type ExecutedContentType {
   type: String!
-  messageId: String!
+  messageId: ID!
 }
 
 """
@@ -188,7 +189,7 @@ Sent when the agent requests user feedback on a command or output
 """
 type FeedbackRequestContentType {
   type: String!
-  messageId: String!
+  messageId: ID!
 }
 
 """
@@ -212,7 +213,12 @@ Aggregation of graphql queries
 """
 type Mutation {
   createTask(input: CreateTaskInput!): CreateTaskResponse
-  respondToTaskMsg(input: TaskLogResponseInput!): RespondToTaskLogMutation
+  sendFeedback(input: TaskFeedbackInput!): TaskFeedbackMutation
+  authorizeCommand(input: CommandAuthorizeInput!): AuthorizeCommandMutation
+  setTaskAutonomous(
+    autonomous: Boolean!
+    taskId: ID!
+  ): SetTaskAutonomousMutation
 }
 
 type CreateTaskResponse {
@@ -221,20 +227,34 @@ type CreateTaskResponse {
 
 input CreateTaskInput {
   name: String!
-  goals: [GoalInput]!
+  goals: [GoalInput]
+  agentId: ID
+  autonomous: Boolean
 }
 
 input GoalInput {
   description: String!
 }
 
-type RespondToTaskLogMutation {
+type TaskFeedbackMutation {
   taskLogMessage: TaskLogMessageType
   errors: [String]
 }
 
-input TaskLogResponseInput {
-  id: String!
-  response: String!
-  isAuthorized: Boolean!
+input TaskFeedbackInput {
+  taskId: ID!
+  feedback: String!
+}
+
+type AuthorizeCommandMutation {
+  taskLogMessage: TaskLogMessageType
+  errors: [String]
+}
+
+input CommandAuthorizeInput {
+  messageId: ID!
+}
+
+type SetTaskAutonomousMutation {
+  task: TaskType
 }

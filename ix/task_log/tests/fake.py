@@ -62,7 +62,7 @@ def fake_feedback_request(task: Task = None, message_id: int = None, **kwargs):
 
 def fake_auth_request(task: Task = None, message_id: int = None, **kwargs):
     if not message_id:
-        message_id = fake_feedback_request(task=task).id
+        message_id = fake_command_reply(task=task).id
     content = {"type": "AUTH_REQUEST", "message_id": message_id}
     return fake_task_log_msg(role="assistant", content=content, task=task, **kwargs)
 

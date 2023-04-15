@@ -32,6 +32,9 @@ const TaskLogMessageStream = () => {
       return () => subscription.unsubscribe();
     };
 
+    // initial fetch
+    fetchTaskLogMessages();
+
     const interval = setInterval(() => {
       fetchTaskLogMessages();
     }, 4000);

@@ -2,8 +2,8 @@ import logging
 import graphene
 from django.contrib.auth.models import User
 
-from ix.schema.mutations.chat import RespondToTaskLogMutation
-from ix.schema.mutations.tasks import CreateTaskMutation
+from ix.schema.mutations.chat import TaskFeedbackMutation, AuthorizeCommandMutation
+from ix.schema.mutations.tasks import CreateTaskMutation, SetTaskAutonomousMutation
 from ix.schema.types.agents import AgentType
 from ix.schema.types.auth import UserType
 from ix.schema.types.messages import TaskLogMessageType
@@ -53,7 +53,9 @@ class Mutation(graphene.ObjectType):
     """
 
     create_task = CreateTaskMutation.Field()
-    respond_to_task_msg = RespondToTaskLogMutation.Field()
+    send_feedback = TaskFeedbackMutation.Field()
+    authorize_command = AuthorizeCommandMutation.Field()
+    set_task_autonomous = SetTaskAutonomousMutation.Field()
 
 
 # full graphql schema

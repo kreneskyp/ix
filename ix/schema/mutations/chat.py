@@ -3,7 +3,7 @@ import graphene
 
 from ix.schema.types.messages import TaskLogMessageType
 from ix.schema.utils import handle_exceptions
-from ix.task_log.models import TaskLogMessage, UserFeedback
+from ix.task_log.models import TaskLogMessage, UserFeedback, Task
 from ix.task_log.tasks.agent_runner import (
     start_agent_loop,
 )
@@ -12,10 +12,40 @@ from ix.task_log.tasks.agent_runner import (
 logger = logging.getLogger(__name__)
 
 
-class TaskLogResponseInput(graphene.InputObjectType):
-    id = graphene.String(required=True)
-    response = graphene.String(required=True)
-    is_authorized = graphene.Boolean(required=True)
+class CommandAuthorizeInput(graphene.InputObjectType):
+    message_id = graphene.ID(required=True)
+
+
+class AuthorizeCommandMutation(graphene.Mutation):
+    class Arguments:
+        input = CommandAuthorizeInput(required=True)
+
+    task_log_message = graphene.Field(TaskLogMessageType)
+    errors = graphene.Field(graphene.List(graphene.String))
+
+    @staticmethod
+    @handle_exceptions
+    def mutate(root, info, input):
+        # save to persistent storage
+        responding_to = TaskLogMessage.objects.get(pk=input.message_id)
+        message = TaskLogMessage.objects.create(
+            task_id=responding_to.task_id,
+            role="USER",
+            content=UserFeedback(
+                type="AUTHORIZE",
+                message_id=input.message_id,
+            ),
+        )
+
+        # resume task loop
+        # This does NOT check if the loop is already running
+        # the agent_runner task is responsible for blocking duplicate runners
+        logger.info(
+            f"Requesting agent loop resume task_id={message.task_id} message_id={message.pk}"
+        )
+        start_agent_loop.delay(responding_to.task_id)
+
+        return TaskLogMessageResponse(task_log_message=message)
 
 
 class TaskLogMessageResponse(graphene.ObjectType):
@@ -26,9 +56,14 @@ class TaskLogMessageResponse(graphene.ObjectType):
         return root.task_log
 
 
-class RespondToTaskLogMutation(graphene.Mutation):
+class TaskFeedbackInput(graphene.InputObjectType):
+    task_id = graphene.ID(required=True)
+    feedback = graphene.String(required=True)
+
+
+class TaskFeedbackMutation(graphene.Mutation):
     class Arguments:
-        input = TaskLogResponseInput(required=True)
+        input = TaskFeedbackInput(required=True)
 
     task_log_message = graphene.Field(TaskLogMessageType)
     errors = graphene.Field(graphene.List(graphene.String))
@@ -37,14 +72,12 @@ class RespondToTaskLogMutation(graphene.Mutation):
     @handle_exceptions
     def mutate(root, info, input):
         # save to persistent storage
-        responding_to = TaskLogMessage.objects.get(pk=input.id)
         message = TaskLogMessage.objects.create(
-            task_id=responding_to.task_id,
+            task_id=input.task_id,
             role="USER",
             content=UserFeedback(
                 type="FEEDBACK",
-                authorized_for=1 if input.is_authorized else 0,
-                feedback=input.response,
+                feedback=input.feedback,
             ),
         )
 
@@ -55,6 +88,6 @@ class RespondToTaskLogMutation(graphene.Mutation):
 
         # Start agent loop. This does NOT check if the loop is already running
         # the agent_runner task is responsible for blocking duplicate runners
-        start_agent_loop.delay(responding_to.task_id)
+        start_agent_loop.delay(input.task_id)
 
         return TaskLogMessageResponse(task_log_message=message)
