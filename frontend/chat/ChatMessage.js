@@ -10,8 +10,10 @@ import AutonomousModeContent from "chat/AutonomousModeContent";
 import AuthorizeContent from "chat/AuthorizeContent";
 import AuthRequestContent from "chat/AuthRequestContent";
 import ExecuteContent from "chat/ExecuteContent";
+import { useColorMode } from "@chakra-ui/color-mode";
 
 const ChatMessage = ({ message }) => {
+  const { colorMode } = useColorMode();
   const { content } = message;
 
   let contentComponent = null;
@@ -50,7 +52,12 @@ const ChatMessage = ({ message }) => {
       <Box mt={5} mr={3}>
         <ChatMessageAvatar message={message} />
       </Box>
-      <Box bg="gray.100" borderRadius={8} p={3}>
+      <Box
+        bg={colorMode === "light" ? "gray.100" : "gray.900"}
+        width="800px"
+        borderRadius={8}
+        p={3}
+      >
         {contentComponent}
       </Box>
     </Flex>

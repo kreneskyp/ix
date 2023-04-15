@@ -1,14 +1,7 @@
 import React, { Suspense } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Box,
-  Flex,
-  VStack,
-  Center,
-  Grid,
-  Progress,
-  Button,
-} from "@chakra-ui/react";
+import { Box, Flex, VStack, Center, Grid } from "@chakra-ui/react";
+import { useColorMode } from "@chakra-ui/color-mode";
 
 import TaskLogLeftPane from "task_log/TaskLogLeftPane";
 import { TaskProvider, useTask } from "tasks/contexts";
@@ -18,11 +11,17 @@ import AutonomousToggle from "chat/AutonomousToggle";
 
 export const TaskLogView = () => {
   const { id } = useParams();
+  const { colorMode } = useColorMode();
 
   return (
     <TaskProvider taskId={id}>
       <Flex h="100vh">
-        <VStack bg="blackAlpha.800" w="20%" p={4} minH="100vh">
+        <VStack
+          bg={colorMode === "light" ? "blackAlpha.900" : "blackAlpha.600"}
+          w="20%"
+          p={4}
+          minH="100vh"
+        >
           <TaskLogLeftPane />
         </VStack>
         <Flex direction="column" flex="1" h="100%">
