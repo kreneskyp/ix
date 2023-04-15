@@ -10,7 +10,7 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
 
   sandbox:
-    image: ghcr.io/ix:latest
+    image: ghcr.io/ix/sandbox:latest
     links:
       - db
       - redis
@@ -27,7 +27,7 @@ services:
       - "8000:8000"
 
   worker:
-    image: ghcr.io/ix:latest
+    image: ghcr.io/ix/sandbox:latest
     command: celery.sh
     links:
       - db

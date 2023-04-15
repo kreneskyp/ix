@@ -29,7 +29,7 @@ runs:
       shell: bash
       run: |
         docker load --input image.tar
-        docker tag ${{ steps.load_image_url.outputs.image-url }} ghcr.io/auto-gpt/ix:latest
+        docker tag ${{ steps.load_image_url.outputs.image-url }} ghcr.io/ix/sandbox:latest
     - name: run
       shell: bash
       env:
