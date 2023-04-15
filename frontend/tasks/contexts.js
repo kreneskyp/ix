@@ -1,6 +1,6 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 import { UserContext } from "users/contexts";
-import { useLazyLoadQuery } from "react-relay/hooks";
+import { graphql, useLazyLoadQuery, useRefetch } from "react-relay/hooks";
 
 export const TasksContext = createContext(null);
 export const TaskContext = createContext(null);
@@ -26,6 +26,15 @@ export const TasksProvider = ({ children }) => {
 
 export function TaskProvider({ children, taskId }) {
   const user = useContext(UserContext);
+  const [refreshedQueryOptions, setRefreshedQueryOptions] = useState(null);
+
+  const refresh = useCallback(() => {
+    setRefreshedQueryOptions((prev) => ({
+      fetchKey: (prev?.fetchKey ?? 0) + 1,
+      fetchPolicy: "network-only",
+    }));
+  }, []);
+
   const data = useLazyLoadQuery(
     graphql`
       query contexts_task_Query($id: ID!) {
@@ -40,11 +49,12 @@ export function TaskProvider({ children, taskId }) {
         }
       }
     `,
-    { id: taskId }
+    { id: taskId },
+    refreshedQueryOptions ?? { fetchPolicy: "store-or-network" }
   );
 
   return (
-    <TaskContext.Provider value={{ task: data.task, user }}>
+    <TaskContext.Provider value={{ task: data.task, user, refresh }}>
       {children}
     </TaskContext.Provider>
   );

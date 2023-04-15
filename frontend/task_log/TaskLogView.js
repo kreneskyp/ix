@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { useParams } from "react-router-dom";
 import {
   Box,
@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 
 import TaskLogLeftPane from "task_log/TaskLogLeftPane";
-import { TaskProvider } from "tasks/contexts";
+import { TaskProvider, useTask } from "tasks/contexts";
 import TaskLogMessageStream from "task_log/TaskLogMessageStream";
 import FeedbackForm from "task_log/FeedbackInput";
 import AutonomousToggle from "chat/AutonomousToggle";
@@ -39,7 +39,14 @@ export const TaskLogView = () => {
             <Box mr={10}>
               <FeedbackForm />
             </Box>
-            <AutonomousToggle />
+            {/* nest another provider here so refresh does not affect the whole view */}
+            <Box width={100}>
+              <Suspense>
+                <TaskProvider taskId={id}>
+                  <AutonomousToggle />
+                </TaskProvider>
+              </Suspense>
+            </Box>
           </Center>
         </Flex>
       </Flex>

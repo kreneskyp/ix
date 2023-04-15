@@ -16,11 +16,7 @@ export const routes = [
   { path: "/tasks/chat", element: <TaskLogView /> },
   {
     path: "/tasks/chat/:id",
-    element: (
-      <Suspense fallback={<div>Loading!</div>}>
-        <TaskLogView />
-      </Suspense>
-    ),
+    element: <TaskLogView />,
   },
   { path: "*", element: <TaskCreateView /> },
 ];

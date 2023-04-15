@@ -1,20 +1,21 @@
 import React from "react";
 import { Box, Flex, Switch, Text, useToast } from "@chakra-ui/react";
 import useSetTaskAutonomous from "tasks/graphql/useSetTaskAutonomous";
-import {useTask} from "tasks/contexts";
+import { useTask } from "tasks/contexts";
 
-const TaskToggle = () => {
-  const { task } = useTask();
+export const TaskToggle = () => {
+  const { task, refresh: refreshTask } = useTask();
   const { setTaskAutonomous } = useSetTaskAutonomous();
   const toast = useToast();
-
   const handleToggle = async () => {
     try {
       await setTaskAutonomous(task.id, !task.autonomous);
+      refreshTask();
     } catch (error) {
       toast({
         title: "Error updating task",
-        description: error.message || "An error occurred while updating the task.",
+        description:
+          error.message || "An error occurred while updating the task.",
         status: "error",
         duration: 5000,
         isClosable: true,
