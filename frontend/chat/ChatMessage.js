@@ -28,7 +28,7 @@ const ChatMessage = ({ message }) => {
     case "AUTH_REQUEST":
       contentComponent = <AuthRequestContent content={content} />;
       break;
-    case "EXECUTE":
+    case "EXECUTED":
       contentComponent = <ExecuteContent content={content} />;
       break;
     case "FEEDBACK":

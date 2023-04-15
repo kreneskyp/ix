@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f1a2ac70efdc00a87b8d640020b573e3>>
+ * @generated SignedSource<<fa7d4faad11b96d4f5cc7a12f9e0f38b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -195,7 +195,7 @@ v5 = [
           {
             "kind": "InlineFragment",
             "selections": (v4/*: any*/),
-            "type": "ExecuteContentType",
+            "type": "ExecutedContentType",
             "abstractKey": null
           },
           {
@@ -272,16 +272,16 @@ return {
     "selections": (v5/*: any*/)
   },
   "params": {
-    "cacheID": "32b660200f3d894c1643c82948b7b942",
+    "cacheID": "1d58e05092011cf9e65e6f1299981e6c",
     "id": null,
     "metadata": {},
     "name": "TaskLogMessagesQuery",
     "operationKind": "query",
-    "text": "query TaskLogMessagesQuery(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    role\n    createdAt\n    content {\n      __typename\n      ... on AssistantContentType {\n        type\n        thoughts {\n          text\n          reasoning\n          plan\n          criticism\n          speak\n        }\n        command {\n          name\n          args\n        }\n      }\n      ... on AutonomousModeContentType {\n        type\n        enabled\n      }\n      ... on AuthorizeContentType {\n        type\n        messageId\n      }\n      ... on AuthRequestContentType {\n        type\n        messageId\n      }\n      ... on ExecuteContentType {\n        type\n        messageId\n      }\n      ... on FeedbackContentType {\n        type\n        feedback\n      }\n      ... on FeedbackRequestContentType {\n        type\n        messageId\n      }\n      ... on SystemContentType {\n        type\n        message\n      }\n    }\n    agent {\n      id\n      name\n    }\n  }\n}\n"
+    "text": "query TaskLogMessagesQuery(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    role\n    createdAt\n    content {\n      __typename\n      ... on AssistantContentType {\n        type\n        thoughts {\n          text\n          reasoning\n          plan\n          criticism\n          speak\n        }\n        command {\n          name\n          args\n        }\n      }\n      ... on AutonomousModeContentType {\n        type\n        enabled\n      }\n      ... on AuthorizeContentType {\n        type\n        messageId\n      }\n      ... on AuthRequestContentType {\n        type\n        messageId\n      }\n      ... on ExecutedContentType {\n        type\n        messageId\n      }\n      ... on FeedbackContentType {\n        type\n        feedback\n      }\n      ... on FeedbackRequestContentType {\n        type\n        messageId\n      }\n      ... on SystemContentType {\n        type\n        message\n      }\n    }\n    agent {\n      id\n      name\n    }\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "09575468f2afd25dbf39c0627d092de9";
+node.hash = "5a7140f35caae57b407b4134256ca49a";
 
 module.exports = node;

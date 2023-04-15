@@ -108,7 +108,7 @@ union MessageContentType =
   | AutonomousModeContentType
   | AuthorizeContentType
   | AuthRequestContentType
-  | ExecuteContentType
+  | ExecutedContentType
   | FeedbackRequestContentType
   | FeedbackContentType
   | SystemContentType
@@ -178,7 +178,7 @@ type AuthRequestContentType {
 """
 Sent when the agent requests user feedback on a command or output
 """
-type ExecuteContentType {
+type ExecutedContentType {
   type: String!
   messageId: String!
 }

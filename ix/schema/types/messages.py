@@ -66,7 +66,7 @@ class SystemContentType(MessageContentType):
     message = graphene.String(required=True)
 
 
-class ExecuteContentType(MessageContentType):
+class ExecutedContentType(MessageContentType):
     """Sent when the agent requests user feedback on a command or output"""
 
     message_id = graphene.String(required=True)
@@ -104,7 +104,7 @@ class MessageContentType(graphene.Union):
             AutonomousModeContentType,
             AuthorizeContentType,
             AuthRequestContentType,
-            ExecuteContentType,
+            ExecutedContentType,
             FeedbackRequestContentType,
             FeedbackContentType,
             SystemContentType,
@@ -117,6 +117,8 @@ class MessageContentType(graphene.Union):
             return AssistantContentType
         elif message_type == "AUTH_REQUEST":
             return AuthRequestContentType
+        elif message_type == "EXECUTED":
+            return FeedbackRequestContentType
         elif message_type == "FEEDBACK_REQUEST":
             return FeedbackRequestContentType
         elif message_type == "FEEDBACK":
