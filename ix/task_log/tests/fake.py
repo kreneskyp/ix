@@ -57,25 +57,21 @@ def fake_feedback_request(task: Task = None, message_id: int = None, **kwargs):
     if not message_id:
         message_id = fake_command_reply(task=task).id
     content = {"type": "FEEDBACK_REQUEST", "message_id": message_id}
-    return fake_task_log_msg(role="assistant", content=content, **kwargs)
+    return fake_task_log_msg(role="assistant", content=content, task=task, **kwargs)
 
 
-def fake_auth_request(
-    task: Task = None, message_id: int = None, feedback: str = None, **kwargs
-):
+def fake_auth_request(task: Task = None, message_id: int = None, **kwargs):
     if not message_id:
         message_id = fake_feedback_request(task=task).id
     content = {"type": "AUTH_REQUEST", "message_id": message_id}
-    return fake_task_log_msg(role="user", content=content, **kwargs)
+    return fake_task_log_msg(role="assistant", content=content, task=task, **kwargs)
 
 
-def fake_execute(
-    task: Task = None, message_id: int = None, feedback: str = None, **kwargs
-):
+def fake_execute(task: Task = None, message_id: int = None, **kwargs):
     if not message_id:
-        message_id = fake_feedback_request(task=task)
+        message_id = fake_feedback_request(task=task).id
     content = {"type": "EXECUTED", "message_id": message_id}
-    return fake_task_log_msg(role="user", content=content, **kwargs)
+    return fake_task_log_msg(role="assistant", content=content, task=task, **kwargs)
 
 
 def fake_feedback(
@@ -84,41 +80,70 @@ def fake_feedback(
     if not message_id:
         feedback_request = fake_feedback_request(task=task)
         message_id = feedback_request.id
-    content = {"type": "FEEDBACK", "message_id": message_id}
-    return fake_task_log_msg(role="user", content=content, **kwargs)
+    content = {"type": "FEEDBACK", "message_id": message_id, "feedback": feedback}
+    return fake_task_log_msg(role="user", content=content, task=task, **kwargs)
 
 
-def fake_authorize(
-    task: Task = None, message_id: int = None, feedback: str = None, **kwargs
-):
+def fake_authorize(task: Task = None, message_id: int = None, **kwargs):
     if not message_id:
-        message_id = fake_feedback_request(task=task)
+        message_id = fake_feedback_request(task=task).id
     content = {"type": "AUTHORIZE", "message_id": message_id, "n": 1}
     return fake_task_log_msg(role="user", content=content, **kwargs)
 
 
-def fake_continuous_toggle(enabled: int = 1, **kwargs):
-    content = {"type": "CONTINUOUS", "enabled": enabled}
+def fake_autonomous_toggle(enabled: int = 1, **kwargs):
+    content = {"type": "AUTONOMOUS", "enabled": enabled}
     return fake_task_log_msg(role="user", content=content, **kwargs)
 
 
+def fake_system(message, **kwargs):
+    content = {"type": "SYSTEM", "message": message}
+    return fake_task_log_msg(role="system", content=content, **kwargs)
+
+
 def fake_task_log_msg_type(content_type, **kwargs):
-    if content_type == "CONTINUOUS":
-        return fake_continuous_toggle(**kwargs)
-    elif content_type == "FEEDBACK":
-        return fake_feedback(**kwargs)
-    elif content_type == "AUTHORIZE":
-        return fake_continuous_toggle(**kwargs)
-    elif content_type == "EXECUTED":
-        return fake_continuous_toggle(**kwargs)
-    elif content_type == "ASSISTANT":
+    if content_type == "ASSISTANT":
         return fake_command_reply(**kwargs)
-    elif content_type == "SYSTEM":
-        return fake_task_log_msg(**kwargs)
-    elif content_type == "FEEDBACK_REQUEST":
-        return fake_feedback_request(**kwargs)
     elif content_type == "AUTH_REQUEST":
         return fake_auth_request(**kwargs)
+    elif content_type == "AUTHORIZE":
+        return fake_authorize(**kwargs)
+    elif content_type == "AUTONOMOUS":
+        return fake_autonomous_toggle(**kwargs)
+    elif content_type == "EXECUTED":
+        return fake_execute(**kwargs)
+    elif content_type == "FEEDBACK":
+        return fake_feedback(**kwargs)
+    elif content_type == "FEEDBACK_REQUEST":
+        return fake_feedback_request(**kwargs)
+    elif content_type == "SYSTEM":
+        return fake_task_log_msg(**kwargs)
+
+
+def fake_all_message_types(task):
+    """
+    Shortcut for faking one of every message type
+    useful for debugging rendering in the UI
+    """
+    # system
+    fake_system(task=task, message="fake system message")
+
+    # autonomous mode toggles
+    fake_autonomous_toggle(task=task, enabled=True)
+    fake_autonomous_toggle(task=task, enabled=False)
+
+    # command with feedback and execute
+    command_1 = fake_command_reply(task=task)
+    fake_feedback(task=task, feedback="this is fake feedback")
+    fake_execute(task=task, message_id=command_1.id)
+
+    # command requesting authorize
+    command_2 = fake_command_reply(task=task)
+    fake_auth_request(task=task, message_id=command_2.id)
+    fake_authorize(task=task, message_id=command_2.id)
+
+    # command without authorization
+    fake_command_reply(task=task)
 
 
 def fake_task_log_msg(**kwargs):

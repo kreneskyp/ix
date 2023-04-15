@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6eec521bc7a6a73f6a56c0a5e7ee5134>>
+ * @generated SignedSource<<137021035f2805e9264f94d6104cd8f6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -40,13 +40,6 @@ v3 = {
 v4 = {
   "kind": "InlineFragment",
   "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "authorized",
-      "storageKey": null
-    },
     {
       "alias": null,
       "args": null,
@@ -166,16 +159,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "169f21bd15c5a2db782eb2fae1ab3c50",
+    "cacheID": "5b9910ae323dd0aa5f7856697a5092ba",
     "id": null,
     "metadata": {},
     "name": "TaskResponseFormMutation",
     "operationKind": "mutation",
-    "text": "mutation TaskResponseFormMutation(\n  $input: TaskLogResponseInput!\n) {\n  respondToTaskMsg(input: $input) {\n    taskLogMessage {\n      id\n      role\n      content {\n        __typename\n        ... on FeedbackContentType {\n          authorized\n          feedback\n        }\n      }\n    }\n    errors\n  }\n}\n"
+    "text": "mutation TaskResponseFormMutation(\n  $input: TaskLogResponseInput!\n) {\n  respondToTaskMsg(input: $input) {\n    taskLogMessage {\n      id\n      role\n      content {\n        __typename\n        ... on FeedbackContentType {\n          feedback\n        }\n      }\n    }\n    errors\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "0075920465b0d50b53346f06435a1f7e";
+node.hash = "b8300b55de4fdc921ea6e06b394c04f7";
 
 module.exports = node;

@@ -14,7 +14,7 @@ import { ArrowForwardIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import { useMutation, graphql } from "react-relay/hooks";
 import { useLatestTaskLog } from "task_log/contexts";
 
-const responseMutation = graphql`
+const feedbackMutation = graphql`
   mutation TaskResponseFormMutation($input: TaskLogResponseInput!) {
     respondToTaskMsg(input: $input) {
       taskLogMessage {
@@ -22,7 +22,6 @@ const responseMutation = graphql`
         role
         content {
           ... on FeedbackContentType {
-            authorized
             feedback
           }
         }
@@ -39,7 +38,7 @@ export const TaskResponseForm = ({ onRespond }) => {
 
   const toast = useToast();
 
-  const [mutate, isLoading] = useMutation(responseMutation);
+  const [mutate, isLoading] = useMutation(feedbackMutation);
 
   function handleSubmit(event) {
     event.preventDefault();

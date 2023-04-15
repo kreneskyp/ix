@@ -44,14 +44,14 @@ class TaskLogMessage(models.Model):
     ]
 
     TYPE_CHOICES = [
-        ("system", "system"),
         ("assistant", "assistant"),
+        ("auth_request", "auth_request"),
+        ("authorize", "authorize"),
+        ("autonomous", "autonomous"),
+        ("execute", "execute"),
         ("feedback_request", "feedback_request"),
         ("feedback", "feedback"),
-        ("authorize", "authorize"),
-        ("continuous", "continuous"),
-        ("auth_request", "auth_request"),
-        ("execute", "execute"),
+        ("system", "system"),
     ]
 
     # message metadata

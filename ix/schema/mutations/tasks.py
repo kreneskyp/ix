@@ -3,7 +3,7 @@ import logging
 import graphene
 from django.contrib.auth.models import User
 
-from ix.schema.mutations.chat import CreateTaskResponse
+from ix.schema.types.tasks import TaskType
 from ix.schema.utils import handle_exceptions
 from ix.task_log.models import Agent, Task
 from ix.task_log.tasks.agent_runner import (
@@ -12,6 +12,10 @@ from ix.task_log.tasks.agent_runner import (
 
 
 logger = logging.getLogger(__name__)
+
+
+class CreateTaskResponse(graphene.ObjectType):
+    task = graphene.Field(TaskType)
 
 
 class GoalInput(graphene.InputObjectType):

@@ -54,7 +54,7 @@ class AgentProcess:
         "AUTH_REQUEST",
         "EXECUTED",
         "AUTHORIZE",
-        "CONTINUOUS",
+        "AUTONOMOUS",
         "SYSTEM",
     }
 
@@ -77,7 +77,7 @@ class AgentProcess:
         self.history = []
         self.last_message_at = None
         self.memory = None
-        self.continuous = 0
+        self.autonomous = 0
 
         # agent init
         self.init_commands()
@@ -120,10 +120,10 @@ class AgentProcess:
         if messages:
             self.last_message_at = messages[-1].created_at
 
-        # toggle continuous mode based on newest CONTINUOUS message
+        # toggle autonomous mode based on newest AUTONOMOUS message
         for message in messages:
-            if message.content["type"] == "CONTINUOUS":
-                self.continuous = message.content["enabled"]
+            if message.content["type"] == "AUTONOMOUS":
+                self.autonomous = message.content["enabled"]
 
         formatted_messages = [
             message.as_message()
@@ -189,7 +189,7 @@ class AgentProcess:
 
     def loop(self, n=1, tick_input: str = None):
         for i in range(n + 1):
-            execute = self.continuous or i < n
+            execute = self.autonomous or i < n
             self.tick(execute=execute)
 
     def tick(self, user_input: str = NEXT_COMMAND, execute: bool = False):
