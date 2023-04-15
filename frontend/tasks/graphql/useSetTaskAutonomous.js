@@ -11,7 +11,6 @@ const SET_TASK_AUTONOMOUS_MUTATION = graphql`
   }
 `;
 
-
 function useSetTaskAutonomous() {
   const [commit, isInFlight] = useMutation(SET_TASK_AUTONOMOUS_MUTATION);
 
