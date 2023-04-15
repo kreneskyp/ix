@@ -42,6 +42,7 @@ export function TaskProvider({ children, taskId }) {
           id
           isComplete
           completeAt
+          autonomous
           goals {
             description
             complete
