@@ -458,7 +458,7 @@ class TestAgentProcessStart:
     def test_restart_task_with_feedback_and_auth_for_none(self, task, mock_openai):
         # TODO: test injection of feedback into loop, i.e. is it in context
         mock_reply = fake_command_reply()
-        mock_feedback = fake_feedback(message_id=mock_reply.id)
+        mock_feedback = fake_feedback(task=task, message_id=mock_reply.id)
         query = TaskLogMessage.objects.filter(
             task=task, created_at__gt=mock_feedback.created_at
         )
