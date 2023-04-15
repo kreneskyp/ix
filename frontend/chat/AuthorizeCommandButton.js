@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, useToast } from "@chakra-ui/react";
-import {useAuthorizeCommand} from "chat/graphql/useAuthorizeCommand";
+import { useAuthorizeCommand } from "chat/graphql/useAuthorizeCommand";
 
 export const AuthorizeCommandButton = ({ messageId }) => {
   const { authorizeCommand, error, loading } = useAuthorizeCommand();

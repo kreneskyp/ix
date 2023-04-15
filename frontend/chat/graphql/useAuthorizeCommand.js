@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useMutation, graphql } from "react-relay/hooks";
 
-
 const AUTHORIZE_COMMAND_MUTATION = graphql`
   mutation useAuthorizeCommandMutation($input: CommandAuthorizeInput!) {
     authorizeCommand(input: $input) {

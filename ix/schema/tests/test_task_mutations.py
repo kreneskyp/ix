@@ -22,10 +22,7 @@ class TestSetTaskAutonomousMutation:
             }
         """
 
-        variables = {
-            "taskId": task.id,
-            "autonomous": False
-        }
+        variables = {"taskId": task.id, "autonomous": False}
 
         response = client.execute(mutation, variables=variables)
 

@@ -34,7 +34,9 @@ class TestAuthorizeCommandMutation:
         responding_to = fake_command_reply(task=task)
 
         # Mock the Celery task function
-        mock_start_agent_loop = mocker.patch("ix.schema.mutations.chat.start_agent_loop")
+        mock_start_agent_loop = mocker.patch(
+            "ix.schema.mutations.chat.start_agent_loop"
+        )
 
         client = Client(schema)
         variables = {
@@ -53,10 +55,15 @@ class TestAuthorizeCommandMutation:
         }
         assert response["data"]["authorizeCommand"]["errors"] is None
 
-        task_log_message = TaskLogMessage.objects.get(pk=response["data"]["authorizeCommand"]["taskLogMessage"]["id"])
+        task_log_message = TaskLogMessage.objects.get(
+            pk=response["data"]["authorizeCommand"]["taskLogMessage"]["id"]
+        )
         assert task_log_message.task_id == task.id
         assert task_log_message.role == "USER"
-        assert task_log_message.content == {"type": "AUTHORIZE", "message_id": str(responding_to.id)}
+        assert task_log_message.content == {
+            "type": "AUTHORIZE",
+            "message_id": str(responding_to.id),
+        }
 
         mock_start_agent_loop.delay.assert_called_once_with(responding_to.task_id)
 
@@ -99,7 +106,9 @@ class TestTaskFeedbackMutation:
         }
 
         # Mock the Celery task function
-        mock_start_agent_loop = mocker.patch("ix.schema.mutations.chat.start_agent_loop")
+        mock_start_agent_loop = mocker.patch(
+            "ix.schema.mutations.chat.start_agent_loop"
+        )
 
         response = client.execute(TASK_FEEDBACK_MUTATION, variables=variables)
 
@@ -113,10 +122,15 @@ class TestTaskFeedbackMutation:
         }
         assert response["data"]["sendFeedback"]["errors"] is None
 
-        task_log_message = TaskLogMessage.objects.get(pk=response["data"]["sendFeedback"]["taskLogMessage"]["id"])
+        task_log_message = TaskLogMessage.objects.get(
+            pk=response["data"]["sendFeedback"]["taskLogMessage"]["id"]
+        )
         assert task_log_message.task_id == task.id
         assert task_log_message.role == "USER"
-        assert task_log_message.content == {"type": "FEEDBACK", "feedback": "Test feedback"}
+        assert task_log_message.content == {
+            "type": "FEEDBACK",
+            "feedback": "Test feedback",
+        }
 
         # Assert that the Celery task is dispatched
         mock_start_agent_loop.delay.assert_called_once_with(str(task.id))

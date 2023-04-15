@@ -9,8 +9,7 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import {useSendFeedback} from "chat/graphql/useSendFeedback";
-
+import { useSendFeedback } from "chat/graphql/useSendFeedback";
 
 const FeedbackInput = () => {
   const [feedback, setFeedback] = useState("");
