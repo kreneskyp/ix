@@ -28,7 +28,9 @@ class Task(models.Model):
 
 
 class UserFeedback(TypedDict):
+    type: str
     feedback: Optional[str]
+    message_id: Optional[str]
 
 
 class TaskLogMessage(models.Model):
