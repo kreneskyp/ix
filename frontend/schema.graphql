@@ -52,6 +52,7 @@ type TaskType {
   isComplete: Boolean!
   createdAt: DateTime!
   completeAt: DateTime
+  autonomous: Boolean!
   tasklogmessageSet: [TaskLogMessageType!]!
 }
 

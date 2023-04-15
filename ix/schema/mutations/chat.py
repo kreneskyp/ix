@@ -43,7 +43,6 @@ class RespondToTaskLogMutation(graphene.Mutation):
             role="USER",
             content=UserFeedback(
                 type="FEEDBACK",
-                authorized_for=1 if input.is_authorized else 0,
                 feedback=input.response,
             ),
         )

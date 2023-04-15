@@ -24,10 +24,10 @@ class Task(models.Model):
     is_complete = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     complete_at = models.DateTimeField(null=True, blank=True)
+    autonomous = models.BooleanField(default=True)
 
 
 class UserFeedback(TypedDict):
-    authorized_for: int
     feedback: Optional[str]
 
 

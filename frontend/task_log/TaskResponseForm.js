@@ -34,8 +34,6 @@ const feedbackMutation = graphql`
 export const TaskResponseForm = ({ onRespond }) => {
   const message = useLatestTaskLog();
   const [response, setResponse] = useState("");
-  const [isAuthorized, setIsAuthorized] = useState(true); // defaults to "Yes" button
-
   const toast = useToast();
 
   const [mutate, isLoading] = useMutation(feedbackMutation);
@@ -48,7 +46,6 @@ export const TaskResponseForm = ({ onRespond }) => {
           input: {
             id: message.id,
             response,
-            isAuthorized,
           },
         },
         onCompleted: (response, errors) => {
@@ -60,46 +57,18 @@ export const TaskResponseForm = ({ onRespond }) => {
               duration: 5000,
               isClosable: true,
             });
-          } else {
-            onRespond(response.respondToTaskLog.taskLogMessage);
-            toast({
-              title: "Success",
-              description: "Your response has been recorded.",
-              status: "success",
-              duration: 3000,
-              isClosable: true,
-            });
           }
         },
       });
-    } else {
-      setIsAuthorized(true); // default to "Yes" if no response message
     }
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <InputGroup>
-        <Button
-          colorScheme={isAuthorized ? "green" : "red"}
-          variant="outline"
-          onClick={() => setIsAuthorized(true)}
-          marginRight="5px"
-        >
-          <CheckIcon marginRight="2px" />
-          Yes
-        </Button>
-        <Button
-          colorScheme={!isAuthorized ? "green" : "red"}
-          variant="outline"
-          onClick={() => setIsAuthorized(false)}
-          marginRight="5px"
-        >
-          <CloseIcon marginRight="2px" />
-          No
-        </Button>
         <Input
           type="text"
+          width={800}
           placeholder="Enter additional feedback."
           value={response}
           onChange={(event) => setResponse(event.target.value)}
