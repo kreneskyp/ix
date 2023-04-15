@@ -1,6 +1,4 @@
-"""
-Aggregation of graphql queries
-"""
+"""Aggregation of graphql queries"""
 type Query {
   users: [UserType]
   agents: [AgentType]
@@ -21,17 +19,13 @@ type UserType {
   """
   isSuperuser: Boolean!
 
-  """
-  Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-  """
+  """Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."""
   username: String!
   firstName: String!
   lastName: String!
   email: String!
 
-  """
-  Designates whether the user can log into this admin site.
-  """
+  """Designates whether the user can log into this admin site."""
   isStaff: Boolean!
 
   """
@@ -84,34 +78,18 @@ type TaskLogMessageType {
 }
 
 enum TaskLogTaskLogMessageRoleChoices {
-  """
-  system
-  """
+  """system"""
   SYSTEM
 
-  """
-  assistant
-  """
+  """assistant"""
   ASSISTANT
 
-  """
-  user
-  """
+  """user"""
   USER
 }
 
-"""
-Union of all message types sent to the task log API.
-"""
-union MessageContentType =
-    AssistantContentType
-  | AutonomousModeContentType
-  | AuthorizeContentType
-  | AuthRequestContentType
-  | ExecutedContentType
-  | FeedbackRequestContentType
-  | FeedbackContentType
-  | SystemContentType
+"""Union of all message types sent to the task log API."""
+union MessageContentType = AssistantContentType | AutonomousModeContentType | AuthorizeContentType | AuthRequestContentType | ExecutedContentType | FeedbackRequestContentType | FeedbackContentType | SystemContentType
 
 """
 Assistant reply with thoughts and command. Sent in response to prompt
@@ -123,9 +101,7 @@ type AssistantContentType {
   command: CommandType!
 }
 
-"""
-Assistant thoughts
-"""
+"""Assistant thoughts"""
 type ThoughtsType {
   text: String!
   reasoning: String!
@@ -134,9 +110,7 @@ type ThoughtsType {
   speak: String
 }
 
-"""
-Assistant command
-"""
+"""Assistant command"""
 type CommandType {
   name: String!
   args: JSONString
@@ -159,57 +133,43 @@ type AutonomousModeContentType {
   enabled: Int!
 }
 
-"""
-User granting permission for agent to run a command
-"""
+"""User granting permission for agent to run a command"""
 type AuthorizeContentType {
   type: String!
   messageId: String!
 }
 
-"""
-Sent when the agent requires permission to run a command
-"""
+"""Sent when the agent requires permission to run a command"""
 type AuthRequestContentType {
   type: String!
   messageId: String!
 }
 
-"""
-Sent when the agent requests user feedback on a command or output
-"""
+"""Sent when the agent requests user feedback on a command or output"""
 type ExecutedContentType {
   type: String!
   messageId: String!
 }
 
-"""
-Sent when the agent requests user feedback on a command or output
-"""
+"""Sent when the agent requests user feedback on a command or output"""
 type FeedbackRequestContentType {
   type: String!
   messageId: String!
 }
 
-"""
-User feedback sent to agent
-"""
+"""User feedback sent to agent"""
 type FeedbackContentType {
   type: String!
   feedback: String!
 }
 
-"""
-All system messages
-"""
+"""All system messages"""
 type SystemContentType {
   type: String!
   message: String!
 }
 
-"""
-Aggregation of graphql queries
-"""
+"""Aggregation of graphql queries"""
 type Mutation {
   createTask(input: CreateTaskInput!): CreateTaskResponse
   respondToTaskMsg(input: TaskLogResponseInput!): RespondToTaskLogMutation
