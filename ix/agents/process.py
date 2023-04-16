@@ -318,9 +318,6 @@ You are {agent.name}, {agent.purpose}
             raise MissingCommandMarkers
 
         json_slice = response[start_index + len(start_marker) : end_index].strip()
-        print()
-        print(json_slice)
-        print()
         data = json.loads(json_slice)
 
         logger.debug(f"parsed message={data}")

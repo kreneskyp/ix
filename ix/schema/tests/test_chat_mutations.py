@@ -112,8 +112,6 @@ class TestTaskFeedbackMutation:
 
         response = client.execute(TASK_FEEDBACK_MUTATION, variables=variables)
 
-        print(response)
-
         assert "errors" not in response
         assert response["data"]["sendFeedback"]["taskLogMessage"]["role"] == "USER"
         assert response["data"]["sendFeedback"]["taskLogMessage"]["content"] == {

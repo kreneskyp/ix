@@ -20,11 +20,3 @@ class TaskType(DjangoObjectType):
         fields = "__all__"
 
     goals = graphene.List(GoalType)
-
-    def resolve_goals(self, info):
-        if self.goals is not None:
-            return [
-                GoalType(description=goal["description"], complete=goal["complete"])
-                for goal in self.goals
-            ]
-        return None
