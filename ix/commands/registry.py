@@ -6,6 +6,18 @@ from typing import Callable, Any
 IX_COMMAND_IDENTIFIER = "ix_command"
 
 
+def get_function_signature(func):
+    """
+    Returns the signature of a function as a string, without the return type hint.
+    """
+    signature = inspect.signature(func)
+    parameters = []
+    for param in signature.parameters.values():
+        parameters.append(f"{param.name}: {param.annotation.__name__ if hasattr(param.annotation, '__name__') else str(param.annotation)}")
+    return ', '.join(parameters)
+
+
+
 class Command:
     """A class representing a command.
 
@@ -25,13 +37,13 @@ class Command:
         self.name = name
         self.description = description
         self.method = method
-        self.signature = signature if signature else str(inspect.signature(self.method))
+        self.signature = signature if signature else get_function_signature(self.method)
 
     def __call__(self, *args, **kwargs) -> Any:
         return self.method(*args, **kwargs)
 
     def __str__(self) -> str:
-        return f"{self.name}: {self.description}, args: {self.signature}"
+        return f"{self.name}({self.signature})"
 
 
 class CommandRegistry:

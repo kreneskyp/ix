@@ -1,8 +1,7 @@
 import logging
+import openai
 from functools import cached_property
 from typing import TypedDict, Optional, List, Any, Dict
-
-import openai
 
 # AUTO GPT
 from auto_gpt.json_parser import fix_and_parse_json
@@ -15,16 +14,13 @@ from ix.utils.importlib import import_class
 from ix.utils.types import ClassPath
 
 
-AUTO_GPT_COMMANDS = [
-    "auto_gpt.ai_functions",
+# config defaults
+DEFAULT_COMMANDS = [
+    'ix.commands.google',
+    'ix.commands.filesystem',
     "auto_gpt.commands",
     "auto_gpt.execute_code",
-    "auto_gpt.agent_manager",
-    "auto_gpt.file_operations",
 ]
-
-# config defaults
-DEFAULT_COMMANDS = AUTO_GPT_COMMANDS
 DEFAULT_MEMORY = "ix.memory.redis.RedisVectorMemory"
 DEFAULT_MEMORY_OPTIONS = {"host": "redis"}
 
@@ -266,10 +262,6 @@ You are {agent.name}, {agent.purpose}
 
         # add user prompt
         prompt.add(user_prompt)
-
-        logger.debug("PROMPT: ")
-        for message in prompt.messages:
-            logger.debug(message)
 
         return prompt
 

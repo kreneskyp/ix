@@ -39,7 +39,7 @@ def google_search_scrape(query: str) -> List[str]:
     return list(search(query, num=10))
 
 
-@command(name="google_search", description="Search Google.")
+@command(name="google_search", description="Search Google")
 def google_search(query: str) -> List[str]:
     """Searches Google using either the Custom Search API or search scraping."""
     if "GOOGLE_API_KEY" in os.environ:
