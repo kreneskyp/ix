@@ -38,7 +38,7 @@ export const TaskLogMessagesQuery = graphql`
           type
           messageId
         }
-        ... on ExecuteErrorType {
+        ... on ExecuteErrorContentType {
           type
           messageId
           errorType
@@ -50,7 +50,7 @@ export const TaskLogMessagesQuery = graphql`
         }
         ... on FeedbackRequestContentType {
           type
-          messageId
+          question
         }
         ... on SystemContentType {
           type

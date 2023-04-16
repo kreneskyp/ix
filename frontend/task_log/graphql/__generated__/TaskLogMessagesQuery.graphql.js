@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b39ab412ee169d49f334b06ee67f6aa3>>
+ * @generated SignedSource<<ebc78dbfda244f23cc4353cb9c829c98>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -214,7 +214,7 @@ v7 = [
               },
               (v3/*: any*/)
             ],
-            "type": "ExecuteErrorType",
+            "type": "ExecuteErrorContentType",
             "abstractKey": null
           },
           {
@@ -234,7 +234,16 @@ v7 = [
           },
           {
             "kind": "InlineFragment",
-            "selections": (v6/*: any*/),
+            "selections": [
+              (v2/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "question",
+                "storageKey": null
+              }
+            ],
             "type": "FeedbackRequestContentType",
             "abstractKey": null
           },
@@ -291,16 +300,16 @@ return {
     "selections": (v7/*: any*/)
   },
   "params": {
-    "cacheID": "e5f235215a3a4229f4c8925d6fbdf940",
+    "cacheID": "cbe6ba8b63ccf87e925df9c9a6f93946",
     "id": null,
     "metadata": {},
     "name": "TaskLogMessagesQuery",
     "operationKind": "query",
-    "text": "query TaskLogMessagesQuery(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    role\n    createdAt\n    content {\n      __typename\n      ... on AssistantContentType {\n        type\n        thoughts {\n          text\n          reasoning\n          plan\n          criticism\n          speak\n        }\n        command {\n          name\n          args\n        }\n      }\n      ... on AutonomousModeContentType {\n        type\n        enabled\n      }\n      ... on AuthorizeContentType {\n        type\n        messageId\n      }\n      ... on AuthRequestContentType {\n        type\n        messageId\n      }\n      ... on ExecutedContentType {\n        type\n        messageId\n      }\n      ... on ExecuteErrorType {\n        type\n        messageId\n        errorType\n        text\n      }\n      ... on FeedbackContentType {\n        type\n        feedback\n      }\n      ... on FeedbackRequestContentType {\n        type\n        messageId\n      }\n      ... on SystemContentType {\n        type\n        message\n      }\n    }\n    agent {\n      id\n      name\n    }\n  }\n}\n"
+    "text": "query TaskLogMessagesQuery(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    role\n    createdAt\n    content {\n      __typename\n      ... on AssistantContentType {\n        type\n        thoughts {\n          text\n          reasoning\n          plan\n          criticism\n          speak\n        }\n        command {\n          name\n          args\n        }\n      }\n      ... on AutonomousModeContentType {\n        type\n        enabled\n      }\n      ... on AuthorizeContentType {\n        type\n        messageId\n      }\n      ... on AuthRequestContentType {\n        type\n        messageId\n      }\n      ... on ExecutedContentType {\n        type\n        messageId\n      }\n      ... on ExecuteErrorContentType {\n        type\n        messageId\n        errorType\n        text\n      }\n      ... on FeedbackContentType {\n        type\n        feedback\n      }\n      ... on FeedbackRequestContentType {\n        type\n        question\n      }\n      ... on SystemContentType {\n        type\n        message\n      }\n    }\n    agent {\n      id\n      name\n    }\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "4e2b7db9e1ff7e0386a00c03a59d5b26";
+node.hash = "79c67c2628b9b22f692c2c566d9d32a9";
 
 module.exports = node;

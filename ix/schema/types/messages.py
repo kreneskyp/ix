@@ -72,7 +72,7 @@ class ExecutedContentType(MessageContentType):
     message_id = graphene.ID(required=True)
 
 
-class ExecuteErrorType(MessageContentType):
+class ExecuteErrorContentType(MessageContentType):
     """Sent when an error occurs while executing a command"""
 
     message_id = graphene.ID(required=True)
@@ -83,7 +83,7 @@ class ExecuteErrorType(MessageContentType):
 class FeedbackRequestContentType(MessageContentType):
     """Sent when the agent requests user feedback on a command or output"""
 
-    message_id = graphene.ID(required=True)
+    question = graphene.String(required=True)
 
 
 class AuthRequestContentType(MessageContentType):
@@ -113,7 +113,7 @@ class MessageContentType(graphene.Union):
             AuthorizeContentType,
             AuthRequestContentType,
             ExecutedContentType,
-            ExecuteErrorType,
+            ExecuteErrorContentType,
             FeedbackRequestContentType,
             FeedbackContentType,
             SystemContentType,
@@ -127,9 +127,9 @@ class MessageContentType(graphene.Union):
         elif message_type == "AUTH_REQUEST":
             return AuthRequestContentType
         elif message_type == "EXECUTED":
-            return FeedbackRequestContentType
+            return ExecutedContentType
         elif message_type == "EXECUTE_ERROR":
-            return ExecuteErrorType
+            return ExecuteErrorContentType
         elif message_type == "FEEDBACK_REQUEST":
             return FeedbackRequestContentType
         elif message_type == "FEEDBACK":
