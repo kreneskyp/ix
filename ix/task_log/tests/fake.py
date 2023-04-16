@@ -191,3 +191,9 @@ def fake_task_log_msg(**kwargs):
 
     task_log_message.save()
     return task_log_message
+
+
+def task_setup():
+    TaskLogMessage.objects.all().delete()
+    task = Task.objects.get(id=1)
+    fake_all_message_types(task)
