@@ -1,9 +1,7 @@
 import React from "react";
-import { VStack, StackDivider, Box, Flex } from "@chakra-ui/react";
-import TaskPlan from "task_log/TaskPlan";
+import { VStack, StackDivider, Box } from "@chakra-ui/react";
 import SideBarGoalList from "task_log/SideBarGoalList";
-import { ColorModeToggleButton } from "components/ColorModeToggleButton";
-import { ColorModeButton } from "components/ColorMode";
+import { ColorModeButton } from "components/ColorModeButton";
 
 export const TaskLogLeftPane = () => {
   return (
