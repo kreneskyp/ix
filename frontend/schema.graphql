@@ -283,7 +283,7 @@ input ResourceInput {
   id: ID
   name: String
   type: String
-  jsonConfig: JSONString
+  config: JSONString
 }
 
 type UpdateResourceMutation {
