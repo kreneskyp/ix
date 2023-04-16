@@ -1,7 +1,11 @@
+import logging
 from typing import List, Dict, Iterable
 
 # TODO: need to rewrite this to support other models.
 from auto_gpt.token_counter import count_message_tokens
+
+
+logger = logging.getLogger(__name__)
 
 
 class ExceedsMaxToken(Exception):
@@ -54,9 +58,11 @@ class PromptBuilder:
         :param messages: The text to count tokens for.
         :return: The number of tokens in the text.
         """
-        print(">>>> ", messages)
-        print()
-        return count_message_tokens(messages, self.model)
+        try:
+            return count_message_tokens(messages, self.model)
+        except:
+            logger.error(f"Error counting tokens for messages={messages}")
+            raise
 
     def add(self, message: Dict[str, str]) -> int:
         """
