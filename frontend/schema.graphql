@@ -1,12 +1,109 @@
 """Aggregation of graphql queries"""
 type Query {
-  users: [UserType]
+  agent(id: ID!): AgentType
   agents: [AgentType]
+  users: [UserType]
   tasks: [TaskType]
   taskLogMessages(taskId: ID!): [TaskLogMessageType]
   user(id: ID!): UserType
-  agent(id: ID!): AgentType
   task(id: ID!): TaskType
+}
+
+type AgentType {
+  id: ID!
+  name: String!
+  purpose: String!
+  createdAt: DateTime!
+  model: String!
+  systemPrompt: String!
+  commands: JSONString
+  config: GenericScalar
+  resources: [ResourceType!]!
+  taskSet: [TaskType!]!
+  tasklogmessageSet: [TaskLogMessageType!]!
+}
+
+"""
+The `DateTime` scalar type represents a DateTime
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar DateTime
+
+"""
+Allows use of a JSON String for input / output from the GraphQL schema.
+
+Use of this type is *not recommended* as you lose the benefits of having a defined, static
+schema (one of the key benefits of GraphQL).
+"""
+scalar JSONString
+
+"""
+The `GenericScalar` scalar type represents a generic
+GraphQL scalar value that could be:
+String, Boolean, Int, Float, List or Object.
+"""
+scalar GenericScalar
+
+type ResourceType {
+  id: ID!
+  type: AgentsResourceTypeChoices!
+  config: JSONString!
+  agent: AgentType!
+}
+
+enum AgentsResourceTypeChoices {
+  """Vector Memory"""
+  VECTOR_MEMORY
+
+  """Database"""
+  DATABASE
+
+  """File System"""
+  FILE_SYSTEM
+
+  """Cache"""
+  CACHE
+
+  """API"""
+  API
+
+  """Knowledge Base"""
+  KNOWLEDGE_BASE
+
+  """Image Database"""
+  IMAGE_DATABASE
+
+  """Audio Database"""
+  AUDIO_DATABASE
+
+  """Video Database"""
+  VIDEO_DATABASE
+
+  """Cloud Storage"""
+  CLOUD_STORAGE
+
+  """Content Delivery Network"""
+  CONTENT_DELIVERY_NETWORK
+
+  """Message Queue"""
+  MESSAGE_QUEUE
+
+  """Stream Processing"""
+  STREAM_PROCESSING
+}
+
+type TaskType {
+  id: ID!
+  name: String!
+  user: UserType!
+  goals: [GoalType]
+  agent: AgentType!
+  isComplete: Boolean!
+  createdAt: DateTime!
+  completeAt: DateTime
+  autonomous: Boolean!
+  tasklogmessageSet: [TaskLogMessageType!]!
 }
 
 type UserType {
@@ -36,37 +133,9 @@ type UserType {
   taskSet: [TaskType!]!
 }
 
-"""
-The `DateTime` scalar type represents a DateTime
-value as specified by
-[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
-"""
-scalar DateTime
-
-type TaskType {
-  id: ID!
-  name: String!
-  user: UserType!
-  goals: [GoalType]
-  agent: AgentType!
-  isComplete: Boolean!
-  createdAt: DateTime!
-  completeAt: DateTime
-  autonomous: Boolean!
-  tasklogmessageSet: [TaskLogMessageType!]!
-}
-
 type GoalType {
   description: String!
   complete: Boolean!
-}
-
-type AgentType {
-  id: ID!
-  name: String!
-  purpose: String!
-  taskSet: [TaskType!]!
-  tasklogmessageSet: [TaskLogMessageType!]!
 }
 
 type TaskLogMessageType {
@@ -116,14 +185,6 @@ type CommandType {
   name: String!
   args: JSONString
 }
-
-"""
-Allows use of a JSON String for input / output from the GraphQL schema.
-
-Use of this type is *not recommended* as you lose the benefits of having a defined, static
-schema (one of the key benefits of GraphQL).
-"""
-scalar JSONString
 
 """
 Instructs the agent to enable/disable autonomous mode. Mode
@@ -180,10 +241,57 @@ type SystemContentType {
 
 """Aggregation of graphql queries"""
 type Mutation {
+  createAgent(input: AgentInput!): CreateAgentMutation
+  updateAgent(input: AgentInput!): UpdateAgentMutation
+  deleteAgent(id: ID!): DeleteAgentMutation
+  createResource(input: ResourceInput!): CreateResourceMutation
+  updateResource(input: ResourceInput!): UpdateResourceMutation
+  deleteResource(id: ID!): DeleteResourceMutation
   createTask(input: CreateTaskInput!): CreateTaskResponse
   sendFeedback(input: TaskFeedbackInput!): TaskFeedbackMutation
   authorizeCommand(input: CommandAuthorizeInput!): AuthorizeCommandMutation
   setTaskAutonomous(autonomous: Boolean!, taskId: ID!): SetTaskAutonomousMutation
+}
+
+type CreateAgentMutation {
+  agent: AgentType
+}
+
+input AgentInput {
+  id: ID
+  name: String
+  purpose: String
+  model: String
+  systemPrompt: String
+  commands: JSONString
+  config: GenericScalar
+}
+
+type UpdateAgentMutation {
+  agent: AgentType
+}
+
+type DeleteAgentMutation {
+  success: Boolean
+}
+
+type CreateResourceMutation {
+  resource: ResourceType
+}
+
+input ResourceInput {
+  id: ID
+  name: String
+  type: String
+  jsonConfig: JSONString
+}
+
+type UpdateResourceMutation {
+  resource: ResourceType
+}
+
+type DeleteResourceMutation {
+  success: Boolean
 }
 
 type CreateTaskResponse {

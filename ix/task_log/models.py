@@ -2,18 +2,7 @@ import json
 from typing import TypedDict, Optional
 
 from django.db import models
-
-
-class Agent(models.Model):
-    """
-    Agent model represents an agent with a unique name and a purpose.
-    """
-
-    name = models.CharField(max_length=255, unique=True)
-    purpose = models.TextField()
-
-    def __str__(self) -> str:
-        return self.name
+from ix.agents.models import Agent
 
 
 class Task(models.Model):

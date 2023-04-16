@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<03714335cbff7344062082b700cfe062>>
+ * @generated SignedSource<<365fedde0274fc942a4fc4ffeffff1cb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,7 +16,14 @@ var v0 = [
     "name": "id"
   }
 ],
-v1 = [
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v2 = [
   {
     "alias": null,
     "args": [
@@ -31,13 +38,7 @@ v1 = [
     "name": "task",
     "plural": false,
     "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "id",
-        "storageKey": null
-      },
+      (v1/*: any*/),
       {
         "alias": null,
         "args": null,
@@ -83,6 +84,39 @@ v1 = [
           }
         ],
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "AgentType",
+        "kind": "LinkedField",
+        "name": "agent",
+        "plural": false,
+        "selections": [
+          (v1/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "name",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "model",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "purpose",
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
       }
     ],
     "storageKey": null
@@ -94,7 +128,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "contexts_task_Query",
-    "selections": (v1/*: any*/),
+    "selections": (v2/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -103,19 +137,19 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "contexts_task_Query",
-    "selections": (v1/*: any*/)
+    "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "2a39acef6e49aa7c676cd5a6aba74fe7",
+    "cacheID": "5af22491bdf76d03c1f537404fb689af",
     "id": null,
     "metadata": {},
     "name": "contexts_task_Query",
     "operationKind": "query",
-    "text": "query contexts_task_Query(\n  $id: ID!\n) {\n  task(id: $id) {\n    id\n    isComplete\n    completeAt\n    autonomous\n    goals {\n      description\n      complete\n    }\n  }\n}\n"
+    "text": "query contexts_task_Query(\n  $id: ID!\n) {\n  task(id: $id) {\n    id\n    isComplete\n    completeAt\n    autonomous\n    goals {\n      description\n      complete\n    }\n    agent {\n      id\n      name\n      model\n      purpose\n    }\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "49ea9f7bd475f3345266ed0abadaf262";
+node.hash = "efac20a7bf26834fcbeabcfb7712651c";
 
 module.exports = node;
