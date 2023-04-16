@@ -6,7 +6,6 @@ ENV APP=/var/app
 ENV PATH=$PATH:/usr/bin/ix
 RUN mkdir -p /usr/bin/ix
 COPY bin/* /usr/bin/ix/
-ADD .bash_profile $HOME
 RUN mkdir -p $APP
 RUN apt update -y && apt install -y curl postgresql-client
 
@@ -62,8 +61,20 @@ ENV APP_MODE=asgi
 # Expose port 8000 for ASGI, or leave it unexposed for Celery
 EXPOSE 8000
 
-# Start the application using either ASGI or Celery depending on APP_MODE
-#CMD if [ "$APP_MODE" = "asgi" ] ; then python manage.py runserver 0.0.0.0:8000 ; else celery -A myapp worker -l info ; fi
+# Still relying on a few bits of AutoGPT,
+# install here since it isn't installable via pip
+ENV PYTHONPATH $PYTHONPATH:/usr/local/lib/Auto-GPT/
+WORKDIR /usr/local/lib
+RUN git clone https://github.com/kreneskyp/Auto-GPT.git && \
+    cd Auto-GPT && \
+    git checkout ix && \
+    pip install -r requirements.txt
 
-# daphne <your_project_name>.asgi:application
-#ENTRYPOINT = ["/usr/bin/ix/entrypoint.sh"]
+
+WORKDIR /var/app
+
+# Start the application using either ASGI or Celery depending on APP_MODE
+# XXX: disabling until this is tested more
+#CMD if [ "$APP_MODE" = "asgi" ] export ; then python manage.py runserver 0.0.0.0:8000 ; else celery -A myapp worker -l info ; fi
+
+

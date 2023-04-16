@@ -8,6 +8,7 @@ const ChatMessageAvatar = ({ message }) => {
   const avatarSize = "40px";
   const iconSize = "lg";
   const bgColor = useColorModeValue("gray.200", "gray.700");
+  const color = useColorModeValue("black", "blue.300");
   const getAvatarByRole = (role) => {
     switch (role) {
       case "USER":
@@ -29,6 +30,7 @@ const ChatMessageAvatar = ({ message }) => {
         justifyContent="center"
         borderRadius="full"
         bg={bgColor}
+        color={color}
         width={avatarSize}
         height={avatarSize}
       >

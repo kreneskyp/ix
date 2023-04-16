@@ -73,5 +73,5 @@ class PineconeMemory(VectorMemory):
     def delete_vector(self, key: IndexKey):
         self.index.delete(key)
 
-    def clear_vectors(self):
+    def clear(self):
         self.index.delete(deleteAll=True)

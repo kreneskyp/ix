@@ -7,10 +7,10 @@ def pinecone_memory():
     index_name = "pytest-memory"
     memory = PineconeMemory(index_name)
     yield memory
-    memory.clear_vectors()
+    memory.clear()
 
 
-# @pytest.mark.skip(reason="Costs money to test this!")
+@pytest.mark.skip(reason="Costs money to test this!")
 class TestPineconeMemory:
     def test_add_and_get_vector(self, pinecone_memory):
         key = "1"

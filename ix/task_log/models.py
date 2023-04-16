@@ -1,3 +1,4 @@
+import json
 from typing import TypedDict, Optional
 
 from django.db import models
@@ -23,11 +24,13 @@ class Task(models.Model):
     is_complete = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     complete_at = models.DateTimeField(null=True, blank=True)
+    autonomous = models.BooleanField(default=True)
 
 
 class UserFeedback(TypedDict):
-    authorized_for: int
+    type: str
     feedback: Optional[str]
+    message_id: Optional[str]
 
 
 class TaskLogMessage(models.Model):
@@ -43,10 +46,14 @@ class TaskLogMessage(models.Model):
     ]
 
     TYPE_CHOICES = [
-        ("system", "system"),
         ("assistant", "assistant"),
+        ("auth_request", "auth_request"),
+        ("authorize", "authorize"),
+        ("autonomous", "autonomous"),
+        ("execute", "execute"),
         ("feedback_request", "feedback_request"),
         ("feedback", "feedback"),
+        ("system", "system"),
     ]
 
     # message metadata
@@ -62,11 +69,12 @@ class TaskLogMessage(models.Model):
         ordering = ["created_at"]
 
     def __str__(self) -> str:
-        return f"TaskLogMessage {self.id} ({self.role})"
+        return f"TaskLogMessage {self.id} ({self.role}, {self.content['type']})"
 
-    def as_dict(self):
-        content = self.content
-        if content["type"] == "FEEDBACK":
-            return {"role": self.role.lower(), "content": self.content["feedback"]}
-        else:
-            return {"role": self.role.lower(), "content": self.content["message"]}
+    def as_message(self):
+        content = self.content.copy()
+        content.pop("type")
+        return {
+            "role": self.role.lower(),
+            "content": json.dumps(content, sort_keys=True),
+        }

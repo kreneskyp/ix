@@ -6,7 +6,6 @@ import {
   Tr,
   Th,
   Td,
-  Box,
   Flex,
   Button,
   Icon,
@@ -18,10 +17,11 @@ import {
 import { faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useTextToSpeech from "chat/useTextToSpeech";
+import { useColorMode } from "@chakra-ui/color-mode";
 
 const AssistantContent = ({ content }) => {
   const { onPaused } = useTextToSpeech();
-
+  const { colorMode } = useColorMode();
   const { thoughts, command } = content;
   const args = JSON.parse(command.args);
 
@@ -69,7 +69,7 @@ const AssistantContent = ({ content }) => {
           borderWidth="1px"
           borderColor="gray.200"
           borderRadius="md"
-          bg="white"
+          bg={colorMode === "light" ? "white" : "gray.900"}
           variant="simple"
           spacing="0"
         >
@@ -80,7 +80,7 @@ const AssistantContent = ({ content }) => {
             </Tr>
           </Thead>
           <Tbody>
-            {Object.entries(args).map(([name, value]) => (
+            {Object.entries(args || []).map(([name, value]) => (
               <Tr key={name}>
                 <Td px={2}>{name}</Td>
                 <Td px={2}>{value}</Td>

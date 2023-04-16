@@ -76,6 +76,7 @@ class CommandRegistry:
         if command_name not in self.commands:
             raise KeyError(f"Command '{command_name}' not found in registry.")
         command = self.commands[command_name]
+
         return command(**kwargs)
 
     def command_prompt(self) -> str:
@@ -87,7 +88,7 @@ class CommandRegistry:
         clauses = "\n".join(
             [f"{idx + 1}. {str(cmd)}" for idx, cmd in enumerate(commands)]
         )
-        return f"COMMANDS: \n{clauses}"
+        return f"COMMANDS: \n\n{clauses}"
 
     def import_commands(self, module_name: str) -> None:
         """
@@ -107,8 +108,9 @@ class CommandRegistry:
         for attr_name in dir(module):
             attr = getattr(module, attr_name)
             # Register decorated functions
-            if hasattr(attr, IX_COMMAND_IDENTIFIER) and getattr(
-                attr, IX_COMMAND_IDENTIFIER
+            if (
+                hasattr(attr, IX_COMMAND_IDENTIFIER)
+                and getattr(attr, IX_COMMAND_IDENTIFIER) is True
             ):
                 self.register(attr.command)
             # Register command classes

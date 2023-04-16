@@ -3,6 +3,7 @@ import ChatMessage from "chat/ChatMessage";
 import { fetchQuery, graphql } from "relay-runtime";
 import { useTask } from "tasks/contexts";
 import environment from "relay-environment";
+import { TaskLogMessagesQuery } from "task_log/graphql/TaskLogMessages";
 
 const TaskLogMessageStream = () => {
   const [taskLogMessages, setMessages] = useState([]);
@@ -15,48 +16,7 @@ const TaskLogMessageStream = () => {
       };
       const observable = fetchQuery(
         environment,
-        graphql`
-          query TaskLogMessageStreamQuery($taskId: ID!) {
-            taskLogMessages(taskId: $taskId) {
-              id
-              role
-              createdAt
-              content {
-                __typename
-                ... on AssistantContentType {
-                  type
-                  thoughts {
-                    text
-                    reasoning
-                    plan
-                    criticism
-                    speak
-                  }
-                  command {
-                    name
-                    args
-                  }
-                }
-                ... on FeedbackRequestContentType {
-                  type
-                  message
-                }
-                ... on FeedbackContentType {
-                  type
-                  feedback
-                }
-                ... on SystemContentType {
-                  type
-                  message
-                }
-              }
-              agent {
-                id
-                name
-              }
-            }
-          }
-        `,
+        TaskLogMessagesQuery,
         variables
       );
 
@@ -71,6 +31,9 @@ const TaskLogMessageStream = () => {
 
       return () => subscription.unsubscribe();
     };
+
+    // initial fetch
+    fetchTaskLogMessages();
 
     const interval = setInterval(() => {
       fetchTaskLogMessages();

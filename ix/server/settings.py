@@ -141,7 +141,7 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-GRAPHENE = {"SCHEMA": "ix.task_log.schema.schema"}
+GRAPHENE = {"SCHEMA": "ix.schema.schema"}
 
 # ASGI_APPLICATION = 'ix.server.asgi.application'
 

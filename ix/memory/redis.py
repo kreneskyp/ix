@@ -7,24 +7,23 @@ from ix.memory.plugin import VectorMemory, IndexKey, NearestResult, get_embeddin
 
 
 class RedisVectorMemoryOptions(TypedDict):
-    redis_host: str
-    redis_port: int
-    redis_password: Optional[str]
-    redis_db: int
+    host: Optional[str]
+    port: Optional[int]
+    password: Optional[str]
+    db: Optional[int]
 
 
 class RedisVectorMemory(VectorMemory):
     def __init__(
-        self,
-        index_name: str,
-        options: Optional[RedisVectorMemoryOptions] = None
+        self, index_name: str, options: Optional[RedisVectorMemoryOptions] = None
     ):
+        options = options or {}
         super().__init__(index_name, options)
         self.redis = redis.StrictRedis(
-            host=options["redis_host"],
-            port=options["redis_port"],
-            password=options["redis_password"],
-            db=options["redis_db"]
+            host=options.pop("host", "redis"),
+            port=options.pop("port", 6379),
+            db=options.pop("db", 15),
+            **options,
         )
 
     def _vector_key(self, key: IndexKey) -> str:
@@ -48,7 +47,9 @@ class RedisVectorMemory(VectorMemory):
     def get_vector(self, key: IndexKey) -> List[float]:
         vector_key = self._vector_key(key)
         vector_str = self.redis.get(vector_key)
-        return [float(x) for x in vector_str.decode().split(",")] if vector_str else None
+        return (
+            [float(x) for x in vector_str.decode().split(",")] if vector_str else None
+        )
 
     def find_nearest(
         self, query_string: str, num_results: int = 1
@@ -61,7 +62,9 @@ class RedisVectorMemory(VectorMemory):
         for key in keys:
             vector_str = self.redis.get(key).decode()
             vector = np.array([float(x) for x in vector_str.split(",")])
-            cosine_similarity = np.dot(query_np, vector) / (np.linalg.norm(query_np) * np.linalg.norm(vector))
+            cosine_similarity = np.dot(query_np, vector) / (
+                np.linalg.norm(query_np) * np.linalg.norm(vector)
+            )
             index_key = key.decode().split(":")[-1]
             scores.append((index_key, cosine_similarity))
 
@@ -81,7 +84,7 @@ class RedisVectorMemory(VectorMemory):
             pipe.delete(text_key)
             pipe.execute()
 
-    def clear_vectors(self) -> None:
+    def clear(self) -> None:
         keys = self.redis.keys(f"{self.index_name}:*")
         if keys:
             self.redis.delete(*keys)

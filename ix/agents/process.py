@@ -1,20 +1,37 @@
 import logging
 from functools import cached_property
-from typing import TypedDict, Optional
+from typing import TypedDict, Optional, List, Any, Dict
 
+import openai
 
 # AUTO GPT
-from auto_gpt.chat import chat_with_ai
-from auto_gpt.memory import PineconeMemory
 from auto_gpt.json_parser import fix_and_parse_json
 
-
+from ix.agents.prompt_builder import PromptBuilder
+from ix.memory.plugin import VectorMemory
 from ix.task_log.models import Task, TaskLogMessage
-from ix.commands.registry import CommandRegistry, Command
+from ix.commands.registry import CommandRegistry
+from ix.utils.importlib import import_class
+from ix.utils.types import ClassPath
 
+
+AUTO_GPT_COMMANDS = [
+    "auto_gpt.ai_functions",
+    "auto_gpt.commands",
+    "auto_gpt.execute_code",
+    "auto_gpt.agent_manager",
+    "auto_gpt.file_operations",
+]
+
+# config defaults
+DEFAULT_COMMANDS = AUTO_GPT_COMMANDS
+DEFAULT_MEMORY = "ix.memory.redis.RedisVectorMemory"
+DEFAULT_MEMORY_OPTIONS = {"host": "redis"}
+
+
+# logging
 FORMAT = "%(asctime)s %(levelname)s %(message)s"
 logging.basicConfig(format=FORMAT, level="DEBUG")
-
 logger = logging.getLogger(__name__)
 
 
@@ -29,20 +46,44 @@ class ChatMessage(TypedDict):
 
 
 class AgentProcess:
-    INITIAL_INPUT = "Determine which next command to use, and respond using the format specified above:"
-    NEXT_COMMAND = "GENERATE NEXT COMMAND JSON"
+    INITIAL_INPUT = "Determine which next command to use, and respond using the format specified above"
+    # NEXT_COMMAND = "GENERATE NEXT COMMAND JSON"
+    NEXT_COMMAND = INITIAL_INPUT
+    EXCLUDED_MSG_TYPES = {
+        "FEEDBACK_REQUEST",
+        "AUTH_REQUEST",
+        "EXECUTED",
+        "AUTHORIZE",
+        "AUTONOMOUS",
+        "SYSTEM",
+    }
 
-    def __init__(self, task_id, message_id: int = None):
+    command_registry: CommandRegistry
+
+    def __init__(
+        self,
+        task_id: int,
+        memory_class: ClassPath = DEFAULT_MEMORY,
+        command_modules: List[ClassPath] = DEFAULT_COMMANDS,
+    ):
         logger.info(f"AgentProcess initializing task_id={task_id}")
+
+        # agent config
+        self.memory_class = memory_class
+        self.command_modules = command_modules
+
+        # initial state
         self.task_id = task_id
-        self.message_history = None
+        self.history = []
+        self.last_message_at = None
         self.memory = None
+        self.autonomous = 0
 
         # agent init
         self.init_commands()
 
         # task int
-        self.load_message_history()
+        self.update_message_history()
         self.initialize_memory()
         logger.info("AgentProcess initialized")
 
@@ -54,59 +95,104 @@ class AgentProcess:
     def agent(self):
         return self.task.agent
 
-    def load_message_history(self):
-        messages = TaskLogMessage.objects.filter(task_id=self.task_id).order_by(
-            "-created_at"
+    def query_message_history(self, since=None):
+        """Fetch message history from persistent store for context relevant messages"""
+
+        # base query, selects messages relevant for chat context
+        query = TaskLogMessage.objects.filter(task_id=self.task_id).order_by(
+            "created_at"
         )
-        self.message_history = [message.as_dict() for message in messages]
+
+        # filter to only new messages
+        if since:
+            query = query.filter(created_at__gt=since)
+
+        return query
+
+    def update_message_history(self):
+        """
+        Update message history for the most recent messages. Will query only new messages
+        if agent already contains messages
+        """
+
+        # fetch unseen messages and save the last timestamp for the next iteration
+        messages = list(self.query_message_history(self.last_message_at))
+        if messages:
+            self.last_message_at = messages[-1].created_at
+
+        # toggle autonomous mode based on newest AUTONOMOUS message
+        for message in messages:
+            if message.content["type"] == "AUTONOMOUS":
+                self.autonomous = message.content["enabled"]
+
+        formatted_messages = [
+            message.as_message()
+            for message in messages
+            if message.content["type"] not in self.EXCLUDED_MSG_TYPES
+        ]
+        self.history.extend(formatted_messages)
+
         logger.info(
-            f"AgentProcess loaded n={len(self.message_history)} chat messages from history"
+            f"AgentProcess loaded n={len(messages)} chat messages from persistence"
         )
 
     def initialize_memory(self):
-        # api key set via env variables
-        # PINECONE_API_KEY and PINECONE_ENV
-        self.memory = PineconeMemory()
+        """Load and initialize configured memory class"""
+        logger.debug("initializing memory_class={self.memory_class}")
+        memory_class = import_class(self.memory_class)
+        assert issubclass(memory_class, VectorMemory)
+        self.memory = memory_class("ix-agent")
         self.memory.clear()
 
     def init_commands(self):
         """Load commands for this agent"""
+        logger.debug("initializing commands")
         self.command_registry = CommandRegistry()
-        self.command_registry.import_commands("auto_gpt.ai_functions")
-        self.command_registry.import_commands("auto_gpt.commands")
-        self.command_registry.import_commands("auto_gpt.execute_code")
-        self.command_registry.import_commands("auto_gpt.agent_manager")
-        self.command_registry.import_commands("auto_gpt.file_operations")
+        for class_path in self.command_modules:
+            self.command_registry.import_commands(class_path)
+
         logger.info(f"intialized command registry")
 
-    def start(self, n: int = 1, user_input_msg: TaskLogMessage = None) -> None:
+    def start(self, n: int = 0) -> None:
         """
-        start agent loop and process `n` ticks. Pass `input` to resume from user feedback.
+        start agent loop and process `n` authorized ticks.
         """
         logger.info(f"starting process loop task_id={self.task_id}")
 
         tick_input = None
-        if user_input_msg:
-            logger.info(f"resuming with user input for task_id={self.task_id}")
-            tick_input = user_input_msg.content["feedback"]
-        elif len(self.message_history) == 0:
-            # special first input for loop start
+        authorized_for = n
+        try:
+            last_message = TaskLogMessage.objects.filter(task_id=self.task_id).latest(
+                "created_at"
+            )
+        except TaskLogMessage.DoesNotExist:
+            last_message = None
+
+        if not last_message:
             logger.info(f"first tick for task_id={self.task_id}")
             tick_input = self.INITIAL_INPUT
+            # TODO load initial auth from either message stream or task
+        elif last_message.content["type"] == "AUTHORIZE":
+            logger.info(f"resuming with user input for task_id={self.task_id}")
+            # auth/feedback resume, run command that was authorized
+            authorized_for = last_message.content["n"] - 1
+            authorized_msg = TaskLogMessage.objects.get(
+                pk=last_message.content["message_id"]
+            )
+            self.msg_execute(authorized_msg)
+        elif last_message.content["type"] == "FEEDBACK_REQUEST":
+            # if last message is an unfulfilled feedback request then exit
+            return
 
-        # if there is input, tick once
-        if tick_input:
-            self.tick(tick_input)
+        # pass to main loop
+        self.loop(n=authorized_for, tick_input=tick_input)
 
-        return
+    def loop(self, n=1, tick_input: str = None):
+        for i in range(n + 1):
+            execute = self.autonomous or i < n
+            self.tick(execute=execute)
 
-        # run the remainder of authorized ticks in a loop
-        # set auto-execute here.
-        if n > 1:
-            for i in range(1, n):
-                self.tick(execute=True)
-
-    def tick(self, user_input=NEXT_COMMAND, execute=False):
+    def tick(self, user_input: str = NEXT_COMMAND, execute: bool = False):
         """
         "tick" the agent loop letting it chat and run commands
         """
@@ -116,28 +202,26 @@ class AgentProcess:
         data = self.handle_response(response)
 
         # save to persistent storage
-        TaskLogMessage.objects.create(
+        log_message = TaskLogMessage.objects.create(
             task_id=self.task_id,
             role="assistant",
             content=dict(type="ASSISTANT", **data),
         )
 
         # process command and then execute or seek feedback
-
         command_name = data["command"]["name"]
-        command_kwargs = data["command"].get("args", {})
         command = self.command_registry.get(command_name)
         logger.info(f"model returned task_id={self.task_id} command={command.name}")
         if command:
             if execute:
-                logger.info(f"executing task_id={self.task_id} command={command.name}")
-                result = self.execute(command, **command_kwargs)
-                self.message_history.append(ChatMessage(role="system", content=result))
+                self.msg_execute(log_message)
             else:
-                logger.info(f"requesting user input task_id={self.task_id}")
-                self.request_user_input()
+                logger.info(f"requesting user authorization task_id={self.task_id}")
+                self.request_user_auth(log_message.id)
+        else:
+            raise ValueError("Response did not include command")
 
-    def construct_prompt(self):
+    def construct_base_prompt(self):
         goals_clause = "\n".join(
             [f"{i+1}. {goal['description']}" for i, goal in enumerate(self.task.goals)]
         )
@@ -149,51 +233,90 @@ class AgentProcess:
         from ix.agents.prompts import FORMAT_CLAUSE
 
         return f"""
-            You are {agent.name}, {agent.purpose}
-            {goals_clause}
+You are {agent.name}, {agent.purpose}
+{goals_clause}
+{CONSTRAINTS_CLAUSE}
+{commands_clause}
+{RESOURCES_CLAUSE}
+{SELF_EVALUATION_CLAUSE}
+{FORMAT_CLAUSE}
+"""
 
-            {CONSTRAINTS_CLAUSE}
-
-            {commands_clause}
-
-            {RESOURCES_CLAUSE}
-
-            {SELF_EVALUATION_CLAUSE}
-
-            {FORMAT_CLAUSE}
-            """
-
-    def handle_response(self, message):
+    def handle_response(self, message: str) -> Dict[str, Any]:
         data = fix_and_parse_json(message)
         logger.debug(f"parsed message={data}")
-        command_name = data["command"]["name"]
         return data
 
-    def chat_with_ai(self, input):
-        return chat_with_ai(
-            self.construct_prompt(),
-            input,
-            full_message_history=self.message_history,
-            permanent_memory=self.memory,
-            token_limit=4000,
-        )
+    def build_prompt(self, user_input: str) -> PromptBuilder:
+        prompt = PromptBuilder(3000)
 
-    def request_user_input(self):
+        system_prompt = {"role": "system", "content": self.construct_base_prompt()}
+        user_prompt = {"role": "user", "content": user_input}
+
+        # Add system prompt
+        prompt.add(system_prompt)
+
+        # Add Memories
+        memories = self.memory.find_nearest(str(self.history[-5:]), num_results=10)
+        prompt.add_max(memories, max_tokens=2500)
+
+        # Add history
+        user_prompt_length = prompt.count_tokens([user_prompt])
+        prompt.add_max(reversed(self.history), max_tokens=500 - user_prompt_length)
+
+        # add user prompt
+        prompt.add(user_prompt)
+
+        logger.debug("PROMPT: ")
+        for message in prompt.messages:
+            logger.debug(message)
+
+        return prompt
+
+    def chat_with_ai(self, user_input):
+        prompt = self.build_prompt(user_input)
+
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=prompt.messages,
+            temperature=0.8,
+            max_tokens=1000,
+        )
+        return response["choices"][0]["message"]["content"]
+
+    def request_user_auth(self, message_id):
         """
-        Request user input to complete task.
+        Request user input to authorize command.
         """
         TaskLogMessage.objects.create(
             task_id=self.task_id,
-            role="system",
+            role="assistant",
             content={
-                "type": "FEEDBACK_REQUEST",
-                "message": "requesting user authorization and input",
+                "type": "AUTH_REQUEST",
+                "message_id": message_id,
             },
         )
         # TODO: notify pubsub
 
-    def execute(self, command: Command, **kwargs):
+    def msg_execute(self, message: TaskLogMessage):
+        name = message.content["command"]["name"]
+        kwargs = message.content["command"].get("args", {})
+        result = self.execute(name, **kwargs)
+        TaskLogMessage.objects.create(
+            task_id=self.task_id,
+            role="assistant",
+            content={
+                "type": "EXECUTED",
+                "message_id": message.id,
+            },
+        )
+        return result
+
+    def execute(self, name: str, **kwargs) -> Any:
         """
         execute the command
         """
-        return command.execute(**kwargs)
+        logger.info(f"executing task_id={self.task_id} command={name} kwargs={kwargs}")
+        result = self.command_registry.call(name, **kwargs)
+        self.history.append(ChatMessage(role="system", content=result))
+        return result

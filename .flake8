@@ -1,2 +1,4 @@
-exclude = "node_modules"
-ignore = "E501"
+[flake8]
+exclude = node_modules
+ignore = E501
+max-line-length = 99

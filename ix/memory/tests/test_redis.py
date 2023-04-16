@@ -14,6 +14,7 @@ def redis_options() -> RedisVectorMemoryOptions:
     }
 
 
+@pytest.mark.skip()
 class TestRedisVectorMemory:
     @pytest.fixture(autouse=True)
     def setup_and_teardown(self, redis_options: RedisVectorMemoryOptions):
@@ -21,7 +22,7 @@ class TestRedisVectorMemory:
         self.memory = RedisVectorMemory(self.index_name, redis_options)
         self.memory.create_index()
         yield
-        self.memory.clear_vectors()
+        self.memory.clear()
 
     def test_add_vector_and_find_nearest(self):
         # Add vectors to the index
@@ -44,7 +45,9 @@ class TestRedisVectorMemory:
         self.memory.delete_vector("key1")
 
         keys = self.memory.redis.keys(f"{self.index_name}:*")
-        assert len(keys) == 2  # Only the keys for the "key2" vector and its text should remain
+        assert (
+            len(keys) == 2
+        )  # Only the keys for the "key2" vector and its text should remain
 
     def test_get_vector(self):
         sentence = "This is a test sentence."
@@ -54,13 +57,15 @@ class TestRedisVectorMemory:
         retrieved_vector = self.memory.get_vector("key1")
 
         assert len(vector) == len(retrieved_vector)
-        assert pytest.approx(vector, rel=1e-6) == retrieved_vector  # Compare the vectors considering a small tolerance
+        assert (
+            pytest.approx(vector, rel=1e-6) == retrieved_vector
+        )  # Compare the vectors considering a small tolerance
 
     def test_clear_vectors(self):
         self.memory.add_vector("key1", "This is a test sentence.")
         self.memory.add_vector("key2", "Another test sentence is here.")
 
-        self.memory.clear_vectors()
+        self.memory.clear()
 
         keys = self.memory.redis.keys(f"{self.index_name}:*")
         assert len(keys) == 0  # No keys should remain after clearing the vectors

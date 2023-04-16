@@ -1,10 +1,13 @@
 import React from "react";
-import { Box, Center, Heading, VStack, Button } from "@chakra-ui/react";
+import { Box, Center, Heading, VStack } from "@chakra-ui/react";
+import { useColorMode } from "@chakra-ui/color-mode";
+
 import { useNavigate } from "react-router-dom";
 import TaskCreateForm from "tasks/TaskCreateForm";
 
 export const TaskCreateView = () => {
   const navigate = useNavigate();
+  const { colorMode } = useColorMode();
 
   const handleMutationSuccess = (task) => {
     navigate(`/tasks/chat/${task.id}`);
@@ -17,7 +20,7 @@ export const TaskCreateView = () => {
         borderWidth={1}
         borderRadius="lg"
         boxShadow="2xl"
-        backgroundColor="white"
+        backgroundColor={colorMode === "light" ? "white" : "gray.900"}
       >
         <VStack spacing={6} alignItems="center">
           <Heading as="h2" size="md" mb={4}>
