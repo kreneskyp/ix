@@ -206,7 +206,16 @@ class AgentProcess:
         logger.debug(f"Response from model, task_id={self.task_id} response={response}")
         data = self.handle_response(response)
 
-        # save to persistent storage
+        # if bot asks a question then log it and exit.
+        if "question" in data:
+            TaskLogMessage.objects.create(
+                task_id=self.task_id,
+                role="assistant",
+                content=dict(type="FEEDBACK_REQUEST", question=data["question"]),
+            )
+            return
+
+        # log command to persistent storage
         log_message = TaskLogMessage.objects.create(
             task_id=self.task_id,
             role="assistant",
