@@ -205,6 +205,9 @@ def fake_task_log_msg(**kwargs):
 
 
 def task_setup():
+    try:
+        task = Task.objects.get(id=1)
+    except Task.DoesNotExist:
+        task = fake_task()
     TaskLogMessage.objects.all().delete()
-    task = Task.objects.get(id=1)
     fake_all_message_types(task)
