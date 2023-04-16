@@ -30,10 +30,79 @@ class TestSetTaskAutonomousMutation:
 
         assert "errors" not in response
         assert response["data"]["setTaskAutonomous"]["task"]["id"] == str(task.id)
-        assert response["data"]["setTaskAutonomous"]["task"]["autonomous"] == task.autonomous
+        assert (
+            response["data"]["setTaskAutonomous"]["task"]["autonomous"]
+            == task.autonomous
+        )
         assert task.autonomous == False
 
         log_message = TaskLogMessage.objects.get(task=task)
-        assert log_message.role == 'user'
-        assert log_message.content['enabled'] == task.autonomous
+        assert log_message.role == "user"
+        assert log_message.content["enabled"] == task.autonomous
 
+
+CREATE_TASK_MUTATION = """
+    mutation CreateTask($input: CreateTaskInput!) {
+      createTask(input: $input) {
+        task {
+          id
+          name
+          autonomous
+          goals {
+            description
+            complete
+          }
+          agent {
+            id
+          }
+        }
+      }
+    }
+"""
+
+
+@pytest.mark.django_db
+class TestCreateTaskMutation:
+    def test_create_task_without_goals_and_agent_autonomous_flag(self):
+        fake_user()
+        client = Client(schema)
+
+        variables = {
+            "input": {
+                "name": "Test Task",
+                "autonomous": False,
+            }
+        }
+
+        response = client.execute(CREATE_TASK_MUTATION, variables=variables)
+
+        assert "errors" not in response
+        assert response["data"]["createTask"]["task"]["name"] == "Test Task"
+        assert response["data"]["createTask"]["task"]["goals"] == []
+        assert response["data"]["createTask"]["task"]["agent"]["id"]
+        task = Task.objects.get(pk=response["data"]["createTask"]["task"]["id"])
+        assert task.autonomous is False
+
+    def test_create_task_with_goals_and_agent_autonomous_flag(self):
+        fake_user()
+        agent = fake_agent()
+        client = Client(schema)
+
+        variables = {
+            "input": {
+                "name": "Test Task",
+                "autonomous": True,
+            }
+        }
+
+        response = client.execute(CREATE_TASK_MUTATION, variables=variables)
+
+        assert "errors" not in response
+        assert response["data"]["createTask"]["task"]["name"] == "Test Task"
+        assert response["data"]["createTask"]["task"]["goals"] == [
+            {"description": "Goal 1", "complete": False},
+            {"description": "Goal 2", "complete": False},
+        ]
+        assert response["data"]["createTask"]["task"]["agent"]["id"] == str(agent.id)
+        task = Task.objects.get(pk=response["data"]["createTask"]["task"]["id"])
+        assert task.autonomous is True

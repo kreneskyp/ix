@@ -16,14 +16,18 @@ def google_search_api(query: str) -> List[str]:
     cx_id = os.environ.get("GOOGLE_CX_ID")
     if not api_key or not cx_id:
         raise ValueError("GOOGLE_API_KEY or GOOGLE_CX_ID environment variable not set.")
-    logger.debug(f"Searching Google API: ", query)
+    logger.debug(f"Searching Google API: {query}")
     service = build("customsearch", "v1", developerKey=api_key)
 
     try:
-        res = service.cse().list(
-            q=query,
-            cx=cx_id,
-        ).execute()
+        res = (
+            service.cse()
+            .list(
+                q=query,
+                cx=cx_id,
+            )
+            .execute()
+        )
         if "items" in res:
             return [item["link"] for item in res["items"]]
     except HttpError as e:
@@ -39,7 +43,7 @@ def google_search_scrape(query: str) -> List[str]:
     return list(search(query, num=10))
 
 
-@command(name="google_search", description="Search Google.")
+@command(name="google_search", description="Search Google")
 def google_search(query: str) -> List[str]:
     """Searches Google using either the Custom Search API or search scraping."""
     if "GOOGLE_API_KEY" in os.environ:

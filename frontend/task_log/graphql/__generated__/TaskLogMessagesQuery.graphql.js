@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fa7d4faad11b96d4f5cc7a12f9e0f38b>>
+ * @generated SignedSource<<ebc78dbfda244f23cc4353cb9c829c98>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -34,20 +34,28 @@ v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "text",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "name",
   "storageKey": null
 },
-v4 = [
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "messageId",
+  "storageKey": null
+},
+v6 = [
   (v2/*: any*/),
-  {
-    "alias": null,
-    "args": null,
-    "kind": "ScalarField",
-    "name": "messageId",
-    "storageKey": null
-  }
+  (v5/*: any*/)
 ],
-v5 = [
+v7 = [
   {
     "alias": null,
     "args": [
@@ -104,13 +112,7 @@ v5 = [
                 "name": "thoughts",
                 "plural": false,
                 "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "text",
-                    "storageKey": null
-                  },
+                  (v3/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -150,7 +152,7 @@ v5 = [
                 "name": "command",
                 "plural": false,
                 "selections": [
-                  (v3/*: any*/),
+                  (v4/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -182,20 +184,37 @@ v5 = [
           },
           {
             "kind": "InlineFragment",
-            "selections": (v4/*: any*/),
+            "selections": (v6/*: any*/),
             "type": "AuthorizeContentType",
             "abstractKey": null
           },
           {
             "kind": "InlineFragment",
-            "selections": (v4/*: any*/),
+            "selections": (v6/*: any*/),
             "type": "AuthRequestContentType",
             "abstractKey": null
           },
           {
             "kind": "InlineFragment",
-            "selections": (v4/*: any*/),
+            "selections": (v6/*: any*/),
             "type": "ExecutedContentType",
+            "abstractKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v2/*: any*/),
+              (v5/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "errorType",
+                "storageKey": null
+              },
+              (v3/*: any*/)
+            ],
+            "type": "ExecuteErrorContentType",
             "abstractKey": null
           },
           {
@@ -215,7 +234,16 @@ v5 = [
           },
           {
             "kind": "InlineFragment",
-            "selections": (v4/*: any*/),
+            "selections": [
+              (v2/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "question",
+                "storageKey": null
+              }
+            ],
             "type": "FeedbackRequestContentType",
             "abstractKey": null
           },
@@ -246,7 +274,7 @@ v5 = [
         "plural": false,
         "selections": [
           (v1/*: any*/),
-          (v3/*: any*/)
+          (v4/*: any*/)
         ],
         "storageKey": null
       }
@@ -260,7 +288,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "TaskLogMessagesQuery",
-    "selections": (v5/*: any*/),
+    "selections": (v7/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -269,19 +297,19 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "TaskLogMessagesQuery",
-    "selections": (v5/*: any*/)
+    "selections": (v7/*: any*/)
   },
   "params": {
-    "cacheID": "1d58e05092011cf9e65e6f1299981e6c",
+    "cacheID": "cbe6ba8b63ccf87e925df9c9a6f93946",
     "id": null,
     "metadata": {},
     "name": "TaskLogMessagesQuery",
     "operationKind": "query",
-    "text": "query TaskLogMessagesQuery(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    role\n    createdAt\n    content {\n      __typename\n      ... on AssistantContentType {\n        type\n        thoughts {\n          text\n          reasoning\n          plan\n          criticism\n          speak\n        }\n        command {\n          name\n          args\n        }\n      }\n      ... on AutonomousModeContentType {\n        type\n        enabled\n      }\n      ... on AuthorizeContentType {\n        type\n        messageId\n      }\n      ... on AuthRequestContentType {\n        type\n        messageId\n      }\n      ... on ExecutedContentType {\n        type\n        messageId\n      }\n      ... on FeedbackContentType {\n        type\n        feedback\n      }\n      ... on FeedbackRequestContentType {\n        type\n        messageId\n      }\n      ... on SystemContentType {\n        type\n        message\n      }\n    }\n    agent {\n      id\n      name\n    }\n  }\n}\n"
+    "text": "query TaskLogMessagesQuery(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    role\n    createdAt\n    content {\n      __typename\n      ... on AssistantContentType {\n        type\n        thoughts {\n          text\n          reasoning\n          plan\n          criticism\n          speak\n        }\n        command {\n          name\n          args\n        }\n      }\n      ... on AutonomousModeContentType {\n        type\n        enabled\n      }\n      ... on AuthorizeContentType {\n        type\n        messageId\n      }\n      ... on AuthRequestContentType {\n        type\n        messageId\n      }\n      ... on ExecutedContentType {\n        type\n        messageId\n      }\n      ... on ExecuteErrorContentType {\n        type\n        messageId\n        errorType\n        text\n      }\n      ... on FeedbackContentType {\n        type\n        feedback\n      }\n      ... on FeedbackRequestContentType {\n        type\n        question\n      }\n      ... on SystemContentType {\n        type\n        message\n      }\n    }\n    agent {\n      id\n      name\n    }\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "5a7140f35caae57b407b4134256ca49a";
+node.hash = "79c67c2628b9b22f692c2c566d9d32a9";
 
 module.exports = node;

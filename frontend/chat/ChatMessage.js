@@ -11,11 +11,11 @@ import AuthorizeContent from "chat/AuthorizeContent";
 import AuthRequestContent from "chat/AuthRequestContent";
 import ExecuteContent from "chat/ExecuteContent";
 import { useColorMode } from "@chakra-ui/color-mode";
+import ExecuteErrorContent from "chat/ExecuteErrorContent";
 
 const ChatMessage = ({ message }) => {
   const { colorMode } = useColorMode();
   const { content } = message;
-
   let contentComponent = null;
   switch (content.type) {
     case "ASSISTANT":
@@ -32,6 +32,9 @@ const ChatMessage = ({ message }) => {
       break;
     case "EXECUTED":
       contentComponent = <ExecuteContent content={content} />;
+      break;
+    case "EXECUTE_ERROR":
+      contentComponent = <ExecuteErrorContent content={content} />;
       break;
     case "FEEDBACK":
       contentComponent = <FeedbackContent content={content} />;

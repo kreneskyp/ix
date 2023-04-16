@@ -54,6 +54,7 @@ class TaskLogMessage(models.Model):
         ("feedback_request", "feedback_request"),
         ("feedback", "feedback"),
         ("system", "system"),
+        ("error", "error"),
     ]
 
     # message metadata

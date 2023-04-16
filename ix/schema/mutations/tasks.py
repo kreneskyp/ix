@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 from ix.schema.types.tasks import TaskType
 from ix.schema.utils import handle_exceptions
-from ix.task_log.models import Agent, Task
+from ix.task_log.models import Agent, Task, TaskLogMessage
 from ix.task_log.tasks.agent_runner import (
     start_agent_loop,
 )
@@ -24,7 +24,9 @@ class GoalInput(graphene.InputObjectType):
 
 class CreateTaskInput(graphene.InputObjectType):
     name = graphene.String(required=True)
-    goals = graphene.List(GoalInput, required=True)
+    goals = graphene.List(GoalInput)
+    agent_id = graphene.ID()
+    autonomous = graphene.Boolean()
 
 
 class CreateTaskMutation(graphene.Mutation):
