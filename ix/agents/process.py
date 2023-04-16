@@ -222,10 +222,13 @@ class AgentProcess:
             content=dict(type="ASSISTANT", **data),
         )
 
-        # process command and then execute or seek feedback
-        command_name = data["command"]["name"]
-        command_kwargs = data["command"]["args"]
-        if not command_name:
+        # validate command and then execute or seek feedback
+        if (
+            not "command" in data
+            or not "name" in data["command"]
+            or not "args" in data["command"]
+            or not data["command"]
+        ):
             TaskLogMessage.objects.create(
                 task_id=self.task_id,
                 role="user",
@@ -234,9 +237,9 @@ class AgentProcess:
                     "message_id": log_message.id,
                     "error_type": "missing command",
                     "text": f"respond in the expected format",
-                }
+                },
             )
-        elif command_name not in self.command_registry.commands:
+        elif data["command"]["name"] not in self.command_registry.commands:
             TaskLogMessage.objects.create(
                 task_id=self.task_id,
                 role="user",
@@ -244,22 +247,23 @@ class AgentProcess:
                     "type": "EXECUTE_ERROR",
                     "message_id": log_message.id,
                     "error_type": "unknown command",
-                    "text": f"{command_name} is not available",
-                }
+                    "text": f'{data["command"]["name"]} is not available',
+                },
             )
         else:
-            command = self.command_registry.get(command_name)
+            command = self.command_registry.get(data["command"]["name"])
             logger.info(f"model returned task_id={self.task_id} command={command.name}")
             if execute:
                 try:
                     self.msg_execute(log_message)
                 except Exception as e:
-                    error_context = f"{command}: {command_kwargs}"
+                    error_context = (
+                        f'{data["command"]["name"]}: {data["command"]["args"]}'
+                    )
                     self.save_and_raise(log_message, error_context, user_input, e)
             else:
                 logger.info(f"requesting user authorization task_id={self.task_id}")
                 self.request_user_auth(log_message.id)
-
 
     def construct_base_prompt(self):
         goals_clause = "\n".join(
