@@ -13,9 +13,10 @@ def get_function_signature(func):
     signature = inspect.signature(func)
     parameters = []
     for param in signature.parameters.values():
-        parameters.append(f"{param.name}: {param.annotation.__name__ if hasattr(param.annotation, '__name__') else str(param.annotation)}")
-    return ', '.join(parameters)
-
+        parameters.append(
+            f"{param.name}: {param.annotation.__name__ if hasattr(param.annotation, '__name__') else str(param.annotation)}"
+        )
+    return ", ".join(parameters)
 
 
 class Command:

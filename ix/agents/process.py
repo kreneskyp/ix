@@ -19,9 +19,9 @@ class MissingCommandMarkers(Exception):
 
 # config defaults
 DEFAULT_COMMANDS = [
-    'ix.commands.google',
-    'ix.commands.filesystem',
-    'ix.commands.execute',
+    "ix.commands.google",
+    "ix.commands.filesystem",
+    "ix.commands.execute",
 ]
 DEFAULT_MEMORY = "ix.memory.redis.RedisVectorMemory"
 DEFAULT_MEMORY_OPTIONS = {"host": "redis"}
@@ -303,7 +303,8 @@ You are {agent.name}, {agent.purpose}
                 "message_id": log_msg.id,
                 "error_type": type(exception).__name__,
                 "text": str(exception),
-            })
+            },
+        )
         logger.error(f"@@@@ EXECUTE ERROR logged as id={failure_msg.id}")
 
     def handle_response(self, response: str) -> Dict[str, Any]:

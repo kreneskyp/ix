@@ -16,7 +16,9 @@ def execute_bash_command(command: str) -> str:
     # command = f"sudo -u {user} {command}"
 
     try:
-        output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, text=True, cwd=WORKDIR)
+        output = subprocess.check_output(
+            command, shell=True, stderr=subprocess.STDOUT, text=True, cwd=WORKDIR
+        )
         return output.strip()
     except subprocess.CalledProcessError as e:
         return f"Error: {e.output.strip()}"

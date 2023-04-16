@@ -20,10 +20,14 @@ def google_search_api(query: str) -> List[str]:
     service = build("customsearch", "v1", developerKey=api_key)
 
     try:
-        res = service.cse().list(
-            q=query,
-            cx=cx_id,
-        ).execute()
+        res = (
+            service.cse()
+            .list(
+                q=query,
+                cx=cx_id,
+            )
+            .execute()
+        )
         if "items" in res:
             return [item["link"] for item in res["items"]]
     except HttpError as e:
