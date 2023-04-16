@@ -54,6 +54,8 @@ class PromptBuilder:
         :param messages: The text to count tokens for.
         :return: The number of tokens in the text.
         """
+        print(">>>> ", messages)
+        print()
         return count_message_tokens(messages, self.model)
 
     def add(self, message: Dict[str, str]) -> int:

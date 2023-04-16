@@ -25,10 +25,8 @@ PERFORMANCE EVALUATION:
 4. Every command has a cost, so be smart and efficient. Aim to complete tasks in the least number of steps.
 """
 
-FORMAT_CLAUSE = """
-You should only respond in JSON format as described below
-
-RESPONSE FORMAT:
+COMMAND_FORMAT = """
+###START###
 {
     "thoughts":
     {
@@ -45,9 +43,40 @@ RESPONSE FORMAT:
         }
     }
 }
-
-Ensure the response can be parsed by Python json.loads
+###END###
 """
+
+FORMAT_CLAUSE = """
+COMMAND FORMAT:
+###START###
+{
+    "thoughts":
+    {
+        "text": "thought",
+        "reasoning": "reasoning",
+        "plan": ["short list of steps","that conveys","long-term plan"],
+        "criticism": "constructive self-criticism",
+        "speak": "thoughts summary to say to user"
+    },
+    "command": {
+        "name": "command name",
+        "args":{
+            "arg name": "value"
+        }
+    }
+}
+###END###
+
+INPUT_REQUEST FORMAT:
+###START###
+{
+    "question": "request for user input"
+}
+###END###
+
+IF YOU REQUIRE INPUT TO PROCEED FORMAT OUTPUT AS INPUT_REQUEST, OTHERWISE AS COMMAND FORMAT
+"""
+
 
 PROMPT_TEMPLATE = f"""
     You are {{name}}, {{role}}

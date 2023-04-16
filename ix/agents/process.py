@@ -1,17 +1,20 @@
 import logging
+import json
 import openai
 from functools import cached_property
 from typing import TypedDict, Optional, List, Any, Dict
 
-# AUTO GPT
-from auto_gpt.json_parser import fix_and_parse_json
-
 from ix.agents.prompt_builder import PromptBuilder
+from ix.agents.prompts import COMMAND_FORMAT
 from ix.memory.plugin import VectorMemory
 from ix.task_log.models import Task, TaskLogMessage
 from ix.commands.registry import CommandRegistry
 from ix.utils.importlib import import_class
 from ix.utils.types import ClassPath
+
+
+class MissingCommandMarkers(Exception):
+    """Exception thrown when command markers are missing from response"""
 
 
 # config defaults
@@ -42,7 +45,9 @@ class ChatMessage(TypedDict):
 
 
 class AgentProcess:
-    INITIAL_INPUT = "Determine which next command to use, and respond using the format specified above"
+    INITIAL_INPUT = (
+        "Determine which next command to use, and respond in the expected format"
+    )
     # NEXT_COMMAND = "GENERATE NEXT COMMAND JSON"
     NEXT_COMMAND = INITIAL_INPUT
     EXCLUDED_MSG_TYPES = {
@@ -155,7 +160,7 @@ class AgentProcess:
         """
         logger.info(f"starting process loop task_id={self.task_id}")
 
-        tick_input = None
+        tick_input = self.NEXT_COMMAND
         authorized_for = n
         try:
             last_message = TaskLogMessage.objects.filter(task_id=self.task_id).latest(
@@ -176,8 +181,11 @@ class AgentProcess:
                 pk=last_message.content["message_id"]
             )
             self.msg_execute(authorized_msg)
-        elif last_message.content["type"] == "FEEDBACK_REQUEST":
+        elif last_message.content["type"] in ["AUTH_REQUEST", "FEEDBACK_REQUEST"]:
             # if last message is an unfulfilled feedback request then exit
+            logger.info(
+                f"Exiting, missing response to type={last_message.content['type']}"
+            )
             return
 
         # pass to main loop
@@ -192,6 +200,8 @@ class AgentProcess:
         """
         "tick" the agent loop letting it chat and run commands
         """
+        logger.debug("============================================================================")
+        logger.info(f"ticking task_id={self.task_id}")
         logger.info(f"ticking task_id={self.task_id}")
         response = self.chat_with_ai(user_input)
         logger.debug(f"Response from model, task_id={self.task_id} response={response}")
@@ -206,16 +216,42 @@ class AgentProcess:
 
         # process command and then execute or seek feedback
         command_name = data["command"]["name"]
-        command = self.command_registry.get(command_name)
-        logger.info(f"model returned task_id={self.task_id} command={command.name}")
-        if command:
+        command_kwargs = data["command"]["args"]
+        if not command_name:
+            TaskLogMessage.objects.create(
+                task_id=self.task_id,
+                role="user",
+                content={
+                    "type": "EXECUTE_ERROR",
+                    "message_id": log_message.id,
+                    "error_type": "missing command",
+                    "text": f"respond in the expected format",
+                }
+            )
+        elif command_name not in self.command_registry.commands:
+            TaskLogMessage.objects.create(
+                task_id=self.task_id,
+                role="user",
+                content={
+                    "type": "EXECUTE_ERROR",
+                    "message_id": log_message.id,
+                    "error_type": "unknown command",
+                    "text": f"{command_name} is not available",
+                }
+            )
+        else:
+            command = self.command_registry.get(command_name)
+            logger.info(f"model returned task_id={self.task_id} command={command.name}")
             if execute:
-                self.msg_execute(log_message)
+                try:
+                    self.msg_execute(log_message)
+                except Exception as e:
+                    error_context = f"{command}: {command_kwargs}"
+                    self.save_and_raise(log_message, error_context, user_input, e)
             else:
                 logger.info(f"requesting user authorization task_id={self.task_id}")
                 self.request_user_auth(log_message.id)
-        else:
-            raise ValueError("Response did not include command")
+
 
     def construct_base_prompt(self):
         goals_clause = "\n".join(
@@ -238,27 +274,71 @@ You are {agent.name}, {agent.purpose}
 {FORMAT_CLAUSE}
 """
 
-    def handle_response(self, message: str) -> Dict[str, Any]:
-        data = fix_and_parse_json(message)
+    def save_and_raise(
+        self,
+        log_msg: TaskLogMessage,
+        context: str,
+        user_input: str,
+        exception: Exception,
+    ):
+        """Collection point for errors while ticking the loop"""
+        prompt = self.build_prompt(user_input)
+        failure_msg = TaskLogMessage.objects.create(
+            task_id=self.task_id,
+            role="system",
+            content={
+                "type": "EXECUTE_ERROR",
+                "message_id": log_msg.id,
+                "error_type": type(exception).__name__,
+                "text": str(exception),
+            })
+        logger.error(f"@@@@ EXECUTE ERROR logged as id={failure_msg.id}")
+
+    def handle_response(self, response: str) -> Dict[str, Any]:
+        # find the json
+        start_marker = "###START###"
+        end_marker = "###END###"
+        start_index = response.find(start_marker)
+        end_index = response.find(end_marker)
+
+        if start_index == -1 or end_index == -1:
+            raise MissingCommandMarkers
+
+        json_slice = response[start_index + len(start_marker) : end_index].strip()
+        print()
+        print(json_slice)
+        print()
+        data = json.loads(json_slice)
+
         logger.debug(f"parsed message={data}")
         return data
 
     def build_prompt(self, user_input: str) -> PromptBuilder:
+        assert user_input, f"user_input is required"
         prompt = PromptBuilder(3000)
 
         system_prompt = {"role": "system", "content": self.construct_base_prompt()}
-        user_prompt = {"role": "user", "content": user_input}
+        reinforcement_query = {
+            "role": "user",
+            "content": "respond with the expected format",
+        }
+        reinforcement_response = {"role": "assistant", "content": COMMAND_FORMAT}
 
         # Add system prompt
         prompt.add(system_prompt)
+        prompt.add(reinforcement_query)
+        prompt.add(reinforcement_response)
 
         # Add Memories
         memories = self.memory.find_nearest(str(self.history[-5:]), num_results=10)
         prompt.add_max(memories, max_tokens=2500)
 
-        # Add history
+        # User prompt
+        user_prompt = {"role": "user", "content": user_input}
         user_prompt_length = prompt.count_tokens([user_prompt])
-        prompt.add_max(reversed(self.history), max_tokens=500 - user_prompt_length)
+
+        # Add history
+        prompt.add_max(self.history, max_tokens=500 - user_prompt_length)
 
         # add user prompt
         prompt.add(user_prompt)
@@ -271,7 +351,7 @@ You are {agent.name}, {agent.purpose}
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=prompt.messages,
-            temperature=0.8,
+            temperature=0.2,
             max_tokens=1000,
         )
         return response["choices"][0]["message"]["content"]

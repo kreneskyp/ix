@@ -33,6 +33,9 @@ const ChatMessage = ({ message }) => {
     case "EXECUTED":
       contentComponent = <ExecuteContent content={content} />;
       break;
+    case "EXECUTE_ERROR":
+      contentComponent = <ExecuteErrorContent content={content} />;
+      break;
     case "FEEDBACK":
       contentComponent = <FeedbackContent content={content} />;
       break;

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # channels",
     "django_extensions",
     "ix.task_log",
+    "ix.agents",
 ]
 
 MIDDLEWARE = [

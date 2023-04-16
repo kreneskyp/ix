@@ -67,9 +67,17 @@ class SystemContentType(MessageContentType):
 
 
 class ExecutedContentType(MessageContentType):
-    """Sent when the agent requests user feedback on a command or output"""
+    """Sent when the agent executes a command"""
 
     message_id = graphene.ID(required=True)
+
+
+class ExecuteErrorType(MessageContentType):
+    """Sent when an error occurs while executing a command"""
+
+    message_id = graphene.ID(required=True)
+    error_type = graphene.String(required=True)
+    text = graphene.String(required=True)
 
 
 class FeedbackRequestContentType(MessageContentType):
@@ -105,6 +113,7 @@ class MessageContentType(graphene.Union):
             AuthorizeContentType,
             AuthRequestContentType,
             ExecutedContentType,
+            ExecuteErrorType,
             FeedbackRequestContentType,
             FeedbackContentType,
             SystemContentType,
@@ -119,6 +128,8 @@ class MessageContentType(graphene.Union):
             return AuthRequestContentType
         elif message_type == "EXECUTED":
             return FeedbackRequestContentType
+        elif message_type == "EXECUTE_ERROR":
+            return ExecuteErrorType
         elif message_type == "FEEDBACK_REQUEST":
             return FeedbackRequestContentType
         elif message_type == "FEEDBACK":
