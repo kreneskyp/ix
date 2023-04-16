@@ -21,8 +21,7 @@ class MissingCommandMarkers(Exception):
 DEFAULT_COMMANDS = [
     'ix.commands.google',
     'ix.commands.filesystem',
-    "auto_gpt.commands",
-    "auto_gpt.execute_code",
+    'ix.commands.execute',
 ]
 DEFAULT_MEMORY = "ix.memory.redis.RedisVectorMemory"
 DEFAULT_MEMORY_OPTIONS = {"host": "redis"}
