@@ -40,7 +40,7 @@ export const TaskLogMessagesQuery = graphql`
         }
         ... on ExecuteErrorContentType {
           type
-          messageId
+          relatedMessageId
           errorType
           text
         }
