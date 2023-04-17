@@ -8,7 +8,6 @@ from graphene.types.generic import GenericScalar
 logger = logging.getLogger(__name__)
 
 
-
 class AgentType(DjangoObjectType):
     class Meta:
         model = Agent
