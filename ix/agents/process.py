@@ -185,7 +185,7 @@ class AgentProcess:
             logger.info(
                 f"Exiting, missing response to type={last_message.content['type']}"
             )
-            return
+            return True
 
         # pass to main loop
         exit_value = self.loop(n=authorized_for, tick_input=tick_input)
