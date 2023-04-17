@@ -49,12 +49,7 @@ class CreateTaskMutation(graphene.Mutation):
         if input.agent_id:
             agent = Agent.objects.get(pk=input.agent_id)
         else:
-            # TODO: replace with real default agent
-            name = "iX test bot"
-            purpose = "to write python apps"
-            agent, _ = Agent.objects.get_or_create(
-                name=name, defaults=dict(purpose=purpose)
-            )
+            agent = Agent.objects.get(pk=1)
 
         for goal in input.goals:
             goal["complete"] = False
