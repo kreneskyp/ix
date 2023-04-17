@@ -281,9 +281,6 @@ class AgentProcess:
                 try:
                     return self.msg_execute(log_message)
                 except Exception as e:
-                    error_context = (
-                        f'{data["command"]["name"]}: {data["command"]["args"]}'
-                    )
                     self.log_exception(e, log_message)
             else:
                 logger.info(f"requesting user authorization task_id={self.task_id}")

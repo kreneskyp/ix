@@ -1,9 +1,7 @@
 import logging
 from typing import List, Dict, Iterable
 
-# TODO: need to rewrite this to support other models.
-from auto_gpt.token_counter import count_message_tokens
-
+from ix.utils.count_tokens import num_tokens_from_messages
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +57,7 @@ class PromptBuilder:
         :return: The number of tokens in the text.
         """
         try:
-            return count_message_tokens(messages, self.model)
+            return num_tokens_from_messages(messages, self.model)
         except:
             logger.error(f"Error counting tokens for messages={messages}")
             raise

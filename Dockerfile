@@ -61,15 +61,6 @@ ENV APP_MODE=asgi
 # Expose port 8000 for ASGI, or leave it unexposed for Celery
 EXPOSE 8000
 
-# Still relying on a few bits of AutoGPT,
-# install here since it isn't installable via pip
-ENV PYTHONPATH $PYTHONPATH:/usr/local/lib/Auto-GPT/
-WORKDIR /usr/local/lib
-RUN git clone https://github.com/kreneskyp/Auto-GPT.git && \
-    cd Auto-GPT && \
-    git checkout ix && \
-    pip install -r requirements.txt
-
 
 WORKDIR /var/app
 

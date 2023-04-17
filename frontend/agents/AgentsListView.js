@@ -1,6 +1,6 @@
 import React from "react";
 
-AgentsListView = () => {
+const AgentsListView = () => {
   const [agents, setAgents] = useState([]);
   const AgentsContext = createContext();
   const AgentsProvider = ({ children }) => {

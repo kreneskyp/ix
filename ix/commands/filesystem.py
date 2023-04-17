@@ -4,10 +4,8 @@ import os
 import glob
 from ix.commands import command
 
+WORKDIR = Path("/var/app/workdir")
 
-# XXX: still using auto-gpt's code execute function for now
-# WORKDIR = Path("/var/app/workdir")
-WORKDIR = Path("/var/app/auto_gpt_workspace")
 
 
 @command(name="write_to_file", description="Write to a file")
