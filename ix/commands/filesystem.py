@@ -7,10 +7,19 @@ from ix.commands import command
 WORKDIR = Path("/var/app/workdir")
 
 
+def create_file_path(file_path):
+    """
+    Creates the file path if it does not exist.
+    """
+    directory = os.path.dirname(file_path)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
 
 @command(name="write_to_file", description="Write to a file")
 def write_to_file(file_path: str, content: str) -> None:
     """Writes the given content to the specified file."""
+    create_file_path(file_path)
     with open(WORKDIR / file_path, "w") as f:
         f.write(content)
 
@@ -18,6 +27,7 @@ def write_to_file(file_path: str, content: str) -> None:
 @command(name="append_to_file", description="Append to a file")
 def append_to_file(file_path: str, content: str) -> None:
     """Appends the given content to the specified file."""
+    create_file_path(file_path)
     with open(WORKDIR / file_path, "a") as f:
         f.write(content)
 
