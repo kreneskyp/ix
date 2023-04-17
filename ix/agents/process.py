@@ -421,5 +421,6 @@ You are {agent.name}, {agent.purpose}
         """
         logger.info(f"executing task_id={self.task_id} command={name} kwargs={kwargs}")
         result = self.command_registry.call(name, **kwargs)
-        self.history.append(ChatMessage(role="system", content=result))
+        content = f"{name} executed, result={result}"
+        self.history.append(ChatMessage(role="system", content=content))
         return result
