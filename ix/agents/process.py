@@ -219,7 +219,13 @@ class AgentProcess:
         logger.info(f"ticking task_id={self.task_id}")
         response = self.chat_with_ai(user_input)
         logger.debug(f"Response from model, task_id={self.task_id} response={response}")
-        data = self.handle_response(response)
+
+        try:
+            data = self.handle_response(response)
+        except MissingCommandMarkers as e:
+            # log parse error and retry
+            self.log_exception(e)
+            return True
 
         # if bot asks a question then log it and exit.
         if "question" in data:
@@ -275,7 +281,7 @@ class AgentProcess:
                     error_context = (
                         f'{data["command"]["name"]}: {data["command"]["args"]}'
                     )
-                    self.save_and_raise(log_message, error_context, user_input, e)
+                    self.log_exception(e, log_message)
             else:
                 logger.info(f"requesting user authorization task_id={self.task_id}")
                 self.request_user_auth(log_message.id)
@@ -302,21 +308,18 @@ You are {agent.name}, {agent.purpose}
 {FORMAT_CLAUSE}
 """
 
-    def save_and_raise(
+    def log_exception(
         self,
-        log_msg: TaskLogMessage,
-        context: str,
-        user_input: str,
-        exception: Exception,
+            exception: Exception,
+            log_msg: TaskLogMessage = None
     ):
         """Collection point for errors while ticking the loop"""
-        prompt = self.build_prompt(user_input)
         failure_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,
             role="system",
             content={
                 "type": "EXECUTE_ERROR",
-                "message_id": log_msg.id,
+                "message_id": log_msg.id if log_msg else None,
                 "error_type": type(exception).__name__,
                 "text": str(exception),
             },
