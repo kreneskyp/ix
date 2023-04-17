@@ -153,12 +153,11 @@ class AgentProcess:
 
         logger.info(f"intialized command registry")
 
-    def start(self, n: int = 0) -> None:
+    def start(self, n: int = 0) -> bool:
         """
         start agent loop and process `n` authorized ticks.
         """
         logger.info(f"starting process loop task_id={self.task_id}")
-
         tick_input = self.NEXT_COMMAND
         authorized_for = n
         try:
@@ -188,16 +187,31 @@ class AgentProcess:
             return
 
         # pass to main loop
-        self.loop(n=authorized_for, tick_input=tick_input)
+        exit_value = self.loop(n=authorized_for, tick_input=tick_input)
+        logger.info(f"exiting process loop task_id={self.task_id} exit_value={exit_value}")
+        return exit_value
 
-    def loop(self, n=1, tick_input: str = None):
+    def loop(self, n=1, tick_input: str = NEXT_COMMAND) -> bool:
+        """
+        main loop for agent process
+        :param n: number of ticks user has authorized
+        :param tick_input: initial input for first tick
+        :return:
+        """
         for i in range(n + 1):
             execute = self.autonomous or i < n
-            self.tick(execute=execute)
+            if not self.tick(execute=execute):
+                logger.info("exiting loop, tick=False")
+                return False
+        return True
 
-    def tick(self, user_input: str = NEXT_COMMAND, execute: bool = False):
+    def tick(self, user_input: str = NEXT_COMMAND, execute: bool = False) -> bool:
         """
         "tick" the agent loop letting it chat and run commands
+
+        :param user_input: the next command to run or NEXT_COMMAND
+        :param execute: execute the command or just chat
+        :return: True to continue, False to exit
         """
         logger.debug("============================================================================")
         logger.info(f"ticking task_id={self.task_id}")
@@ -213,7 +227,7 @@ class AgentProcess:
                 role="assistant",
                 content=dict(type="FEEDBACK_REQUEST", question=data["question"]),
             )
-            return
+            return False
 
         # log command to persistent storage
         log_message = TaskLogMessage.objects.create(
@@ -255,7 +269,7 @@ class AgentProcess:
             logger.info(f"model returned task_id={self.task_id} command={command.name}")
             if execute:
                 try:
-                    self.msg_execute(log_message)
+                    return self.msg_execute(log_message)
                 except Exception as e:
                     error_context = (
                         f'{data["command"]["name"]}: {data["command"]["args"]}'
@@ -264,6 +278,7 @@ class AgentProcess:
             else:
                 logger.info(f"requesting user authorization task_id={self.task_id}")
                 self.request_user_auth(log_message.id)
+        return True
 
     def construct_base_prompt(self):
         goals_clause = "\n".join(
