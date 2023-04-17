@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import logging
 import os
 from pathlib import Path
 
@@ -172,3 +173,32 @@ CACHES = {
 
 
 SHELL_PLUS_PRE_IMPORTS = (("ix.task_log.models", "*"), ("ix.task_log.tests.fake", "*"))
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "formatter": "colorful"}
+    },
+    "formatters": {
+        "colorful": {
+            "()": "colorlog.ColoredFormatter",
+            "format": "%(asctime)s %(log_color)s%(levelname)s%(reset)s %(message)s ",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+            "log_colors": {
+                "DEBUG": "cyan",
+                "INFO": "white",
+                "WARNING": "yellow",
+                "ERROR": "red",
+                "CRITICAL": "red,bg_white",
+            },
+        }
+    },
+    "loggers": {
+        "ix": {
+            "handlers": ["console"],
+            "level": logging.DEBUG,
+        },
+    },
+}

@@ -28,8 +28,6 @@ DEFAULT_MEMORY_OPTIONS = {"host": "redis"}
 
 
 # logging
-FORMAT = "%(asctime)s %(levelname)s %(message)s"
-logging.basicConfig(format=FORMAT, level="DEBUG")
 logger = logging.getLogger(__name__)
 
 
