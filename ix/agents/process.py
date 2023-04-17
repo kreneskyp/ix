@@ -346,17 +346,20 @@ You are {agent.name}, {agent.purpose}
         assert user_input, f"user_input is required"
         prompt = PromptBuilder(3000)
 
-        system_prompt = {"role": "system", "content": self.construct_base_prompt()}
-        reinforcement_query = {
-            "role": "user",
-            "content": "respond with the expected format",
-        }
-        reinforcement_response = {"role": "assistant", "content": COMMAND_FORMAT}
-
         # Add system prompt
+        system_prompt = {"role": "system", "content": self.construct_base_prompt()}
         prompt.add(system_prompt)
-        prompt.add(reinforcement_query)
-        prompt.add(reinforcement_response)
+
+        # Reinforcement
+        reinforcement = [
+            {
+                "role": "user",
+                "content": "respond with the expected format",
+            },
+            {"role": "assistant", "content": COMMAND_FORMAT}
+        ]
+        for msg in reinforcement:
+            prompt.add(msg)
 
         # Add Memories
         memories = self.memory.find_nearest(str(self.history[-5:]), num_results=10)
