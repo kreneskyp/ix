@@ -17,6 +17,7 @@ def execute_python_file(filename: str):
         raise ExecuteException(f"Error: {e.output.strip()}")
 
 
+@registry_command(description="execute a bash command", name="execute_bash_command")
 def execute_bash_command(command: str) -> str:
     # XXX: turn on once dockerfile users are setup
     # command = f"sudo -u {user} {command}"
