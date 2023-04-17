@@ -174,7 +174,8 @@ class AgentProcess:
         elif last_message.content["type"] == "AUTHORIZE":
             logger.info(f"resuming with user input for task_id={self.task_id}")
             # auth/feedback resume, run command that was authorized
-            authorized_for = last_message.content["n"] - 1
+            # by default only a single command is authorized.
+            authorized_for = last_message.content.get("n", 1) - 1
             authorized_msg = TaskLogMessage.objects.get(
                 pk=last_message.content["message_id"]
             )
