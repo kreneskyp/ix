@@ -121,7 +121,7 @@ migrations: compose
 # load initial data needed for dev environment
 .PHONY: dev_fixtures
 dev_fixtures: compose
-	${DOCKER_COMPOSE_RUN} ./manage.py loaddata dev_data.json
+	${DOCKER_COMPOSE_RUN} ./manage.py loaddata fake_user.json default_agent.json
 
 
 # =========================================================
