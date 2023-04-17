@@ -293,7 +293,8 @@ class TestAgentProcessStart:
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
-        agent_process.start()
+        return_value = agent_process.start()
+        assert return_value is True
         assert TaskLogMessage.objects.filter(task=task).count() == 2
 
         msg_1 = TaskLogMessage.objects.filter(task=task)[0]
@@ -318,7 +319,8 @@ class TestAgentProcessStart:
 
         # start process
         # TODO: update testing for initial startup
-        agent_process.start(n=1)
+        return_value = agent_process.start(n=1)
+        assert return_value is True
 
         # first command is authorized
         assert TaskLogMessage.objects.filter(task=task).count() == 4
@@ -358,7 +360,8 @@ class TestAgentProcessStart:
 
         # start process
         # TODO: update testing for initial startup
-        agent_process.start(n=2)
+        return_value = agent_process.start(n=2)
+        assert return_value is True
 
         # first command is authorized
         assert TaskLogMessage.objects.filter(task=task).count() == 6
@@ -415,7 +418,8 @@ class TestAgentProcessStart:
         mock_openai.return_value = msg_to_response(mock_reply)
 
         # start process
-        agent_process.start()
+        return_value = agent_process.start()
+        assert return_value is True
         assert query.count() == 0
 
     def test_restart_task_with_auth_for_one(self, task, mock_openai, command_output):
@@ -432,7 +436,8 @@ class TestAgentProcessStart:
         mock_openai.return_value = msg_to_response(mock_reply)
 
         # start process
-        agent_process.start()
+        return_value = agent_process.start()
+        assert return_value is True
         assert query.count() == 3
         msg_1 = query.filter(task=task)[0]
         msg_2 = query.filter(task=task)[1]
@@ -470,7 +475,8 @@ class TestAgentProcessStart:
         mock_openai.return_value = msg_to_response(mock_reply)
 
         # start process
-        agent_process.start()
+        return_value = agent_process.start()
+        assert return_value is True
         assert query.count() == 2
         msg_1 = query.filter(task=task)[0]
         msg_2 = query.filter(task=task)[1]
@@ -504,10 +510,15 @@ class TestAgentProcessStart:
                     fake_autonomous_toggle(task=task, enabled=0)
                     self.agent.update_message_history()
 
+                # simulate return code, will be False when autonomous mode
+                # is disabled and agent returns with AUTH_REQUEST
+                return self.remaining >= 0
+
         fake_autonomous_toggle(task=task, enabled=1)
         agent_process = AgentProcess(task_id=task.id)
         agent_process.tick = Ticker(agent_process)
-        agent_process.start(n=3)
+        return_value = agent_process.start(n=3)
+        assert return_value is False
 
         # the last item will not be authorized because autonomous mode is disabled
         assert all(agent_process.tick.executes[:-1])
