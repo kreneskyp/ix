@@ -12,7 +12,9 @@ import {
   GridItem,
   Text,
   Grid,
-  VStack, Box, useColorModeValue,
+  VStack,
+  Box,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -34,7 +36,7 @@ const AssistantContent = ({ content }) => {
       }
     });
   };
-  
+
   const labelColor = useColorModeValue("black", "blue.300");
   const textColor = useColorModeValue("gray.600", "gray.400");
 
@@ -55,7 +57,7 @@ const AssistantContent = ({ content }) => {
             <b>Criticism:</b>
           </Text>
         </GridItem>
-        <GridItem >
+        <GridItem>
           <Text color={textColor}>{thoughts.criticism}</Text>
         </GridItem>
         <GridItem>

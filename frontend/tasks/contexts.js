@@ -47,6 +47,12 @@ export function TaskProvider({ children, taskId }) {
             description
             complete
           }
+          agent {
+            id
+            name
+            model
+            purpose
+          }
         }
       }
     `,

@@ -10,8 +10,19 @@ fake = Faker()
 def fake_agent(**kwargs):
     name = kwargs.get("name", fake.unique.name())
     purpose = kwargs.get("purpose", fake.text())
+    model = kwargs.get("model", "gpt-3-turbo")
+    system_prompt = kwargs.get("purpose", fake.text())
+    commands = kwargs.get("purpose", [])
+    json_config = kwargs.get("purpose", {})
 
-    agent = Agent.objects.create(name=name, purpose=purpose)
+    agent = Agent.objects.create(
+        name=name,
+        purpose=purpose,
+        model=model,
+        system_prompt=system_prompt,
+        commands=commands,
+        json_config=json_config,
+    )
     return agent
 
 
@@ -194,6 +205,9 @@ def fake_task_log_msg(**kwargs):
 
 
 def task_setup():
+    try:
+        task = Task.objects.get(id=1)
+    except Task.DoesNotExist:
+        task = fake_task()
     TaskLogMessage.objects.all().delete()
-    task = Task.objects.get(id=1)
     fake_all_message_types(task)
