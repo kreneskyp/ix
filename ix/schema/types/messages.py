@@ -75,7 +75,7 @@ class ExecutedContentType(MessageContentType):
 class ExecuteErrorContentType(MessageContentType):
     """Sent when an error occurs while executing a command"""
 
-    message_id = graphene.ID(required=True)
+    related_message_id = graphene.ID(required=False)
     error_type = graphene.String(required=True)
     text = graphene.String(required=True)
 

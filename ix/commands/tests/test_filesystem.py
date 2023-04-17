@@ -88,12 +88,12 @@ class TestFindFiles:
             with open(file_path, "w") as f:
                 f.write("test")
             file_paths.append(str(file_path))
-        results = find_files(str(dir_path), "*")
+        results = find_files(str(dir_path / "*"))
         assert len(results) == 3
         assert all(result in file_paths for result in results)
 
     def test_find_files_with_no_matches(self, tmp_path):
         dir_path = tmp_path / "test_dir"
         dir_path.mkdir()
-        results = find_files(str(dir_path), "*.txt")
+        results = find_files(str(dir_path / "*.txt"))
         assert len(results) == 0

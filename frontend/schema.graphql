@@ -216,7 +216,7 @@ type ExecutedContentType {
 """Sent when an error occurs while executing a command"""
 type ExecuteErrorContentType {
   type: String!
-  messageId: ID!
+  relatedMessageId: ID
   errorType: String!
   text: String!
 }

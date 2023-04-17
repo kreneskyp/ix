@@ -153,12 +153,11 @@ class AgentProcess:
 
         logger.info(f"intialized command registry")
 
-    def start(self, n: int = 0) -> None:
+    def start(self, n: int = 0) -> bool:
         """
         start agent loop and process `n` authorized ticks.
         """
         logger.info(f"starting process loop task_id={self.task_id}")
-
         tick_input = self.NEXT_COMMAND
         authorized_for = n
         try:
@@ -175,7 +174,8 @@ class AgentProcess:
         elif last_message.content["type"] == "AUTHORIZE":
             logger.info(f"resuming with user input for task_id={self.task_id}")
             # auth/feedback resume, run command that was authorized
-            authorized_for = last_message.content["n"] - 1
+            # by default only a single command is authorized.
+            authorized_for = last_message.content.get("n", 1) - 1
             authorized_msg = TaskLogMessage.objects.get(
                 pk=last_message.content["message_id"]
             )
@@ -188,23 +188,47 @@ class AgentProcess:
             return
 
         # pass to main loop
-        self.loop(n=authorized_for, tick_input=tick_input)
+        exit_value = self.loop(n=authorized_for, tick_input=tick_input)
+        logger.info(
+            f"exiting process loop task_id={self.task_id} exit_value={exit_value}"
+        )
+        return exit_value
 
-    def loop(self, n=1, tick_input: str = None):
+    def loop(self, n=1, tick_input: str = NEXT_COMMAND) -> bool:
+        """
+        main loop for agent process
+        :param n: number of ticks user has authorized
+        :param tick_input: initial input for first tick
+        :return:
+        """
         for i in range(n + 1):
             execute = self.autonomous or i < n
-            self.tick(execute=execute)
+            if not self.tick(execute=execute):
+                logger.info("exiting loop, tick=False")
+                return False
+        return True
 
-    def tick(self, user_input: str = NEXT_COMMAND, execute: bool = False):
+    def tick(self, user_input: str = NEXT_COMMAND, execute: bool = False) -> bool:
         """
         "tick" the agent loop letting it chat and run commands
+
+        :param user_input: the next command to run or NEXT_COMMAND
+        :param execute: execute the command or just chat
+        :return: True to continue, False to exit
         """
-        logger.debug("============================================================================")
-        logger.info(f"ticking task_id={self.task_id}")
+        logger.debug(
+            "============================================================================"
+        )
         logger.info(f"ticking task_id={self.task_id}")
         response = self.chat_with_ai(user_input)
         logger.debug(f"Response from model, task_id={self.task_id} response={response}")
-        data = self.handle_response(response)
+
+        try:
+            data = self.handle_response(response)
+        except MissingCommandMarkers as e:
+            # log parse error and retry
+            self.log_exception(e)
+            return True
 
         # if bot asks a question then log it and exit.
         if "question" in data:
@@ -213,7 +237,7 @@ class AgentProcess:
                 role="assistant",
                 content=dict(type="FEEDBACK_REQUEST", question=data["question"]),
             )
-            return
+            return False
 
         # log command to persistent storage
         log_message = TaskLogMessage.objects.create(
@@ -255,15 +279,16 @@ class AgentProcess:
             logger.info(f"model returned task_id={self.task_id} command={command.name}")
             if execute:
                 try:
-                    self.msg_execute(log_message)
+                    return self.msg_execute(log_message)
                 except Exception as e:
                     error_context = (
                         f'{data["command"]["name"]}: {data["command"]["args"]}'
                     )
-                    self.save_and_raise(log_message, error_context, user_input, e)
+                    self.log_exception(e, log_message)
             else:
                 logger.info(f"requesting user authorization task_id={self.task_id}")
                 self.request_user_auth(log_message.id)
+        return True
 
     def construct_base_prompt(self):
         goals_clause = "\n".join(
@@ -286,21 +311,14 @@ You are {agent.name}, {agent.purpose}
 {FORMAT_CLAUSE}
 """
 
-    def save_and_raise(
-        self,
-        log_msg: TaskLogMessage,
-        context: str,
-        user_input: str,
-        exception: Exception,
-    ):
+    def log_exception(self, exception: Exception, log_msg: TaskLogMessage = None):
         """Collection point for errors while ticking the loop"""
-        prompt = self.build_prompt(user_input)
         failure_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,
             role="system",
             content={
                 "type": "EXECUTE_ERROR",
-                "message_id": log_msg.id,
+                "message_id": log_msg.id if log_msg else None,
                 "error_type": type(exception).__name__,
                 "text": str(exception),
             },
@@ -327,17 +345,20 @@ You are {agent.name}, {agent.purpose}
         assert user_input, f"user_input is required"
         prompt = PromptBuilder(3000)
 
-        system_prompt = {"role": "system", "content": self.construct_base_prompt()}
-        reinforcement_query = {
-            "role": "user",
-            "content": "respond with the expected format",
-        }
-        reinforcement_response = {"role": "assistant", "content": COMMAND_FORMAT}
-
         # Add system prompt
+        system_prompt = {"role": "system", "content": self.construct_base_prompt()}
         prompt.add(system_prompt)
-        prompt.add(reinforcement_query)
-        prompt.add(reinforcement_response)
+
+        # Reinforcement
+        reinforcement = [
+            {
+                "role": "user",
+                "content": "respond with the expected format",
+            },
+            {"role": "assistant", "content": COMMAND_FORMAT},
+        ]
+        for msg in reinforcement:
+            prompt.add(msg)
 
         # Add Memories
         memories = self.memory.find_nearest(str(self.history[-5:]), num_results=10)
@@ -357,11 +378,11 @@ You are {agent.name}, {agent.purpose}
 
     def chat_with_ai(self, user_input):
         prompt = self.build_prompt(user_input)
-
+        agent = self.task.agent
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model=agent.model,
             messages=prompt.messages,
-            temperature=0.2,
+            temperature=agent.config["temperature"],
             max_tokens=1000,
         )
         return response["choices"][0]["message"]["content"]
@@ -400,5 +421,6 @@ You are {agent.name}, {agent.purpose}
         """
         logger.info(f"executing task_id={self.task_id} command={name} kwargs={kwargs}")
         result = self.command_registry.call(name, **kwargs)
-        self.history.append(ChatMessage(role="system", content=result))
+        content = f"{name} executed, result={result}"
+        self.history.append(ChatMessage(role="system", content=content))
         return result
