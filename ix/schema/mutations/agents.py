@@ -63,7 +63,7 @@ class ResourceInput(graphene.InputObjectType):
     id = graphene.ID()
     name = graphene.String()
     type = graphene.String()
-    json_config = graphene.JSONString()
+    config = graphene.JSONString()
 
 
 class CreateResourceMutation(graphene.Mutation):
@@ -74,7 +74,7 @@ class CreateResourceMutation(graphene.Mutation):
 
     def mutate(self, info, input):
         resource = Resource.objects.create(
-            name=input.name, type=input.type, json_config=input.json_config
+            name=input.name, type=input.type, config=input.config
         )
         return CreateResourceMutation(resource=resource)
 

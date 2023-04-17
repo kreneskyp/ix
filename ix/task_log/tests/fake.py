@@ -21,7 +21,7 @@ def fake_agent(**kwargs):
         model=model,
         system_prompt=system_prompt,
         commands=commands,
-        json_config=json_config,
+        config=config,
     )
     return agent
 
