@@ -518,7 +518,8 @@ def msg_to_response(msg: TaskLogMessage):
     """utility for turning model instances back into response json"""
     content = dict(msg.content.items())
     content.pop("type")
-    return {"choices": [{"message": {"content": json.dumps(content)}}]}
+    json_content = f"###START###{json.dumps(content)}###END###"
+    return {"choices": [{"message": {"content": json_content}}]}
 
 
 @pytest.mark.django_db
