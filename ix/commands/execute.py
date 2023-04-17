@@ -4,11 +4,17 @@ from ix.commands import command as registry_command
 from ix.commands.filesystem import WORKDIR
 
 
+class ExecuteException(Exception):
+    pass
+
+
 @registry_command(description="execute a python file", name="execute_python_file")
 def execute_python_file(filename: str):
     """Execute a python file"""
-    full_path = WORKDIR / filename
-    return subprocess.run(["python", full_path])
+    try:
+        return subprocess.check_output(["python", filename],  stderr=subprocess.STDOUT, text=True, cwd=WORKDIR)
+    except subprocess.CalledProcessError as e:
+        raise ExecuteException(f"Error: {e.output.strip()}")
 
 
 def execute_bash_command(command: str) -> str:
@@ -21,4 +27,4 @@ def execute_bash_command(command: str) -> str:
         )
         return output.strip()
     except subprocess.CalledProcessError as e:
-        return f"Error: {e.output.strip()}"
+        raise ExecuteException(f"Error: {e.output.strip()}")
