@@ -19,7 +19,7 @@ def create_file_path(file_path):
 @command(name="write_to_file", description="Write to a file")
 def write_to_file(file_path: str, content: str) -> None:
     """Writes the given content to the specified file."""
-    create_file_path(file_path)
+    create_file_path(WORKDIR / file_path)
     with open(WORKDIR / file_path, "w") as f:
         f.write(content)
 
@@ -27,7 +27,7 @@ def write_to_file(file_path: str, content: str) -> None:
 @command(name="append_to_file", description="Append to a file")
 def append_to_file(file_path: str, content: str) -> None:
     """Appends the given content to the specified file."""
-    create_file_path(file_path)
+    create_file_path(WORKDIR / file_path)
     with open(WORKDIR / file_path, "a") as f:
         f.write(content)
 
