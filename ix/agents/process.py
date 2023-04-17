@@ -379,11 +379,11 @@ You are {agent.name}, {agent.purpose}
 
     def chat_with_ai(self, user_input):
         prompt = self.build_prompt(user_input)
-
+        agent = self.task.agent
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model=agent.model,
             messages=prompt.messages,
-            temperature=0.2,
+            temperature=agent.config['temperature'],
             max_tokens=1000,
         )
         return response["choices"][0]["message"]["content"]
