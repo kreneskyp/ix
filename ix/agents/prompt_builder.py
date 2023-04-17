@@ -86,6 +86,7 @@ class PromptBuilder:
 
         self.messages.append(message)
         self.total_tokens += token_count
+        logger.debug(f"Added to prompt token_count={token_count} message={message}")
         return token_count
 
     def add_max(

@@ -109,14 +109,21 @@ class AgentProcess:
 
     def update_message_history(self):
         """
-        Update message history for the most recent messages. Will query only new messages
-        if agent already contains messages
+        Update message history with the most recent messages since the last update.
+        Initial startup will load all history into memory. Subsequent updates will
+        only load new messages.
         """
+        logger.debug(
+            f"AgentProcess updating message history, last_message_at={self.last_message_at}"
+        )
 
         # fetch unseen messages and save the last timestamp for the next iteration
         messages = list(self.query_message_history(self.last_message_at))
         if messages:
             self.last_message_at = messages[-1].created_at
+        logger.debug(
+            f"AgentProcess fetched n={len(messages)} messages from persistence"
+        )
 
         # toggle autonomous mode based on newest AUTONOMOUS message
         for message in messages:
@@ -318,7 +325,10 @@ You are {agent.name}, {agent.purpose}
                 "text": str(exception),
             },
         )
-        logger.error(f"@@@@ EXECUTE ERROR logged as id={failure_msg.id}")
+        logger.error(
+            f"@@@@ EXECUTE ERROR logged as id={failure_msg.id} message_id={message_id} error_type={failure_msg.id}"
+        )
+        logger.error(f"@@@@ EXECUTE ERROR {failure_msg.content['text']}")
 
     def handle_response(self, response: str) -> Dict[str, Any]:
         # find the json
@@ -357,6 +367,7 @@ You are {agent.name}, {agent.purpose}
 
         # Add Memories
         memories = self.memory.find_nearest(str(self.history[-5:]), num_results=10)
+        logger.debug(f"selected len={len(memories)} memories for prompt")
         prompt.add_max(memories, max_tokens=2500)
 
         # User prompt
@@ -364,6 +375,7 @@ You are {agent.name}, {agent.purpose}
         user_prompt_length = prompt.count_tokens([user_prompt])
 
         # Add history
+        logger.debug(f"history contains n={len(self.history)}")
         prompt.add_max(self.history, max_tokens=500 - user_prompt_length)
 
         # add user prompt
@@ -374,6 +386,7 @@ You are {agent.name}, {agent.purpose}
     def chat_with_ai(self, user_input):
         prompt = self.build_prompt(user_input)
         agent = self.task.agent
+        logger.info(f"Sending request to model {agent.model}")
         response = openai.ChatCompletion.create(
             model=agent.model,
             messages=prompt.messages,
