@@ -189,7 +189,9 @@ class AgentProcess:
 
         # pass to main loop
         exit_value = self.loop(n=authorized_for, tick_input=tick_input)
-        logger.info(f"exiting process loop task_id={self.task_id} exit_value={exit_value}")
+        logger.info(
+            f"exiting process loop task_id={self.task_id} exit_value={exit_value}"
+        )
         return exit_value
 
     def loop(self, n=1, tick_input: str = NEXT_COMMAND) -> bool:
@@ -214,8 +216,9 @@ class AgentProcess:
         :param execute: execute the command or just chat
         :return: True to continue, False to exit
         """
-        logger.debug("============================================================================")
-        logger.info(f"ticking task_id={self.task_id}")
+        logger.debug(
+            "============================================================================"
+        )
         logger.info(f"ticking task_id={self.task_id}")
         response = self.chat_with_ai(user_input)
         logger.debug(f"Response from model, task_id={self.task_id} response={response}")
@@ -308,11 +311,7 @@ You are {agent.name}, {agent.purpose}
 {FORMAT_CLAUSE}
 """
 
-    def log_exception(
-        self,
-            exception: Exception,
-            log_msg: TaskLogMessage = None
-    ):
+    def log_exception(self, exception: Exception, log_msg: TaskLogMessage = None):
         """Collection point for errors while ticking the loop"""
         failure_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,
@@ -356,7 +355,7 @@ You are {agent.name}, {agent.purpose}
                 "role": "user",
                 "content": "respond with the expected format",
             },
-            {"role": "assistant", "content": COMMAND_FORMAT}
+            {"role": "assistant", "content": COMMAND_FORMAT},
         ]
         for msg in reinforcement:
             prompt.add(msg)
@@ -383,7 +382,7 @@ You are {agent.name}, {agent.purpose}
         response = openai.ChatCompletion.create(
             model=agent.model,
             messages=prompt.messages,
-            temperature=agent.config['temperature'],
+            temperature=agent.config["temperature"],
             max_tokens=1000,
         )
         return response["choices"][0]["message"]["content"]
