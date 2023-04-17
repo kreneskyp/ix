@@ -24,6 +24,7 @@ def fake_agent(**kwargs):
     )
 
     agent = Agent.objects.create(
+        pk=kwargs.get("pk"),
         name=name,
         purpose=purpose,
         model=model,
