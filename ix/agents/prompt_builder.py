@@ -58,7 +58,7 @@ class PromptBuilder:
         """
         try:
             return num_tokens_from_messages(messages, self.model)
-        except:
+        except Exception:
             logger.error(f"Error counting tokens for messages={messages}")
             raise
 
