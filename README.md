@@ -42,6 +42,7 @@ coded, it's within the realm of possibility for an agent to assist.
 
 ![Dialog for entering task name and goals](docs/create_task.png)
 ![chat interface displaying log](docs/chat.png)
+![Agent options screen](docs/model_options.png)
 
 **Note that this is an early version and should NOT be used in production. Agents require a human in the loop to provide
 direction and halt the process if it goes off the rails.**
