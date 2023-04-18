@@ -1,9 +1,9 @@
 from __future__ import absolute_import
 import redis
 import numpy as np
-from typing import List, Optional, Dict, Any, Union, TypedDict
+from typing import List, Optional, TypedDict
 
-from ix.memory.plugin import VectorMemory, IndexKey, NearestResult, get_embeddings
+from ix.memory import VectorMemory, IndexKey, NearestResult, get_embeddings
 
 
 class RedisVectorMemoryOptions(TypedDict):

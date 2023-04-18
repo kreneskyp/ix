@@ -1,6 +1,6 @@
 import pytest
 
-from ix.memory.plugin import NearestResult
+from ix.memory import NearestResult
 from ix.memory.tests.mock_vector_memory import MockMemory
 
 
@@ -10,7 +10,7 @@ def mock_memory():
     return memory
 
 
-def test_add_vector(mock_memory):
+def test_add_vector(mock_memory, mock_embeddings):
     mock_memory.add_vector(key="key1", text="text1")
     mock_memory.add_vector(key="key2", text="text2")
     mock_memory.add_vector(key="key3", text="text3")
@@ -37,7 +37,7 @@ def test_add_vector(mock_memory):
     }
 
 
-def test_find_nearest(mock_memory):
+def test_find_nearest(mock_memory, mock_embeddings):
     mock_memory.add_vector(key="key1", text="text1")
     mock_memory.add_vector(key="key2", text="text2")
     mock_memory.add_vector(key="key3", text="text3")
@@ -50,14 +50,14 @@ def test_find_nearest(mock_memory):
     assert nearest == expected
 
 
-def test_delete_vector(mock_memory):
+def test_delete_vector(mock_memory, mock_embeddings):
     mock_memory.add_vector(key="key1", text="text1")
     mock_memory.delete_vector(key="key1")
     with pytest.raises(KeyError):
         mock_memory.get_vector("key1")
 
 
-def test_clear_vectors(mock_memory):
+def test_clear_vectors(mock_memory, mock_embeddings):
     mock_memory.add_vector(key="key1", text="text1")
     mock_memory.add_vector(key="key2", text="text2")
     mock_memory.clear()
