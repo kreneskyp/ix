@@ -125,10 +125,14 @@ class AgentProcess:
             f"AgentProcess fetched n={len(messages)} messages from persistence"
         )
 
-        # toggle autonomous mode based on newest AUTONOMOUS message
-        for message in messages:
+        # toggle autonomous mode based on latest AUTONOMOUS message
+        for message in reversed(messages):
             if message.content["type"] == "AUTONOMOUS":
-                self.autonomous = message.content["enabled"]
+                autonomous = message.content["enabled"]
+                if autonomous != self.autonomous:
+                    self.autonomous = autonomous
+                    logger.info(f"AgentProcess toggled autonomous mode to {autonomous}")
+                break
 
         formatted_messages = [
             message.as_message()

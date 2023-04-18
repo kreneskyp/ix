@@ -210,6 +210,7 @@ class TestAgentProcessHistory(MessageTeardown):
         agent_process.update_message_history()
         assert not agent_process.autonomous
 
+        # verify it uses latest with many back and forth
         fake_autonomous_toggle(enabled=1)
         fake_autonomous_toggle(enabled=0)
         fake_autonomous_toggle(enabled=1)
@@ -218,6 +219,19 @@ class TestAgentProcessHistory(MessageTeardown):
         agent_process.update_message_history()
         assert not agent_process.autonomous
 
+        # verify it uses latest
+        fake_autonomous_toggle(enabled=0)
+        fake_autonomous_toggle(enabled=1)
+        agent_process.update_message_history()
+        assert agent_process.autonomous
+
+        # verify it uses latest
+        fake_autonomous_toggle(enabled=1)
+        fake_autonomous_toggle(enabled=0)
+        agent_process.update_message_history()
+        assert not agent_process.autonomous
+
+        # verify it uses latest with many back and forth
         fake_autonomous_toggle(enabled=0)
         fake_autonomous_toggle(enabled=1)
         fake_autonomous_toggle(enabled=1)
@@ -873,6 +887,7 @@ class TestAgentProcessTicks:
             "error_type": "Exception",
             "message_id": msg_1.id,
         }
+
 
 @pytest.mark.django_db
 class TestAgentProcessAIChat:
