@@ -50,7 +50,6 @@ class AgentProcess:
     EXCLUDED_MSG_TYPES = {
         "FEEDBACK_REQUEST",
         "AUTH_REQUEST",
-        "EXECUTED",
         "AUTHORIZE",
         "AUTONOMOUS",
         "SYSTEM",
@@ -401,7 +400,7 @@ You are {agent.name}, {agent.purpose}
         return response["choices"][0]["message"]["content"]
 
     def add_history(self, *history_messages: Dict[str, Any]):
-        logger.debug(f"adding history history_messages={history_message}")
+        logger.debug(f"adding history history_messages={history_messages}")
         self.history.extend(history_messages)
 
     def request_user_auth(self, message_id):
@@ -439,6 +438,4 @@ You are {agent.name}, {agent.purpose}
         """
         logger.info(f"executing task_id={self.task_id} command={name} kwargs={kwargs}")
         result = self.command_registry.call(name, **kwargs)
-        content = f"{name} executed, result={result}"
-        self.history.append(ChatMessage(role="system", content=content))
         return result
