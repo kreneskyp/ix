@@ -16,7 +16,9 @@ class ExecuteException(Exception):
 def execute_python_file(filename: str):
     """Execute a python file"""
     try:
-        return subprocess.check_output(["python", filename],  stderr=subprocess.STDOUT, text=True, cwd=WORKDIR)
+        return subprocess.check_output(
+            ["python", filename], stderr=subprocess.STDOUT, text=True, cwd=WORKDIR
+        )
     except subprocess.CalledProcessError as e:
         raise ExecuteException(f"Error: {e.output.strip()}")
 

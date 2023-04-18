@@ -51,7 +51,7 @@ class MockTicker:
         self.return_value = return_value
 
     def __call__(
-            self, user_input: str = AgentProcess.NEXT_COMMAND, execute: bool = False
+        self, user_input: str = AgentProcess.NEXT_COMMAND, execute: bool = False
     ):
         self.executes.append(execute)
         self.remaining -= 1
@@ -677,8 +677,8 @@ class TestAgentProcessTicks:
         # Remove command markers from mock reply
         mock_response = msg_to_response(mock_reply)
         mock_content = mock_response["choices"][0]["message"]["content"]
-        mock_content = mock_content.replace('###START###', '')
-        mock_content = mock_content.replace('###END###', '')
+        mock_content = mock_content.replace("###START###", "")
+        mock_content = mock_content.replace("###END###", "")
         mock_response["choices"][0]["message"]["content"] = mock_content
         mock_openai.return_value = mock_response
         return_value = agent_process.tick(execute=True)
