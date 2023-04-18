@@ -623,6 +623,7 @@ class TestAgentProcessTicks:
         assert msg_2.role == "assistant"
         assert msg_2.content["type"] == "EXECUTED"
         assert msg_2.content["message_id"] == msg_1.id
+        assert msg_2.content["output"] == f"echo executed, result=this is a test"
         command_output.assert_called_once_with("ECHO: this is a test")
 
     def test_tick_user_input_without_auth(self, task, mock_openai):

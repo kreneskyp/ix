@@ -211,6 +211,7 @@ type AuthRequestContentType {
 type ExecutedContentType {
   type: String!
   messageId: ID!
+  output: String!
 }
 
 """Sent when an error occurs while executing a command"""

@@ -139,7 +139,7 @@ class AgentProcess:
             for message in messages
             if message.content["type"] not in self.EXCLUDED_MSG_TYPES
         ]
-        self.history.extend(formatted_messages)
+        self.add_history(*formatted_messages)
 
         logger.info(
             f"AgentProcess loaded n={len(messages)} chat messages from persistence"
@@ -400,6 +400,10 @@ You are {agent.name}, {agent.purpose}
         )
         return response["choices"][0]["message"]["content"]
 
+    def add_history(self, *history_messages: Dict[str, Any]):
+        logger.debug(f"adding history history_messages={history_message}")
+        self.history.extend(history_messages)
+
     def request_user_auth(self, message_id):
         """
         Request user input to authorize command.
@@ -424,6 +428,7 @@ You are {agent.name}, {agent.purpose}
             content={
                 "type": "EXECUTED",
                 "message_id": message.id,
+                "output": f"{name} executed, result={result}",
             },
         )
         return result

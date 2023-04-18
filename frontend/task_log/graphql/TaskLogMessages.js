@@ -37,6 +37,7 @@ export const TaskLogMessagesQuery = graphql`
         ... on ExecutedContentType {
           type
           messageId
+          output
         }
         ... on ExecuteErrorContentType {
           type

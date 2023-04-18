@@ -70,6 +70,7 @@ class ExecutedContentType(MessageContentType):
     """Sent when the agent executes a command"""
 
     message_id = graphene.ID(required=True)
+    output = graphene.String(required=True)
 
 
 class ExecuteErrorContentType(MessageContentType):
