@@ -39,6 +39,7 @@ def command_output(mocker):
     """mocks write_output to capture output from `echo` command"""
     yield mocker.patch("ix.agents.tests.echo_command.write_output")
 
+
 @pytest.fixture()
 def mock_embeddings(mocker) -> List[float]:
     yield mocker.patch("ix.memory.redis.get_embeddings", return_value=[0.1, 0.2, 0.3])
@@ -354,7 +355,9 @@ class TestAgentProcessStart:
         assert msg_2.content["type"] == "AUTH_REQUEST"
         assert msg_2.content["message_id"] == msg_1.id
 
-    def test_start_task_with_auth_for_one(self, task, mock_openai, command_output, mock_embeddings):
+    def test_start_task_with_auth_for_one(
+        self, task, mock_openai, command_output, mock_embeddings
+    ):
         """Run initial tick + 1 more"""
         mock_reply = fake_command_reply(task=task)
         mock_reply.delete()
@@ -395,7 +398,9 @@ class TestAgentProcessStart:
         assert msg_4.content["type"] == "AUTH_REQUEST"
         assert msg_4.content["message_id"] == msg_3.id
 
-    def test_start_task_with_auth_for_two(self, task, mock_openai, command_output, mock_embeddings):
+    def test_start_task_with_auth_for_two(
+        self, task, mock_openai, command_output, mock_embeddings
+    ):
         """Run initial tick + 2 more"""
         mock_reply = fake_command_reply(task=task)
         mock_reply.delete()
@@ -469,7 +474,9 @@ class TestAgentProcessStart:
         assert return_value is True
         assert query.count() == 0
 
-    def test_restart_task_with_auth_for_one(self, task, mock_openai, command_output, mock_embeddings):
+    def test_restart_task_with_auth_for_one(
+        self, task, mock_openai, command_output, mock_embeddings
+    ):
         mock_reply = fake_command_reply()
         mock_authorization = fake_authorize(message_id=mock_reply.id)
         query = TaskLogMessage.objects.filter(
@@ -507,7 +514,9 @@ class TestAgentProcessStart:
         assert msg_3.content["type"] == "AUTH_REQUEST"
         assert msg_3.content["message_id"] == msg_2.id
 
-    def test_restart_task_with_feedback_and_auth_for_none(self, task, mock_openai, mock_embeddings):
+    def test_restart_task_with_feedback_and_auth_for_none(
+        self, task, mock_openai, mock_embeddings
+    ):
         # TODO: test injection of feedback into loop, i.e. is it in context
         mock_reply = fake_command_reply()
         mock_feedback = fake_feedback(task=task, message_id=mock_reply.id)
@@ -602,7 +611,9 @@ class TestAgentProcessTicks:
         assert msg_2.content["type"] == "AUTH_REQUEST"
         assert msg_2.content["message_id"] == msg_1.id
 
-    def test_tick_next_command_with_auth(self, task, command_output, mock_openai, mock_embeddings):
+    def test_tick_next_command_with_auth(
+        self, task, command_output, mock_openai, mock_embeddings
+    ):
         """
         Test ticking for NEXT_COMMAND where the user has granted
         authentication to execute the command autonomously.
@@ -658,7 +669,9 @@ class TestAgentProcessTicks:
         assert msg_2.content["type"] == "AUTH_REQUEST"
         assert msg_2.content["message_id"] == msg_1.id
 
-    def test_tick_user_input_with_auth(self, task, mock_openai, command_output, mock_embeddings):
+    def test_tick_user_input_with_auth(
+        self, task, mock_openai, command_output, mock_embeddings
+    ):
         """
         Test ticking for NEXT_COMMAND where the user has granted
         authentication to execute the command autonomously.
@@ -686,7 +699,9 @@ class TestAgentProcessTicks:
 
         command_output.assert_called_once_with("ECHO: this is a test")
 
-    def test_tick_response_without_command_markers(self, task, mock_openai, mock_embeddings):
+    def test_tick_response_without_command_markers(
+        self, task, mock_openai, mock_embeddings
+    ):
         mock_reply = fake_command_reply()
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
@@ -770,7 +785,9 @@ class TestAgentProcessTicks:
             "message_id": msg_1.id,
         }
 
-    def test_tick_command_name_not_in_response(self, task, mock_openai, mock_embeddings):
+    def test_tick_command_name_not_in_response(
+        self, task, mock_openai, mock_embeddings
+    ):
         mock_reply = fake_command_reply()
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
@@ -801,7 +818,9 @@ class TestAgentProcessTicks:
             "message_id": msg_1.id,
         }
 
-    def test_tick_command_args_not_in_response(self, task, mock_openai, mock_embeddings):
+    def test_tick_command_args_not_in_response(
+        self, task, mock_openai, mock_embeddings
+    ):
         mock_reply = fake_command_reply()
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
