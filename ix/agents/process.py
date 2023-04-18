@@ -315,12 +315,13 @@ You are {agent.name}, {agent.purpose}
 
     def log_exception(self, exception: Exception, log_msg: TaskLogMessage = None):
         """Collection point for errors while ticking the loop"""
+        message_id = log_msg.id if log_msg else None
         failure_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,
             role="system",
             content={
                 "type": "EXECUTE_ERROR",
-                "message_id": log_msg.id if log_msg else None,
+                "message_id": message_id,
                 "error_type": type(exception).__name__,
                 "text": str(exception),
             },

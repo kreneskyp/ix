@@ -39,6 +39,33 @@ def command_output(mocker):
     yield mocker.patch("ix.agents.tests.echo_command.write_output")
 
 
+class MockTicker:
+    """Mock tick method used for testing autonomous mode without risking infinite loops"""
+    def __init__(self, agent_process, task, return_value=None):
+        # limit runs to less than loop n
+        self.remaining = 3
+        self.task = task
+        self.agent_process = agent_process
+        self.executes = []
+        self.return_value = return_value
+
+    def __call__(
+            self, user_input: str = AgentProcess.NEXT_COMMAND, execute: bool = False
+    ):
+        self.executes.append(execute)
+        self.remaining -= 1
+        # use toggle to stop autonomous mode
+        if not self.remaining:
+            fake_autonomous_toggle(task=self.task, enabled=0)
+            self.agent_process.update_message_history()
+
+        # simulate return code, will be False when autonomous mode
+        # is disabled and agent returns with AUTH_REQUEST
+        if self.return_value is not None:
+            return self.return_value
+        return self.remaining >= 0
+
+
 class MessageTeardown:
     def teardown_method(self):
         # always teardown to prevent leaks when django_db doesnt clear db
@@ -493,36 +520,29 @@ class TestAgentProcessStart:
         assert msg_2.content["message_id"] == msg_1.id
 
     def test_loop_autonomous(self, task, mock_openai):
-        class Ticker:
-            def __init__(self, agent):
-                # limit runs to less than loop n
-                self.remaining = 3
-                self.agent = agent
-                self.executes = []
-
-            def __call__(
-                self, user_input: str = AgentProcess.NEXT_COMMAND, execute: bool = False
-            ):
-                self.executes.append(execute)
-                self.remaining -= 1
-                # use toggle to stop autonomous mode
-                if not self.remaining:
-                    fake_autonomous_toggle(task=task, enabled=0)
-                    self.agent.update_message_history()
-
-                # simulate return code, will be False when autonomous mode
-                # is disabled and agent returns with AUTH_REQUEST
-                return self.remaining >= 0
-
         fake_autonomous_toggle(task=task, enabled=1)
         agent_process = AgentProcess(task_id=task.id)
-        agent_process.tick = Ticker(agent_process)
+        agent_process.tick = MockTicker(agent_process, task)
         return_value = agent_process.start(n=3)
         assert return_value is False
 
         # the last item will not be authorized because autonomous mode is disabled
         assert all(agent_process.tick.executes[:-1])
         assert not agent_process.tick.executes[-1]
+
+    def test_loop_exit_on_tick_false(self, task, mock_openai):
+        """
+        Test that the loop exits when tick returns False. This mechanism allows
+        tick to signal to the loop that it should exit even if the loop has not
+        yet reached the maximum number of ticks or is in autonomous mode.
+        """
+        fake_autonomous_toggle(task=task, enabled=1)
+        agent_process = AgentProcess(task_id=task.id)
+        agent_process.tick = MockTicker(agent_process, task, return_value=False)
+        return_value = agent_process.start(n=3)
+        assert return_value is False
+        # only the first tick should have executed
+        assert agent_process.tick.executes == [1]
 
 
 def msg_to_response(msg: TaskLogMessage):
@@ -645,6 +665,54 @@ class TestAgentProcessTicks:
 
         command_output.assert_called_once_with("ECHO: this is a test")
 
+    def test_tick_response_without_command_markers(self, task, mock_openai):
+        mock_reply = fake_command_reply()
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        # Remove command markers from mock reply
+        mock_response = msg_to_response(mock_reply)
+        mock_content = mock_response["choices"][0]["message"]["content"]
+        mock_content = mock_content.replace('###START###', '')
+        mock_content = mock_content.replace('###END###', '')
+        mock_response["choices"][0]["message"]["content"] = mock_content
+        mock_openai.return_value = mock_response
+        return_value = agent_process.tick(execute=True)
+
+        # return value is True because the loop should continue
+        assert return_value is True
+
+        assert query.count() == 1
+        msg_1 = query[0]
+        assert msg_1.role == "system"
+        assert msg_1.content["type"] == "EXECUTE_ERROR"
+        assert msg_1.content == {'text': '', 'type': 'EXECUTE_ERROR', 'error_type': 'MissingCommandMarkers', 'message_id': None}
+
+    def test_tick_response_with_question(self, task, mock_openai):
+        """Test that question response are parsed as expected"""
+        mock_reply = fake_feedback_request(task=task)
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        mock_openai.return_value = msg_to_response(mock_reply)
+        return_value = agent_process.tick(execute=True)
+
+        # return value is False because the loop should exit even
+        # if in autonomous mode. The user should be prompted to
+        # answer the question before continuing.
+        assert return_value is False
+
+        assert query.count() == 1
+        msg_1 = query[0]
+        assert msg_1.role == "assistant"
+        assert msg_1.content["type"] == "FEEDBACK_REQUEST"
+        assert msg_1.content["question"] == "this is a fake question"
 
 @pytest.mark.django_db
 class TestAgentProcessAIChat:
