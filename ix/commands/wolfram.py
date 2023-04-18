@@ -1,4 +1,4 @@
-from typing import Callable, Any, List, Tuple
+from typing import List, Tuple
 import os
 import wolframalpha
 

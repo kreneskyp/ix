@@ -15,3 +15,8 @@ def echo(output: str) -> str:
 @command(name="noop", description="Mock test command.")
 def noop() -> None:
     return None
+
+
+@command(name="fail", description="Mock test command that fails.")
+def fail() -> None:
+    raise Exception("This is a test failure")

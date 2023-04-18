@@ -19,7 +19,7 @@ RESOURCES:
 SELF_EVALUATION_CLAUSE = """
 PERFORMANCE EVALUATION:
 
-1. Continuously review and analyze your actions to ensure you are performing to the best of your abilities. 
+1. Continuously review and analyze your actions to ensure you are performing to the best of your abilities.
 2. Constructively self-criticize your big-picture behavior constantly.
 3. Reflect on past decisions and strategies to refine your approach.
 4. Every command has a cost, so be smart and efficient. Aim to complete tasks in the least number of steps.
@@ -80,14 +80,14 @@ IF YOU REQUIRE INPUT TO PROCEED FORMAT OUTPUT AS INPUT_REQUEST, OTHERWISE AS COM
 
 PROMPT_TEMPLATE = f"""
     You are {{name}}, {{role}}
-    
+
     {CONSTRAINTS_CLAUSE}
-    
+
     {{commands_clause}}
-    
+
     {RESOURCES_CLAUSE}
-    
+
     {SELF_EVALUATION_CLAUSE}
-    
-    {FORMAT_CLAUSE}    
+
+    {FORMAT_CLAUSE}
     """

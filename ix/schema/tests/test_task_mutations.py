@@ -34,7 +34,7 @@ class TestSetTaskAutonomousMutation:
             response["data"]["setTaskAutonomous"]["task"]["autonomous"]
             == task.autonomous
         )
-        assert task.autonomous == False
+        assert task.autonomous is False
 
         log_message = TaskLogMessage.objects.get(task=task)
         assert log_message.role == "user"
@@ -65,6 +65,7 @@ CREATE_TASK_MUTATION = """
 class TestCreateTaskMutation:
     def test_create_task_without_goals_and_agent_autonomous_flag(self):
         fake_user()
+        fake_agent(pk=1)
         client = Client(schema)
 
         variables = {
@@ -91,7 +92,12 @@ class TestCreateTaskMutation:
         variables = {
             "input": {
                 "name": "Test Task",
+                "agentId": agent.id,
                 "autonomous": True,
+                "goals": [
+                    {"description": "Goal 1"},
+                    {"description": "Goal 2"},
+                ],
             }
         }
 

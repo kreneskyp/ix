@@ -28,8 +28,8 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0301"):
         tokens_per_name = 1
     else:
         raise NotImplementedError(
-            f"""num_tokens_from_messages() is not implemented for model {model}. See 
-            https://github.com/openai/openai-python/blob/main/chatml.md for information 
+            f"""num_tokens_from_messages() is not implemented for model {model}. See
+            https://github.com/openai/openai-python/blob/main/chatml.md for information
             on how messages are converted to tokens."""
         )
     num_tokens = 0
@@ -61,17 +61,13 @@ def count_tokens(text, model="gpt-3.5-turbo-0301"):
         )
         return count_tokens(text, model="gpt-4-0314")
     elif model == "gpt-3.5-turbo-0301":
-        tokens_per_message = (
-            4  # every message follows <|start|>{role/name}\n{content}<|end|>\n
-        )
-        tokens_per_name = -1  # if there's a name, the role is omitted
+        pass
     elif model == "gpt-4-0314":
-        tokens_per_message = 3
-        tokens_per_name = 1
+        pass
     else:
         raise NotImplementedError(
-            f"""num_tokens_from_messages() is not implemented for model {model}. See 
-            https://github.com/openai/openai-python/blob/main/chatml.md for information 
+            f"""num_tokens_from_messages() is not implemented for model {model}. See
+            https://github.com/openai/openai-python/blob/main/chatml.md for information
             on how messages are converted to tokens."""
         )
     return len(encoding.encode(text))

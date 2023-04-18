@@ -64,7 +64,17 @@ class TaskLogMessage(models.Model):
     def as_message(self):
         content = self.content.copy()
         content.pop("type")
+        # Map SYSTEM messages to USER role
+        #
+        # SYSTEM messages that are included as history must be converted to the USER role. SYSTEM is a special meaning
+        # that configures the agent. Messages must either be ASSISTANT or USER for the model to interpret it as
+        # conversation.
+        if self.role == "system":
+            role = "user"
+        else:
+            role = self.role
+
         return {
-            "role": self.role.lower(),
+            "role": role.lower(),
             "content": json.dumps(content, sort_keys=True),
         }

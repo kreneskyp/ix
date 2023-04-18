@@ -51,13 +51,14 @@ class CreateTaskMutation(graphene.Mutation):
         else:
             agent = Agent.objects.get(pk=1)
 
-        for goal in input.goals:
-            goal["complete"] = False
+        if input.goals:
+            for goal in input.goals:
+                goal["complete"] = False
 
         # Save to persistence layer
         task = Task.objects.create(
             user=user,
-            goals=input.goals,
+            goals=input.goals or [],
             name=input.name,
             agent=agent,
             autonomous=input.autonomous if input.autonomous is not None else True,

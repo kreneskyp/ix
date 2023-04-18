@@ -1,8 +1,8 @@
 import pytest
-import os
 from ix.commands.google import google_search
 
 
+@pytest.mark.skipif("not ('GOOGLE_API_KEY' in os.environ)")
 class TestGoogleSearch:
     def test_google_search_scrape(self):
         query = "Python"

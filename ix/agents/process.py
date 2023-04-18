@@ -28,8 +28,6 @@ DEFAULT_MEMORY_OPTIONS = {"host": "redis"}
 
 
 # logging
-FORMAT = "%(asctime)s %(levelname)s %(message)s"
-logging.basicConfig(format=FORMAT, level="DEBUG")
 logger = logging.getLogger(__name__)
 
 
@@ -52,7 +50,6 @@ class AgentProcess:
     EXCLUDED_MSG_TYPES = {
         "FEEDBACK_REQUEST",
         "AUTH_REQUEST",
-        "EXECUTED",
         "AUTHORIZE",
         "AUTONOMOUS",
         "SYSTEM",
@@ -111,26 +108,37 @@ class AgentProcess:
 
     def update_message_history(self):
         """
-        Update message history for the most recent messages. Will query only new messages
-        if agent already contains messages
+        Update message history with the most recent messages since the last update.
+        Initial startup will load all history into memory. Subsequent updates will
+        only load new messages.
         """
+        logger.debug(
+            f"AgentProcess updating message history, last_message_at={self.last_message_at}"
+        )
 
         # fetch unseen messages and save the last timestamp for the next iteration
         messages = list(self.query_message_history(self.last_message_at))
         if messages:
             self.last_message_at = messages[-1].created_at
+        logger.debug(
+            f"AgentProcess fetched n={len(messages)} messages from persistence"
+        )
 
-        # toggle autonomous mode based on newest AUTONOMOUS message
-        for message in messages:
+        # toggle autonomous mode based on latest AUTONOMOUS message
+        for message in reversed(messages):
             if message.content["type"] == "AUTONOMOUS":
-                self.autonomous = message.content["enabled"]
+                autonomous = message.content["enabled"]
+                if autonomous != self.autonomous:
+                    self.autonomous = autonomous
+                    logger.info(f"AgentProcess toggled autonomous mode to {autonomous}")
+                break
 
         formatted_messages = [
             message.as_message()
             for message in messages
             if message.content["type"] not in self.EXCLUDED_MSG_TYPES
         ]
-        self.history.extend(formatted_messages)
+        self.add_history(*formatted_messages)
 
         logger.info(
             f"AgentProcess loaded n={len(messages)} chat messages from persistence"
@@ -151,7 +159,7 @@ class AgentProcess:
         for class_path in self.command_modules:
             self.command_registry.import_commands(class_path)
 
-        logger.info(f"intialized command registry")
+        logger.info("intialized command registry")
 
     def start(self, n: int = 0) -> bool:
         """
@@ -248,25 +256,25 @@ class AgentProcess:
 
         # validate command and then execute or seek feedback
         if (
-            not "command" in data
-            or not "name" in data["command"]
-            or not "args" in data["command"]
+            "command" not in data
+            or "name" not in data["command"]
+            or "args" not in data["command"]
             or not data["command"]
         ):
             TaskLogMessage.objects.create(
                 task_id=self.task_id,
-                role="user",
+                role="system",
                 content={
                     "type": "EXECUTE_ERROR",
                     "message_id": log_message.id,
                     "error_type": "missing command",
-                    "text": f"respond in the expected format",
+                    "text": "respond in the expected format",
                 },
             )
         elif data["command"]["name"] not in self.command_registry.commands:
             TaskLogMessage.objects.create(
                 task_id=self.task_id,
-                role="user",
+                role="system",
                 content={
                     "type": "EXECUTE_ERROR",
                     "message_id": log_message.id,
@@ -310,17 +318,21 @@ You are {agent.name}, {agent.purpose}
 
     def log_exception(self, exception: Exception, log_msg: TaskLogMessage = None):
         """Collection point for errors while ticking the loop"""
+        message_id = log_msg.id if log_msg else None
         failure_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,
             role="system",
             content={
                 "type": "EXECUTE_ERROR",
-                "message_id": log_msg.id if log_msg else None,
+                "message_id": message_id,
                 "error_type": type(exception).__name__,
                 "text": str(exception),
             },
         )
-        logger.error(f"@@@@ EXECUTE ERROR logged as id={failure_msg.id}")
+        logger.error(
+            f"@@@@ EXECUTE ERROR logged as id={failure_msg.id} message_id={message_id} error_type={failure_msg.id}"
+        )
+        logger.error(f"@@@@ EXECUTE ERROR {failure_msg.content['text']}")
 
     def handle_response(self, response: str) -> Dict[str, Any]:
         # find the json
@@ -339,7 +351,7 @@ You are {agent.name}, {agent.purpose}
         return data
 
     def build_prompt(self, user_input: str) -> PromptBuilder:
-        assert user_input, f"user_input is required"
+        assert user_input, "user_input is required"
         prompt = PromptBuilder(3000)
 
         # Add system prompt
@@ -359,6 +371,7 @@ You are {agent.name}, {agent.purpose}
 
         # Add Memories
         memories = self.memory.find_nearest(str(self.history[-5:]), num_results=10)
+        logger.debug(f"selected len={len(memories)} memories for prompt")
         prompt.add_max(memories, max_tokens=2500)
 
         # User prompt
@@ -366,6 +379,7 @@ You are {agent.name}, {agent.purpose}
         user_prompt_length = prompt.count_tokens([user_prompt])
 
         # Add history
+        logger.debug(f"history contains n={len(self.history)}")
         prompt.add_max(self.history, max_tokens=500 - user_prompt_length)
 
         # add user prompt
@@ -376,6 +390,7 @@ You are {agent.name}, {agent.purpose}
     def chat_with_ai(self, user_input):
         prompt = self.build_prompt(user_input)
         agent = self.task.agent
+        logger.info(f"Sending request to model {agent.model}")
         response = openai.ChatCompletion.create(
             model=agent.model,
             messages=prompt.messages,
@@ -383,6 +398,10 @@ You are {agent.name}, {agent.purpose}
             max_tokens=1000,
         )
         return response["choices"][0]["message"]["content"]
+
+    def add_history(self, *history_messages: Dict[str, Any]):
+        logger.debug(f"adding history history_messages={history_messages}")
+        self.history.extend(history_messages)
 
     def request_user_auth(self, message_id):
         """
@@ -408,6 +427,7 @@ You are {agent.name}, {agent.purpose}
             content={
                 "type": "EXECUTED",
                 "message_id": message.id,
+                "output": f"{name} executed, result={result}",
             },
         )
         return result
@@ -418,6 +438,4 @@ You are {agent.name}, {agent.purpose}
         """
         logger.info(f"executing task_id={self.task_id} command={name} kwargs={kwargs}")
         result = self.command_registry.call(name, **kwargs)
-        content = f"{name} executed, result={result}"
-        self.history.append(ChatMessage(role="system", content=content))
         return result

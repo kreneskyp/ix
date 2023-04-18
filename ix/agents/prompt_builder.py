@@ -58,7 +58,7 @@ class PromptBuilder:
         """
         try:
             return num_tokens_from_messages(messages, self.model)
-        except:
+        except Exception:
             logger.error(f"Error counting tokens for messages={messages}")
             raise
 
@@ -86,6 +86,7 @@ class PromptBuilder:
 
         self.messages.append(message)
         self.total_tokens += token_count
+        logger.debug(f"Added to prompt token_count={token_count} message={message}")
         return token_count
 
     def add_max(

@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional, Any
 from collections import OrderedDict
 
-from ix.memory.plugin import VectorMemory, IndexKey, NearestResult
+from ix.memory import VectorMemory, IndexKey, NearestResult
 
 
 class MockMemory(VectorMemory):

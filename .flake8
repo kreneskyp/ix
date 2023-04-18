@@ -1,4 +1,5 @@
 [flake8]
-exclude = node_modules
-ignore = E501
+exclude = node_modules tmp workdir .git .tox .bak
+# Ignore E203,W503,W504 for compatibility with black
+ignore = E501,E203,W503,W504
 max-line-length = 99

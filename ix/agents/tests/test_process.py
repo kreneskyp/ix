@@ -1,3 +1,4 @@
+from typing import List
 from unittest.mock import call
 
 import pytest
@@ -37,6 +38,39 @@ def mock_openai(mocker):
 def command_output(mocker):
     """mocks write_output to capture output from `echo` command"""
     yield mocker.patch("ix.agents.tests.echo_command.write_output")
+
+
+@pytest.fixture()
+def mock_embeddings(mocker) -> List[float]:
+    yield mocker.patch("ix.memory.redis.get_embeddings", return_value=[0.1, 0.2, 0.3])
+
+
+class MockTicker:
+    """Mock tick method used for testing autonomous mode without risking infinite loops"""
+
+    def __init__(self, agent_process, task, return_value=None):
+        # limit runs to less than loop n
+        self.remaining = 3
+        self.task = task
+        self.agent_process = agent_process
+        self.executes = []
+        self.return_value = return_value
+
+    def __call__(
+        self, user_input: str = AgentProcess.NEXT_COMMAND, execute: bool = False
+    ):
+        self.executes.append(execute)
+        self.remaining -= 1
+        # use toggle to stop autonomous mode
+        if not self.remaining:
+            fake_autonomous_toggle(task=self.task, enabled=0)
+            self.agent_process.update_message_history()
+
+        # simulate return code, will be False when autonomous mode
+        # is disabled and agent returns with AUTH_REQUEST
+        if self.return_value is not None:
+            return self.return_value
+        return self.remaining >= 0
 
 
 class MessageTeardown:
@@ -182,6 +216,7 @@ class TestAgentProcessHistory(MessageTeardown):
         agent_process.update_message_history()
         assert not agent_process.autonomous
 
+        # verify it uses latest with many back and forth
         fake_autonomous_toggle(enabled=1)
         fake_autonomous_toggle(enabled=0)
         fake_autonomous_toggle(enabled=1)
@@ -190,6 +225,19 @@ class TestAgentProcessHistory(MessageTeardown):
         agent_process.update_message_history()
         assert not agent_process.autonomous
 
+        # verify it uses latest
+        fake_autonomous_toggle(enabled=0)
+        fake_autonomous_toggle(enabled=1)
+        agent_process.update_message_history()
+        assert agent_process.autonomous
+
+        # verify it uses latest
+        fake_autonomous_toggle(enabled=1)
+        fake_autonomous_toggle(enabled=0)
+        agent_process.update_message_history()
+        assert not agent_process.autonomous
+
+        # verify it uses latest with many back and forth
         fake_autonomous_toggle(enabled=0)
         fake_autonomous_toggle(enabled=1)
         fake_autonomous_toggle(enabled=1)
@@ -260,7 +308,7 @@ class TestAgentProcessCommands:
         command_output.assert_called_once_with("ECHO: this is a test")
 
         # call command with kwargs
-        assert agent_process.execute("noop") == None
+        assert agent_process.execute("noop") is None
 
     def test_execute_command_not_found(self, task):
         agent_process = AgentProcess(task_id=task.id)
@@ -284,7 +332,7 @@ class TestAgentProcessCommands:
 
 @pytest.mark.django_db
 class TestAgentProcessStart:
-    def test_start_task(self, task, mock_openai):
+    def test_start_task(self, task, mock_openai, mock_embeddings):
         """Run task for the first time with no auth to run commands"""
         mock_reply = fake_command_reply(task=task)
         mock_reply.delete()
@@ -293,7 +341,8 @@ class TestAgentProcessStart:
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
-        agent_process.start()
+        return_value = agent_process.start()
+        assert return_value is True
         assert TaskLogMessage.objects.filter(task=task).count() == 2
 
         msg_1 = TaskLogMessage.objects.filter(task=task)[0]
@@ -306,7 +355,9 @@ class TestAgentProcessStart:
         assert msg_2.content["type"] == "AUTH_REQUEST"
         assert msg_2.content["message_id"] == msg_1.id
 
-    def test_start_task_with_auth_for_one(self, task, mock_openai, command_output):
+    def test_start_task_with_auth_for_one(
+        self, task, mock_openai, command_output, mock_embeddings
+    ):
         """Run initial tick + 1 more"""
         mock_reply = fake_command_reply(task=task)
         mock_reply.delete()
@@ -318,7 +369,8 @@ class TestAgentProcessStart:
 
         # start process
         # TODO: update testing for initial startup
-        agent_process.start(n=1)
+        return_value = agent_process.start(n=1)
+        assert return_value is True
 
         # first command is authorized
         assert TaskLogMessage.objects.filter(task=task).count() == 4
@@ -346,7 +398,9 @@ class TestAgentProcessStart:
         assert msg_4.content["type"] == "AUTH_REQUEST"
         assert msg_4.content["message_id"] == msg_3.id
 
-    def test_start_task_with_auth_for_two(self, task, mock_openai, command_output):
+    def test_start_task_with_auth_for_two(
+        self, task, mock_openai, command_output, mock_embeddings
+    ):
         """Run initial tick + 2 more"""
         mock_reply = fake_command_reply(task=task)
         mock_reply.delete()
@@ -358,7 +412,8 @@ class TestAgentProcessStart:
 
         # start process
         # TODO: update testing for initial startup
-        agent_process.start(n=2)
+        return_value = agent_process.start(n=2)
+        assert return_value is True
 
         # first command is authorized
         assert TaskLogMessage.objects.filter(task=task).count() == 6
@@ -415,10 +470,13 @@ class TestAgentProcessStart:
         mock_openai.return_value = msg_to_response(mock_reply)
 
         # start process
-        agent_process.start()
+        return_value = agent_process.start()
+        assert return_value is True
         assert query.count() == 0
 
-    def test_restart_task_with_auth_for_one(self, task, mock_openai, command_output):
+    def test_restart_task_with_auth_for_one(
+        self, task, mock_openai, command_output, mock_embeddings
+    ):
         mock_reply = fake_command_reply()
         mock_authorization = fake_authorize(message_id=mock_reply.id)
         query = TaskLogMessage.objects.filter(
@@ -432,7 +490,8 @@ class TestAgentProcessStart:
         mock_openai.return_value = msg_to_response(mock_reply)
 
         # start process
-        agent_process.start()
+        return_value = agent_process.start()
+        assert return_value is True
         assert query.count() == 3
         msg_1 = query.filter(task=task)[0]
         msg_2 = query.filter(task=task)[1]
@@ -455,7 +514,9 @@ class TestAgentProcessStart:
         assert msg_3.content["type"] == "AUTH_REQUEST"
         assert msg_3.content["message_id"] == msg_2.id
 
-    def test_restart_task_with_feedback_and_auth_for_none(self, task, mock_openai):
+    def test_restart_task_with_feedback_and_auth_for_none(
+        self, task, mock_openai, mock_embeddings
+    ):
         # TODO: test injection of feedback into loop, i.e. is it in context
         mock_reply = fake_command_reply()
         mock_feedback = fake_feedback(task=task, message_id=mock_reply.id)
@@ -470,7 +531,8 @@ class TestAgentProcessStart:
         mock_openai.return_value = msg_to_response(mock_reply)
 
         # start process
-        agent_process.start()
+        return_value = agent_process.start()
+        assert return_value is True
         assert query.count() == 2
         msg_1 = query.filter(task=task)[0]
         msg_2 = query.filter(task=task)[1]
@@ -487,43 +549,42 @@ class TestAgentProcessStart:
         assert msg_2.content["message_id"] == msg_1.id
 
     def test_loop_autonomous(self, task, mock_openai):
-        class Ticker:
-            def __init__(self, agent):
-                # limit runs to less than loop n
-                self.remaining = 3
-                self.agent = agent
-                self.executes = []
-
-            def __call__(
-                self, user_input: str = AgentProcess.NEXT_COMMAND, execute: bool = False
-            ):
-                self.executes.append(execute)
-                self.remaining -= 1
-                # use toggle to stop autonomous mode
-                if not self.remaining:
-                    fake_autonomous_toggle(task=task, enabled=0)
-                    self.agent.update_message_history()
-
         fake_autonomous_toggle(task=task, enabled=1)
         agent_process = AgentProcess(task_id=task.id)
-        agent_process.tick = Ticker(agent_process)
-        agent_process.start(n=3)
+        agent_process.tick = MockTicker(agent_process, task)
+        return_value = agent_process.start(n=3)
+        assert return_value is False
 
         # the last item will not be authorized because autonomous mode is disabled
         assert all(agent_process.tick.executes[:-1])
         assert not agent_process.tick.executes[-1]
+
+    def test_loop_exit_on_tick_false(self, task, mock_openai):
+        """
+        Test that the loop exits when tick returns False. This mechanism allows
+        tick to signal to the loop that it should exit even if the loop has not
+        yet reached the maximum number of ticks or is in autonomous mode.
+        """
+        fake_autonomous_toggle(task=task, enabled=1)
+        agent_process = AgentProcess(task_id=task.id)
+        agent_process.tick = MockTicker(agent_process, task, return_value=False)
+        return_value = agent_process.start(n=3)
+        assert return_value is False
+        # only the first tick should have executed
+        assert agent_process.tick.executes == [1]
 
 
 def msg_to_response(msg: TaskLogMessage):
     """utility for turning model instances back into response json"""
     content = dict(msg.content.items())
     content.pop("type")
-    return {"choices": [{"message": {"content": json.dumps(content)}}]}
+    json_content = f"###START###{json.dumps(content)}###END###"
+    return {"choices": [{"message": {"content": json_content}}]}
 
 
 @pytest.mark.django_db
 class TestAgentProcessTicks:
-    def test_tick_next_command_no_auth(self, task, mock_openai):
+    def test_tick_next_command_no_auth(self, task, mock_openai, mock_embeddings):
         """
         Test ticking for NEXT_COMMAND where the user has not granted
         authentication to execute the command autonomously.
@@ -550,7 +611,9 @@ class TestAgentProcessTicks:
         assert msg_2.content["type"] == "AUTH_REQUEST"
         assert msg_2.content["message_id"] == msg_1.id
 
-    def test_tick_next_command_with_auth(self, task, command_output, mock_openai):
+    def test_tick_next_command_with_auth(
+        self, task, command_output, mock_openai, mock_embeddings
+    ):
         """
         Test ticking for NEXT_COMMAND where the user has granted
         authentication to execute the command autonomously.
@@ -576,9 +639,10 @@ class TestAgentProcessTicks:
         assert msg_2.role == "assistant"
         assert msg_2.content["type"] == "EXECUTED"
         assert msg_2.content["message_id"] == msg_1.id
+        assert msg_2.content["output"] == "echo executed, result=this is a test"
         command_output.assert_called_once_with("ECHO: this is a test")
 
-    def test_tick_user_input_without_auth(self, task, mock_openai):
+    def test_tick_user_input_without_auth(self, task, mock_openai, mock_embeddings):
         """
         Test ticking for NEXT_COMMAND where the user has not granted
         authentication to execute the command autonomously.
@@ -605,7 +669,9 @@ class TestAgentProcessTicks:
         assert msg_2.content["type"] == "AUTH_REQUEST"
         assert msg_2.content["message_id"] == msg_1.id
 
-    def test_tick_user_input_with_auth(self, task, mock_openai, command_output):
+    def test_tick_user_input_with_auth(
+        self, task, mock_openai, command_output, mock_embeddings
+    ):
         """
         Test ticking for NEXT_COMMAND where the user has granted
         authentication to execute the command autonomously.
@@ -633,10 +699,224 @@ class TestAgentProcessTicks:
 
         command_output.assert_called_once_with("ECHO: this is a test")
 
+    def test_tick_response_without_command_markers(
+        self, task, mock_openai, mock_embeddings
+    ):
+        mock_reply = fake_command_reply()
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        # Remove command markers from mock reply
+        mock_response = msg_to_response(mock_reply)
+        mock_content = mock_response["choices"][0]["message"]["content"]
+        mock_content = mock_content.replace("###START###", "")
+        mock_content = mock_content.replace("###END###", "")
+        mock_response["choices"][0]["message"]["content"] = mock_content
+        mock_openai.return_value = mock_response
+        return_value = agent_process.tick(execute=True)
+
+        # return value is True because the loop should continue
+        assert return_value is True
+
+        assert query.count() == 1
+        msg_1 = query[0]
+        assert msg_1.role == "system"
+        assert msg_1.content["type"] == "EXECUTE_ERROR"
+        assert msg_1.content == {
+            "text": "",
+            "type": "EXECUTE_ERROR",
+            "error_type": "MissingCommandMarkers",
+            "message_id": None,
+        }
+
+    def test_tick_response_with_question(self, task, mock_openai, mock_embeddings):
+        """Test that question response are parsed as expected"""
+        mock_reply = fake_feedback_request(task=task)
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        mock_openai.return_value = msg_to_response(mock_reply)
+        return_value = agent_process.tick(execute=True)
+
+        # return value is False because the loop should exit even
+        # if in autonomous mode. The user should be prompted to
+        # answer the question before continuing.
+        assert return_value is False
+
+        assert query.count() == 1
+        msg_1 = query[0]
+        assert msg_1.role == "assistant"
+        assert msg_1.content["type"] == "FEEDBACK_REQUEST"
+        assert msg_1.content["question"] == "this is a fake question"
+
+    def test_tick_command_not_in_response(self, task, mock_openai, mock_embeddings):
+        mock_reply = fake_command_reply()
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        del mock_reply.content["command"]
+        mock_openai.return_value = msg_to_response(mock_reply)
+        return_value = agent_process.tick(execute=True)
+
+        # return value is True because the loop should continue
+        assert return_value is True
+
+        assert query.count() == 2
+        msg_1 = query[0]
+        msg_2 = query[1]
+        assert msg_1.role == "assistant"
+        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
+        assert msg_2.role == "system"
+        assert msg_2.content["type"] == "EXECUTE_ERROR"
+        assert msg_2.content == {
+            "text": "respond in the expected format",
+            "type": "EXECUTE_ERROR",
+            "error_type": "missing command",
+            "message_id": msg_1.id,
+        }
+
+    def test_tick_command_name_not_in_response(
+        self, task, mock_openai, mock_embeddings
+    ):
+        mock_reply = fake_command_reply()
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        mock_reply.content["command"] = {"args": []}
+        mock_openai.return_value = msg_to_response(mock_reply)
+        return_value = agent_process.tick(execute=True)
+
+        # return value is True because the loop should continue
+        assert return_value is True
+
+        assert query.count() == 2
+        msg_1 = query[0]
+        msg_2 = query[1]
+        assert msg_1.role == "assistant"
+        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
+        assert msg_1.content["command"] == mock_reply.content["command"]
+        assert msg_2.role == "system"
+        assert msg_2.content["type"] == "EXECUTE_ERROR"
+        assert msg_2.content == {
+            "text": "respond in the expected format",
+            "type": "EXECUTE_ERROR",
+            "error_type": "missing command",
+            "message_id": msg_1.id,
+        }
+
+    def test_tick_command_args_not_in_response(
+        self, task, mock_openai, mock_embeddings
+    ):
+        mock_reply = fake_command_reply()
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        mock_reply.content["command"] = {"name": "echo"}
+        mock_openai.return_value = msg_to_response(mock_reply)
+        return_value = agent_process.tick(execute=True)
+
+        # return value is True because the loop should continue
+        assert return_value is True
+
+        assert query.count() == 2
+        msg_1 = query[0]
+        msg_2 = query[1]
+        assert msg_1.role == "assistant"
+        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
+        assert msg_1.content["command"] == mock_reply.content["command"]
+        assert msg_2.role == "system"
+        assert msg_2.content["type"] == "EXECUTE_ERROR"
+        assert msg_2.content == {
+            "text": "respond in the expected format",
+            "type": "EXECUTE_ERROR",
+            "error_type": "missing command",
+            "message_id": msg_1.id,
+        }
+
+    def test_tick_unknown_command_in_response(self, task, mock_openai, mock_embeddings):
+        mock_reply = fake_command_reply()
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        mock_reply.content["command"] = {"name": "does_not_exist", "args": []}
+        mock_openai.return_value = msg_to_response(mock_reply)
+        return_value = agent_process.tick(execute=True)
+
+        # return value is True because the loop should continue
+        assert return_value is True
+
+        assert query.count() == 2
+        msg_1 = query[0]
+        msg_2 = query[1]
+        assert msg_1.role == "assistant"
+        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
+        assert msg_1.content["command"] == mock_reply.content["command"]
+        assert msg_2.role == "system"
+        assert msg_2.content["type"] == "EXECUTE_ERROR"
+        assert msg_2.content == {
+            "text": "does_not_exist is not available",
+            "type": "EXECUTE_ERROR",
+            "error_type": "unknown command",
+            "message_id": msg_1.id,
+        }
+
+    def test_tick_command_failure(self, task, mock_openai, mock_embeddings):
+        mock_reply = fake_command_reply()
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        mock_reply.content["command"] = {"name": "fail", "args": {}}
+        mock_openai.return_value = msg_to_response(mock_reply)
+        return_value = agent_process.tick(execute=True)
+
+        # return value is True because the loop should continue
+        assert return_value is True
+
+        assert query.count() == 2
+        msg_1 = query[0]
+        msg_2 = query[1]
+        assert msg_1.role == "assistant"
+        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
+        assert msg_1.content["command"] == mock_reply.content["command"]
+        assert msg_2.role == "system"
+        assert msg_2.content["type"] == "EXECUTE_ERROR"
+        assert msg_2.content == {
+            "text": "This is a test failure",
+            "type": "EXECUTE_ERROR",
+            "error_type": "Exception",
+            "message_id": msg_1.id,
+        }
+
 
 @pytest.mark.django_db
 class TestAgentProcessAIChat:
-    def test_chat_with_ai(self, task, mock_openai):
+    def test_chat_with_ai(self, task, mock_openai, mock_embeddings):
         agent_process = AgentProcess(task_id=task.id)
         message = "Test message"
         agent_process.chat_with_ai(message)

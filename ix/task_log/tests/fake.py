@@ -1,4 +1,4 @@
-from datetime import timezone, datetime
+from datetime import datetime
 
 from django.contrib.auth.models import User
 from ix.task_log.models import Agent, Task, TaskLogMessage
@@ -24,6 +24,7 @@ def fake_agent(**kwargs):
     )
 
     agent = Agent.objects.create(
+        pk=kwargs.get("pk"),
         name=name,
         purpose=purpose,
         model=model,
@@ -90,7 +91,11 @@ def fake_auth_request(task: Task = None, message_id: int = None, **kwargs):
 def fake_execute(task: Task = None, message_id: int = None, **kwargs):
     if not message_id:
         message_id = fake_feedback_request(task=task).id
-    content = {"type": "EXECUTED", "message_id": message_id}
+    content = {
+        "type": "EXECUTED",
+        "message_id": message_id,
+        "output": "fake output from mock command",
+    }
     return fake_task_log_msg(role="assistant", content=content, task=task, **kwargs)
 
 
@@ -183,7 +188,6 @@ def fake_task_log_msg(**kwargs):
     # Get or create fake instances for Task and Agent models
     task = kwargs.get("task", Task.objects.order_by("?").first())
     agent = kwargs.get("agent", task.agent)
-
     # Generate random role choice
     role = kwargs.get("role", fake.random_element(TaskLogMessage.ROLE_CHOICES)[0])
 

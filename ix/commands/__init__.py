@@ -1,1 +1,1 @@
-from ix.commands.registry import Command, CommandRegistry, command
+from ix.commands.registry import Command, CommandRegistry, command  # noqa: F401
