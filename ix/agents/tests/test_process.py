@@ -843,6 +843,36 @@ class TestAgentProcessTicks:
             "message_id": msg_1.id,
         }
 
+    def test_tick_command_failure(self, task, mock_openai):
+        mock_reply = fake_command_reply()
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        mock_reply.content["command"] = {"name": "fail", "args": {}}
+        mock_openai.return_value = msg_to_response(mock_reply)
+        return_value = agent_process.tick(execute=True)
+
+        # return value is True because the loop should continue
+        assert return_value is True
+
+        assert query.count() == 2
+        msg_1 = query[0]
+        msg_2 = query[1]
+        assert msg_1.role == "assistant"
+        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
+        assert msg_1.content["command"] == mock_reply.content["command"]
+        assert msg_2.role == "system"
+        assert msg_2.content["type"] == "EXECUTE_ERROR"
+        assert msg_2.content == {
+            "text": "This is a test failure",
+            "type": "EXECUTE_ERROR",
+            "error_type": "Exception",
+            "message_id": msg_1.id,
+        }
 
 @pytest.mark.django_db
 class TestAgentProcessAIChat:
