@@ -260,7 +260,7 @@ class AgentProcess:
         ):
             TaskLogMessage.objects.create(
                 task_id=self.task_id,
-                role="user",
+                role="system",
                 content={
                     "type": "EXECUTE_ERROR",
                     "message_id": log_message.id,
@@ -271,7 +271,7 @@ class AgentProcess:
         elif data["command"]["name"] not in self.command_registry.commands:
             TaskLogMessage.objects.create(
                 task_id=self.task_id,
-                role="user",
+                role="system",
                 content={
                     "type": "EXECUTE_ERROR",
                     "message_id": log_message.id,

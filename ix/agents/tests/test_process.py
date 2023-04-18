@@ -41,6 +41,7 @@ def command_output(mocker):
 
 class MockTicker:
     """Mock tick method used for testing autonomous mode without risking infinite loops"""
+
     def __init__(self, agent_process, task, return_value=None):
         # limit runs to less than loop n
         self.remaining = 3
@@ -689,7 +690,12 @@ class TestAgentProcessTicks:
         msg_1 = query[0]
         assert msg_1.role == "system"
         assert msg_1.content["type"] == "EXECUTE_ERROR"
-        assert msg_1.content == {'text': '', 'type': 'EXECUTE_ERROR', 'error_type': 'MissingCommandMarkers', 'message_id': None}
+        assert msg_1.content == {
+            "text": "",
+            "type": "EXECUTE_ERROR",
+            "error_type": "MissingCommandMarkers",
+            "message_id": None,
+        }
 
     def test_tick_response_with_question(self, task, mock_openai):
         """Test that question response are parsed as expected"""
@@ -713,6 +719,130 @@ class TestAgentProcessTicks:
         assert msg_1.role == "assistant"
         assert msg_1.content["type"] == "FEEDBACK_REQUEST"
         assert msg_1.content["question"] == "this is a fake question"
+
+    def test_tick_command_not_in_response(self, task, mock_openai):
+        mock_reply = fake_command_reply()
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        del mock_reply.content["command"]
+        mock_openai.return_value = msg_to_response(mock_reply)
+        return_value = agent_process.tick(execute=True)
+
+        # return value is True because the loop should continue
+        assert return_value is True
+
+        assert query.count() == 2
+        msg_1 = query[0]
+        msg_2 = query[1]
+        assert msg_1.role == "assistant"
+        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
+        assert msg_2.role == "system"
+        assert msg_2.content["type"] == "EXECUTE_ERROR"
+        assert msg_2.content == {
+            "text": "respond in the expected format",
+            "type": "EXECUTE_ERROR",
+            "error_type": "missing command",
+            "message_id": msg_1.id,
+        }
+
+    def test_tick_command_name_not_in_response(self, task, mock_openai):
+        mock_reply = fake_command_reply()
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        mock_reply.content["command"] = {"args": []}
+        mock_openai.return_value = msg_to_response(mock_reply)
+        return_value = agent_process.tick(execute=True)
+
+        # return value is True because the loop should continue
+        assert return_value is True
+
+        assert query.count() == 2
+        msg_1 = query[0]
+        msg_2 = query[1]
+        assert msg_1.role == "assistant"
+        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
+        assert msg_1.content["command"] == mock_reply.content["command"]
+        assert msg_2.role == "system"
+        assert msg_2.content["type"] == "EXECUTE_ERROR"
+        assert msg_2.content == {
+            "text": "respond in the expected format",
+            "type": "EXECUTE_ERROR",
+            "error_type": "missing command",
+            "message_id": msg_1.id,
+        }
+
+    def test_tick_command_args_not_in_response(self, task, mock_openai):
+        mock_reply = fake_command_reply()
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        mock_reply.content["command"] = {"name": "echo"}
+        mock_openai.return_value = msg_to_response(mock_reply)
+        return_value = agent_process.tick(execute=True)
+
+        # return value is True because the loop should continue
+        assert return_value is True
+
+        assert query.count() == 2
+        msg_1 = query[0]
+        msg_2 = query[1]
+        assert msg_1.role == "assistant"
+        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
+        assert msg_1.content["command"] == mock_reply.content["command"]
+        assert msg_2.role == "system"
+        assert msg_2.content["type"] == "EXECUTE_ERROR"
+        assert msg_2.content == {
+            "text": "respond in the expected format",
+            "type": "EXECUTE_ERROR",
+            "error_type": "missing command",
+            "message_id": msg_1.id,
+        }
+
+    def test_tick_unknown_command_in_response(self, task, mock_openai):
+        mock_reply = fake_command_reply()
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        mock_reply.content["command"] = {"name": "does_not_exist", "args": []}
+        mock_openai.return_value = msg_to_response(mock_reply)
+        return_value = agent_process.tick(execute=True)
+
+        # return value is True because the loop should continue
+        assert return_value is True
+
+        assert query.count() == 2
+        msg_1 = query[0]
+        msg_2 = query[1]
+        assert msg_1.role == "assistant"
+        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
+        assert msg_1.content["command"] == mock_reply.content["command"]
+        assert msg_2.role == "system"
+        assert msg_2.content["type"] == "EXECUTE_ERROR"
+        assert msg_2.content == {
+            "text": "does_not_exist is not available",
+            "type": "EXECUTE_ERROR",
+            "error_type": "unknown command",
+            "message_id": msg_1.id,
+        }
+
 
 @pytest.mark.django_db
 class TestAgentProcessAIChat:

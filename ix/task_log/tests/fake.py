@@ -184,7 +184,6 @@ def fake_task_log_msg(**kwargs):
     # Get or create fake instances for Task and Agent models
     task = kwargs.get("task", Task.objects.order_by("?").first())
     agent = kwargs.get("agent", task.agent)
-
     # Generate random role choice
     role = kwargs.get("role", fake.random_element(TaskLogMessage.ROLE_CHOICES)[0])
 
