@@ -3,7 +3,7 @@ import graphene
 
 from ix.schema.types.messages import TaskLogMessageType
 from ix.schema.utils import handle_exceptions
-from ix.task_log.models import TaskLogMessage, UserFeedback, Task
+from ix.task_log.models import TaskLogMessage, UserFeedback
 from ix.task_log.tasks.agent_runner import (
     start_agent_loop,
 )

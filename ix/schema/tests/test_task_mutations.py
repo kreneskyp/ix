@@ -34,7 +34,7 @@ class TestSetTaskAutonomousMutation:
             response["data"]["setTaskAutonomous"]["task"]["autonomous"]
             == task.autonomous
         )
-        assert task.autonomous == False
+        assert task.autonomous is False
 
         log_message = TaskLogMessage.objects.get(task=task)
         assert log_message.role == "user"

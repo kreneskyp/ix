@@ -6,11 +6,10 @@ from ix.schema.mutations.chat import TaskFeedbackMutation, AuthorizeCommandMutat
 from ix.schema.mutations.tasks import CreateTaskMutation, SetTaskAutonomousMutation
 from ix.schema.mutations.agents import Mutation as AgentMutation
 from ix.schema.types.agents import Query as AgentQuery
-from ix.schema.types.agents import AgentType
 from ix.schema.types.auth import UserType
 from ix.schema.types.messages import TaskLogMessageType
 from ix.schema.types.tasks import TaskType
-from ix.task_log.models import Agent, Task, TaskLogMessage
+from ix.task_log.models import Task, TaskLogMessage
 
 logger = logging.getLogger(__name__)
 

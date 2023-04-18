@@ -30,4 +30,5 @@ class CheckTaskStatusConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         if text_data == "start_task":
-            my_celery_task.delay()
+            pass
+            # my_celery_task.delay()

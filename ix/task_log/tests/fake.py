@@ -1,4 +1,4 @@
-from datetime import timezone, datetime
+from datetime import datetime
 
 from django.contrib.auth.models import User
 from ix.task_log.models import Agent, Task, TaskLogMessage

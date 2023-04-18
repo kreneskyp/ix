@@ -308,7 +308,7 @@ class TestAgentProcessCommands:
         command_output.assert_called_once_with("ECHO: this is a test")
 
         # call command with kwargs
-        assert agent_process.execute("noop") == None
+        assert agent_process.execute("noop") is None
 
     def test_execute_command_not_found(self, task):
         agent_process = AgentProcess(task_id=task.id)
@@ -639,7 +639,7 @@ class TestAgentProcessTicks:
         assert msg_2.role == "assistant"
         assert msg_2.content["type"] == "EXECUTED"
         assert msg_2.content["message_id"] == msg_1.id
-        assert msg_2.content["output"] == f"echo executed, result=this is a test"
+        assert msg_2.content["output"] == "echo executed, result=this is a test"
         command_output.assert_called_once_with("ECHO: this is a test")
 
     def test_tick_user_input_without_auth(self, task, mock_openai, mock_embeddings):

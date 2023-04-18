@@ -1,5 +1,4 @@
 import pytest
-import os
 from ix.commands.google import google_search
 
 

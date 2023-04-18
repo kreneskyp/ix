@@ -159,7 +159,7 @@ class AgentProcess:
         for class_path in self.command_modules:
             self.command_registry.import_commands(class_path)
 
-        logger.info(f"intialized command registry")
+        logger.info("intialized command registry")
 
     def start(self, n: int = 0) -> bool:
         """
@@ -256,9 +256,9 @@ class AgentProcess:
 
         # validate command and then execute or seek feedback
         if (
-            not "command" in data
-            or not "name" in data["command"]
-            or not "args" in data["command"]
+            "command" not in data
+            or "name" not in data["command"]
+            or "args" not in data["command"]
             or not data["command"]
         ):
             TaskLogMessage.objects.create(
@@ -268,7 +268,7 @@ class AgentProcess:
                     "type": "EXECUTE_ERROR",
                     "message_id": log_message.id,
                     "error_type": "missing command",
-                    "text": f"respond in the expected format",
+                    "text": "respond in the expected format",
                 },
             )
         elif data["command"]["name"] not in self.command_registry.commands:
@@ -351,7 +351,7 @@ You are {agent.name}, {agent.purpose}
         return data
 
     def build_prompt(self, user_input: str) -> PromptBuilder:
-        assert user_input, f"user_input is required"
+        assert user_input, "user_input is required"
         prompt = PromptBuilder(3000)
 
         # Add system prompt

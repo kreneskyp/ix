@@ -1,7 +1,6 @@
 from celery import shared_task
 
 from ix.agents.process import AgentProcess
-from ix.task_log.models import TaskLogMessage
 
 
 @shared_task
