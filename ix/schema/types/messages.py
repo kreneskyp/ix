@@ -57,7 +57,7 @@ class FeedbackContentType(MessageContentType):
 class AuthorizeContentType(MessageContentType):
     """User granting permission for agent to run a command"""
 
-    message_id = graphene.ID(required=True)
+    message_id = graphene.UUID(required=True)
 
 
 class SystemContentType(MessageContentType):
@@ -69,14 +69,14 @@ class SystemContentType(MessageContentType):
 class ExecutedContentType(MessageContentType):
     """Sent when the agent executes a command"""
 
-    message_id = graphene.ID(required=True)
+    message_id = graphene.UUID(required=True)
     output = graphene.String(required=True)
 
 
 class ExecuteErrorContentType(MessageContentType):
     """Sent when an error occurs while executing a command"""
 
-    related_message_id = graphene.ID(required=False)
+    related_message_id = graphene.UUID(required=False)
     error_type = graphene.String(required=True)
     text = graphene.String(required=True)
 
@@ -90,7 +90,7 @@ class FeedbackRequestContentType(MessageContentType):
 class AuthRequestContentType(MessageContentType):
     """Sent when the agent requires permission to run a command"""
 
-    message_id = graphene.ID(required=True)
+    message_id = graphene.UUID(required=True)
 
 
 class AutonomousModeContentType(MessageContentType):

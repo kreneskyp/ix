@@ -1,7 +1,7 @@
 import { graphql } from "relay-runtime";
 
 export const TaskLogMessagesQuery = graphql`
-  query TaskLogMessagesQuery($taskId: ID!) {
+  query TaskLogMessagesQuery($taskId: UUID!) {
     taskLogMessages(taskId: $taskId) {
       id
       role

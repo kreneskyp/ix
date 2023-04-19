@@ -23,7 +23,7 @@ class ResourceType(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    agent = graphene.Field(AgentType, id=graphene.ID(required=True))
+    agent = graphene.Field(AgentType, id=graphene.UUID(required=True))
     agents = graphene.List(AgentType)
 
     def resolve_agent(self, info, id):

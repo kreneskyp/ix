@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f0a0ddee86e78a73105464f5b542fa70>>
+ * @generated SignedSource<<770bef9d4af489d5d625640995aeb65d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -102,16 +102,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "9a20aef007dd169371a53a549e58c518",
+    "cacheID": "41f70cb665da59ddb39f84852afedac9",
     "id": null,
     "metadata": {},
     "name": "AgentProvider_AgentByIdQuery",
     "operationKind": "query",
-    "text": "query AgentProvider_AgentByIdQuery(\n  $id: ID!\n) {\n  agent(id: $id) {\n    id\n    name\n    model\n    purpose\n    systemPrompt\n    commands\n    config\n  }\n}\n"
+    "text": "query AgentProvider_AgentByIdQuery(\n  $id: UUID!\n) {\n  agent(id: $id) {\n    id\n    name\n    model\n    purpose\n    systemPrompt\n    commands\n    config\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "d990d4afe50f97ee18749b8502302544";
+node.hash = "6190b743cc9017125c9d5472aef389e7";
 
 module.exports = node;

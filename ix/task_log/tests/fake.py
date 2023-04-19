@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 
 from django.contrib.auth.models import User
@@ -81,38 +82,38 @@ def fake_feedback_request(task: Task = None, question: str = None, **kwargs):
     return fake_task_log_msg(role="assistant", content=content, task=task, **kwargs)
 
 
-def fake_auth_request(task: Task = None, message_id: int = None, **kwargs):
+def fake_auth_request(task: Task = None, message_id: uuid.UUID = None, **kwargs):
     if not message_id:
         message_id = fake_command_reply(task=task).id
-    content = {"type": "AUTH_REQUEST", "message_id": message_id}
+    content = {"type": "AUTH_REQUEST", "message_id": str(message_id)}
     return fake_task_log_msg(role="assistant", content=content, task=task, **kwargs)
 
 
-def fake_execute(task: Task = None, message_id: int = None, **kwargs):
+def fake_execute(task: Task = None, message_id: uuid.UUID = None, **kwargs):
     if not message_id:
         message_id = fake_feedback_request(task=task).id
     content = {
         "type": "EXECUTED",
-        "message_id": message_id,
+        "message_id": str(message_id),
         "output": "fake output from mock command",
     }
     return fake_task_log_msg(role="assistant", content=content, task=task, **kwargs)
 
 
 def fake_feedback(
-    task: Task = None, message_id: int = None, feedback: str = None, **kwargs
+    task: Task = None, message_id: uuid.UUID = None, feedback: str = None, **kwargs
 ):
     if not message_id:
         feedback_request = fake_feedback_request(task=task, question="test question")
         message_id = feedback_request.id
-    content = {"type": "FEEDBACK", "message_id": message_id, "feedback": feedback}
+    content = {"type": "FEEDBACK", "message_id": str(message_id), "feedback": feedback}
     return fake_task_log_msg(role="user", content=content, task=task, **kwargs)
 
 
-def fake_authorize(task: Task = None, message_id: int = None, **kwargs):
+def fake_authorize(task: Task = None, message_id: uuid.UUID = None, **kwargs):
     if not message_id:
         message_id = fake_feedback_request(task=task).id
-    content = {"type": "AUTHORIZE", "message_id": message_id, "n": 1}
+    content = {"type": "AUTHORIZE", "message_id": str(message_id), "n": 1}
     return fake_task_log_msg(role="user", content=content, **kwargs)
 
 
@@ -126,10 +127,10 @@ def fake_system(message, **kwargs):
     return fake_task_log_msg(role="system", content=content, **kwargs)
 
 
-def fake_execute_error(message, **kwargs):
+def fake_execute_error(message_id, **kwargs):
     content = {
         "type": "EXECUTE_ERROR",
-        "message_id": message,
+        "message_id": message_id,
         "error_type": "test error",
         "text": "test error text",
     }
@@ -164,7 +165,7 @@ def fake_all_message_types(task):
     """
     # system
     fake_system(task=task, message="fake system message")
-    fake_execute_error(task=task, message="fake execute error message")
+    fake_execute_error(task=task, message_id="fake execute error message")
 
     # autonomous mode toggles
     fake_autonomous_toggle(task=task, enabled=True)

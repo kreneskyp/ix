@@ -22,10 +22,10 @@ class Query(AgentQuery, graphene.ObjectType):
     users = graphene.List(UserType)
     tasks = graphene.List(TaskType)
     task_log_messages = graphene.List(
-        TaskLogMessageType, task_id=graphene.ID(required=True)
+        TaskLogMessageType, task_id=graphene.UUID(required=True)
     )
     user = graphene.Field(UserType, id=graphene.ID(required=True))
-    task = graphene.Field(TaskType, id=graphene.ID(required=True))
+    task = graphene.Field(TaskType, id=graphene.UUID(required=True))
 
     def resolve_user(self, info, id):
         return User.objects.get(pk=id)

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8b242b94d6c03eb8427a2d7184656da9>>
+ * @generated SignedSource<<40bb2121c6639e29464585fca1919f0e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -60,16 +60,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "ca52a0a1b30e3cfc2c80bd14d9103fe2",
+    "cacheID": "9cdb733184ad9c1b74660350e3b2d027",
     "id": null,
     "metadata": {},
     "name": "ResourceMutations_DeleteResourceMutation",
     "operationKind": "mutation",
-    "text": "mutation ResourceMutations_DeleteResourceMutation(\n  $id: ID!\n) {\n  deleteResource(id: $id) {\n    success\n  }\n}\n"
+    "text": "mutation ResourceMutations_DeleteResourceMutation(\n  $id: UUID!\n) {\n  deleteResource(id: $id) {\n    success\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "2b469767a177af44e4e522024553c3a1";
+node.hash = "5a50110f3a400a3a24ddc8f7a9deb4f0";
 
 module.exports = node;

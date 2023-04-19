@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<27ad7c29eb5956acbeb89d3ffe9d9bd6>>
+ * @generated SignedSource<<7ccf4f2e5fe697a136969eedf7b5a53c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -92,16 +92,16 @@ return {
     "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "ba6e2ad920f1128a9a1f4ba76925a524",
+    "cacheID": "e1ec673f443f3f4380b449e536a705a6",
     "id": null,
     "metadata": {},
     "name": "useSetTaskAutonomousMutation",
     "operationKind": "mutation",
-    "text": "mutation useSetTaskAutonomousMutation(\n  $taskId: ID!\n  $autonomous: Boolean!\n) {\n  setTaskAutonomous(taskId: $taskId, autonomous: $autonomous) {\n    task {\n      id\n      autonomous\n    }\n  }\n}\n"
+    "text": "mutation useSetTaskAutonomousMutation(\n  $taskId: UUID!\n  $autonomous: Boolean!\n) {\n  setTaskAutonomous(taskId: $taskId, autonomous: $autonomous) {\n    task {\n      id\n      autonomous\n    }\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "7b443399475ccea6331a06032fd6f331";
+node.hash = "1ac941d39ed5626d962ab3a75884a0fb";
 
 module.exports = node;

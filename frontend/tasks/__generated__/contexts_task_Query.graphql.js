@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<365fedde0274fc942a4fc4ffeffff1cb>>
+ * @generated SignedSource<<528dcfff046c010459ef86dc720004ad>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -140,16 +140,16 @@ return {
     "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "5af22491bdf76d03c1f537404fb689af",
+    "cacheID": "b15a2ae29e7d0494182ae5683d85f2b7",
     "id": null,
     "metadata": {},
     "name": "contexts_task_Query",
     "operationKind": "query",
-    "text": "query contexts_task_Query(\n  $id: ID!\n) {\n  task(id: $id) {\n    id\n    isComplete\n    completeAt\n    autonomous\n    goals {\n      description\n      complete\n    }\n    agent {\n      id\n      name\n      model\n      purpose\n    }\n  }\n}\n"
+    "text": "query contexts_task_Query(\n  $id: UUID!\n) {\n  task(id: $id) {\n    id\n    isComplete\n    completeAt\n    autonomous\n    goals {\n      description\n      complete\n    }\n    agent {\n      id\n      name\n      model\n      purpose\n    }\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "efac20a7bf26834fcbeabcfb7712651c";
+node.hash = "feb02e8a80942a25e96acf73cf6ae17f";
 
 module.exports = node;

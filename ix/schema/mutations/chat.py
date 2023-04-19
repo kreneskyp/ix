@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class CommandAuthorizeInput(graphene.InputObjectType):
-    message_id = graphene.ID(required=True)
+    message_id = graphene.UUID(required=True)
 
 
 class AuthorizeCommandMutation(graphene.Mutation):
@@ -33,7 +33,7 @@ class AuthorizeCommandMutation(graphene.Mutation):
             role="USER",
             content=UserFeedback(
                 type="AUTHORIZE",
-                message_id=input.message_id,
+                message_id=str(input.message_id),
             ),
         )
 
@@ -57,7 +57,7 @@ class TaskLogMessageResponse(graphene.ObjectType):
 
 
 class TaskFeedbackInput(graphene.InputObjectType):
-    task_id = graphene.ID(required=True)
+    task_id = graphene.UUID(required=True)
     feedback = graphene.String(required=True)
 
 
