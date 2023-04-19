@@ -12,7 +12,7 @@ class TestSetTaskAutonomousMutation:
         client = Client(schema)
 
         mutation = """
-            mutation SetTaskAutonomous($taskId: ID!, $autonomous: Boolean!) {
+            mutation SetTaskAutonomous($taskId: UUID!, $autonomous: Boolean!) {
               setTaskAutonomous(taskId: $taskId, autonomous: $autonomous) {
                 task {
                   id
@@ -22,7 +22,7 @@ class TestSetTaskAutonomousMutation:
             }
         """
 
-        variables = {"taskId": task.id, "autonomous": False}
+        variables = {"taskId": str(task.id), "autonomous": False}
 
         response = client.execute(mutation, variables=variables)
 
@@ -92,7 +92,7 @@ class TestCreateTaskMutation:
         variables = {
             "input": {
                 "name": "Test Task",
-                "agentId": agent.id,
+                "agentId": str(agent.id),
                 "autonomous": True,
                 "goals": [
                     {"description": "Goal 1"},

@@ -44,7 +44,9 @@ export const TaskCreateForm = ({ onMutationSuccess }) => {
   const handleSubmit = () => {
     const input = {
       name,
-      agentId: "1", // XXX: Hard-coded for now as easy fix
+      // TODO: Hard-coded for now as easy fix until
+      // we have a way to select an agent
+      agentId: "a6062f37-645e-46c4-9a9b-e77b15031566",
       goals: goals.map((description) => ({ description })),
     };
 

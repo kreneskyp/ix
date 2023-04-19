@@ -31,7 +31,7 @@ export const UpdateAgentMutation = graphql`
 `;
 
 export const DeleteAgentMutation = graphql`
-  mutation AgentMutations_DeleteAgentMutation($id: ID!) {
+  mutation AgentMutations_DeleteAgentMutation($id: UUID!) {
     deleteAgent(id: $id) {
       success
     }

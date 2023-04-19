@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 
 
@@ -7,6 +9,7 @@ class Agent(models.Model):
         ("gpt-3.5-turbo", "GPT4"),
     )
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     purpose = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -40,6 +43,7 @@ class Resource(models.Model):
         ("stream_processing", "Stream Processing"),
     )
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     type = models.CharField(max_length=32, choices=RESOURCE_TYPE_CHOICES)
     config = models.JSONField()
 

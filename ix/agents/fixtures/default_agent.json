@@ -1,7 +1,7 @@
 [
   {
     "model": "agents.agent",
-    "pk": 1,
+    "pk": "a6062f37-645e-46c4-9a9b-e77b15031566",
     "fields": {
       "name": "Python Coder",
       "purpose": "To write python code to improve myself",
@@ -16,7 +16,7 @@
   },
   {
     "model": "agents.agent",
-    "pk": 2,
+    "pk": "121669a9-1c00-4dc4-98b3-9c813924982e",
     "fields": {
       "name": "Python Coder GPT-4",
       "purpose": "To write python code to improve myself",

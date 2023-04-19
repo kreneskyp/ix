@@ -7,7 +7,7 @@ const AgentContext = createContext();
 export const AgentProvider = ({ agentId, children }) => {
   const data = useLazyLoadQuery(
     graphql`
-      query AgentProvider_AgentByIdQuery($id: ID!) {
+      query AgentProvider_AgentByIdQuery($id: UUID!) {
         agent: agent(id: $id) {
           id
           name
