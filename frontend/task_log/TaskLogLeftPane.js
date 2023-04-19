@@ -1,7 +1,6 @@
 import React from "react";
 import { VStack, StackDivider, Box } from "@chakra-ui/react";
 import SideBarGoalList from "task_log/SideBarGoalList";
-import { ColorModeButton } from "components/ColorModeButton";
 import { AgentProvider } from "agents/graphql/AgentProvider";
 import AgentCard from "agents/AgentCard";
 import { useTask } from "tasks/contexts";
@@ -15,7 +14,6 @@ export const TaskLogLeftPane = () => {
         <AgentProvider agentId={task.agent.id}>
           <AgentCard />
         </AgentProvider>
-        <ColorModeButton />
       </VStack>
     </Box>
   );
