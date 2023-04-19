@@ -1,4 +1,5 @@
 import json
+import uuid
 from typing import TypedDict, Optional
 
 from django.db import models
@@ -6,6 +7,7 @@ from ix.agents.models import Agent
 
 
 class Task(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=64)
     user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     goals = models.JSONField(null=True, blank=True)
@@ -47,6 +49,7 @@ class TaskLogMessage(models.Model):
     ]
 
     # message metadata
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     task = models.ForeignKey(Task, default=None, on_delete=models.CASCADE)
     agent = models.ForeignKey(Agent, null=True, default=None, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)

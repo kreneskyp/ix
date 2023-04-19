@@ -353,7 +353,7 @@ class TestAgentProcessStart:
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "assistant"
         assert msg_2.content["type"] == "AUTH_REQUEST"
-        assert msg_2.content["message_id"] == msg_1.id
+        assert msg_2.content["message_id"] == str(msg_1.id)
 
     def test_start_task_with_auth_for_one(
         self, task, mock_openai, command_output, mock_embeddings
@@ -384,7 +384,7 @@ class TestAgentProcessStart:
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "assistant"
         assert msg_2.content["type"] == "EXECUTED"
-        assert msg_2.content["message_id"] == msg_1.id
+        assert msg_2.content["message_id"] == str(msg_1.id)
         command_output.assert_called_once_with("ECHO: this is a test")
 
         # second command query
@@ -396,7 +396,7 @@ class TestAgentProcessStart:
         # auth required for second command
         assert msg_4.role == "assistant"
         assert msg_4.content["type"] == "AUTH_REQUEST"
-        assert msg_4.content["message_id"] == msg_3.id
+        assert msg_4.content["message_id"] == str(msg_3.id)
 
     def test_start_task_with_auth_for_two(
         self, task, mock_openai, command_output, mock_embeddings
@@ -429,7 +429,7 @@ class TestAgentProcessStart:
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "assistant"
         assert msg_2.content["type"] == "EXECUTED"
-        assert msg_2.content["message_id"] == msg_1.id
+        assert msg_2.content["message_id"] == str(msg_1.id)
 
         # 2nd command query
         assert msg_3.role == "assistant"
@@ -438,7 +438,7 @@ class TestAgentProcessStart:
         assert msg_3.content["command"] == mock_reply.content["command"]
         assert msg_4.role == "assistant"
         assert msg_4.content["type"] == "EXECUTED"
-        assert msg_4.content["message_id"] == msg_3.id
+        assert msg_4.content["message_id"] == str(msg_3.id)
 
         # 3rd command query
         assert msg_5.role == "assistant"
@@ -449,7 +449,7 @@ class TestAgentProcessStart:
         # auth required for 3rd command
         assert msg_6.role == "assistant"
         assert msg_6.content["type"] == "AUTH_REQUEST"
-        assert msg_6.content["message_id"] == msg_5.id
+        assert msg_6.content["message_id"] == str(msg_5.id)
 
         # two command calls:
         assert command_output.call_args_list == [
@@ -500,7 +500,7 @@ class TestAgentProcessStart:
         # first command is authorized
         assert msg_1.role == "assistant"
         assert msg_1.content["type"] == "EXECUTED"
-        assert msg_1.content["message_id"] == mock_reply.id
+        assert msg_1.content["message_id"] == str(mock_reply.id)
         command_output.assert_called_once_with("ECHO: this is a test")
 
         # second command
@@ -512,7 +512,7 @@ class TestAgentProcessStart:
         # auth required for second command
         assert msg_3.role == "assistant"
         assert msg_3.content["type"] == "AUTH_REQUEST"
-        assert msg_3.content["message_id"] == msg_2.id
+        assert msg_3.content["message_id"] == str(msg_2.id)
 
     def test_restart_task_with_feedback_and_auth_for_none(
         self, task, mock_openai, mock_embeddings
@@ -546,7 +546,7 @@ class TestAgentProcessStart:
         # auth required for second command
         assert msg_2.role == "assistant"
         assert msg_2.content["type"] == "AUTH_REQUEST"
-        assert msg_2.content["message_id"] == msg_1.id
+        assert msg_2.content["message_id"] == str(msg_1.id)
 
     def test_loop_autonomous(self, task, mock_openai):
         fake_autonomous_toggle(task=task, enabled=1)
@@ -609,7 +609,7 @@ class TestAgentProcessTicks:
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "assistant"
         assert msg_2.content["type"] == "AUTH_REQUEST"
-        assert msg_2.content["message_id"] == msg_1.id
+        assert msg_2.content["message_id"] == str(msg_1.id)
 
     def test_tick_next_command_with_auth(
         self, task, command_output, mock_openai, mock_embeddings
@@ -638,7 +638,7 @@ class TestAgentProcessTicks:
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "assistant"
         assert msg_2.content["type"] == "EXECUTED"
-        assert msg_2.content["message_id"] == msg_1.id
+        assert msg_2.content["message_id"] == str(msg_1.id)
         assert msg_2.content["output"] == "echo executed, result=this is a test"
         command_output.assert_called_once_with("ECHO: this is a test")
 
@@ -667,7 +667,7 @@ class TestAgentProcessTicks:
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "assistant"
         assert msg_2.content["type"] == "AUTH_REQUEST"
-        assert msg_2.content["message_id"] == msg_1.id
+        assert msg_2.content["message_id"] == str(msg_1.id)
 
     def test_tick_user_input_with_auth(
         self, task, mock_openai, command_output, mock_embeddings
@@ -695,7 +695,7 @@ class TestAgentProcessTicks:
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "assistant"
         assert msg_2.content["type"] == "EXECUTED"
-        assert msg_2.content["message_id"] == msg_1.id
+        assert msg_2.content["message_id"] == str(msg_1.id)
 
         command_output.assert_called_once_with("ECHO: this is a test")
 
@@ -729,7 +729,7 @@ class TestAgentProcessTicks:
             "text": "",
             "type": "EXECUTE_ERROR",
             "error_type": "MissingCommandMarkers",
-            "message_id": None,
+            "message_id": "None",
         }
 
     def test_tick_response_with_question(self, task, mock_openai, mock_embeddings):
@@ -782,7 +782,7 @@ class TestAgentProcessTicks:
             "text": "respond in the expected format",
             "type": "EXECUTE_ERROR",
             "error_type": "missing command",
-            "message_id": msg_1.id,
+            "message_id": str(msg_1.id),
         }
 
     def test_tick_command_name_not_in_response(
@@ -815,7 +815,7 @@ class TestAgentProcessTicks:
             "text": "respond in the expected format",
             "type": "EXECUTE_ERROR",
             "error_type": "missing command",
-            "message_id": msg_1.id,
+            "message_id": str(msg_1.id),
         }
 
     def test_tick_command_args_not_in_response(
@@ -848,7 +848,7 @@ class TestAgentProcessTicks:
             "text": "respond in the expected format",
             "type": "EXECUTE_ERROR",
             "error_type": "missing command",
-            "message_id": msg_1.id,
+            "message_id": str(msg_1.id),
         }
 
     def test_tick_unknown_command_in_response(self, task, mock_openai, mock_embeddings):
@@ -879,7 +879,7 @@ class TestAgentProcessTicks:
             "text": "does_not_exist is not available",
             "type": "EXECUTE_ERROR",
             "error_type": "unknown command",
-            "message_id": msg_1.id,
+            "message_id": str(msg_1.id),
         }
 
     def test_tick_command_failure(self, task, mock_openai, mock_embeddings):
@@ -910,7 +910,7 @@ class TestAgentProcessTicks:
             "text": "This is a test failure",
             "type": "EXECUTE_ERROR",
             "error_type": "Exception",
-            "message_id": msg_1.id,
+            "message_id": str(msg_1.id),
         }
 
 

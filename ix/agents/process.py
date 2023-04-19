@@ -266,7 +266,7 @@ class AgentProcess:
                 role="system",
                 content={
                     "type": "EXECUTE_ERROR",
-                    "message_id": log_message.id,
+                    "message_id": str(log_message.id),
                     "error_type": "missing command",
                     "text": "respond in the expected format",
                 },
@@ -277,7 +277,7 @@ class AgentProcess:
                 role="system",
                 content={
                     "type": "EXECUTE_ERROR",
-                    "message_id": log_message.id,
+                    "message_id": str(log_message.id),
                     "error_type": "unknown command",
                     "text": f'{data["command"]["name"]} is not available',
                 },
@@ -292,7 +292,7 @@ class AgentProcess:
                     self.log_exception(e, log_message)
             else:
                 logger.info(f"requesting user authorization task_id={self.task_id}")
-                self.request_user_auth(log_message.id)
+                self.request_user_auth(str(log_message.id))
         return True
 
     def construct_base_prompt(self):
@@ -324,7 +324,7 @@ You are {agent.name}, {agent.purpose}
             role="system",
             content={
                 "type": "EXECUTE_ERROR",
-                "message_id": message_id,
+                "message_id": str(message_id),
                 "error_type": type(exception).__name__,
                 "text": str(exception),
             },
@@ -426,7 +426,7 @@ You are {agent.name}, {agent.purpose}
             role="assistant",
             content={
                 "type": "EXECUTED",
-                "message_id": message.id,
+                "message_id": str(message.id),
                 "output": f"{name} executed, result={result}",
             },
         )

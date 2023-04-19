@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ed899502efc070703636ac9a62508a17>>
+ * @generated SignedSource<<8c29a7b14857912cfb2890d613dd8722>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -316,16 +316,16 @@ return {
     "selections": (v7/*: any*/)
   },
   "params": {
-    "cacheID": "14cdb7eabb5d2690531bafa65aee1f36",
+    "cacheID": "f6f76b1f491948f7d96bc71770b206e1",
     "id": null,
     "metadata": {},
     "name": "TaskLogMessagesQuery",
     "operationKind": "query",
-    "text": "query TaskLogMessagesQuery(\n  $taskId: ID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    role\n    createdAt\n    content {\n      __typename\n      ... on AssistantContentType {\n        type\n        thoughts {\n          text\n          reasoning\n          plan\n          criticism\n          speak\n        }\n        command {\n          name\n          args\n        }\n      }\n      ... on AutonomousModeContentType {\n        type\n        enabled\n      }\n      ... on AuthorizeContentType {\n        type\n        messageId\n      }\n      ... on AuthRequestContentType {\n        type\n        messageId\n      }\n      ... on ExecutedContentType {\n        type\n        messageId\n        output\n      }\n      ... on ExecuteErrorContentType {\n        type\n        relatedMessageId\n        errorType\n        text\n      }\n      ... on FeedbackContentType {\n        type\n        feedback\n      }\n      ... on FeedbackRequestContentType {\n        type\n        question\n      }\n      ... on SystemContentType {\n        type\n        message\n      }\n    }\n    agent {\n      id\n      name\n    }\n  }\n}\n"
+    "text": "query TaskLogMessagesQuery(\n  $taskId: UUID!\n) {\n  taskLogMessages(taskId: $taskId) {\n    id\n    role\n    createdAt\n    content {\n      __typename\n      ... on AssistantContentType {\n        type\n        thoughts {\n          text\n          reasoning\n          plan\n          criticism\n          speak\n        }\n        command {\n          name\n          args\n        }\n      }\n      ... on AutonomousModeContentType {\n        type\n        enabled\n      }\n      ... on AuthorizeContentType {\n        type\n        messageId\n      }\n      ... on AuthRequestContentType {\n        type\n        messageId\n      }\n      ... on ExecutedContentType {\n        type\n        messageId\n        output\n      }\n      ... on ExecuteErrorContentType {\n        type\n        relatedMessageId\n        errorType\n        text\n      }\n      ... on FeedbackContentType {\n        type\n        feedback\n      }\n      ... on FeedbackRequestContentType {\n        type\n        question\n      }\n      ... on SystemContentType {\n        type\n        message\n      }\n    }\n    agent {\n      id\n      name\n    }\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "59e5ac35940338f127e46dd2b8709704";
+node.hash = "6bcd3bda74b5421058f36c71aa218982";
 
 module.exports = node;

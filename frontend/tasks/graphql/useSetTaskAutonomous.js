@@ -1,7 +1,7 @@
 import { useMutation, graphql } from "react-relay/hooks";
 
 const SET_TASK_AUTONOMOUS_MUTATION = graphql`
-  mutation useSetTaskAutonomousMutation($taskId: ID!, $autonomous: Boolean!) {
+  mutation useSetTaskAutonomousMutation($taskId: UUID!, $autonomous: Boolean!) {
     setTaskAutonomous(taskId: $taskId, autonomous: $autonomous) {
       task {
         id

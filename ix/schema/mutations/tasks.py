@@ -25,7 +25,7 @@ class GoalInput(graphene.InputObjectType):
 class CreateTaskInput(graphene.InputObjectType):
     name = graphene.String(required=True)
     goals = graphene.List(GoalInput)
-    agent_id = graphene.ID()
+    agent_id = graphene.UUID()
     autonomous = graphene.Boolean()
 
 
@@ -74,7 +74,7 @@ class SetTaskAutonomousMutation(graphene.Mutation):
     task = graphene.Field(TaskType)
 
     class Arguments:
-        task_id = graphene.ID(required=True)
+        task_id = graphene.UUID(required=True)
         autonomous = graphene.Boolean(required=True)
 
     @handle_exceptions

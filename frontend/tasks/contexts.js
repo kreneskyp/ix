@@ -37,7 +37,7 @@ export function TaskProvider({ children, taskId }) {
 
   const data = useLazyLoadQuery(
     graphql`
-      query contexts_task_Query($id: ID!) {
+      query contexts_task_Query($id: UUID!) {
         task(id: $id) {
           id
           isComplete

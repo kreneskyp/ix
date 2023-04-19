@@ -41,7 +41,7 @@ class TestAuthorizeCommandMutation:
         client = Client(schema)
         variables = {
             "input": {
-                "messageId": responding_to.id,
+                "messageId": str(responding_to.id),
             }
         }
 
@@ -100,7 +100,7 @@ class TestTaskFeedbackMutation:
 
         variables = {
             "input": {
-                "taskId": task.id,
+                "taskId": str(task.id),
                 "feedback": "Test feedback",
             }
         }
@@ -131,4 +131,4 @@ class TestTaskFeedbackMutation:
         }
 
         # Assert that the Celery task is dispatched
-        mock_start_agent_loop.delay.assert_called_once_with(str(task.id))
+        mock_start_agent_loop.delay.assert_called_once_with(task.id)

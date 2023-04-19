@@ -7,7 +7,7 @@ from graphene.types.generic import GenericScalar
 
 
 class AgentInput(graphene.InputObjectType):
-    id = graphene.ID()
+    id = graphene.UUID()
     name = graphene.String()
     purpose = graphene.String()
     model = graphene.String()
@@ -51,7 +51,7 @@ class DeleteAgentMutation(graphene.Mutation):
     success = graphene.Boolean()
 
     class Arguments:
-        id = graphene.ID(required=True)
+        id = graphene.UUID(required=True)
 
     def mutate(self, info, id):
         agent = Agent.objects.get(pk=id)
@@ -60,7 +60,7 @@ class DeleteAgentMutation(graphene.Mutation):
 
 
 class ResourceInput(graphene.InputObjectType):
-    id = graphene.ID()
+    id = graphene.UUID()
     name = graphene.String()
     type = graphene.String()
     config = graphene.JSONString()
@@ -98,7 +98,7 @@ class DeleteResourceMutation(graphene.Mutation):
     success = graphene.Boolean()
 
     class Arguments:
-        id = graphene.ID(required=True)
+        id = graphene.UUID(required=True)
 
     def mutate(self, info, id):
         resource = Resource.objects.get(pk=id)
