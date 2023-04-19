@@ -37,9 +37,20 @@ const AgentCard = () => {
             <Text as="h5" size="xs">
               <strong>Model:</strong> {agent.model}
             </Text>
-            <Text as="h6" size="xs">
+
+            <Box
+              maxWidth="350px"
+              height={75}
+              overflow="hidden"
+              textOverflow="ellipsis"
+              css={{
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: 3,
+              }}
+            >
               <strong>Purpose:</strong> {agent.purpose}
-            </Text>
+            </Box>
           </VStack>
         </CardBody>
       </Card>

@@ -11,5 +11,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("task_log>/", include("ix.task_log.urls")),
     path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    re_path(r"agents", index, name="index"),
     re_path(r"tasks/chat/(?:.*)", index, name="index"),
 ]
