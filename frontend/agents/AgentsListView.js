@@ -3,13 +3,8 @@ import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 import { AgentCardList } from "agents/AgentCardList";
 import { AgentsQuery } from "agents/graphql/AgentsQuery";
 import { useQueryLoader } from "react-relay";
-import {
-  Heading,
-  Spinner,
-  VStack,
-} from "@chakra-ui/react";
+import { Heading, Spinner, VStack } from "@chakra-ui/react";
 import { ScrollableBox } from "site/ScrollableBox";
-
 
 export const AgentsListView = () => {
   const [queryRef, loadQuery] = useQueryLoader(AgentsQuery);

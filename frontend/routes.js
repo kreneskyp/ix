@@ -20,5 +20,4 @@ export const routes = [
   { path: "*", element: <TaskCreateView /> },
 ];
 
-
 export default routes;
