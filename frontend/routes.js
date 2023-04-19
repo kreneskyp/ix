@@ -10,7 +10,7 @@ import { AgentsListView } from "agents/AgentsListView";
 
 export const routes = [
   { path: "/tasks", element: <TasksListView /> },
-  { path: "/tasks/chat", element: <TaskLogView /> },
+  { path: "/tasks/new", element: <TaskCreateView /> },
   {
     path: "/tasks/chat/:id",
     element: <TaskLogView />,

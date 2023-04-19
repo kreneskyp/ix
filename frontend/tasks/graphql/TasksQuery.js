@@ -19,6 +19,5 @@ export const TasksQuery = graphql`
         model
       }
     }
-    
   }
 `;

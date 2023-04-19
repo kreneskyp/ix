@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useMutation, graphql } from "react-relay";
+import { useMutation } from "react-relay";
 import {
   Box,
   Button,
@@ -8,32 +8,22 @@ import {
   FormLabel,
   HStack,
   Input,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
+import { AgentSelect } from "agents/AgentSelect";
+import { CreateTaskMutation } from "tasks/graphql/CreateTaskMutation";
+import { useNavigate } from "react-router-dom";
 
-const CreateTaskMutation = graphql`
-  mutation TaskCreateFormMutation($input: CreateTaskInput!) {
-    createTask(input: $input) {
-      task {
-        id
-        name
-        agent {
-          id
-          name
-          purpose
-        }
-        goals {
-          description
-        }
-      }
-    }
-  }
-`;
+const DEFAULT_AGENT = "a6062f37-645e-46c4-9a9b-e77b15031566";
 
 export const TaskCreateForm = ({ onMutationSuccess }) => {
   const [name, setName] = useState("");
+  const [agentId, setAgentId] = useState(DEFAULT_AGENT);
   const [goals, setGoals] = useState(Array(5).fill(""));
   const [commit, isInFlight] = useMutation(CreateTaskMutation);
+  let navigate = useNavigate();
+  const toast = useToast();
 
   const handleGoalChange = (index, value) => {
     const newGoals = [...goals];
@@ -41,12 +31,14 @@ export const TaskCreateForm = ({ onMutationSuccess }) => {
     setGoals(newGoals);
   };
 
+  const handleAgentChange = (index, value) => {
+    setAgentId(value);
+  };
+
   const handleSubmit = () => {
     const input = {
       name,
-      // TODO: Hard-coded for now as easy fix until
-      // we have a way to select an agent
-      agentId: "a6062f37-645e-46c4-9a9b-e77b15031566",
+      agentId: agentId,
       goals: goals.map((description) => ({ description })),
     };
 
@@ -56,9 +48,16 @@ export const TaskCreateForm = ({ onMutationSuccess }) => {
         if (onMutationSuccess) {
           onMutationSuccess(data.createTask.task);
         }
+        navigate(`/tasks/chat/${data.createTask.task.id}`);
       },
       onError: (error) => {
-        console.error("Error creating task:", error);
+        toast({
+          title: "Error",
+          description: "Failed to save the task.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       },
     });
   };
@@ -91,7 +90,11 @@ export const TaskCreateForm = ({ onMutationSuccess }) => {
           onChange={(e) => setName(e.target.value)}
         />
       </FormControl>
-
+      // agent selection
+      <FormControl>
+        <FormLabel>Agent</FormLabel>
+        <AgentSelect value={agentId} onChange={handleAgentChange} />
+      </FormControl>
       <FormControl>
         <FormLabel mt={2}>Goals</FormLabel>
         <VStack spacing={2} alignItems="flex-start">
