@@ -37,7 +37,6 @@ class TestAuthorizeCommandMutation:
         mock_start_agent_loop = mocker.patch(
             "ix.schema.mutations.chat.start_agent_loop"
         )
-
         client = Client(schema)
         variables = {
             "input": {

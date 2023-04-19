@@ -6,10 +6,19 @@ export const TasksQuery = graphql`
     tasks {
       id
       name
+      createdAt
+      isComplete
+      completeAt
       goals {
         description
         complete
       }
+      agent {
+        id
+        name
+        model
+      }
     }
+    
   }
 `;

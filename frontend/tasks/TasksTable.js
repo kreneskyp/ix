@@ -38,8 +38,8 @@ export const TasksTable = ({ queryRef }) => {
                   {task.name}
                 </Link>
               </Td>
-              <Td></Td>
-              <Td></Td>
+              <Td>{task.agent.name}</Td>
+              <Td>{task.agent.model}</Td>
               <Td>{task.createdAt}</Td>
               <Td></Td>
               <Td></Td>
