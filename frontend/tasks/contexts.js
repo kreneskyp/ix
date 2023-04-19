@@ -1,28 +1,8 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 import { UserContext } from "users/contexts";
-import { graphql, useLazyLoadQuery, useRefetch } from "react-relay/hooks";
+import { graphql, useLazyLoadQuery } from "react-relay/hooks";
 
-export const TasksContext = createContext(null);
 export const TaskContext = createContext(null);
-
-const tasksQuery = graphql`
-  query contexts_tasks_Query {
-    tasks {
-      id
-      isComplete
-      createdAt
-      completeAt
-    }
-  }
-`;
-
-export const TasksProvider = ({ children }) => {
-  const { tasks } = useLazyLoadQuery(tasksQuery, {});
-
-  return (
-    <TasksContext.Provider value={tasks}>{children}</TasksContext.Provider>
-  );
-};
 
 export function TaskProvider({ children, taskId }) {
   const user = useContext(UserContext);
@@ -69,10 +49,6 @@ export function TaskProvider({ children, taskId }) {
 
 export const useTask = () => {
   return useContext(TaskContext);
-};
-
-export const useTasks = () => {
-  return useContext(TasksContext);
 };
 
 export function useUser() {
