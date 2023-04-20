@@ -11,11 +11,9 @@ AUTHORIZE_COMMAND_MUTATION = """
         taskLogMessage {
           id
           role
-          content {
-            ... on AuthorizeContentType {
-              type
-              messageId
-            }
+          content
+          parent {
+            id
           }
         }
         errors
@@ -50,7 +48,7 @@ class TestAuthorizeCommandMutation:
         assert response["data"]["authorizeCommand"]["taskLogMessage"]["role"] == "USER"
         assert response["data"]["authorizeCommand"]["taskLogMessage"]["content"] == {
             "type": "AUTHORIZE",
-            "messageId": str(responding_to.id),
+            "message_id": str(responding_to.id),
         }
         assert response["data"]["authorizeCommand"]["errors"] is None
 
@@ -74,11 +72,9 @@ TASK_FEEDBACK_MUTATION = """
         taskLogMessage {
           id
           role
-          content {
-            ... on FeedbackContentType {
-              type
-              feedback
-            }
+          content
+          parent {
+            id
           }
         }
         errors

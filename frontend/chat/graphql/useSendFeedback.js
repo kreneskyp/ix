@@ -8,10 +8,9 @@ const SEND_FEEDBACK_MUTATION = graphql`
       taskLogMessage {
         id
         role
-        content {
-          ... on FeedbackContentType {
-            feedback
-          }
+        content
+        parent {
+          id
         }
       }
       errors

@@ -7,10 +7,10 @@ const AuthRequestContent = ({ content }) => {
   return (
     <Box>
       <Text mb="4">
-        Requesting authorization for message_id={content.messageId}
+        Requesting authorization for message_id={content.message_id}
       </Text>
       <Flex justifyContent="flex-end">
-        <AuthorizeCommandButton messageId={content.messageId} />
+        <AuthorizeCommandButton messageId={content.message_id} />
       </Flex>
     </Box>
   );

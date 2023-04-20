@@ -7,11 +7,9 @@ const AUTHORIZE_COMMAND_MUTATION = graphql`
       taskLogMessage {
         id
         role
-        content {
-          ... on AuthorizeContentType {
-            type
-            messageId
-          }
+        content
+        parent {
+          id
         }
       }
       errors

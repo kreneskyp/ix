@@ -25,7 +25,7 @@ const AssistantContent = ({ content }) => {
   const { onPaused } = useTextToSpeech();
   const { colorMode } = useColorMode();
   const { thoughts, command } = content;
-  const args = JSON.parse(command.args);
+  const args = command.args;
 
   const handleSpeak = () => {
     onPaused(() => {
