@@ -39,7 +39,11 @@ class UpdateAgentMutation(graphene.Mutation):
         input = AgentInput(required=True)
 
     def mutate(self, info, input):
-        agent = Agent.objects.get(pk=input.id)
+        """Update or create an agent"""
+        if input.id is None:
+            agent = Agent()
+        else:
+            agent = Agent.objects.get(pk=input.id)
         for key, value in input.items():
             if value is not None:
                 setattr(agent, key, value)

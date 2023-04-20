@@ -5,6 +5,7 @@ import { AgentsQuery } from "agents/graphql/AgentsQuery";
 import { useQueryLoader } from "react-relay";
 import { Heading, Spinner, VStack } from "@chakra-ui/react";
 import { ScrollableBox } from "site/ScrollableBox";
+import { NewAgentButton } from "agents/NewAgentButton";
 
 export const AgentsListView = () => {
   const [queryRef, loadQuery] = useQueryLoader(AgentsQuery);
@@ -22,7 +23,9 @@ export const AgentsListView = () => {
 
   return (
     <Layout>
-      <LayoutLeftPane />
+      <LayoutLeftPane>
+        <NewAgentButton />
+      </LayoutLeftPane>
       <LayoutContent>
         <VStack alignItems="start" p={5} spacing={4}>
           <Heading>Agents</Heading>
