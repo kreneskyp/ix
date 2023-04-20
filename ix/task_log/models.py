@@ -53,6 +53,9 @@ class TaskLogMessage(models.Model):
     task = models.ForeignKey(Task, default=None, on_delete=models.CASCADE)
     agent = models.ForeignKey(Agent, null=True, default=None, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey(
+        "self", null=True, default=None, on_delete=models.CASCADE
+    )
 
     # message content
     role = models.CharField(max_length=16, choices=ROLE_CHOICES)

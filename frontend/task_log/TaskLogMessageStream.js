@@ -3,7 +3,7 @@ import ChatMessage from "chat/ChatMessage";
 import { fetchQuery, graphql } from "relay-runtime";
 import { useTask } from "tasks/contexts";
 import environment from "relay-environment";
-import { TaskLogMessagesQuery } from "task_log/graphql/TaskLogMessages";
+import { TaskLogMessagesQuery } from "task_log/graphql/TaskLogMessagesQuery";
 
 const TaskLogMessageStream = () => {
   const [taskLogMessages, setMessages] = useState([]);

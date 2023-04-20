@@ -2,24 +2,24 @@ import React from "react";
 import { Text, useColorModeValue } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 
-const FeedbackRequestContent = ({ content }) => {
+const ThinkContent = ({ content }) => {
   const labelColor = useColorModeValue("black", "blue.300");
   const textColor = useColorModeValue("gray.600", "gray.400");
 
   return (
     <>
       <Text mt="4" color={labelColor}>
-        <b>I require input:</b>
+        <b>Thinking:</b>
       </Text>
       <Text mt="4" color={textColor}>
-        {content.question}
+        {content.input}
       </Text>
     </>
   );
 };
 
-FeedbackRequestContent.propTypes = {
+ThinkContent.propTypes = {
   content: PropTypes.object.isRequired,
 };
 
-export default FeedbackRequestContent;
+export default ThinkContent;
