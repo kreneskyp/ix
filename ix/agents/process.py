@@ -54,7 +54,6 @@ class AgentProcess:
         "AUTHORIZE",
         "AUTONOMOUS",
         "FEEDBACK_REQUEST",
-        "THINK",
         "THOUGHT",
         "SYSTEM",
     }

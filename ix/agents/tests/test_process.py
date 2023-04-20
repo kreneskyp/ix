@@ -620,7 +620,7 @@ def msg_to_response(msg: TaskLogMessage):
     """utility for turning model instances back into response json"""
     content = dict(msg.content.items())
     content.pop("type")
-    json_content = f"###START###{json.dumps(content)}###END###"
+    json_content = f"###START###{json.dumps(content, sort_keys=True)}###END###"
     return {
         "choices": [{"message": {"content": json_content}}],
         "usage": {"prompt_tokens": 5, "completion_tokens": 7, "total_tokens": 12},
@@ -1012,6 +1012,71 @@ class TestAgentProcessTicks:
             "error_type": "Exception",
             "message_id": str(msg_1.id),
         }
+
+    def test_tick_updates_history(self, task, mock_openai, mock_embeddings):
+        """Tick starts by updating history, each tick should load any new messages"""
+        mock_reply = fake_command_reply(task=task)
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        mock_response = msg_to_response(mock_reply)
+        mock_openai.return_value = mock_response
+
+        mock_chat_message_content = (
+            '{"command": {"args": {"output": "this is a test"}, "name": "echo"}, "thoughts": {"criticism": '
+            '"constructive self-criticism", "plan": ["short list of steps", "that conveys", "long-term plan"], '
+            '"reasoning": "reasoning", "speak": "thoughts summary to say to user", "text": "thought"}}'
+        )
+        mock_ai_chat_message = {
+            "content": mock_chat_message_content,
+            "role": "assistant",
+        }
+        mock_user_chat_message = {
+            "content": '{"input": "Determine which next command to use, and respond in the expected format"}',
+            "role": "user",
+        }
+
+        # verify that history is loaded on each tick. Note that history from a tick
+        # isn't loaded until the next tick.
+
+        # first tick starts with no history
+        agent_process.tick(execute=False)
+        assert query.all().count() == 4
+        message_types = list(query.values_list("content__type", flat=True))
+        assert message_types == ["THINK", "THOUGHT", "COMMAND", "AUTH_REQUEST"]
+        assert agent_process.history == []
+
+        # tick again adds THINK and COMMAND from first tick
+        agent_process.tick(execute=False)
+        assert query.all().count() == 8
+        message_types = list(query.values_list("content__type", flat=True))
+        assert message_types == [
+            "THINK",
+            "THOUGHT",
+            "COMMAND",
+            "AUTH_REQUEST",
+            "THINK",
+            "THOUGHT",
+            "COMMAND",
+            "AUTH_REQUEST",
+        ]
+        assert agent_process.history == [
+            mock_user_chat_message,
+            mock_ai_chat_message,
+        ]
+
+        # tick with new messages
+        agent_process.tick(execute=False)
+        assert query.all().count() == 12
+        assert agent_process.history == [
+            mock_user_chat_message,
+            mock_ai_chat_message,
+            mock_user_chat_message,
+            mock_ai_chat_message,
+        ]
 
 
 @pytest.mark.django_db
