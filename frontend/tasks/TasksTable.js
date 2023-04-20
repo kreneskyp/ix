@@ -1,83 +1,54 @@
 import React from "react";
 import {
+  Box,
+  Link,
   Table,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
-  Tooltip,
-  Box,
+  TableCaption,
 } from "@chakra-ui/react";
-import { CheckIcon, WarningIcon, TimeIcon } from "@chakra-ui/icons";
-import { Link } from "react-router-dom";
-import { useTasks } from "tasks/contexts";
-import { useLatestTaskLog } from "task_log/contexts";
+import { Link as RouterLink } from "react-router-dom";
+import { usePreloadedQuery } from "react-relay/hooks";
+import { TasksQuery } from "tasks/graphql/TasksQuery";
 
-const TasksTable = () => {
-  const tasks = useTasks();
-  let rows;
-  if (tasks) {
-    rows = tasks.map((task) => <TaskRow key={task.id} task={task} />);
-  }
-
+export const TasksTable = ({ queryRef }) => {
+  const { tasks } = usePreloadedQuery(TasksQuery, queryRef);
   return (
-    <Table variant="striped" colorScheme="gray">
-      <Thead>
-        <Tr>
-          <Th>Title</Th>
-          <Th>User</Th>
-          <Th>Status</Th>
-        </Tr>
-      </Thead>
-      <Tbody>{rows}</Tbody>
-    </Table>
-  );
-};
-
-const TaskRow = ({ task }) => {
-  const latestTaskLog = useLatestTaskLog(task.id);
-
-  let statusIcon = null;
-  if (task.is_complete) {
-    statusIcon = <CheckIcon color="green.500" />;
-  } else if (
-    latestTaskLog &&
-    latestTaskLog.assistant_response &&
-    !latestTaskLog.user_response
-  ) {
-    statusIcon = (
-      <Tooltip label="Waiting for user input">
-        <Box as="span" color="gray.500">
-          <TimeIcon />
-        </Box>
-      </Tooltip>
-    );
-  } else if (latestTaskLog && latestTaskLog.error_message) {
-    statusIcon = (
-      <Tooltip label={latestTaskLog.error_message}>
-        <Box as="span" color="red.500">
-          <WarningIcon />
-        </Box>
-      </Tooltip>
-    );
-  } else {
-    statusIcon = (
-      <Tooltip label="Running">
-        <Box as="span" color="yellow.500">
-          <TimeIcon />
-        </Box>
-      </Tooltip>
-    );
-  }
-
-  return (
-    <Tr>
-      <Td>
-        <Link to={`/tasks/chat/${task.id}`}>{task.id}</Link>
-      </Td>
-      <Td>{statusIcon}</Td>
-    </Tr>
+    <Box>
+      <Table variant="simple">
+        <Thead>
+          <Tr>
+            <Th>Name</Th>
+            <Th>Agent Name</Th>
+            <Th>Agent Model</Th>
+            <Th>Created</Th>
+            <Th>Runtime</Th>
+            <Th>Tokens</Th>
+            <Th>Cost</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {tasks.map((task) => (
+            <Tr key={task.id}>
+              <Td>
+                <Link as={RouterLink} to={`/tasks/chat/${task.id}`}>
+                  {task.name}
+                </Link>
+              </Td>
+              <Td>{task.agent.name}</Td>
+              <Td>{task.agent.model}</Td>
+              <Td>{task.createdAt}</Td>
+              <Td></Td>
+              <Td></Td>
+              <Td></Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </Box>
   );
 };
 
