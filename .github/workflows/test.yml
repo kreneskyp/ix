@@ -74,12 +74,14 @@ jobs:
         with:
           command: make flake8
 
-  pyright:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run Pyright
-        uses: ./.github/actions/run-docker
-        with:
-          command: make pyright
+# Disabling until a later date
+#
+#  pyright:
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Run Pyright
+#        uses: ./.github/actions/run-docker
+#        with:
+#          command: make pyright

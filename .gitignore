@@ -8,6 +8,7 @@ node_modules
 .env
 .pyc
 .coverage
+__generated__
 
 __pycache__
 
