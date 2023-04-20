@@ -18,7 +18,7 @@ const ChatMessage = ({ message }) => {
   const { content } = message;
   let contentComponent = null;
   switch (content.type) {
-    case "ASSISTANT":
+    case "COMMAND":
       contentComponent = <AssistantContent content={content} />;
       break;
     case "AUTONOMOUS":

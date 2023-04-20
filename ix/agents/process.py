@@ -1,8 +1,10 @@
 import logging
 import json
+import time
+
 import openai
 from functools import cached_property
-from typing import TypedDict, Optional, List, Any, Dict
+from typing import TypedDict, Optional, List, Any, Dict, Tuple
 
 from ix.agents.prompt_builder import PromptBuilder
 from ix.agents.prompts import COMMAND_FORMAT
@@ -180,7 +182,7 @@ class AgentProcess:
             tick_input = self.INITIAL_INPUT
             # TODO load initial auth from either message stream or task
         elif last_message.content["type"] == "AUTHORIZE":
-            logger.info(f"resuming with user input for task_id={self.task_id}")
+            logger.info(f"resuming with user authorization for task_id={self.task_id}")
             # auth/feedback resume, run command that was authorized
             # by default only a single command is authorized.
             authorized_for = last_message.content.get("n", 1) - 1
@@ -218,30 +220,34 @@ class AgentProcess:
 
     def tick(self, user_input: str = NEXT_COMMAND, execute: bool = False) -> bool:
         """
-        "tick" the agent loop letting it chat and run commands
+        "tick" the agent loop letting it chat and run commands. The chat interaction
+        including feedback requests, authorization requests, command results, and
+        errors are logged.
 
         :param user_input: the next command to run or NEXT_COMMAND
         :param execute: execute the command or just chat
         :return: True to continue, False to exit
         """
         logger.debug(
-            "============================================================================"
+            "=== TICK =================================================================="
         )
+        self.update_message_history()
         logger.info(f"ticking task_id={self.task_id}")
-        response = self.chat_with_ai(user_input)
+        think_msg, response = self.chat_with_ai(user_input)
         logger.debug(f"Response from model, task_id={self.task_id} response={response}")
 
         try:
             data = self.handle_response(response)
         except MissingCommandMarkers as e:
             # log parse error and retry
-            self.log_exception(e)
+            self.log_exception(e, think_msg)
             return True
 
         # if bot asks a question then log it and exit.
         if "question" in data:
             TaskLogMessage.objects.create(
                 task_id=self.task_id,
+                parent_id=think_msg.id,
                 role="assistant",
                 content=dict(type="FEEDBACK_REQUEST", question=data["question"]),
             )
@@ -250,8 +256,9 @@ class AgentProcess:
         # log command to persistent storage
         log_message = TaskLogMessage.objects.create(
             task_id=self.task_id,
+            parent_id=think_msg.id,
             role="assistant",
-            content=dict(type="ASSISTANT", **data),
+            content=dict(type="COMMAND", **data),
         )
 
         # validate command and then execute or seek feedback
@@ -263,6 +270,7 @@ class AgentProcess:
         ):
             TaskLogMessage.objects.create(
                 task_id=self.task_id,
+                parent_id=think_msg.id,
                 role="system",
                 content={
                     "type": "EXECUTE_ERROR",
@@ -274,6 +282,7 @@ class AgentProcess:
         elif data["command"]["name"] not in self.command_registry.commands:
             TaskLogMessage.objects.create(
                 task_id=self.task_id,
+                parent_id=think_msg.id,
                 role="system",
                 content={
                     "type": "EXECUTE_ERROR",
@@ -289,7 +298,7 @@ class AgentProcess:
                 try:
                     return self.msg_execute(log_message)
                 except Exception as e:
-                    self.log_exception(e, log_message)
+                    self.log_exception(e, think_msg, log_message)
             else:
                 logger.info(f"requesting user authorization task_id={self.task_id}")
                 self.request_user_auth(str(log_message.id))
@@ -316,11 +325,17 @@ You are {agent.name}, {agent.purpose}
 {FORMAT_CLAUSE}
 """
 
-    def log_exception(self, exception: Exception, log_msg: TaskLogMessage = None):
+    def log_exception(
+        self,
+        exception: Exception,
+        think_msg: TaskLogMessage,
+        log_msg: TaskLogMessage = None,
+    ):
         """Collection point for errors while ticking the loop"""
         message_id = log_msg.id if log_msg else None
         failure_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,
+            parent_id=think_msg.id,
             role="system",
             content={
                 "type": "EXECUTE_ERROR",
@@ -387,17 +402,37 @@ You are {agent.name}, {agent.purpose}
 
         return prompt
 
-    def chat_with_ai(self, user_input):
+    def chat_with_ai(self, user_input) -> Tuple[TaskLogMessage, str]:
         prompt = self.build_prompt(user_input)
         agent = self.task.agent
         logger.info(f"Sending request to model {agent.model}")
+        think_msg = TaskLogMessage.objects.create(
+            task_id=self.task_id,
+            role="system",
+            content={
+                "type": "THINK",
+                "input": user_input,
+            },
+        )
+        start = time.time()
         response = openai.ChatCompletion.create(
             model=agent.model,
             messages=prompt.messages,
             temperature=agent.config["temperature"],
             max_tokens=1000,
         )
-        return response["choices"][0]["message"]["content"]
+        end = time.time()
+        TaskLogMessage.objects.create(
+            task_id=self.task_id,
+            role="system",
+            parent_id=think_msg.id,
+            content={
+                "type": "THOUGHT",
+                "usage": response["usage"],
+                "runtime": end - start,
+            },
+        )
+        return think_msg, response["choices"][0]["message"]["content"]
 
     def add_history(self, *history_messages: Dict[str, Any]):
         logger.debug(f"adding history history_messages={history_messages}")

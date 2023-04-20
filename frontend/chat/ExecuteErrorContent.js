@@ -3,7 +3,6 @@ import { Flex, Heading, Text } from "@chakra-ui/react";
 
 const ExecuteErrorContent = ({ content }) => {
   let relatedMsg;
-  console.log(content);
   if (content.message_id !== null) {
     relatedMsg = (
       <Text mb={5}>

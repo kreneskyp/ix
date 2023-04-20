@@ -90,10 +90,10 @@ class TestAgentProcessInit:
 
 @pytest.mark.django_db
 class TestAgentProcessHistory(MessageTeardown):
-    MSG_1 = {"type": "ASSISTANT", "message": "THIS IS A TEST 1"}
-    MSG_2 = {"type": "ASSISTANT", "message": "THIS IS A TEST 2"}
-    MSG_3 = {"type": "ASSISTANT", "message": "THIS IS A TEST 3"}
-    MSG_4 = {"type": "ASSISTANT", "message": "THIS IS A TEST 4"}
+    MSG_1 = {"type": "COMMAND", "message": "THIS IS A TEST 1"}
+    MSG_2 = {"type": "COMMAND", "message": "THIS IS A TEST 2"}
+    MSG_3 = {"type": "COMMAND", "message": "THIS IS A TEST 3"}
+    MSG_4 = {"type": "COMMAND", "message": "THIS IS A TEST 4"}
 
     @pytest.mark.parametrize("content_type", AgentProcess.EXCLUDED_MSG_TYPES)
     def test_query_message_excludes_msgs(self, content_type, task):
@@ -336,19 +336,25 @@ class TestAgentProcessStart:
         """Run task for the first time with no auth to run commands"""
         mock_reply = fake_command_reply(task=task)
         mock_reply.delete()
-        assert TaskLogMessage.objects.filter(task=task).count() == 0
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
         agent_process = AgentProcess(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
         return_value = agent_process.start()
         assert return_value is True
-        assert TaskLogMessage.objects.filter(task=task).count() == 2
+        assert query.count() == 4
 
-        msg_1 = TaskLogMessage.objects.filter(task=task)[0]
-        msg_2 = TaskLogMessage.objects.filter(task=task)[1]
+        think_msg = query[0]
+        thought_msg = query[1]
+        msg_1 = query[2]
+        msg_2 = query[3]
+
+        assert think_msg.content["type"] == "THINK"
+        assert thought_msg.content["type"] == "THOUGHT"
         assert msg_1.role == "assistant"
-        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["type"] == "COMMAND"
         assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "assistant"
@@ -361,7 +367,8 @@ class TestAgentProcessStart:
         """Run initial tick + 1 more"""
         mock_reply = fake_command_reply(task=task)
         mock_reply.delete()
-        assert TaskLogMessage.objects.filter(task=task).count() == 0
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
         agent_process = AgentProcess(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
@@ -373,13 +380,22 @@ class TestAgentProcessStart:
         assert return_value is True
 
         # first command is authorized
-        assert TaskLogMessage.objects.filter(task=task).count() == 4
-        msg_1 = TaskLogMessage.objects.filter(task=task)[0]
-        msg_2 = TaskLogMessage.objects.filter(task=task)[1]
-        msg_3 = TaskLogMessage.objects.filter(task=task)[2]
-        msg_4 = TaskLogMessage.objects.filter(task=task)[3]
+        assert query.count() == 8
+        think1_msg = query[0]
+        thought1_msg = query[1]
+        think2_msg = query[4]
+        thought2_msg = query[5]
+        assert think1_msg.content["type"] == "THINK"
+        assert thought1_msg.content["type"] == "THOUGHT"
+        assert think2_msg.content["type"] == "THINK"
+        assert thought2_msg.content["type"] == "THOUGHT"
+
+        msg_1 = query[2]
+        msg_2 = query[3]
+        msg_3 = query[6]
+        msg_4 = query[7]
         assert msg_1.role == "assistant"
-        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["type"] == "COMMAND"
         assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "assistant"
@@ -389,7 +405,7 @@ class TestAgentProcessStart:
 
         # second command query
         assert msg_3.role == "assistant"
-        assert msg_3.content["type"] == "ASSISTANT"
+        assert msg_3.content["type"] == "COMMAND"
         assert msg_3.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_3.content["command"] == mock_reply.content["command"]
 
@@ -404,7 +420,8 @@ class TestAgentProcessStart:
         """Run initial tick + 2 more"""
         mock_reply = fake_command_reply(task=task)
         mock_reply.delete()
-        assert TaskLogMessage.objects.filter(task=task).count() == 0
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
         agent_process = AgentProcess(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
@@ -416,15 +433,28 @@ class TestAgentProcessStart:
         assert return_value is True
 
         # first command is authorized
-        assert TaskLogMessage.objects.filter(task=task).count() == 6
-        msg_1 = TaskLogMessage.objects.filter(task=task)[0]
-        msg_2 = TaskLogMessage.objects.filter(task=task)[1]
-        msg_3 = TaskLogMessage.objects.filter(task=task)[2]
-        msg_4 = TaskLogMessage.objects.filter(task=task)[3]
-        msg_5 = TaskLogMessage.objects.filter(task=task)[4]
-        msg_6 = TaskLogMessage.objects.filter(task=task)[5]
+        assert query.count() == 12
+        think1_msg = query[0]
+        think2_msg = query[4]
+        think3_msg = query[8]
+        thought1_msg = query[1]
+        thought2_msg = query[5]
+        thought3_msg = query[9]
+        assert think1_msg.content["type"] == "THINK"
+        assert thought1_msg.content["type"] == "THOUGHT"
+        assert think2_msg.content["type"] == "THINK"
+        assert thought2_msg.content["type"] == "THOUGHT"
+        assert think3_msg.content["type"] == "THINK"
+        assert thought3_msg.content["type"] == "THOUGHT"
+
+        msg_1 = query[2]
+        msg_2 = query[3]
+        msg_3 = query[6]
+        msg_4 = query[7]
+        msg_5 = query[10]
+        msg_6 = query[11]
         assert msg_1.role == "assistant"
-        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["type"] == "COMMAND"
         assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "assistant"
@@ -433,7 +463,7 @@ class TestAgentProcessStart:
 
         # 2nd command query
         assert msg_3.role == "assistant"
-        assert msg_3.content["type"] == "ASSISTANT"
+        assert msg_3.content["type"] == "COMMAND"
         assert msg_3.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_3.content["command"] == mock_reply.content["command"]
         assert msg_4.role == "assistant"
@@ -442,7 +472,7 @@ class TestAgentProcessStart:
 
         # 3rd command query
         assert msg_5.role == "assistant"
-        assert msg_5.content["type"] == "ASSISTANT"
+        assert msg_5.content["type"] == "COMMAND"
         assert msg_5.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_5.content["command"] == mock_reply.content["command"]
 
@@ -492,10 +522,15 @@ class TestAgentProcessStart:
         # start process
         return_value = agent_process.start()
         assert return_value is True
-        assert query.count() == 3
-        msg_1 = query.filter(task=task)[0]
-        msg_2 = query.filter(task=task)[1]
-        msg_3 = query.filter(task=task)[2]
+        assert query.count() == 5
+        think1_msg = query[1]
+        thought1_msg = query[2]
+        assert think1_msg.content["type"] == "THINK"
+        assert thought1_msg.content["type"] == "THOUGHT"
+
+        msg_1 = query[0]
+        msg_2 = query[3]
+        msg_3 = query[4]
 
         # first command is authorized
         assert msg_1.role == "assistant"
@@ -505,7 +540,7 @@ class TestAgentProcessStart:
 
         # second command
         assert msg_2.role == "assistant"
-        assert msg_2.content["type"] == "ASSISTANT"
+        assert msg_2.content["type"] == "COMMAND"
         assert msg_2.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_2.content["command"] == mock_reply.content["command"]
 
@@ -533,13 +568,18 @@ class TestAgentProcessStart:
         # start process
         return_value = agent_process.start()
         assert return_value is True
-        assert query.count() == 2
-        msg_1 = query.filter(task=task)[0]
-        msg_2 = query.filter(task=task)[1]
+        assert query.count() == 4
+        think_msg = query[0]
+        thought_msg = query[1]
+        msg_1 = query[2]
+        msg_2 = query[3]
+
+        assert think_msg.content["type"] == "THINK"
+        assert thought_msg.content["type"] == "THOUGHT"
 
         # second command
         assert msg_1.role == "assistant"
-        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["type"] == "COMMAND"
         assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_1.content["command"] == mock_reply.content["command"]
 
@@ -579,7 +619,10 @@ def msg_to_response(msg: TaskLogMessage):
     content = dict(msg.content.items())
     content.pop("type")
     json_content = f"###START###{json.dumps(content)}###END###"
-    return {"choices": [{"message": {"content": json_content}}]}
+    return {
+        "choices": [{"message": {"content": json_content}}],
+        "usage": {"prompt_tokens": 5, "completion_tokens": 7, "total_tokens": 12},
+    }
 
 
 @pytest.mark.django_db
@@ -593,18 +636,23 @@ class TestAgentProcessTicks:
         """
         mock_reply = fake_command_reply()
         mock_reply.delete()
-        assert TaskLogMessage.objects.filter(task=task).count() == 0
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
         agent_process = AgentProcess(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
         agent_process.tick(execute=False)
-        assert TaskLogMessage.objects.filter(task=task).count() == 2
+        assert query.count() == 4
+        think_msg = query[0]
+        thought_msg = query[1]
+        assert think_msg.content["type"] == "THINK"
+        assert thought_msg.content["type"] == "THOUGHT"
 
-        msg_1 = TaskLogMessage.objects.filter(task=task)[0]
-        msg_2 = TaskLogMessage.objects.filter(task=task)[1]
+        msg_1 = query[2]
+        msg_2 = query[3]
         assert msg_1.role == "assistant"
-        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["type"] == "COMMAND"
         assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "assistant"
@@ -627,13 +675,17 @@ class TestAgentProcessTicks:
         )
         mock_openai.return_value = msg_to_response(mock_reply)
         agent_process.tick(execute=True)
-        assert query.count() == 2
-        msg_1 = query[0]
-        msg_2 = query[1]
+        assert query.count() == 4
+        think_msg = query[0]
+        thought_msg = query[1]
+        assert think_msg.content["type"] == "THINK"
+        assert thought_msg.content["type"] == "THOUGHT"
+        msg_1 = query[2]
+        msg_2 = query[3]
 
         # command authorized
         assert msg_1.role == "assistant"
-        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["type"] == "COMMAND"
         assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "assistant"
@@ -651,18 +703,24 @@ class TestAgentProcessTicks:
         """
         mock_reply = fake_command_reply()
         mock_reply.delete()
-        assert TaskLogMessage.objects.filter(task=task).count() == 0
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
         agent_process = AgentProcess(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
         agent_process.tick(user_input="extra input", execute=False)
-        assert TaskLogMessage.objects.filter(task=task).count() == 2
+        assert query.count() == 4
 
-        msg_1 = TaskLogMessage.objects.filter(task=task)[0]
-        msg_2 = TaskLogMessage.objects.filter(task=task)[1]
+        think_msg = query[0]
+        thought_msg = query[1]
+        assert think_msg.content["type"] == "THINK"
+        assert thought_msg.content["type"] == "THOUGHT"
+
+        msg_1 = query[2]
+        msg_2 = query[3]
         assert msg_1.role == "assistant"
-        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["type"] == "COMMAND"
         assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "assistant"
@@ -686,11 +744,16 @@ class TestAgentProcessTicks:
         mock_openai.return_value = msg_to_response(mock_reply)
         agent_process.tick(user_input="extra input", execute=True)
 
-        assert query.count() == 2
-        msg_1 = query[0]
-        msg_2 = query[1]
+        assert query.count() == 4
+        think_msg = query[0]
+        thought_msg = query[1]
+        assert think_msg.content["type"] == "THINK"
+        assert thought_msg.content["type"] == "THOUGHT"
+
+        msg_1 = query[2]
+        msg_2 = query[3]
         assert msg_1.role == "assistant"
-        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["type"] == "COMMAND"
         assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "assistant"
@@ -721,8 +784,13 @@ class TestAgentProcessTicks:
         # return value is True because the loop should continue
         assert return_value is True
 
-        assert query.count() == 1
-        msg_1 = query[0]
+        assert query.count() == 3
+        think_msg = query[0]
+        thought_msg = query[1]
+        msg_1 = query[2]
+
+        assert think_msg.content["type"] == "THINK"
+        assert thought_msg.content["type"] == "THOUGHT"
         assert msg_1.role == "system"
         assert msg_1.content["type"] == "EXECUTE_ERROR"
         assert msg_1.content == {
@@ -749,8 +817,13 @@ class TestAgentProcessTicks:
         # answer the question before continuing.
         assert return_value is False
 
-        assert query.count() == 1
-        msg_1 = query[0]
+        assert query.count() == 3
+        think_msg = query[0]
+        thought_msg = query[1]
+        msg_1 = query[2]
+
+        assert think_msg.content["type"] == "THINK"
+        assert thought_msg.content["type"] == "THOUGHT"
         assert msg_1.role == "assistant"
         assert msg_1.content["type"] == "FEEDBACK_REQUEST"
         assert msg_1.content["question"] == "this is a fake question"
@@ -770,11 +843,16 @@ class TestAgentProcessTicks:
         # return value is True because the loop should continue
         assert return_value is True
 
-        assert query.count() == 2
-        msg_1 = query[0]
-        msg_2 = query[1]
+        assert query.count() == 4
+        think_msg = query[0]
+        thought_msg = query[1]
+        msg_1 = query[2]
+        msg_2 = query[3]
+
+        assert think_msg.content["type"] == "THINK"
+        assert thought_msg.content["type"] == "THOUGHT"
         assert msg_1.role == "assistant"
-        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["type"] == "COMMAND"
         assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_2.role == "system"
         assert msg_2.content["type"] == "EXECUTE_ERROR"
@@ -802,11 +880,16 @@ class TestAgentProcessTicks:
         # return value is True because the loop should continue
         assert return_value is True
 
-        assert query.count() == 2
-        msg_1 = query[0]
-        msg_2 = query[1]
+        assert query.count() == 4
+        think_msg = query[0]
+        thought_msg = query[1]
+        msg_1 = query[2]
+        msg_2 = query[3]
+
+        assert think_msg.content["type"] == "THINK"
+        assert thought_msg.content["type"] == "THOUGHT"
         assert msg_1.role == "assistant"
-        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["type"] == "COMMAND"
         assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "system"
@@ -835,11 +918,16 @@ class TestAgentProcessTicks:
         # return value is True because the loop should continue
         assert return_value is True
 
-        assert query.count() == 2
-        msg_1 = query[0]
-        msg_2 = query[1]
+        assert query.count() == 4
+        think_msg = query[0]
+        thought_msg = query[1]
+        msg_1 = query[2]
+        msg_2 = query[3]
+
+        assert think_msg.content["type"] == "THINK"
+        assert thought_msg.content["type"] == "THOUGHT"
         assert msg_1.role == "assistant"
-        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["type"] == "COMMAND"
         assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "system"
@@ -866,11 +954,16 @@ class TestAgentProcessTicks:
         # return value is True because the loop should continue
         assert return_value is True
 
-        assert query.count() == 2
-        msg_1 = query[0]
-        msg_2 = query[1]
+        assert query.count() == 4
+        think_msg = query[0]
+        thought_msg = query[1]
+        msg_1 = query[2]
+        msg_2 = query[3]
+
+        assert think_msg.content["type"] == "THINK"
+        assert thought_msg.content["type"] == "THOUGHT"
         assert msg_1.role == "assistant"
-        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["type"] == "COMMAND"
         assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "system"
@@ -897,11 +990,16 @@ class TestAgentProcessTicks:
         # return value is True because the loop should continue
         assert return_value is True
 
-        assert query.count() == 2
-        msg_1 = query[0]
-        msg_2 = query[1]
+        assert query.count() == 4
+        think_msg = query[0]
+        thought_msg = query[1]
+        msg_1 = query[2]
+        msg_2 = query[3]
+
+        assert think_msg.content["type"] == "THINK"
+        assert thought_msg.content["type"] == "THOUGHT"
         assert msg_1.role == "assistant"
-        assert msg_1.content["type"] == "ASSISTANT"
+        assert msg_1.content["type"] == "COMMAND"
         assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
         assert msg_1.content["command"] == mock_reply.content["command"]
         assert msg_2.role == "system"
@@ -917,10 +1015,29 @@ class TestAgentProcessTicks:
 @pytest.mark.django_db
 class TestAgentProcessAIChat:
     def test_chat_with_ai(self, task, mock_openai, mock_embeddings):
+        mock_reply = fake_command_reply()
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+
+        mock_openai.return_value = msg_to_response(mock_reply)
         agent_process = AgentProcess(task_id=task.id)
         message = "Test message"
         agent_process.chat_with_ai(message)
         mock_openai.assert_called()
+
+        assert query.count() == 2
+        think_msg = query[0]
+        thought_msg = query[1]
+        assert think_msg.content["type"] == "THINK"
+        assert think_msg.content["input"] == "Test message"
+        assert thought_msg.content["type"] == "THOUGHT"
+        assert isinstance(thought_msg.content["runtime"], float)
+        assert thought_msg.content["usage"] == {
+            "completion_tokens": 7,
+            "prompt_tokens": 5,
+            "total_tokens": 12,
+        }
 
 
 @pytest.mark.django_db

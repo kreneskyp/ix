@@ -61,7 +61,7 @@ def fake_task(**kwargs):
 
 def fake_command_reply(**kwargs):
     content = {
-        "type": "ASSISTANT",
+        "type": "COMMAND",
         "thoughts": {
             "text": "thought",
             "reasoning": "reasoning",
@@ -122,15 +122,17 @@ def fake_autonomous_toggle(enabled: int = 1, **kwargs):
     return fake_task_log_msg(role="user", content=content, **kwargs)
 
 
-def fake_system(message, **kwargs):
+def fake_system(message: str, **kwargs):
     content = {"type": "SYSTEM", "message": message}
     return fake_task_log_msg(role="system", content=content, **kwargs)
 
 
-def fake_execute_error(message_id, **kwargs):
+def fake_execute_error(task: Task = None, message_id: uuid.UUID = None, **kwargs):
+    if not message_id:
+        message_id = fake_feedback_request(task=task).id
     content = {
         "type": "EXECUTE_ERROR",
-        "message_id": message_id,
+        "message_id": str(message_id),
         "error_type": "test error",
         "text": "test error text",
     }
@@ -138,7 +140,7 @@ def fake_execute_error(message_id, **kwargs):
 
 
 def fake_task_log_msg_type(content_type, **kwargs):
-    if content_type == "ASSISTANT":
+    if content_type == "COMMAND":
         return fake_command_reply(**kwargs)
     elif content_type == "EXECUTE_ERROR":
         return fake_execute_error(**kwargs)
@@ -165,7 +167,7 @@ def fake_all_message_types(task):
     """
     # system
     fake_system(task=task, message="fake system message")
-    fake_execute_error(task=task, message_id="fake execute error message")
+    fake_execute_error(task=task)
 
     # autonomous mode toggles
     fake_autonomous_toggle(task=task, enabled=True)
@@ -224,6 +226,7 @@ def task_setup():
         task = fake_task()
     TaskLogMessage.objects.all().delete()
     fake_all_message_types(task)
+    return task
 
 
 def reset_task():
