@@ -12,6 +12,8 @@ import AuthRequestContent from "chat/AuthRequestContent";
 import ExecuteContent from "chat/ExecuteContent";
 import { useColorMode } from "@chakra-ui/color-mode";
 import ExecuteErrorContent from "chat/ExecuteErrorContent";
+import ThoughtContent from "chat/ThoughtContent";
+import ThinkContent from "chat/ThinkContent";
 
 const ChatMessage = ({ message }) => {
   const { colorMode } = useColorMode();
@@ -41,6 +43,12 @@ const ChatMessage = ({ message }) => {
       break;
     case "FEEDBACK_REQUEST":
       contentComponent = <FeedbackRequestContent content={content} />;
+      break;
+    case "THINK":
+      contentComponent = <ThinkContent content={content} />;
+      break;
+    case "THOUGHT":
+      contentComponent = <ThoughtContent content={content} />;
       break;
     case "SYSTEM":
       contentComponent = <SystemContent content={content} />;
