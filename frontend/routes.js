@@ -17,7 +17,7 @@ export const routes = [
   },
   { path: "/agents", element: <AgentsListView /> },
   { path: "/agents/new", element: <AgentEditorView /> },
-  //{ path: "/agents/:id", element: <AgentDetailView /> },
+  { path: "/agents/:id", element: <AgentEditorView /> },
   { path: "*", element: <TaskCreateView /> },
 ];
 

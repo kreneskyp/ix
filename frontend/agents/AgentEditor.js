@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
+  HStack,
   Tab,
   TabList,
   TabPanel,
@@ -92,11 +93,11 @@ export const AgentEditor = ({ agent }) => {
           </TabPanel>
         </TabPanels>
       </Tabs>
-      <Box width="100%" justify="right">
+      <HStack width="100%" justify="right" mt={5} mb={5}>
         <Button colorScheme="green" onClick={updateAgent}>
           Save
         </Button>
-      </Box>
+      </HStack>
     </Box>
   );
 };

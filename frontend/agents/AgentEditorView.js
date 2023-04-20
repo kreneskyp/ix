@@ -6,28 +6,31 @@ import { Heading, Spinner, VStack } from "@chakra-ui/react";
 import { NewAgentButton } from "agents/NewAgentButton";
 import { AgentEditor } from "agents/AgentEditor";
 import { usePreloadedQuery } from "react-relay/hooks";
+import { useParams } from "react-router-dom";
+import { AgentByIdQuery } from "agents/graphql/AgentByIdQuery";
 
-const AgentEditorShim = ({ queryRef }) => {
+const AgentEditorShim = ({ queryRef, agentId }) => {
   const { agent } = usePreloadedQuery(AgentByIdQuery, queryRef);
   return <AgentEditor agent={agent} />;
 };
 
-export const AgentEditorView = ({ agentId }) => {
+export const AgentEditorView = () => {
+  const { id } = useParams();
   let content;
-  if (agentId !== null) {
+  if (id !== undefined && id !== null) {
     const [queryRef, loadQuery] = useQueryLoader(AgentByIdQuery);
 
     useEffect(() => {
-      loadQuery({}, { fetchPolicy: "network-only" });
+      loadQuery({ id }, { fetchPolicy: "network-only" });
     }, []);
 
     if (!queryRef) {
       content = <Spinner />;
     } else {
-      content = <AgentEditorShim queryRef={queryRef} />;
+      content = <AgentEditorShim queryRef={queryRef} agentId={id} />;
     }
   } else {
-    content = <AgentEditor agentId={agentId} />;
+    content = <AgentEditor agentId={id} />;
   }
 
   return (
