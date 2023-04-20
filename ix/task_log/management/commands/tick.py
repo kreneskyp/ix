@@ -7,7 +7,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("-n", type=int, default=1, help="Number of ticks to run")
-        parser.add_argument("-t", "--task", type=int, help="Task id to load")
+        parser.add_argument("-t", "--task", type=str, help="Task id to load")
 
     def handle(self, *args, **options):
         # Set options
