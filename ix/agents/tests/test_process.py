@@ -105,7 +105,9 @@ class TestAgentProcessHistory(MessageTeardown):
         for history_msg in agent_process.history:
             assert history_msg != msg.as_message()
 
-    @pytest.mark.parametrize("content_type", ["FEEDBACK", "ASSISTANT"])
+    @pytest.mark.parametrize(
+        "content_type", ["FEEDBACK", "COMMAND", "EXECUTED", "EXECUTE_ERROR"]
+    )
     def test_query_message_includes_types(self, content_type, task):
         """Test that relevant messages are included in history"""
         msg = fake_task_log_msg_type(content_type, task=task)

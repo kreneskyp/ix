@@ -50,10 +50,12 @@ class AgentProcess:
     # NEXT_COMMAND = "GENERATE NEXT COMMAND JSON"
     NEXT_COMMAND = INITIAL_INPUT
     EXCLUDED_MSG_TYPES = {
-        "FEEDBACK_REQUEST",
         "AUTH_REQUEST",
         "AUTHORIZE",
         "AUTONOMOUS",
+        "FEEDBACK_REQUEST",
+        "THINK",
+        "THOUGHT",
         "SYSTEM",
     }
 
