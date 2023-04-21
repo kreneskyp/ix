@@ -2,6 +2,7 @@
 beautifulsoup4==4.12.2
 black==23.3.0
 celery==5.2.7
+celery-singleton==0.3.1
 channels==4.0.0
 channels_redis==4.1.0
 colorlog==6.5.0

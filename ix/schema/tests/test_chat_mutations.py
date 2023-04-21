@@ -62,7 +62,7 @@ class TestAuthorizeCommandMutation:
             "message_id": str(responding_to.id),
         }
 
-        mock_start_agent_loop.delay.assert_called_once_with(responding_to.task_id)
+        mock_start_agent_loop.delay.assert_called_once_with(str(responding_to.task_id))
 
 
 # graphql queries should be in the module scope
@@ -126,4 +126,4 @@ class TestTaskFeedbackMutation:
         }
 
         # Assert that the Celery task is dispatched
-        mock_start_agent_loop.delay.assert_called_once_with(task.id)
+        mock_start_agent_loop.delay.assert_called_once_with(str(task.id))

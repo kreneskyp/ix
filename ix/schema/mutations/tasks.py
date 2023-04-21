@@ -65,7 +65,7 @@ class CreateTaskMutation(graphene.Mutation):
         )
 
         # Start task loop
-        start_agent_loop.delay(task_id=task.id)
+        start_agent_loop.delay(task_id=str(task.id))
 
         return CreateTaskResponse(task=task)
 
@@ -104,7 +104,7 @@ class StartTaskMutation(graphene.Mutation):
     @handle_exceptions
     def mutate(self, info, task_id, n=1):
         task = Task.objects.get(pk=task_id)
-        start_agent_loop.delay(task_id=task.id)
+        start_agent_loop.delay(task_id=str(task.id))
 
         return StartTaskMutation(task=task)
 

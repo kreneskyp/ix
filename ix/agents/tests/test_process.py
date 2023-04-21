@@ -810,7 +810,7 @@ class TestAgentProcessTicks:
         command_output.assert_called_once_with("ECHO: this is a test")
 
     def test_tick_response_without_command_markers_invalid_json(
-            self, task, mock_openai, mock_embeddings
+        self, task, mock_openai, mock_embeddings
     ):
         """
         Command responses missing command markers will be parsed as JSON if possible.
