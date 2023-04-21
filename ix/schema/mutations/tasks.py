@@ -65,7 +65,7 @@ class CreateTaskMutation(graphene.Mutation):
         )
 
         # Start task loop
-        start_agent_loop.delay(task_id=task.id)
+        start_agent_loop.delay(task_id=str(task.id))
 
         return CreateTaskResponse(task=task)
 
@@ -93,3 +93,27 @@ class SetTaskAutonomousMutation(graphene.Mutation):
         )
 
         return SetTaskAutonomousMutation(task=task)
+
+
+class StartTaskMutation(graphene.Mutation):
+    task = graphene.Field(TaskType)
+
+    class Arguments:
+        task_id = graphene.UUID(required=True)
+
+    @handle_exceptions
+    def mutate(self, info, task_id, n=1):
+        task = Task.objects.get(pk=task_id)
+        start_agent_loop.delay(task_id=str(task.id))
+
+        return StartTaskMutation(task=task)
+
+
+class Mutation(graphene.ObjectType):
+    """
+    Aggregation of task mutations
+    """
+
+    create_task = CreateTaskMutation.Field()
+    start_task = StartTaskMutation.Field()
+    set_task_autonomous = SetTaskAutonomousMutation.Field()

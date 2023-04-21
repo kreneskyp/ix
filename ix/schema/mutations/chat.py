@@ -43,7 +43,7 @@ class AuthorizeCommandMutation(graphene.Mutation):
         logger.info(
             f"Requesting agent loop resume task_id={message.task_id} message_id={message.pk}"
         )
-        start_agent_loop.delay(responding_to.task_id)
+        start_agent_loop.delay(str(responding_to.task_id))
 
         return TaskLogMessageResponse(task_log_message=message)
 
@@ -88,6 +88,15 @@ class TaskFeedbackMutation(graphene.Mutation):
 
         # Start agent loop. This does NOT check if the loop is already running
         # the agent_runner task is responsible for blocking duplicate runners
-        start_agent_loop.delay(input.task_id)
+        start_agent_loop.delay(str(input.task_id))
 
         return TaskLogMessageResponse(task_log_message=message)
+
+
+class Mutation(graphene.ObjectType):
+    """
+    Aggregation of chat mutations
+    """
+
+    send_feedback = TaskFeedbackMutation.Field()
+    authorize_command = AuthorizeCommandMutation.Field()

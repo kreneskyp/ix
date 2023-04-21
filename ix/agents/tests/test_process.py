@@ -764,9 +764,14 @@ class TestAgentProcessTicks:
 
         command_output.assert_called_once_with("ECHO: this is a test")
 
-    def test_tick_response_without_command_markers(
-        self, task, mock_openai, mock_embeddings
+    def test_tick_response_without_command_markers_valid_command(
+        self, task, mock_openai, mock_embeddings, command_output
     ):
+        """
+        Command responses missing command markers will be parsed as JSON if possible.
+        Testing that a valid command is still executed.
+        """
+
         mock_reply = fake_command_reply()
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
@@ -780,6 +785,48 @@ class TestAgentProcessTicks:
         mock_content = mock_content.replace("###START###", "")
         mock_content = mock_content.replace("###END###", "")
         mock_response["choices"][0]["message"]["content"] = mock_content
+        mock_openai.return_value = mock_response
+        return_value = agent_process.tick(execute=True)
+
+        # return value is True because the loop should continue
+        assert return_value is True
+
+        assert query.count() == 4
+        think_msg = query[0]
+        thought_msg = query[1]
+        assert think_msg.content["type"] == "THINK"
+        assert thought_msg.content["type"] == "THOUGHT"
+
+        msg_1 = query[2]
+        msg_2 = query[3]
+        assert msg_1.role == "assistant"
+        assert msg_1.content["type"] == "COMMAND"
+        assert msg_1.content["thoughts"] == mock_reply.content["thoughts"]
+        assert msg_1.content["command"] == mock_reply.content["command"]
+        assert msg_2.role == "assistant"
+        assert msg_2.content["type"] == "EXECUTED"
+        assert msg_2.content["message_id"] == str(msg_1.id)
+
+        command_output.assert_called_once_with("ECHO: this is a test")
+
+    def test_tick_response_without_command_markers_invalid_json(
+        self, task, mock_openai, mock_embeddings
+    ):
+        """
+        Command responses missing command markers will be parsed as JSON if possible.
+        Testing that invalid JSON is handled correctly.
+        """
+
+        mock_reply = fake_command_reply()
+        mock_reply.delete()
+        query = TaskLogMessage.objects.filter(task=task)
+        assert query.count() == 0
+        agent_process = AgentProcess(
+            task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
+        )
+        # Remove command markers from mock reply
+        mock_response = msg_to_response(mock_reply)
+        mock_response["choices"][0]["message"]["content"] = "this is not valid json"
         mock_openai.return_value = mock_response
         return_value = agent_process.tick(execute=True)
 
