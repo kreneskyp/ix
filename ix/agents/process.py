@@ -296,10 +296,7 @@ class AgentProcess:
             command = self.command_registry.get(data["command"]["name"])
             logger.info(f"model returned task_id={self.task_id} command={command.name}")
             if execute:
-                try:
-                    return self.msg_execute(log_message)
-                except Exception as e:
-                    self.log_exception(e, think_msg, log_message)
+                return self.msg_execute(log_message)
             else:
                 logger.info(f"requesting user authorization task_id={self.task_id}")
                 self.request_user_auth(str(log_message.id))
@@ -334,6 +331,8 @@ You are {agent.name}, {agent.purpose}
     ):
         """Collection point for errors while ticking the loop"""
         message_id = log_msg.id if log_msg else None
+        assert isinstance(exception, Exception), exception
+        error_type = type(exception).__name__
         failure_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,
             parent_id=think_msg.id,
@@ -341,12 +340,12 @@ You are {agent.name}, {agent.purpose}
             content={
                 "type": "EXECUTE_ERROR",
                 "message_id": str(message_id),
-                "error_type": type(exception).__name__,
+                "error_type": error_type,
                 "text": str(exception),
             },
         )
         logger.error(
-            f"@@@@ EXECUTE ERROR logged as id={failure_msg.id} message_id={message_id} error_type={failure_msg.id}"
+            f"@@@@ EXECUTE ERROR logged as id={failure_msg.id} message_id={message_id} error_type={error_type}"
         )
         logger.error(f"@@@@ EXECUTE ERROR {failure_msg.content['text']}")
 
@@ -453,20 +452,24 @@ You are {agent.name}, {agent.purpose}
         )
         # TODO: notify pubsub
 
-    def msg_execute(self, message: TaskLogMessage):
-        name = message.content["command"]["name"]
-        kwargs = message.content["command"].get("args", {})
-        result = self.execute(name, **kwargs)
-        TaskLogMessage.objects.create(
-            task_id=self.task_id,
-            role="assistant",
-            content={
-                "type": "EXECUTED",
-                "message_id": str(message.id),
-                "output": f"{name} executed, result={result}",
-            },
-        )
-        return result
+    def msg_execute(self, cmd_message: TaskLogMessage):
+        name = cmd_message.content["command"]["name"]
+        kwargs = cmd_message.content["command"].get("args", {})
+        try:
+            result = self.execute(name, **kwargs)
+            TaskLogMessage.objects.create(
+                task_id=self.task_id,
+                role="assistant",
+                parent=cmd_message.parent,
+                content={
+                    "type": "EXECUTED",
+                    "message_id": str(cmd_message.id),
+                    "output": f"{name} executed, result={result}",
+                },
+            )
+        except Exception as e:
+            self.log_exception(e, cmd_message.parent, cmd_message)
+        return True
 
     def execute(self, name: str, **kwargs) -> Any:
         """
