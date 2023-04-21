@@ -1,4 +1,6 @@
 #! /bin/bash
 set -o errexit
 
-celery -A ix worker --loglevel=info
+CELERY_CONCURRENCY=${CELERY_CONCURRENCY:=1}
+
+celery -A ix worker --loglevel=info --concurrency=${CELERY_CONCURRENCY}
