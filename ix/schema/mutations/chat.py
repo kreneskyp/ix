@@ -91,3 +91,12 @@ class TaskFeedbackMutation(graphene.Mutation):
         start_agent_loop.delay(input.task_id)
 
         return TaskLogMessageResponse(task_log_message=message)
+
+
+class Mutation(graphene.ObjectType):
+    """
+    Aggregation of chat mutations
+    """
+
+    send_feedback = TaskFeedbackMutation.Field()
+    authorize_command = AuthorizeCommandMutation.Field()

@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Center } from "@chakra-ui/react";
+import {Box, Center, HStack} from "@chakra-ui/react";
 
 import { TaskProvider } from "tasks/contexts";
 import TaskLogMessageStream from "task_log/TaskLogMessageStream";
@@ -9,6 +9,7 @@ import AutonomousToggle from "chat/AutonomousToggle";
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 import { ScrollableBox } from "site/ScrollableBox";
 import TaskLogLeftPane from "task_log/TaskLogLeftPane";
+import RunButton from "chat/RunButton";
 
 export const TaskLogView = () => {
   const { id } = useParams();
@@ -41,7 +42,10 @@ export const TaskLogView = () => {
           <Box width={100}>
             <Suspense>
               <TaskProvider taskId={id}>
-                <AutonomousToggle />
+                <HStack>
+                  <RunButton />
+                  <AutonomousToggle />
+                </HStack>
               </TaskProvider>
             </Suspense>
           </Box>

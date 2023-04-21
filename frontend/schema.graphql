@@ -166,18 +166,61 @@ enum TaskLogTaskLogMessageRoleChoices {
   USER
 }
 
-"""Aggregation of graphql queries"""
+"""Aggregation of graphql mutations"""
 type Mutation {
+  sendFeedback(input: TaskFeedbackInput!): TaskFeedbackMutation
+  authorizeCommand(input: CommandAuthorizeInput!): AuthorizeCommandMutation
+  createTask(input: CreateTaskInput!): CreateTaskResponse
+  startTask(taskId: UUID!): StartTaskMutation
+  setTaskAutonomous(autonomous: Boolean!, taskId: UUID!): SetTaskAutonomousMutation
   createAgent(input: AgentInput!): CreateAgentMutation
   updateAgent(input: AgentInput!): UpdateAgentMutation
   deleteAgent(id: UUID!): DeleteAgentMutation
   createResource(input: ResourceInput!): CreateResourceMutation
   updateResource(input: ResourceInput!): UpdateResourceMutation
   deleteResource(id: UUID!): DeleteResourceMutation
-  createTask(input: CreateTaskInput!): CreateTaskResponse
-  sendFeedback(input: TaskFeedbackInput!): TaskFeedbackMutation
-  authorizeCommand(input: CommandAuthorizeInput!): AuthorizeCommandMutation
-  setTaskAutonomous(autonomous: Boolean!, taskId: UUID!): SetTaskAutonomousMutation
+}
+
+type TaskFeedbackMutation {
+  taskLogMessage: TaskLogMessageType
+  errors: [String]
+}
+
+input TaskFeedbackInput {
+  taskId: UUID!
+  feedback: String!
+}
+
+type AuthorizeCommandMutation {
+  taskLogMessage: TaskLogMessageType
+  errors: [String]
+}
+
+input CommandAuthorizeInput {
+  messageId: UUID!
+}
+
+type CreateTaskResponse {
+  task: TaskType
+}
+
+input CreateTaskInput {
+  name: String!
+  goals: [GoalInput]
+  agentId: UUID
+  autonomous: Boolean
+}
+
+input GoalInput {
+  description: String!
+}
+
+type StartTaskMutation {
+  task: TaskType
+}
+
+type SetTaskAutonomousMutation {
+  task: TaskType
 }
 
 type CreateAgentMutation {
@@ -219,42 +262,4 @@ type UpdateResourceMutation {
 
 type DeleteResourceMutation {
   success: Boolean
-}
-
-type CreateTaskResponse {
-  task: TaskType
-}
-
-input CreateTaskInput {
-  name: String!
-  goals: [GoalInput]
-  agentId: UUID
-  autonomous: Boolean
-}
-
-input GoalInput {
-  description: String!
-}
-
-type TaskFeedbackMutation {
-  taskLogMessage: TaskLogMessageType
-  errors: [String]
-}
-
-input TaskFeedbackInput {
-  taskId: UUID!
-  feedback: String!
-}
-
-type AuthorizeCommandMutation {
-  taskLogMessage: TaskLogMessageType
-  errors: [String]
-}
-
-input CommandAuthorizeInput {
-  messageId: UUID!
-}
-
-type SetTaskAutonomousMutation {
-  task: TaskType
 }
