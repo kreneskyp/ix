@@ -357,10 +357,15 @@ You are {agent.name}, {agent.purpose}
         end_index = response.find(end_marker)
 
         if start_index == -1 or end_index == -1:
-            raise MissingCommandMarkers
-
-        json_slice = response[start_index + len(start_marker) : end_index].strip()
-        data = json.loads(json_slice)
+            # before raising attempt to parse the response as json
+            # sometimes the AI returns responses that are still usable even without the markers
+            try:
+                data = json.loads(response)
+            except Exception:
+                raise MissingCommandMarkers
+        else:
+            json_slice = response[start_index + len(start_marker) : end_index].strip()
+            data = json.loads(json_slice)
 
         logger.debug(f"parsed message={data}")
         return data
