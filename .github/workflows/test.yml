@@ -44,6 +44,18 @@ jobs:
           path: docker-image.tar
           key: ${{ steps.load_image_url.outputs.image-url }}
 
+  dev_image:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run pytest
+        uses: ./.github/actions/run-docker
+        with:
+          # build frontend
+          # For now just testing that frontend builds
+          command: make frontend
+
   pytest:
     needs: build
     runs-on: ubuntu-latest
