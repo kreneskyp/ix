@@ -34,7 +34,7 @@ services:
       - redis
     volumes:
       - .:/var/app
-      #- .node_modules:/var/npm/node_modules
+      - .node_modules:/var/npm/node_modules
       - ./bin:/usr/bin/ix
       - .bash_profile:/root/.bash_profile
     env_file:
