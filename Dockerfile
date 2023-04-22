@@ -36,9 +36,7 @@ ENV PATH $PATH:$NODE_MODULES_BIN
 
 # NPM package installs
 RUN echo "[$NPM_DIR]"
-WORKDIR $NPM_DIR
 COPY package.json $NPM_DIR
-RUN npm install
 
 ENV WEBPACK_OUTPUT=/var/compiled-static
 
