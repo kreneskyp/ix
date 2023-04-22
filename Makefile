@@ -55,7 +55,12 @@ image: ${IMAGE_SENTINEL}
 
 # full frontend build
 .PHONY: frontend
-frontend: compose graphene_to_graphql compile_relay webpack
+frontend: compose npm_install graphene_to_graphql compile_relay webpack
+
+# install npm packages
+.PHONY: npm_install
+npm_install: compose
+	docker-compose run --rm sandbox npm install
 
 # compile javascript
 .PHONY: webpack
