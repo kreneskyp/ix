@@ -1,5 +1,9 @@
 # iX - Autonomous GPT-4 Agent Platform
 
+[![Unit Tests](https://img.shields.io/github/actions/workflow/status/kreneskyp/ix/test.yml)](https://github.com/kreneskyp/ix/actions/workflows/test.yml)
+[![Discord Server](https://dcbadge.vercel.app/api/server/jtrMKxzZZQ)](https://discord.gg/jtrMKxzZZQ)
+[![Twitter Follow](https://img.shields.io/twitter/follow/kreneskyp?style=social)](https://twitter.com/kreneskyp)
+
 <div>
 <img align="left" src="ix_350.png" alt="The ninth planet around the sun">
 <p>
@@ -40,18 +44,29 @@ You provide a task and goals and an agent uses that direction to investigate, pl
 capable of searching the web, writing code, creating images, interacting with other APIs and services. If it can be 
 coded, it's within the realm of possibility for an agent to assist.
 
-![Dialog for entering task name and goals](docs/create_task.png)
-![chat interface displaying log](docs/chat.png)
-![Agent options screen](docs/model_options.png)
+1. Start by create a task and goals for the agent to work towards.
+    ![Dialog for entering task name and goals](docs/create_task.png)
 
-**Note that this is an early version and should NOT be used in production. Agents require a human in the loop to provide
-direction and halt the process if it goes off the rails.**
+2. The agent will begin researching and planning to complete the task.
+    ![chat interface displaying log](docs/chat.png)
+
+3. The chat system provides an interaction model for the agent and user to communicate. The agent will respond to
+    user input and provide updates on its progress. The Agent will request additional information and authorization
+    from the user as needed.
+
+    ![chat interface displaying log](docs/chat_interactions.png)
+
+4. Agents are customizable and can be extended to support new functionality. The platform provides a plugin architecture
+    for adding new agents and customizing existing agents.
+    ![chat interface displaying log](docs/model_options.png)
+
+
 
 ## Key Features
 
 - Scalable model for running a fleet of GPT agents.
+- Responsive user interface. for interacting with agents.
 - Persistent storage of interactions, processes, and metrics.
-- Responsive user interface.
 - Message queue for agent jobs and inter-agent communication.
 - Extensible model for customizing agents.
 - Deployment using Docker.
