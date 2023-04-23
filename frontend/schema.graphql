@@ -2,6 +2,8 @@
 type Query {
   agent(id: UUID!): AgentType
   agents: [AgentType]
+  chat(id: UUID!): ChatType
+  chats: [ChatType]
   users: [UserType]
   tasks: [TaskType]
   taskLogMessages(taskId: UUID!): [TaskLogMessageType]
@@ -15,12 +17,15 @@ type AgentType {
   purpose: String!
   createdAt: DateTime!
   model: String!
+  agentClassPath: String!
   systemPrompt: String!
   commands: JSONString
   config: GenericScalar
   resources: [ResourceType!]!
   taskSet: [TaskType!]!
   tasklogmessageSet: [TaskLogMessageType!]!
+  leadingChats: [ChatType!]!
+  chats: [ChatType!]!
 }
 
 """
@@ -56,6 +61,7 @@ type ResourceType {
   type: AgentsResourceTypeChoices!
   config: JSONString!
   agent: AgentType!
+  chats: [ChatType!]!
 }
 
 enum AgentsResourceTypeChoices {
@@ -99,6 +105,18 @@ enum AgentsResourceTypeChoices {
   STREAM_PROCESSING
 }
 
+type ChatType {
+  id: UUID!
+  name: String!
+  createdAt: DateTime!
+  lead: AgentType!
+  agents: [AgentType!]!
+  tasks: [TaskType!]!
+  artifacts: [ArtifactType!]!
+  resources: [ResourceType!]!
+  task: TaskType!
+}
+
 type TaskType {
   id: UUID!
   name: String!
@@ -110,6 +128,9 @@ type TaskType {
   completeAt: DateTime
   autonomous: Boolean!
   tasklogmessageSet: [TaskLogMessageType!]!
+  artifacts: [ArtifactType!]!
+  chats: [ChatType!]!
+  leadingChats: [ChatType!]!
 }
 
 type UserType {
@@ -164,6 +185,18 @@ enum TaskLogTaskLogMessageRoleChoices {
 
   """user"""
   USER
+}
+
+type ArtifactType {
+  id: UUID!
+  task: TaskType!
+  key: String!
+  artifactType: String!
+  name: String!
+  description: String!
+  createdAt: DateTime!
+  reference: JSONString!
+  chats: [ChatType!]!
 }
 
 """Aggregation of graphql mutations"""

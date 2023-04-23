@@ -20,3 +20,9 @@ class TaskType(DjangoObjectType):
         fields = "__all__"
 
     goals = graphene.List(GoalType)
+
+
+class ArtifactType(DjangoObjectType):
+    class Meta:
+        model = Artifact
+        fields = "__all__"
