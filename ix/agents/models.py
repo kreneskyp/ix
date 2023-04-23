@@ -16,6 +16,7 @@ class Agent(models.Model):
 
     # model config
     model = models.CharField(max_length=255)
+    agent_class_path = models.CharField(max_length=255)
 
     # agent config
     system_prompt = models.TextField()

@@ -17,6 +17,11 @@ class Task(models.Model):
     complete_at = models.DateTimeField(null=True, blank=True)
     autonomous = models.BooleanField(default=True)
 
+    def get_agent_process(self):
+        from ix.agents.process import AgentProcess
+
+        return AgentProcess.from_task(self)
+
 
 class UserFeedback(TypedDict):
     type: str

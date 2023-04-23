@@ -95,6 +95,16 @@ class AgentProcess:
     def agent(self):
         return self.task.agent
 
+    @classmethod
+    def from_task(cls, task: Task) -> "AgentProcess":
+        """
+        Create an agent process from a task object. This will create an instance of the
+        agent class defined in the task and initialize it with the task id.
+        """
+        agent_class = import_class(task.agent.agent_class_path)
+        assert issubclass(agent_class, cls)
+        return agent_class(task_id=task.id)
+
     def query_message_history(self, since=None):
         """Fetch message history from persistent store for context relevant messages"""
 
