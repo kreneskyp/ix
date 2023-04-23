@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from ix.schema.mutations.chat import Mutation as ChatMutation
 from ix.schema.mutations.tasks import Mutation as TaskMutation
 from ix.schema.mutations.agents import Mutation as AgentMutation
+from ix.schema.types.chat import Query as ChatQuery
 from ix.schema.types.agents import Query as AgentQuery
 from ix.schema.types.auth import UserType
 from ix.schema.types.messages import TaskLogMessageType
@@ -14,7 +15,7 @@ from ix.task_log.models import Task, TaskLogMessage
 logger = logging.getLogger(__name__)
 
 
-class Query(AgentQuery, graphene.ObjectType):
+class Query(ChatQuery, AgentQuery, graphene.ObjectType):
     """
     Aggregation of graphql queries
     """
