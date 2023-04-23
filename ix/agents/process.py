@@ -15,8 +15,27 @@ from ix.utils.importlib import import_class
 from ix.utils.types import ClassPath
 
 
-class MissingCommandMarkers(Exception):
+class ResponseParseError(Exception):
+    """Exception thrown when response parsing fails"""
+
+
+class MissingCommandMarkers(ResponseParseError):
     """Exception thrown when command markers are missing from response"""
+
+
+class UnknownCommand(ResponseParseError):
+    """Exception thrown when command is not recognized"""
+
+
+class MissingCommand(ResponseParseError):
+    """Exception thrown when command is not present in parsed response"""
+
+
+class AgentQuestion(Exception):
+    """Exception thrown when the agent needs to ask a question"""
+
+    def __init__(self, message: str):
+        self.message = message
 
 
 # config defaults
@@ -248,19 +267,20 @@ class AgentProcess:
         logger.debug(f"Response from model, task_id={self.task_id} response={response}")
 
         try:
-            data = self.handle_response(response)
-        except MissingCommandMarkers as e:
-            # log parse error and retry
+            parsed_response = self.parse_response(think_msg, response)
+        except ResponseParseError as e:
+            # log parse error and return True to retry
+            # if the loop has more ticks remaining
             self.log_exception(e, think_msg)
             return True
-
-        # if bot asks a question then log it and exit.
-        if "question" in data:
+        except AgentQuestion as question:
+            # Agent returned a question that requires a response from the user.
+            # Abort normal execution and request INPUT from the user.
             TaskLogMessage.objects.create(
                 task_id=self.task_id,
                 parent_id=think_msg.id,
                 role="assistant",
-                content=dict(type="FEEDBACK_REQUEST", question=data["question"]),
+                content=dict(type="FEEDBACK_REQUEST", question=question.message),
             )
             return False
 
@@ -337,10 +357,8 @@ You are {agent.name}, {agent.purpose}
         self,
         exception: Exception,
         think_msg: TaskLogMessage,
-        log_msg: TaskLogMessage = None,
     ):
         """Collection point for errors while ticking the loop"""
-        message_id = log_msg.id if log_msg else None
         assert isinstance(exception, Exception), exception
         error_type = type(exception).__name__
         failure_msg = TaskLogMessage.objects.create(
@@ -416,6 +434,34 @@ You are {agent.name}, {agent.purpose}
         prompt.add(user_prompt)
 
         return prompt
+
+    def parse_response(
+        self, think_msg: TaskLogMessage, response: str
+    ) -> Dict[str, Any]:
+        # find the json
+        start_marker = "###START###"
+        end_marker = "###END###"
+        start_index = response.find(start_marker)
+        end_index = response.find(end_marker)
+
+        if start_index == -1 or end_index == -1:
+            # before raising attempt to parse the response as json
+            # sometimes the AI returns responses that are still usable even without the markers
+            try:
+                data = json.loads(response.strip())
+            except Exception as e:
+                raise MissingCommandMarkers
+        else:
+            json_slice = response[start_index + len(start_marker) : end_index].strip()
+            data = json.loads(json_slice)
+
+        logger.debug(f"parsed message={data}")
+        return data
+
+    def handle_response(self, execute: bool, response: Dict[str, Any]):
+        raise NotImplementedError(
+            "Agents must implement handle_response for the specific type of response they receive"
+        )
 
     def chat_with_ai(self, user_input) -> Tuple[TaskLogMessage, str]:
         prompt = self.build_prompt(user_input)

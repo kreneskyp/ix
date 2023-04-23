@@ -846,7 +846,6 @@ class TestAgentProcessTicks:
             "text": "",
             "type": "EXECUTE_ERROR",
             "error_type": "MissingCommandMarkers",
-            "message_id": "None",
         }
 
     def test_tick_response_with_question(self, task, mock_openai, mock_embeddings):
@@ -906,10 +905,9 @@ class TestAgentProcessTicks:
         assert msg_2.role == "system"
         assert msg_2.content["type"] == "EXECUTE_ERROR"
         assert msg_2.content == {
-            "text": "respond in the expected format",
+            "text": "",
             "type": "EXECUTE_ERROR",
-            "error_type": "missing command",
-            "message_id": str(msg_1.id),
+            "error_type": "MissingCommand",
         }
 
     def test_tick_command_name_not_in_response(
@@ -944,10 +942,9 @@ class TestAgentProcessTicks:
         assert msg_2.role == "system"
         assert msg_2.content["type"] == "EXECUTE_ERROR"
         assert msg_2.content == {
-            "text": "respond in the expected format",
+            "text": "",
             "type": "EXECUTE_ERROR",
-            "error_type": "missing command",
-            "message_id": str(msg_1.id),
+            "error_type": "MissingCommand",
         }
 
     def test_tick_command_args_not_in_response(
@@ -982,10 +979,9 @@ class TestAgentProcessTicks:
         assert msg_2.role == "system"
         assert msg_2.content["type"] == "EXECUTE_ERROR"
         assert msg_2.content == {
-            "text": "respond in the expected format",
+            "text": "",
             "type": "EXECUTE_ERROR",
-            "error_type": "missing command",
-            "message_id": str(msg_1.id),
+            "error_type": "MissingCommand",
         }
 
     def test_tick_unknown_command_in_response(self, task, mock_openai, mock_embeddings):
@@ -1018,10 +1014,9 @@ class TestAgentProcessTicks:
         assert msg_2.role == "system"
         assert msg_2.content["type"] == "EXECUTE_ERROR"
         assert msg_2.content == {
-            "text": "does_not_exist is not available",
+            "text": "does_not_exist is not a valid command",
             "type": "EXECUTE_ERROR",
-            "error_type": "unknown command",
-            "message_id": str(msg_1.id),
+            "error_type": "UnknownCommand",
         }
 
     def test_tick_command_failure(self, task, mock_openai, mock_embeddings):
