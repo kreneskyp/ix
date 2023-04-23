@@ -63,11 +63,13 @@ class ChatMessage(TypedDict):
 
 
 class AgentProcess:
-    INITIAL_INPUT = (
-        "Determine which next command to use, and respond in the expected format"
-    )
-    # NEXT_COMMAND = "GENERATE NEXT COMMAND JSON"
-    NEXT_COMMAND = INITIAL_INPUT
+    # the default prompt to use if not given FEEDBACK
+    NEXT_COMMAND = None
+
+    # indicates if the agent should be allowed to run autonomously
+    ALLOWS_AUTONOMOUS = True
+
+    # Messages useful for humans and debugging, but aren't included in the prompt context
     EXCLUDED_MSG_TYPES = {
         "AUTH_REQUEST",
         "AUTHORIZE",
@@ -94,7 +96,7 @@ class AgentProcess:
         # initial state
         self.task_id = task_id
         self.history = []
-        self.last_message_at = None
+        self.last_message = None
         self.memory = None
         self.autonomous = 0
 
@@ -144,14 +146,16 @@ class AgentProcess:
         Initial startup will load all history into memory. Subsequent updates will
         only load new messages.
         """
+
+        last_message_at = self.last_message.created_at if self.last_message else None
         logger.debug(
-            f"AgentProcess updating message history, last_message_at={self.last_message_at}"
+            f"AgentProcess updating message history, last_message_at={last_message_at}"
         )
 
         # fetch unseen messages and save the last timestamp for the next iteration
-        messages = list(self.query_message_history(self.last_message_at))
+        messages = list(self.query_message_history(last_message_at))
         if messages:
-            self.last_message_at = messages[-1].created_at
+            self.last_message = messages[-1]
         logger.debug(
             f"AgentProcess fetched n={len(messages)} messages from persistence"
         )
@@ -201,29 +205,30 @@ class AgentProcess:
         tick_input = self.NEXT_COMMAND
         authorized_for = n
         try:
-            last_message = TaskLogMessage.objects.filter(task_id=self.task_id).latest(
-                "created_at"
-            )
+            self.last_message = TaskLogMessage.objects.filter(
+                task_id=self.task_id
+            ).latest("created_at")
         except TaskLogMessage.DoesNotExist:
-            last_message = None
+            self.last_message = None
 
-        if not last_message:
+        if not self.last_message:
             logger.info(f"first tick for task_id={self.task_id}")
             tick_input = self.INITIAL_INPUT
             # TODO load initial auth from either message stream or task
-        elif last_message.content["type"] == "AUTHORIZE":
+
+        elif self.last_message.content["type"] == "AUTHORIZE":
             logger.info(f"resuming with user authorization for task_id={self.task_id}")
             # auth/feedback resume, run command that was authorized
             # by default only a single command is authorized.
-            authorized_for = last_message.content.get("n", 1) - 1
+            authorized_for = self.last_message.content.get("n", 1) - 1
             authorized_msg = TaskLogMessage.objects.get(
-                pk=last_message.content["message_id"]
+                pk=self.last_message.content["message_id"]
             )
             self.msg_execute(authorized_msg)
-        elif last_message.content["type"] in ["AUTH_REQUEST", "FEEDBACK_REQUEST"]:
+        elif self.last_message.content["type"] in ["AUTH_REQUEST", "FEEDBACK_REQUEST"]:
             # if last message is an unfulfilled feedback request then exit
             logger.info(
-                f"Exiting, missing response to type={last_message.content['type']}"
+                f"Exiting, missing response to type={self.last_message.content['type']}"
             )
             return True
 
