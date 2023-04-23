@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { useParams } from "react-router-dom";
-import {Box, Center, HStack} from "@chakra-ui/react";
+import { Box, Center, HStack } from "@chakra-ui/react";
 
 import { TaskProvider } from "tasks/contexts";
 import TaskLogMessageStream from "task_log/TaskLogMessageStream";
