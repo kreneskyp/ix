@@ -93,3 +93,45 @@ class TaskLogMessage(models.Model):
             "role": role.lower(),
             "content": content_str,
         }
+
+
+class Artifact(models.Model):
+    """
+    Artifacts represent an object or data created by an Agent. Artifacts are bits of information
+    that are either a user deliverable or an input to a further step.
+
+    This model stores precise information about the artifact. The artifact itself may be stored
+    elsewhere such as a filesystem or database.
+
+    References to artifacts may also be stored in vector databases for similarity search.
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="artifacts")
+    key = models.CharField(max_length=128)
+    artifact_type = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    reference = models.JSONField()
+
+
+class Plan(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
+class PlanSteps(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name="steps")
+    is_complete = models.BooleanField(default=False)
+    # agent = models.ForeignKey(Agent, on_delete=models.CASCADE, related_name="steps")
+    details = models.JSONField()
+
+    def __str__(self):
+        return f"{self.plan.name} step {self.order}"
