@@ -69,7 +69,7 @@ class TaskLogMessage(models.Model):
 
     def as_message(self):
         content = self.content.copy()
-        content.pop("type")
+        content_type = content.pop("type")
         # Map SYSTEM messages to USER role
         #
         # SYSTEM messages that are included as history must be converted to the USER role. SYSTEM is a special meaning
@@ -80,7 +80,16 @@ class TaskLogMessage(models.Model):
         else:
             role = self.role
 
+        # return content_type specific formatting to tune AI response
+        if content_type == "FEEDBACK":
+            content_str = content["feedback"]
+        elif content_type == "THINK":
+            content_str = content["input"]
+        else:
+            # default to dumping json datum
+            content_str = json.dumps(content, sort_keys=True)
+
         return {
             "role": role.lower(),
-            "content": json.dumps(content, sort_keys=True),
+            "content": content_str,
         }
