@@ -7,7 +7,6 @@ from functools import cached_property
 from typing import TypedDict, Optional, List, Any, Dict, Tuple
 
 from ix.agents.prompt_builder import PromptBuilder
-from ix.agents.prompts import COMMAND_FORMAT
 from ix.memory.plugin import VectorMemory
 from ix.task_log.models import Task, TaskLogMessage
 from ix.commands.registry import CommandRegistry
