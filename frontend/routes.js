@@ -5,6 +5,7 @@ import { TaskLogView } from "task_log/TaskLogView";
 import { TaskCreateView } from "tasks/TaskCreateView";
 import { AgentEditorView } from "agents/AgentEditorView";
 import { AgentsListView } from "agents/AgentsListView";
+import { ChatView } from "chat/ChatView";
 //import { UserSettingsView } from 'users/UserSettingsView';
 //import { AdminSettingsView } from 'admin/AdminSettingsView';
 
@@ -14,6 +15,10 @@ export const routes = [
   {
     path: "/tasks/chat/:id",
     element: <TaskLogView />,
+  },
+  {
+    path: "/chat/:id",
+    element: <ChatView />,
   },
   { path: "/agents", element: <AgentsListView /> },
   { path: "/agents/new", element: <AgentEditorView /> },

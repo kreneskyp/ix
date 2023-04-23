@@ -14,6 +14,7 @@ import { useColorMode } from "@chakra-ui/color-mode";
 import ExecuteErrorContent from "chat/ExecuteErrorContent";
 import ThoughtContent from "chat/ThoughtContent";
 import ThinkContent from "chat/ThinkContent";
+import { PlanContent } from "planner/PlanContent";
 
 const ChatMessage = ({ message }) => {
   const { colorMode } = useColorMode();
@@ -52,6 +53,9 @@ const ChatMessage = ({ message }) => {
       break;
     case "SYSTEM":
       contentComponent = <SystemContent content={content} />;
+      break;
+    case "ARTIFACT":
+      contentComponent = <PlanContent content={content} />;
       break;
     default:
       contentComponent = <div>{content.message}</div>;
