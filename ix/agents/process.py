@@ -294,55 +294,39 @@ class AgentProcess:
             )
             return False
 
-        # log command to persistent storage
-        log_message = TaskLogMessage.objects.create(
+        try:
+            # pass the parsed response as is. The specific agent process should know how
+            # to handle parsed responses that it created itself.
+            self.handle_response(execute, parsed_response)
+        except Exception as e:
+            # log exception and exit
+            self.log_exception(e, think_msg)
+            return False
+
+    def log_exception(
+        self,
+        exception: Exception,
+        think_msg: TaskLogMessage,
+    ):
+        """Collection point for errors while ticking the loop"""
+        assert isinstance(exception, Exception), exception
+        error_type = type(exception).__name__
+        failure_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,
             parent_id=think_msg.id,
-            role="assistant",
-            content=dict(type="COMMAND", **data),
+            role="system",
+            content={
+                "type": "EXECUTE_ERROR",
+                "error_type": error_type,
+                "text": str(exception),
+            },
         )
+        logger.error(
+            f"@@@@ EXECUTE ERROR logged as id={failure_msg.id} message_id={think_msg.pk} error_type={error_type}"
+        )
+        logger.error(f"@@@@ EXECUTE ERROR {failure_msg.content['text']}")
 
-        # validate command and then execute or seek feedback
-        if (
-            "command" not in data
-            or "name" not in data["command"]
-            or "args" not in data["command"]
-            or not data["command"]
-        ):
-            TaskLogMessage.objects.create(
-                task_id=self.task_id,
-                parent_id=think_msg.id,
-                role="system",
-                content={
-                    "type": "EXECUTE_ERROR",
-                    "message_id": str(log_message.id),
-                    "error_type": "missing command",
-                    "text": "respond in the expected format",
-                },
-            )
-        elif data["command"]["name"] not in self.command_registry.commands:
-            TaskLogMessage.objects.create(
-                task_id=self.task_id,
-                parent_id=think_msg.id,
-                role="system",
-                content={
-                    "type": "EXECUTE_ERROR",
-                    "message_id": str(log_message.id),
-                    "error_type": "unknown command",
-                    "text": f'{data["command"]["name"]} is not available',
-                },
-            )
-        else:
-            command = self.command_registry.get(data["command"]["name"])
-            logger.info(f"model returned task_id={self.task_id} command={command.name}")
-            if execute:
-                return self.msg_execute(log_message)
-            else:
-                logger.info(f"requesting user authorization task_id={self.task_id}")
-                self.request_user_auth(str(log_message.id))
-        return True
-
-    def construct_base_prompt(self):
+    def build_base_prompt(self):
         goals_clause = "\n".join(
             [f"{i+1}. {goal['description']}" for i, goal in enumerate(self.task.goals)]
         )
@@ -363,66 +347,22 @@ You are {agent.name}, {agent.purpose}
 {FORMAT_CLAUSE}
 """
 
-    def log_exception(
-        self,
-        exception: Exception,
-        think_msg: TaskLogMessage,
-    ):
-        """Collection point for errors while ticking the loop"""
-        assert isinstance(exception, Exception), exception
-        error_type = type(exception).__name__
-        failure_msg = TaskLogMessage.objects.create(
-            task_id=self.task_id,
-            parent_id=think_msg.id,
-            role="system",
-            content={
-                "type": "EXECUTE_ERROR",
-                "message_id": str(message_id),
-                "error_type": error_type,
-                "text": str(exception),
-            },
-        )
-        logger.error(
-            f"@@@@ EXECUTE ERROR logged as id={failure_msg.id} message_id={message_id} error_type={error_type}"
-        )
-        logger.error(f"@@@@ EXECUTE ERROR {failure_msg.content['text']}")
-
-    def handle_response(self, response: str) -> Dict[str, Any]:
-        # find the json
-        start_marker = "###START###"
-        end_marker = "###END###"
-        start_index = response.find(start_marker)
-        end_index = response.find(end_marker)
-
-        if start_index == -1 or end_index == -1:
-            # before raising attempt to parse the response as json
-            # sometimes the AI returns responses that are still usable even without the markers
-            try:
-                data = json.loads(response)
-            except Exception:
-                raise MissingCommandMarkers
-        else:
-            json_slice = response[start_index + len(start_marker) : end_index].strip()
-            data = json.loads(json_slice)
-
-        logger.debug(f"parsed message={data}")
-        return data
-
     def build_prompt(self, user_input: str) -> PromptBuilder:
-        assert user_input, "user_input is required"
         prompt = PromptBuilder(3000)
 
+        logger.error(f"building prompt for user_input={user_input}")
+
         # Add system prompt
-        system_prompt = {"role": "system", "content": self.construct_base_prompt()}
+        system_prompt = {"role": "system", "content": self.build_base_prompt()}
         prompt.add(system_prompt)
 
-        # Reinforcement
+        # Command Reinforcement
         reinforcement = [
             {
                 "role": "user",
                 "content": "respond with the expected format",
             },
-            {"role": "assistant", "content": COMMAND_FORMAT},
+            {"role": "assistant", "content": self.OUTPUT_FORMAT},
         ]
         for msg in reinforcement:
             prompt.add(msg)
@@ -522,30 +462,3 @@ You are {agent.name}, {agent.purpose}
             },
         )
         # TODO: notify pubsub
-
-    def msg_execute(self, cmd_message: TaskLogMessage):
-        name = cmd_message.content["command"]["name"]
-        kwargs = cmd_message.content["command"].get("args", {})
-        try:
-            result = self.execute(name, **kwargs)
-            TaskLogMessage.objects.create(
-                task_id=self.task_id,
-                role="assistant",
-                parent=cmd_message.parent,
-                content={
-                    "type": "EXECUTED",
-                    "message_id": str(cmd_message.id),
-                    "output": f"{name} executed, result={result}",
-                },
-            )
-        except Exception as e:
-            self.log_exception(e, cmd_message.parent, cmd_message)
-        return True
-
-    def execute(self, name: str, **kwargs) -> Any:
-        """
-        execute the command
-        """
-        logger.info(f"executing task_id={self.task_id} command={name} kwargs={kwargs}")
-        result = self.command_registry.call(name, **kwargs)
-        return result

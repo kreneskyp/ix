@@ -3,7 +3,9 @@ from unittest.mock import call
 
 import pytest
 import json
-from ix.agents.process import AgentProcess, DEFAULT_COMMANDS, DEFAULT_MEMORY
+
+from ix.agents.auto_agent import AutoAgent
+from ix.agents.process import DEFAULT_COMMANDS, DEFAULT_MEMORY, AgentProcess
 from ix.memory.redis import RedisVectorMemory
 from ix.task_log.models import TaskLogMessage
 from ix.task_log.tests.fake import (
@@ -56,9 +58,7 @@ class MockTicker:
         self.executes = []
         self.return_value = return_value
 
-    def __call__(
-        self, user_input: str = AgentProcess.NEXT_COMMAND, execute: bool = False
-    ):
+    def __call__(self, user_input: str = AutoAgent.NEXT_COMMAND, execute: bool = False):
         self.executes.append(execute)
         self.remaining -= 1
         # use toggle to stop autonomous mode
@@ -82,7 +82,7 @@ class MessageTeardown:
 @pytest.mark.django_db
 class TestAgentProcessInit:
     def test_init_with_defaults(self, task):
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         assert agent_process.task_id == task.id
         assert agent_process.memory_class == DEFAULT_MEMORY
         assert agent_process.command_modules == DEFAULT_COMMANDS
@@ -99,7 +99,7 @@ class TestAgentProcessHistory(MessageTeardown):
     def test_query_message_excludes_msgs(self, content_type, task):
         """Test that non-relevant messages are excluded from history"""
         msg = fake_task_log_msg_type(content_type, task=task)
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         agent_process.update_message_history()
 
         for history_msg in agent_process.history:
@@ -111,7 +111,7 @@ class TestAgentProcessHistory(MessageTeardown):
     def test_query_message_includes_types(self, content_type, task):
         """Test that relevant messages are included in history"""
         msg = fake_task_log_msg_type(content_type, task=task)
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         agent_process.update_message_history()
         assert len(agent_process.history) >= 1
         assert agent_process.history[-1] == msg.as_message()
@@ -120,7 +120,7 @@ class TestAgentProcessHistory(MessageTeardown):
         """Test querying all messages"""
         msg1 = fake_task_log_msg(task=task)
         msg2 = fake_task_log_msg(task=task)
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         messages = agent_process.query_message_history()
         assert messages.count() == 2
         assert messages.filter(id=msg1.id).exists()
@@ -130,7 +130,7 @@ class TestAgentProcessHistory(MessageTeardown):
         """Test querying new messages"""
         msg1 = fake_task_log_msg(task=task)
         msg2 = fake_task_log_msg(task=task)
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         messages = agent_process.query_message_history(since=msg1.created_at)
         assert messages.count() == 1
         assert not messages.filter(id=msg1.id).exists()
@@ -138,7 +138,7 @@ class TestAgentProcessHistory(MessageTeardown):
 
     def test_update_message_history_no_messages(self, task):
         """initializing history before there are messages"""
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         assert len(agent_process.history) == 0
 
         # still no messages
@@ -158,7 +158,7 @@ class TestAgentProcessHistory(MessageTeardown):
         assert not TaskLogMessage.objects.all().exists()
         msg1 = fake_task_log_msg(task=task, content=self.MSG_1).as_message()
         msg2 = fake_task_log_msg(task=task, content=self.MSG_2).as_message()
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         agent_process.update_message_history()
         assert len(agent_process.history) == 2
         assert agent_process.history[0] == msg1
@@ -185,7 +185,7 @@ class TestAgentProcessHistory(MessageTeardown):
         assert not TaskLogMessage.objects.all().exists()
         fake_task_log_msg(task=task, content=self.MSG_1)
         fake_task_log_msg(task=task, content=self.MSG_2)
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         agent_process.update_message_history()
         assert not agent_process.autonomous
 
@@ -214,7 +214,7 @@ class TestAgentProcessHistory(MessageTeardown):
         assert not TaskLogMessage.objects.all().exists()
         fake_task_log_msg(task=task, content=self.MSG_1)
         fake_task_log_msg(task=task, content=self.MSG_2)
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         agent_process.update_message_history()
         assert not agent_process.autonomous
 
@@ -253,7 +253,7 @@ class TestAgentProcessHistory(MessageTeardown):
         assert not TaskLogMessage.objects.all().exists()
         fake_task_log_msg(task=task, content=self.MSG_1)
         fake_task_log_msg(task=task, content=self.MSG_2)
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         agent_process.update_message_history()
         assert not agent_process.autonomous
 
@@ -273,35 +273,35 @@ class TestAgentProcessMemory:
         assert (
             custom_memory_class != DEFAULT_MEMORY
         ), "test shouldn't use the default memory as the custom option"
-        agent_process = AgentProcess(task_id=task.id, memory_class=custom_memory_class)
+        agent_process = AutoAgent(task_id=task.id, memory_class=custom_memory_class)
         assert agent_process.memory_class == custom_memory_class
 
     def test_initialize_memory_with_default_memory_class(self, task):
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         assert isinstance(agent_process.memory, RedisVectorMemory)
 
 
 @pytest.mark.django_db
 class TestAgentProcessCommands:
     def test_init_commands_with_default_command_modules(self, task):
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         agent_process.init_commands()
         assert len(agent_process.command_registry.commands) > 0
 
     def test_init_with_custom_command_modules(self, task, command_output):
         custom_command_modules = ["ix.agents.tests.echo_command"]
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=custom_command_modules
         )
         assert agent_process.command_modules == custom_command_modules
 
     def test_init_commands_invalid_command_module(self, task):
         with pytest.raises(ModuleNotFoundError, match="No module named 'non'"):
-            AgentProcess(task_id=task.id, command_modules=["non.existent.CommandClass"])
+            AutoAgent(task_id=task.id, command_modules=["non.existent.CommandClass"])
 
     def test_commands_execute(self, task, command_output):
         custom_command_modules = ["ix.agents.tests.echo_command"]
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=custom_command_modules
         )
 
@@ -313,7 +313,7 @@ class TestAgentProcessCommands:
         assert agent_process.execute("noop") is None
 
     def test_execute_command_not_found(self, task):
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         command_name = "NonExistentCommand"
         kwargs = {"arg1": "value1", "arg2": "value2"}
         with pytest.raises(
@@ -323,7 +323,7 @@ class TestAgentProcessCommands:
 
     def test_commands_execute_with_invalid_args(self, task, command_output):
         custom_command_modules = ["ix.agents.tests.echo_command"]
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=custom_command_modules
         )
         with pytest.raises(
@@ -340,7 +340,7 @@ class TestAgentProcessStart:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
@@ -371,7 +371,7 @@ class TestAgentProcessStart:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
@@ -424,7 +424,7 @@ class TestAgentProcessStart:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
@@ -496,7 +496,7 @@ class TestAgentProcessStart:
             task=task, created_at__gt=feedback_request.created_at
         )
 
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
@@ -516,7 +516,7 @@ class TestAgentProcessStart:
         )
         assert query.count() == 0
 
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
@@ -562,7 +562,7 @@ class TestAgentProcessStart:
         )
         assert query.count() == 0
 
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
@@ -592,7 +592,7 @@ class TestAgentProcessStart:
 
     def test_loop_autonomous(self, task, mock_openai):
         fake_autonomous_toggle(task=task, enabled=1)
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         agent_process.tick = MockTicker(agent_process, task)
         return_value = agent_process.start(n=3)
         assert return_value is False
@@ -608,7 +608,7 @@ class TestAgentProcessStart:
         yet reached the maximum number of ticks or is in autonomous mode.
         """
         fake_autonomous_toggle(task=task, enabled=1)
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         agent_process.tick = MockTicker(agent_process, task, return_value=False)
         return_value = agent_process.start(n=3)
         assert return_value is False
@@ -640,7 +640,7 @@ class TestAgentProcessTicks:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
@@ -672,7 +672,7 @@ class TestAgentProcessTicks:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
@@ -707,7 +707,7 @@ class TestAgentProcessTicks:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
@@ -740,7 +740,7 @@ class TestAgentProcessTicks:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
@@ -776,7 +776,7 @@ class TestAgentProcessTicks:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         # Remove command markers from mock reply
@@ -821,7 +821,7 @@ class TestAgentProcessTicks:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         # Remove command markers from mock reply
@@ -854,7 +854,7 @@ class TestAgentProcessTicks:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
@@ -881,7 +881,7 @@ class TestAgentProcessTicks:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         del mock_reply.content["command"]
@@ -917,7 +917,7 @@ class TestAgentProcessTicks:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_reply.content["command"] = {"args": []}
@@ -954,7 +954,7 @@ class TestAgentProcessTicks:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_reply.content["command"] = {"name": "echo"}
@@ -989,7 +989,7 @@ class TestAgentProcessTicks:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_reply.content["command"] = {"name": "does_not_exist", "args": []}
@@ -1024,7 +1024,7 @@ class TestAgentProcessTicks:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_reply.content["command"] = {"name": "fail", "args": {}}
@@ -1061,7 +1061,7 @@ class TestAgentProcessTicks:
         mock_reply.delete()
         query = TaskLogMessage.objects.filter(task=task)
         assert query.count() == 0
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_response = msg_to_response(mock_reply)
@@ -1130,7 +1130,7 @@ class TestAgentProcessAIChat:
         assert query.count() == 0
 
         mock_openai.return_value = msg_to_response(mock_reply)
-        agent_process = AgentProcess(task_id=task.id)
+        agent_process = AutoAgent(task_id=task.id)
         message = "Test message"
         agent_process.chat_with_ai(message)
         mock_openai.assert_called()
@@ -1158,19 +1158,19 @@ class TestAgentProcessPrompt:
             {"description": "Goal 2", "type": "GOAL"},
         ]
         task.save()
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
-        prompt = agent_process.construct_base_prompt()
+        prompt = agent_process.build_base_prompt()
         # just sanity checks for now
         assert prompt is not None
 
     def test_construct_prompt_for_task_without_goals(self, task):
         task.goals = []
         task.save()
-        agent_process = AgentProcess(
+        agent_process = AutoAgent(
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
-        prompt = agent_process.construct_base_prompt()
+        prompt = agent_process.build_base_prompt()
         # just sanity checks for now
         assert prompt is not None
