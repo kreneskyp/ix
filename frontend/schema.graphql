@@ -129,6 +129,8 @@ type TaskType {
   autonomous: Boolean!
   tasklogmessageSet: [TaskLogMessageType!]!
   artifacts: [ArtifactType!]!
+  createdPlans: [PlanType!]!
+  ranPlans: [PlanType!]!
   chats: [ChatType!]!
   leadingChats: [ChatType!]!
 }
@@ -197,6 +199,24 @@ type ArtifactType {
   createdAt: DateTime!
   reference: JSONString!
   chats: [ChatType!]!
+}
+
+type PlanType {
+  id: UUID!
+  creator: TaskType!
+  runner: TaskType
+  name: String!
+  description: String!
+  createdAt: DateTime!
+  isDraft: Boolean!
+  steps: [StepType!]!
+}
+
+type StepType {
+  id: UUID!
+  plan: PlanType!
+  isComplete: Boolean!
+  details: JSONString!
 }
 
 """Aggregation of graphql mutations"""

@@ -3,8 +3,7 @@ import logging
 import graphene
 from graphene_django import DjangoObjectType
 
-from ix.task_log.models import Task
-
+from ix.task_log.models import Task, Artifact, Plan, PlanSteps
 
 logger = logging.getLogger(__name__)
 
@@ -25,4 +24,16 @@ class TaskType(DjangoObjectType):
 class ArtifactType(DjangoObjectType):
     class Meta:
         model = Artifact
+        fields = "__all__"
+
+
+class PlanType(DjangoObjectType):
+    class Meta:
+        model = Plan
+        fields = "__all__"
+
+
+class StepType(DjangoObjectType):
+    class Meta:
+        model = PlanSteps
         fields = "__all__"

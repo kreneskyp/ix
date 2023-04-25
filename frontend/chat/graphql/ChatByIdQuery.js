@@ -28,6 +28,21 @@ export const ChatByIdQuery = graphql`
       }
       task {
         id
+        createdPlans {
+          id
+          name
+          description
+          createdAt
+          isDraft
+          steps {
+            id
+            isComplete
+            details
+          }
+          runner {
+            id
+          }
+        }
       }
     }
   }

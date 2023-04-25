@@ -1,6 +1,12 @@
 import React, { Suspense, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Center, HStack, Spinner } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  HStack,
+  Spinner,
+  VStack,
+} from "@chakra-ui/react";
 
 import { TaskProvider } from "tasks/contexts";
 import TaskLogMessageStream from "task_log/TaskLogMessageStream";
@@ -8,11 +14,13 @@ import FeedbackForm from "task_log/FeedbackInput";
 import AutonomousToggle from "chat/AutonomousToggle";
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 import { ScrollableBox } from "site/ScrollableBox";
-import TaskLogLeftPane from "task_log/TaskLogLeftPane";
 import RunButton from "chat/RunButton";
 import { useQueryLoader } from "react-relay";
 import { ChatByIdQuery } from "chat/graphql/ChatByIdQuery";
 import { usePreloadedQuery } from "react-relay/hooks";
+import { AgentProvider } from "agents/graphql/AgentProvider";
+import AgentCardModalButton from "agents/AgentCardModalButton";
+import SideBarGoalList from "chat/SideBarPlanList";
 
 export const ChatContentShim = ({ queryRef }) => {
   const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
@@ -56,9 +64,12 @@ export const ChatLeftPaneShim = ({ queryRef }) => {
 
   return (
     <Suspense>
-      <TaskProvider taskId={moderatorTask.id}>
-        <TaskLogLeftPane />
-      </TaskProvider>
+      <VStack spacing={4} align="stretch">
+        <AgentProvider agentId={chat.lead.id}>
+          <AgentCardModalButton />
+        </AgentProvider>
+        <SideBarGoalList queryRef={queryRef} />
+      </VStack>
     </Suspense>
   );
 };

@@ -65,6 +65,7 @@ class PlanningAgent(GenerativeAgentProcess):
         plan = Plan.objects.create(
             name=response["name"],
             description=response["description"],
+            creator=self.task,
         )
 
         for command in response["commands"]:

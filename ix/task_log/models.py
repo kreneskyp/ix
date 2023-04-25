@@ -123,9 +123,16 @@ class Artifact(models.Model):
 
 class Plan(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    creator = models.ForeignKey(
+        Task, on_delete=models.CASCADE, related_name="created_plans"
+    )
+    runner = models.ForeignKey(
+        Task, on_delete=models.CASCADE, null=True, related_name="ran_plans"
+    )
     name = models.CharField(max_length=255)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    is_draft = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
