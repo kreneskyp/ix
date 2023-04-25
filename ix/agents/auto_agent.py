@@ -107,7 +107,7 @@ class AutoAgent(AgentProcess):
                 },
             )
         except Exception as e:
-            self.log_exception(e, cmd_message.parent, cmd_message)
+            self.log_exception(e, cmd_message.parent)
         return True
 
     def execute(self, name: str, **kwargs) -> Any:
