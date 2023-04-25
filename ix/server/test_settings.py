@@ -1,7 +1,8 @@
-from ix.server.settings import *
+from ix.server.settings import *  # noqa:F403
+import logging
 
 
-LOGGING = LOGGING.copy()
+LOGGING = LOGGING.copy()  # noqa:F405
 LOGGING["loggers"] = {
     "ix": {
         "handlers": [],
