@@ -19,6 +19,7 @@ services:
       #- .node_modules:/var/npm/node_modules
       - ./bin:/usr/bin/ix
       - .bash_profile:/root/.bash_profile
+      - .ipython:/root/.ipython
     env_file:
       - .env
     environment:

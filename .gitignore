@@ -10,6 +10,7 @@ node_modules
 .coverage
 __generated__
 frontend/schema.graphql
+.ipython
 
 __pycache__
 
