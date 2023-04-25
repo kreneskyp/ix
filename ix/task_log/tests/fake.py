@@ -2,6 +2,8 @@ import uuid
 from datetime import datetime
 
 from django.contrib.auth.models import User
+
+from ix.chat.models import Chat
 from ix.task_log.models import Agent, Task, TaskLogMessage
 from faker import Faker
 
@@ -217,6 +219,38 @@ def fake_task_log_msg(**kwargs):
 
     task_log_message.save()
     return task_log_message
+
+
+def fake_planner():
+    agent = fake_agent(
+        name="Planner",
+        purpose="Plan tasks for other agents to perform",
+        agent_class_path="ix.agents.planning_agent.PlanningAgent",
+        system_prompt="",
+        commands=[],
+        config={
+            "temperature": 0.3,
+        },
+    )
+    return agent
+
+
+# default id so test chat is always the same URL. This will be needed until
+# UI has a start chat button
+DEFAULT_CHAT_ID = "f0034449-f226-44b2-9036-ca49f7d2348e"
+
+
+def fake_chat():
+    Agent.objects.filter(leading_chats__pk=DEFAULT_CHAT_ID).delete()
+    Chat.objects.filter(pk=DEFAULT_CHAT_ID).delete()
+
+    agent = fake_planner()
+    task = fake_task(agent=agent)
+    chat = Chat.objects.create(
+        id=DEFAULT_CHAT_ID, name="Test Chat", task=task, lead=agent
+    )
+
+    return chat
 
 
 def task_setup():
