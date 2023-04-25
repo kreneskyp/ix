@@ -6,20 +6,23 @@ from ix.task_log.models import TaskLogMessage, Plan, PlanSteps
 
 
 class PlanningAgent(GenerativeAgentProcess):
-    INSTRUCTION_CLAUSE = (
-        """
+    INSTRUCTION_CLAUSE = """
+
+        ARTIFACTS: Artifacts represent the results or consequences of executing a command or action.
+        They can be new objects created (e.g., code components, data, files) or changes to the system
+        or environment state (e.g., modified settings, enabled features, activated services).
+
         Generate a PLAN:
-            - use the available COMMANDS to build a PLAN for the GOALS.
-            - include a list of PREREQUISITES for each COMMAND.
-            - include a list of ARTIFACTS to store the result of a COMMAND.
+            - use the available COMMANDS to build a PLAN to complete the GOALS.
+            - include a list of required ARTIFACTS for each COMMAND
+            - include a list of ARTIFACTS the COMMAND produces.
+            - the plan's `goal_artifacts` should fulfill the goal
             - every COMMAND must produce at least one ARTIFACT representing a new object or state.
             - for each command consider how it will complete the GOALS.
-            - if you cannot determine a plan respond using the QUESTION_FORMAT
-            - if you cannot determine an input respond using the QUESTION_FORMAT
+            - If you cannot determine a plan or an input, respond using the QUESTION_FORMAT.
             - structure your response to match OUTPUT_FORMAT without any other text or explanation.
-            - OUTPUT_FORMAT must begin with ###START### and end with ###END###.
+            - output must include markers, begin with ###START### and end with ###END### .
         """
-    )
 
     OUTPUT_FORMAT = """
     ###START###
