@@ -9,6 +9,7 @@ node_modules
 .pyc
 .coverage
 __generated__
+frontend/schema.graphql
 
 __pycache__
 
