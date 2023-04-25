@@ -17,10 +17,13 @@ def fake_agent(**kwargs):
     name = kwargs.get("name", fake.unique.name())
     purpose = kwargs.get("purpose", fake.text())
     model = kwargs.get("model", "gpt-3.5-turbo")
-    system_prompt = kwargs.get("purpose", fake.text())
-    commands = kwargs.get("purpose", [])
+    agent_class_path = kwargs.get(
+        "agent_class_path", "ix.agents.planning_agent.PlanningAgent"
+    )
+    system_prompt = kwargs.get("system_prompt", "")
+    commands = kwargs.get("commands", [])
     config = kwargs.get(
-        "purpose",
+        "config",
         {
             "temperature": 0.9,
         },
