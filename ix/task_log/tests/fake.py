@@ -34,6 +34,7 @@ def fake_agent(**kwargs):
         system_prompt=system_prompt,
         commands=commands,
         config=config,
+        agent_class_path=agent_class_path,
     )
     return agent
 
@@ -105,10 +106,11 @@ def fake_execute(task: Task = None, message_id: uuid.UUID = None, **kwargs):
 def fake_feedback(
     task: Task = None, message_id: uuid.UUID = None, feedback: str = None, **kwargs
 ):
-    if not message_id:
+    content = {"type": "FEEDBACK", "feedback": feedback or "this is fake feedback"}
+    if not message_id and not message_id == -1:
         feedback_request = fake_feedback_request(task=task, question="test question")
-        message_id = feedback_request.id
-    content = {"type": "FEEDBACK", "message_id": str(message_id), "feedback": feedback}
+        content["message_id"] = str(feedback_request.id)
+
     return fake_task_log_msg(role="user", content=content, task=task, **kwargs)
 
 
