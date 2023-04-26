@@ -33,14 +33,12 @@ class PlanningAgent(GenerativeAgentProcess):
         "commands": [
             {
                 name: "step_name",
-                reason: "short description of why this step is needed",
                 "command": {
                     "name": "command name",
                     "args":{
                         "arg name": "value"
                     }
                 }
-                completes_goal: "goal_name"
                 requires_artifacts: ["artifact_name"]
                 produces_artifacts: ["artifact_name"]
             }
