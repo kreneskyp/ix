@@ -204,3 +204,5 @@ LOGGING = {
         },
     },
 }
+
+MOCK_CHAT_RESPONSE = os.environ.get("MOCK_CHAT_RESPONSE", False)

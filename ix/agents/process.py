@@ -406,12 +406,28 @@ class AgentProcess:
             },
         )
         start = time.time()
-        response = openai.ChatCompletion.create(
-            model=agent.model,
-            messages=prompt.messages,
-            temperature=agent.config["temperature"],
-            max_tokens=1000,
-        )
+
+        if settings.MOCK_CHAT_RESPONSE:
+            logger.debug("Sending mock response")
+            with open(settings.MOCK_CHAT_RESPONSE, "r") as f:
+                response = {
+                    "choices": [
+                        {"message": {"content": f"###START###{f.read()}###END###"}}
+                    ],
+                    "usage": {
+                        "prompt_tokens": 5,
+                        "completion_tokens": 7,
+                        "total_tokens": 12,
+                    },
+                }
+        else:
+            response = openai.ChatCompletion.create(
+                model=agent.model,
+                messages=prompt.messages,
+                temperature=agent.config["temperature"],
+                max_tokens=2000,
+            )
+
         end = time.time()
         TaskLogMessage.objects.create(
             task_id=self.task_id,
