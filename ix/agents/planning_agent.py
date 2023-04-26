@@ -55,9 +55,9 @@ class PlanningAgent(GenerativeAgentProcess):
         commands_clause = self.command_registry.command_prompt()
         return (
             f"""You are {agent.name}, {agent.purpose}\n\n"""
-            f"""INSTRUCTIONS:\n{self.INSTRUCTION_CLAUSE}\n\n"""
             f"""{commands_clause}\n\n"""
             f"""OUTPUT_FORMAT:\n{self.OUTPUT_FORMAT}"""
+            f"""INSTRUCTIONS:\n{self.INSTRUCTION_CLAUSE}\n\n"""
         )
 
     def save_artifacts(self, response: Dict[str, Any]):
