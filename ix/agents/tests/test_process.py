@@ -650,7 +650,7 @@ class TestAgentProcessTicks:
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
-        agent_process.tick(execute=False)
+        agent_process.tick(AutoAgent.NEXT_COMMAND, execute=False)
         assert query.count() == 4
         think_msg = query[0]
         thought_msg = query[1]
@@ -682,7 +682,7 @@ class TestAgentProcessTicks:
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
-        agent_process.tick(execute=True)
+        agent_process.tick(AutoAgent.NEXT_COMMAND, execute=True)
         assert query.count() == 4
         think_msg = query[0]
         thought_msg = query[1]
@@ -792,7 +792,7 @@ class TestAgentProcessTicks:
         mock_content = mock_content.replace("###END###", "")
         mock_response["choices"][0]["message"]["content"] = mock_content
         mock_openai.return_value = mock_response
-        return_value = agent_process.tick(execute=True)
+        return_value = agent_process.tick(AutoAgent.NEXT_COMMAND, execute=True)
 
         # return value is True because the loop should continue
         assert return_value is True
@@ -834,7 +834,7 @@ class TestAgentProcessTicks:
         mock_response = msg_to_response(mock_reply)
         mock_response["choices"][0]["message"]["content"] = "this is not valid json"
         mock_openai.return_value = mock_response
-        return_value = agent_process.tick(execute=True)
+        return_value = agent_process.tick(AutoAgent.NEXT_COMMAND, execute=True)
 
         # return value is True because the loop should continue
         assert return_value is True
@@ -864,7 +864,7 @@ class TestAgentProcessTicks:
             task_id=task.id, command_modules=["ix.agents.tests.echo_command"]
         )
         mock_openai.return_value = msg_to_response(mock_reply)
-        return_value = agent_process.tick(execute=True)
+        return_value = agent_process.tick(AutoAgent.NEXT_COMMAND, execute=True)
 
         # return value is False because the loop should exit even
         # if in autonomous mode. The user should be prompted to
@@ -892,7 +892,7 @@ class TestAgentProcessTicks:
         )
         del mock_reply.content["command"]
         mock_openai.return_value = msg_to_response(mock_reply)
-        return_value = agent_process.tick(execute=True)
+        return_value = agent_process.tick(AutoAgent.NEXT_COMMAND, execute=True)
 
         # return value is True because the loop should continue
         assert return_value is True
@@ -928,7 +928,7 @@ class TestAgentProcessTicks:
         )
         mock_reply.content["command"] = {"args": []}
         mock_openai.return_value = msg_to_response(mock_reply)
-        return_value = agent_process.tick(execute=True)
+        return_value = agent_process.tick(AutoAgent.NEXT_COMMAND, execute=True)
 
         # return value is True because the loop should continue
         assert return_value is True
@@ -965,7 +965,7 @@ class TestAgentProcessTicks:
         )
         mock_reply.content["command"] = {"name": "echo"}
         mock_openai.return_value = msg_to_response(mock_reply)
-        return_value = agent_process.tick(execute=True)
+        return_value = agent_process.tick(AutoAgent.NEXT_COMMAND, execute=True)
 
         # return value is True because the loop should continue
         assert return_value is True
@@ -1000,7 +1000,7 @@ class TestAgentProcessTicks:
         )
         mock_reply.content["command"] = {"name": "does_not_exist", "args": []}
         mock_openai.return_value = msg_to_response(mock_reply)
-        return_value = agent_process.tick(execute=True)
+        return_value = agent_process.tick(AutoAgent.NEXT_COMMAND, execute=True)
 
         # return value is True because the loop should continue
         assert return_value is True
@@ -1035,7 +1035,7 @@ class TestAgentProcessTicks:
         )
         mock_reply.content["command"] = {"name": "fail", "args": {}}
         mock_openai.return_value = msg_to_response(mock_reply)
-        return_value = agent_process.tick(execute=True)
+        return_value = agent_process.tick(AutoAgent.NEXT_COMMAND, execute=True)
 
         # return value is True because the loop should continue
         assert return_value is True
@@ -1090,14 +1090,14 @@ class TestAgentProcessTicks:
         # isn't loaded until the next tick.
 
         # first tick starts with no history
-        agent_process.tick(execute=False)
+        agent_process.tick(AutoAgent.NEXT_COMMAND, execute=False)
         assert query.all().count() == 4
         message_types = list(query.values_list("content__type", flat=True))
         assert message_types == ["THINK", "THOUGHT", "COMMAND", "AUTH_REQUEST"]
         assert agent_process.history == []
 
         # tick again adds THINK and COMMAND from first tick
-        agent_process.tick(execute=False)
+        agent_process.tick(AutoAgent.NEXT_COMMAND, execute=False)
         assert query.all().count() == 8
         message_types = list(query.values_list("content__type", flat=True))
         assert message_types == [
@@ -1116,7 +1116,7 @@ class TestAgentProcessTicks:
         ]
 
         # tick with new messages
-        agent_process.tick(execute=False)
+        agent_process.tick(AutoAgent.NEXT_COMMAND, execute=False)
         assert query.all().count() == 12
         assert agent_process.history == [
             mock_user_chat_message,

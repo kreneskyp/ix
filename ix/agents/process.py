@@ -46,6 +46,9 @@ class ChatMessage(TypedDict):
 
 
 class AgentProcess:
+    # initial command when first starting
+    INITIAL_INPUT = None
+
     # the default prompt to use if not given FEEDBACK
     NEXT_COMMAND = None
 
@@ -234,14 +237,16 @@ class AgentProcess:
         :param tick_input: initial input for first tick
         :return:
         """
+        loop_input = tick_input
         for i in range(n + 1):
             execute = self.autonomous or i < n
-            if not self.tick(execute=execute):
+            if not self.tick(execute=execute, user_input=loop_input):
                 logger.info("exiting loop, tick=False")
                 return False
+            loop_input = self.NEXT_COMMAND
         return True
 
-    def tick(self, user_input: str = NEXT_COMMAND, execute: bool = False) -> bool:
+    def tick(self, user_input: Optional[str] = None, execute: bool = False) -> bool:
         """
         "tick" the agent loop letting it chat and run commands. The chat interaction
         including feedback requests, authorization requests, command results, and
@@ -350,15 +355,19 @@ class AgentProcess:
         prompt.add_max(memories, max_tokens=2500)
 
         # User prompt
-        user_prompt = {"role": "user", "content": user_input}
-        user_prompt_length = prompt.count_tokens([user_prompt])
+        if user_input:
+            user_prompt = {"role": "user", "content": user_input}
+            user_prompt_length = prompt.count_tokens([user_prompt])
+        else:
+            user_prompt_length = 0
 
         # Add history
         logger.debug(f"history contains n={len(self.history)}")
         prompt.add_max(self.history, max_tokens=500 - user_prompt_length)
 
         # add user prompt
-        prompt.add(user_prompt)
+        if user_input:
+            prompt.add(user_prompt)
 
         return prompt
 
@@ -396,7 +405,9 @@ class AgentProcess:
     def chat_with_ai(self, user_input) -> Tuple[TaskLogMessage, str]:
         prompt = self.build_prompt(user_input)
         agent = self.task.agent
-        logger.info(f"Sending request to model {agent.model}")
+
+        logger.info(f"Sending request to model={agent.model} prompt={user_input}")
+
         think_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,
             role="system",
