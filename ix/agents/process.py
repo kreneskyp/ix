@@ -6,35 +6,19 @@ import openai
 from functools import cached_property
 from typing import TypedDict, Optional, List, Any, Dict, Tuple
 
+from ix.agents.exceptions import (
+    ResponseParseError,
+    AgentQuestion,
+    AuthRequired,
+    MissingCommandMarkers,
+)
 from ix.agents.prompt_builder import PromptBuilder
 from ix.memory.plugin import VectorMemory
+from ix.server import settings
 from ix.task_log.models import Task, TaskLogMessage
 from ix.commands.registry import CommandRegistry
 from ix.utils.importlib import import_class
 from ix.utils.types import ClassPath
-
-
-class ResponseParseError(Exception):
-    """Exception thrown when response parsing fails"""
-
-
-class MissingCommandMarkers(ResponseParseError):
-    """Exception thrown when command markers are missing from response"""
-
-
-class UnknownCommand(ResponseParseError):
-    """Exception thrown when command is not recognized"""
-
-
-class MissingCommand(ResponseParseError):
-    """Exception thrown when command is not present in parsed response"""
-
-
-class AgentQuestion(Exception):
-    """Exception thrown when the agent needs to ask a question"""
-
-    def __init__(self, message: str):
-        self.message = message
 
 
 # config defaults
@@ -296,7 +280,11 @@ class AgentProcess:
         try:
             # pass the parsed response as is. The specific agent process should know how
             # to handle parsed responses that it created itself.
-            self.handle_response(execute, parsed_response)
+            return self.handle_response(execute, parsed_response)
+        except AuthRequired as e:
+            self.request_user_auth(think_msg, e.message)
+            return False
+
         except Exception as e:
             # log exception and exit
             self.log_exception(e, think_msg)
@@ -398,11 +386,14 @@ You are {agent.name}, {agent.purpose}
             # sometimes the AI returns responses that are still usable even without the markers
             try:
                 data = json.loads(response.strip())
-            except Exception as e:
+            except Exception:
                 raise MissingCommandMarkers
         else:
             json_slice = response[start_index + len(start_marker) : end_index].strip()
             data = json.loads(json_slice)
+
+        if "question" in data:
+            raise AgentQuestion(data["question"])
 
         logger.debug(f"parsed message={data}")
         return data
@@ -448,16 +439,19 @@ You are {agent.name}, {agent.purpose}
         logger.debug(f"adding history history_messages={history_messages}")
         self.history.extend(history_messages)
 
-    def request_user_auth(self, message_id):
+    def request_user_auth(self, think_msg: TaskLogMessage, message: TaskLogMessage):
         """
         Request user input to authorize command.
         """
+        logger.info(
+            f"requesting user authorization task_id={self.task_id} message_id={message.id}"
+        )
         TaskLogMessage.objects.create(
             task_id=self.task_id,
+            parent=think_msg,
             role="assistant",
             content={
                 "type": "AUTH_REQUEST",
-                "message_id": message_id,
+                "message_id": str(message.id),
             },
         )
-        # TODO: notify pubsub

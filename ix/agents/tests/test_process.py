@@ -345,7 +345,7 @@ class TestAgentProcessStart:
         )
         mock_openai.return_value = msg_to_response(mock_reply)
         return_value = agent_process.start()
-        assert return_value is True
+        assert return_value is False
         assert query.count() == 4
 
         think_msg = query[0]
@@ -379,7 +379,7 @@ class TestAgentProcessStart:
         # start process
         # TODO: update testing for initial startup
         return_value = agent_process.start(n=1)
-        assert return_value is True
+        assert return_value is False
 
         # first command is authorized
         assert query.count() == 8
@@ -432,7 +432,7 @@ class TestAgentProcessStart:
         # start process
         # TODO: update testing for initial startup
         return_value = agent_process.start(n=2)
-        assert return_value is True
+        assert return_value is False
 
         # first command is authorized
         assert query.count() == 12
@@ -490,6 +490,7 @@ class TestAgentProcessStart:
         ]
 
     def test_restart_task_with_auth_for_none(self, task, mock_openai):
+        """Restarting task when task is waiting for AUTHORIZE does nothing"""
         mock_reply = fake_command_reply(task=task)
         feedback_request = fake_feedback_request(task=task, message_id=mock_reply.id)
         query = TaskLogMessage.objects.filter(
@@ -523,7 +524,7 @@ class TestAgentProcessStart:
 
         # start process
         return_value = agent_process.start()
-        assert return_value is True
+        assert return_value is False
         assert query.count() == 5
         think1_msg = query[1]
         thought1_msg = query[2]
@@ -554,6 +555,11 @@ class TestAgentProcessStart:
     def test_restart_task_with_feedback_and_auth_for_none(
         self, task, mock_openai, mock_embeddings
     ):
+        """
+        Restarting the feedback will trigger a THINK but doesn't AUTHORIZE
+        the command to proceed. An AUTH_REQUEST will be sent for the command
+        """
+
         # TODO: test injection of feedback into loop, i.e. is it in context
         mock_reply = fake_command_reply()
         mock_feedback = fake_feedback(task=task, message_id=mock_reply.id)
@@ -569,7 +575,7 @@ class TestAgentProcessStart:
 
         # start process
         return_value = agent_process.start()
-        assert return_value is True
+        assert return_value is False
         assert query.count() == 4
         think_msg = query[0]
         thought_msg = query[1]
@@ -1052,7 +1058,6 @@ class TestAgentProcessTicks:
             "text": "This is a test failure",
             "type": "EXECUTE_ERROR",
             "error_type": "Exception",
-            "message_id": str(msg_1.id),
         }
 
     def test_tick_updates_history(self, task, mock_openai, mock_embeddings):

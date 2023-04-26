@@ -1,7 +1,8 @@
 import logging
 from typing import Any, Dict
 
-from ix.agents.process import AgentProcess, MissingCommand, UnknownCommand
+from ix.agents.process import AgentProcess
+from ix.agents.exceptions import MissingCommand, UnknownCommand, AuthRequired
 from ix.agents.prompts import COMMAND_FORMAT
 from ix.task_log.models import TaskLogMessage
 
@@ -88,8 +89,7 @@ class AutoAgent(AgentProcess):
         if execute:
             return self.msg_execute(cmd_message)
         else:
-            logger.info(f"requesting user authorization task_id={self.task_id}")
-            self.request_user_auth(str(cmd_message.id))
+            raise AuthRequired(cmd_message)
 
     def msg_execute(self, cmd_message: TaskLogMessage) -> bool:
         name = cmd_message.content["command"]["name"]
