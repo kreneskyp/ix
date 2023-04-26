@@ -256,8 +256,16 @@ class AgentProcess:
         )
         self.update_message_history()
         logger.info(f"ticking task_id={self.task_id}")
-        think_msg, response = self.chat_with_ai(user_input)
-        logger.debug(f"Response from model, task_id={self.task_id} response={response}")
+
+        try:
+            think_msg, response = self.chat_with_ai(user_input)
+            logger.debug(
+                f"Response from model, task_id={self.task_id} response={response}"
+            )
+        except Exception as e:
+            # exception was already logged, just exit for retry
+            self.log_exception(e)
+            return True
 
         try:
             parsed_response = self.parse_response(think_msg, response)
