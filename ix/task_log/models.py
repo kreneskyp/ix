@@ -55,7 +55,9 @@ class TaskLogMessage(models.Model):
 
     # message metadata
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    task = models.ForeignKey(Task, default=None, on_delete=models.CASCADE)
+    task = models.ForeignKey(
+        Task, default=None, on_delete=models.CASCADE, related_name="messages"
+    )
     agent = models.ForeignKey(Agent, null=True, default=None, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     parent = models.ForeignKey(

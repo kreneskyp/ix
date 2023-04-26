@@ -23,7 +23,9 @@ class Chat(models.Model):
     artifacts = models.ManyToManyField(Artifact, related_name="chats")
     resources = models.ManyToManyField(Resource, related_name="chats")
 
-    # TODO: this is a placeholder for now until TaskLogMessage can be converted to ChatMessage
+    # A chat has a root task that runs either a solo agent, chain, or moderator
+    # The capability of the chat room is based on this root task that will process
+    # the stream of messages.
     task = models.ForeignKey(
         Task, on_delete=models.CASCADE, related_name="leading_chats"
     )

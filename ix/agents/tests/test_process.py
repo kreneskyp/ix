@@ -1082,7 +1082,7 @@ class TestAgentProcessTicks:
             "role": "assistant",
         }
         mock_user_chat_message = {
-            "content": '{"input": "Determine which next command to use, and respond in the expected format"}',
+            "content": "Determine which next command to use, and respond in the expected format",
             "role": "user",
         }
 
