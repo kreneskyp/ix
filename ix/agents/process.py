@@ -322,25 +322,7 @@ class AgentProcess:
         logger.error(f"@@@@ EXECUTE ERROR {failure_msg.content['text']}")
 
     def build_base_prompt(self):
-        goals_clause = "\n".join(
-            [f"{i+1}. {goal['description']}" for i, goal in enumerate(self.task.goals)]
-        )
-        commands_clause = self.command_registry.command_prompt()
-        agent = self.agent
-        from ix.agents.prompts import CONSTRAINTS_CLAUSE
-        from ix.agents.prompts import RESOURCES_CLAUSE
-        from ix.agents.prompts import SELF_EVALUATION_CLAUSE
-        from ix.agents.prompts import FORMAT_CLAUSE
-
-        return f"""
-You are {agent.name}, {agent.purpose}
-{goals_clause}
-{CONSTRAINTS_CLAUSE}
-{commands_clause}
-{RESOURCES_CLAUSE}
-{SELF_EVALUATION_CLAUSE}
-{FORMAT_CLAUSE}
-"""
+        raise NotImplementedError("Agents must implement their own base prompt")
 
     def build_prompt(self, user_input: str) -> PromptBuilder:
         prompt = PromptBuilder(3000)
