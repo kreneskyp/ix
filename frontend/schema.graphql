@@ -127,7 +127,7 @@ type TaskType {
   createdAt: DateTime!
   completeAt: DateTime
   autonomous: Boolean!
-  tasklogmessageSet: [TaskLogMessageType!]!
+  messages: [TaskLogMessageType!]!
   artifacts: [ArtifactType!]!
   createdPlans: [PlanType!]!
   ranPlans: [PlanType!]!

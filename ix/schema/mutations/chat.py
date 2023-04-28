@@ -88,7 +88,7 @@ class TaskFeedbackMutation(graphene.Mutation):
 
         # Start agent loop. This does NOT check if the loop is already running
         # the agent_runner task is responsible for blocking duplicate runners
-        start_agent_loop.delay(str(input.task_id))
+        start_agent_loop.delay(str(input.task_id), input_id=message.id)
 
         return TaskLogMessageResponse(task_log_message=message)
 

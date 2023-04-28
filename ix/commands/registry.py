@@ -101,7 +101,7 @@ class CommandRegistry:
         clauses = "\n".join(
             [f"{idx + 1}. {str(cmd)}" for idx, cmd in enumerate(commands)]
         )
-        return f"COMMANDS: \n\n{clauses}"
+        return clauses
 
     def import_commands(self, module_name: str) -> None:
         """

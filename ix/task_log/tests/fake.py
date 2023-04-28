@@ -230,7 +230,7 @@ def fake_planner():
     agent = fake_agent(
         name="Planner",
         purpose="Plan tasks for other agents to perform",
-        agent_class_path="ix.agents.planning_agent.PlanningAgent",
+        agent_class_path="ix.agents.process.AgentProcess",
         system_prompt="",
         commands=[],
         config={
@@ -253,6 +253,10 @@ def fake_chat():
     task = fake_task(agent=agent)
     chat = Chat.objects.create(
         id=DEFAULT_CHAT_ID, name="Test Chat", task=task, lead=agent
+    )
+
+    fake_feedback(
+        task=task, feedback="create a django app for cat memes", message_id=-1
     )
 
     return chat

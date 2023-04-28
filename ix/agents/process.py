@@ -1,22 +1,21 @@
 import logging
 import json
 import time
+import uuid
 
-import openai
 from functools import cached_property
-from typing import TypedDict, Optional, List, Any, Dict, Tuple
+from typing import TypedDict, Optional, Any, Dict, Tuple
 
+from langchain.chains.base import Chain
+
+from ix.agents.callback_manager import IxCallbackManager
 from ix.agents.exceptions import (
-    ResponseParseError,
     AgentQuestion,
     AuthRequired,
-    MissingCommandMarkers,
 )
-from ix.agents.prompt_builder import PromptBuilder
 from ix.memory.plugin import VectorMemory
 from ix.server import settings
 from ix.task_log.models import Task, TaskLogMessage
-from ix.commands.registry import CommandRegistry
 from ix.utils.importlib import import_class
 from ix.utils.types import ClassPath
 
@@ -65,19 +64,15 @@ class AgentProcess:
         "SYSTEM",
     }
 
-    command_registry: CommandRegistry
-
     def __init__(
         self,
         task_id: int,
         memory_class: ClassPath = DEFAULT_MEMORY,
-        command_modules: List[ClassPath] = DEFAULT_COMMANDS,
     ):
         logger.info(f"AgentProcess initializing task_id={task_id}")
 
         # agent config
         self.memory_class = memory_class
-        self.command_modules = command_modules
 
         # initial state
         self.task_id = task_id
@@ -85,9 +80,6 @@ class AgentProcess:
         self.last_message = None
         self.memory = None
         self.autonomous = 0
-
-        # agent init
-        self.init_commands()
 
         # task int
         self.update_message_history()
@@ -179,21 +171,12 @@ class AgentProcess:
         self.memory = memory_class("ix-agent")
         self.memory.clear()
 
-    def init_commands(self):
-        """Load commands for this agent"""
-        logger.debug("initializing commands")
-        self.command_registry = CommandRegistry()
-        for class_path in self.command_modules:
-            self.command_registry.import_commands(class_path)
-
-        logger.info("intialized command registry")
-
-    def start(self, n: int = 0) -> bool:
+    def start(self, input_id: Optional[uuid.UUID] = None, n: int = 0) -> bool:
         """
         start agent loop and process `n` authorized ticks.
         """
         logger.info(f"starting process loop task_id={self.task_id}")
-        tick_input = self.NEXT_COMMAND
+        tick_input = None
         authorized_for = n
         try:
             self.last_message = TaskLogMessage.objects.filter(
@@ -206,7 +189,11 @@ class AgentProcess:
             logger.info(f"first tick for task_id={self.task_id}")
             tick_input = self.INITIAL_INPUT
             # TODO load initial auth from either message stream or task
-
+        elif input_id is not None:
+            message = TaskLogMessage.objects.get(id=input_id)
+            tick_input = message.content["feedback"]
+        elif self.last_message.content["type"] == "FEEDBACK":
+            tick_input = self.last_message.content["feedback"]
         elif self.last_message.content["type"] == "AUTHORIZE":
             logger.info(f"resuming with user authorization for task_id={self.task_id}")
             # auth/feedback resume, run command that was authorized
@@ -267,18 +254,7 @@ class AgentProcess:
             logger.debug(
                 f"Response from model, task_id={self.task_id} response={response}"
             )
-        except Exception as e:
-            # exception was already logged, just exit for retry
-            self.log_exception(e)
-            return True
 
-        try:
-            parsed_response = self.parse_response(think_msg, response)
-        except ResponseParseError as e:
-            # log parse error and return True to retry
-            # if the loop has more ticks remaining
-            self.log_exception(e, think_msg)
-            return True
         except AgentQuestion as question:
             # Agent returned a question that requires a response from the user.
             # Abort normal execution and request INPUT from the user.
@@ -290,30 +266,28 @@ class AgentProcess:
             )
             return False
 
-        try:
-            # pass the parsed response as is. The specific agent process should know how
-            # to handle parsed responses that it created itself.
-            return self.handle_response(execute, parsed_response)
         except AuthRequired as e:
             self.request_user_auth(think_msg, e.message)
             return False
 
         except Exception as e:
-            # log exception and exit
-            self.log_exception(e, think_msg)
-            return False
+            # catch all to log all other messages
+            self.log_exception(exception=e, think_msg=think_msg)
+            raise
+            return True
 
     def log_exception(
         self,
         exception: Exception,
-        think_msg: TaskLogMessage,
+        think_msg: TaskLogMessage = None,
     ):
         """Collection point for errors while ticking the loop"""
         assert isinstance(exception, Exception), exception
         error_type = type(exception).__name__
+        think_msg_id = think_msg.id if think_msg else None
         failure_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,
-            parent_id=think_msg.id,
+            parent_id=think_msg_id,
             role="system",
             content={
                 "type": "EXECUTE_ERROR",
@@ -322,90 +296,28 @@ class AgentProcess:
             },
         )
         logger.error(
-            f"@@@@ EXECUTE ERROR logged as id={failure_msg.id} message_id={think_msg.pk} error_type={error_type}"
+            f"@@@@ EXECUTE ERROR logged as id={failure_msg.id} message_id={think_msg_id} error_type={error_type}"
         )
         logger.error(f"@@@@ EXECUTE ERROR {failure_msg.content['text']}")
 
-    def build_base_prompt(self):
-        raise NotImplementedError("Agents must implement their own base prompt")
+    def construct_chain(self) -> Chain:
+        # TODO: load from Agent.chain
+        with open("/var/app/ix/agents/chains/planning.json") as file:
+            chain_config = json.loads(file.read())
 
-    def build_prompt(self, user_input: str) -> PromptBuilder:
-        prompt = PromptBuilder(3000)
+        callback_manager = IxCallbackManager(self.task)
+        # [
+        #     OpenAICallbackHandler(),
+        #     IxCallbackHandler(task=self.task)
+        # ]
 
-        logger.error(f"building prompt for user_input={user_input}")
-
-        # Add system prompt
-        system_prompt = {"role": "system", "content": self.build_base_prompt()}
-        prompt.add(system_prompt)
-
-        # Command Reinforcement
-        reinforcement = [
-            {
-                "role": "user",
-                "content": "respond with the expected format",
-            },
-            {"role": "assistant", "content": self.OUTPUT_FORMAT},
-        ]
-        for msg in reinforcement:
-            prompt.add(msg)
-
-        # Add Memories
-        memories = self.memory.find_nearest(str(self.history[-5:]), num_results=10)
-        logger.debug(f"selected len={len(memories)} memories for prompt")
-        prompt.add_max(memories, max_tokens=2500)
-
-        # User prompt
-        if user_input:
-            user_prompt = {"role": "user", "content": user_input}
-            user_prompt_length = prompt.count_tokens([user_prompt])
-        else:
-            user_prompt_length = 0
-
-        # Add history
-        logger.debug(f"history contains n={len(self.history)}")
-        prompt.add_max(self.history, max_tokens=500 - user_prompt_length)
-
-        # add user prompt
-        if user_input:
-            prompt.add(user_prompt)
-
-        return prompt
-
-    def parse_response(
-        self, think_msg: TaskLogMessage, response: str
-    ) -> Dict[str, Any]:
-        # find the json
-        start_marker = "###START###"
-        end_marker = "###END###"
-        start_index = response.find(start_marker)
-        end_index = response.find(end_marker)
-
-        if start_index == -1 or end_index == -1:
-            # before raising attempt to parse the response as json
-            # sometimes the AI returns responses that are still usable even without the markers
-            try:
-                data = json.loads(response.strip())
-            except Exception:
-                raise MissingCommandMarkers
-        else:
-            json_slice = response[start_index + len(start_marker) : end_index].strip()
-            data = json.loads(json_slice)
-
-        if "question" in data:
-            raise AgentQuestion(data["question"])
-
-        logger.debug(f"parsed message={data}")
-        return data
-
-    def handle_response(self, execute: bool, response: Dict[str, Any]):
-        raise NotImplementedError(
-            "Agents must implement handle_response for the specific type of response they receive"
-        )
+        root_class = import_class(chain_config["class_path"])
+        chain = root_class.from_config(chain_config["config"], callback_manager)
+        return chain
 
     def chat_with_ai(self, user_input) -> Tuple[TaskLogMessage, str]:
-        prompt = self.build_prompt(user_input)
         agent = self.task.agent
-
+        chain = self.construct_chain()
         logger.info(f"Sending request to model={agent.model} prompt={user_input}")
 
         think_msg = TaskLogMessage.objects.create(
@@ -432,12 +344,8 @@ class AgentProcess:
                     },
                 }
         else:
-            response = openai.ChatCompletion.create(
-                model=agent.model,
-                messages=prompt.messages,
-                temperature=agent.config["temperature"],
-                max_tokens=2000,
-            )
+            response = chain.run(user_input=user_input)
+            logger.debug(f"chain returned response={response}")
 
         end = time.time()
         TaskLogMessage.objects.create(
@@ -446,11 +354,11 @@ class AgentProcess:
             parent_id=think_msg.id,
             content={
                 "type": "THOUGHT",
-                "usage": response["usage"],
+                # "usage": response["usage"],
                 "runtime": end - start,
             },
         )
-        return think_msg, response["choices"][0]["message"]["content"]
+        return think_msg, response
 
     def add_history(self, *history_messages: Dict[str, Any]):
         logger.debug(f"adding history history_messages={history_messages}")
