@@ -29,9 +29,9 @@ export const Layout = ({ children }) => {
   return (
     <Flex h="100vh">
       <VStack
-        bg={colorMode === "light" ? "blackAlpha.900" : "blackAlpha.600"}
+        bg={colorMode === "light" ? "gray.200" : "gray.900"}
         width={300}
-        p={4}
+        p={2}
         minH="100vh"
         align="left"
       >
@@ -42,8 +42,8 @@ export const Layout = ({ children }) => {
             width="100%"
             borderStyle="dashed"
             borderWidth="2px"
-            borderColor="whiteAlpha.600"
-            color="whiteAlpha.800"
+            borderColor={colorMode === "light" ? "gray.800" : "whiteAlpha.600"}
+            color={colorMode === "light" ? "gray.900" : "whiteAlpha.800"}
             leftIcon={<Icon as={FontAwesomeIcon} icon={faPlus} />}
           >
             New Task
@@ -52,9 +52,13 @@ export const Layout = ({ children }) => {
         <Divider />
         {leftPane}
         <Spacer />
-        <Divider />
+        <Divider
+          borderColor={colorMode === "light" ? "gray.800" : "whiteAlpha.400"}
+        />
         <Navigation />
-        <Divider />
+        <Divider
+          borderColor={colorMode === "light" ? "gray.800" : "whiteAlpha.400"}
+        />
         <ColorModeButton />
       </VStack>
       <Flex direction="column" flex="1" h="100%">
