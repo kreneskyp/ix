@@ -328,24 +328,7 @@ class AgentProcess:
             },
         )
         start = time.time()
-
-        if settings.MOCK_CHAT_RESPONSE:
-            logger.debug("Sending mock response")
-            with open(settings.MOCK_CHAT_RESPONSE, "r") as f:
-                response = {
-                    "choices": [
-                        {"message": {"content": f"###START###{f.read()}###END###"}}
-                    ],
-                    "usage": {
-                        "prompt_tokens": 5,
-                        "completion_tokens": 7,
-                        "total_tokens": 12,
-                    },
-                }
-        else:
-            response = chain.run(user_input=user_input)
-            logger.debug(f"chain returned response={response}")
-
+        response = chain.run(**user_input)
         end = time.time()
         TaskLogMessage.objects.create(
             task_id=self.task_id,
