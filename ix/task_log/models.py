@@ -144,8 +144,7 @@ class PlanSteps(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name="steps")
     is_complete = models.BooleanField(default=False)
-    # agent = models.ForeignKey(Agent, on_delete=models.CASCADE, related_name="steps")
     details = models.JSONField()
 
     def __str__(self):
-        return f"{self.plan.name} step {self.order}"
+        return f"{self.details['name']}"
