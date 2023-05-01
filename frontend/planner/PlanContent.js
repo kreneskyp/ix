@@ -13,8 +13,10 @@ import {
   Card,
   CardHeader,
   CardBody,
+  Flex,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import AuthorizeCommandButton from "chat/AuthorizeCommandButton";
 
 const StepDetails = ({ step }) => (
   <Card mt={5}>
@@ -50,7 +52,7 @@ const StepDetails = ({ step }) => (
   </Card>
 );
 
-export const PlanContent = ({ content }) => {
+export const PlanContent = ({ message }) => {
   const [expandedStep, setExpandedStep] = useState(null);
 
   const handleExpand = (index) => {
@@ -72,7 +74,7 @@ export const PlanContent = ({ content }) => {
           </Tr>
         </Thead>
         <Tbody>
-          {content.steps.map((step, index) => (
+          {message.content.steps.map((step, index) => (
             <React.Fragment key={index}>
               <Tr
                 onClick={() => handleExpand(index)}
@@ -105,6 +107,9 @@ export const PlanContent = ({ content }) => {
           ))}
         </Tbody>
       </Table>
+      <Flex m={5} mb={2} justifyContent="flex-end">
+        <AuthorizeCommandButton messageId={message.id} />
+      </Flex>
     </Box>
   );
 };

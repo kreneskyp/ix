@@ -55,7 +55,7 @@ const ChatMessage = ({ message }) => {
       contentComponent = <SystemContent content={content} />;
       break;
     case "ARTIFACT":
-      contentComponent = <PlanContent content={content} />;
+      contentComponent = <PlanContent message={message} />;
       break;
     default:
       contentComponent = <div>{content.message}</div>;
