@@ -4,6 +4,9 @@ type Query {
   agents: [AgentType]
   chat(id: UUID!): ChatType
   chats: [ChatType]
+  chain(id: UUID!): ChainType
+  chains: [ChainType]
+  graph(id: UUID!): ChainWithGraphType
   users: [UserType]
   tasks: [TaskType]
   taskLogMessages(taskId: UUID!): [TaskLogMessageType]
@@ -217,6 +220,51 @@ type StepType {
   plan: PlanType!
   isComplete: Boolean!
   details: JSONString!
+}
+
+type ChainType {
+  id: UUID!
+  name: String!
+  description: String!
+  createdAt: DateTime!
+  root: ChainNodeType!
+}
+
+type ChainNodeType {
+  id: UUID!
+  classPath: String!
+  config: GenericScalar
+  name: String
+  description: String
+  nodeType: ChainsChainNodeNodeTypeChoices!
+  root: ChainNodeType
+  parent: ChainNodeType
+}
+
+enum ChainsChainNodeNodeTypeChoices {
+  """node"""
+  NODE
+
+  """list"""
+  LIST
+
+  """map"""
+  MAP
+}
+
+type ChainWithGraphType {
+  chain: ChainType
+  nodes: [ChainNodeType]
+  edges: [ChainEdgeType]
+}
+
+type ChainEdgeType {
+  id: UUID!
+  source: ChainNodeType
+  target: ChainNodeType
+  key: String
+  root: ChainNodeType!
+  inputMap: GenericScalar
 }
 
 """Aggregation of graphql mutations"""
