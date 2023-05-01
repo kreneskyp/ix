@@ -1,15 +1,6 @@
 import React from "react";
-import {
-  Box,
-  Card,
-  CardBody,
-  Heading,
-  Text,
-  useDisclosure,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Card, CardBody, Heading, Text, VStack } from "@chakra-ui/react";
 import { useAgent } from "agents/graphql/AgentProvider";
-import { AgentDetailModal } from "agents/AgentDetailModal";
 
 const AgentCard = () => {
   const { agent } = useAgent();

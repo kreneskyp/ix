@@ -6,7 +6,7 @@ import { ColorModeButton } from "components/ColorModeButton";
 import { CenteredSpinner } from "site/CenteredSpinner";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 export const LayoutLeftPane = ({ children }) => {
   return children;
