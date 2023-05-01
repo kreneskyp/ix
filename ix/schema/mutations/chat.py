@@ -43,7 +43,7 @@ class AuthorizeCommandMutation(graphene.Mutation):
         logger.info(
             f"Requesting agent loop resume task_id={message.task_id} message_id={message.pk}"
         )
-        start_agent_loop.delay(str(responding_to.task_id))
+        start_agent_loop.delay(str(responding_to.task_id), message_id=str(message.id))
 
         return TaskLogMessageResponse(task_log_message=message)
 

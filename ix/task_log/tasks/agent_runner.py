@@ -1,3 +1,5 @@
+from typing import Optional
+
 from celery_singleton import Singleton
 from ix.agents.process import AgentProcess
 from ix.chat.models import Chat
@@ -15,7 +17,7 @@ logger = logging.getLogger(__name__)
         "task_id",
     ],
 )
-def start_agent_loop(task_id: str):
+def start_agent_loop(task_id: str, message_id: Optional[str] = None):
     """
     Start agent process loop.
 

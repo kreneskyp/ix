@@ -1,5 +1,4 @@
 import logging
-import json
 import time
 import uuid
 
@@ -175,7 +174,7 @@ class AgentProcess:
         """
         start agent loop and process `n` authorized ticks.
         """
-        logger.info(f"starting process loop task_id={self.task_id}")
+        logger.info(f"starting process loop task_id={self.task_id} input_id={input_id}")
         tick_input = None
         authorized_for = n
         try:
@@ -185,15 +184,17 @@ class AgentProcess:
         except TaskLogMessage.DoesNotExist:
             self.last_message = None
 
+        logger.debug(f"task_id={self.task_id} last message={self.last_message}")
+
         if not self.last_message:
             logger.info(f"first tick for task_id={self.task_id}")
-            tick_input = self.INITIAL_INPUT
+            tick_input = {"user_input": self.INITIAL_INPUT}
             # TODO load initial auth from either message stream or task
         elif input_id is not None:
             message = TaskLogMessage.objects.get(id=input_id)
-            tick_input = message.content["feedback"]
+            tick_input = {"user_input": message.content["feedback"]}
         elif self.last_message.content["type"] == "FEEDBACK":
-            tick_input = self.last_message.content["feedback"]
+            tick_input = {"user_input": self.last_message.content["feedback"]}
         elif self.last_message.content["type"] == "AUTHORIZE":
             logger.info(f"resuming with user authorization for task_id={self.task_id}")
             # auth/feedback resume, run command that was authorized
@@ -249,6 +250,7 @@ class AgentProcess:
         self.update_message_history()
         logger.info(f"ticking task_id={self.task_id}")
 
+        think_msg = None
         try:
             think_msg, response = self.chat_with_ai(user_input)
             logger.debug(
@@ -301,19 +303,16 @@ class AgentProcess:
         logger.error(f"@@@@ EXECUTE ERROR {failure_msg.content['text']}")
 
     def construct_chain(self) -> Chain:
-        # TODO: load from Agent.chain
-        with open("/var/app/ix/agents/chains/planning.json") as file:
-            chain_config = json.loads(file.read())
-
         callback_manager = IxCallbackManager(self.task)
         # [
         #     OpenAICallbackHandler(),
         #     IxCallbackHandler(task=self.task)
         # ]
+        from ix.chains.models import Chain as ChainModel
 
-        root_class = import_class(chain_config["class_path"])
-        chain = root_class.from_config(chain_config["config"], callback_manager)
-        return chain
+        # TODO: load from agent
+        chain = ChainModel.objects.get()
+        return chain.load_chain(callback_manager)
 
     def chat_with_ai(self, user_input) -> Tuple[TaskLogMessage, str]:
         agent = self.task.agent
@@ -354,6 +353,7 @@ class AgentProcess:
             parent_id=think_msg.id,
             content={
                 "type": "THOUGHT",
+                # TODO: add usage in somewhere else, it's not provided by langchain
                 # "usage": response["usage"],
                 "runtime": end - start,
             },
