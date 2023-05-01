@@ -1,0 +1,76 @@
+{
+  "input_keys": ["user_input"],
+  "class_path": "ix.chains.tool_chooser.ChooseTool",
+  "config": {
+    "llm": {
+      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "config": {
+        "temperature": 0
+      }
+    },
+    "tools": [
+      {
+        "name": "create",
+        "description": "create a new PLAN to fulfill the user request",
+        "class_path": "ix.chains.routing.IXSequence",
+        "config": {
+          "input_variables": ["user_input"],
+          "chains": [
+            {
+              "class_path": "ix.chains.planning.CreatePlan",
+              "config": {
+                "llm": {
+                  "class_path": "langchain.chat_models.openai.ChatOpenAI",
+                  "config": {
+                    "request_timeout": 240,
+                    "temperature": 0.2,
+                    "verbose": true
+                  }
+                },
+                "tools": [
+                  "ix.commands.google",
+                  "ix.commands.filesystem",
+                  "ix.commands.execute"
+                ]
+              }
+            },
+            {
+              "class_path": "ix.chains.json.ParseJSON"
+            },
+            {
+              "class_path": "ix.chains.planning.SavePlan"
+            }
+          ]
+        }
+      },
+      {
+        "name": "execute plan",
+        "description": "execute all steps in a PLAN",
+        "class_path": "ix.chains.routing.IXSequence",
+        "config": {
+          "input_variables": ["user_input", "plan_id"],
+          "chains": [
+            {
+              "class_path": "ix.chains.planning.RunPlan",
+              "config": {
+                "llm": {
+                  "class_path": "langchain.chat_models.openai.ChatOpenAI",
+                  "config": {
+                    "request_timeout": 60,
+                    "temperature": 0.2,
+                    "verbose": true
+                  }
+                },
+                "tools": [
+                  "ix.commands.google",
+                  "ix.commands.filesystem",
+                  "ix.commands.execute"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

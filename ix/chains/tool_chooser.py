@@ -79,8 +79,6 @@ class ChooseTool(Chain):
     tool_configs: Dict[str, dict] = None
     callback_manager: Any = None
 
-    # TODO: generate output keys from union of tools?
-
     def __init__(
         self,
         callback_manager: Any,
@@ -123,12 +121,19 @@ class ChooseTool(Chain):
             user_input=user_input, planning_tools=self.tool_prompt
         )
         logger.debug(f"Agent returned response={response}")
+        # TODO: move to chain
         response_data = self.parse_response(response)
+        logger.error("have response")
 
         # 1. run tool chain
-        tool_chain = self.get_tool(response_data["tool"])
-        result = tool_chain.run(inputs)
-        logger.debug(f"tool={response_data['tool']} result={result}")
+        tool_name = response_data.pop("tool")
+        logger.error("getting tool")
+        tool_chain = self.get_tool(tool_name)
+        merged_inputs = inputs.copy()
+        merged_inputs.update(response_data)
+        logger.error(f"running tool={tool_name} inputs={merged_inputs}")
+        result = tool_chain.run(merged_inputs)
+        logger.debug(f"ran tool={tool_name} result={result}")
         return {"ai_response": result}
 
     def parse_response(self, response: str) -> Dict[str, Any]:

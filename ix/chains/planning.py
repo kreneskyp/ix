@@ -71,6 +71,14 @@ INSTRUCTIONS TO CREATE A PLAN:
 """
 
 
+def load_registry(tools: list) -> CommandRegistry:
+    # load instance specific tools
+    tool_registry = CommandRegistry()
+    for class_path in tools or []:
+        tool_registry.import_commands(class_path)
+    return tool_registry
+
+
 class CreatePlan(LLMChain):
     """Chain to create new plans."""
 
@@ -85,9 +93,7 @@ class CreatePlan(LLMChain):
         config["llm"] = load_llm(config["llm"], callback_manager)
 
         # load instance specific tools
-        tool_registry = CommandRegistry()
-        for class_path in config.pop("tools", []):
-            tool_registry.import_commands(class_path)
+        tool_registry = load_registry(config.pop("tools", []))
         tools = tool_registry.command_prompt()
 
         # build messages and prompt
@@ -154,6 +160,7 @@ class SavePlan(Chain):
             description=response["description"],
             artifact_type="PLAN",
             reference={"plan_id": str(plan.id)},
+            # content={"steps": response["commands"]}
         )
 
         TaskLogMessage.objects.create(
@@ -162,9 +169,10 @@ class SavePlan(Chain):
             agent=self.callback_manager.task.agent,
             content={
                 "type": "ARTIFACT",
-                "name": response["name"],
                 "artifact_type": "PLAN",
                 "artifact_id": str(artifact.id),
+                "reference": {"plan_id": str(plan.id)},
+                # remove details after UI is updated to load artifact
                 "description": response["description"],
                 "steps": response["commands"],
             },
@@ -178,3 +186,64 @@ class SavePlan(Chain):
     def from_config(cls, config: Dict[str, Any], callback_manager: Dict[str, Any]):
         """Load an instance from a config dictionary and runtime"""
         return cls(callback_manager=callback_manager, **config)
+
+
+class RunPlan(Chain):
+    tool_registry: CommandRegistry = None
+
+    def __init__(
+        self,
+        tool_registry,
+        **data,
+    ):
+        super().__init__(**data)
+        self.tool_registry = tool_registry
+
+    @property
+    def _chain_type(self) -> str:
+        return "ix_plan_run"
+
+    @property
+    def output_keys(self) -> List[str]:
+        return ["results"]
+
+    @property
+    def input_keys(self) -> List[str]:
+        """Input keys this chain expects."""
+        return ["plan_id"]
+
+    def _call(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Save the PLAN as an artifact in the database
+        """
+        plan_id = inputs["plan_id"]
+        plan = Plan.objects.get(pk=plan_id)
+
+        results = {}
+        for step in plan.steps.all():
+            tool_config = step.details
+            logger.error(f"tool_config={tool_config}")
+            tool_name = tool_config["command"]["name"]
+            tool_kwargs = tool_config["command"]["args"]
+            logger.info(
+                f"executing task_id={self.callback_manager.task.id} tool={tool_name} kwargs={tool_kwargs}"
+            )
+            result = self.tool_registry.call(command_name=tool_name, **tool_kwargs)
+            results[tool_name] = result
+
+            step.is_complete = True
+            step.save(update_fields=["is_complete"])
+
+        return {"results": {}}
+
+    async def _acall(self, inputs: Dict[str, str]) -> Dict[str, str]:
+        pass
+
+    @classmethod
+    def from_config(cls, config: Dict[str, Any], callback_manager: Dict[str, Any]):
+        """Load an instance from a config dictionary and runtime"""
+        tool_registry = load_registry(config.pop("tools", []))
+
+        return cls(
+            callback_manager=callback_manager, tool_registry=tool_registry, **config
+        )
