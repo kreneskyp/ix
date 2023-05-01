@@ -123,15 +123,13 @@ class ChooseTool(Chain):
         logger.debug(f"Agent returned response={response}")
         # TODO: move to chain
         response_data = self.parse_response(response)
-        logger.error("have response")
 
         # 1. run tool chain
         tool_name = response_data.pop("tool")
-        logger.error("getting tool")
         tool_chain = self.get_tool(tool_name)
         merged_inputs = inputs.copy()
         merged_inputs.update(response_data)
-        logger.error(f"running tool={tool_name} inputs={merged_inputs}")
+        logger.debug(f"running tool={tool_name} inputs={merged_inputs}")
         result = tool_chain.run(merged_inputs)
         logger.debug(f"ran tool={tool_name} result={result}")
         return {"ai_response": result}

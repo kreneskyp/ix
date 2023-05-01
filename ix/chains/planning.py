@@ -222,7 +222,6 @@ class RunPlan(Chain):
         results = {}
         for step in plan.steps.all():
             tool_config = step.details
-            logger.error(f"tool_config={tool_config}")
             tool_name = tool_config["command"]["name"]
             tool_kwargs = tool_config["command"]["args"]
             logger.info(

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     # channels",
     "django_extensions",
     "ix.task_log",
+    "ix.chains",
     "ix.agents",
     "ix.chat",
 ]
