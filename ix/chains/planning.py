@@ -230,10 +230,22 @@ class RunPlan(Chain):
             result = self.tool_registry.call(command_name=tool_name, **tool_kwargs)
             results[tool_name] = result
 
+            TaskLogMessage.objects.create(
+                task_id=self.callback_manager.task.id,
+                role="assistant",
+                content={
+                    "type": "EXECUTED",
+                    "output": f"{tool_name} executed, result={result}",
+                },
+            )
+
             step.is_complete = True
             step.save(update_fields=["is_complete"])
 
-        return {"results": {}}
+        plan.is_complete = True
+        plan.save(update_fields=["is_complete"])
+
+        return {"results": results}
 
     async def _acall(self, inputs: Dict[str, str]) -> Dict[str, str]:
         pass
