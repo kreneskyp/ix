@@ -1,12 +1,10 @@
 import React, { Suspense } from "react";
-import { Button, Divider, Flex, Icon, Spacer, VStack } from "@chakra-ui/react";
+import { Divider, Flex, Spacer, VStack } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/color-mode";
 import Navigation from "site/Navigation";
 import { ColorModeButton } from "components/ColorModeButton";
 import { CenteredSpinner } from "site/CenteredSpinner";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { NewChatButton } from "chat/NewChatButton";
 
 export const LayoutLeftPane = ({ children }) => {
   return children;
@@ -36,19 +34,7 @@ export const Layout = ({ children }) => {
         align="left"
       >
         {/* left sidebar */}
-        <Link to="/tasks/new">
-          <Button
-            bg="transparent"
-            width="100%"
-            borderStyle="dashed"
-            borderWidth="2px"
-            borderColor={colorMode === "light" ? "gray.800" : "whiteAlpha.600"}
-            color={colorMode === "light" ? "gray.900" : "whiteAlpha.800"}
-            leftIcon={<Icon as={FontAwesomeIcon} icon={faPlus} />}
-          >
-            New Task
-          </Button>
-        </Link>
+        <NewChatButton />
         <Divider />
         {leftPane}
         <Spacer />
