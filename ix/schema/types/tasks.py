@@ -13,20 +13,6 @@ class GoalType(graphene.ObjectType):
     complete = graphene.Boolean(required=True)
 
 
-class TaskType(DjangoObjectType):
-    class Meta:
-        model = Task
-        fields = "__all__"
-
-    goals = graphene.List(GoalType)
-
-
-class ArtifactType(DjangoObjectType):
-    class Meta:
-        model = Artifact
-        fields = "__all__"
-
-
 class PlanType(DjangoObjectType):
     class Meta:
         model = Plan
@@ -36,4 +22,27 @@ class PlanType(DjangoObjectType):
 class StepType(DjangoObjectType):
     class Meta:
         model = PlanSteps
+        fields = "__all__"
+
+
+class TaskType(DjangoObjectType):
+    class Meta:
+        model = Task
+        fields = "__all__"
+
+    goals = graphene.List(GoalType)
+    created_plans = graphene.Field(
+        graphene.List(PlanType), is_draft=graphene.Boolean(required=False)
+    )
+
+    def resolve_created_plans(self, info, is_draft=None):
+        if is_draft is None:
+            return self.created_plans.all()
+        else:
+            return self.created_plans.filter(is_draft=is_draft)
+
+
+class ArtifactType(DjangoObjectType):
+    class Meta:
+        model = Artifact
         fields = "__all__"

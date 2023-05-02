@@ -28,7 +28,7 @@ export const ChatByIdQuery = graphql`
       }
       task {
         id
-        createdPlans {
+        createdPlans(isDraft: false) {
           id
           name
           description

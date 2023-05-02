@@ -132,7 +132,7 @@ type TaskType {
   autonomous: Boolean!
   messages: [TaskLogMessageType!]!
   artifacts: [ArtifactType!]!
-  createdPlans: [PlanType!]!
+  createdPlans(isDraft: Boolean): [PlanType]
   ranPlans: [PlanType!]!
   chats: [ChatType!]!
   leadingChats: [ChatType!]!
@@ -272,6 +272,7 @@ type ChainEdgeType {
 type Mutation {
   sendFeedback(input: TaskFeedbackInput!): TaskFeedbackMutation
   authorizeCommand(input: CommandAuthorizeInput!): AuthorizeCommandMutation
+  createChat(input: CreateChatInput): CreateChatResponse
   createTask(input: CreateTaskInput!): CreateTaskResponse
   startTask(taskId: UUID!): StartTaskMutation
   setTaskAutonomous(autonomous: Boolean!, taskId: UUID!): SetTaskAutonomousMutation
@@ -300,6 +301,15 @@ type AuthorizeCommandMutation {
 
 input CommandAuthorizeInput {
   messageId: UUID!
+}
+
+type CreateChatResponse {
+  chat: ChatType
+}
+
+input CreateChatInput {
+  name: String
+  agentId: UUID
 }
 
 type CreateTaskResponse {
