@@ -1,5 +1,4 @@
 import React from "react";
-import SliderInput from "components/SliderInput";
 import {
   Box,
   Flex,

@@ -7,18 +7,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
-import { OpenAIAgentConfigForm } from "agents/OpenAIAgentConfigForm";
-
-const AGENT_MODELS = {
-  "gpt-3.5-turbo": {
-    name: "GPT-3.5 Turbo",
-    configComponent: OpenAIAgentConfigForm,
-  },
-  "gpt-4": {
-    name: "GPT-4",
-    configComponent: OpenAIAgentConfigForm,
-  },
-};
+import { AGENT_MODELS } from "chains/constants";
 
 export const AgentGeneralEditor = ({ agentData, setAgentData }) => {
   const ModelConfigForm = AGENT_MODELS[agentData?.model]?.configComponent;
