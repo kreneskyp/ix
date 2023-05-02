@@ -202,7 +202,14 @@ class AgentProcess:
             authorized_msg = TaskLogMessage.objects.get(
                 pk=self.last_message.content["message_id"]
             )
-            self.msg_execute(authorized_msg)
+            [reference_field, reference_value] = list(
+                authorized_msg.content["reference"].items()
+            )[0]
+            tick_input = dict(
+                user_input=f"execute {reference_field}={reference_value}",
+                **authorized_msg.content["reference"],
+            )
+
         elif self.last_message.content["type"] in ["AUTH_REQUEST", "FEEDBACK_REQUEST"]:
             # if last message is an unfulfilled feedback request then exit
             logger.info(
