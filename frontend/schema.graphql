@@ -212,6 +212,7 @@ type PlanType {
   description: String!
   createdAt: DateTime!
   isDraft: Boolean!
+  isComplete: Boolean!
   steps: [StepType!]!
 }
 

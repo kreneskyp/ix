@@ -34,6 +34,7 @@ export const ChatByIdQuery = graphql`
           description
           createdAt
           isDraft
+          isComplete
           steps {
             id
             isComplete

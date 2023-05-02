@@ -135,6 +135,7 @@ class Plan(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_draft = models.BooleanField(default=True)
+    is_complete = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

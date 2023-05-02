@@ -1,9 +1,23 @@
 import React from "react";
-import { HStack, VStack, Card, CardBody, Heading, Box } from "@chakra-ui/react";
+import { HStack, VStack, Text, Heading, Box, Spinner } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSquareCheck, faClock } from "@fortawesome/free-regular-svg-icons";
+import { faClock } from "@fortawesome/free-regular-svg-icons";
+import { faSquareCheck } from "@fortawesome/free-solid-svg-icons";
 import { usePreloadedQuery } from "react-relay/hooks";
 import { ChatByIdQuery } from "chat/graphql/ChatByIdQuery";
+
+const StatusIcon = ({ isComplete, isRunning }) => {
+  if (isComplete) {
+    return (
+      <Text as="span" color="green.400">
+        <FontAwesomeIcon icon={faSquareCheck} />
+      </Text>
+    );
+  } else if (isRunning) {
+    return <Spinner size="xs" />;
+  }
+  return <FontAwesomeIcon icon={faClock} />;
+};
 
 const SideBarGoalList = ({ queryRef }) => {
   const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
@@ -23,7 +37,10 @@ const SideBarGoalList = ({ queryRef }) => {
           }}
         >
           <HStack justify="top" py={1} pl={2}>
-            <FontAwesomeIcon icon={plan.isComplete ? faSquareCheck : faClock} />
+            <StatusIcon
+              isComplete={plan.isComplete}
+              isRunning={plan.task !== undefined}
+            />
             <span style={{ marginLeft: 10 }}>{plan.name}</span>
           </HStack>
         </Box>
