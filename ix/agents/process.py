@@ -13,7 +13,6 @@ from ix.agents.exceptions import (
     AuthRequired,
 )
 from ix.memory.plugin import VectorMemory
-from ix.server import settings
 from ix.task_log.models import Task, TaskLogMessage
 from ix.utils.importlib import import_class
 from ix.utils.types import ClassPath

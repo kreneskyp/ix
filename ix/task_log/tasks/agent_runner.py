@@ -27,10 +27,10 @@ def start_agent_loop(task_id: str, message_id: Optional[str] = None):
     This method expects `task_id` to be a string to be compatible with celery Singleton.
     """
     task = Task.objects.get(pk=task_id)
-    process = AgentProcess.from_task(task)
     logger.info(
         f"Starting agent process for task_id={task_id} agent_class_path={task.agent.agent_class_path}"
     )
+    process = AgentProcess.from_task(task)
     return process.start()
 
 

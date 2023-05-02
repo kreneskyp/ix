@@ -42,7 +42,9 @@ class ChainNode(models.Model):
         if self.node_type == "list":
             child_chains = []
             # TODO: sort by edge key
-            for i, child in enumerate(self.children.all().order_by("incoming_edges__key")):
+            for i, child in enumerate(
+                self.children.all().order_by("incoming_edges__key")
+            ):
                 child_chains.append(child.load_config())
             config["chains"] = child_chains
         elif self.node_type == "map":

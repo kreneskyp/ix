@@ -22,7 +22,7 @@ export const TaskCreateForm = ({ onMutationSuccess }) => {
   const [agentId, setAgentId] = useState(DEFAULT_AGENT);
   const [goals, setGoals] = useState(Array(5).fill(""));
   const [commit, isInFlight] = useMutation(CreateTaskMutation);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const toast = useToast();
 
   const handleGoalChange = (index, value) => {
