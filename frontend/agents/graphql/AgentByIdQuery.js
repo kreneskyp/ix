@@ -7,6 +7,12 @@ export const AgentByIdQuery = graphql`
       name
       model
       purpose
+      config
+      chain {
+        id
+        name
+        description
+      }
     }
   }
 `;

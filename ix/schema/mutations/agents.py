@@ -11,9 +11,8 @@ class AgentInput(graphene.InputObjectType):
     name = graphene.String()
     purpose = graphene.String()
     model = graphene.String()
-    system_prompt = graphene.String()
-    commands = graphene.JSONString()
     config = GenericScalar()
+    chain_id = graphene.UUID()
 
 
 class CreateAgentMutation(graphene.Mutation):
@@ -26,8 +25,6 @@ class CreateAgentMutation(graphene.Mutation):
         agent = Agent.objects.create(
             name=input.name,
             model=input.model,
-            system_prompt=input.system_prompt,
-            commands=input.commands,
         )
         return CreateAgentMutation(agent=agent)
 

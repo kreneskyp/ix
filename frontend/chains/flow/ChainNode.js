@@ -1,7 +1,7 @@
 import React from "react";
 import { Handle } from "reactflow";
 import { Box, VStack, Heading, Text, Divider, HStack } from "@chakra-ui/react";
-import {llm_name} from "chains/utils";
+import { llm_name } from "chains/utils";
 
 export const ChainNode = ({ data }) => {
   const node = data.node;

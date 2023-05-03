@@ -7,8 +7,6 @@ export const CreateAgentMutation = graphql`
         id
         name
         model
-        systemPrompt
-        commands
         config
       }
     }
@@ -22,8 +20,6 @@ export const UpdateAgentMutation = graphql`
         id
         name
         model
-        systemPrompt
-        commands
         config
       }
     }

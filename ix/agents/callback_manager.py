@@ -17,7 +17,9 @@ class IxCallbackManager(CallbackManager):
     task: Task
     command_registry: CommandRegistry
 
-    def __init__(self, task: Task, stack_id: str = None, parent: "IxCallbackHandler" = None):
+    def __init__(
+        self, task: Task, stack_id: str = None, parent: "IxCallbackHandler" = None
+    ):
         super().__init__(handlers=[])
 
         self.task = task
@@ -26,5 +28,7 @@ class IxCallbackManager(CallbackManager):
 
     def child(self, stack_id: str) -> "IxCallbackManager":
         """Return a child clone with nested stack_id"""
-        child = type(self)(parent=self, task=self.task, stack_id=f"{self.stack_id}.{stack_id}")
+        child = type(self)(
+            parent=self, task=self.task, stack_id=f"{self.stack_id}.{stack_id}"
+        )
         return child

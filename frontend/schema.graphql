@@ -20,10 +20,9 @@ type AgentType {
   purpose: String!
   createdAt: DateTime!
   model: String!
-  agentClassPath: String!
-  systemPrompt: String!
-  commands: JSONString
   config: GenericScalar
+  agentClassPath: String!
+  chain: ChainType
   resources: [ResourceType!]!
   taskSet: [TaskType!]!
   tasklogmessageSet: [TaskLogMessageType!]!
@@ -45,19 +44,42 @@ value as specified by
 scalar DateTime
 
 """
-Allows use of a JSON String for input / output from the GraphQL schema.
-
-Use of this type is *not recommended* as you lose the benefits of having a defined, static
-schema (one of the key benefits of GraphQL).
-"""
-scalar JSONString
-
-"""
 The `GenericScalar` scalar type represents a generic
 GraphQL scalar value that could be:
 String, Boolean, Int, Float, List or Object.
 """
 scalar GenericScalar
+
+type ChainType {
+  id: UUID!
+  name: String!
+  description: String!
+  createdAt: DateTime!
+  root: ChainNodeType!
+  agentSet: [AgentType!]!
+}
+
+type ChainNodeType {
+  id: UUID!
+  classPath: String!
+  config: GenericScalar
+  name: String
+  description: String
+  nodeType: ChainsChainNodeNodeTypeChoices!
+  root: ChainNodeType
+  parent: ChainNodeType
+}
+
+enum ChainsChainNodeNodeTypeChoices {
+  """node"""
+  NODE
+
+  """list"""
+  LIST
+
+  """map"""
+  MAP
+}
 
 type ResourceType {
   id: UUID!
@@ -107,6 +129,14 @@ enum AgentsResourceTypeChoices {
   """Stream Processing"""
   STREAM_PROCESSING
 }
+
+"""
+Allows use of a JSON String for input / output from the GraphQL schema.
+
+Use of this type is *not recommended* as you lose the benefits of having a defined, static
+schema (one of the key benefits of GraphQL).
+"""
+scalar JSONString
 
 type ChatType {
   id: UUID!
@@ -223,36 +253,6 @@ type StepType {
   details: JSONString!
 }
 
-type ChainType {
-  id: UUID!
-  name: String!
-  description: String!
-  createdAt: DateTime!
-  root: ChainNodeType!
-}
-
-type ChainNodeType {
-  id: UUID!
-  classPath: String!
-  config: GenericScalar
-  name: String
-  description: String
-  nodeType: ChainsChainNodeNodeTypeChoices!
-  root: ChainNodeType
-  parent: ChainNodeType
-}
-
-enum ChainsChainNodeNodeTypeChoices {
-  """node"""
-  NODE
-
-  """list"""
-  LIST
-
-  """map"""
-  MAP
-}
-
 type ChainWithGraphType {
   chain: ChainType
   nodes: [ChainNodeType]
@@ -344,9 +344,8 @@ input AgentInput {
   name: String
   purpose: String
   model: String
-  systemPrompt: String
-  commands: JSONString
   config: GenericScalar
+  chainId: UUID
 }
 
 type UpdateAgentMutation {

@@ -13,9 +13,12 @@ export const AgentProvider = ({ agentId, children }) => {
           name
           model
           purpose
-          systemPrompt
-          commands
           config
+          chain {
+            id
+            name
+            description
+          }
         }
       }
     `,
