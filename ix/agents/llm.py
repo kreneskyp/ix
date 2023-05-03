@@ -19,7 +19,9 @@ def load_llm(
 
     llm_class = import_class(config_or_llm["class_path"])
     logger.debug(f"loading llm config={config_or_llm}")
-    return llm_class(**config_or_llm["config"], callback_manager=callback_manager)
+    llm = llm_class(**config_or_llm["config"])
+    llm.callback_manager = callback_manager
+    return llm
 
 
 def load_chain(config: Dict[str, Any], callback_manager: IxCallbackManager):

@@ -182,9 +182,12 @@ class ChooseTool(Chain):
         llm = load_llm(llm_config, callback_manager)
         tool_configs = {tool["name"]: tool for tool in config["tools"]}
 
+        chooser = LLMChooseTool.from_llm(llm=llm)
+        chooser.callback_manager = callback_manager
+
         instance = cls(
             llm=llm,
-            selection_chain=LLMChooseTool.from_llm(llm=llm),
+            selection_chain=chooser,
             tool_configs=tool_configs,
             callback_manager=callback_manager,
         )

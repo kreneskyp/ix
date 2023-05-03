@@ -310,10 +310,6 @@ class AgentProcess:
 
     def construct_chain(self) -> Chain:
         callback_manager = IxCallbackManager(self.task)
-        # [
-        #     OpenAICallbackHandler(),
-        #     IxCallbackHandler(task=self.task)
-        # ]
         from ix.chains.models import Chain as ChainModel
 
         # TODO: load from agent
