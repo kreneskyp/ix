@@ -1,5 +1,13 @@
 import React from "react";
-import { Box, Card, CardBody, Heading, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  CardBody,
+  Divider,
+  Heading,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import { useAgent } from "agents/graphql/AgentProvider";
 
 const AgentCard = () => {
@@ -17,12 +25,16 @@ const AgentCard = () => {
             {agent.name}
           </Heading>
           <Text as="h5" size="xs">
-            <strong>Model:</strong> {agent.model}
+            {agent.model}
           </Text>
-
+          <Divider />
+          <Heading as="h5" size="xs">
+            {agent.chain.name}
+          </Heading>
           <Box
             maxWidth="350px"
-            height={75}
+            minHeight={50}
+            maxHeight={75}
             overflow="hidden"
             textOverflow="ellipsis"
             css={{
@@ -31,7 +43,7 @@ const AgentCard = () => {
               WebkitLineClamp: 3,
             }}
           >
-            <strong>Purpose:</strong> {agent.purpose}
+            {agent.chain.description}
           </Box>
         </VStack>
       </CardBody>
