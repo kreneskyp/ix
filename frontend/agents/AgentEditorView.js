@@ -7,7 +7,7 @@ import { AgentEditor } from "agents/AgentEditor";
 import { usePreloadedQuery } from "react-relay/hooks";
 import { useParams } from "react-router-dom";
 import { AgentByIdQuery } from "agents/graphql/AgentByIdQuery";
-import {ChainsQuery} from "chains/graphql/ChainsQuery";
+import { ChainsQuery } from "chains/graphql/ChainsQuery";
 
 const AgentEditorShim = ({ queryRef, chainsRef }) => {
   const { agent } = usePreloadedQuery(AgentByIdQuery, queryRef);
@@ -33,7 +33,6 @@ export const AgentEditorView = () => {
       content = <AgentEditorShim queryRef={queryRef} chainsRef={chainsRef} />;
     }
   } else {
-
     useEffect(() => {
       loadChains();
     }, []);
@@ -41,7 +40,7 @@ export const AgentEditorView = () => {
     if (!chainsRef) {
       content = <Spinner />;
     } else {
-      content = <AgentEditor agentId={id} chainsRef={chainsRef}/>;
+      content = <AgentEditor agentId={id} chainsRef={chainsRef} />;
     }
   }
 

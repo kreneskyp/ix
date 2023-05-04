@@ -12,17 +12,17 @@ import {
 } from "@chakra-ui/react";
 import { AgentGeneralEditor } from "agents/AgentGeneralEditor";
 import { AgentMetricsPanel } from "agents/AgentMetricsPanel";
-import {useMutation, usePreloadedQuery} from "react-relay/hooks";
+import { useMutation, usePreloadedQuery } from "react-relay/hooks";
 import { UpdateAgentMutation } from "agents/graphql/AgentMutations";
-import {ChainsQuery} from "chains/graphql/ChainsQuery";
+import { ChainsQuery } from "chains/graphql/ChainsQuery";
 
 export const AgentEditor = ({ agent, chainsRef }) => {
   const { chains } = usePreloadedQuery(ChainsQuery, chainsRef);
   const [commit] = useMutation(UpdateAgentMutation);
 
   // repack agent & chain into initial data
-  const {chain, ...agentMinusChain} = agent || {};
-  const initialData = {...agentMinusChain, chainId:chain?.id}
+  const { chain, ...agentMinusChain } = agent || {};
+  const initialData = { ...agentMinusChain, chainId: chain?.id };
 
   const [agentData, setAgentData] = useState(initialData);
   const toast = useToast();
