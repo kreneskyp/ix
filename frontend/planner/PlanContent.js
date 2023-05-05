@@ -14,43 +14,61 @@ import {
   CardHeader,
   CardBody,
   Flex,
+  Grid,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import AuthorizeCommandButton from "chat/AuthorizeCommandButton";
 
-const StepDetails = ({ step }) => (
-  <Card mt={5}>
-    <CardHeader>
-      <Text>
-        <strong>Requires:</strong> {step.requires_artifacts?.join(", ")}
-      </Text>
-      <Text>
-        <strong>Produces:</strong> {step.produces_artifacts?.join(", ")}
-      </Text>
-    </CardHeader>
-    <CardBody>
-      <Text mt={5}>
-        <strong>Command:</strong> {step.command?.name}
-      </Text>
-      <Table variant="simple" size="sm">
+import SyntaxHighlighter from "react-syntax-highlighter";
+import {
+  stackoverflowLight,
+  stackoverflowDark,
+} from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { useColorMode } from "@chakra-ui/color-mode";
+
+const StepDetails = ({ step }) => {
+  const { colorMode } = useColorMode();
+  const syntaxTheme =
+    colorMode === "light" ? stackoverflowLight : stackoverflowDark;
+  return (
+    <Box mt={5}>
+      <Grid templateColumns="max-content 1fr" gap={3}>
+        <Text fontWeight="bold" justifySelf="left">
+          Requires:
+        </Text>
+        <Text gridColumn="2 / 3">{step.requires_artifacts?.join(", ")}</Text>
+        <Text fontWeight="bold" justifySelf="left">
+          Produces:
+        </Text>
+        <Text gridColumn="2 / 3">{step.produces_artifacts?.join(", ")}</Text>
+        <Text fontWeight="bold" justifySelf="left">
+          Command:
+        </Text>
+        <Text gridColumn="2 / 3">{step.command?.name}</Text>
+      </Grid>
+      <Table variant="simple" size="sm" borderWidth="0px" my={5}>
         <Thead>
           <Tr>
-            <Th>Argument</Th>
-            <Th>Value</Th>
+            <Th borderBottomWidth="1px">Argument</Th>
+            <Th borderBottomWidth="1px">Value</Th>
           </Tr>
         </Thead>
         <Tbody>
           {Object.entries(step.command?.args).map(([key, value]) => (
             <Tr key={key}>
-              <Td>{key}</Td>
-              <Td>{value}</Td>
+              <Td border={0}>{key}</Td>
+              <Td border={0}>
+                <SyntaxHighlighter style={syntaxTheme} wrapLines={true}>
+                  {value}
+                </SyntaxHighlighter>
+              </Td>
             </Tr>
           ))}
         </Tbody>
       </Table>
-    </CardBody>
-  </Card>
-);
+    </Box>
+  );
+};
 
 export const PlanContent = ({ message }) => {
   const [expandedStep, setExpandedStep] = useState(null);

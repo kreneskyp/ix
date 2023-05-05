@@ -13,6 +13,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "dagre": "^0.8.5",
     "package.json": "^2.0.1",
+    "react-syntax-highlighter": "^15.5.0",
     "reactflow": "^11.7.0"
   },
   "devDependencies": {
