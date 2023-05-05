@@ -324,16 +324,12 @@ class AgentProcess:
 
     def construct_chain(self) -> Chain:
         callback_manager = IxCallbackManager(self.task)
-        from ix.chains.models import Chain as ChainModel
-
-        # TODO: load from agent
-        chain = ChainModel.objects.get()
+        chain = self.task.agent.chain
         return chain.load_chain(callback_manager)
 
-    def chat_with_ai(self, user_input) -> Tuple[TaskLogMessage, str]:
-        agent = self.task.agent
+    def chat_with_ai(self, user_input: Dict[str, Any]) -> Tuple[TaskLogMessage, str]:
         chain = self.construct_chain()
-        logger.info(f"Sending request to model={agent.model} prompt={user_input}")
+        logger.info(f"Sending request to chain={self.task.agent.chain.name} prompt={user_input}")
 
         think_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,
