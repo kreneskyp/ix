@@ -3,7 +3,7 @@ import time
 import uuid
 
 from functools import cached_property
-from typing import TypedDict, Optional, Any, Dict, Tuple
+from typing import TypedDict, Optional, Any, Dict, Tuple, Union
 
 from langchain.chains.base import Chain
 
@@ -169,13 +169,17 @@ class AgentProcess:
         self.memory = memory_class("ix-agent")
         self.memory.clear()
 
-    def start(self, input_id: Optional[uuid.UUID] = None, n: int = 0) -> bool:
-        """
-        start agent loop and process `n` authorized ticks.
-        """
-        logger.info(f"starting process loop task_id={self.task_id} input_id={input_id}")
-        tick_input = None
-        authorized_for = n
+    def get_input(
+        self, input_id: Optional[uuid.UUID] = None
+    ) -> Union[Dict[str, Any], bool]:
+        """get input for chain"""
+
+        # 1. use input_id message if present
+        if input_id:
+            message = TaskLogMessage.objects.get(id=input_id)
+            return {"user_input": message.content["feedback"]}
+
+        # 2. load the last message from the queue
         try:
             self.last_message = TaskLogMessage.objects.filter(
                 task_id=self.task_id
@@ -187,13 +191,12 @@ class AgentProcess:
 
         if not self.last_message:
             logger.info(f"first tick for task_id={self.task_id}")
-            tick_input = {"user_input": self.INITIAL_INPUT}
+            return {"user_input": self.INITIAL_INPUT}
             # TODO load initial auth from either message stream or task
-        elif input_id is not None:
-            message = TaskLogMessage.objects.get(id=input_id)
-            tick_input = {"user_input": message.content["feedback"]}
+
         elif self.last_message.content["type"] == "FEEDBACK":
-            tick_input = {"user_input": self.last_message.content["feedback"]}
+            return {"user_input": self.last_message.content["feedback"]}
+
         elif self.last_message.content["type"] == "AUTHORIZE":
             logger.info(f"resuming with user authorization for task_id={self.task_id}")
             # auth/feedback resume, run command that was authorized
@@ -205,7 +208,7 @@ class AgentProcess:
             [reference_field, reference_value] = list(
                 authorized_msg.content["reference"].items()
             )[0]
-            tick_input = dict(
+            return dict(
                 user_input=f"execute {reference_field}={reference_value}",
                 **authorized_msg.content["reference"],
             )
@@ -215,7 +218,18 @@ class AgentProcess:
             logger.info(
                 f"Exiting, missing response to type={self.last_message.content['type']}"
             )
-            return True
+            return False
+
+    def start(self, input_id: Optional[uuid.UUID] = None, n: int = 0) -> bool:
+        """
+        start agent loop and process `n` authorized ticks.
+        """
+        logger.info(f"starting process loop task_id={self.task_id} input_id={input_id}")
+        tick_input = self.get_input()
+        if tick_input is False:
+            return False
+
+        authorized_for = n
 
         # pass to main loop
         exit_value = self.loop(n=authorized_for, tick_input=tick_input)
