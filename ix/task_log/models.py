@@ -7,10 +7,11 @@ from ix.agents.models import Agent
 
 
 class Task(models.Model):
+    """An instance of an agent running."""
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=64)
     user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
-    goals = models.JSONField(null=True, blank=True)
     agent = models.ForeignKey(Agent, on_delete=models.CASCADE)
     is_complete = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

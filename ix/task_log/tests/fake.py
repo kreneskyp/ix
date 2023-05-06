@@ -20,8 +20,6 @@ def fake_agent(**kwargs):
     agent_class_path = kwargs.get(
         "agent_class_path", "ix.agents.planning_agent.PlanningAgent"
     )
-    system_prompt = kwargs.get("system_prompt", "")
-    commands = kwargs.get("commands", [])
     config = kwargs.get(
         "config",
         {
@@ -34,8 +32,6 @@ def fake_agent(**kwargs):
         name=name,
         purpose=purpose,
         model=model,
-        system_prompt=system_prompt,
-        commands=commands,
         config=config,
         agent_class_path=agent_class_path,
     )
@@ -59,9 +55,8 @@ def fake_goal(**kwargs):
 
 def fake_task(**kwargs):
     user = kwargs.get("user") or fake_user()
-    goals = kwargs.get("goals", [fake_goal() for _ in range(fake.random.randint(1, 5))])
     agent = kwargs.get("agent") or fake_agent()
-    task = Task.objects.create(user=user, goals=goals, agent=agent)
+    task = Task.objects.create(user=user, agent=agent)
     return task
 
 
