@@ -11,6 +11,32 @@ from ix.agents.exceptions import MissingCommandMarkers
 logger = logging.getLogger(__name__)
 
 
+def parse_json(text: str, output_key: str) -> Dict[str, Any]:
+    """Parse response into valid JSON"""
+    start_marker = "###START###"
+    end_marker = "###END###"
+    start_index = text.find(start_marker)
+    end_index = text.find(end_marker)
+
+    if start_index == -1 or end_index == -1:
+        # before raising attempt to parse the response as json
+        # sometimes the AI returns responses that are still usable even without the markers
+        try:
+            data = json.loads(text.strip())
+        except Exception:
+            raise MissingCommandMarkers
+    else:
+        json_slice = text[start_index + len(start_marker): end_index].strip()
+        try:
+            data = json.loads(json_slice)
+        except:
+            logger.error(f"error parsing json={json_slice}")
+            raise
+
+    logger.debug(f"parsed message={data}")
+    return {output_key: data}
+
+
 class ParseJSON(Chain):
     """
     Chain that parses AI response content into JSON
@@ -31,31 +57,10 @@ class ParseJSON(Chain):
         return [self.input_key]
 
     def _call(self, inputs: Dict[str, str]) -> Dict[str, str]:
-        return self.parse_response(inputs[self.input_key])
+        return parse_json(inputs[self.input_key], self.output_key)
 
     async def _acall(self, inputs: Dict[str, str]) -> Dict[str, str]:
-        return self.parse_response(inputs[self.input_key])
-
-    def parse_response(self, response: str) -> Dict[str, Any]:
-        """Parse response into valid JSON"""
-        start_marker = "###START###"
-        end_marker = "###END###"
-        start_index = response.find(start_marker)
-        end_index = response.find(end_marker)
-
-        if start_index == -1 or end_index == -1:
-            # before raising attempt to parse the response as json
-            # sometimes the AI returns responses that are still usable even without the markers
-            try:
-                data = json.loads(response.strip())
-            except Exception:
-                raise MissingCommandMarkers
-        else:
-            json_slice = response[start_index + len(start_marker) : end_index].strip()
-            data = json.loads(json_slice)
-
-        logger.debug(f"parsed message={data}")
-        return {"ai_json": data}
+        return parse_json(inputs[self.input_key], self.output_key)
 
     @classmethod
     def from_config(cls, config: Dict[str, Any], callback_manager: IxCallbackManager):
