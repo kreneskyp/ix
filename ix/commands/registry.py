@@ -133,6 +133,15 @@ class CommandRegistry:
                 cmd_instance = attr()
                 self.register(cmd_instance)
 
+    @classmethod
+    def for_tools(cls, tools: list) -> "CommandRegistry":
+        """Loads a CommandRegistry instance with the specified tools."""
+        # load instance specific tools
+        tool_registry = cls()
+        for class_path in tools or []:
+            tool_registry.import_commands(class_path)
+        return tool_registry
+
 
 def command(name: str, description: str, signature: str = None) -> Callable[..., Any]:
     """The command decorator is used to create Command objects from ordinary functions."""
