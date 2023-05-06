@@ -26,10 +26,10 @@ def parse_json(text: str, output_key: str) -> Dict[str, Any]:
         except Exception:
             raise MissingCommandMarkers
     else:
-        json_slice = text[start_index + len(start_marker): end_index].strip()
+        json_slice = text[start_index + len(start_marker) : end_index].strip()
         try:
             data = json.loads(json_slice)
-        except:
+        except Exception:
             logger.error(f"error parsing json={json_slice}")
             raise
 

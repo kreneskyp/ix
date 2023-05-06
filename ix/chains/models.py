@@ -93,7 +93,9 @@ class ChainNode(models.Model):
         return node
 
     def load_config(self) -> Dict[str, Any]:
-        logger.debug("Loading config for: ", self.name, self.class_path)
+        logger.debug(
+            f"Loading config for: name={self.name} class_path={self.class_path}"
+        )
         config = self.config.copy() if self.config else {}
 
         if self.node_type == "list":
