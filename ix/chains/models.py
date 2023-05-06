@@ -1,10 +1,13 @@
+import logging
 import uuid
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from django.db import models
 from langchain.chains.base import Chain
 
 from ix.utils.importlib import import_class
+
+logger = logging.getLogger(__name__)
 
 
 class ChainNode(models.Model):
@@ -36,12 +39,65 @@ class ChainNode(models.Model):
         "self", on_delete=models.CASCADE, related_name="children", null=True, blank=True
     )
 
+    def get_root(self) -> "ChainNode":
+        """return the root of the chain"""
+        return self.root if self.root else self
+
+    def add_node(self, key: str = "tools", **kwargs) -> "ChainNode":
+        """Add a node to the root"""
+        logger.debug(f"adding node to {self.class_path} kwargs={kwargs}")
+        root = self.get_root()
+        node = ChainNode.objects.create(root=root, **kwargs)
+        ChainEdge.objects.create(
+            root=root,
+            source=root,
+            target=node,
+            key=key,
+        )
+        return node
+
+    def add_child(self, key: Optional[str] = None, **kwargs) -> "ChainNode":
+        """Add a node as a child"""
+        logger.debug(f"adding child to {self.class_path} kwargs={kwargs}")
+        root = self.get_root()
+        parent = self
+
+        # auto-set ordering key for edges within lists
+        latest_node = None
+        if not key and parent.node_type == "list":
+            try:
+                latest_node = self.children.all().latest("incoming_edges__key")
+                edge = latest_node.incoming_edges.get()
+                last_key = int(edge.key)
+                logger.debug(f"found last child key={last_key}")
+            except ChainNode.DoesNotExist:
+                last_key = 0
+            key = f"{last_key+1:0>3}"
+
+        # default key for map types is chains
+        elif not key and parent.node_type == "map":
+            key = "chains"
+
+        # Chain the edges from parent -> nodes -> new node
+        # if no node then start with parent
+        source_node = latest_node or parent
+
+        logger.debug(f"adding child to {self.class_path} key={key} kwargs={kwargs}")
+        node = ChainNode.objects.create(root=root, parent=parent, **kwargs)
+        ChainEdge.objects.create(
+            root=root,
+            source=source_node,
+            target=node,
+            key=key,
+        )
+        return node
+
     def load_config(self) -> Dict[str, Any]:
+        logger.debug("Loading config for: ", self.name, self.class_path)
         config = self.config.copy() if self.config else {}
 
         if self.node_type == "list":
             child_chains = []
-            # TODO: sort by edge key
             for i, child in enumerate(
                 self.children.all().order_by("incoming_edges__key")
             ):

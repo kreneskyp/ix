@@ -12,23 +12,29 @@ logger = logging.getLogger(__name__)
 
 
 class ParseJSON(Chain):
-    """Chain that parses AI response content into JSON"""
+    """
+    Chain that parses AI response content into JSON
+    """
+
+    # input/output key map
+    input_key: str = "text"
+    output_key: str = "json"
 
     @property
     def output_keys(self) -> List[str]:
         # TODO: does this need to list all known outputs?
-        return ["ai_json"]
+        return [self.output_key]
 
     @property
     def input_keys(self) -> List[str]:
         """Input keys this chain expects."""
-        return ["text"]
+        return [self.input_key]
 
     def _call(self, inputs: Dict[str, str]) -> Dict[str, str]:
-        return self.parse_response(inputs["text"])
+        return self.parse_response(inputs[self.input_key])
 
     async def _acall(self, inputs: Dict[str, str]) -> Dict[str, str]:
-        return self.parse_response(inputs["text"])
+        return self.parse_response(inputs[self.input_key])
 
     def parse_response(self, response: str) -> Dict[str, Any]:
         """Parse response into valid JSON"""
