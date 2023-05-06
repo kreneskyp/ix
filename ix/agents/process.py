@@ -329,7 +329,9 @@ class AgentProcess:
 
     def chat_with_ai(self, user_input: Dict[str, Any]) -> Tuple[TaskLogMessage, str]:
         chain = self.construct_chain()
-        logger.info(f"Sending request to chain={self.task.agent.chain.name} prompt={user_input}")
+        logger.info(
+            f"Sending request to chain={self.task.agent.chain.name} prompt={user_input}"
+        )
 
         think_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,

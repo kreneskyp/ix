@@ -152,9 +152,6 @@ class Chain(models.Model):
     root = models.ForeignKey(ChainNode, on_delete=models.CASCADE, related_name="chains")
 
     def load_chain(self, callback_manager) -> Chain:
-        # from ix.agents.callback_manager import IxCallbackManager
-
-        # callback_manager = IxCallbackManager(None)
         return self.root.load_chain(callback_manager)
 
     def run(self):
