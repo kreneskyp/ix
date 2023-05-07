@@ -112,6 +112,8 @@ class RunPlan(Chain):
         """
         plan_id = inputs["plan_id"]
         plan = Plan.objects.get(pk=plan_id)
+        plan.is_draft = False
+        plan.save(update_fields=["is_draft"])
 
         results = {}
         for step in plan.steps.all():
