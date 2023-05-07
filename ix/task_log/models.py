@@ -147,6 +147,21 @@ class PlanSteps(models.Model):
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name="steps")
     is_complete = models.BooleanField(default=False)
     details = models.JSONField()
+    order = models.IntegerField(null=True, default=None)
+
+    @staticmethod
+    def get_default_order(instance: "PlanSteps") -> int:
+        siblings = PlanSteps.objects.filter(plan=instance.plan)
+        max_order = siblings.aggregate(models.Max("order"))["order__max"]
+        return (max_order or 0) + 1
+
+    def save(self, *args, **kwargs):
+        if self.order is None:
+            self.order = type(self).get_default_order(self)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ["order"]
 
     def __str__(self):
         return f"{self.details['name']}"
