@@ -121,7 +121,7 @@ class Artifact(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    reference = models.JSONField()
+    storage = models.JSONField()
 
 
 class Plan(models.Model):

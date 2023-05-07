@@ -53,8 +53,7 @@ class SavePlan(Chain):
             name=response["name"],
             description=response["description"],
             artifact_type="PLAN",
-            reference={"plan_id": str(plan.id)},
-            # content={"steps": response["commands"]}
+            storage={"type": "django:ix.task_log.models.Plan", "id": str(plan.id)},
         )
 
         TaskLogMessage.objects.create(

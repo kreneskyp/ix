@@ -1,6 +1,7 @@
 import logging
 
 import graphene
+from graphene.types.generic import GenericScalar
 from graphene_django import DjangoObjectType
 
 from ix.task_log.models import Task, Artifact, Plan, PlanSteps
@@ -43,6 +44,8 @@ class TaskType(DjangoObjectType):
 
 
 class ArtifactType(DjangoObjectType):
+    storage = GenericScalar()
+
     class Meta:
         model = Artifact
         fields = "__all__"

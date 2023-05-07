@@ -154,7 +154,6 @@ type TaskType {
   id: UUID!
   name: String!
   user: UserType!
-  goals: [GoalType]
   agent: AgentType!
   isComplete: Boolean!
   createdAt: DateTime!
@@ -166,6 +165,7 @@ type TaskType {
   ranPlans: [PlanType!]!
   chats: [ChatType!]!
   leadingChats: [ChatType!]!
+  goals: [GoalType]
 }
 
 type UserType {
@@ -193,11 +193,6 @@ type UserType {
   isActive: Boolean!
   dateJoined: DateTime!
   taskSet: [TaskType!]!
-}
-
-type GoalType {
-  description: String!
-  complete: Boolean!
 }
 
 type TaskLogMessageType {
@@ -230,7 +225,7 @@ type ArtifactType {
   name: String!
   description: String!
   createdAt: DateTime!
-  reference: JSONString!
+  storage: GenericScalar
   chats: [ChatType!]!
 }
 
@@ -251,6 +246,12 @@ type StepType {
   plan: PlanType!
   isComplete: Boolean!
   details: JSONString!
+  order: Int
+}
+
+type GoalType {
+  description: String!
+  complete: Boolean!
 }
 
 type ChainWithGraphType {
