@@ -1,5 +1,6 @@
 import React from "react";
 import { HStack, VStack, Text, Heading, Box, Spinner } from "@chakra-ui/react";
+import { useColorMode } from "@chakra-ui/color-mode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { faSquareCheck } from "@fortawesome/free-solid-svg-icons";
@@ -19,9 +20,9 @@ const StatusIcon = ({ isComplete, isRunning }) => {
   return <FontAwesomeIcon icon={faClock} />;
 };
 
-const SideBarGoalList = ({ queryRef }) => {
+const SideBarPlanList = ({ queryRef }) => {
   const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
-
+  const { colorMode } = useColorMode();
   return (
     <VStack spacing={1}>
       <Heading as="h3" size="md" width="100%" align="left" mt={5}>
@@ -30,13 +31,12 @@ const SideBarGoalList = ({ queryRef }) => {
       {chat.task.createdPlans?.map((plan, i) => (
         <Box
           bg="transparent"
-          color="gray.300"
           _hover={{
-            bg: "gray.700",
+            bg: colorMode === 'light' ? "gray.300" : "gray.700",
             cursor: "pointer",
           }}
         >
-          <HStack justify="top" py={1} pl={2}>
+          <HStack justify="top" py={1} pl={2} width="100%">
             <StatusIcon
               isComplete={plan.isComplete}
               isRunning={plan.task !== undefined}
@@ -49,4 +49,4 @@ const SideBarGoalList = ({ queryRef }) => {
   );
 };
 
-export default SideBarGoalList;
+export default SideBarPlanList;
