@@ -125,12 +125,29 @@ class RunPlan(Chain):
             result = self.tool_registry.call(command_name=tool_name, **tool_kwargs)
             results[tool_name] = result
 
+            # save all artifacts produced by this tool
+            artifacts = []
+            for artifact_definition in tool_config.get("produces_artifacts", []):
+                artifact = Artifact.objects.create(
+                    task=self.callback_manager.task,
+                    key=artifact_definition["key"],
+                    name=artifact_definition["name"],
+                    description=artifact_definition["description"],
+                    artifact_type=artifact_definition["type"],
+                    storage={
+                        "type": artifact_definition["storage"],
+                        "id": artifact_definition["identifier"],
+                    },
+                )
+                artifacts.append(artifact)
+
             TaskLogMessage.objects.create(
                 task_id=self.callback_manager.task.id,
                 role="assistant",
                 content={
                     "type": "EXECUTED",
-                    "output": f"{tool_name} executed, result={result}",
+                    "output": f"{tool_name} executed, results={results}",
+                    "artifacts": [str(artifact.id) for artifact in artifacts],
                 },
             )
 
