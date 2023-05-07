@@ -34,7 +34,7 @@ const ChatMessage = ({ message }) => {
       contentComponent = <AuthRequestContent content={content} />;
       break;
     case "EXECUTED":
-      contentComponent = <ExecuteContent content={content} />;
+      contentComponent = <ExecuteContent message={message} />;
       break;
     case "EXECUTE_ERROR":
       contentComponent = <ExecuteErrorContent content={content} />;
