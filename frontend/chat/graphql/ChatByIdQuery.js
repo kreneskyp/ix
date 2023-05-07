@@ -19,13 +19,7 @@ export const ChatByIdQuery = graphql`
         createdAt
         model
       }
-      artifacts {
-        id
-        name
-        key
-        description
-        reference
-      }
+
       task {
         id
         createdPlans(isDraft: false) {
@@ -43,6 +37,14 @@ export const ChatByIdQuery = graphql`
           runner {
             id
           }
+        }
+        artifacts {
+          id
+          name
+          key
+          description
+          artifactType
+          storage
         }
       }
     }

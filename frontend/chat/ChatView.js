@@ -14,7 +14,8 @@ import { ChatByIdQuery } from "chat/graphql/ChatByIdQuery";
 import { usePreloadedQuery } from "react-relay/hooks";
 import { AgentProvider } from "agents/graphql/AgentProvider";
 import AgentCardModalButton from "agents/AgentCardModalButton";
-import SideBarGoalList from "chat/SideBarPlanList";
+import SideBarPlanList from "chat/SideBarPlanList";
+import SideBarArtifactList from "chat/sidebar/SideBarArtifactList";
 
 export const ChatContentShim = ({ queryRef }) => {
   const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
@@ -62,7 +63,8 @@ export const ChatLeftPaneShim = ({ queryRef }) => {
         <AgentProvider agentId={chat.lead.id}>
           <AgentCardModalButton />
         </AgentProvider>
-        <SideBarGoalList queryRef={queryRef} />
+        <SideBarPlanList queryRef={queryRef} />
+        <SideBarArtifactList queryRef={queryRef} />
       </VStack>
     </Suspense>
   );
