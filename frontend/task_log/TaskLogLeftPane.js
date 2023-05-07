@@ -3,7 +3,8 @@ import { VStack, StackDivider, Box } from "@chakra-ui/react";
 import SideBarGoalList from "task_log/SideBarGoalList";
 import { AgentProvider } from "agents/graphql/AgentProvider";
 import { useTask } from "tasks/contexts";
-import AgentCardModalButton from "agents/AgentCardModalButton";
+import AgentDetailModalButton from "agents/AgentDetailModalButton";
+import AgentCard from "agents/AgentCard";
 
 export const TaskLogLeftPane = () => {
   const { task } = useTask();
@@ -12,7 +13,9 @@ export const TaskLogLeftPane = () => {
       <VStack divider={<StackDivider />} spacing={4} align="stretch">
         <SideBarGoalList />
         <AgentProvider agentId={task.agent.id}>
-          <AgentCardModalButton />
+          <AgentDetailModalButton agent={task.agent}>
+              <AgentCard />
+          </AgentDetailModalButton>
         </AgentProvider>
       </VStack>
     </Box>
