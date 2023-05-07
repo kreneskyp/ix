@@ -10,9 +10,6 @@ import {
   Td,
   Collapse,
   IconButton,
-  Card,
-  CardHeader,
-  CardBody,
   Flex,
   Grid,
 } from "@chakra-ui/react";
@@ -36,11 +33,23 @@ const StepDetails = ({ step }) => {
         <Text fontWeight="bold" justifySelf="left">
           Requires:
         </Text>
-        <Text gridColumn="2 / 3">{step.requires_artifacts?.join(", ")}</Text>
+        <Text gridColumn="2 / 3">
+          {step.requires_artifacts?.map((artifact) => (
+            <Text as="span" color="blue.300" mr={3}>
+              {artifact}
+            </Text>
+          ))}
+        </Text>
         <Text fontWeight="bold" justifySelf="left">
           Produces:
         </Text>
-        <Text gridColumn="2 / 3">{step.produces_artifacts?.join(", ")}</Text>
+        <Text gridColumn="2 / 3">
+          {step.produces_artifacts?.map((artifact) => (
+            <Text as="span" color="blue.300" mr={3}>
+              {artifact.identifier}{" "}
+            </Text>
+          ))}
+        </Text>
         <Text fontWeight="bold" justifySelf="left">
           Command:
         </Text>
