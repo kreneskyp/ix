@@ -32,8 +32,9 @@ const SideBarPlanList = ({ queryRef }) => {
         <Box
           key={i}
           bg="transparent"
+          color={colorMode === "light" ? "gray.700" : "gray.400"}
           _hover={{
-            bg: colorMode === 'light' ? "gray.300" : "gray.700",
+            bg: colorMode === "light" ? "gray.300" : "gray.700",
             cursor: "pointer",
           }}
         >

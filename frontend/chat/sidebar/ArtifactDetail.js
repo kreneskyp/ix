@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Text,
-  VStack,
-  Grid,
-  GridItem,
-} from "@chakra-ui/react";
+import { Text, VStack, Grid, GridItem } from "@chakra-ui/react";
 
 const ArtifactDetail = ({ artifact }) => {
   const { id, key, description, createdAt } = artifact;
@@ -27,11 +22,11 @@ const ArtifactDetail = ({ artifact }) => {
         <GridItem>{key}</GridItem>
         <GridItem>
           <Text fontSize="sm" color="gray.500">
-            {artifact.storage.type}:
+            {artifact.storage?.type}:
           </Text>
         </GridItem>
         <GridItem>
-          <Text fontSize="sm">{artifact.storage.id}</Text>
+          <Text fontSize="sm">{artifact.storage?.id}</Text>
         </GridItem>
         <GridItem>
           <Text fontSize="sm" color="gray.500">

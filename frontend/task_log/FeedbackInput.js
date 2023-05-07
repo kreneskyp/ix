@@ -45,7 +45,7 @@ const FeedbackInput = () => {
         <Input
           type="text"
           width={800}
-          placeholder="Enter additional feedback."
+          placeholder="What can I help you with?"
           value={feedback}
           onChange={(e) => setFeedback(e.target.value)}
           onKeyPress={handleKeyPress}
