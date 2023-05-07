@@ -1,5 +1,6 @@
 import logging
 import time
+import traceback
 import uuid
 
 from functools import cached_property
@@ -305,6 +306,10 @@ class AgentProcess:
     ):
         """Collection point for errors while ticking the loop"""
         assert isinstance(exception, Exception), exception
+        traceback_list = traceback.format_exception(
+            type(exception), exception, exception.__traceback__
+        )
+        traceback_string = "".join(traceback_list)
         error_type = type(exception).__name__
         think_msg_id = think_msg.id if think_msg else None
         failure_msg = TaskLogMessage.objects.create(
@@ -315,6 +320,7 @@ class AgentProcess:
                 "type": "EXECUTE_ERROR",
                 "error_type": error_type,
                 "text": str(exception),
+                "details": traceback_string,
             },
         )
         logger.error(
