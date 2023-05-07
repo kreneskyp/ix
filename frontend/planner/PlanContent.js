@@ -34,8 +34,8 @@ const StepDetails = ({ step }) => {
           Requires:
         </Text>
         <Text gridColumn="2 / 3">
-          {step.requires_artifacts?.map((artifact) => (
-            <Text as="span" color="blue.300" mr={3}>
+          {step.requires_artifacts?.map((artifact, i) => (
+            <Text key={i} as="span" color="blue.300" mr={3}>
               {artifact}
             </Text>
           ))}
@@ -44,8 +44,8 @@ const StepDetails = ({ step }) => {
           Produces:
         </Text>
         <Text gridColumn="2 / 3">
-          {step.produces_artifacts?.map((artifact) => (
-            <Text as="span" color="blue.300" mr={3}>
+          {step.produces_artifacts?.map((artifact, i) => (
+            <Text key={i} as="span" color="blue.300" mr={3}>
               {artifact.identifier}{" "}
             </Text>
           ))}
@@ -125,7 +125,7 @@ export const PlanContent = ({ message }) => {
                       float="right"
                     />
                   </Box>
-                  <Collapse in={expandedStep === index} paddingTop="1px">
+                  <Collapse in={expandedStep === index}>
                     <StepDetails step={step} />
                   </Collapse>
                 </Td>

@@ -30,6 +30,7 @@ const SideBarPlanList = ({ queryRef }) => {
       </Heading>
       {chat.task.createdPlans?.map((plan, i) => (
         <Box
+          key={i}
           bg="transparent"
           _hover={{
             bg: colorMode === 'light' ? "gray.300" : "gray.700",

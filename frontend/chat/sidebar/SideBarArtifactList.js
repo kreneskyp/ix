@@ -33,6 +33,7 @@ const SideBarArtifactList = ({ queryRef }) => {
       </Heading>
       {artifacts?.map((artifact, i) => (
         <Box
+          key={i}
           bg="transparent"
           _hover={{
             bg: colorMode === 'light' ? "gray.300" : "gray.700",
