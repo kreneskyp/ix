@@ -1,31 +1,33 @@
 [
   {
     "model": "agents.agent",
-    "pk": "a6062f37-645e-46c4-9a9b-e77b15031566",
+    "pk": "121669a9-1c00-4dc4-98b3-9c8139249833",
     "fields": {
-      "name": "Python Coder",
-      "purpose": "To write python code to improve myself",
+      "name": "Chat Moderator",
+      "alias": "moderator",
+      "purpose": "The moderator analyzes user input and delegates to the appropriate agent.",
       "created_at": "2023-04-16T15:21:55.788Z",
-      "model": "gpt-3.5-turbo",
+      "model": "gpt-4",
       "agent_class_path": "ix.agents.process.AgentProcess",
-      "chain_id": "b7d8f662-12f6-4525-b07b-c9ea7ca7f116",
+      "chain_id": "b7d8f662-12f6-4525-b07b-c9ea7ca7f200",
       "config": {
-        "temperature": 0.7
+        "temperature": 0.1
       }
     }
   },
   {
     "model": "agents.agent",
-    "pk": "121669a9-1c00-4dc4-98b3-9c813924982e",
+    "pk": "121669a9-1c00-4dc4-98b3-9c8139249844",
     "fields": {
-      "name": "Python Coder GPT-4",
-      "purpose": "To write python code to improve myself",
+      "name": "Planner v3",
+      "alias": "planner",
+      "purpose": "Creates plans to achieve goals described by user input",
       "created_at": "2023-04-16T15:21:55.788Z",
       "model": "gpt-4",
       "agent_class_path": "ix.agents.process.AgentProcess",
-      "chain_id": "b7d8f662-12f6-4525-b07b-c9ea7ca7f116",
+      "chain_id": "b7d8f662-12f6-4525-b07b-c9ea7ca7f118",
       "config": {
-        "temperature": 0.7
+        "temperature": 0.1
       }
     }
   }
