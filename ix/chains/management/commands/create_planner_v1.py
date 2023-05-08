@@ -149,9 +149,7 @@ class Command(BaseCommand):
     help = "Creates planning chain v1"
 
     def handle(self, *args, **options):
-        ChainEdge.objects.all().delete()
-        ChainNode.objects.all().delete()
-        Chain.objects.all().delete()
+        Chain.objects.filter(id=CHAIN_ID).delete()
 
         # Create root node
         root = ChainNode.objects.create(**PLAN_FLOW_CHOOSER)
