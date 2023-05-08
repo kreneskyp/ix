@@ -1,3 +1,4 @@
+
 DOCKER_COMPOSE=docker-compose.yml
 DOCKERFILE=Dockerfile
 DOCKER_REGISTRY=ghcr.io
@@ -126,7 +127,7 @@ migrations: compose
 # load initial data needed for dev environment
 .PHONY: dev_fixtures
 dev_fixtures: compose
-	${DOCKER_COMPOSE_RUN} ./manage.py loaddata fake_user default_agent planning_chain
+	${DOCKER_COMPOSE_RUN} ./manage.py loaddata fake_user default_agent planning_chain_v3 moderator_v1
 
 
 # =========================================================
