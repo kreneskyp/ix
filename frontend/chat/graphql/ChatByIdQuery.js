@@ -20,6 +20,10 @@ export const ChatByIdQuery = graphql`
         purpose
         createdAt
         model
+        config
+        chain {
+          id
+        }
       }
 
       task {
@@ -47,6 +51,7 @@ export const ChatByIdQuery = graphql`
           description
           artifactType
           storage
+          createdAt
         }
       }
     }

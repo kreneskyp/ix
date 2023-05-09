@@ -8,6 +8,7 @@ export const AgentsQuery = graphql`
       name
       alias
       model
+      purpose
       config
       chain {
         id
