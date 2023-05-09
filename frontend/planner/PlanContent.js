@@ -67,11 +67,11 @@ const StepDetails = ({ step }) => {
             <Tr key={key}>
               <Td border={0}>{key}</Td>
               <Td border={0}>
-                <Box sx={{ overflowX: 'auto'}} width={500}>
-                <SyntaxHighlighter style={syntaxTheme} wrapLines={true}>
-                  {value}
-                </SyntaxHighlighter>
-              </Box>
+                <Box sx={{ overflowX: "auto" }} width={500}>
+                  <SyntaxHighlighter style={syntaxTheme} wrapLines={true}>
+                    {value}
+                  </SyntaxHighlighter>
+                </Box>
               </Td>
             </Tr>
           ))}

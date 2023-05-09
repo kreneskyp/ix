@@ -14,7 +14,7 @@ export const TaskLogLeftPane = () => {
         <SideBarGoalList />
         <AgentProvider agentId={task.agent.id}>
           <AgentDetailModalButton agent={task.agent}>
-              <AgentCard />
+            <AgentCard />
           </AgentDetailModalButton>
         </AgentProvider>
       </VStack>

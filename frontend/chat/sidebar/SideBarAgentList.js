@@ -1,14 +1,11 @@
 import React from "react";
-import { HStack, VStack, Text, Box, useDisclosure } from "@chakra-ui/react";
-import { useColorMode } from "@chakra-ui/color-mode";
+import { HStack, VStack, Text, Box } from "@chakra-ui/react";
 import { usePreloadedQuery } from "react-relay/hooks";
 import { ChatByIdQuery } from "chat/graphql/ChatByIdQuery";
 import AssistantAvatar from "chat/AssistantAvatar";
 import AgentDetailModalButton from "agents/AgentDetailModalButton";
 
 const AgentListItem = ({ agent }) => {
-  const { colorMode } = useColorMode();
-  console.log(agent);
   return (
     <AgentDetailModalButton agent={agent} width="100%">
       <Box
@@ -25,7 +22,6 @@ const AgentListItem = ({ agent }) => {
     </AgentDetailModalButton>
   );
 };
-
 const SideBarAgentList = ({ queryRef }) => {
   const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
   const lead = chat.lead;
@@ -33,7 +29,7 @@ const SideBarAgentList = ({ queryRef }) => {
 
   return (
     <Box justify="left" p={3} borderRadius={5} bg="gray.800" color="gray.300">
-      <VStack spacing={1}>
+      <VStack spacing={3}>
         <AgentListItem agent={lead} />
         {agents?.map((agent, i) => (
           <AgentListItem key={i} agent={agent} />
