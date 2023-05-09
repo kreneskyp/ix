@@ -17,6 +17,7 @@ type Query {
 type AgentType {
   id: UUID!
   name: String!
+  alias: String!
   purpose: String!
   createdAt: DateTime!
   model: String!
@@ -343,6 +344,7 @@ type CreateAgentMutation {
 input AgentInput {
   id: UUID
   name: String
+  alias: String
   purpose: String
   model: String
   config: GenericScalar

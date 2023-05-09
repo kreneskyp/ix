@@ -6,6 +6,7 @@ export const AgentsQuery = graphql`
     agents {
       id
       name
+      alias
       model
       config
       chain {

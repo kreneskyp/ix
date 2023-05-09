@@ -30,6 +30,13 @@ export const AgentGeneralEditor = ({ agentData, setAgentData, chains }) => {
           p={5}
           onChange={(e) => setAgentData({ ...agentData, name: e.target.value })}
         />
+        <FormLabel>Alias (chat tag)</FormLabel>
+        <Input
+          placeholder="alias"
+          value={agentData?.alias || ""}
+          p={5}
+          onChange={(e) => setAgentData({ ...agentData, alias: e.target.value })}
+        />
         <FormLabel>Purpose</FormLabel>
         <Input
           placeholder="Purpose"

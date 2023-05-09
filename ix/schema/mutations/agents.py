@@ -9,6 +9,7 @@ from graphene.types.generic import GenericScalar
 class AgentInput(graphene.InputObjectType):
     id = graphene.UUID()
     name = graphene.String()
+    alias = graphene.String()
     purpose = graphene.String()
     model = graphene.String()
     config = GenericScalar()

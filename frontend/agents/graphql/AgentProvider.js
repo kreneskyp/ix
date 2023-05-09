@@ -11,6 +11,7 @@ export const AgentProvider = ({ agentId, children }) => {
         agent: agent(id: $id) {
           id
           name
+          alias
           model
           purpose
           config

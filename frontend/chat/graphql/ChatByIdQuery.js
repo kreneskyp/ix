@@ -8,6 +8,7 @@ export const ChatByIdQuery = graphql`
       lead {
         id
         name
+        alias
         purpose
         createdAt
         model
@@ -15,6 +16,7 @@ export const ChatByIdQuery = graphql`
       agents {
         id
         name
+        alias
         purpose
         createdAt
         model
