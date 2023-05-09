@@ -67,9 +67,11 @@ const StepDetails = ({ step }) => {
             <Tr key={key}>
               <Td border={0}>{key}</Td>
               <Td border={0}>
+                <Box sx={{ overflowX: 'auto'}} width={500}>
                 <SyntaxHighlighter style={syntaxTheme} wrapLines={true}>
                   {value}
                 </SyntaxHighlighter>
+              </Box>
               </Td>
             </Tr>
           ))}
@@ -108,7 +110,7 @@ export const PlanContent = ({ message }) => {
                 borderTop={expandedStep === index ? "none" : "1px solid"}
                 borderColor="gray.200"
               >
-                <Td>{index + 1}</Td>
+                <Td width={50}>{index + 1}</Td>
                 <Td>
                   <Box>
                     {step.name}
