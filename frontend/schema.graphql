@@ -58,6 +58,7 @@ type ChainType {
   createdAt: DateTime!
   root: ChainNodeType!
   agentSet: [AgentType!]!
+  taskSet: [TaskType!]!
 }
 
 type ChainNodeType {
@@ -82,80 +83,12 @@ enum ChainsChainNodeNodeTypeChoices {
   MAP
 }
 
-type ResourceType {
-  id: UUID!
-  type: AgentsResourceTypeChoices!
-  config: JSONString!
-  agent: AgentType!
-  chats: [ChatType!]!
-}
-
-enum AgentsResourceTypeChoices {
-  """Vector Memory"""
-  VECTOR_MEMORY
-
-  """Database"""
-  DATABASE
-
-  """File System"""
-  FILE_SYSTEM
-
-  """Cache"""
-  CACHE
-
-  """API"""
-  API
-
-  """Knowledge Base"""
-  KNOWLEDGE_BASE
-
-  """Image Database"""
-  IMAGE_DATABASE
-
-  """Audio Database"""
-  AUDIO_DATABASE
-
-  """Video Database"""
-  VIDEO_DATABASE
-
-  """Cloud Storage"""
-  CLOUD_STORAGE
-
-  """Content Delivery Network"""
-  CONTENT_DELIVERY_NETWORK
-
-  """Message Queue"""
-  MESSAGE_QUEUE
-
-  """Stream Processing"""
-  STREAM_PROCESSING
-}
-
-"""
-Allows use of a JSON String for input / output from the GraphQL schema.
-
-Use of this type is *not recommended* as you lose the benefits of having a defined, static
-schema (one of the key benefits of GraphQL).
-"""
-scalar JSONString
-
-type ChatType {
-  id: UUID!
-  name: String!
-  createdAt: DateTime!
-  lead: AgentType!
-  agents: [AgentType!]!
-  tasks: [TaskType!]!
-  artifacts: [ArtifactType!]!
-  resources: [ResourceType!]!
-  task: TaskType!
-}
-
 type TaskType {
   id: UUID!
   name: String!
   user: UserType!
-  agent: AgentType!
+  agent: AgentType
+  chain: ChainType!
   isComplete: Boolean!
   createdAt: DateTime!
   completeAt: DateTime
@@ -230,6 +163,75 @@ type ArtifactType {
   chats: [ChatType!]!
 }
 
+type ChatType {
+  id: UUID!
+  name: String!
+  createdAt: DateTime!
+  lead: AgentType!
+  agents: [AgentType!]!
+  tasks: [TaskType!]!
+  artifacts: [ArtifactType!]!
+  resources: [ResourceType!]!
+  task: TaskType!
+}
+
+type ResourceType {
+  id: UUID!
+  type: AgentsResourceTypeChoices!
+  config: JSONString!
+  agent: AgentType!
+  chats: [ChatType!]!
+}
+
+enum AgentsResourceTypeChoices {
+  """Vector Memory"""
+  VECTOR_MEMORY
+
+  """Database"""
+  DATABASE
+
+  """File System"""
+  FILE_SYSTEM
+
+  """Cache"""
+  CACHE
+
+  """API"""
+  API
+
+  """Knowledge Base"""
+  KNOWLEDGE_BASE
+
+  """Image Database"""
+  IMAGE_DATABASE
+
+  """Audio Database"""
+  AUDIO_DATABASE
+
+  """Video Database"""
+  VIDEO_DATABASE
+
+  """Cloud Storage"""
+  CLOUD_STORAGE
+
+  """Content Delivery Network"""
+  CONTENT_DELIVERY_NETWORK
+
+  """Message Queue"""
+  MESSAGE_QUEUE
+
+  """Stream Processing"""
+  STREAM_PROCESSING
+}
+
+"""
+Allows use of a JSON String for input / output from the GraphQL schema.
+
+Use of this type is *not recommended* as you lose the benefits of having a defined, static
+schema (one of the key benefits of GraphQL).
+"""
+scalar JSONString
+
 type PlanType {
   id: UUID!
   creator: TaskType!
@@ -274,7 +276,7 @@ type ChainEdgeType {
 type Mutation {
   sendFeedback(input: TaskFeedbackInput!): TaskFeedbackMutation
   authorizeCommand(input: CommandAuthorizeInput!): AuthorizeCommandMutation
-  createChat(input: CreateChatInput): CreateChatResponse
+  createChat(input: CreateChatInput): ChatMutationResponse
   createTask(input: CreateTaskInput!): CreateTaskResponse
   startTask(taskId: UUID!): StartTaskMutation
   setTaskAutonomous(autonomous: Boolean!, taskId: UUID!): SetTaskAutonomousMutation
@@ -305,7 +307,7 @@ input CommandAuthorizeInput {
   messageId: UUID!
 }
 
-type CreateChatResponse {
+type ChatMutationResponse {
   chat: ChatType
 }
 

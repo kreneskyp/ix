@@ -16,7 +16,7 @@ from ix.task_log.tasks.agent_runner import (
 logger = logging.getLogger(__name__)
 
 
-class CreateChatResponse(graphene.ObjectType):
+class ChatMutationResponse(graphene.ObjectType):
     chat = graphene.Field(ChatType)
 
 
@@ -30,7 +30,7 @@ DEFAULT_AGENT_GPT4 = "121669a9-1c00-4dc4-98b3-9c813924982e"
 
 
 class CreateChatMutation(graphene.Mutation):
-    Output = CreateChatResponse
+    Output = ChatMutationResponse
 
     class Arguments:
         input = CreateChatInput(required=False)
@@ -66,7 +66,7 @@ class CreateChatMutation(graphene.Mutation):
             lead=agent,
         )
 
-        return CreateChatResponse(chat=chat)
+        return ChatMutationResponse(chat=chat)
 
 
 class CommandAuthorizeInput(graphene.InputObjectType):
