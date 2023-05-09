@@ -6,8 +6,14 @@ export const CreateAgentMutation = graphql`
       agent {
         id
         name
+        alias
         model
+        purpose
         config
+        chain {
+          id
+          name
+        }
       }
     }
   }
@@ -19,8 +25,14 @@ export const UpdateAgentMutation = graphql`
       agent {
         id
         name
+        alias
+        purpose
         model
         config
+        chain {
+          id
+          name
+        }
       }
     }
   }

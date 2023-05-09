@@ -12,6 +12,10 @@ export const ChatByIdQuery = graphql`
         purpose
         createdAt
         model
+        config
+        chain {
+          id
+        }
       }
       agents {
         id
