@@ -20,8 +20,8 @@ export const AgentEditor = ({ agent, chainsRef }) => {
   const { chains } = usePreloadedQuery(ChainsQuery, chainsRef);
   const [commit] = useMutation(UpdateAgentMutation);
 
-  // repack agent & chain into initial data
-  const { chain, ...agentMinusChain } = agent || {};
+  // repack agent without data that can't be updated
+  const { chain, createdAt, ...agentMinusChain } = agent || {};
   const initialData = { ...agentMinusChain, chainId: chain?.id };
 
   const [agentData, setAgentData] = useState(initialData);
