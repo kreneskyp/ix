@@ -22,7 +22,15 @@ const ArtifactDetail = ({ artifact }) => {
         <GridItem>{key}</GridItem>
         <GridItem>
           <Text fontSize="sm" color="gray.500">
-            {artifact.storage?.type}:
+            Storage Type:
+          </Text>
+        </GridItem>
+        <GridItem>
+          <Text fontSize="sm">{artifact.storage?.type}</Text>
+        </GridItem>
+        <GridItem>
+          <Text fontSize="sm" color="gray.500">
+            Storage ID:
           </Text>
         </GridItem>
         <GridItem>
