@@ -3,11 +3,48 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 
+from ix.chains.models import Chain, ChainNode
 from ix.chat.models import Chat
 from ix.task_log.models import Agent, Task, TaskLogMessage
 from faker import Faker
 
 fake = Faker()
+
+
+def fake_chain():
+    """
+    Create a fake chain with a root ChainNode.
+    """
+    root_node = fake_chain_node()
+
+    chain = Chain.objects.create(
+        id=uuid.uuid4(),
+        name=fake.unique.name(),
+        description=fake.text(),
+        root=root_node,
+    )
+
+    return chain
+
+
+def fake_chain_node():
+    """
+    Create a fake chain node.
+    """
+    node = ChainNode.objects.create(
+        id=uuid.uuid4(),
+        name=fake.unique.name(),
+        description="This is a mock node",
+        class_path="ix.chains.llm_chain.LLMChain",
+        config={
+            "llm": {
+                "class_path": "ix.chains.tests.mock_llm.MockLLM",
+            },
+            "messages": [{"role": "system", "template": "This is a mock node"}],
+        },
+    )
+
+    return node
 
 
 def fake_agent(**kwargs):
@@ -27,12 +64,15 @@ def fake_agent(**kwargs):
         },
     )
 
+    chain = kwargs.get("chain", fake_chain())
+
     agent = Agent.objects.create(
         pk=kwargs.get("pk"),
         name=name,
         purpose=purpose,
         model=model,
         config=config,
+        chain=chain,
         agent_class_path=agent_class_path,
     )
     return agent
@@ -56,8 +96,13 @@ def fake_goal(**kwargs):
 def fake_task(**kwargs):
     user = kwargs.get("user") or fake_user()
     agent = kwargs.get("agent") or fake_agent()
-    task = Task.objects.create(user=user, agent=agent)
+    task = Task.objects.create(user=user, agent=agent, chain=agent.chain)
     return task
+
+
+def fake_think(**kwargs):
+    content = {"type": "THINK", "input": {"user_input": "Test message"}}
+    return fake_task_log_msg(role="assistant", content=content, **kwargs)
 
 
 def fake_command_reply(**kwargs):
