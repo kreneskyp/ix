@@ -109,7 +109,7 @@ class ChatModerator(Chain):
         chat = Chat.objects.get(id=chat_id)
         lines = []
         for i, agent in enumerate(chat.agents.all()):
-            lines.append(f'{i}. {agent.alias}: {agent.purpose}')
+            lines.append(f"{i}. {agent.alias}: {agent.purpose}")
         return "\n".join(lines)
 
     def delegate_to_agent(self, agent_id, user_input):
@@ -121,7 +121,9 @@ class ChatModerator(Chain):
             agent_id=agent_id,
             autonomous=task.autonomous,
         )
-        start_agent_loop.delay(task_id=subtask.id, chain_id=agent.chain_id, user_input=user_input)
+        start_agent_loop.delay(
+            task_id=subtask.id, chain_id=agent.chain_id, user_input=user_input
+        )
         return subtask.id
 
     def _call(self, inputs: Dict[str, str]) -> Dict[str, str]:

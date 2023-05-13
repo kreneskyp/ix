@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from ix.chains.models import ChainNode, ChainEdge, Chain
+from ix.chains.models import ChainNode, Chain
 
 
 CHAT_MODERATOR = {
@@ -30,6 +30,6 @@ class Command(BaseCommand):
             pk=CHAIN_ID,
             name="Chat Moderation Chain",
             description="Chain used moderate chats. The moderator analyzes user input "
-                        "and delegates it to the appropriate agent.",
+            "and delegates it to the appropriate agent.",
             root=root,
         )

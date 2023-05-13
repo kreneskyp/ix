@@ -18,7 +18,10 @@ class IxCallbackManager(CallbackManager):
     command_registry: CommandRegistry
 
     def __init__(
-        self, task: Task, stack_id: str = None, parent: "IxCallbackHandler" = None  # noqa: F821
+        self,
+        task: Task,
+        stack_id: str = None,
+        parent: "IxCallbackHandler" = None,  # noqa: F821
     ):
         super().__init__(handlers=[])
 

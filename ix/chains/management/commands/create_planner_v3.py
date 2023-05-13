@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from ix.chains.models import ChainNode, ChainEdge, Chain
+from ix.chains.models import ChainNode, Chain
 
 
 ARTIFACT_FORMAT = """

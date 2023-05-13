@@ -4,7 +4,7 @@ import traceback
 import uuid
 
 from functools import cached_property
-from typing import TypedDict, Optional, Any, Dict, Tuple, Union
+from typing import TypedDict, Optional, Any, Dict, Union
 
 from langchain.chains.base import Chain
 
