@@ -30,12 +30,13 @@ class LLMChain(LangchainLLMChain):
         message: Dict[str, Any], config: Dict[str, Any], context: Dict[str, Any]
     ) -> BaseStringMessagePromptTemplate:
         """Create a message template"""
-        template_class = TEMPLATE_CLASSES[message.pop("role")]
+        message_config = message.copy()
+        template_class = TEMPLATE_CLASSES[message_config.pop("role")]
         prompt_config = {
             "input_variables": [],
             "partial_variables": {},
         }
-        prompt_config.update(message)
+        prompt_config.update(message_config)
         logger.debug(f"LLMChain creating message with prompt_config={prompt_config}")
         prompt = PromptTemplate(**prompt_config)
         return template_class(prompt=prompt)
