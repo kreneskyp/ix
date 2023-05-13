@@ -48,10 +48,6 @@ CREATE_TASK_MUTATION = """
           id
           name
           autonomous
-          goals {
-            description
-            complete
-          }
           agent {
             id
           }
@@ -63,7 +59,7 @@ CREATE_TASK_MUTATION = """
 
 @pytest.mark.django_db
 class TestCreateTaskMutation:
-    def test_create_task_without_goals_and_agent_autonomous_flag(self):
+    def test_create_task_without_agent_autonomous_flag(self):
         fake_user()
         fake_agent(pk=1)
         client = Client(schema)
@@ -77,14 +73,13 @@ class TestCreateTaskMutation:
 
         response = client.execute(CREATE_TASK_MUTATION, variables=variables)
 
-        assert "errors" not in response
+        assert "errors" not in response, response["errors"]
         assert response["data"]["createTask"]["task"]["name"] == "Test Task"
-        assert response["data"]["createTask"]["task"]["goals"] == []
         assert response["data"]["createTask"]["task"]["agent"]["id"]
         task = Task.objects.get(pk=response["data"]["createTask"]["task"]["id"])
         assert task.autonomous is False
 
-    def test_create_task_with_goals_and_agent_autonomous_flag(self):
+    def test_create_task_with_autonomous_flag(self):
         fake_user()
         agent = fake_agent()
         client = Client(schema)
@@ -94,10 +89,6 @@ class TestCreateTaskMutation:
                 "name": "Test Task",
                 "agentId": str(agent.id),
                 "autonomous": True,
-                "goals": [
-                    {"description": "Goal 1"},
-                    {"description": "Goal 2"},
-                ],
             }
         }
 
@@ -105,10 +96,6 @@ class TestCreateTaskMutation:
 
         assert "errors" not in response
         assert response["data"]["createTask"]["task"]["name"] == "Test Task"
-        assert response["data"]["createTask"]["task"]["goals"] == [
-            {"description": "Goal 1", "complete": False},
-            {"description": "Goal 2", "complete": False},
-        ]
         assert response["data"]["createTask"]["task"]["agent"]["id"] == str(agent.id)
         task = Task.objects.get(pk=response["data"]["createTask"]["task"]["id"])
         assert task.autonomous is True

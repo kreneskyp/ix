@@ -56,6 +56,7 @@ class CreateChatMutation(graphene.Mutation):
             user=user,
             name=input and input.name or "",
             agent=agent,
+            chain=agent.chain,
             autonomous=input.autonomous
             if (input and input.autonomous is not None)
             else True,

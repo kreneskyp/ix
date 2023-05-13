@@ -4,6 +4,7 @@ from typing import TypedDict, Optional
 
 from django.db import models
 from ix.agents.models import Agent
+from ix.chains.models import Chain
 
 
 class Task(models.Model):
@@ -12,7 +13,8 @@ class Task(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=64)
     user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
-    agent = models.ForeignKey(Agent, on_delete=models.CASCADE)
+    agent = models.ForeignKey(Agent, null=True, on_delete=models.CASCADE)
+    chain = models.ForeignKey(Chain, on_delete=models.CASCADE)
     is_complete = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     complete_at = models.DateTimeField(null=True, blank=True)

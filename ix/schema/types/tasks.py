@@ -31,7 +31,6 @@ class TaskType(DjangoObjectType):
         model = Task
         fields = "__all__"
 
-    goals = graphene.List(GoalType)
     created_plans = graphene.Field(
         graphene.List(PlanType), is_draft=graphene.Boolean(required=False)
     )

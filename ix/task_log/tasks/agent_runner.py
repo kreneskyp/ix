@@ -2,7 +2,6 @@ from typing import Optional
 
 from celery_singleton import Singleton
 from ix.agents.process import AgentProcess
-from ix.chat.models import Chat
 from ix.server.celery import app
 from ix.task_log.models import Task
 

@@ -126,4 +126,6 @@ class TestTaskFeedbackMutation:
         }
 
         # Assert that the Celery task is dispatched
-        mock_start_agent_loop.delay.assert_called_once_with(str(task.id))
+        mock_start_agent_loop.delay.assert_called_once_with(
+            str(task.id), message_id=str(task_log_message.id)
+        )
