@@ -271,9 +271,16 @@ class AgentProcess:
         self.update_message_history()
         logger.info(f"ticking task_id={self.task_id}")
 
-        think_msg = None
+        think_msg = TaskLogMessage.objects.create(
+            task_id=self.task_id,
+            role="system",
+            content={
+                "type": "THINK",
+                "input": user_input,
+            },
+        )
         try:
-            think_msg, response = self.chat_with_ai(user_input)
+            response = self.chat_with_ai(think_msg, user_input)
             logger.debug(
                 f"Response from model, task_id={self.task_id} response={response}"
             )
@@ -296,8 +303,8 @@ class AgentProcess:
         except Exception as e:
             # catch all to log all other messages
             self.log_exception(exception=e, think_msg=think_msg)
-            raise
             return True
+        return True
 
     def log_exception(
         self,
@@ -333,35 +340,33 @@ class AgentProcess:
         chain = self.task.agent.chain
         return chain.load_chain(callback_manager)
 
-    def chat_with_ai(self, user_input: Dict[str, Any]) -> Tuple[TaskLogMessage, str]:
+    def chat_with_ai(
+        self, think_msg: TaskLogMessage, user_input: Dict[str, Any]
+    ) -> TaskLogMessage:
         chain = self.construct_chain()
         logger.info(
             f"Sending request to chain={self.task.agent.chain.name} prompt={user_input}"
         )
 
-        think_msg = TaskLogMessage.objects.create(
-            task_id=self.task_id,
-            role="system",
-            content={
-                "type": "THINK",
-                "input": user_input,
-            },
-        )
         start = time.time()
-        response = chain.run(**user_input)
-        end = time.time()
-        TaskLogMessage.objects.create(
-            task_id=self.task_id,
-            role="system",
-            parent_id=think_msg.id,
-            content={
-                "type": "THOUGHT",
-                # TODO: add usage in somewhere else, it's not provided by langchain
-                # "usage": response["usage"],
-                "runtime": end - start,
-            },
-        )
-        return think_msg, response
+        try:
+            response = chain.run(**user_input)
+        except:  # noqa: E722
+            raise
+        finally:
+            end = time.time()
+            TaskLogMessage.objects.create(
+                task_id=self.task_id,
+                role="system",
+                parent_id=think_msg.id,
+                content={
+                    "type": "THOUGHT",
+                    # TODO: add usage in somewhere else, it's not provided by langchain
+                    # "usage": response["usage"],
+                    "runtime": end - start,
+                },
+            )
+        return response
 
     def add_history(self, *history_messages: Dict[str, Any]):
         logger.debug(f"adding history history_messages={history_messages}")
