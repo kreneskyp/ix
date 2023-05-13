@@ -13,8 +13,8 @@ import { Link } from "react-router-dom";
 
 function Navigation() {
   return (
-    <Box as="nav">
-      <Stack spacing={4}>
+    <Box as="nav" fontSize="sm" color="gray.200">
+      <Stack spacing={3}>
         <HStack align="center">
           <FontAwesomeIcon icon={faChain} />
           <Link ml={3} to="/chains">
