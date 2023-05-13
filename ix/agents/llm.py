@@ -9,6 +9,10 @@ from ix.utils.importlib import import_class
 logger = logging.getLogger(__name__)
 
 
+# mock point for testing
+import_llm_class = import_class
+
+
 def load_llm(
     config_or_llm: Union[BaseLanguageModel, Dict[str, Any]],
     callback_manager: IxCallbackManager,
@@ -17,9 +21,9 @@ def load_llm(
     if isinstance(config_or_llm, BaseLanguageModel):
         return config_or_llm
 
-    llm_class = import_class(config_or_llm["class_path"])
+    llm_class = import_llm_class(config_or_llm["class_path"])
     logger.debug(f"loading llm config={config_or_llm}")
-    llm = llm_class(**config_or_llm["config"])
+    llm = llm_class(**config_or_llm.get("config", {}))
     llm.callback_manager = callback_manager
     return llm
 
