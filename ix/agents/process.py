@@ -322,7 +322,7 @@ class AgentProcess:
         failure_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,
             parent_id=think_msg_id,
-            role="system",
+            role="assistant",
             content={
                 "type": "EXECUTE_ERROR",
                 "error_type": error_type,
