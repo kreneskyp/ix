@@ -22,4 +22,4 @@ class TestPlannerV1:
 
         assert uuid.UUID(artifact_id)
         artifact = Artifact.objects.get(pk=artifact_id)
-        assert Plan.objects.filter(pk=artifact.reference["plan_id"]).exists()
+        assert Plan.objects.filter(pk=artifact.storage["plan_id"]).exists()

@@ -207,11 +207,11 @@ class AgentProcess:
                 pk=self.last_message.content["message_id"]
             )
             [reference_field, reference_value] = list(
-                authorized_msg.content["reference"].items()
+                authorized_msg.content["storage"].items()
             )[0]
             return dict(
                 user_input=f"execute {reference_field}={reference_value}",
-                **authorized_msg.content["reference"],
+                **authorized_msg.content["storage"],
             )
 
         elif self.last_message.content["type"] in ["AUTH_REQUEST", "FEEDBACK_REQUEST"]:

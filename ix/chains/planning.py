@@ -64,7 +64,7 @@ class SavePlan(Chain):
                 "type": "ARTIFACT",
                 "artifact_type": "PLAN",
                 "artifact_id": str(artifact.id),
-                "reference": {"plan_id": str(plan.id)},
+                "storage": {"plan_id": str(plan.id)},
                 # remove details after UI is updated to load artifact
                 "description": response["description"],
                 "steps": response["commands"],
