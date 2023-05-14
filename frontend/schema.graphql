@@ -85,6 +85,7 @@ enum ChainsChainNodeNodeTypeChoices {
 
 type TaskType {
   id: UUID!
+  parent: TaskType
   name: String!
   user: UserType!
   agent: AgentType
@@ -93,13 +94,13 @@ type TaskType {
   createdAt: DateTime!
   completeAt: DateTime
   autonomous: Boolean!
+  children: [TaskType!]!
   messages: [TaskLogMessageType!]!
   artifacts: [ArtifactType!]!
   createdPlans(isDraft: Boolean): [PlanType]
   ranPlans: [PlanType!]!
   chats: [ChatType!]!
   leadingChats: [ChatType!]!
-  goals: [GoalType]
 }
 
 type UserType {
@@ -252,11 +253,6 @@ type StepType {
   order: Int
 }
 
-type GoalType {
-  description: String!
-  complete: Boolean!
-}
-
 type ChainWithGraphType {
   chain: ChainType
   nodes: [ChainNodeType]
@@ -274,7 +270,7 @@ type ChainEdgeType {
 
 """Aggregation of graphql mutations"""
 type Mutation {
-  sendFeedback(input: TaskFeedbackInput!): TaskFeedbackMutation
+  sendInput(input: ChatInput!): ChatInputMutation
   authorizeCommand(input: CommandAuthorizeInput!): AuthorizeCommandMutation
   createChat(input: CreateChatInput): ChatMutationResponse
   createTask(input: CreateTaskInput!): CreateTaskResponse
@@ -288,14 +284,14 @@ type Mutation {
   deleteResource(id: UUID!): DeleteResourceMutation
 }
 
-type TaskFeedbackMutation {
+type ChatInputMutation {
   taskLogMessage: TaskLogMessageType
   errors: [String]
 }
 
-input TaskFeedbackInput {
-  taskId: UUID!
-  feedback: String!
+input ChatInput {
+  chatId: UUID!
+  text: String!
 }
 
 type AuthorizeCommandMutation {
@@ -322,13 +318,9 @@ type CreateTaskResponse {
 
 input CreateTaskInput {
   name: String!
-  goals: [GoalInput]
   agentId: UUID
+  chainId: UUID
   autonomous: Boolean
-}
-
-input GoalInput {
-  description: String!
 }
 
 type StartTaskMutation {
