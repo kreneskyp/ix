@@ -36,7 +36,6 @@ class CreateTaskMutation(graphene.Mutation):
     @handle_exceptions
     def mutate(root, info, input):
         user = User.objects.latest("id")
-
         # TODO: turn this on once auth is setup for UI
         # user = info.context.user
         if user.is_anonymous:

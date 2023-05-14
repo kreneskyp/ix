@@ -70,6 +70,15 @@ CHAT_INPUT_MUTATION = """
     }
 """
 
+SEARCH_AGENTS_QUERY = """
+query SearchAgentsQuery($search: String!) {
+  searchAgents(search: $search) {
+    id
+    name
+  }
+}
+"""
+
 
 @pytest.mark.django_db
 class TestAuthorizeCommandMutation:
@@ -226,7 +235,6 @@ class TestChatInputMutation:
         )
 
         assert "errors" not in executed
-        print("executed", executed)
         assert (
             executed["data"]["sendInput"]["taskLogMessage"]["content"]["feedback"]
             == "@other Message for other"
@@ -259,3 +267,67 @@ class TestAddRemoveAgentMutation:
         assert str(agent.id) not in [
             agent["id"] for agent in executed["data"]["removeAgent"]["chat"]["agents"]
         ]
+
+    def test_add_agent_when_agent_is_lead(self, chat):
+        agent = fake_agent()
+        chat["chat"].lead = agent
+        chat["chat"].save()
+
+        assert chat["chat"].agents.count() == 2
+
+        variables = {"chatId": str(chat["chat"].id), "agentId": str(agent.id)}
+
+        # Execute mutation
+        result = schema.execute(ADD_AGENT_MUTATION, variable_values=variables)
+
+        # Assert that the agent was not added to the agents list
+        assert not result.errors
+        assert len(result.data["addAgent"]["chat"]["agents"]) == 2
+        assert chat["chat"].agents.count() == 2
+
+    def test_add_agent_when_agent_is_already_in_chat(self, chat):
+        agent = fake_agent()
+        chat["chat"].agents.add(agent)
+        chat["chat"].save()
+        assert chat["chat"].agents.count() == 3
+        assert chat["chat"].agents.filter(pk=agent.id).exists()
+
+        variables = {"chatId": str(chat["chat"].id), "agentId": str(agent.id)}
+
+        # Execute mutation
+        result = schema.execute(ADD_AGENT_MUTATION, variable_values=variables)
+
+        # Assert that the agent was not added again to the agents list
+        assert not result.errors
+        assert len(result.data["addAgent"]["chat"]["agents"]) == 3
+        assert chat["chat"].agents.count() == 3
+        assert chat["chat"].agents.filter(pk=agent.id).exists()
+
+
+@pytest.mark.django_db
+class TestSearchAgents:
+    @pytest.fixture(autouse=True)
+    def setup(self, chat):
+        self.client = Client(schema)
+        self.chat = chat["chat"]
+        self.agents = [fake_agent() for _ in range(3)]
+
+    def test_search_agents(self):
+        for agent in self.agents:
+            self.chat.agents.add(agent)
+
+        result = self.client.execute(
+            SEARCH_AGENTS_QUERY, variables={"search": self.agents[0].name}
+        )
+
+        assert "errors" not in result
+        assert len(result["data"]["searchAgents"]) == 1
+        assert result["data"]["searchAgents"][0]["id"] == str(self.agents[0].id)
+
+    def test_search_agents_no_match(self):
+        result = self.client.execute(
+            SEARCH_AGENTS_QUERY, variables={"search": "nonexistent"}
+        )
+
+        assert "errors" not in result
+        assert len(result["data"]["searchAgents"]) == 0

@@ -2,6 +2,7 @@
 type Query {
   agent(id: UUID!): AgentType
   agents: [AgentType]
+  searchAgents(search: String): [AgentType]
   chat(id: UUID!): ChatType
   chats: [ChatType]
   chain(id: UUID!): ChainType
@@ -273,6 +274,8 @@ type Mutation {
   sendInput(input: ChatInput!): ChatInputMutation
   authorizeCommand(input: CommandAuthorizeInput!): AuthorizeCommandMutation
   createChat(input: CreateChatInput): ChatMutationResponse
+  removeAgent(agentId: UUID!, chatId: UUID!): RemoveAgentMutation
+  addAgent(agentId: UUID!, chatId: UUID!): AddAgentMutation
   createTask(input: CreateTaskInput!): CreateTaskResponse
   startTask(taskId: UUID!): StartTaskMutation
   setTaskAutonomous(autonomous: Boolean!, taskId: UUID!): SetTaskAutonomousMutation
@@ -310,6 +313,14 @@ type ChatMutationResponse {
 input CreateChatInput {
   name: String
   agentId: UUID
+}
+
+type RemoveAgentMutation {
+  chat: ChatType
+}
+
+type AddAgentMutation {
+  chat: ChatType
 }
 
 type CreateTaskResponse {

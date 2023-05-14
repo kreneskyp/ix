@@ -103,8 +103,14 @@ class AddAgentMutation(graphene.Mutation):
         try:
             chat = Chat.objects.get(id=chat_id)
             agent = Agent.objects.get(id=agent_id)
+
+            # Check if the agent is already a lead or an agent
+            if chat.lead == agent or chat.agents.filter(id=agent_id).exists():
+                return AddAgentMutation(chat=chat)
+
             chat.agents.add(agent)
             chat.save()
+
             return AddAgentMutation(chat=chat)
         except Chat.DoesNotExist:
             raise graphene.GraphQLError("Chat does not exist.")
