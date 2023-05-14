@@ -2,8 +2,13 @@ import pytest
 from graphene.test import Client
 from ix.schema import schema
 from ix.task_log.models import TaskLogMessage
-from ix.task_log.tests.fake import fake_task, fake_user, fake_agent, fake_command_reply
-
+from ix.task_log.tests.fake import (
+    fake_task,
+    fake_user,
+    fake_agent,
+    fake_command_reply,
+    fake_chat,
+)
 
 AUTHORIZE_COMMAND_MUTATION = """
     mutation AuthorizeCommand($input: CommandAuthorizeInput!) {
