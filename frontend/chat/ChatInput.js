@@ -13,7 +13,7 @@ import { useSendInput } from "chat/graphql/useSendInput";
 
 const ChatInput = ({ chat }) => {
   const [input, setInput] = useState("");
-  const { sendFeedback: sendInput, error, loading } = useSendInput(chat.id);
+  const { sendInput, error, loading } = useSendInput(chat.id);
   const toast = useToast();
 
   const handleSendInput = async () => {
