@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useMutation, graphql } from "react-relay/hooks";
-import { useTask } from "tasks/contexts";
 
 const SEND_FEEDBACK_MUTATION = graphql`
-  mutation useSendFeedbackMutation($input: TaskFeedbackInput!) {
-    sendFeedback(input: $input) {
+  mutation useSendInputMutation($input: ChatInput!) {
+    sendInput(input: $input) {
       taskLogMessage {
         id
         role
@@ -18,18 +17,17 @@ const SEND_FEEDBACK_MUTATION = graphql`
   }
 `;
 
-export const useSendFeedback = () => {
-  const { task } = useTask();
+export const useSendInput = (chat_id) => {
   const [commit, isInFlight] = useMutation(SEND_FEEDBACK_MUTATION);
   const [error, setError] = useState(null);
 
-  const sendFeedback = (feedback) => {
+  const sendInput = (text) => {
     return new Promise((resolve) => {
       commit({
         variables: {
           input: {
-            taskId: task.id,
-            feedback,
+            chatId: chat_id,
+            text,
           },
         },
         onCompleted: (response, errors) => {
@@ -49,5 +47,5 @@ export const useSendFeedback = () => {
     });
   };
 
-  return { sendFeedback, error, loading: isInFlight };
+  return { sendInput, error, loading: isInFlight };
 };

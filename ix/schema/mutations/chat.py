@@ -114,14 +114,14 @@ class TaskLogMessageResponse(graphene.ObjectType):
         return root.task_log
 
 
-class TaskFeedbackInput(graphene.InputObjectType):
-    task_id = graphene.UUID(required=True)
-    feedback = graphene.String(required=True)
+class ChatInput(graphene.InputObjectType):
+    chat_id = graphene.UUID(required=True)
+    text = graphene.String(required=True)
 
 
-class TaskFeedbackMutation(graphene.Mutation):
+class ChatInputMutation(graphene.Mutation):
     class Arguments:
-        input = TaskFeedbackInput(required=True)
+        input = ChatInput(required=True)
 
     task_log_message = graphene.Field(TaskLogMessageType)
     errors = graphene.Field(graphene.List(graphene.String))
@@ -156,6 +156,6 @@ class Mutation(graphene.ObjectType):
     Aggregation of chat mutations
     """
 
-    send_feedback = TaskFeedbackMutation.Field()
+    sendInput = ChatInputMutation.Field()
     authorize_command = AuthorizeCommandMutation.Field()
     create_chat = CreateChatMutation.Field()

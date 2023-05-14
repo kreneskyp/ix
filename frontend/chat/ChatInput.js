@@ -9,29 +9,29 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { useSendFeedback } from "chat/graphql/useSendFeedback";
+import { useSendInput } from "chat/graphql/useSendInput";
 
-const FeedbackInput = () => {
-  const [feedback, setFeedback] = useState("");
-  const { sendFeedback, error, loading } = useSendFeedback();
+const ChatInput = ({ chat }) => {
+  const [input, setInput] = useState("");
+  const { sendFeedback: sendInput, error, loading } = useSendInput(chat.id);
   const toast = useToast();
 
-  const handleSendFeedback = async () => {
-    const result = await sendFeedback(feedback);
+  const handleSendInput = async () => {
+    const result = await sendInput(input);
     if (result) {
-      setFeedback("");
+      setInput("");
     }
   };
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
-      handleSendFeedback();
+      handleSendInput();
     }
   };
 
   if (error) {
     toast({
-      title: "Error sending feedback",
+      title: "Error sending input",
       description: error.message,
       status: "error",
       duration: 3000,
@@ -46,8 +46,8 @@ const FeedbackInput = () => {
           type="text"
           width={800}
           placeholder="What can I help you with?"
-          value={feedback}
-          onChange={(e) => setFeedback(e.target.value)}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
           isDisabled={loading}
           sx={{
@@ -56,7 +56,7 @@ const FeedbackInput = () => {
         />
         <InputRightElement>
           <Button
-            onClick={handleSendFeedback}
+            onClick={handleSendInput}
             isLoading={loading}
             size="sm"
             bg="none"
@@ -70,4 +70,4 @@ const FeedbackInput = () => {
   );
 };
 
-export default FeedbackInput;
+export default ChatInput;

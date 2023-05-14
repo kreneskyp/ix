@@ -4,7 +4,7 @@ import { Box, Center, Spinner, VStack } from "@chakra-ui/react";
 
 import { TaskProvider } from "tasks/contexts";
 import TaskLogMessageStream from "task_log/TaskLogMessageStream";
-import FeedbackForm from "task_log/FeedbackInput";
+import ChatInput from "chat/ChatInput";
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 import { ScrollableBox } from "site/ScrollableBox";
 import { useQueryLoader } from "react-relay";
@@ -31,7 +31,7 @@ export const ChatContentShim = ({ queryRef }) => {
         {/* Bottom aligned section */}
         <Box mr={10}>
           <TaskProvider taskId={moderatorTask.id}>
-            <FeedbackForm />
+            <ChatInput chat={chat} />
           </TaskProvider>
         </Box>
       </Center>
