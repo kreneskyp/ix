@@ -26,21 +26,15 @@ const SideBarArtifactList = ({ queryRef }) => {
   const artifacts = chat.task.artifacts;
   const { colorMode } = useColorMode();
 
-
   return (
     <VStack spacing={1}>
       <Heading as="h3" size="md" width="100%" align="left" mt={5}>
         Artifacts
       </Heading>
       {artifacts?.length === 0 ? (
-          <Text
-              p={2}
-              fontSize="xs"
-              color="gray.400"
-              sx={{borderRadius: "5px"}}
-          >
-            Artifacts will appear here as they are created by agents.
-          </Text>
+        <Text p={2} fontSize="xs" color="gray.400" sx={{ borderRadius: "5px" }}>
+          Artifacts will appear here as they are created by agents.
+        </Text>
       ) : null}
       {artifacts?.map((artifact, i) => (
         <Box

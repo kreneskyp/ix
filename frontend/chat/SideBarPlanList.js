@@ -29,14 +29,10 @@ const SideBarPlanList = ({ queryRef }) => {
         Tasks
       </Heading>
       {chat.task.createdPlans?.length === 0 ? (
-          <Text
-              p={2}
-              fontSize="xs"
-              color="gray.400"
-              sx={{borderRadius: "5px"}}
-          >
-            Task plans for your requests will appear here as they are created by agents.
-          </Text>
+        <Text p={2} fontSize="xs" color="gray.400" sx={{ borderRadius: "5px" }}>
+          Task plans for your requests will appear here as they are created by
+          agents.
+        </Text>
       ) : null}
       {chat.task.createdPlans?.map((plan, i) => (
         <Box
