@@ -52,7 +52,7 @@ class CreateChatMutation(graphene.Mutation):
         else:
             agent = Agent.objects.get(pk=DEFAULT_AGENT_GPT3_5)
 
-        # Save to persistence layer
+        # spawn subtask
         task = Task.objects.create(
             user=user,
             name=input and input.name or "",

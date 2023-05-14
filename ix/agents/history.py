@@ -132,7 +132,7 @@ class TaskHistory:
             logger.info(f"resuming with user authorization for task_id={self.task_id}")
             # auth/feedback resume, run command that was authorized
             # by default only a single command is authorized.
-            authorized_for = self.last_message.content.get("n", 1) - 1
+            # authorized_for = self.last_message.content.get("n", 1) - 1
             authorized_msg = TaskLogMessage.objects.get(
                 pk=self.last_message.content["message_id"]
             )

@@ -1,10 +1,9 @@
 import logging
 import time
 import traceback
-import uuid
 
 from functools import cached_property
-from typing import TypedDict, Optional, Any, Dict, Union
+from typing import TypedDict, Optional, Any, Dict
 
 from langchain.chains.base import Chain
 
@@ -14,10 +13,8 @@ from ix.agents.exceptions import (
     AuthRequired,
 )
 from ix.chains.models import Chain as ChainModel
-from ix.memory.plugin import VectorMemory
 from ix.task_log.models import Task, TaskLogMessage
 from ix.utils.importlib import import_class
-from ix.utils.types import ClassPath
 
 
 # config defaults

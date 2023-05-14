@@ -4,18 +4,14 @@ import pytest
 import json
 
 from ix.agents.exceptions import AgentQuestion
-from ix.agents.process import DEFAULT_MEMORY, AgentProcess
+from ix.agents.process import AgentProcess
 from ix.conftest import USER_INPUT
-from ix.memory.redis import RedisVectorMemory
 from ix.task_log.models import TaskLogMessage
 from ix.task_log.tests.fake import (
-    fake_task,
-    fake_task_log_msg,
     fake_command_reply,
     fake_feedback_request,
     fake_feedback,
     fake_autonomous_toggle,
-    fake_task_log_msg_type,
     fake_think,
 )
 
