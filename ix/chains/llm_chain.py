@@ -12,6 +12,7 @@ from langchain.prompts.chat import (
 
 from ix.agents.llm import load_llm
 from ix.agents.callback_manager import IxCallbackManager
+from ix.task_log.models import TaskLogMessage
 
 logger = logging.getLogger(__name__)
 
@@ -70,3 +71,25 @@ class LLMChain(LangchainLLMChain):
         chain.callback_manager = callback_manager
 
         return chain
+
+
+class LLMReply(LLMChain):
+    """
+    Wrapper around LLMChain that records output as an ASSISTANT message.
+    This simplifies making simple agents that just reply to messages.
+    """
+
+    def run(self, *args, **kwargs) -> Any:
+        response = super().run(*args, **kwargs)
+        TaskLogMessage.objects.create(
+            task_id=self.callback_manager.task.id,
+            role="assistant",
+            content={
+                "type": "ASSISTANT",
+                "text": response,
+                # "agent": str(self.callback_manager.task.agent.id),
+                "agent": self.callback_manager.task.agent.alias,
+            },
+        )
+
+        return response
