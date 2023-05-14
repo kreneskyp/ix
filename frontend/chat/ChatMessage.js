@@ -15,13 +15,14 @@ import ExecuteErrorContent from "chat/ExecuteErrorContent";
 import ThoughtContent from "chat/ThoughtContent";
 import ThinkContent from "chat/ThinkContent";
 import { PlanContent } from "planner/PlanContent";
+import CommandContent from "chat/CommandContent";
 
 const ChatMessage = ({ message }) => {
   const { colorMode } = useColorMode();
   const { content } = message;
   let contentComponent = null;
   switch (content.type) {
-    case "COMMAND":
+    case "ASSISTANT":
       contentComponent = <AssistantContent content={content} />;
       break;
     case "AUTONOMOUS":
@@ -32,6 +33,9 @@ const ChatMessage = ({ message }) => {
       break;
     case "AUTH_REQUEST":
       contentComponent = <AuthRequestContent content={content} />;
+      break;
+    case "COMMAND":
+      contentComponent = <CommandContent content={content} />;
       break;
     case "EXECUTED":
       contentComponent = <ExecuteContent message={message} />;
