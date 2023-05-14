@@ -71,6 +71,47 @@ class CreateChatMutation(graphene.Mutation):
         return ChatMutationResponse(chat=chat)
 
 
+class RemoveAgentMutation(graphene.Mutation):
+    class Arguments:
+        agent_id = graphene.UUID(required=True)
+        chat_id = graphene.UUID(required=True)
+
+    chat = graphene.Field(ChatType)
+
+    @staticmethod
+    def mutate(root, info, agent_id, chat_id):
+        try:
+            chat = Chat.objects.get(id=chat_id)
+            agent = Agent.objects.get(id=agent_id)
+            chat.agents.remove(agent)
+            return RemoveAgentMutation(chat=chat)
+        except Chat.DoesNotExist:
+            raise graphene.GraphQLError("Chat does not exist.")
+        except Agent.DoesNotExist:
+            raise graphene.GraphQLError("Agent does not exist.")
+
+
+class AddAgentMutation(graphene.Mutation):
+    class Arguments:
+        agent_id = graphene.UUID(required=True)
+        chat_id = graphene.UUID(required=True)
+
+    chat = graphene.Field(ChatType)
+
+    @staticmethod
+    def mutate(root, info, agent_id, chat_id):
+        try:
+            chat = Chat.objects.get(id=chat_id)
+            agent = Agent.objects.get(id=agent_id)
+            chat.agents.add(agent)
+            chat.save()
+            return AddAgentMutation(chat=chat)
+        except Chat.DoesNotExist:
+            raise graphene.GraphQLError("Chat does not exist.")
+        except Agent.DoesNotExist:
+            raise graphene.GraphQLError("Agent does not exist.")
+
+
 class CommandAuthorizeInput(graphene.InputObjectType):
     message_id = graphene.UUID(required=True)
 
@@ -189,4 +230,8 @@ class Mutation(graphene.ObjectType):
 
     sendInput = ChatInputMutation.Field()
     authorize_command = AuthorizeCommandMutation.Field()
+
+    # chat management
     create_chat = CreateChatMutation.Field()
+    remove_agent = RemoveAgentMutation.Field()
+    add_agent = AddAgentMutation.Field()
