@@ -62,13 +62,15 @@ class TestAuthorizeCommandMutation:
             "message_id": str(responding_to.id),
         }
 
-        mock_start_agent_loop.delay.assert_called_once_with(str(responding_to.task_id))
+        mock_start_agent_loop.delay.assert_called_once_with(
+            str(responding_to.task_id), message_id=str(task_log_message.id)
+        )
 
 
 # graphql queries should be in the module scope
-TASK_FEEDBACK_MUTATION = """
-    mutation TaskFeedback($input: TaskFeedbackInput!) {
-      sendFeedback(input: $input) {
+CHAT_INPUT_MUTATION = """
+    mutation ChatInput($input: ChatInput!) {
+      sendInput(input: $input) {
         taskLogMessage {
           id
           role
@@ -84,10 +86,10 @@ TASK_FEEDBACK_MUTATION = """
 
 
 @pytest.mark.django_db
-class TestTaskFeedbackMutation:
-    def test_task_feedback(self, mocker):
+class TestChatInputMutation:
+    def test_chat_input(self, mocker):
         # Create a task, user, agent, and an initial task log message
-        task = fake_task()
+        chat = fake_chat()
         fake_user()
         fake_agent()
 
@@ -95,8 +97,8 @@ class TestTaskFeedbackMutation:
 
         variables = {
             "input": {
-                "taskId": str(task.id),
-                "feedback": "Test feedback",
+                "chatId": str(chat.id),
+                "text": "Test input",
             }
         }
 
@@ -105,27 +107,29 @@ class TestTaskFeedbackMutation:
             "ix.schema.mutations.chat.start_agent_loop"
         )
 
-        response = client.execute(TASK_FEEDBACK_MUTATION, variables=variables)
+        response = client.execute(CHAT_INPUT_MUTATION, variables=variables)
 
         assert "errors" not in response
-        assert response["data"]["sendFeedback"]["taskLogMessage"]["role"] == "USER"
-        assert response["data"]["sendFeedback"]["taskLogMessage"]["content"] == {
+        assert response["data"]["sendInput"]["taskLogMessage"]["role"] == "USER"
+        assert response["data"]["sendInput"]["taskLogMessage"]["content"] == {
             "type": "FEEDBACK",
-            "feedback": "Test feedback",
+            "feedback": "Test input",
         }
-        assert response["data"]["sendFeedback"]["errors"] is None
+        assert response["data"]["sendInput"]["errors"] is None
 
         task_log_message = TaskLogMessage.objects.get(
-            pk=response["data"]["sendFeedback"]["taskLogMessage"]["id"]
+            pk=response["data"]["sendInput"]["taskLogMessage"]["id"]
         )
-        assert task_log_message.task_id == task.id
+        assert task_log_message.task_id == chat.task.id
         assert task_log_message.role == "USER"
         assert task_log_message.content == {
             "type": "FEEDBACK",
-            "feedback": "Test feedback",
+            "feedback": "Test input",
         }
 
         # Assert that the Celery task is dispatched
         mock_start_agent_loop.delay.assert_called_once_with(
-            str(task.id), message_id=str(task_log_message.id)
+            str(chat.task.id),
+            str(chat.task.chain.id),
+            inputs={"user_input": "Test input", "chat_id": str(chat.id)},
         )
