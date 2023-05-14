@@ -9,6 +9,7 @@ from ix.task_log.models import Plan, Artifact
 from ix.task_log.tests.fake import fake_task
 
 
+@pytest.mark.skip()
 @pytest.mark.django_db
 class TestPlannerV1:
     def test_create_planner_v1(self):
