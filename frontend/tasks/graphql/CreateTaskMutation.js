@@ -11,9 +11,6 @@ export const CreateTaskMutation = graphql`
           name
           purpose
         }
-        goals {
-          description
-        }
       }
     }
   }
