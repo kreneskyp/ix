@@ -28,6 +28,19 @@ class Task(models.Model):
 
         return AgentProcess.from_task(self)
 
+    def delegate_to_agent(self, agent: Agent) -> "Task":
+        """
+        Create a subtask in which a delegated task will run.
+        """
+        return Task.objects.create(
+            parent=self,
+            name=f"delegating to agent {agent.alias}",
+            agent_id=agent.id,
+            chain=agent.chain,
+            autonomous=self.autonomous,
+            user=self.user,
+        )
+
 
 class UserFeedback(TypedDict):
     type: str
