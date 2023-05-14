@@ -4,39 +4,10 @@ import pytest
 from ix.agents.callback_manager import IxCallbackManager
 from ix.chains.llm_chain import LLMChain
 from ix.chains.moderator import ChatModerator
-from ix.task_log.tests.fake import fake_agent, fake_chat
 
 
 @pytest.mark.django_db
 class TestChatModerator:
-    @pytest.fixture()
-    def chat(self):
-        chat = fake_chat()
-        fake_agent_1 = fake_agent(
-            name="agent 1", alias="agent_1", purpose="to test selections"
-        )
-        fake_agent_2 = fake_agent(
-            name="agent 2", alias="agent_2", purpose="to test selections"
-        )
-        chat.agents.set([fake_agent_1, fake_agent_2])
-        callback_manager = IxCallbackManager(chat.task)
-
-        config = {
-            "llm": {
-                "class_path": "langchain.chat_models.openai.ChatOpenAI",
-                "config": {"request_timeout": 120, "temperature": 0.2, "verbose": True},
-            }
-        }
-
-        yield {
-            "chat": chat,
-            "fake_agent_1": fake_agent_1,
-            "fake_agent_2": fake_agent_2,
-            "instance": ChatModerator.from_config(
-                config, callback_manager=callback_manager
-            ),
-        }
-
     def test_agent_prompt(self, chat):
         """Test that the agent prompt is formatted correctly"""
 

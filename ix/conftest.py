@@ -3,9 +3,10 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from ix.agents.callback_manager import IxCallbackManager
 from ix.agents.tests.mock_llm import MockChatOpenAI
-from ix.task_log.tests.fake import fake_task, fake_task_log_msg
-
+from ix.chains.moderator import ChatModerator
+from ix.task_log.tests.fake import fake_task, fake_task_log_msg, fake_chat, fake_agent
 
 USER_INPUT = {"user_input": "hello agent 1"}
 
@@ -34,6 +35,35 @@ def mock_openai(mocker):
 @pytest.fixture
 def task():
     return fake_task()
+
+
+@pytest.fixture()
+def chat():
+    chat = fake_chat()
+    fake_agent_1 = fake_agent(
+        name="agent 1", alias="agent_1", purpose="to test selections"
+    )
+    fake_agent_2 = fake_agent(
+        name="agent 2", alias="agent_2", purpose="to test selections"
+    )
+    chat.agents.set([fake_agent_1, fake_agent_2])
+    callback_manager = IxCallbackManager(chat.task)
+
+    config = {
+        "llm": {
+            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "config": {"request_timeout": 120, "temperature": 0.2, "verbose": True},
+        }
+    }
+
+    yield {
+        "chat": chat,
+        "fake_agent_1": fake_agent_1,
+        "fake_agent_2": fake_agent_2,
+        "instance": ChatModerator.from_config(
+            config, callback_manager=callback_manager
+        ),
+    }
 
 
 @pytest.fixture
