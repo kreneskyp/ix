@@ -11,6 +11,9 @@ class Task(models.Model):
     """An instance of an agent running."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    parent = models.ForeignKey(
+        "self", related_name="children", null=True, blank=True, on_delete=models.CASCADE
+    )
     name = models.CharField(max_length=64)
     user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     agent = models.ForeignKey(Agent, null=True, on_delete=models.CASCADE)

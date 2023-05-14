@@ -1,6 +1,7 @@
 import logging
 import graphene
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from ix.schema.mutations.chat import Mutation as ChatMutation
 from ix.schema.mutations.tasks import Mutation as TaskMutation
@@ -39,7 +40,9 @@ class Query(ChainQuery, ChatQuery, AgentQuery, graphene.ObjectType):
         return Task.objects.select_related("user").all()
 
     def resolve_task_log_messages(self, info, task_id):
-        return TaskLogMessage.objects.filter(task_id=task_id).select_related("agent")
+        return TaskLogMessage.objects.filter(
+            Q(task_id=task_id) | Q(task__parent_id=task_id)
+        ).select_related("agent")
 
 
 class Mutation(AgentMutation, TaskMutation, ChatMutation, graphene.ObjectType):
