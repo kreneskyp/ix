@@ -1,7 +1,9 @@
-from typing import Optional
+from typing import Dict, Any
 
 from celery_singleton import Singleton
+
 from ix.agents.process import AgentProcess
+from ix.chat.models import Chat
 from ix.server.celery import app
 from ix.task_log.models import Task
 
@@ -14,9 +16,10 @@ logger = logging.getLogger(__name__)
     base=Singleton,
     unique_on=[
         "task_id",
+        "chain_id",
     ],
 )
-def start_agent_loop(task_id: str, message_id: Optional[str] = None):
+def start_agent_loop(task_id: str, chain_id: str = None, inputs: Dict[str, Any] = None):
     """
     Start agent process loop.
 
@@ -27,19 +30,20 @@ def start_agent_loop(task_id: str, message_id: Optional[str] = None):
     """
     task = Task.objects.get(pk=task_id)
     logger.info(
-        f"Starting agent process for task_id={task_id} agent_class_path={task.agent.agent_class_path}"
+        f"Starting agent process for agent={task.agent.name} task_id={task_id} user_input={inputs}"
     )
-    process = AgentProcess.from_task(task)
-    return process.start()
+
+    process = AgentProcess(task_id, chain_id)
+    return process.start(inputs)
 
 
 @app.task(
     base=Singleton,
-    unique_on=[
-        "task_id",
-    ],
+    unique_on=["chat_id", "chain_id"],
 )
-def start_chat_loop(chat_id: str):
+def start_chat_loop(
+    task_id: str, chat_id: str, chain_id: str, inputs: Dict[str, Any] = None
+):
     """
     Start a Chat's agent process loop.
 
@@ -51,6 +55,10 @@ def start_chat_loop(chat_id: str):
 
     This method expects `chat_id` to be a string to be compatible with celery Singleton.
     """
-    chat = Chat.objects.get(chat_id=chat_id)
-    process = AgentProcess.from_task(chat.task)
-    return process.start()
+    chat = Chat.objects.get(pk=chat_id)
+    task = chat.task
+    logger.info(
+        f"Starting agent process for agent={task.agent.name} task_id={task_id} user_input={inputs}"
+    )
+    process = AgentProcess(task_id, chain_id)
+    return process.start(inputs)

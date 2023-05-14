@@ -13,6 +13,7 @@ from ix.agents.exceptions import (
     AgentQuestion,
     AuthRequired,
 )
+from ix.chains.models import Chain as ChainModel
 from ix.memory.plugin import VectorMemory
 from ix.task_log.models import Task, TaskLogMessage
 from ix.utils.importlib import import_class
@@ -53,37 +54,17 @@ class AgentProcess:
     # indicates if the agent should be allowed to run autonomously
     ALLOWS_AUTONOMOUS = True
 
-    # Messages useful for humans and debugging, but aren't included in the prompt context
-    EXCLUDED_MSG_TYPES = {
-        "AUTH_REQUEST",
-        "AUTHORIZE",
-        "AUTONOMOUS",
-        "FEEDBACK_REQUEST",
-        "THOUGHT",
-        "SYSTEM",
-    }
-
     def __init__(
         self,
         task_id: int,
-        memory_class: ClassPath = DEFAULT_MEMORY,
+        chain_id: str,
     ):
         logger.info(f"AgentProcess initializing task_id={task_id}")
 
-        # agent config
-        self.memory_class = memory_class
-
         # initial state
         self.task_id = task_id
-        self.history = []
-        self.last_message = None
-        self.memory = None
+        self.chain_id = chain_id
         self.autonomous = 0
-
-        # task int
-        self.update_message_history()
-        self.initialize_memory()
-        logger.info("AgentProcess initialized")
 
     @cached_property
     def task(self):
@@ -92,6 +73,10 @@ class AgentProcess:
     @cached_property
     def agent(self):
         return self.task.agent
+
+    @cached_property
+    def chain(self):
+        return ChainModel.objects.get(pk=self.chain_id)
 
     @classmethod
     def from_task(cls, task: Task) -> "AgentProcess":
@@ -103,143 +88,21 @@ class AgentProcess:
         assert issubclass(agent_class, cls)
         return agent_class(task_id=task.id)
 
-    def query_message_history(self, since=None):
-        """Fetch message history from persistent store for context relevant messages"""
-
-        # base query, selects messages relevant for chat context
-        query = TaskLogMessage.objects.filter(task_id=self.task_id).order_by(
-            "created_at"
-        )
-
-        # filter to only new messages
-        if since:
-            query = query.filter(created_at__gt=since)
-
-        return query
-
-    def update_message_history(self):
-        """
-        Update message history with the most recent messages since the last update.
-        Initial startup will load all history into memory. Subsequent updates will
-        only load new messages.
-        """
-
-        last_message_at = self.last_message.created_at if self.last_message else None
-        logger.debug(
-            f"AgentProcess updating message history, last_message_at={last_message_at}"
-        )
-
-        # fetch unseen messages and save the last timestamp for the next iteration
-        messages = list(self.query_message_history(last_message_at))
-        if messages:
-            self.last_message = messages[-1]
-        logger.debug(
-            f"AgentProcess fetched n={len(messages)} messages from persistence"
-        )
-
-        # process AUTONOMOUS messages if supported by the agent
-        # toggle autonomous mode based on latest AUTONOMOUS message
-        if self.ALLOWS_AUTONOMOUS:
-            for message in reversed(messages):
-                if message.content["type"] == "AUTONOMOUS":
-                    autonomous = message.content["enabled"]
-                    if autonomous != self.autonomous:
-                        self.autonomous = autonomous
-                        logger.info(
-                            f"AgentProcess toggled autonomous mode to {autonomous}"
-                        )
-                    break
-
-        # format all message instance for use in the prompt
-        formatted_messages = [
-            message.as_message()
-            for message in messages
-            if message.content["type"] not in self.EXCLUDED_MSG_TYPES
-        ]
-        self.add_history(*formatted_messages)
-
-        logger.info(
-            f"AgentProcess loaded n={len(messages)} chat messages from persistence"
-        )
-
-    def initialize_memory(self):
-        """Load and initialize configured memory class"""
-        logger.debug("initializing memory_class={self.memory_class}")
-        memory_class = import_class(self.memory_class)
-        assert issubclass(memory_class, VectorMemory)
-        self.memory = memory_class("ix-agent")
-        self.memory.clear()
-
-    def get_input(
-        self, input_id: Optional[uuid.UUID] = None
-    ) -> Union[Dict[str, Any], bool]:
-        """get input for chain"""
-
-        # 1. use input_id message if present
-        if input_id:
-            message = TaskLogMessage.objects.get(id=input_id)
-            return {"user_input": message.content["feedback"]}
-
-        # 2. load the last message from the queue
-        try:
-            self.last_message = TaskLogMessage.objects.filter(
-                task_id=self.task_id
-            ).latest("created_at")
-        except TaskLogMessage.DoesNotExist:
-            self.last_message = None
-
-        logger.debug(f"task_id={self.task_id} last message={self.last_message}")
-
-        if not self.last_message:
-            logger.info(f"first tick for task_id={self.task_id}")
-            return {"user_input": self.INITIAL_INPUT}
-            # TODO load initial auth from either message stream or task
-
-        elif self.last_message.content["type"] == "FEEDBACK":
-            return {"user_input": self.last_message.content["feedback"]}
-
-        elif self.last_message.content["type"] == "AUTHORIZE":
-            logger.info(f"resuming with user authorization for task_id={self.task_id}")
-            # auth/feedback resume, run command that was authorized
-            # by default only a single command is authorized.
-            authorized_for = self.last_message.content.get("n", 1) - 1
-            authorized_msg = TaskLogMessage.objects.get(
-                pk=self.last_message.content["message_id"]
-            )
-            [reference_field, reference_value] = list(
-                authorized_msg.content["storage"].items()
-            )[0]
-            return dict(
-                user_input=f"execute {reference_field}={reference_value}",
-                **authorized_msg.content["storage"],
-            )
-
-        elif self.last_message.content["type"] in ["AUTH_REQUEST", "FEEDBACK_REQUEST"]:
-            # if last message is an unfulfilled feedback request then exit
-            logger.info(
-                f"Exiting, missing response to type={self.last_message.content['type']}"
-            )
-            return False
-
-    def start(self, input_id: Optional[uuid.UUID] = None, n: int = 0) -> bool:
+    def start(self, inputs: Optional[Dict[str, Any]] = None, n: int = 0) -> bool:
         """
         start agent loop and process `n` authorized ticks.
         """
-        logger.info(f"starting process loop task_id={self.task_id} input_id={input_id}")
-        tick_input = self.get_input()
-        if tick_input is False:
-            return False
-
+        logger.info(f"starting process loop task_id={self.task_id} input_id={inputs}")
         authorized_for = n
 
         # pass to main loop
-        exit_value = self.loop(n=authorized_for, tick_input=tick_input)
+        exit_value = self.loop(n=authorized_for, tick_input=inputs)
         logger.info(
             f"exiting process loop task_id={self.task_id} exit_value={exit_value}"
         )
         return exit_value
 
-    def loop(self, n=1, tick_input: str = NEXT_COMMAND) -> bool:
+    def loop(self, n=1, tick_input: Optional[Dict[str, Any]] = NEXT_COMMAND) -> bool:
         """
         main loop for agent process
         :param n: number of ticks user has authorized
@@ -255,7 +118,9 @@ class AgentProcess:
             loop_input = self.NEXT_COMMAND
         return True
 
-    def tick(self, user_input: Optional[str] = None, execute: bool = False) -> bool:
+    def tick(
+        self, user_input: Optional[Dict[str, Any]] = None, execute: bool = False
+    ) -> bool:
         """
         "tick" the agent loop letting it chat and run commands. The chat interaction
         including feedback requests, authorization requests, command results, and
@@ -268,16 +133,12 @@ class AgentProcess:
         logger.debug(
             "=== TICK =================================================================="
         )
-        self.update_message_history()
-        logger.info(f"ticking task_id={self.task_id}")
+        logger.info(f"ticking task_id={self.task_id} user_input={user_input}")
 
         think_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,
             role="system",
-            content={
-                "type": "THINK",
-                "input": user_input,
-            },
+            content={"type": "THINK", "input": user_input, "agent": self.agent.alias},
         )
         try:
             response = self.chat_with_ai(think_msg, user_input)
@@ -337,8 +198,7 @@ class AgentProcess:
 
     def construct_chain(self) -> Chain:
         callback_manager = IxCallbackManager(self.task)
-        chain = self.task.agent.chain
-        return chain.load_chain(callback_manager)
+        return self.chain.load_chain(callback_manager)
 
     def chat_with_ai(
         self, think_msg: TaskLogMessage, user_input: Dict[str, Any]
@@ -367,10 +227,6 @@ class AgentProcess:
                 },
             )
         return response
-
-    def add_history(self, *history_messages: Dict[str, Any]):
-        logger.debug(f"adding history history_messages={history_messages}")
-        self.history.extend(history_messages)
 
     def request_user_auth(self, think_msg: TaskLogMessage, message: TaskLogMessage):
         """
