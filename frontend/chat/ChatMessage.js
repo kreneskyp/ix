@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, VStack, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import AssistantContent from "chat/AssistantContent";
 import FeedbackContent from "chat/FeedbackContent";
@@ -66,16 +66,27 @@ const ChatMessage = ({ message }) => {
       break;
   }
 
+  // Use agent name when available
+  const alias = message.content.agent || message.role;
+
   return (
-    <Flex alignItems="flex-start" mb={4}>
-      <Box mt={5} mr={3}>
+    <Flex alignItems="flex-start" mb={6} align="center">
+      <VStack mt={3} mr={3}>
         <ChatMessageAvatar message={message} />
-      </Box>
+        <Text
+          color={colorMode === "light" ? "blackAlpha.800" : "whiteAlpha.400"}
+          fontSize="xs"
+        >
+          {alias.toLowerCase()}
+        </Text>
+      </VStack>
       <Box
         bg={colorMode === "light" ? "gray.100" : "gray.900"}
         width="800px"
         borderRadius={8}
+        minHeight={90}
         p={3}
+        justify="top"
       >
         {contentComponent}
       </Box>

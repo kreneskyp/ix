@@ -34,7 +34,7 @@ const ChatMessageAvatar = ({ message }) => {
         width={avatarSize}
         height={avatarSize}
       >
-        {getAvatarByRole(message.role)}
+        {getAvatarByRole(message.content.agent ? "ASSISTANT" : message.role)}
       </Box>
     </Tooltip>
   );
