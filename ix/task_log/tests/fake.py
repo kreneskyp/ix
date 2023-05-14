@@ -52,6 +52,7 @@ def fake_agent(**kwargs):
     Fake an agent, for now configure it to be a gpt-3.5-turbo agent.
     """
     name = kwargs.get("name", fake.unique.name())
+    alias = kwargs.get("alias", name)
     purpose = kwargs.get("purpose", fake.text())
     model = kwargs.get("model", "gpt-3.5-turbo")
     agent_class_path = kwargs.get(
@@ -69,6 +70,7 @@ def fake_agent(**kwargs):
     agent = Agent.objects.create(
         pk=kwargs.get("pk"),
         name=name,
+        alias=alias,
         purpose=purpose,
         model=model,
         config=config,
