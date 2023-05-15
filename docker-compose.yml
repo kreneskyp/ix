@@ -9,8 +9,12 @@ services:
       POSTGRES_DB: ix
       POSTGRES_HOST_AUTH_METHOD: trust
 
-  sandbox:
+  web:
     image: ghcr.io/ix/sandbox:latest
+    #image: ghcr.io/ix:latest
+    command: uvicorn ix.server.asgi:application --host 0.0.0.0 --port 8001 --reload
+    ports:
+      - "8001:8001"
     links:
       - db
       - redis
@@ -24,8 +28,16 @@ services:
       - .env
     environment:
       DJANGO_SETTINGS_MODULE: "ix.server.settings"
+
+  nginx:
+    image: nginx:latest
     ports:
       - "8000:8000"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./.compiled-static:/var/static/
+    depends_on:
+      - web
 
   worker:
     image: ghcr.io/ix/sandbox:latest
@@ -40,7 +52,6 @@ services:
       - .bash_profile:/root/.bash_profile
     env_file:
       - .env
-
 
 
   redis:

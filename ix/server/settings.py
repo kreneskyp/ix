@@ -149,7 +149,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 GRAPHENE = {"SCHEMA": "ix.schema.schema"}
 
-# ASGI_APPLICATION = 'ix.server.asgi.application'
+ASGI_APPLICATION = "ix.server.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
