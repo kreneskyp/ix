@@ -382,3 +382,15 @@ type UpdateResourceMutation {
 type DeleteResourceMutation {
   success: Boolean
 }
+
+"""Aggregation of graphql subscriptions"""
+type Subscription {
+  chatMessageSubscription(chatId: String): ChatMessageSubscription
+}
+
+"""GraphQL subscription to TaskLogMessage instances."""
+type ChatMessageSubscription {
+  taskLogMessage: TaskLogMessageType
+  agent: AgentType
+  parentId: UUID
+}
