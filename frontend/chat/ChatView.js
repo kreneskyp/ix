@@ -13,6 +13,7 @@ import { usePreloadedQuery } from "react-relay/hooks";
 import SideBarPlanList from "chat/SideBarPlanList";
 import SideBarArtifactList from "chat/sidebar/SideBarArtifactList";
 import SideBarAgentList from "chat/sidebar/SideBarAgentList";
+import ChatMessages from "chat/ChatMessages";
 
 export const ChatContentShim = ({ queryRef }) => {
   const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
@@ -23,7 +24,7 @@ export const ChatContentShim = ({ queryRef }) => {
       <ScrollableBox>
         <Suspense>
           <TaskProvider taskId={moderatorTask.id}>
-            <TaskLogMessageStream />
+            <ChatMessages chat={chat} />
           </TaskProvider>
         </Suspense>
       </ScrollableBox>
