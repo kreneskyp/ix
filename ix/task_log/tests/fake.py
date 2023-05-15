@@ -89,12 +89,6 @@ def fake_user(**kwargs):
     return user
 
 
-def fake_goal(**kwargs):
-    data = {"name": fake.word(), "description": fake.text()[:50], "complete": False}
-    data.update(kwargs)
-    return data
-
-
 def fake_task(**kwargs):
     user = kwargs.get("user") or fake_user()
     agent = kwargs.get("agent") or fake_agent()
