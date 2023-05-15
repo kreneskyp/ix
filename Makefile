@@ -61,7 +61,7 @@ frontend: compose npm_install graphene_to_graphql compile_relay webpack
 # install npm packages
 .PHONY: npm_install
 npm_install: compose package.json
-	docker-compose run --rm sandbox npm install
+	docker-compose run --rm web npm install
 
 # compile javascript
 .PHONY: webpack
