@@ -256,6 +256,7 @@ def fake_task_log_msg(**kwargs):
         created_at=created_at,
         role=role,
         content=content,
+        parent=kwargs.get("parent", None),
     )
 
     task_log_message.save()
