@@ -5,8 +5,6 @@ import {
   RecordSource,
   Store,
 } from "relay-runtime";
-// import { createClient } from 'graphql-ws';
-
 import { SubscriptionClient } from "subscriptions-transport-ws";
 
 // Create WebSocket client

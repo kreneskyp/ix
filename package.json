@@ -14,7 +14,8 @@
     "dagre": "^0.8.5",
     "package.json": "^2.0.1",
     "react-syntax-highlighter": "^15.5.0",
-    "reactflow": "^11.7.0"
+    "reactflow": "^11.7.0",
+    "subscriptions-transport-ws": "^0.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.3",
