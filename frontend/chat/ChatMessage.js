@@ -85,6 +85,8 @@ const ChatMessageContent = ({ message }) => {
 };
 
 const ChatMessageStats = ({ message }) => {
+  const { colorMode } = useColorMode();
+
   if (message === null) {
     return null;
   }
@@ -92,13 +94,13 @@ const ChatMessageStats = ({ message }) => {
   return (
     <Box
       width="100%"
-      bg="blackAlpha.300"
+      bg={colorMode === 'light' ? "blackAlpha.50" : "blackAlpha.300"}
       px={3}
       pb={1}
       pt={2}
       textAlign="right"
     >
-      <Text fontSize="xs" color="gray.500">
+      <Text fontSize="xs" color={colorMode === 'light' ? "gray.800" : "gray.500"}>
         <b>Runtime:</b> {message?.content.runtime?.toFixed(2)} seconds.
       </Text>
     </Box>
@@ -139,6 +141,7 @@ const ChatMessage = ({ messageGroup }) => {
         <Text
           color={colorMode === "light" ? "blackAlpha.800" : "whiteAlpha.400"}
           fontSize="xs"
+          fontWeight="bold"
         >
           {alias.toLowerCase()}
         </Text>
@@ -147,12 +150,14 @@ const ChatMessage = ({ messageGroup }) => {
         bg={colorMode === "light" ? "gray.100" : "gray.700"}
         width="800px"
         borderRadius={8}
+        border="1px solid"
+        borderColor={colorMode === "light" ? "gray.300" : "gray.800"}
         minHeight={90}
         p={0}
         direction="column"
         justify="space-between"
       >
-        <Box p={3}>{content}</Box>
+        <Box p={3} color={colorMode === 'light' ? "black" : "gray.100"}>{content}</Box>
         <ChatMessageStats message={thought} />
       </Flex>
     </Flex>

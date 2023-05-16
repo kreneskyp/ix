@@ -3,8 +3,11 @@ import PropTypes from "prop-types";
 import { Box, Tooltip, useColorModeValue } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faRobot, faCog } from "@fortawesome/free-solid-svg-icons";
+import AssistantAvatar from "chat/AssistantAvatar";
+import {useColorMode} from "@chakra-ui/color-mode";
 
 const ChatMessageAvatar = ({ message }) => {
+  const { colorMode } = useColorMode();
   const avatarSize = "40px";
   const iconSize = "lg";
   const bgColor = useColorModeValue("gray.200", "gray.700");
@@ -28,7 +31,9 @@ const ChatMessageAvatar = ({ message }) => {
         display="flex"
         alignItems="center"
         justifyContent="center"
+        border="1px solid"
         borderRadius="full"
+        borderColor={colorMode === "light" ? "gray.300" : "transparent"}
         bg={bgColor}
         color={color}
         width={avatarSize}
