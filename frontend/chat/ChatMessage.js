@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Flex, VStack, Text } from "@chakra-ui/react";
+import { Box, Flex, VStack, Text, Spinner } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import AssistantContent from "chat/AssistantContent";
 import FeedbackContent from "chat/FeedbackContent";
@@ -17,10 +17,32 @@ import ThinkContent from "chat/ThinkContent";
 import { PlanContent } from "planner/PlanContent";
 import CommandContent from "chat/CommandContent";
 
-const ChatMessage = ({ message }) => {
-  const { colorMode } = useColorMode();
-  const { content } = message;
-  let contentComponent = null;
+import { useMemo } from "react";
+
+const useMessageGroup = (messageGroup) => {
+  // build message structure out of a group of messages
+  return useMemo(() => {
+    let think = null;
+    let thought = null;
+    const messages = [];
+
+    messageGroup.messages.forEach((message) => {
+      if (message.content.type === "THINK" && !think) {
+        think = message;
+      } else if (message.content.type === "THOUGHT" && !thought) {
+        thought = message;
+      } else {
+        messages.push(message);
+      }
+    });
+
+    return { think, thought, messages };
+  }, [messageGroup]);
+};
+
+const ChatMessageContent = ({ message }) => {
+  let contentComponent;
+  const content = message.content;
   switch (content.type) {
     case "ASSISTANT":
       contentComponent = <AssistantContent content={content} />;
@@ -49,12 +71,6 @@ const ChatMessage = ({ message }) => {
     case "FEEDBACK_REQUEST":
       contentComponent = <FeedbackRequestContent content={content} />;
       break;
-    case "THINK":
-      contentComponent = <ThinkContent content={content} />;
-      break;
-    case "THOUGHT":
-      contentComponent = <ThoughtContent content={content} />;
-      break;
     case "SYSTEM":
       contentComponent = <SystemContent content={content} />;
       break;
@@ -65,13 +81,60 @@ const ChatMessage = ({ message }) => {
       contentComponent = <div>{content.message}</div>;
       break;
   }
+  return contentComponent;
+};
+
+const ChatMessageStats = ({ message }) => {
+  if (message === null) {
+    return null;
+  }
+
+  return (
+    <Box
+      width="100%"
+      bg="blackAlpha.300"
+      px={3}
+      pb={1}
+      pt={2}
+      textAlign="right"
+    >
+      <Text fontSize="xs" color="gray.500">
+        <b>Runtime:</b> {message?.content.runtime?.toFixed(2)} seconds.
+      </Text>
+    </Box>
+  );
+};
+
+const ChatMessage = ({ messageGroup }) => {
+  const { colorMode } = useColorMode();
+  const { think, thought, messages } = useMessageGroup(messageGroup);
+
+  // Main message is either a THINK or a plain message that doesn't have a parent.
+  // Most messages should have parent THINK but this provides a fallback so all
+  // messages are still rendered.
+  let message;
+  if (think !== null) {
+    message = think;
+  } else if (messages.length) {
+    message = messages[0];
+  }
+
+  // Message content or spinner if still thinking
+  let content = null;
+  if (messages.length === 0 && thought === null) {
+    content = <Spinner />;
+  } else {
+    content = messages.map((message) => (
+      <ChatMessageContent key={message.id} message={message} />
+    ));
+  }
 
   // Use agent name when available
-  const alias = message.content.agent || message.role;
+  const alias = message?.content.agent || message.role;
 
   return (
     <Flex alignItems="flex-start" mb={6} align="center">
-      <VStack mt={3} mr={3}>
+      <VStack mt={3} mr={3} width={100}>
         <ChatMessageAvatar message={message} />
         <Text
           color={colorMode === "light" ? "blackAlpha.800" : "whiteAlpha.400"}
@@ -80,25 +143,20 @@ const ChatMessage = ({ message }) => {
           {alias.toLowerCase()}
         </Text>
       </VStack>
-      <Box
-        bg={colorMode === "light" ? "gray.100" : "gray.900"}
+      <Flex
+        bg={colorMode === "light" ? "gray.100" : "gray.700"}
         width="800px"
         borderRadius={8}
         minHeight={90}
-        p={3}
-        justify="top"
+        p={0}
+        direction="column"
+        justify="space-between"
       >
-        {contentComponent}
-      </Box>
+        <Box p={3}>{content}</Box>
+        <ChatMessageStats message={thought} />
+      </Flex>
     </Flex>
   );
-};
-
-ChatMessage.propTypes = {
-  message: PropTypes.shape({
-    role: PropTypes.string.isRequired,
-    content: PropTypes.any.isRequired,
-  }).isRequired,
 };
 
 export default ChatMessage;

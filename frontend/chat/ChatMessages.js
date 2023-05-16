@@ -15,8 +15,8 @@ export const ChatMessages = () => {
 
   return (
     <Box>
-      {messages.map((message) => (
-        <ChatMessage key={message.id} message={message} />
+      {messages.map((messageGroup) => (
+        <ChatMessage key={messageGroup.id} messageGroup={messageGroup} />
       ))}
       <div ref={messagesEndRef} />
     </Box>

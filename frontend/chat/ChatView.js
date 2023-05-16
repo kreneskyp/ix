@@ -1,6 +1,7 @@
-import React, { Suspense, useEffect, useState, useCallback } from "react";
+import React, { Suspense, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Center, Spinner, VStack } from "@chakra-ui/react";
+import { usePreloadedQuery } from "react-relay/hooks";
 
 import { TaskProvider } from "tasks/contexts";
 import ChatInput from "chat/ChatInput";
@@ -8,17 +9,11 @@ import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 import { ScrollableBox } from "site/ScrollableBox";
 import { useQueryLoader } from "react-relay";
 import { ChatByIdQuery } from "chat/graphql/ChatByIdQuery";
-import {
-  fetchQuery,
-  usePreloadedQuery,
-  useRelayEnvironment,
-} from "react-relay/hooks";
+import { useMessageStream } from "chat/graphql/useMessageStream";
 import SideBarPlanList from "chat/SideBarPlanList";
 import SideBarArtifactList from "chat/sidebar/SideBarArtifactList";
 import SideBarAgentList from "chat/sidebar/SideBarAgentList";
 import ChatMessages from "chat/ChatMessages";
-import { useChatMessageSubscription } from "chat/graphql/useChatMessageSubscription";
-import { TaskLogMessagesQuery } from "task_log/graphql/TaskLogMessagesQuery";
 
 import {
   MessagesContext,
@@ -26,32 +21,9 @@ import {
 } from "chat/graphql/useChatMessageSubscription";
 
 export const ChatContentShim = ({ queryRef }) => {
-  const environment = useRelayEnvironment();
   const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
   const moderatorTask = chat.task;
-
-  // setup messages and handler
-  const [messages, setMessages] = useState([]);
-  const handleNewMessage = useCallback((newMessage) => {
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
-  }, []);
-
-  // subscribe to messages
-  const subscriptionActive = useChatMessageSubscription(
-    chat.id,
-    handleNewMessage
-  );
-
-  // Load initial messages synchronously
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchQuery(environment, TaskLogMessagesQuery, {
-        taskId: chat.task.id,
-      }).toPromise();
-      setMessages(data.taskLogMessages);
-    };
-    fetchData();
-  }, [environment, chat.id]);
+  const { messages, subscriptionActive } = useMessageStream(chat);
 
   return (
     <MessagesContext.Provider value={messages}>
