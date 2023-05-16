@@ -35,6 +35,7 @@ class GraphqlWsConsumer(channels_graphql_ws.GraphqlWsConsumer):
         """New client connection handler."""
         pass
 
+
 # Set up the ASGI application
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ix.server.settings")
 django_application = get_asgi_application()
