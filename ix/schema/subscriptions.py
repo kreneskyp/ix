@@ -46,8 +46,12 @@ class ChatMessageSubscription(channels_graphql_ws.Subscription):
         Broadcast to all clients subscribed to the chat's task_id.
         Subtasks are broadcast to the parent task's task_id.
         """
-        instance = kwargs["instance"]
 
+        # messages shouldn't be updated but check just in case
+        if not kwargs.get("created", False):
+            return
+
+        instance = kwargs["instance"]
         parent_id = instance.task.parent_id
         task_id = parent_id if parent_id else instance.task_id
         cls.broadcast(
