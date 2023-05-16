@@ -18,13 +18,11 @@ export const AgentToggleButton = ({ children, chat, agent }) => {
     if (isAgentInChat) {
       commitRemoveMutation({
         variables: { chatId: chat.id, agentId: agent.id },
-        onCompleted: () => console.log("Agent removed from chat"),
         onError: (err) => console.error(err),
       });
     } else {
       commitAddMutation({
         variables: { chatId: chat.id, agentId: agent.id },
-        onCompleted: () => console.log("Agent added to chat"),
         onError: (err) => console.error(err),
       });
     }

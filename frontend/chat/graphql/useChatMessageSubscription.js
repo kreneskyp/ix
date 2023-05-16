@@ -1,6 +1,13 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 import { graphql, requestSubscription } from "react-relay";
 import environment from "relay-environment";
+
+export const MessagesContext = createContext();
+export const SubscriptionActiveContext = createContext();
+
+export const useMessagesContext = () => useContext(MessagesContext);
+export const useSubscriptionActiveContext = () =>
+  useContext(SubscriptionActiveContext);
 
 const taskLogMessagesSubscription = graphql`
   subscription useChatMessageSubscription($chatId: String!) {
@@ -27,6 +34,7 @@ export function useChatMessageSubscription(chatId, onNewMessage) {
     let subscription;
 
     const connect = () => {
+      setConnectionActive(true);
       subscription = requestSubscription(environment, {
         subscription: taskLogMessagesSubscription,
         variables: { chatId },
@@ -37,7 +45,6 @@ export function useChatMessageSubscription(chatId, onNewMessage) {
             agent: data.chatMessageSubscription.agent,
             parent: parentId === null ? null : { id: parentId },
           });
-          setConnectionActive(true);
         },
         onError: (error) => {
           console.error("An error occurred:", error);
