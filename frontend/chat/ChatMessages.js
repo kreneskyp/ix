@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Box } from "@chakra-ui/react";
 import { fetchQuery, useRelayEnvironment } from "react-relay/hooks";
 import { useChatMessageSubscription } from "chat/graphql/useChatMessageSubscription";
@@ -20,10 +20,12 @@ export const ChatMessages = ({ chat }) => {
     fetchData();
   }, [environment, chat.id]);
 
-  // Set up subscription to new messages
-  useChatMessageSubscription(chat.id, (newMessage) => {
+  const handleNewMessage = useCallback((newMessage) => {
     setMessages((prevMessages) => [...prevMessages, newMessage]);
-  });
+  }, []);
+
+  // Set up subscription to new messages
+  useChatMessageSubscription(chat.id, handleNewMessage);
 
   return (
     <Box>

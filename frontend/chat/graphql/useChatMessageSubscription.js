@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { graphql, requestSubscription } from "react-relay";
 import environment from "relay-environment";
 
@@ -21,25 +21,43 @@ const taskLogMessagesSubscription = graphql`
 `;
 
 export function useChatMessageSubscription(chatId, onNewMessage) {
+  const [connectionActive, setConnectionActive] = useState(false);
+
   useEffect(() => {
-    const subscription = requestSubscription(environment, {
-      subscription: taskLogMessagesSubscription,
-      variables: { chatId },
-      updater: (store, data) => {
-        // reconstruct the message object here since the proper nested
-        // structure doesn't work since graphene doesn't do async FKs well
-        const parentId = data.chatMessageSubscription.parentId;
-        onNewMessage({
-          ...data.chatMessageSubscription.taskLogMessage,
-          agent: data.chatMessageSubscription.agent,
-          parent: parentId === null ? null : { id: parentId },
-        });
-      },
-      onError: (error) => console.error("An error occurred:", error),
-    });
+    let subscription;
+
+    const connect = () => {
+      subscription = requestSubscription(environment, {
+        subscription: taskLogMessagesSubscription,
+        variables: { chatId },
+        updater: (store, data) => {
+          const parentId = data.chatMessageSubscription.parentId;
+          onNewMessage({
+            ...data.chatMessageSubscription.taskLogMessage,
+            agent: data.chatMessageSubscription.agent,
+            parent: parentId === null ? null : { id: parentId },
+          });
+          setConnectionActive(true);
+        },
+        onError: (error) => {
+          console.error("An error occurred:", error);
+          setConnectionActive(false);
+
+          // Reconnect after a delay
+          setTimeout(connect, 5000);
+        },
+      });
+    };
+
+    connect();
 
     return () => {
-      subscription.dispose();
+      if (subscription) {
+        subscription.dispose();
+      }
+      setConnectionActive(false);
     };
-  }, [onNewMessage]);
+  }, [onNewMessage, chatId]);
+
+  return connectionActive;
 }
