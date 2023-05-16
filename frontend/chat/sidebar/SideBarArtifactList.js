@@ -32,7 +32,12 @@ const SideBarArtifactList = ({ queryRef }) => {
         Artifacts
       </Heading>
       {artifacts?.length === 0 ? (
-        <Text p={2} fontSize="xs" color="gray.400" sx={{ borderRadius: "5px" }}>
+        <Text
+          p={2}
+          fontSize="xs"
+          color={colorMode === "light" ? "gray.800" : "gray.400"}
+          sx={{ borderRadius: "5px" }}
+        >
           Artifacts will appear here as they are created by agents.
         </Text>
       ) : null}

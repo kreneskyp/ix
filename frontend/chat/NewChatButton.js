@@ -25,12 +25,9 @@ export const NewChatButton = () => {
 
   return (
     <Button
-      bg="transparent"
+      border="1px solid"
+      borderColor={colorMode === "light" ? "gray.300" : "whiteAlpha.50"}
       width="100%"
-      borderStyle="dashed"
-      borderWidth="2px"
-      borderColor={colorMode === "light" ? "gray.800" : "whiteAlpha.600"}
-      color={colorMode === "light" ? "gray.900" : "whiteAlpha.800"}
       leftIcon={<Icon as={FontAwesomeIcon} icon={faPlus} />}
       onClick={handleCreate}
     >

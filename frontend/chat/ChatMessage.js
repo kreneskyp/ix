@@ -94,13 +94,16 @@ const ChatMessageStats = ({ message }) => {
   return (
     <Box
       width="100%"
-      bg={colorMode === 'light' ? "blackAlpha.50" : "blackAlpha.300"}
+      bg={colorMode === "light" ? "blackAlpha.50" : "blackAlpha.300"}
       px={3}
       pb={1}
       pt={2}
       textAlign="right"
     >
-      <Text fontSize="xs" color={colorMode === 'light' ? "gray.800" : "gray.500"}>
+      <Text
+        fontSize="xs"
+        color={colorMode === "light" ? "gray.800" : "gray.500"}
+      >
         <b>Runtime:</b> {message?.content.runtime?.toFixed(2)} seconds.
       </Text>
     </Box>
@@ -157,7 +160,9 @@ const ChatMessage = ({ messageGroup }) => {
         direction="column"
         justify="space-between"
       >
-        <Box p={3} color={colorMode === 'light' ? "black" : "gray.100"}>{content}</Box>
+        <Box p={3} color={colorMode === "light" ? "black" : "gray.100"}>
+          {content}
+        </Box>
         <ChatMessageStats message={thought} />
       </Flex>
     </Flex>

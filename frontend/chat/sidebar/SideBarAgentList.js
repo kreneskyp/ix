@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquareMinus, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import RemoveAgentModalTrigger from "chat/agents/RemoveAgentModalTrigger";
 import AddAgentModalTrigger from "chat/agents/AddAgentModalTrigger";
+import { useColorMode } from "@chakra-ui/color-mode";
 
 const AgentListItem = ({ chat, agent }) => {
   return (
@@ -33,6 +34,7 @@ const AgentListItem = ({ chat, agent }) => {
 };
 const SideBarAgentList = ({ queryRef }) => {
   const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
+  const { colorMode } = useColorMode();
   const lead = chat.lead;
   const agents = chat.agents;
 
@@ -42,15 +44,21 @@ const SideBarAgentList = ({ queryRef }) => {
       px={3}
       pb={3}
       pt={1}
+      border="1px solid"
       borderRadius={5}
-      bg="gray.800"
-      color="gray.300"
+      borderColor={colorMode === "light" ? "gray.400" : "gray.700"}
+      bg={colorMode === "light" ? "gray.300" : "gray.800"}
+      color={colorMode === "light" ? "gray.800" : "gray.300"}
     >
-      <HStack width="100%" mb={2}>
-        <Text fontSize="xs" color="whiteAlpha.500" fontWeight="bold" mb={2}>
+      <HStack
+        width="100%"
+        mb={2}
+        color={colorMode === "light" ? "gray.800" : "whiteAlpha.500"}
+      >
+        <Text fontSize="xs" fontWeight="bold" mb={2}>
           Agents
         </Text>
-        <Box width="100%" align="right" color="whiteAlpha.500">
+        <Box width="100%" align="right">
           <AddAgentModalTrigger chat={chat}>
             <FontAwesomeIcon icon={faUserPlus} />
           </AddAgentModalTrigger>

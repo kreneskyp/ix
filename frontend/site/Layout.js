@@ -35,7 +35,6 @@ export const Layout = ({ children }) => {
       >
         {/* left sidebar */}
         <NewChatButton />
-        <Divider />
         {leftPane}
         <Spacer />
         <Divider

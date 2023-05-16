@@ -10,10 +10,17 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
+import { useColorMode } from "@chakra-ui/color-mode";
 
 function Navigation() {
+  const { colorMode } = useColorMode();
+
   return (
-    <Box as="nav" fontSize="sm" color="gray.200">
+    <Box
+      as="nav"
+      fontSize="sm"
+      color={colorMode === "light" ? "gray.900" : "gray.200"}
+    >
       <Stack spacing={3}>
         <HStack align="center">
           <FontAwesomeIcon icon={faChain} />

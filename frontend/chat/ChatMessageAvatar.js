@@ -4,7 +4,7 @@ import { Box, Tooltip, useColorModeValue } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faRobot, faCog } from "@fortawesome/free-solid-svg-icons";
 import AssistantAvatar from "chat/AssistantAvatar";
-import {useColorMode} from "@chakra-ui/color-mode";
+import { useColorMode } from "@chakra-ui/color-mode";
 
 const ChatMessageAvatar = ({ message }) => {
   const { colorMode } = useColorMode();
