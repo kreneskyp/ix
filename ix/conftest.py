@@ -17,7 +17,12 @@ def mock_embeddings(mocker) -> List[float]:
 
 
 @pytest.fixture
-def mock_openai(mocker):
+def mock_openai_key(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "MOCK_KEY")
+
+
+@pytest.fixture
+def mock_openai(mocker, mock_openai_key):
     # create a mock instance of the class
     mock_llm = MockChatOpenAI()
 
@@ -38,7 +43,7 @@ def task():
 
 
 @pytest.fixture()
-def chat():
+def chat(mock_openai_key):
     chat = fake_chat()
     fake_agent_1 = fake_agent(
         name="agent 1", alias="agent_1", purpose="to test selections"

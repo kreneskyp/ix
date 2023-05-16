@@ -8,8 +8,8 @@ IMAGE_TAG=$(shell cat $(HASH_FILES) | md5sum | cut -d ' ' -f 1)
 IMAGE_URL=$(DOCKER_REPOSITORY):$(IMAGE_TAG)
 IMAGE_SENTINEL=.sentinel/image
 
-DOCKER_COMPOSE_RUN=docker-compose run --rm sandbox
-DOCKER_COMPOSE_RUN_WITH_PORT=docker-compose run -p 8000:8000 --rm sandbox
+DOCKER_COMPOSE_RUN=docker-compose run --rm web
+DOCKER_COMPOSE_RUN_WITH_PORT=docker-compose run -p 8000:8000 --rm web
 
 # set to skip build, primarily used by github workflows to skip builds when image is cached
 NO_IMAGE_BUILD?=0
@@ -61,12 +61,12 @@ frontend: compose npm_install graphene_to_graphql compile_relay webpack
 # install npm packages
 .PHONY: npm_install
 npm_install: compose package.json
-	docker-compose run --rm sandbox npm install
+	docker-compose run --rm web npm install
 
 # compile javascript
 .PHONY: webpack
 webpack: compose
-	docker-compose run --rm sandbox webpack --progress
+	${DOCKER_COMPOSE_RUN} webpack --progress
 
 # compile javascript in watcher mode
 .PHONY: webpack-watch
@@ -76,19 +76,26 @@ webpack-watch: compose
 # compile graphene graphql classes into schema.graphql for javascript
 .PHONY: graphene_to_graphql
 graphene_to_graphql: compose
-	docker-compose run --rm sandbox ./manage.py graphql_schema --out ./frontend/schema.graphql
+	${DOCKER_COMPOSE_RUN} ./manage.py graphql_schema --out ./frontend/schema.graphql
 
 # compile javascript
 .PHONY: compile_relay
 compile_relay: compose
-	docker-compose run --rm sandbox npm run relay
+	${DOCKER_COMPOSE_RUN} npm run relay
 
 
 # =========================================================
 # Run
 # =========================================================
 
-# run backend and frontend
+# run backend and frontend. This starts uvicorn for asgi+websockers
+# and nginx to serve static files
+.PHONY: server
+server: compose
+	docker-compose up web nginx
+
+
+# run django debug server, backup in case nginx ever breaks
 .PHONY: runserver
 runserver: compose
 	${DOCKER_COMPOSE_RUN_WITH_PORT} ./manage.py runserver 0.0.0.0:8000

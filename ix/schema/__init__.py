@@ -3,6 +3,7 @@ import graphene
 from django.contrib.auth.models import User
 from django.db.models import Q
 
+from ix.schema.subscriptions import Subscription as ChatSubscription
 from ix.schema.mutations.chat import Mutation as ChatMutation
 from ix.schema.mutations.tasks import Mutation as TaskMutation
 from ix.schema.mutations.agents import Mutation as AgentMutation
@@ -45,6 +46,12 @@ class Query(ChainQuery, ChatQuery, AgentQuery, graphene.ObjectType):
         ).select_related("agent")
 
 
+class Subscription(ChatSubscription, graphene.ObjectType):
+    """
+    Aggregation of graphql subscriptions
+    """
+
+
 class Mutation(AgentMutation, TaskMutation, ChatMutation, graphene.ObjectType):
     """
     Aggregation of graphql mutations
@@ -52,7 +59,7 @@ class Mutation(AgentMutation, TaskMutation, ChatMutation, graphene.ObjectType):
 
 
 # full graphql schema
-schema = graphene.Schema(query=Query, mutation=Mutation)
+schema = graphene.Schema(query=Query, mutation=Mutation, subscription=Subscription)
 
 
 __all__ = ["schema", "Query", "Mutation"]

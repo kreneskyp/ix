@@ -89,12 +89,6 @@ def fake_user(**kwargs):
     return user
 
 
-def fake_goal(**kwargs):
-    data = {"name": fake.word(), "description": fake.text()[:50], "complete": False}
-    data.update(kwargs)
-    return data
-
-
 def fake_task(**kwargs):
     user = kwargs.get("user") or fake_user()
     agent = kwargs.get("agent") or fake_agent()
@@ -262,6 +256,7 @@ def fake_task_log_msg(**kwargs):
         created_at=created_at,
         role=role,
         content=content,
+        parent=kwargs.get("parent", None),
     )
 
     task_log_message.save()

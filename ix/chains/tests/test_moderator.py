@@ -19,7 +19,7 @@ class TestChatModerator:
             == """0. agent_1: to test selections\n1. agent_2: to test selections"""
         )
 
-    def test_call(self, chat, mock_openai):
+    def test_call(self, mock_openai, chat):
         mock_openai.return_value = '{"agent": "agent_1"}'
 
         chat_moderator = chat["instance"]

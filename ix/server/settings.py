@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "graphene_django",
-    # channels",
+    "channels",
     "django_extensions",
     "ix.task_log",
     "ix.chains",
@@ -149,20 +149,20 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 GRAPHENE = {"SCHEMA": "ix.schema.schema"}
 
-# ASGI_APPLICATION = 'ix.server.asgi.application'
+ASGI_APPLICATION = "ix.server.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379)],
+            "hosts": [("redis", 6379)],
         },
     },
 }
 
 # Celery configuration
-CELERY_BROKER_URL = "redis://redis:6379/0"
-CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+CELERY_BROKER_URL = "redis://redis:6379/2"
+CELERY_RESULT_BACKEND = "redis://redis:6379/2"
 
 CACHES = {
     "default": {
