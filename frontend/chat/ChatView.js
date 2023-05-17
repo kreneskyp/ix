@@ -74,7 +74,7 @@ export const ChatView = () => {
 
   useEffect(() => {
     loadQuery({ id }, { fetchPolicy: "network-only" });
-  }, []);
+  }, [id]);
 
   return (
     <Layout>
