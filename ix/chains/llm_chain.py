@@ -84,6 +84,7 @@ class LLMReply(LLMChain):
         TaskLogMessage.objects.create(
             task_id=self.callback_manager.task.id,
             role="assistant",
+            parent=self.callback_manager.think_msg,
             content={
                 "type": "ASSISTANT",
                 "text": response,

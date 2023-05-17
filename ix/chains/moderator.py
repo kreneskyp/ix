@@ -8,6 +8,7 @@ from ix.agents.llm import load_llm
 from ix.chains.json import parse_json
 from ix.chains.llm_chain import LLMChain
 from ix.chat.models import Chat
+from ix.task_log.models import TaskLogMessage
 from ix.task_log.tasks.agent_runner import start_agent_loop
 
 logger = logging.getLogger(__name__)
@@ -101,10 +102,22 @@ class ChatModerator(Chain):
         )
         logger.debug(f"Moderator returned response={response}")
         response_data = parse_json(response, output_key="agent")
-
-        # 1. delegate to the agent
         # TODO parse_json maps the whole return string to the agent key
         alias = response_data["agent"]["agent"]
+
+        # 2. report delegation
+        TaskLogMessage.objects.create(
+            task_id=self.callback_manager.task.id,
+            role="assistant",
+            parent=self.callback_manager.think_msg,
+            content={
+                "type": "ASSISTANT",
+                "text": f"Delegating to @{alias}",
+                "agent": self.callback_manager.task.agent.alias,
+            },
+        )
+
+        # 3. delegate to the agent
         agent = chat.agents.get(alias=alias)
         subtask = chat.task.delegate_to_agent(agent)
         logger.error(

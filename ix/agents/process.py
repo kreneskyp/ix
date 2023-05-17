@@ -193,14 +193,13 @@ class AgentProcess:
         )
         logger.error(f"@@@@ EXECUTE ERROR {failure_msg.content['text']}")
 
-    def construct_chain(self) -> Chain:
-        callback_manager = IxCallbackManager(self.task)
-        return self.chain.load_chain(callback_manager)
-
     def chat_with_ai(
         self, think_msg: TaskLogMessage, user_input: Dict[str, Any]
     ) -> TaskLogMessage:
-        chain = self.construct_chain()
+        callback_manager = IxCallbackManager(self.task)
+        callback_manager.think_msg = think_msg
+        chain = self.chain.load_chain(callback_manager)
+
         logger.info(
             f"Sending request to chain={self.task.agent.chain.name} prompt={user_input}"
         )
