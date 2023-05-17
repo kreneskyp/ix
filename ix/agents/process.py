@@ -5,8 +5,6 @@ import traceback
 from functools import cached_property
 from typing import TypedDict, Optional, Any, Dict
 
-from langchain.chains.base import Chain
-
 from ix.agents.callback_manager import IxCallbackManager
 from ix.agents.exceptions import (
     AgentQuestion,
