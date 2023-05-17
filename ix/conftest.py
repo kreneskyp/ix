@@ -6,7 +6,13 @@ import pytest
 from ix.agents.callback_manager import IxCallbackManager
 from ix.agents.tests.mock_llm import MockChatOpenAI
 from ix.chains.moderator import ChatModerator
-from ix.task_log.tests.fake import fake_task, fake_task_log_msg, fake_chat, fake_agent
+from ix.task_log.tests.fake import (
+    fake_task,
+    fake_task_log_msg,
+    fake_chat,
+    fake_agent,
+    fake_think,
+)
 
 USER_INPUT = {"user_input": "hello agent 1"}
 
@@ -53,6 +59,7 @@ def chat(mock_openai_key):
     )
     chat.agents.set([fake_agent_1, fake_agent_2])
     callback_manager = IxCallbackManager(chat.task)
+    callback_manager.think_msg = fake_think(task=chat.task)
 
     config = {
         "llm": {
