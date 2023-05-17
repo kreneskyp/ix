@@ -27,6 +27,9 @@ const StepDetails = ({ step }) => {
   const { colorMode } = useColorMode();
   const syntaxTheme =
     colorMode === "light" ? stackoverflowLight : stackoverflowDark;
+
+  const artifactColor = colorMode === "light" ? "blue.500" : "blue.300";
+
   return (
     <Box mt={5}>
       <Grid templateColumns="max-content 1fr" gap={3}>
@@ -35,7 +38,7 @@ const StepDetails = ({ step }) => {
         </Text>
         <Text gridColumn="2 / 3">
           {step.requires_artifacts?.map((artifact, i) => (
-            <Text key={i} as="span" color="blue.300" mr={3}>
+            <Text key={i} as="span" color={artifactColor} mr={3}>
               {artifact}
             </Text>
           ))}
@@ -45,7 +48,7 @@ const StepDetails = ({ step }) => {
         </Text>
         <Text gridColumn="2 / 3">
           {step.produces_artifacts?.map((artifact, i) => (
-            <Text key={i} as="span" color="blue.300" mr={3}>
+            <Text key={i} as="span" color={artifactColor} mr={3}>
               {artifact.identifier}{" "}
             </Text>
           ))}
@@ -58,8 +61,18 @@ const StepDetails = ({ step }) => {
       <Table variant="simple" size="sm" borderWidth="0px" my={5}>
         <Thead>
           <Tr>
-            <Th borderBottomWidth="1px">Argument</Th>
-            <Th borderBottomWidth="1px">Value</Th>
+            <Th
+              borderBottomWidth="1px"
+              borderColor={colorMode === "light" ? "gray.300" : "gray.600"}
+            >
+              Argument
+            </Th>
+            <Th
+              borderBottomWidth="1px"
+              borderColor={colorMode === "light" ? "gray.300" : "gray.600"}
+            >
+              Value
+            </Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -67,7 +80,12 @@ const StepDetails = ({ step }) => {
             <Tr key={key}>
               <Td border={0}>{key}</Td>
               <Td border={0}>
-                <Box sx={{ overflowX: "auto" }} width={500}>
+                <Box
+                  sx={{ overflowX: "auto" }}
+                  width={500}
+                  border="1px solid"
+                  borderColor={colorMode === "light" ? "gray.300" : "black"}
+                >
                   <SyntaxHighlighter style={syntaxTheme} wrapLines={true}>
                     {value}
                   </SyntaxHighlighter>
@@ -83,6 +101,7 @@ const StepDetails = ({ step }) => {
 
 export const PlanContent = ({ message }) => {
   const [expandedStep, setExpandedStep] = useState(null);
+  const { colorMode } = useColorMode();
 
   const handleExpand = (index) => {
     if (expandedStep === index) {
@@ -92,26 +111,26 @@ export const PlanContent = ({ message }) => {
     }
   };
 
+  const borderColor = colorMode === "light" ? "gray.300" : "gray.600";
+
   return (
     <Box>
       Here is a plan for your request:
       <Table variant="simple" borderBottom={0}>
         <Thead>
           <Tr>
-            <Th>#</Th>
-            <Th>Description</Th>
+            <Th borderColor={borderColor}>#</Th>
+            <Th borderColor={borderColor}>Description</Th>
           </Tr>
         </Thead>
         <Tbody>
           {message.content.steps.map((step, index) => (
             <React.Fragment key={index}>
-              <Tr
-                onClick={() => handleExpand(index)}
-                borderTop={expandedStep === index ? "none" : "1px solid"}
-                borderColor="gray.200"
-              >
-                <Td width={50}>{index + 1}</Td>
-                <Td>
+              <Tr onClick={() => handleExpand(index)}>
+                <Td width={50} borderColor={borderColor}>
+                  {index + 1}
+                </Td>
+                <Td borderColor={borderColor}>
                   <Box>
                     {step.name}
                     <IconButton

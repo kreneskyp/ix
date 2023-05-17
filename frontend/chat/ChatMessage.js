@@ -154,7 +154,7 @@ const ChatMessage = ({ messageGroup }) => {
         width="800px"
         borderRadius={8}
         border="1px solid"
-        borderColor={colorMode === "light" ? "gray.300" : "gray.800"}
+        borderColor={colorMode === "light" ? "gray.300" : "gray.700"}
         minHeight={90}
         p={0}
         direction="column"
