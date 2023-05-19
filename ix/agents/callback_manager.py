@@ -34,4 +34,5 @@ class IxCallbackManager(CallbackManager):
         child = type(self)(
             parent=self, task=self.task, stack_id=f"{self.stack_id}.{stack_id}"
         )
+        child.think_msg = self.think_msg
         return child
