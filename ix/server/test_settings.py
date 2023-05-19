@@ -9,3 +9,6 @@ LOGGING["loggers"] = {
         "level": logging.DEBUG,
     },
 }
+
+# do not run celery tasks in the background during tests
+CELERY_TASK_ALWAYS_EAGER = True
