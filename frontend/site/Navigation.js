@@ -7,6 +7,7 @@ import {
   faListCheck,
   faServer,
   faChain,
+  faMessage,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
@@ -22,6 +23,13 @@ function Navigation() {
       color={colorMode === "light" ? "gray.900" : "gray.200"}
     >
       <Stack spacing={3}>
+        <HStack align="center">
+          <FontAwesomeIcon icon={faMessage} />
+          <Link ml={3} to="/chats">
+            Chats
+          </Link>
+        </HStack>
+
         <HStack align="center">
           <FontAwesomeIcon icon={faChain} />
           <Link ml={3} to="/chains">
@@ -40,12 +48,14 @@ function Navigation() {
             Tasks
           </Link>
         </HStack>
-        <HStack align="center">
-          <FontAwesomeIcon icon={faServer} />
-          <Link ml={3} to="#">
-            Resources
-          </Link>
-        </HStack>
+        {false && (
+          <HStack align="center">
+            <FontAwesomeIcon icon={faServer} />
+            <Link ml={3} to="#">
+              Resources
+            </Link>
+          </HStack>
+        )}
         <HStack align="center">
           <FontAwesomeIcon icon={faCog} />
           <Link ml={3} to="#">

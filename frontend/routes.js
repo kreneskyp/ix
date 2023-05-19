@@ -8,6 +8,7 @@ import { ChatView } from "chat/ChatView";
 import { ChainListView } from "chains/ChainListView";
 import { ChainEditorView } from "chains/ChainEditorView";
 import { NewChatRedirect } from "chat/NewChatRedirect";
+import { ChatHistoryView } from "chat/history/ChatHistoryView";
 //import { UserSettingsView } from 'users/UserSettingsView';
 //import { AdminSettingsView } from 'admin/AdminSettingsView';
 
@@ -22,6 +23,7 @@ export const routes = [
     path: "/chat/:id",
     element: <ChatView />,
   },
+  { path: "/chats", element: <ChatHistoryView /> },
   { path: "/chains", element: <ChainListView /> },
   { path: "/chains/new", element: <ChainEditorView /> },
   { path: "/chains/:id", element: <ChainEditorView /> },
