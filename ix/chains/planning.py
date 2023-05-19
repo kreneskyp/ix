@@ -60,6 +60,7 @@ class SavePlan(Chain):
             role="assistant",
             task=self.callback_manager.task,
             agent=self.callback_manager.task.agent,
+            parent=self.callback_manager.think_msg,
             content={
                 "type": "ARTIFACT",
                 "artifact_type": "PLAN",
@@ -143,6 +144,7 @@ class RunPlan(Chain):
 
             TaskLogMessage.objects.create(
                 task_id=self.callback_manager.task.id,
+                parent=self.callback_manager.think_msg,
                 role="assistant",
                 content={
                     "type": "EXECUTED",

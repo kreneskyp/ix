@@ -136,7 +136,7 @@ class AuthorizeCommandMutation(graphene.Mutation):
         responding_to = TaskLogMessage.objects.get(pk=input.message_id)
         message = TaskLogMessage.objects.create(
             task_id=responding_to.task_id,
-            parent_id=input.message_id,
+            parent_id=responding_to.parent_id,
             role="USER",
             content=UserFeedback(
                 type="AUTHORIZE",
