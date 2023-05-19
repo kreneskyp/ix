@@ -8,6 +8,11 @@ import { useColorMode } from "@chakra-ui/color-mode";
 
 const ChatMessageAvatar = ({ message }) => {
   const { colorMode } = useColorMode();
+
+  if (!message) {
+    return null;
+  }
+
   const avatarSize = "40px";
   const iconSize = "lg";
   const bgColor = useColorModeValue("gray.200", "gray.700");

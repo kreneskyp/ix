@@ -164,7 +164,7 @@ const ChatMessage = ({ messageGroup }) => {
   }
 
   // Use agent name when available
-  const alias = message?.content.agent || message.role;
+  const alias = message?.content.agent || message?.role || "Unknown";
 
   return (
     <Flex alignItems="flex-start" mb={6} align="center">
