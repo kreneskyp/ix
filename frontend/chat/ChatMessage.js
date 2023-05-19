@@ -1,6 +1,12 @@
 import React from "react";
-import { Box, Flex, VStack, Text, Spinner } from "@chakra-ui/react";
-import PropTypes from "prop-types";
+import {
+  Box,
+  Flex,
+  VStack,
+  Text,
+  Spinner,
+  HStack,
+} from "@chakra-ui/react";
 import AssistantContent from "chat/AssistantContent";
 import FeedbackContent from "chat/FeedbackContent";
 import FeedbackRequestContent from "chat/FeedbackRequestContent";
@@ -12,18 +18,19 @@ import AuthRequestContent from "chat/AuthRequestContent";
 import ExecuteContent from "chat/ExecuteContent";
 import { useColorMode } from "@chakra-ui/color-mode";
 import ExecuteErrorContent from "chat/ExecuteErrorContent";
-import ThoughtContent from "chat/ThoughtContent";
-import ThinkContent from "chat/ThinkContent";
 import { PlanContent } from "planner/PlanContent";
 import CommandContent from "chat/CommandContent";
 
 import { useMemo } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 const useMessageGroup = (messageGroup) => {
   // build message structure out of a group of messages
   return useMemo(() => {
     let think = null;
     let thought = null;
+    let authorizations = [];
     const messages = [];
 
     messageGroup.messages.forEach((message) => {
@@ -31,12 +38,14 @@ const useMessageGroup = (messageGroup) => {
         think = message;
       } else if (message.content.type === "THOUGHT" && !thought) {
         thought = message;
+      } else if (message.content.type === "AUTHORIZE") {
+        authorizations.push(message);
       } else {
         messages.push(message);
       }
     });
 
-    return { think, thought, messages };
+    return { think, thought, messages, authorizations };
   }, [messageGroup]);
 };
 
@@ -84,35 +93,55 @@ const ChatMessageContent = ({ message }) => {
   return contentComponent;
 };
 
-const ChatMessageStats = ({ message }) => {
+const ChatMessageAuthorizations = ({ authorizations }) => {
   const { colorMode } = useColorMode();
-
-  if (message === null) {
+  if (authorizations.length === 0) {
     return null;
   }
 
+  // for now just show that it was authorized
   return (
-    <Box
+    <HStack spacing={1} fontSize="xs">
+      <Text color="green.300">
+        <FontAwesomeIcon icon={faCheck} />
+      </Text>
+      <Text color={colorMode === "light" ? "gray.800" : "gray.500"}>
+        Authorized
+      </Text>
+    </HStack>
+  );
+};
+
+const ChatMessageFooter = ({ groupedMessages }) => {
+  const { colorMode } = useColorMode();
+  const { thought, authorizations } = groupedMessages;
+
+  return (
+    <Flex
       width="100%"
       bg={colorMode === "light" ? "blackAlpha.50" : "blackAlpha.300"}
       px={3}
       pb={1}
       pt={2}
-      textAlign="right"
+      justifyContent="space-between"
     >
-      <Text
-        fontSize="xs"
-        color={colorMode === "light" ? "gray.800" : "gray.500"}
-      >
-        <b>Runtime:</b> {message?.content.runtime?.toFixed(2)} seconds.
-      </Text>
-    </Box>
+      <ChatMessageAuthorizations authorizations={authorizations} />
+      {thought !== null && (
+        <Text
+          fontSize="xs"
+          color={colorMode === "light" ? "gray.800" : "gray.500"}
+        >
+          <b>Runtime:</b> {thought?.content.runtime?.toFixed(2)} seconds.
+        </Text>
+      )}
+    </Flex>
   );
 };
 
 const ChatMessage = ({ messageGroup }) => {
   const { colorMode } = useColorMode();
-  const { think, thought, messages } = useMessageGroup(messageGroup);
+  const groupedMessages = useMessageGroup(messageGroup);
+  const { think, thought, messages } = groupedMessages;
 
   // Main message is either a THINK or a plain message that doesn't have a parent.
   // Most messages should have parent THINK but this provides a fallback so all
@@ -163,7 +192,7 @@ const ChatMessage = ({ messageGroup }) => {
         <Box p={3} color={colorMode === "light" ? "black" : "gray.100"}>
           {content}
         </Box>
-        <ChatMessageStats message={thought} />
+        <ChatMessageFooter groupedMessages={groupedMessages} />
       </Flex>
     </Flex>
   );
