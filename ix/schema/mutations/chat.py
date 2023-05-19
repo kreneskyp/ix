@@ -136,11 +136,22 @@ class AuthorizeCommandMutation(graphene.Mutation):
         responding_to = TaskLogMessage.objects.get(pk=input.message_id)
         message = TaskLogMessage.objects.create(
             task_id=responding_to.task_id,
+            parent_id=input.message_id,
             role="USER",
             content=UserFeedback(
                 type="AUTHORIZE",
                 message_id=str(input.message_id),
             ),
+        )
+
+        # TODO: here or in a chain node?
+        authorized_msg = TaskLogMessage.objects.get(pk=input.message_id)
+        [reference_field, reference_value] = list(
+            authorized_msg.content["storage"].items()
+        )[0]
+        inputs = dict(
+            user_input=f"execute {reference_field}={reference_value}",
+            **authorized_msg.content["storage"],
         )
 
         # resume task loop
@@ -149,7 +160,12 @@ class AuthorizeCommandMutation(graphene.Mutation):
         logger.info(
             f"Requesting agent loop resume task_id={message.task_id} message_id={message.pk}"
         )
-        start_agent_loop.delay(str(responding_to.task_id), message_id=str(message.id))
+        task = responding_to.task
+        start_agent_loop.delay(
+            task_id=str(responding_to.task_id),
+            chain_id=str(task.chain_id),
+            inputs=inputs,
+        )
 
         return TaskLogMessageResponse(task_log_message=message)
 

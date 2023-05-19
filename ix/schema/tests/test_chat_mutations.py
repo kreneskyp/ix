@@ -6,8 +6,8 @@ from ix.task_log.tests.fake import (
     fake_task,
     fake_user,
     fake_agent,
-    fake_command_reply,
     fake_chat,
+    fake_task_log_msg,
 )
 
 AUTHORIZE_COMMAND_MUTATION = """
@@ -87,7 +87,16 @@ class TestAuthorizeCommandMutation:
         task = fake_task()
         fake_user()
         fake_agent()
-        responding_to = fake_command_reply(task=task)
+        responding_to = fake_task_log_msg(
+            task=task,
+            agent=task.agent,
+            content={
+                "type": "ARTIFACT",
+                "artifact_type": "PLAN",
+                "artifact_id": "fake_plan_id",
+                "storage": {"plan_id": "fake_plan_id"},
+            },
+        )
 
         # Mock the Celery task function
         mock_start_agent_loop = mocker.patch(
@@ -121,7 +130,11 @@ class TestAuthorizeCommandMutation:
         }
 
         mock_start_agent_loop.delay.assert_called_once_with(
-            str(responding_to.task_id), message_id=str(task_log_message.id)
+            task_id=str(responding_to.task_id),
+            chain_id=str(task.chain.id),
+            inputs=dict(
+                plan_id="fake_plan_id", user_input="execute plan_id=fake_plan_id"
+            ),
         )
 
 
