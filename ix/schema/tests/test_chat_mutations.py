@@ -204,7 +204,7 @@ class TestChatInputMutation:
 
         assert "errors" in executed
 
-    def test_chat_input_with_lead_agent(self, chat):
+    def test_chat_input_with_lead_agent(self, mock_openai, chat):
         # Assuming the lead agent has an alias "lead"
         agent = fake_agent()
         chat["chat"].lead = agent
@@ -229,7 +229,7 @@ class TestChatInputMutation:
             == "@lead Message for lead"
         )
 
-    def test_chat_input_with_other_agent(self, chat):
+    def test_chat_input_with_other_agent(self, mock_openai, chat):
         # Assuming the other agent has an alias "other"
         agent = fake_agent()
         chat["chat"].agents.add(agent)

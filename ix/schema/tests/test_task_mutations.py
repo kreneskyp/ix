@@ -59,7 +59,8 @@ CREATE_TASK_MUTATION = """
 
 @pytest.mark.django_db
 class TestCreateTaskMutation:
-    def test_create_task_without_agent_autonomous_flag(self):
+    def test_create_task_without_agent_autonomous_flag(self, mocker, mock_openai):
+        mocker.patch("ix.schema.mutations.tasks.start_agent_loop")
         fake_user()
         fake_agent(pk=1)
         client = Client(schema)
@@ -79,7 +80,8 @@ class TestCreateTaskMutation:
         task = Task.objects.get(pk=response["data"]["createTask"]["task"]["id"])
         assert task.autonomous is False
 
-    def test_create_task_with_autonomous_flag(self):
+    def test_create_task_with_autonomous_flag(self, mocker, mock_openai):
+        mocker.patch("ix.schema.mutations.tasks.start_agent_loop")
         fake_user()
         agent = fake_agent()
         client = Client(schema)
