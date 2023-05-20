@@ -16,13 +16,11 @@ and the subchain descriptions.
 
 
 Example
-^^^^^^
+^^^^^^^
 
 .. code-block:: python
 
-    import pytest
     from ix.chains.tool_chooser import ChooseTool
-    from ix.chains.tests.mock_chain import MockChain
     from ix.chains.management.commands.create_dad_jokes_v1 import DAD_JOKESTER
     from ix.chains.management.commands.create_fake_weather_v1 import FAKE_WEATHERMAN
 
@@ -75,37 +73,37 @@ Class Attributes
 - `output_key`: String key for the output list
 
 
-Creating a MapSubchain from config
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Creating a MapSubchain
+^^^^^^^^^^^^^^^^^^^^^^
 
 This class method loads a MapSubchain instance from a configuration dictionary.
 
 .. code-block:: python
 
-    import pytest
     from ix.chains.routing import MapSubchain
-    from ix.chains.tests.mock_chain import MockChain
+    from ix.chains.tests.mock_chain import MOCK_CHAIN_CONFIG
 
     EXAMPLE_CONFIG = {
-        'chains': [
-            {
-                'class_path': 'ix.chains.tests.mock_chain.MockChain',
-                'config': {},
-                'description': 'mock chain for testing',
-                'name': 'mock_chain'
-            }
-         ],
         'input_variables': ['input1'],
-        'map_input': '$.nested.input1',
+        'map_input': 'input1',
         'map_input_to': 'mock_chain_input',
         'output_key': 'output1'
     }
 
-    map_subchain = MapSubchain.from_config(EXAMPLE_CONFIG, mock_callback_manager)
-    assert isinstance(map_subchain, MapSubchain)
+    # create nodes
+    node = ChainNode.objects.create(**EXAMPLE_CONFIG)
+    node.add_child(**MOCK_CHAIN_CONFIG)
+
+    # load chain
+    chain = node.load_chain(mock_callback_manager)
+
+    # run chain
+    inputs = {"input1": ["test1", "test2", "test3"]}
+    output = chain.run(**inputs)
+    assert output == ["test1", "test2", "test3"]
 
 Selecting input with `map_input`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The `map_input` attribute uses a jsonpath expression to extract
 the required data from the input. This can either refer to a
@@ -136,31 +134,3 @@ set `map_input` to `$.nested.input1`.
 
 
 You can also use the NodeChain to create an instance of MapSubchain:
-
-Creating a MapSubchain with NodeChain
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Creating a MapSubchain with NodeChain will save the MapSubchain to the database. It can then be loaded
-and run later.
-
-.. code-block:: python
-    from ix.chains.tests.mock_chain import MOCK_CHAIN_CONFIG
-
-    EXAMPLE_CONFIG = {
-        'input_variables': ['input1'],
-        'map_input': '$.nested.input1',
-        'map_input_to': 'mock_chain_input',
-        'output_key': 'output1'
-    }
-
-    # create nodes
-    node = ChainNode.objects.create(**EXAMPLE_CONFIG)
-    node.add_child(**MOCK_CHAIN_CONFIG)
-
-    # load chain
-    chain = node.load_chain(mock_callback_manager)
-
-    # run chain
-    inputs = {"input1": ["test1", "test2", "test3"]}
-    output = chain.run(**inputs)
-    assert output == ["test1", "test2", "test3"]

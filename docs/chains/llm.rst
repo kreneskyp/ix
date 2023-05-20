@@ -28,16 +28,19 @@ Example Messages:
 
     FORMAT = "{command: output}"
     PROMPT_MESSAGES = [
+        # system message with partial variables
         {
             "role": "system",
             "template": "Hello.  I respond with this {format}"
             "partial_variables": {"format": FORMAT},
         },
+        # user message with input variables
         {
             "role": "user",
             "template": "{user_input}",
             "input_variables": ["user_input"],
         },
+        # assistant message with no variables
         {
             "role": "assistant",
             "template": "This is my response",
@@ -93,6 +96,33 @@ Example JSON Config
             "ix.commands.execute",
         ],
     }
+
+
+Example
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    LLM_TOOL_CHAIN_CONFIG = {
+        "class_path": "ix.chains.tool_chain.LLMToolChain",
+        "config": {
+            "llm": {
+                "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            },
+            # prompt that uses tools. Tools will be added automatically
+            # by LLMToolChain at rendering time.
+            "messages": [
+                {"role": "system", "template": "describe the {tools}"}
+            ]
+        },
+    }
+
+    root = ChainNode.objects.create(**LLM_TOOL_CHAIN_CONFIG)
+    chain = Chain.objects.create(
+        name="Example LLMToolChain",
+        description="Chain used to demonstrate LLMToolChain",
+        root=root,
+    )
 
 
 
