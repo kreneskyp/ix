@@ -29,9 +29,12 @@ knowledge, casting a shadow of intrigue over the galaxy.
 
 ## About
 <div>
-iX is a platform to run semi-autonomous GPT-4 agents, providing a scalable and responsive solution for delegating tasks.
-Agents can be spawned as individual processes to research and complete tasks through a web based interface while the 
-backend architecture efficiently manages message queues and inter-agent communication between a fleet of workers.
+Ix is an experimental platform for designing and deploying semi-autonomous LLM agents. It provides a scalable and
+responsive solution for delegating tasks to AI powered agents. The platform is designed to be extensible, allowing
+developers to create custom agents and chains to perform a wide variety of tasks.
+
+The backend is designed to support multiple agents running in parallel and communicating with each other. Each agent
+may be customized and may utilize parallel processes to complete tasks.
 <br>
 <br>
 The platform supports deployment using Docker containers, ensuring a consistent environment and enabling easy scaling 
@@ -40,44 +43,41 @@ to multiple worker containers.
 
 ## How does it work
 
-You provide a task and goals and an agent uses that direction to investigate, plan, and complete tasks. The agents are
+### Basic Usage
+You chat with an agent that uses that direction to investigate, plan, and complete tasks. The agents are
 capable of searching the web, writing code, creating images, interacting with other APIs and services. If it can be 
-coded, it's within the realm of possibility for an agent to assist.
+coded, it's within the realm of possibility that an agent can be built to assist you.
 
-1. Start by create a task and goals for the agent to work towards.
-    ![Dialog for entering task name and goals](docs/create_task.png)
+1. Setup the server and visit `http://localhost:8000`, a new chat will be created automatically
 
-2. The agent will begin researching and planning to complete the task.
-    ![chat interface displaying log](docs/chat.png)
+2. Enter a request and the Ix moderator will delegate the task to the agent best suited for the response. Or @mention
+an agent to request a specific agent to complete the task.
 
-3. The chat system provides an interaction model for the agent and user to communicate. The agent will respond to
-    user input and provide updates on its progress. The Agent will request additional information and authorization
-    from the user as needed.
+3. Customized agents may be added or removed from the chat as needed to process your tasks
 
-    ![chat interface displaying log](docs/chat_interactions.png)
 
-4. Agents are customizable and can be extended to support new functionality. The platform provides a plugin architecture
-    for adding new agents and customizing existing agents.
-    ![chat interface displaying log](docs/model_options.png)
+### Creating Custom Agents and Chains
 
+View the [documentation](docs/chains/chains.rst) to create custom agents and chains.
 
 
 ## Key Features
 
 - Scalable model for running a fleet of GPT agents.
-- Responsive user interface. for interacting with agents.
+- Responsive user interface for interacting with agents.
 - Persistent storage of interactions, processes, and metrics.
 - Message queue for agent jobs and inter-agent communication.
 - Extensible model for customizing agents.
 - Deployment using Docker.
 
 
-## Technologies:
+## Stack:
 - Python 3.11
 - Django 4.2
 - PostgreSQL 14.4
-- Graphql
+- Graphql / Graphene / Relay
 - React 18
+- Langchain
 - Integrated with OpenAI GPT models
 - Plugin architecture to support extending agent functionality (e.g. web browsing, writing code, etc)
 - Generic framework for vector database based agent memory
@@ -131,7 +131,7 @@ make dev_setup
 Run the dev server
 
 ```bash
-make runserver
+make server
 ```
 
 Start a worker
@@ -155,7 +155,7 @@ Run as many worker processes as you want with `make worker`.
 Here are some helpful commands for developers to set up and manage the development environment:
 
 ### Running:
-- `make runserver`: Start the application in development mode on `0.0.0.0:8000`.
+- `make server`: Start the application in development mode on `0.0.0.0:8000`.
 - `make worker`: Start an Agent worker.
 
 ### Building:
