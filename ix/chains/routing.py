@@ -69,7 +69,6 @@ class MapSubchain(Chain):
         pass
 
     def _call(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
-        logger.error(f"=======================MAP SUBCHAIN =======================")
         map_input = self.map_input
         map_input_to = self.map_input_to
 
