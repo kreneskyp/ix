@@ -62,9 +62,8 @@ const AddAgentModal = ({
         <ModalBody>
           <VStack maxH="md" overflowY="auto" spacing={5}>
             {agents?.map((agent) => (
-              <AgentToggleButton chat={chat} agent={agent}>
+              <AgentToggleButton chat={chat} agent={agent} key={agent.id}>
                 <AddAgentCard
-                  key={agent.id}
                   agent={agent}
                   inChat={agentSet.has(agent.id)}
                   isLead={agent.id === chat.lead.id}
