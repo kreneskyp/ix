@@ -24,19 +24,17 @@ Ix uses a custom loading mechanism and provides custom chain types for flow cont
 for use by default:
 
 LLM Chains:
-
-
-- `LLMToolChain <./llm.rst>`_.: chain that has `tools` available in the prompt.
-- `LLMChain <./llm.rst>`_.: wrapper around `langchain.LLMChain` to add config loader.
-- `LLMReply <./llm.rst#LLMReply>`_.: chain that replies to a message with LLM prompt.
+- `LLMChain <./llm.rst#LLMChain>`_: wrapper around `langchain.LLMChain` to add config loader.
+- `LLMToolChain <./llm.rst#LLMToolChain>`_: chain that has `tools` available in the prompt.
+- `LLMReply <./llm.rst#LLMReply>`_: chain that replies to a message with LLM prompt.
 
 Data handling:
-- [`ParseJSON`](../chains/data.rst#parsejson): chain that parses a JSON string into a python object.
+- `ParseJSON <./data.rst#ParseJSON>`_: chain that parses a JSON string into a python object.
 
 Routing / flow control:
-- [`IxSequence`](../routing.rst#ixsequence): wrapper for Sequence that provides config loader
-- [`MapSubchain`](../routing.rst#mapsubchain): chain that runs a subchain for each value in a list
-- [`ChooseTool`](../routing.rst#toolchooser): chain that chooses a tool with a subchain
+- `IxSequence <./routing.rst#IxSequence>`_: wrapper for Sequence that provides config loader
+- `MapSubchain <./routing.rst#MapSubchain>`_: chain that runs a subchain for each value in a list
+- `ChooseTool <./routing.rst#ChooseTool>`_: chain that chooses a tool with a subchain
 
 Chain Models
 ------------
