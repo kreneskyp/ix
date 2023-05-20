@@ -87,15 +87,13 @@ containing functions decorated by `ix.commands.command`.
 Example JSON Config
 ^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: json
+.. code-block:: python
 
-    {
-        "tools": [
-            "ix.commands.google",
-            "ix.commands.filesystem",
-            "ix.commands.execute",
-        ],
-    }
+    TOOLS = [
+        "ix.commands.google",
+        "ix.commands.filesystem",
+        "ix.commands.execute",
+    ],
 
 
 Example
@@ -109,8 +107,13 @@ Example
             "llm": {
                 "class_path": "langchain.chat_models.openai.ChatOpenAI",
             },
-            # prompt that uses tools. Tools will be added automatically
-            # by LLMToolChain at rendering time.
+            # tools will be loaded into partial variable `tools` at runtime.
+            "tools": [
+                "ix.commands.google",
+                "ix.commands.filesystem",
+                "ix.commands.execute",
+            ],
+            # prompt that uses tools.
             "messages": [
                 {"role": "system", "template": "describe the {tools}"}
             ]

@@ -16,6 +16,7 @@ Example
 ^^^^^^^
 
 .. code-block:: python
+
     PARSE_JSON_CONFIG = {
         "class_path": "ix.chains.json.ParseJSON",
         "config" : {
