@@ -25,6 +25,7 @@ Each message is a dictionary with the following fields:
 All variables in the template must be filled by either `input_variables` or `partial_variables`.
 
 Example Messages:
+
 .. code-block:: python
 
     FORMAT = "{command: output}"
@@ -49,6 +50,7 @@ Example
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
+
     LLMCHAIN_CONFIG = {
         "class_path": "ix.chains.llm_chain.LLMChain",
         "config": {
@@ -85,6 +87,7 @@ Example JSON Config
 ^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: json
+
     {
         "tools": [
             "ix.commands.google",
@@ -104,6 +107,7 @@ a prompt. Any output from the prompt is sent as a chat message.
 Example:
 
 .. code-block:: python
+
     DAD_JOKES = {
         "class_path": "ix.chains.llm_chain.LLMReply",
         "config": {
