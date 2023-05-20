@@ -66,7 +66,7 @@ MapSubchain is a subclass of Chain that runs a subchain for each element in a li
 .. note:: The input list is read from inputs using jsonpath set as `map_input` and mapped as input_variable `map_input_to`. `map_input_to` is automatically added to input_variables if not already present. Each iteration will receive the outputs of the previous iteration under the key `outputs`. Results are output as a list under `output_key`.
 
 Class Attributes
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 - `chain`: Instance of Chain
 - `input_variables`: List of input variable names as strings
@@ -76,7 +76,7 @@ Class Attributes
 
 
 Creating a MapSubchain from config
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This class method loads a MapSubchain instance from a configuration dictionary.
 
@@ -105,7 +105,7 @@ This class method loads a MapSubchain instance from a configuration dictionary.
     assert isinstance(map_subchain, MapSubchain)
 
 Selecting input with `map_input`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The `map_input` attribute uses a jsonpath expression to extract
 the required data from the input. This can either refer to a
@@ -138,7 +138,7 @@ set `map_input` to `$.nested.input1`.
 You can also use the NodeChain to create an instance of MapSubchain:
 
 Creating a MapSubchain with NodeChain
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Creating a MapSubchain with NodeChain will save the MapSubchain to the database. It can then be loaded
 and run later.
