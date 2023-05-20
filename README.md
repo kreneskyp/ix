@@ -43,6 +43,8 @@ to multiple worker containers.
 
 ## How does it work
 
+<video src='/docs/MultiAgentChat.mp4' />
+
 ### Basic Usage
 You chat with an agent that uses that direction to investigate, plan, and complete tasks. The agents are
 capable of searching the web, writing code, creating images, interacting with other APIs and services. If it can be 
