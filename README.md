@@ -43,9 +43,6 @@ to multiple worker containers.
 
 ## How does it work
 
-
-![Multi Agent Chat example](./docs/MultiAgentChat.mp4)
-
 ### Basic Usage
 You chat with an agent that uses that direction to investigate, plan, and complete tasks. The agents are
 capable of searching the web, writing code, creating images, interacting with other APIs and services. If it can be 
@@ -55,7 +52,6 @@ coded, it's within the realm of possibility that an agent can be built to assist
 
 2. Enter a request and the Ix moderator will delegate the task to the agent best suited for the response. Or @mention
 an agent to request a specific agent to complete the task.
-
 
 3. Customized agents may be added or removed from the chat as needed to process your tasks
 
