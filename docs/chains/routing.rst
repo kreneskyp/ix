@@ -10,9 +10,6 @@ encapsulated in a different chain subclass.
 ChooseTool
 -----------
 
-.. automodule:: ix.chains.tool_chooser.ChooseTool
-   :members:
-
 ChooseTool is a subclass of Chain that selects a subchain that can best respond to `user_input`. Each subchain
 requires a name and description. ChooseTool prompts the LLM to decide based on a comparison of `user_input`
 and the subchain descriptions.
@@ -63,8 +60,6 @@ Example
 MapSubchain
 -----------
 
-.. automodule:: ix.chains.routing.MapSubchain
-   :members:
 
 MapSubchain is a subclass of Chain that runs a subchain for each element in a list input.
 
@@ -82,8 +77,6 @@ Class Attributes
 
 Creating a MapSubchain from config
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-``from_config(cls, config: Dict[str, Any], callback_manager: "IxCallbackManager") -> "MapSubchain"``
 
 This class method loads a MapSubchain instance from a configuration dictionary.
 
