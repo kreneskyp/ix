@@ -106,11 +106,13 @@ class ChainNode(models.Model):
                 child_chains.append(child.load_config())
             config["chains"] = child_chains
         elif self.node_type == "map":
-            # The chain class expects a list and will build its own map
-            config["tools"] = [
-                edge.target.load_config()
-                for edge in self.outgoing_edges.select_related("target")
-            ]
+            for edge in self.outgoing_edges.select_related("target"):
+                try:
+                    target = config[edge.key]
+                except KeyError:
+                    target = []
+                    config[edge.key] = target
+                target.append(edge.target.load_config())
 
         return {
             "name": self.name,
