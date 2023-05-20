@@ -20,20 +20,23 @@ calling other chains and agents.
 
 Chain References
 ------------
-Ix uses a custom loading mechanism and provides custom chain types for flow control.
+Ix uses a custom loading mechanism and provides custom chain types for flow control. These chains are available
+for use by default:
 
 LLM Chains:
-- [`LLMToolChain`](../chains/llm.rst#llmtoolchain): chain that has `tools` available in the prompt.
-- [`LLMChain`](../chains/llm.rst#llmchain): wrapper around `langchain.LLMChain` to add config loader.
-- [`LLMReply`](../chains/llm.rst#llmreply): chain that replies to a message with LLM prompt.
+
+
+- :doc:`LLMToolChain <../llm.rst>`: chain that has `tools` available in the prompt.
+- [`LLMChain`](../llm.rst#llmchain): wrapper around `langchain.LLMChain` to add config loader.
+- [`LLMReply`](../llm.rst#llmreply): chain that replies to a message with LLM prompt.
 
 Data handling:
 - [`ParseJSON`](../chains/data.rst#parsejson): chain that parses a JSON string into a python object.
 
 Routing / flow control:
-- [`IxSequence`](../chains/routing.rst#ixsequence): wrapper for Sequence that provides config loader
-- [`MapSubchain`](../chains/routing.rst#mapsubchain): chain that runs a subchain for each value in a list
-- [`ChooseTool`](../chains/routing.rst#toolchooser): chain that chooses a tool with a subchain
+- [`IxSequence`](../routing.rst#ixsequence): wrapper for Sequence that provides config loader
+- [`MapSubchain`](../routing.rst#mapsubchain): chain that runs a subchain for each value in a list
+- [`ChooseTool`](../routing.rst#toolchooser): chain that chooses a tool with a subchain
 
 Chain Models
 ------------
@@ -48,8 +51,7 @@ description.
 A ``ChainNode`` also maintains references to its parent and root nodes in the chain, allowing the chain to be traversed
 and manipulated easily.
 
-A node can have three types: "node", "list", or "map". Each type defines the way the node interacts with its children
-in the chain:
+A node has a type that defines the way the node interacts with its children in the chain:
 
 - ``node``: A basic node with no specific interaction with its children.
 - ``list``: An ordered sequence of children nodes. The order of processing is defined by the order of the children.
