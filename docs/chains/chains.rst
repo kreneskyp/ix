@@ -26,7 +26,7 @@ for use by default:
 LLM Chains:
 
 
-- :doc:`LLMToolChain <../llm.rst>`: chain that has `tools` available in the prompt.
+- `LLMToolChain <../llm.rst>`_. chain that has `tools` available in the prompt.
 - [`LLMChain`](../llm.rst#llmchain): wrapper around `langchain.LLMChain` to add config loader.
 - [`LLMReply`](../llm.rst#llmreply): chain that replies to a message with LLM prompt.
 
