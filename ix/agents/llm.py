@@ -21,9 +21,12 @@ def load_llm(
     if isinstance(config_or_llm, BaseLanguageModel):
         return config_or_llm
 
-    llm_class = import_llm_class(config_or_llm["class_path"])
-    logger.debug(f"loading llm config={config_or_llm}")
-    llm = llm_class(**config_or_llm.get("config", {}))
+    config = config_or_llm
+    llm_class = import_llm_class(config["class_path"])
+    logger.debug(f"loading llm config={config}")
+
+    llm_config = config.get("config", {})
+    llm = llm_class(**llm_config)
     llm.callback_manager = callback_manager
     return llm
 
