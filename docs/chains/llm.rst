@@ -14,12 +14,13 @@ The config supports chat messages composed of multiple messages. Messages are co
 message templates and then compiled into a final `ChatPromptTemplate` for the chain.
 
 Each message is a dictionary with the following fields:
-- `role`: The role of the message. [system, user, assistant]
-- `template`: The template for the message. The template can contain variables that are replaced with
+
+* `role`: The role of the message. [system, user, assistant]
+* `template`: The template for the message. The template can contain variables that are replaced with
 values from the input variables or partial variables.
-- `input_variables`: The list of input variables to use for the template. The input variables are
+* `input_variables`: The list of input variables to use for the template. The input variables are
 extracted from the input and passed to the template.
-- `partial_variables`: The list of partial variables to use for the template. The partial variables
+* `partial_variables`: The list of partial variables to use for the template. The partial variables
 are extracted from the partial variables and passed to the template.
 
 All variables in the template must be filled by either `input_variables` or `partial_variables`.
