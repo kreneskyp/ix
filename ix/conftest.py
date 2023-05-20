@@ -44,6 +44,20 @@ def mock_openai(mocker, mock_openai_key):
 
 
 @pytest.fixture
+def mock_callback_manager(mocker):
+    return mocker.MagicMock(spec=IxCallbackManager)
+
+
+@pytest.fixture
+def mock_chain(mocker):
+    """
+    Mocks the function that MockChain calls. Used to hook into
+    the chain and test the output.
+    """
+    yield mocker.patch("ix.chains.tests.mock_chain.mock_chain_func")
+
+
+@pytest.fixture
 def task():
     return fake_task()
 
