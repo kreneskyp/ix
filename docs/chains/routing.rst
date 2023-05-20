@@ -71,7 +71,7 @@ MapSubchain is a subclass of Chain that runs a subchain for each element in a li
 .. note:: The input list is read from inputs using jsonpath set as `map_input` and mapped as input_variable `map_input_to`. `map_input_to` is automatically added to input_variables if not already present. Each iteration will receive the outputs of the previous iteration under the key `outputs`. Results are output as a list under `output_key`.
 
 Class Attributes
-----------------
+~~~~~~~~~~~~~~~~
 
 - `chain`: Instance of Chain
 - `input_variables`: List of input variable names as strings
@@ -79,8 +79,6 @@ Class Attributes
 - `map_input_to`: String name of the variable to map input to
 - `output_key`: String key for the output list
 
-Usage
------
 
 Creating a MapSubchain from config
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
