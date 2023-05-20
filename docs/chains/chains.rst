@@ -26,9 +26,9 @@ for use by default:
 LLM Chains:
 
 
-- `LLMToolChain <../llm.rst>`_. chain that has `tools` available in the prompt.
-- [`LLMChain`](../llm.rst#llmchain): wrapper around `langchain.LLMChain` to add config loader.
-- [`LLMReply`](../llm.rst#llmreply): chain that replies to a message with LLM prompt.
+- `LLMToolChain <./llm.rst>`_.: chain that has `tools` available in the prompt.
+- `LLMChain <./llm.rst>`_.: wrapper around `langchain.LLMChain` to add config loader.
+- `LLMReply <./llm.rst#LLMReply>`_.: chain that replies to a message with LLM prompt.
 
 Data handling:
 - [`ParseJSON`](../chains/data.rst#parsejson): chain that parses a JSON string into a python object.
