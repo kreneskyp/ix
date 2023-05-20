@@ -18,10 +18,10 @@ The graph model supports both defining arbitrary processing chains to run them, 
 (eventually) editing them visually in the user interface. The model will be extended to support asynchronously
 calling other chains and agents.
 
-Chain References
+Chain API Reference
 ------------
-Ix uses a custom loading mechanism and provides custom chain types for flow control. These chains are available
-for use by default:
+Ix uses a custom loading mechanism and provides custom chain types for flow control. These Chain classes
+are available by default:
 
 LLM Chains:
 
