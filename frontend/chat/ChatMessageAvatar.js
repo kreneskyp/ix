@@ -1,14 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Box, Tooltip, useColorModeValue } from "@chakra-ui/react";
+import { Box, useColorModeValue } from "@chakra-ui/react";
+import { Global } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faRobot, faCog } from "@fortawesome/free-solid-svg-icons";
-import AssistantAvatar from "chat/AssistantAvatar";
-import { useColorMode } from "@chakra-ui/color-mode";
+import { spin } from "site/key_frames";
 
-const ChatMessageAvatar = ({ message }) => {
-  const { colorMode } = useColorMode();
-
+const ChatMessageAvatar = ({ message, isThinking }) => {
   if (!message) {
     return null;
   }
@@ -17,6 +15,8 @@ const ChatMessageAvatar = ({ message }) => {
   const iconSize = "lg";
   const bgColor = useColorModeValue("gray.200", "gray.700");
   const color = useColorModeValue("black", "gray.500");
+  const border = useColorModeValue("gray.300", "transparent");
+
   const getAvatarByRole = (role) => {
     switch (role) {
       case "USER":
@@ -29,24 +29,52 @@ const ChatMessageAvatar = ({ message }) => {
         return null;
     }
   };
-
   return (
-    <Tooltip label={message.timestamp} aria-label="Timestamp">
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        border="1px solid"
-        borderRadius="full"
-        borderColor={colorMode === "light" ? "gray.300" : "transparent"}
-        bg={bgColor}
-        color={color}
-        width={avatarSize}
-        height={avatarSize}
-      >
-        {getAvatarByRole(message.content.agent ? "ASSISTANT" : message.role)}
-      </Box>
-    </Tooltip>
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      border="2px solid"
+      borderRadius="full"
+      borderColor={border}
+      bg={bgColor}
+      color={color}
+      width={avatarSize}
+      height={avatarSize}
+      position="relative"
+      _before={{
+        content: '""',
+        position: "absolute",
+        width: "calc(100% + 4px)",
+        height: "calc(100% + 4px)",
+        border: "2px solid",
+        borderRadius: "50%",
+        boxSizing: "border-box",
+        borderColor: isThinking
+          ? "#63B3ED transparent #63B3ED transparent"
+          : border,
+        animation: isThinking ? "spin 1.2s linear infinite" : "none",
+        zIndex: "1",
+      }}
+      _after={{
+        content: '""',
+        position: "absolute",
+        width: "calc(100% + 8px)",
+        height: "calc(100% + 8px)",
+        border: "2px solid",
+        borderRadius: "50%",
+        boxSizing: "border-box",
+        borderColor: isThinking
+          ? "#63B3ED transparent #63B3ED transparent"
+          : border,
+        animation: isThinking ? "spin 1.2s linear infinite" : "none",
+        zIndex: "1",
+        filter: isThinking ? "blur(4px)" : "none",
+      }}
+    >
+      <Global styles={spin} />
+      {getAvatarByRole(message.content.agent ? "ASSISTANT" : message.role)}
+    </Box>
   );
 };
 
@@ -55,6 +83,10 @@ ChatMessageAvatar.propTypes = {
     role: PropTypes.oneOf(["USER", "ASSISTANT", "SYSTEM"]).isRequired,
     createdAt: PropTypes.string.isRequired,
   }).isRequired,
+};
+
+ChatMessageAvatar.defaultProps = {
+  isThinking: false,
 };
 
 export default ChatMessageAvatar;

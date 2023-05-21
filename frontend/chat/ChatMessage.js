@@ -26,6 +26,7 @@ const useMessageGroup = (messageGroup) => {
     let think = null;
     let thought = null;
     let authorizations = [];
+    let errors = [];
     const messages = [];
 
     messageGroup.messages.forEach((message) => {
@@ -35,12 +36,15 @@ const useMessageGroup = (messageGroup) => {
         thought = message;
       } else if (message.content.type === "AUTHORIZE") {
         authorizations.push(message);
+      } else if (message.content.type === "EXECUTE_ERROR") {
+        errors.push(message);
+        messages.push(message);
       } else {
         messages.push(message);
       }
     });
 
-    return { think, thought, messages, authorizations };
+    return { think, thought, messages, authorizations, errors };
   }, [messageGroup]);
 };
 
@@ -136,7 +140,7 @@ const ChatMessageFooter = ({ groupedMessages }) => {
 const ChatMessage = ({ messageGroup }) => {
   const { colorMode } = useColorMode();
   const groupedMessages = useMessageGroup(messageGroup);
-  const { think, thought, messages } = groupedMessages;
+  const { think, thought, messages, errors } = groupedMessages;
 
   // Main message is either a THINK or a plain message that doesn't have a parent.
   // Most messages should have parent THINK but this provides a fallback so all
@@ -148,10 +152,12 @@ const ChatMessage = ({ messageGroup }) => {
     message = messages[0];
   }
 
+  const isThinking = think !== null && thought === null && !errors.length;
+
   // Message content or spinner if still thinking
   let content = null;
   if (messages.length === 0 && thought === null) {
-    content = <Spinner />;
+    content = null;
   } else {
     content = messages.map((message) => (
       <ChatMessageContent key={message.id} message={message} />
@@ -164,7 +170,7 @@ const ChatMessage = ({ messageGroup }) => {
   return (
     <Flex alignItems="flex-start" mb={6} align="center">
       <VStack mt={3} mr={3} width={100}>
-        <ChatMessageAvatar message={message} />
+        <ChatMessageAvatar message={message} isThinking={isThinking} />
         <Text
           color={colorMode === "light" ? "blackAlpha.800" : "whiteAlpha.400"}
           fontSize="xs"
