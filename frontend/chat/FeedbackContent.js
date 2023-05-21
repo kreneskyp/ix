@@ -1,10 +1,11 @@
 import React from "react";
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
+import HighlightText from "components/HighlightText";
 
 const FeedbackContent = ({ content }) => {
   return (
     <Flex direction="column" mt="4">
-      <Text mb="2">{content.feedback}</Text>
+      <HighlightText content={content.feedback} />
     </Flex>
   );
 };

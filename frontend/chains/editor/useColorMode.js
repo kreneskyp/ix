@@ -33,3 +33,14 @@ export const useSideBarColorMode = () => {
     border: isLight ? "gray.600" : "black",
   };
 };
+
+export const useChatColorMode = () => {
+  const { colorMode } = useColorMode();
+  const isLight = colorMode === "light";
+
+  return {
+    isLight,
+    mention: isLight ? "blue.300" : "blue.400",
+    artifact: isLight ? "yellow.300" : "yellow.300",
+  };
+};

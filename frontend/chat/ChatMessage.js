@@ -1,12 +1,6 @@
 import React from "react";
-import {
-  Box,
-  Flex,
-  VStack,
-  Text,
-  Spinner,
-  HStack,
-} from "@chakra-ui/react";
+import { Box, Flex, VStack, Text, HStack } from "@chakra-ui/react";
+
 import AssistantContent from "chat/AssistantContent";
 import FeedbackContent from "chat/FeedbackContent";
 import FeedbackRequestContent from "chat/FeedbackRequestContent";
@@ -24,6 +18,7 @@ import CommandContent from "chat/CommandContent";
 import { useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import HighlightText from "components/HighlightText";
 
 const useMessageGroup = (messageGroup) => {
   // build message structure out of a group of messages
@@ -54,7 +49,7 @@ const ChatMessageContent = ({ message }) => {
   const content = message.content;
   switch (content.type) {
     case "ASSISTANT":
-      contentComponent = <AssistantContent content={content} />;
+      contentComponent = <AssistantContent message={message} />;
       break;
     case "AUTONOMOUS":
       contentComponent = <AutonomousModeContent content={content} />;
@@ -84,10 +79,10 @@ const ChatMessageContent = ({ message }) => {
       contentComponent = <SystemContent content={content} />;
       break;
     case "ARTIFACT":
-      contentComponent = <PlanContent message={message} />;
+      contentComponent = <ArtifactContent message={message} />;
       break;
     default:
-      contentComponent = <div>{content.message}</div>;
+      contentComponent = <HighlightText content={content.message} />;
       break;
   }
   return contentComponent;
@@ -96,7 +91,7 @@ const ChatMessageContent = ({ message }) => {
 const ChatMessageAuthorizations = ({ authorizations }) => {
   const { colorMode } = useColorMode();
   if (authorizations.length === 0) {
-    return null;
+    return <Text></Text>;
   }
 
   // for now just show that it was authorized
