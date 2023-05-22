@@ -1,5 +1,12 @@
 import React from "react";
-import { Box, Card, CardBody, Heading, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  CardBody,
+  Heading,
+  useColorModeValue,
+  VStack,
+} from "@chakra-ui/react";
 import { useChain } from "chains/graphql/ChainProvider";
 
 const ChainCard = () => {
@@ -9,8 +16,19 @@ const ChainCard = () => {
     return null;
   }
 
+  const borderColor = useColorModeValue("gray.400", "whiteAlpha.50");
+  const bg = useColorModeValue("gray.100", "gray.700");
+
   return (
-    <Card overflow="hidden" boxShadow="sm" width="100%" cursor="pointer">
+    <Card
+      overflow="hidden"
+      boxShadow="sm"
+      width="100%"
+      cursor="pointer"
+      border="1px solid"
+      borderColor={borderColor}
+      bg={bg}
+    >
       <CardBody>
         <VStack alignItems="start" spacing={2}>
           <Heading as="h5" size="xs">
