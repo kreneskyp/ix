@@ -37,11 +37,13 @@ The backend is designed to support multiple agents running in parallel and commu
 may be customized and may utilize parallel processes to complete tasks.
 <br>
 <br>
-The platform supports deployment using Docker containers, ensuring a consistent environment and enabling easy scaling 
-to multiple worker containers.
+
+Ix uses GPT-4 by default, but agents may be configured to use any model supported by langchain.
 </div>
 
 ## How does it work
+
+![FizzBuzzExample.gif](docs/FizzBuzzExample.gif)
 
 ### Basic Usage
 You chat with an agent that uses that direction to investigate, plan, and complete tasks. The agents are
@@ -55,8 +57,10 @@ an agent to request a specific agent to complete the task.
 
 3. Customized agents may be added or removed from the chat as needed to process your tasks
 
-
 ### Creating Custom Agents and Chains
+
+Ix provides the moderator agent Ix, a coder agent, a planning agent, and a few example agents. Additional agents 
+may be built using the chain framework.
 
 View the [documentation](docs/chains/chains.rst) to create custom agents and chains.
 
@@ -71,7 +75,7 @@ View the [documentation](docs/chains/chains.rst) to create custom agents and cha
 - Deployment using Docker.
 
 
-## Stack:
+### Stack:
 - Python 3.11
 - Django 4.2
 - PostgreSQL 14.4
@@ -86,14 +90,16 @@ View the [documentation](docs/chains/chains.rst) to create custom agents and cha
     - Milvus (soon)
     - FAISS (soon)
 
-## Prerequisites
+
+## Setup
+
+### Prerequisites
 
 Before getting started, ensure you have the following software installed on your system:
 
 - Docker
 - Docker Compose
 
-## Setup
 
 Clone the repository:
 
