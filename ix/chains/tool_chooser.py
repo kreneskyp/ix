@@ -3,13 +3,13 @@ import logging
 from typing import Dict, Any, List
 
 from langchain import LLMChain
+from langchain.base_language import BaseLanguageModel
 from langchain.chains.base import Chain
 from langchain.prompts import (
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
 )
-from langchain.schema import BaseLanguageModel
 
 from ix.agents.callback_manager import IxCallbackManager
 from ix.agents.exceptions import MissingCommandMarkers

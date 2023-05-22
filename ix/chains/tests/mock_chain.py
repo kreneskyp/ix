@@ -53,5 +53,5 @@ class MockChain(Chain):
         cls, config: Dict[str, Any], callback_manager: IxCallbackManager
     ) -> "MockChain":
         chain = MockChain(**config)
-        chain.callback_manager = callback_manager
+        chain.callbacks = callback_manager
         return chain

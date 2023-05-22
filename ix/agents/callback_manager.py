@@ -1,6 +1,6 @@
 import logging
 
-from langchain.callbacks import CallbackManager
+from langchain.callbacks.manager import CallbackManager
 
 from ix.commands import CommandRegistry
 from ix.task_log.models import Task

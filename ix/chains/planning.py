@@ -41,14 +41,14 @@ class SavePlan(Chain):
         plan = Plan.objects.create(
             name=response["name"],
             description=response["description"],
-            creator=self.callback_manager.task,
+            creator=self.callbacks.task,
         )
 
         for command in response["commands"]:
             PlanSteps.objects.create(plan=plan, details=command)
 
         artifact = Artifact.objects.create(
-            task=self.callback_manager.task,
+            task=self.callbacks.task,
             key="plan",
             name=response["name"],
             description=response["description"],
@@ -58,9 +58,9 @@ class SavePlan(Chain):
 
         TaskLogMessage.objects.create(
             role="assistant",
-            task=self.callback_manager.task,
-            agent=self.callback_manager.task.agent,
-            parent=self.callback_manager.think_msg,
+            task=self.callbacks.task,
+            agent=self.callbacks.task.agent,
+            parent=self.callbacks.think_msg,
             content={
                 "type": "ARTIFACT",
                 "artifact_type": "PLAN",
@@ -121,7 +121,7 @@ class RunPlan(Chain):
             tool_name = tool_config["command"]["name"]
             tool_kwargs = tool_config["command"]["args"]
             logger.info(
-                f"executing task_id={self.callback_manager.task.id} tool={tool_name} kwargs={tool_kwargs}"
+                f"executing task_id={self.callbacks.task.id} tool={tool_name} kwargs={tool_kwargs}"
             )
             result = self.tool_registry.call(command_name=tool_name, **tool_kwargs)
             results[tool_name] = result
@@ -130,7 +130,7 @@ class RunPlan(Chain):
             artifacts = []
             for artifact_definition in tool_config.get("produces_artifacts", []):
                 artifact = Artifact.objects.create(
-                    task=self.callback_manager.task,
+                    task=self.callbacks.task,
                     key=artifact_definition["key"],
                     name=artifact_definition["name"],
                     description=artifact_definition["description"],
@@ -143,8 +143,8 @@ class RunPlan(Chain):
                 artifacts.append(artifact)
 
             TaskLogMessage.objects.create(
-                task_id=self.callback_manager.task.id,
-                parent=self.callback_manager.think_msg,
+                task_id=self.callbacks.task.id,
+                parent=self.callbacks.think_msg,
                 role="assistant",
                 content={
                     "type": "EXECUTED",

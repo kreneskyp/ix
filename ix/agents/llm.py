@@ -1,6 +1,7 @@
 import logging
 from typing import Dict, Any, Union
-from langchain.schema import BaseLanguageModel
+
+from langchain.base_language import BaseLanguageModel
 
 from ix.agents.callback_manager import IxCallbackManager
 from ix.utils.importlib import import_class

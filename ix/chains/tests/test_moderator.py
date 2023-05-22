@@ -43,4 +43,4 @@ class TestChatModerator:
         chat_moderator = ChatModerator.from_config(config, callback_manager)
 
         assert isinstance(chat_moderator.selection_chain, LLMChain)
-        assert chat_moderator.callback_manager == callback_manager
+        assert chat_moderator.callbacks == callback_manager
