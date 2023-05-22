@@ -22,7 +22,8 @@ langchain==0.0.149
 openai==0.27.2
 pinecone-client==2.2.1
 pyright==1.1.301
-#psycopg2
+# Note: django reset_db requires psycopg2 to be installed
+#       but psycop3 is required for async queries.
 psycopg==3.1.8
 pytest==7.2.2
 pytest-cov==4.0.0
