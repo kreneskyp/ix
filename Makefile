@@ -138,6 +138,8 @@ dev_fixtures: compose
 	# use management commands for now since fixtures didn't load correctly
 	${DOCKER_COMPOSE_RUN} ./manage.py create_moderator_v1
 	${DOCKER_COMPOSE_RUN} ./manage.py create_coder_v1
+	${DOCKER_COMPOSE_RUN} ./manage.py create_planner_v3
+	${DOCKER_COMPOSE_RUN} ./manage.py create_dad_jokes_v1
 
 
 # =========================================================

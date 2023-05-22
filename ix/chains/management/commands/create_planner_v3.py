@@ -1,4 +1,6 @@
 from django.core.management.base import BaseCommand
+
+from ix.agents.models import Agent
 from ix.chains.models import ChainNode, Chain
 
 
@@ -165,14 +167,15 @@ EXECUTE_RUN = {
 }
 
 
-CHAIN_ID = "b7d8f662-12f6-4525-b07b-c9ea7ca7f118"
+PLANNER_CHAIN_V3 = "b7d8f662-12f6-4525-b07b-c9ea7c10002c"
+PLANNER_AGENT_V3 = "b7d8f662-12f6-4525-b07b-c9ea7c10002a"
 
 
 class Command(BaseCommand):
     help = "Creates planning chain v1"
 
     def handle(self, *args, **options):
-        Chain.objects.filter(id=CHAIN_ID).delete()
+        Chain.objects.filter(id=PLANNER_CHAIN_V3).delete()
 
         # Create root node
         root = ChainNode.objects.create(**PLAN_FLOW_CHOOSER)
@@ -187,9 +190,18 @@ class Command(BaseCommand):
         create_plan_sequence_node = root.add_node(**EXECUTE_PLAN_SEQUENCE)
         create_plan_sequence_node.add_child(**EXECUTE_RUN)
 
-        Chain.objects.create(
-            pk=CHAIN_ID,
-            name="Planning chain",
-            description="Chain used to generate and execute plans",
+        chain = Chain.objects.create(
+            pk=PLANNER_CHAIN_V3,
+            name="Planning chain v3",
+            description="Chain used to generate and execute plans.",
             root=root,
+        )
+
+        Agent.objects.create(
+            id=PLANNER_AGENT_V3,
+            name="Planner v3",
+            alias="plan",
+            purpose="To generate plans for user requests.",
+            chain=chain,
+            config={},
         )
