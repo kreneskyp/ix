@@ -5,22 +5,22 @@ Chains for interacting with an LLM
 
 LLMChain
 ------------
-Extension of `langchain.LLMChain` to provide config loading. The config supports loading llm and a
+Extension of ``langchain.LLMChain`` to provide config loading. The config supports loading llm and a
 chat message composed of multiple messages
 
 Composing prompts
 ^^^^^^^^^^^^^^^^^
 The config supports chat messages composed of multiple messages. Messages are converted to langchain
-message templates and then compiled into a final `ChatPromptTemplate` for the chain.
+message templates and then compiled into a final ``ChatPromptTemplate`` for the chain.
 
 Each message is a dictionary with the following fields:
 
-* `role`: The role of the message. [system, user, assistant]
-* `template`: The template for the message. The template can contain variables that are replaced with values from the input variables or partial variables.
-* `input_variables`: The list of input variables to use for the template. The input variables are extracted from the input and passed to the template.
-* `partial_variables`: The list of partial variables to use for the template. The partial variables are extracted from the partial variables and passed to the template.
+* ``role``: The role of the message. [system, user, assistant]
+* ``template``: The template for the message. The template can contain variables that are replaced with values from the input variables or partial variables.
+* ``input_variables``: The list of input variables to use for the template. The input variables are extracted from the input and passed to the template.
+* ``partial_variables``: The list of partial variables to use for the template. The partial variables are extracted from the partial variables and passed to the template.
 
-All variables in the template must be filled by either `input_variables` or `partial_variables`.
+All variables in the template must be filled by either ``input_variables`` or ``partial_variables``.
 
 Example Messages:
 
@@ -74,11 +74,11 @@ Example
 LLMToolChain
 ------------
 
-LLMChain that loads tools from the ToolRegistry and adds them as partial variable `tools` for use in prompt
+LLMChain that loads tools from the ToolRegistry and adds them as partial variable ``tools`` for use in prompt
 templates.
 
-The set of tools can be configured by setting `tools` in the config. Each entry is a class path to a model
-containing functions decorated by `ix.commands.command`.
+The set of tools can be configured by setting ``tools`` in the config. Each entry is a class path to a model
+containing functions decorated by ``ix.commands.command``.
 
 .. note::
     Tools are currently limited to Ix specific tools. Tool specification will be expanded to include

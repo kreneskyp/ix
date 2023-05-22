@@ -10,7 +10,7 @@ ParseJSON
 ParseJSON takes an input string and parses it as JSON. It is useful for
 processing LLM responses into JSON.
 
-Input and output keys may be mapped with `input_key` and `output_key` respectively.
+Input and output keys may be mapped with ``input_key`` and ``output_key`` respectively.
 
 Example
 ^^^^^^^
