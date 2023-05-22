@@ -1,5 +1,5 @@
 import React from "react";
-import { HStack, VStack, Text, Box } from "@chakra-ui/react";
+import { HStack, VStack, Text, Box, useColorModeValue } from "@chakra-ui/react";
 import { usePreloadedQuery } from "react-relay/hooks";
 import { ChatByIdQuery } from "chat/graphql/ChatByIdQuery";
 import AssistantAvatar from "chat/AssistantAvatar";
@@ -10,10 +10,13 @@ import AddAgentModalTrigger from "chat/agents/AddAgentModalTrigger";
 import { useColorMode } from "@chakra-ui/color-mode";
 
 const AgentListItem = ({ chat, agent }) => {
+  const avatarColor = useColorModeValue("gray.700", "gray.400");
+
   return (
     <Box bg="transparent" width="100%">
       <HStack whiteSpace="nowrap">
-        <AssistantAvatar agent={agent} /> <Text>{agent.name}</Text>
+        <AssistantAvatar agent={agent} color={avatarColor} />{" "}
+        <Text>{agent.name}</Text>
         <Box
           width="100%"
           align="right"

@@ -1,9 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Text } from "@chakra-ui/react";
 
 const Avatar = ({ icon, size, color }) => {
-  return <FontAwesomeIcon icon={icon} size={size} color={color} />;
+  return (
+    <Text as="span" color={color}>
+      <FontAwesomeIcon icon={icon} size={size} color={color} />
+    </Text>
+  );
 };
 
 Avatar.propTypes = {

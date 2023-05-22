@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Box, useColorModeValue } from "@chakra-ui/react";
+import { Box, Text, useColorModeValue } from "@chakra-ui/react";
 import { Global } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faRobot, faCog } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,7 @@ const ChatMessageAvatar = ({ message, isThinking }) => {
   const bgColor = useColorModeValue("gray.200", "gray.700");
   const color = useColorModeValue("black", "gray.500");
   const border = useColorModeValue("gray.300", "transparent");
+  const avatarColor = useColorModeValue("gray.600", "gray.500");
 
   const getAvatarByRole = (role) => {
     switch (role) {
@@ -73,7 +74,9 @@ const ChatMessageAvatar = ({ message, isThinking }) => {
       }}
     >
       <Global styles={spin} />
-      {getAvatarByRole(message.content.agent ? "ASSISTANT" : message.role)}
+      <Text color={avatarColor}>
+        {getAvatarByRole(message.content.agent ? "ASSISTANT" : message.role)}
+      </Text>
     </Box>
   );
 };
