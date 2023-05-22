@@ -1,19 +1,20 @@
+import React from "react";
+import { Link } from "react-router-dom";
 import { Button, Icon } from "@chakra-ui/react";
+import { useColorMode } from "@chakra-ui/color-mode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
-import React from "react";
 
 export const NewAgentButton = () => {
+  const { colorMode } = useColorMode();
+
   return (
     <Link to="/agents/new">
       <Button
         bg="transparent"
         width="100%"
-        borderStyle="dashed"
-        borderWidth="2px"
-        borderColor="whiteAlpha.600"
-        color="whiteAlpha.800"
+        border="1px solid"
+        borderColor={colorMode === "light" ? "gray.300" : "whiteAlpha.50"}
         leftIcon={<Icon as={FontAwesomeIcon} icon={faPlus} />}
       >
         New Agent

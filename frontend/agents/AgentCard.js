@@ -3,13 +3,13 @@ import {
   Box,
   Card,
   CardBody,
+  Divider,
   Heading,
   Text,
-  useDisclosure,
+  useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
 import { useAgent } from "agents/graphql/AgentProvider";
-import { AgentDetailModal } from "agents/AgentDetailModal";
 
 const AgentCard = () => {
   const { agent } = useAgent();
@@ -18,20 +18,35 @@ const AgentCard = () => {
     return null;
   }
 
+  const borderColor = useColorModeValue("gray.400", "whiteAlpha.50");
+  const bg = useColorModeValue("gray.100", "gray.700");
+
   return (
-    <Card overflow="hidden" boxShadow="sm" width="100%" cursor="pointer">
+    <Card
+      overflow="hidden"
+      boxShadow="md"
+      width="100%"
+      cursor="pointer"
+      border="1px solid"
+      borderColor={borderColor}
+      bg={bg}
+    >
       <CardBody>
         <VStack alignItems="start" spacing={2}>
           <Heading as="h5" size="xs">
             {agent.name}
           </Heading>
           <Text as="h5" size="xs">
-            <strong>Model:</strong> {agent.model}
+            {agent.model}
           </Text>
-
+          <Divider />
+          <Heading as="h5" size="xs">
+            {agent.chain.name}
+          </Heading>
           <Box
             maxWidth="350px"
-            height={75}
+            minHeight={50}
+            maxHeight={75}
             overflow="hidden"
             textOverflow="ellipsis"
             css={{
@@ -40,7 +55,7 @@ const AgentCard = () => {
               WebkitLineClamp: 3,
             }}
           >
-            <strong>Purpose:</strong> {agent.purpose}
+            {agent.chain.description}
           </Box>
         </VStack>
       </CardBody>

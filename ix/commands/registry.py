@@ -101,7 +101,7 @@ class CommandRegistry:
         clauses = "\n".join(
             [f"{idx + 1}. {str(cmd)}" for idx, cmd in enumerate(commands)]
         )
-        return f"COMMANDS: \n\n{clauses}"
+        return clauses
 
     def import_commands(self, module_name: str) -> None:
         """
@@ -132,6 +132,15 @@ class CommandRegistry:
             ):
                 cmd_instance = attr()
                 self.register(cmd_instance)
+
+    @classmethod
+    def for_tools(cls, tools: list) -> "CommandRegistry":
+        """Loads a CommandRegistry instance with the specified tools."""
+        # load instance specific tools
+        tool_registry = cls()
+        for class_path in tools or []:
+            tool_registry.import_commands(class_path)
+        return tool_registry
 
 
 def command(name: str, description: str, signature: str = None) -> Callable[..., Any]:

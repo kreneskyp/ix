@@ -6,10 +6,14 @@ export const CreateAgentMutation = graphql`
       agent {
         id
         name
+        alias
         model
-        systemPrompt
-        commands
+        purpose
         config
+        chain {
+          id
+          name
+        }
       }
     }
   }
@@ -21,10 +25,14 @@ export const UpdateAgentMutation = graphql`
       agent {
         id
         name
+        alias
+        purpose
         model
-        systemPrompt
-        commands
         config
+        chain {
+          id
+          name
+        }
       }
     }
   }

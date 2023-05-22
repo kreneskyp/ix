@@ -6,24 +6,41 @@ module.exports = {
   entry: './frontend/index.js',
   context: __dirname,
   mode: NODE_ENV,
-  devServer: {
-    contentBase: './dist',
-  },
+  devtool: 'eval-source-map',
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ['babel-loader'],
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+          'postcss-loader',
+        ],
       },
     ],
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx'],
+    extensions: ['*', '.js', '.jsx', '.css'],
     modules: [
         path.resolve('/var/app/frontend'),
         'node_modules'
-        //path.resolve('/var/npm/node_modules')
     ],
     aliasFields: ['browser'],
     fallback: {
@@ -41,19 +58,7 @@ module.exports = {
     publicPath: '/static/',
     filename: 'js/[name].js',
     chunkFilename: 'js/[name]-chunk.js?t=${timestamp}',
-    sourceMapFilename: 'map/[file].map'
   },
   plugins: [
-
-    //new HtmlWebpackPlugin({
-    //  template: 'public/index.html'
-    //}),
   ],
-  //assets: {
-  //  assetsSpace: 100,
-  //  excludeAssets: [
-  //      /.*-chunk.js.*/,
-  //      /.*-chunk.css.*/
-  //  ]
-  //}
 };

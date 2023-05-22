@@ -1,7 +1,9 @@
 from __future__ import absolute_import
-import redis
-import numpy as np
+
 from typing import List, Optional, TypedDict
+
+import numpy as np
+import redis
 
 from ix.memory import VectorMemory, IndexKey, NearestResult, get_embeddings
 

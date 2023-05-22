@@ -1,0 +1,215 @@
+[
+  {
+    "model": "chains.chainnode",
+    "pk": "07540047-450f-4a41-a3ca-a57904a21eb1",
+    "fields": {
+      "class_path": "ix.chains.planning.RunPlan",
+      "config": {
+        "llm": {
+          "config": {
+            "verbose": true,
+            "temperature": 0.2,
+            "request_timeout": 60
+          },
+          "class_path": "langchain.chat_models.openai.ChatOpenAI"
+        },
+        "tools": [
+          "ix.commands.google",
+          "ix.commands.filesystem",
+          "ix.commands.execute"
+        ]
+      },
+      "name": null,
+      "description": null,
+      "node_type": "node",
+      "root": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+      "parent": "942e857c-0aa0-4d0f-9841-519961de2885"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "710d4c7e-6782-4a44-9c91-d54723c598b2",
+    "fields": {
+      "class_path": "ix.chains.routing.IXSequence",
+      "config": {
+        "input_variables": [
+          "user_input"
+        ]
+      },
+      "name": "create",
+      "description": "create a new PLAN to fulfill the user request",
+      "node_type": "list",
+      "root": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+      "parent": null
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "735ed23d-635d-4a56-9148-60fd9588b0b7",
+    "fields": {
+      "class_path": "ix.chains.planning.SavePlan",
+      "config": null,
+      "name": null,
+      "description": null,
+      "node_type": "node",
+      "root": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+      "parent": "710d4c7e-6782-4a44-9c91-d54723c598b2"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "7c5c0ceb-5954-4840-81b8-391add8cdbef",
+    "fields": {
+      "class_path": "ix.chains.json.ParseJSON",
+      "config": null,
+      "name": null,
+      "description": null,
+      "node_type": "node",
+      "root": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+      "parent": "710d4c7e-6782-4a44-9c91-d54723c598b2"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "942e857c-0aa0-4d0f-9841-519961de2885",
+    "fields": {
+      "class_path": "ix.chains.routing.IXSequence",
+      "config": {
+        "input_variables": [
+          "user_input",
+          "plan_id"
+        ]
+      },
+      "name": "execute plan",
+      "description": "execute all steps in a PLAN",
+      "node_type": "list",
+      "root": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+      "parent": null
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "9c8bca7b-0e78-4d86-a7b4-2bf676543668",
+    "fields": {
+      "class_path": "ix.chains.planning.CreatePlan",
+      "config": {
+        "llm": {
+          "config": {
+            "verbose": true,
+            "temperature": 0.2,
+            "request_timeout": 240
+          },
+          "class_path": "langchain.chat_models.openai.ChatOpenAI"
+        },
+        "tools": [
+          "ix.commands.google",
+          "ix.commands.filesystem",
+          "ix.commands.execute"
+        ]
+      },
+      "name": null,
+      "description": null,
+      "node_type": "node",
+      "root": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+      "parent": "710d4c7e-6782-4a44-9c91-d54723c598b2"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+    "fields": {
+      "class_path": "ix.chains.tool_chooser.ChooseTool",
+      "config": {
+        "llm": {
+          "config": {
+            "temperature": 0
+          },
+          "class_path": "langchain.chat_models.openai.ChatOpenAI"
+        }
+      },
+      "name": null,
+      "description": null,
+      "node_type": "map",
+      "root": null,
+      "parent": null
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "196fc7ca-53fb-4de9-92d7-8c1dc309f23d",
+    "fields": {
+      "source": "7c5c0ceb-5954-4840-81b8-391add8cdbef",
+      "target": "735ed23d-635d-4a56-9148-60fd9588b0b7",
+      "key": "003",
+      "root": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+      "input_map": {
+        "parsed_json": "plan"
+      }
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "70614cfe-4501-47ed-8414-7f7b8b4efe06",
+    "fields": {
+      "source": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+      "target": "710d4c7e-6782-4a44-9c91-d54723c598b2",
+      "key": "tools",
+      "root": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+      "input_map": null
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "7c337bd9-2699-40f4-8686-78a56f1f9129",
+    "fields": {
+      "source": "942e857c-0aa0-4d0f-9841-519961de2885",
+      "target": "07540047-450f-4a41-a3ca-a57904a21eb1",
+      "key": null,
+      "root": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+      "input_map": null
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "bb8febb3-b2fd-420a-a790-c83ad8187158",
+    "fields": {
+      "source": "710d4c7e-6782-4a44-9c91-d54723c598b2",
+      "target": "9c8bca7b-0e78-4d86-a7b4-2bf676543668",
+      "key": "001",
+      "root": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+      "input_map": null
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "d145d2fc-0bcd-44ed-acf6-5471e24352e4",
+    "fields": {
+      "source": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+      "target": "942e857c-0aa0-4d0f-9841-519961de2885",
+      "key": null,
+      "root": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+      "input_map": null
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "fca6721c-a683-4d19-8693-6ae2d24c5ab3",
+    "fields": {
+      "source": "9c8bca7b-0e78-4d86-a7b4-2bf676543668",
+      "target": "7c5c0ceb-5954-4840-81b8-391add8cdbef",
+      "key": "002",
+      "root": "a366d4bc-09ee-4213-9f50-bb6c75249997",
+      "input_map": null
+    }
+  },
+  {
+    "model": "chains.chain",
+    "pk": "b7d8f662-12f6-4525-b07b-c9ea7ca7f116",
+    "fields": {
+      "name": "Planning chain",
+      "description": "Chain used to generate and execute plans",
+      "created_at": "2023-05-04T02:02:13.491Z",
+      "root": "a366d4bc-09ee-4213-9f50-bb6c75249997"
+    }
+  }
+]

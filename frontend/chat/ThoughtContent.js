@@ -10,15 +10,6 @@ const ThoughtContent = ({ content }) => {
       <Text mt="4" color={textColor}>
         <b>Runtime:</b> {content.runtime.toFixed(2)} seconds.
       </Text>
-      <Text mt="4" color={textColor}>
-        <b>Prompt Tokens:</b> {content.usage.prompt_tokens}
-      </Text>
-      <Text mt="4" color={textColor}>
-        <b>Completion Tokens:</b> {content.usage.completion_tokens}
-      </Text>
-      <Text mt="4" color={textColor}>
-        <b>Total Tokens:</b> {content.usage.total_tokens}
-      </Text>
     </>
   );
 };

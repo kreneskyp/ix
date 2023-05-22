@@ -1,26 +1,28 @@
 import uuid
-
 from django.db import models
+
+from ix.chains.models import Chain
 
 
 class Agent(models.Model):
     MODEL_CHOICES = (
         ("gpt4", "GPT4"),
-        ("gpt-3.5-turbo", "GPT4"),
+        ("gpt-3.5-turbo", "GPT3.5"),
     )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
+    alias = models.CharField(max_length=63)
     purpose = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # model config
+    # default model config
     model = models.CharField(max_length=255)
+    config = models.JSONField()
 
     # agent config
-    system_prompt = models.TextField()
-    commands = models.JSONField(null=True, blank=True)
-    config = models.JSONField()
+    agent_class_path = models.CharField(max_length=255)
+    chain = models.ForeignKey(Chain, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name

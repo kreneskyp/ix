@@ -6,10 +6,15 @@ export const AgentsQuery = graphql`
     agents {
       id
       name
+      alias
       model
-      systemPrompt
-      commands
+      purpose
       config
+      chain {
+        id
+        name
+        description
+      }
     }
   }
 `;

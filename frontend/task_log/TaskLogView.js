@@ -1,10 +1,10 @@
 import React, { Suspense } from "react";
 import { useParams } from "react-router-dom";
-import {Box, Center, HStack} from "@chakra-ui/react";
+import { Box, Center, HStack } from "@chakra-ui/react";
 
 import { TaskProvider } from "tasks/contexts";
 import TaskLogMessageStream from "task_log/TaskLogMessageStream";
-import FeedbackForm from "task_log/FeedbackInput";
+import ChatInput from "chat/ChatInput";
 import AutonomousToggle from "chat/AutonomousToggle";
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 import { ScrollableBox } from "site/ScrollableBox";
@@ -35,7 +35,7 @@ export const TaskLogView = () => {
           {/* Bottom aligned section */}
           <Box mr={10}>
             <TaskProvider taskId={id}>
-              <FeedbackForm />
+              <ChatInput />
             </TaskProvider>
           </Box>
           {/* nest another provider here so refresh does not affect the whole view */}

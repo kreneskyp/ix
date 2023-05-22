@@ -1,0 +1,22 @@
+@keyframes dash {
+  to {
+    stroke-dashoffset: -8;
+  }
+}
+
+.edgePath {
+  stroke: #000;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 4, 4;
+  stroke-dashoffset: 0;
+  animation: dash 1s linear infinite;
+}
+
+.react-flow__node-chain .react-flow__handle {
+  width: 0px;
+  height: 0px;
+  border-radius: 0px;
+  border: 0;
+  background-color: unset;
+}

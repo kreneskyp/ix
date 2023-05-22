@@ -2,6 +2,12 @@
 type Query {
   agent(id: UUID!): AgentType
   agents: [AgentType]
+  searchAgents(search: String): [AgentType]
+  chat(id: UUID!): ChatType
+  chatPage(limit: Int = 10, offset: Int = 0): ChatsPage
+  chain(id: UUID!): ChainType
+  chains: [ChainType]
+  graph(id: UUID!): ChainWithGraphType
   users: [UserType]
   tasks: [TaskType]
   taskLogMessages(taskId: UUID!): [TaskLogMessageType]
@@ -12,15 +18,18 @@ type Query {
 type AgentType {
   id: UUID!
   name: String!
+  alias: String!
   purpose: String!
   createdAt: DateTime!
   model: String!
-  systemPrompt: String!
-  commands: JSONString
   config: GenericScalar
+  agentClassPath: String!
+  chain: ChainType
   resources: [ResourceType!]!
   taskSet: [TaskType!]!
   tasklogmessageSet: [TaskLogMessageType!]!
+  leadingChats: [ChatType!]!
+  chats: [ChatType!]!
 }
 
 """
@@ -37,25 +46,143 @@ value as specified by
 scalar DateTime
 
 """
-Allows use of a JSON String for input / output from the GraphQL schema.
-
-Use of this type is *not recommended* as you lose the benefits of having a defined, static
-schema (one of the key benefits of GraphQL).
-"""
-scalar JSONString
-
-"""
 The `GenericScalar` scalar type represents a generic
 GraphQL scalar value that could be:
 String, Boolean, Int, Float, List or Object.
 """
 scalar GenericScalar
 
+type ChainType {
+  id: UUID!
+  name: String!
+  description: String!
+  createdAt: DateTime!
+  root: ChainNodeType!
+  agentSet: [AgentType!]!
+  taskSet: [TaskType!]!
+}
+
+type ChainNodeType {
+  id: UUID!
+  classPath: String!
+  config: GenericScalar
+  name: String
+  description: String
+  nodeType: ChainsChainNodeNodeTypeChoices!
+  root: ChainNodeType
+  parent: ChainNodeType
+}
+
+enum ChainsChainNodeNodeTypeChoices {
+  """node"""
+  NODE
+
+  """list"""
+  LIST
+
+  """map"""
+  MAP
+}
+
+type TaskType {
+  id: UUID!
+  parent: TaskType
+  name: String!
+  user: UserType!
+  agent: AgentType
+  chain: ChainType!
+  isComplete: Boolean!
+  createdAt: DateTime!
+  completeAt: DateTime
+  autonomous: Boolean!
+  children: [TaskType!]!
+  messages: [TaskLogMessageType!]!
+  artifacts: [ArtifactType!]!
+  createdPlans(isDraft: Boolean): [PlanType]
+  ranPlans: [PlanType!]!
+  chats: [ChatType!]!
+  leadingChats: [ChatType!]!
+}
+
+type UserType {
+  id: ID!
+  password: String!
+  lastLogin: DateTime
+
+  """
+  Designates that this user has all permissions without explicitly assigning them.
+  """
+  isSuperuser: Boolean!
+
+  """Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."""
+  username: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+
+  """Designates whether the user can log into this admin site."""
+  isStaff: Boolean!
+
+  """
+  Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+  """
+  isActive: Boolean!
+  dateJoined: DateTime!
+  taskSet: [TaskType!]!
+}
+
+type TaskLogMessageType {
+  id: UUID!
+  task: TaskType!
+  agent: AgentType
+  createdAt: DateTime!
+  parent: TaskLogMessageType
+  role: TaskLogTaskLogMessageRoleChoices!
+  content: GenericScalar
+  tasklogmessageSet: [TaskLogMessageType!]!
+}
+
+enum TaskLogTaskLogMessageRoleChoices {
+  """system"""
+  SYSTEM
+
+  """assistant"""
+  ASSISTANT
+
+  """user"""
+  USER
+}
+
+type ArtifactType {
+  id: UUID!
+  task: TaskType!
+  key: String!
+  artifactType: String!
+  name: String!
+  description: String!
+  createdAt: DateTime!
+  storage: GenericScalar
+  chats: [ChatType!]!
+}
+
+type ChatType {
+  id: UUID!
+  name: String!
+  createdAt: DateTime!
+  lead: AgentType!
+  agents: [AgentType!]!
+  tasks: [TaskType!]!
+  artifacts: [ArtifactType!]!
+  resources: [ResourceType!]!
+  task: TaskType!
+}
+
 type ResourceType {
   id: UUID!
   type: AgentsResourceTypeChoices!
   config: JSONString!
   agent: AgentType!
+  chats: [ChatType!]!
 }
 
 enum AgentsResourceTypeChoices {
@@ -99,77 +226,65 @@ enum AgentsResourceTypeChoices {
   STREAM_PROCESSING
 }
 
-type TaskType {
+"""
+Allows use of a JSON String for input / output from the GraphQL schema.
+
+Use of this type is *not recommended* as you lose the benefits of having a defined, static
+schema (one of the key benefits of GraphQL).
+"""
+scalar JSONString
+
+type PlanType {
   id: UUID!
+  creator: TaskType!
+  runner: TaskType
   name: String!
-  user: UserType!
-  goals: [GoalType]
-  agent: AgentType!
-  isComplete: Boolean!
-  createdAt: DateTime!
-  completeAt: DateTime
-  autonomous: Boolean!
-  tasklogmessageSet: [TaskLogMessageType!]!
-}
-
-type UserType {
-  id: ID!
-  password: String!
-  lastLogin: DateTime
-
-  """
-  Designates that this user has all permissions without explicitly assigning them.
-  """
-  isSuperuser: Boolean!
-
-  """Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."""
-  username: String!
-  firstName: String!
-  lastName: String!
-  email: String!
-
-  """Designates whether the user can log into this admin site."""
-  isStaff: Boolean!
-
-  """
-  Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-  """
-  isActive: Boolean!
-  dateJoined: DateTime!
-  taskSet: [TaskType!]!
-}
-
-type GoalType {
   description: String!
-  complete: Boolean!
-}
-
-type TaskLogMessageType {
-  id: UUID!
-  task: TaskType!
-  agent: AgentType
   createdAt: DateTime!
-  parent: TaskLogMessageType
-  role: TaskLogTaskLogMessageRoleChoices!
-  content: GenericScalar
-  tasklogmessageSet: [TaskLogMessageType!]!
+  isDraft: Boolean!
+  isComplete: Boolean!
+  steps: [StepType!]!
 }
 
-enum TaskLogTaskLogMessageRoleChoices {
-  """system"""
-  SYSTEM
+type StepType {
+  id: UUID!
+  plan: PlanType!
+  isComplete: Boolean!
+  details: JSONString!
+  order: Int
+}
 
-  """assistant"""
-  ASSISTANT
+type ChatsPage {
+  pageNumber: Int
+  pages: Int
+  count: Int
+  hasNext: Boolean
+  hasPrevious: Boolean
+  objects: [ChatType]
+}
 
-  """user"""
-  USER
+type ChainWithGraphType {
+  chain: ChainType
+  nodes: [ChainNodeType]
+  edges: [ChainEdgeType]
+}
+
+type ChainEdgeType {
+  id: UUID!
+  source: ChainNodeType
+  target: ChainNodeType
+  key: String
+  root: ChainNodeType!
+  inputMap: GenericScalar
 }
 
 """Aggregation of graphql mutations"""
 type Mutation {
-  sendFeedback(input: TaskFeedbackInput!): TaskFeedbackMutation
+  sendInput(input: ChatInput!): ChatInputMutation
   authorizeCommand(input: CommandAuthorizeInput!): AuthorizeCommandMutation
+  createChat(input: CreateChatInput): ChatMutationResponse
+  removeAgent(agentId: UUID!, chatId: UUID!): RemoveAgentMutation
+  addAgent(agentId: UUID!, chatId: UUID!): AddAgentMutation
   createTask(input: CreateTaskInput!): CreateTaskResponse
   startTask(taskId: UUID!): StartTaskMutation
   setTaskAutonomous(autonomous: Boolean!, taskId: UUID!): SetTaskAutonomousMutation
@@ -181,14 +296,14 @@ type Mutation {
   deleteResource(id: UUID!): DeleteResourceMutation
 }
 
-type TaskFeedbackMutation {
+type ChatInputMutation {
   taskLogMessage: TaskLogMessageType
   errors: [String]
 }
 
-input TaskFeedbackInput {
-  taskId: UUID!
-  feedback: String!
+input ChatInput {
+  chatId: UUID!
+  text: String!
 }
 
 type AuthorizeCommandMutation {
@@ -200,19 +315,32 @@ input CommandAuthorizeInput {
   messageId: UUID!
 }
 
+type ChatMutationResponse {
+  chat: ChatType
+}
+
+input CreateChatInput {
+  name: String
+  agentId: UUID
+}
+
+type RemoveAgentMutation {
+  chat: ChatType
+}
+
+type AddAgentMutation {
+  chat: ChatType
+}
+
 type CreateTaskResponse {
   task: TaskType
 }
 
 input CreateTaskInput {
   name: String!
-  goals: [GoalInput]
   agentId: UUID
+  chainId: UUID
   autonomous: Boolean
-}
-
-input GoalInput {
-  description: String!
 }
 
 type StartTaskMutation {
@@ -230,11 +358,11 @@ type CreateAgentMutation {
 input AgentInput {
   id: UUID
   name: String
+  alias: String
   purpose: String
   model: String
-  systemPrompt: String
-  commands: JSONString
   config: GenericScalar
+  chainId: UUID
 }
 
 type UpdateAgentMutation {
@@ -262,4 +390,16 @@ type UpdateResourceMutation {
 
 type DeleteResourceMutation {
   success: Boolean
+}
+
+"""Aggregation of graphql subscriptions"""
+type Subscription {
+  chatMessageSubscription(chatId: String): ChatMessageSubscription
+}
+
+"""GraphQL subscription to TaskLogMessage instances."""
+type ChatMessageSubscription {
+  taskLogMessage: TaskLogMessageType
+  agent: AgentType
+  parentId: UUID
 }

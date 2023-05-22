@@ -9,6 +9,8 @@ node_modules
 .pyc
 .coverage
 __generated__
+frontend/schema.graphql
+.ipython
 
 __pycache__
 
@@ -18,3 +20,6 @@ public
 react-app-unused
 tmp
 workspace
+.bak
+*.bak
+workdir

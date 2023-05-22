@@ -1,23 +1,39 @@
 import React from "react";
-import { Box, Flex, HStack, Stack } from "@chakra-ui/react";
+import { Box, HStack, Stack } from "@chakra-ui/react";
 import {
   faCog,
   faSignOutAlt,
   faRobot,
   faListCheck,
   faServer,
+  faChain,
+  faMessage,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
+import { useColorMode } from "@chakra-ui/color-mode";
 
 function Navigation() {
+  const { colorMode } = useColorMode();
+
   return (
-    <Box as="nav">
-      <Stack spacing={4}>
-        <HStack align="center" space={3}>
-          <FontAwesomeIcon icon={faListCheck} />
-          <Link ml={3} to="/tasks">
-            Tasks
+    <Box
+      as="nav"
+      fontSize="sm"
+      color={colorMode === "light" ? "gray.900" : "gray.200"}
+    >
+      <Stack spacing={3}>
+        <HStack align="center">
+          <FontAwesomeIcon icon={faMessage} />
+          <Link ml={3} to="/chats">
+            Chats
+          </Link>
+        </HStack>
+
+        <HStack align="center">
+          <FontAwesomeIcon icon={faChain} />
+          <Link ml={3} to="/chains">
+            Chains
           </Link>
         </HStack>
         <HStack align="center">
@@ -26,12 +42,20 @@ function Navigation() {
             Agents
           </Link>
         </HStack>
-        <HStack align="center">
-          <FontAwesomeIcon icon={faServer} />
-          <Link ml={3} to="#">
-            Resources
+        <HStack align="center" space={3}>
+          <FontAwesomeIcon icon={faListCheck} />
+          <Link ml={3} to="/tasks">
+            Tasks
           </Link>
         </HStack>
+        {false && (
+          <HStack align="center">
+            <FontAwesomeIcon icon={faServer} />
+            <Link ml={3} to="#">
+              Resources
+            </Link>
+          </HStack>
+        )}
         <HStack align="center">
           <FontAwesomeIcon icon={faCog} />
           <Link ml={3} to="#">

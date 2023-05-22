@@ -1,9 +1,9 @@
 import React from "react";
-import {Button, useToast} from "@chakra-ui/react";
+import { Button, useToast } from "@chakra-ui/react";
 import { useTask } from "tasks/contexts";
 import useStartTask from "tasks/graphql/useStartTask";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlay} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlay } from "@fortawesome/free-solid-svg-icons";
 
 export const TaskRunButton = () => {
   const { task } = useTask();
@@ -27,7 +27,7 @@ export const TaskRunButton = () => {
   return (
     <Button onClick={handleStart} colorScheme="green" px={10}>
       Run
-        <FontAwesomeIcon icon={faPlay} ml={5} style={{paddingLeft: "5px"}}/>
+      <FontAwesomeIcon icon={faPlay} ml={5} style={{ paddingLeft: "5px" }} />
     </Button>
   );
 };

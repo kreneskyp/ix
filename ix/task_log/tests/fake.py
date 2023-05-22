@@ -2,10 +2,49 @@ import uuid
 from datetime import datetime
 
 from django.contrib.auth.models import User
+
+from ix.chains.models import Chain, ChainNode
+from ix.chat.models import Chat
 from ix.task_log.models import Agent, Task, TaskLogMessage
 from faker import Faker
 
 fake = Faker()
+
+
+def fake_chain():
+    """
+    Create a fake chain with a root ChainNode.
+    """
+    root_node = fake_chain_node()
+
+    chain = Chain.objects.create(
+        id=uuid.uuid4(),
+        name=fake.unique.name(),
+        description=fake.text(),
+        root=root_node,
+    )
+
+    return chain
+
+
+def fake_chain_node():
+    """
+    Create a fake chain node.
+    """
+    node = ChainNode.objects.create(
+        id=uuid.uuid4(),
+        name=fake.unique.name(),
+        description="This is a mock node",
+        class_path="ix.chains.llm_chain.LLMChain",
+        config={
+            "llm": {
+                "class_path": "ix.chains.tests.mock_llm.MockLLM",
+            },
+            "messages": [{"role": "system", "template": "This is a mock node"}],
+        },
+    )
+
+    return node
 
 
 def fake_agent(**kwargs):
@@ -13,25 +52,30 @@ def fake_agent(**kwargs):
     Fake an agent, for now configure it to be a gpt-3.5-turbo agent.
     """
     name = kwargs.get("name", fake.unique.name())
+    alias = kwargs.get("alias", name)
     purpose = kwargs.get("purpose", fake.text())
     model = kwargs.get("model", "gpt-3.5-turbo")
-    system_prompt = kwargs.get("purpose", fake.text())
-    commands = kwargs.get("purpose", [])
+    agent_class_path = kwargs.get(
+        "agent_class_path", "ix.agents.planning_agent.PlanningAgent"
+    )
     config = kwargs.get(
-        "purpose",
+        "config",
         {
             "temperature": 0.9,
         },
     )
 
+    chain = kwargs.get("chain", fake_chain())
+
     agent = Agent.objects.create(
         pk=kwargs.get("pk"),
         name=name,
+        alias=alias,
         purpose=purpose,
         model=model,
-        system_prompt=system_prompt,
-        commands=commands,
         config=config,
+        chain=chain,
+        agent_class_path=agent_class_path,
     )
     return agent
 
@@ -45,18 +89,16 @@ def fake_user(**kwargs):
     return user
 
 
-def fake_goal(**kwargs):
-    data = {"name": fake.word(), "description": fake.text()[:50], "complete": False}
-    data.update(kwargs)
-    return data
-
-
 def fake_task(**kwargs):
     user = kwargs.get("user") or fake_user()
-    goals = kwargs.get("goals", [fake_goal() for _ in range(fake.random.randint(1, 5))])
     agent = kwargs.get("agent") or fake_agent()
-    task = Task.objects.create(user=user, goals=goals, agent=agent)
+    task = Task.objects.create(user=user, agent=agent, chain=agent.chain)
     return task
+
+
+def fake_think(**kwargs):
+    content = {"type": "THINK", "input": {"user_input": "Test message"}}
+    return fake_task_log_msg(role="assistant", content=content, **kwargs)
 
 
 def fake_command_reply(**kwargs):
@@ -103,10 +145,11 @@ def fake_execute(task: Task = None, message_id: uuid.UUID = None, **kwargs):
 def fake_feedback(
     task: Task = None, message_id: uuid.UUID = None, feedback: str = None, **kwargs
 ):
-    if not message_id:
+    content = {"type": "FEEDBACK", "feedback": feedback or "this is fake feedback"}
+    if not message_id and not message_id == -1:
         feedback_request = fake_feedback_request(task=task, question="test question")
-        message_id = feedback_request.id
-    content = {"type": "FEEDBACK", "message_id": str(message_id), "feedback": feedback}
+        content["message_id"] = str(feedback_request.id)
+
     return fake_task_log_msg(role="user", content=content, task=task, **kwargs)
 
 
@@ -213,10 +256,47 @@ def fake_task_log_msg(**kwargs):
         created_at=created_at,
         role=role,
         content=content,
+        parent=kwargs.get("parent", None),
     )
 
     task_log_message.save()
     return task_log_message
+
+
+def fake_planner():
+    agent = fake_agent(
+        name="Planner",
+        purpose="Plan tasks for other agents to perform",
+        agent_class_path="ix.agents.process.AgentProcess",
+        system_prompt="",
+        commands=[],
+        config={
+            "temperature": 0.3,
+        },
+    )
+    return agent
+
+
+# default id so test chat is always the same URL. This will be needed until
+# UI has a start chat button
+DEFAULT_CHAT_ID = "f0034449-f226-44b2-9036-ca49f7d2348e"
+
+
+def fake_chat():
+    Agent.objects.filter(leading_chats__pk=DEFAULT_CHAT_ID).delete()
+    Chat.objects.filter(pk=DEFAULT_CHAT_ID).delete()
+
+    agent = fake_planner()
+    task = fake_task(agent=agent)
+    chat = Chat.objects.create(
+        id=DEFAULT_CHAT_ID, name="Test Chat", task=task, lead=agent
+    )
+
+    fake_feedback(
+        task=task, feedback="create a django app for cat memes", message_id=-1
+    )
+
+    return chat
 
 
 def task_setup():

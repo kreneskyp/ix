@@ -3,6 +3,7 @@ import logging
 import graphene
 from django.contrib.auth.models import User
 
+from ix.chains.models import Chain
 from ix.schema.types.tasks import TaskType
 from ix.schema.utils import handle_exceptions
 from ix.task_log.models import Agent, Task, TaskLogMessage
@@ -18,14 +19,10 @@ class CreateTaskResponse(graphene.ObjectType):
     task = graphene.Field(TaskType)
 
 
-class GoalInput(graphene.InputObjectType):
-    description = graphene.String(required=True)
-
-
 class CreateTaskInput(graphene.InputObjectType):
     name = graphene.String(required=True)
-    goals = graphene.List(GoalInput)
     agent_id = graphene.UUID()
+    chain_id = graphene.UUID()
     autonomous = graphene.Boolean()
 
 
@@ -39,7 +36,6 @@ class CreateTaskMutation(graphene.Mutation):
     @handle_exceptions
     def mutate(root, info, input):
         user = User.objects.latest("id")
-
         # TODO: turn this on once auth is setup for UI
         # user = info.context.user
         if user.is_anonymous:
@@ -51,21 +47,22 @@ class CreateTaskMutation(graphene.Mutation):
         else:
             agent = Agent.objects.get(pk=1)
 
-        if input.goals:
-            for goal in input.goals:
-                goal["complete"] = False
+        if input.chain_id:
+            chain = Chain.objects.get(pk=input.chain_id)
+        else:
+            chain = agent.chain
 
         # Save to persistence layer
         task = Task.objects.create(
             user=user,
-            goals=input.goals or [],
             name=input.name,
             agent=agent,
+            chain=chain,
             autonomous=input.autonomous if input.autonomous is not None else True,
         )
 
         # Start task loop
-        start_agent_loop.delay(task_id=str(task.id))
+        start_agent_loop.delay(task_id=str(task.id), chain_id=str(chain.id))
 
         return CreateTaskResponse(task=task)
 

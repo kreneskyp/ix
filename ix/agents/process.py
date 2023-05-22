@@ -1,22 +1,18 @@
 import logging
-import json
 import time
+import traceback
 
-import openai
 from functools import cached_property
-from typing import TypedDict, Optional, List, Any, Dict, Tuple
+from typing import TypedDict, Optional, Any, Dict
 
-from ix.agents.prompt_builder import PromptBuilder
-from ix.agents.prompts import COMMAND_FORMAT
-from ix.memory.plugin import VectorMemory
+from ix.agents.callback_manager import IxCallbackManager
+from ix.agents.exceptions import (
+    AgentQuestion,
+    AuthRequired,
+)
+from ix.chains.models import Chain as ChainModel
 from ix.task_log.models import Task, TaskLogMessage
-from ix.commands.registry import CommandRegistry
 from ix.utils.importlib import import_class
-from ix.utils.types import ClassPath
-
-
-class MissingCommandMarkers(Exception):
-    """Exception thrown when command markers are missing from response"""
 
 
 # config defaults
@@ -44,48 +40,26 @@ class ChatMessage(TypedDict):
 
 
 class AgentProcess:
-    INITIAL_INPUT = (
-        "Determine which next command to use, and respond in the expected format"
-    )
-    # NEXT_COMMAND = "GENERATE NEXT COMMAND JSON"
-    NEXT_COMMAND = INITIAL_INPUT
-    EXCLUDED_MSG_TYPES = {
-        "AUTH_REQUEST",
-        "AUTHORIZE",
-        "AUTONOMOUS",
-        "FEEDBACK_REQUEST",
-        "THOUGHT",
-        "SYSTEM",
-    }
+    # initial command when first starting
+    INITIAL_INPUT = None
 
-    command_registry: CommandRegistry
+    # the default prompt to use if not given FEEDBACK
+    NEXT_COMMAND = None
+
+    # indicates if the agent should be allowed to run autonomously
+    ALLOWS_AUTONOMOUS = True
 
     def __init__(
         self,
         task_id: int,
-        memory_class: ClassPath = DEFAULT_MEMORY,
-        command_modules: List[ClassPath] = DEFAULT_COMMANDS,
+        chain_id: str,
     ):
         logger.info(f"AgentProcess initializing task_id={task_id}")
 
-        # agent config
-        self.memory_class = memory_class
-        self.command_modules = command_modules
-
         # initial state
         self.task_id = task_id
-        self.history = []
-        self.last_message_at = None
-        self.memory = None
+        self.chain_id = chain_id
         self.autonomous = 0
-
-        # agent init
-        self.init_commands()
-
-        # task int
-        self.update_message_history()
-        self.initialize_memory()
-        logger.info("AgentProcess initialized")
 
     @cached_property
     def task(self):
@@ -95,131 +69,53 @@ class AgentProcess:
     def agent(self):
         return self.task.agent
 
-    def query_message_history(self, since=None):
-        """Fetch message history from persistent store for context relevant messages"""
+    @cached_property
+    def chain(self):
+        return ChainModel.objects.get(pk=self.chain_id)
 
-        # base query, selects messages relevant for chat context
-        query = TaskLogMessage.objects.filter(task_id=self.task_id).order_by(
-            "created_at"
-        )
-
-        # filter to only new messages
-        if since:
-            query = query.filter(created_at__gt=since)
-
-        return query
-
-    def update_message_history(self):
+    @classmethod
+    def from_task(cls, task: Task) -> "AgentProcess":
         """
-        Update message history with the most recent messages since the last update.
-        Initial startup will load all history into memory. Subsequent updates will
-        only load new messages.
+        Create an agent process from a task object. This will create an instance of the
+        agent class defined in the task and initialize it with the task id.
         """
-        logger.debug(
-            f"AgentProcess updating message history, last_message_at={self.last_message_at}"
-        )
+        agent_class = import_class(task.agent.agent_class_path)
+        assert issubclass(agent_class, cls)
+        return agent_class(task_id=task.id)
 
-        # fetch unseen messages and save the last timestamp for the next iteration
-        messages = list(self.query_message_history(self.last_message_at))
-        if messages:
-            self.last_message_at = messages[-1].created_at
-        logger.debug(
-            f"AgentProcess fetched n={len(messages)} messages from persistence"
-        )
-
-        # toggle autonomous mode based on latest AUTONOMOUS message
-        for message in reversed(messages):
-            if message.content["type"] == "AUTONOMOUS":
-                autonomous = message.content["enabled"]
-                if autonomous != self.autonomous:
-                    self.autonomous = autonomous
-                    logger.info(f"AgentProcess toggled autonomous mode to {autonomous}")
-                break
-
-        formatted_messages = [
-            message.as_message()
-            for message in messages
-            if message.content["type"] not in self.EXCLUDED_MSG_TYPES
-        ]
-        self.add_history(*formatted_messages)
-
-        logger.info(
-            f"AgentProcess loaded n={len(messages)} chat messages from persistence"
-        )
-
-    def initialize_memory(self):
-        """Load and initialize configured memory class"""
-        logger.debug("initializing memory_class={self.memory_class}")
-        memory_class = import_class(self.memory_class)
-        assert issubclass(memory_class, VectorMemory)
-        self.memory = memory_class("ix-agent")
-        self.memory.clear()
-
-    def init_commands(self):
-        """Load commands for this agent"""
-        logger.debug("initializing commands")
-        self.command_registry = CommandRegistry()
-        for class_path in self.command_modules:
-            self.command_registry.import_commands(class_path)
-
-        logger.info("intialized command registry")
-
-    def start(self, n: int = 0) -> bool:
+    def start(self, inputs: Optional[Dict[str, Any]] = None, n: int = 0) -> bool:
         """
         start agent loop and process `n` authorized ticks.
         """
-        logger.info(f"starting process loop task_id={self.task_id}")
-        tick_input = self.NEXT_COMMAND
+        logger.info(f"starting process loop task_id={self.task_id} input_id={inputs}")
         authorized_for = n
-        try:
-            last_message = TaskLogMessage.objects.filter(task_id=self.task_id).latest(
-                "created_at"
-            )
-        except TaskLogMessage.DoesNotExist:
-            last_message = None
-
-        if not last_message:
-            logger.info(f"first tick for task_id={self.task_id}")
-            tick_input = self.INITIAL_INPUT
-            # TODO load initial auth from either message stream or task
-        elif last_message.content["type"] == "AUTHORIZE":
-            logger.info(f"resuming with user authorization for task_id={self.task_id}")
-            # auth/feedback resume, run command that was authorized
-            # by default only a single command is authorized.
-            authorized_for = last_message.content.get("n", 1) - 1
-            authorized_msg = TaskLogMessage.objects.get(
-                pk=last_message.content["message_id"]
-            )
-            self.msg_execute(authorized_msg)
-        elif last_message.content["type"] in ["AUTH_REQUEST", "FEEDBACK_REQUEST"]:
-            # if last message is an unfulfilled feedback request then exit
-            logger.info(
-                f"Exiting, missing response to type={last_message.content['type']}"
-            )
-            return True
 
         # pass to main loop
-        exit_value = self.loop(n=authorized_for, tick_input=tick_input)
+        exit_value = self.loop(n=authorized_for, tick_input=inputs)
         logger.info(
             f"exiting process loop task_id={self.task_id} exit_value={exit_value}"
         )
         return exit_value
 
-    def loop(self, n=1, tick_input: str = NEXT_COMMAND) -> bool:
+    def loop(self, n=1, tick_input: Optional[Dict[str, Any]] = NEXT_COMMAND) -> bool:
         """
         main loop for agent process
         :param n: number of ticks user has authorized
         :param tick_input: initial input for first tick
         :return:
         """
+        loop_input = tick_input
         for i in range(n + 1):
             execute = self.autonomous or i < n
-            if not self.tick(execute=execute):
+            if not self.tick(execute=execute, user_input=loop_input):
                 logger.info("exiting loop, tick=False")
                 return False
+            loop_input = self.NEXT_COMMAND
         return True
 
-    def tick(self, user_input: str = NEXT_COMMAND, execute: bool = False) -> bool:
+    def tick(
+        self, user_input: Optional[Dict[str, Any]] = None, execute: bool = False
+    ) -> bool:
         """
         "tick" the agent loop letting it chat and run commands. The chat interaction
         including feedback requests, authorization requests, command results, and
@@ -232,254 +128,113 @@ class AgentProcess:
         logger.debug(
             "=== TICK =================================================================="
         )
-        self.update_message_history()
-        logger.info(f"ticking task_id={self.task_id}")
-        think_msg, response = self.chat_with_ai(user_input)
-        logger.debug(f"Response from model, task_id={self.task_id} response={response}")
+        logger.info(f"ticking task_id={self.task_id} user_input={user_input}")
 
+        think_msg = TaskLogMessage.objects.create(
+            task_id=self.task_id,
+            role="system",
+            content={"type": "THINK", "input": user_input, "agent": self.agent.alias},
+        )
         try:
-            data = self.handle_response(response)
-        except MissingCommandMarkers as e:
-            # log parse error and retry
-            self.log_exception(e, think_msg)
-            return True
+            response = self.chat_with_ai(think_msg, user_input)
+            logger.debug(
+                f"Response from model, task_id={self.task_id} response={response}"
+            )
 
-        # if bot asks a question then log it and exit.
-        if "question" in data:
+        except AgentQuestion as question:
+            # Agent returned a question that requires a response from the user.
+            # Abort normal execution and request INPUT from the user.
             TaskLogMessage.objects.create(
                 task_id=self.task_id,
                 parent_id=think_msg.id,
                 role="assistant",
-                content=dict(type="FEEDBACK_REQUEST", question=data["question"]),
+                content=dict(type="FEEDBACK_REQUEST", question=question.message),
             )
             return False
 
-        # log command to persistent storage
-        log_message = TaskLogMessage.objects.create(
-            task_id=self.task_id,
-            parent_id=think_msg.id,
-            role="assistant",
-            content=dict(type="COMMAND", **data),
-        )
+        except AuthRequired as e:
+            self.request_user_auth(think_msg, e.message)
+            return False
 
-        # validate command and then execute or seek feedback
-        if (
-            "command" not in data
-            or "name" not in data["command"]
-            or "args" not in data["command"]
-            or not data["command"]
-        ):
-            TaskLogMessage.objects.create(
-                task_id=self.task_id,
-                parent_id=think_msg.id,
-                role="system",
-                content={
-                    "type": "EXECUTE_ERROR",
-                    "message_id": str(log_message.id),
-                    "error_type": "missing command",
-                    "text": "respond in the expected format",
-                },
-            )
-        elif data["command"]["name"] not in self.command_registry.commands:
-            TaskLogMessage.objects.create(
-                task_id=self.task_id,
-                parent_id=think_msg.id,
-                role="system",
-                content={
-                    "type": "EXECUTE_ERROR",
-                    "message_id": str(log_message.id),
-                    "error_type": "unknown command",
-                    "text": f'{data["command"]["name"]} is not available',
-                },
-            )
-        else:
-            command = self.command_registry.get(data["command"]["name"])
-            logger.info(f"model returned task_id={self.task_id} command={command.name}")
-            if execute:
-                return self.msg_execute(log_message)
-            else:
-                logger.info(f"requesting user authorization task_id={self.task_id}")
-                self.request_user_auth(str(log_message.id))
+        except Exception as e:
+            # catch all to log all other messages
+            self.log_exception(exception=e, think_msg=think_msg)
+            return True
         return True
-
-    def construct_base_prompt(self):
-        goals_clause = "\n".join(
-            [f"{i+1}. {goal['description']}" for i, goal in enumerate(self.task.goals)]
-        )
-        commands_clause = self.command_registry.command_prompt()
-        agent = self.agent
-        from ix.agents.prompts import CONSTRAINTS_CLAUSE
-        from ix.agents.prompts import RESOURCES_CLAUSE
-        from ix.agents.prompts import SELF_EVALUATION_CLAUSE
-        from ix.agents.prompts import FORMAT_CLAUSE
-
-        return f"""
-You are {agent.name}, {agent.purpose}
-{goals_clause}
-{CONSTRAINTS_CLAUSE}
-{commands_clause}
-{RESOURCES_CLAUSE}
-{SELF_EVALUATION_CLAUSE}
-{FORMAT_CLAUSE}
-"""
 
     def log_exception(
         self,
         exception: Exception,
-        think_msg: TaskLogMessage,
-        log_msg: TaskLogMessage = None,
+        think_msg: TaskLogMessage = None,
     ):
         """Collection point for errors while ticking the loop"""
-        message_id = log_msg.id if log_msg else None
         assert isinstance(exception, Exception), exception
+        traceback_list = traceback.format_exception(
+            type(exception), exception, exception.__traceback__
+        )
+        traceback_string = "".join(traceback_list)
         error_type = type(exception).__name__
+        think_msg_id = think_msg.id if think_msg else None
         failure_msg = TaskLogMessage.objects.create(
             task_id=self.task_id,
-            parent_id=think_msg.id,
-            role="system",
+            parent_id=think_msg_id,
+            role="assistant",
             content={
                 "type": "EXECUTE_ERROR",
-                "message_id": str(message_id),
                 "error_type": error_type,
                 "text": str(exception),
+                "details": traceback_string,
             },
         )
         logger.error(
-            f"@@@@ EXECUTE ERROR logged as id={failure_msg.id} message_id={message_id} error_type={error_type}"
+            f"@@@@ EXECUTE ERROR logged as id={failure_msg.id} message_id={think_msg_id} error_type={error_type}"
         )
         logger.error(f"@@@@ EXECUTE ERROR {failure_msg.content['text']}")
 
-    def handle_response(self, response: str) -> Dict[str, Any]:
-        # find the json
-        start_marker = "###START###"
-        end_marker = "###END###"
-        start_index = response.find(start_marker)
-        end_index = response.find(end_marker)
+    def chat_with_ai(
+        self, think_msg: TaskLogMessage, user_input: Dict[str, Any]
+    ) -> TaskLogMessage:
+        callback_manager = IxCallbackManager(self.task)
+        callback_manager.think_msg = think_msg
+        chain = self.chain.load_chain(callback_manager)
 
-        if start_index == -1 or end_index == -1:
-            # before raising attempt to parse the response as json
-            # sometimes the AI returns responses that are still usable even without the markers
-            try:
-                data = json.loads(response)
-            except Exception:
-                raise MissingCommandMarkers
-        else:
-            json_slice = response[start_index + len(start_marker) : end_index].strip()
-            data = json.loads(json_slice)
-
-        logger.debug(f"parsed message={data}")
-        return data
-
-    def build_prompt(self, user_input: str) -> PromptBuilder:
-        assert user_input, "user_input is required"
-        prompt = PromptBuilder(3000)
-
-        # Add system prompt
-        system_prompt = {"role": "system", "content": self.construct_base_prompt()}
-        prompt.add(system_prompt)
-
-        # Reinforcement
-        reinforcement = [
-            {
-                "role": "user",
-                "content": "respond with the expected format",
-            },
-            {"role": "assistant", "content": COMMAND_FORMAT},
-        ]
-        for msg in reinforcement:
-            prompt.add(msg)
-
-        # Add Memories
-        memories = self.memory.find_nearest(str(self.history[-5:]), num_results=10)
-        logger.debug(f"selected len={len(memories)} memories for prompt")
-        prompt.add_max(memories, max_tokens=2500)
-
-        # User prompt
-        user_prompt = {"role": "user", "content": user_input}
-        user_prompt_length = prompt.count_tokens([user_prompt])
-
-        # Add history
-        logger.debug(f"history contains n={len(self.history)}")
-        prompt.add_max(self.history, max_tokens=500 - user_prompt_length)
-
-        # add user prompt
-        prompt.add(user_prompt)
-
-        return prompt
-
-    def chat_with_ai(self, user_input) -> Tuple[TaskLogMessage, str]:
-        prompt = self.build_prompt(user_input)
-        agent = self.task.agent
-        logger.info(f"Sending request to model {agent.model}")
-        think_msg = TaskLogMessage.objects.create(
-            task_id=self.task_id,
-            role="system",
-            content={
-                "type": "THINK",
-                "input": user_input,
-            },
+        logger.info(
+            f"Sending request to chain={self.task.agent.chain.name} prompt={user_input}"
         )
+
         start = time.time()
-        response = openai.ChatCompletion.create(
-            model=agent.model,
-            messages=prompt.messages,
-            temperature=agent.config["temperature"],
-            max_tokens=1000,
-        )
-        end = time.time()
-        TaskLogMessage.objects.create(
-            task_id=self.task_id,
-            role="system",
-            parent_id=think_msg.id,
-            content={
-                "type": "THOUGHT",
-                "usage": response["usage"],
-                "runtime": end - start,
-            },
-        )
-        return think_msg, response["choices"][0]["message"]["content"]
+        try:
+            response = chain.run(**user_input)
+        except:  # noqa: E722
+            raise
+        finally:
+            end = time.time()
+            TaskLogMessage.objects.create(
+                task_id=self.task_id,
+                role="system",
+                parent_id=think_msg.id,
+                content={
+                    "type": "THOUGHT",
+                    # TODO: add usage in somewhere else, it's not provided by langchain
+                    # "usage": response["usage"],
+                    "runtime": end - start,
+                },
+            )
+        return response
 
-    def add_history(self, *history_messages: Dict[str, Any]):
-        logger.debug(f"adding history history_messages={history_messages}")
-        self.history.extend(history_messages)
-
-    def request_user_auth(self, message_id):
+    def request_user_auth(self, think_msg: TaskLogMessage, message: TaskLogMessage):
         """
         Request user input to authorize command.
         """
+        logger.info(
+            f"requesting user authorization task_id={self.task_id} message_id={message.id}"
+        )
         TaskLogMessage.objects.create(
             task_id=self.task_id,
+            parent=think_msg,
             role="assistant",
             content={
                 "type": "AUTH_REQUEST",
-                "message_id": message_id,
+                "message_id": str(message.id),
             },
         )
-        # TODO: notify pubsub
-
-    def msg_execute(self, cmd_message: TaskLogMessage):
-        name = cmd_message.content["command"]["name"]
-        kwargs = cmd_message.content["command"].get("args", {})
-        try:
-            result = self.execute(name, **kwargs)
-            TaskLogMessage.objects.create(
-                task_id=self.task_id,
-                role="assistant",
-                parent=cmd_message.parent,
-                content={
-                    "type": "EXECUTED",
-                    "message_id": str(cmd_message.id),
-                    "output": f"{name} executed, result={result}",
-                },
-            )
-        except Exception as e:
-            self.log_exception(e, cmd_message.parent, cmd_message)
-        return True
-
-    def execute(self, name: str, **kwargs) -> Any:
-        """
-        execute the command
-        """
-        logger.info(f"executing task_id={self.task_id} command={name} kwargs={kwargs}")
-        result = self.command_registry.call(name, **kwargs)
-        return result

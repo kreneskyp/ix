@@ -23,10 +23,6 @@ export function TaskProvider({ children, taskId }) {
           isComplete
           completeAt
           autonomous
-          goals {
-            description
-            complete
-          }
           agent {
             id
             name

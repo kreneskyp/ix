@@ -5,8 +5,15 @@ export const AgentByIdQuery = graphql`
     agent(id: $id) {
       id
       name
+      alias
       model
       purpose
+      config
+      chain {
+        id
+        name
+        description
+      }
     }
   }
 `;

@@ -10,25 +10,21 @@ import {
   Tabs,
   useToast,
 } from "@chakra-ui/react";
-import { AgentCommandsEditor } from "agents/AgentCommandsEditor";
-import { AgentPromptEditor } from "agents/AgentPromptEditor";
 import { AgentGeneralEditor } from "agents/AgentGeneralEditor";
 import { AgentMetricsPanel } from "agents/AgentMetricsPanel";
-import { useMutation } from "react-relay/hooks";
+import { useMutation, usePreloadedQuery } from "react-relay/hooks";
 import { UpdateAgentMutation } from "agents/graphql/AgentMutations";
+import { ChainsQuery } from "chains/graphql/ChainsQuery";
 
-export const AgentEditor = ({ agent }) => {
+export const AgentEditor = ({ agent, chainsRef }) => {
+  const { chains } = usePreloadedQuery(ChainsQuery, chainsRef);
   const [commit] = useMutation(UpdateAgentMutation);
-  const [agentData, setAgentData] = useState(
-    agent || {
-      name: "",
-      purpose: "",
-      model: "",
-      systemPrompt: "",
-      commands: "[]",
-      config: {},
-    }
-  );
+
+  // repack agent without data that can't be updated
+  const { chain, createdAt, ...agentMinusChain } = agent || {};
+  const initialData = { ...agentMinusChain, chainId: chain?.id };
+
+  const [agentData, setAgentData] = useState(initialData);
   const toast = useToast();
 
   const updateAgent = () => {
@@ -64,8 +60,6 @@ export const AgentEditor = ({ agent }) => {
       <Tabs>
         <TabList>
           <Tab>Agent</Tab>
-          <Tab>Prompt</Tab>
-          <Tab>Commands</Tab>
           <Tab>Resources</Tab>
           <Tab>Metrics</Tab>
         </TabList>
@@ -74,18 +68,7 @@ export const AgentEditor = ({ agent }) => {
             <AgentGeneralEditor
               agentData={agentData}
               setAgentData={setAgentData}
-            />
-          </TabPanel>
-          <TabPanel>
-            <AgentPromptEditor
-              agentData={agentData}
-              setAgentData={setAgentData}
-            />
-          </TabPanel>
-          <TabPanel>
-            <AgentCommandsEditor
-              agentData={agentData}
-              setAgentData={setAgentData}
+              chains={chains}
             />
           </TabPanel>
           <TabPanel>
