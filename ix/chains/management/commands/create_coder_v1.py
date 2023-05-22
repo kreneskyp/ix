@@ -201,14 +201,15 @@ SAVE_FILE_ARTIFACT = {
     },
 }
 
-CODER_V1 = "b7d8f662-12f6-4525-b07b-c9ea7c100000"
+CODER_V1_CHAIN = "b7d8f662-12f6-4525-b07b-c9ea7c10000c"
+CODER_V1_AGENT = "b7d8f662-12f6-4525-b07b-c9ea7c10000a"
 
 
 class Command(BaseCommand):
     help = "Generates planner v4 chain"
 
     def handle(self, *args, **options):
-        Chain.objects.filter(id=CODER_V1).delete()
+        Chain.objects.filter(id=CODER_V1_CHAIN).delete()
 
         # Coder sequence
         coder = ChainNode.objects.create(**CODER_SEQUENCE)
@@ -223,13 +224,14 @@ class Command(BaseCommand):
         generate_map.add_child(**SAVE_FILE_ARTIFACT)
 
         chain = Chain.objects.create(
-            pk=CODER_V1,
+            pk=CODER_V1_CHAIN,
             name="Coder chain v1",
             description="Chain used to generate code files",
             root=coder,
         )
 
         Agent.objects.create(
+            id=CODER_V1_AGENT,
             name="Coder v1",
             alias="code",
             purpose="To generate code for a user request. May generate multiple files",

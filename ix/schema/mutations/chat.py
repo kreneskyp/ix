@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 
 from ix.agents.models import Agent
+from ix.chains.management.commands.create_coder_v1 import CODER_V1_AGENT
+from ix.chains.management.commands.create_moderator_v1 import MODERATOR_AGENT_V1
 from ix.chat.models import Chat
 from ix.schema.types.chat import ChatType
 from ix.schema.types.messages import TaskLogMessageType
@@ -26,10 +28,6 @@ class CreateChatInput(graphene.InputObjectType):
     agent_id = graphene.UUID(required=False)
 
 
-DEFAULT_AGENT_GPT3_5 = "a6062f37-645e-46c4-9a9b-e77b15031566"
-DEFAULT_AGENT_GPT4 = "121669a9-1c00-4dc4-98b3-9c813924982e"
-
-
 class CreateChatMutation(graphene.Mutation):
     Output = ChatMutationResponse
 
@@ -48,16 +46,16 @@ class CreateChatMutation(graphene.Mutation):
 
         # If agent is not provided, use the default agent
         if input and input.agent_id:
-            agent = Agent.objects.get(pk=input.agent_id)
+            lead = Agent.objects.get(pk=input.agent_id)
         else:
-            agent = Agent.objects.get(pk=DEFAULT_AGENT_GPT3_5)
+            lead = Agent.objects.get(pk=MODERATOR_AGENT_V1)
 
         # spawn subtask
         task = Task.objects.create(
             user=user,
             name=input and input.name or "",
-            agent=agent,
-            chain=agent.chain,
+            agent=lead,
+            chain=lead.chain,
             autonomous=input.autonomous
             if (input and input.autonomous is not None)
             else True,
@@ -65,8 +63,11 @@ class CreateChatMutation(graphene.Mutation):
 
         chat = Chat.objects.create(
             task=task,
-            lead=agent,
+            lead=lead,
         )
+
+        code = Agent.objects.get(id=CODER_V1_AGENT)
+        chat.agents.add(code)
 
         return ChatMutationResponse(chat=chat)
 
