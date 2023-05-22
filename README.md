@@ -43,7 +43,7 @@ Ix uses GPT-4 by default, but agents may be configured to use any model supporte
 
 ## How does it work
 
-![FizzBuzzExample.gif](docs/FizzBuzzExample.gif | width=400 )
+<img src="docs/FizzBuzzExample.gif" width="600" height="407">
 
 ### Basic Usage
 You chat with an agent that uses that direction to investigate, plan, and complete tasks. The agents are
