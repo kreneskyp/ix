@@ -99,9 +99,9 @@ CREATE_PLAN = {
             "class_path": "langchain.chat_models.openai.ChatOpenAI",
             "config": {
                 "model_name": "gpt-4",
-                "request_timeout": 240,
-                "temperature": 0.2,
-                "max_tokens": 4000,
+                "request_timeout": 600,
+                "temperature": 0.1,
+                "max_tokens": 5500,
                 "verbose": True,
             },
         },
