@@ -9,6 +9,7 @@ export const ChainGraphByIdQuery = graphql`
         description
         root {
           id
+          nodeType
           classPath
           config
           name
