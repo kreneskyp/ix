@@ -40,7 +40,7 @@ LLM Chains:
 
 Artifacts:
 
-* `SaveArtifact` <./artifacts.rst#SaveArtifact>`_: Save an artifact to the chat stream.
+* `SaveArtifact <./artifacts.rst#SaveArtifact>`_: Save an artifact to the chat stream.
 
 Data handling:
 
