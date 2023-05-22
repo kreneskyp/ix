@@ -12,13 +12,13 @@ import AuthRequestContent from "chat/AuthRequestContent";
 import ExecuteContent from "chat/ExecuteContent";
 import { useColorMode } from "@chakra-ui/color-mode";
 import ExecuteErrorContent from "chat/ExecuteErrorContent";
-import { PlanContent } from "planner/PlanContent";
 import CommandContent from "chat/CommandContent";
 
 import { useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import HighlightText from "components/HighlightText";
+import { ArtifactContent } from "chat/messages/ArtifactContent";
 
 const useMessageGroup = (messageGroup) => {
   // build message structure out of a group of messages
