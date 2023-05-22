@@ -44,8 +44,10 @@ def mock_openai(mocker, mock_openai_key):
 
 
 @pytest.fixture
-def mock_callback_manager(mocker):
-    return mocker.MagicMock(spec=IxCallbackManager)
+def mock_callback_manager(task):
+    manager = IxCallbackManager(task)
+    manager.think_msg = fake_think(task=task)
+    yield manager
 
 
 @pytest.fixture
