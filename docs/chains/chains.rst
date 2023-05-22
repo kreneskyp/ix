@@ -10,24 +10,30 @@ Overview
 A Langchain processing chain represents a sequence of actions or processes to be applied on a given input. This chain
 can involve various types of processes, including interactions with Language Models (LLMs).
 
-In the context of our Django application, we model this processing chain using two main entities: ``ChainNode`` and
-``ChainEdge``. This model is used to define the structure of the chain, and is stored in the database. The actual
+In the context of ourIx, we model this processing chain using two main entities: ``ChainNode`` and
+``ChainEdge``. This model is used to define the structure of the chain, and is stored in the database. The langchain
 processing chain is generated from this model when it is loaded.
 
 The graph model supports both defining arbitrary processing chains to run them, and also supports displaying and
-(eventually) editing them visually in the user interface. The model will be extended to support asynchronously
-calling other chains and agents.
+(eventually) editing them visually in the user interface. The model supports asynchronicity, including parallel
+processing and delegation to other agents.
 
 Chain API Reference
 ------------
-Ix uses a custom loading mechanism and provides custom chain types for flow control. These Chain classes
-are available by default:
+Ix provides custom features on top of langchain that require custom integrations to load.
+
+Default chain types
+^^^^^^^^^^^^^^^^^^^
 
 LLM Chains:
 
-* `LLMChain <./llm.rst#LLMChain>`_: wrapper around `langchain.LLMChain` to add config loader.
+* `LLMChain <./llm.rst#LLMChain>`_: wrapper around `langchain.LLMChain` to add Ix config loader.
 * `LLMToolChain <./llm.rst#LLMToolChain>`_: chain that has `tools` available in the prompt.
-* `LLMReply <./llm.rst#LLMReply>`_: chain that replies to a message with LLM prompt.
+* `LLMReply <./llm.rst#LLMReply>`_: Respond to chat stream with the result of an LLM prompt.
+
+Artifacts:
+
+* `SaveArtifact <./artifacts.rst#SaveArtifact>`_: Save an artifact to the chat stream.
 
 Data handling:
 
@@ -35,9 +41,9 @@ Data handling:
 
 Routing / flow control:
 
-* `IxSequence <./routing.rst#IxSequence>`_: wrapper for Sequence that provides config loader
-* `MapSubchain <./routing.rst#MapSubchain>`_: chain that runs a subchain for each value in a list
-* `ChooseTool <./routing.rst#ChooseTool>`_: chain that chooses a tool with a subchain
+* `IxSequence <./routing.rst#IxSequence>`_: wrapper for Sequence that provides config loader.
+* `MapSubchain <./routing.rst#MapSubchain>`_: Run subchain for each item in a list.
+* `ChooseTool <./routing.rst#ChooseTool>`_: chain that chooses a tool with a subchain.
 
 Chain Models
 ------------
@@ -81,6 +87,9 @@ the ``from_config`` class method of the chain class specified by the ``class_pat
 
 Creating Chains
 ^^^^^^^^
+
+Chains should be generated through python code run as a management command or via shell_plus. JSON config import is not
+supported yet.
 
 Here is a simple example of creating a chain that sends a greeting to the user. In this example, a simple chain that
 greets the user is created. The chain consists of a single node that uses the hypothetical class ``GreetUserChain`` to
