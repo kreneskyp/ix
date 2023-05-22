@@ -58,7 +58,6 @@ class ChainNode(models.Model):
 
     def add_child(self, key: Optional[str] = None, **kwargs) -> "ChainNode":
         """Add a node as a child"""
-        logger.debug(f"adding child to {self.class_path} kwargs={kwargs}")
         root = self.get_root()
         parent = self
 
@@ -69,7 +68,6 @@ class ChainNode(models.Model):
                 latest_node = self.children.all().latest("incoming_edges__key")
                 edge = latest_node.incoming_edges.get()
                 last_key = int(edge.key)
-                logger.debug(f"found last child key={last_key}")
             except ChainNode.DoesNotExist:
                 last_key = 0
             key = f"{last_key+1:0>3}"

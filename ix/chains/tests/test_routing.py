@@ -28,6 +28,7 @@ def mock_subchain_config():
     yield config
 
 
+@pytest.mark.django_db
 class TestMapSubchain:
     def test_from_config(self, mock_subchain_config, mock_callback_manager):
         chain = MapSubchain.from_config(
@@ -58,7 +59,6 @@ class TestMapSubchain:
         output = chain.run(**inputs)
         assert output == ["test1", "test2", "test3"]
 
-    @pytest.mark.django_db
     def test_model_save_load_run(self, mock_callback_manager):
         # create nodes
         node = ChainNode.objects.create(**EXAMPLE_CONFIG)

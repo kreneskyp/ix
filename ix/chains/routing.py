@@ -55,7 +55,7 @@ class MapSubchain(Chain):
 
     @property
     def _chain_type(self) -> str:
-        return "ix.MapSubchain"
+        return "ix.MapSubchain"  # pragma: no cover
 
     @property
     def input_keys(self) -> List[str]:
@@ -66,7 +66,7 @@ class MapSubchain(Chain):
         return [self.output_key]
 
     async def _acall(self, inputs: Dict[str, str]) -> Dict[str, str]:
-        pass
+        pass  # pragma: no cover
 
     def _call(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
         map_input = self.map_input
@@ -118,7 +118,6 @@ class MapSubchain(Chain):
         if map_input_to not in chain_config["input_variables"]:
             chain_config["input_variables"].append(map_input_to)
 
-        logger.error(f"mapped input variables={chain_config['input_variables']}")
         chain = IXSequence.from_config(chain_config, callback_manager=callback_manager)
 
         # build instance
