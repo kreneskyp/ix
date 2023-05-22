@@ -20,17 +20,10 @@ processing and delegation to other agents.
 
 Chain API Reference
 ------------
-Ix provides custom features on top of langchain.
-* Asynchronous processing queues
-* Chain types for data handling.
-* Chain types for routing / flow control.
-* Chain types for artifact handling.
-
+Ix provides custom features on top of langchain that require custom integrations to load.
 
 Default chain types
 ^^^^^^^^^^^^^^^^^^^
-
-These chains are available within Ix by default.
 
 LLM Chains:
 
