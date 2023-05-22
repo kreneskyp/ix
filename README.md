@@ -32,10 +32,10 @@ knowledge, casting a shadow of intrigue over the galaxy.
 Ix is an experimental platform for designing and deploying semi-autonomous LLM agents. It provides a scalable and
 responsive solution for delegating tasks to AI powered agents. The platform is designed to be extensible, allowing
 developers to create custom agents and chains to perform a wide variety of tasks.
+<br>
 
 The backend is designed to support multiple agents running in parallel and communicating with each other. Each agent
 may be customized and may utilize parallel processes to complete tasks.
-<br>
 <br>
 
 Ix uses GPT-4 by default, but agents may be configured to use any model supported by langchain.
@@ -43,7 +43,7 @@ Ix uses GPT-4 by default, but agents may be configured to use any model supporte
 
 ## How does it work
 
-![FizzBuzzExample.gif](docs/FizzBuzzExample.gif)
+![FizzBuzzExample.gif](docs/FizzBuzzExample.gif | width=400 )
 
 ### Basic Usage
 You chat with an agent that uses that direction to investigate, plan, and complete tasks. The agents are
