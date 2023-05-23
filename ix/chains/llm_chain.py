@@ -10,7 +10,7 @@ from langchain.prompts.chat import (
     BaseStringMessagePromptTemplate,
 )
 
-from ix.agents.llm import load_llm
+from ix.agents.llm import load_llm, load_memory
 from ix.agents.callback_manager import IxCallbackManager
 from ix.task_log.models import TaskLogMessage
 
@@ -60,15 +60,25 @@ class LLMChain(LangchainLLMChain):
 
         prepared_config, context = cls.prepare_config(config, callback_manager)
 
-        # load message templates
+        # load message templates and build prompt
         messages = []
         for message in config.pop("messages"):
             messages.append(cls.create_message(message, prepared_config, context))
-
-        # build prompt & chain
         prompt = ChatPromptTemplate.from_messages(messages)
+
+        # initialize memory
+        memory = None
+        memory_config = config.pop("memory", None)
+        if memory_config:
+            memory = load_memory(memory_config)
+
+        # build instance
         chain = cls(
-            **config, callback_manager=callback_manager, prompt=prompt, verbose=True
+            **config,
+            callback_manager=callback_manager,
+            prompt=prompt,
+            memory=memory,
+            verbose=True,
         )
 
         return chain

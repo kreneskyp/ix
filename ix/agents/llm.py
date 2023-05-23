@@ -2,6 +2,7 @@ import logging
 from typing import Dict, Any, Union
 
 from langchain.base_language import BaseLanguageModel
+from langchain.schema import BaseMemory
 
 from ix.agents.callback_manager import IxCallbackManager
 from ix.utils.importlib import import_class
@@ -30,6 +31,18 @@ def load_llm(
     llm = llm_class(**llm_config)
     llm.callback_manager = callback_manager
     return llm
+
+
+def load_memory(config: Dict[str, Any]) -> BaseMemory:
+    """Load a memory instance using a config"""
+    memory_class = import_class(config["class_path"])
+    logger.debug(f"loading memory class={memory_class} config={config}")
+
+    # TODO: how to integrate with redis, etc?
+    # TODO: any solution has to handle secrets.
+
+    instance = memory_class(**config.get("config", {}))
+    return instance
 
 
 def load_chain(config: Dict[str, Any], callback_manager: IxCallbackManager):
