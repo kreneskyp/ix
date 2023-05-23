@@ -10,7 +10,7 @@ ifndef HASHER
     HASHER := md5 -r
 endif
 
-IMAGE_TAG=$(shell cat $(HASH_FILES) | md5sum | cut -d ' ' -f 1)
+IMAGE_TAG=$(shell cat $(HASH_FILES) | ${HASHER} | cut -d ' ' -f 1)
 IMAGE_URL=$(DOCKER_REPOSITORY):$(IMAGE_TAG)
 IMAGE_SENTINEL=.sentinel/image
 
