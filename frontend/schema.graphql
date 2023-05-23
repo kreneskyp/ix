@@ -4,6 +4,7 @@ type Query {
   agents: [AgentType]
   searchAgents(search: String): [AgentType]
   chat(id: UUID!): ChatType
+  chats: [ChatType]
   chatPage(limit: Int = 10, offset: Int = 0): ChatsPage
   chain(id: UUID!): ChainType
   chains: [ChainType]
@@ -395,6 +396,7 @@ type DeleteResourceMutation {
 """Aggregation of graphql subscriptions"""
 type Subscription {
   chatMessageSubscription(chatId: String): ChatMessageSubscription
+  chatArtifactSubscription(chatId: String): ChatArtifactSubscription
 }
 
 """GraphQL subscription to TaskLogMessage instances."""
@@ -402,4 +404,9 @@ type ChatMessageSubscription {
   taskLogMessage: TaskLogMessageType
   agent: AgentType
   parentId: UUID
+}
+
+"""GraphQL subscription to Artifact instances."""
+type ChatArtifactSubscription {
+  artifact: ArtifactType
 }
