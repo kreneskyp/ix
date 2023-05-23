@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { HStack, VStack, Heading, Box, Text } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,6 +10,7 @@ import {
 import { usePreloadedQuery } from "react-relay/hooks";
 import { ChatByIdQuery } from "chat/graphql/ChatByIdQuery";
 import ArtifactModalButton from "chat/sidebar/ArtifactModalButton";
+import { useChatArtifactSubscription } from "chat/graphql/useChatArtifactSubscription";
 
 const ARTIFACT_TYPE_ICONS = {
   file: faFile,
@@ -23,8 +24,22 @@ const TypeIcon = ({ artifact }) => {
 
 const SideBarArtifactList = ({ queryRef }) => {
   const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
-  const artifacts = chat.task.artifacts;
+  const [artifacts, setArtifacts] = useState(chat.task.artifacts);
+
   const { colorMode } = useColorMode();
+
+  // Handle incoming new messages and update message groups
+  const handleNewArtifact = useCallback((artifact) => {
+    setArtifacts((prevArtifacts) => {
+      return [...prevArtifacts, artifact];
+    });
+  }, []);
+
+  // subscribe to messages
+  const subscriptionActive = useChatArtifactSubscription(
+    chat.id,
+    handleNewArtifact
+  );
 
   return (
     <VStack spacing={1}>
