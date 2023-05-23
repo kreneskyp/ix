@@ -42,7 +42,7 @@ export const ChatContentShim = ({ queryRef }) => {
           boxShadow="0px -1px 4px rgba(0, 0, 0, 0.1)"
         >
           {/* Bottom aligned section */}
-          <Box mr={10}>
+          <Box ml={95}>
             <TaskProvider taskId={moderatorTask.id}>
               <ChatInput chat={chat} />
             </TaskProvider>
