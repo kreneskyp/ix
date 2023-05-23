@@ -4,6 +4,7 @@ type Query {
   agents: [AgentType]
   searchAgents(search: String): [AgentType]
   chat(id: UUID!): ChatType
+  chats: [ChatType]
   chatPage(limit: Int = 10, offset: Int = 0): ChatsPage
   chain(id: UUID!): ChainType
   chains: [ChainType]

@@ -13,6 +13,7 @@ import { ChatHistoryView } from "chat/history/ChatHistoryView";
 //import { AdminSettingsView } from 'admin/AdminSettingsView';
 
 export const routes = [
+  { path: "/proto", element: <ChainEditorView /> },
   { path: "/tasks", element: <TasksListView /> },
   { path: "/chats/new", element: <NewChatRedirect /> },
   {
