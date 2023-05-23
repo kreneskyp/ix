@@ -1,5 +1,6 @@
 import logging
 import graphene
+import re
 from django.contrib.auth.models import User
 from django.db.models import Q
 
@@ -184,6 +185,19 @@ class ChatInput(graphene.InputObjectType):
     text = graphene.String(required=True)
 
 
+def get_artifacts(user_input):
+    """Find all references to artifacts in user input."""
+    # Pattern to find all instances of text enclosed in curly braces.
+    pattern = r"\{(.*?)\}"
+
+    # re.findall returns all non-overlapping matches of pattern in string, as a list of strings.
+    # The string is scanned left-to-right, and matches are returned in the order found.
+    matches = re.findall(pattern, user_input)
+
+    # Return the list of matches.
+    return matches
+
+
 class ChatInputMutation(graphene.Mutation):
     class Arguments:
         input = ChatInput(required=True)
@@ -226,6 +240,7 @@ class ChatInputMutation(graphene.Mutation):
                 | Q(chats__id=chat.id, alias=agent_alias)
             ).get()
 
+            # delegate the task to the agent and run in this thread
             subtask = chat.task.delegate_to_agent(agent)
             task_id = subtask.id
 
@@ -237,6 +252,7 @@ class ChatInputMutation(graphene.Mutation):
         inputs = {
             "user_input": input.text,
             "chat_id": str(chat.id),
+            "artifact_keys": get_artifacts(user_input) or [],
         }
 
         # Start agent loop. This does NOT check if the loop is already running
