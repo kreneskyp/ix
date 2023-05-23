@@ -5,6 +5,7 @@ from typing import TypedDict, Optional
 from django.db import models
 from ix.agents.models import Agent
 from ix.chains.models import Chain
+from ix.commands.filesystem import read_file
 
 
 class Task(models.Model):
@@ -140,6 +141,29 @@ class Artifact(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     storage = models.JSONField()
+
+    @property
+    def data(self):
+        """Fetch related data for this artifact"""
+        storage_type = self.storage["type"]
+        storage_id = self.storage["id"]
+        if storage_type == "write_to_file":
+            # TODO: should push this out to a storage subsystem.
+            return read_file(storage_id)
+        return None
+
+    def as_memory_text(self):
+        """
+        Return a string representation of this artifact for inclusion in prompts
+        """
+        return f"""
+        id: {self.id}
+        key: {self.key}
+        type: {self.artifact_type}
+        desc: {self.description}
+        data:
+        {self.data}
+        """
 
 
 class Plan(models.Model):
