@@ -62,6 +62,8 @@ FILE_CONTENT_FORMAT = """
 GENERATE_CODE_V1 = """
 You are a python coder. You will writes files for the user request.
 
+{related_artifacts}
+
 FILE ARTIFACT:
 {file_artifact}
 
@@ -166,6 +168,9 @@ GENERATE_FILE = {
                 "temperature": 0.2,
                 "verbose": True,
             },
+        },
+        "memory": {
+            "class_path": "ix.memory.artifacts.ArtifactMemory",
         },
         "messages": [
             {
