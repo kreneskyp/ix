@@ -57,7 +57,6 @@ class ChatModerator(Chain):
 
     llm: Any = None
     selection_chain: Chain = None
-    callback_manager: Any = None
 
     def __init__(
         self,
@@ -67,7 +66,7 @@ class ChatModerator(Chain):
     ):
         super().__init__(**data)
         self.selection_chain = selection_chain
-        self.callback_manager = callback_manager
+        self.callbacks = callback_manager
         self.llm = data["llm"]
 
     @property
@@ -107,13 +106,13 @@ class ChatModerator(Chain):
 
         # 2. report delegation
         TaskLogMessage.objects.create(
-            task_id=self.callback_manager.task.id,
+            task_id=self.callbacks.task.id,
             role="assistant",
-            parent=self.callback_manager.think_msg,
+            parent=self.callbacks.think_msg,
             content={
                 "type": "ASSISTANT",
                 "text": f"Delegating to @{alias}",
-                "agent": self.callback_manager.task.agent.alias,
+                "agent": self.callbacks.task.agent.alias,
             },
         )
 
@@ -140,7 +139,7 @@ class ChatModerator(Chain):
         chooser_config = LLM_CHOOSE_AGENT_CONFIG.copy()
         chooser_config["llm"] = llm
         chooser = LLMChain.from_config(chooser_config, callback_manager)
-        chooser.callback_manager = callback_manager
+        chooser.callbacks = callback_manager
 
         instance = cls(
             llm=llm,

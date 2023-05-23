@@ -80,4 +80,4 @@ class TestLLMChain:
             == EXAMPLE_CONFIG["config"]["messages"][0]["partial_variables"]
         )
         assert result.prompt.messages[1].prompt.partial_variables == {}
-        assert result.callback_manager == callback_manager_mock
+        assert result.callbacks == callback_manager_mock

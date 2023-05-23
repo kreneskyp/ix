@@ -67,8 +67,9 @@ class LLMChain(LangchainLLMChain):
 
         # build prompt & chain
         prompt = ChatPromptTemplate.from_messages(messages)
-        chain = cls(**config, prompt=prompt, verbose=True)
-        chain.callback_manager = callback_manager
+        chain = cls(
+            **config, callback_manager=callback_manager, prompt=prompt, verbose=True
+        )
 
         return chain
 
@@ -82,14 +83,14 @@ class LLMReply(LLMChain):
     def run(self, *args, **kwargs) -> Any:
         response = super().run(*args, **kwargs)
         TaskLogMessage.objects.create(
-            task_id=self.callback_manager.task.id,
+            task_id=self.callbacks.task.id,
             role="assistant",
-            parent=self.callback_manager.think_msg,
+            parent=self.callbacks.think_msg,
             content={
                 "type": "ASSISTANT",
                 "text": response,
                 # "agent": str(self.callback_manager.task.agent.id),
-                "agent": self.callback_manager.task.agent.alias,
+                "agent": self.callbacks.task.agent.alias,
             },
         )
 

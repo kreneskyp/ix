@@ -77,7 +77,7 @@ class SaveArtifact(Chain):
                 "key": self.artifact_key,
                 "name": self.artifact_name,
                 "description": self.artifact_description,
-                "identifier": f"{self.artifact_key}_{self.callback_manager.think_msg.id}",
+                "identifier": f"{self.artifact_key}_{self.callbacks.think_msg.id}",
             }
 
         # Storage is always set from the config for now
@@ -98,7 +98,7 @@ class SaveArtifact(Chain):
         # Associate the artifact with the parent task (chat) until
         # frontend API call can include artifacts from any descendant
         # of the Chat's task.
-        task = self.callback_manager.task
+        task = self.callbacks.task
         artifact_task_id = task.parent_id if task.parent_id else task.id
 
         # save to artifact storage
@@ -114,9 +114,9 @@ class SaveArtifact(Chain):
         # send message to log
         TaskLogMessage.objects.create(
             role="assistant",
-            task=self.callback_manager.task,
-            agent=self.callback_manager.task.agent,
-            parent=self.callback_manager.think_msg,
+            task=self.callbacks.task,
+            agent=self.callbacks.task.agent,
+            parent=self.callbacks.think_msg,
             content={
                 "type": "ARTIFACT",
                 "artifact_type": artifact.artifact_type,
@@ -142,4 +142,4 @@ class SaveArtifact(Chain):
 
     @classmethod
     def from_config(cls, config: Dict[str, Any], callback_manager: IxCallbackManager):
-        return cls(**config, callback_manager=callback_manager)
+        return cls(**config, callbacks=callback_manager)
