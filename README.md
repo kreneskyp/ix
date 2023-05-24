@@ -93,20 +93,25 @@ View the [documentation](docs/chains/chains.rst) to create custom agents and cha
 
 ## Setup
 
-### Prerequisites
+### 1. Prerequisites
 
 Before getting started, ensure you have the following software installed on your system:
 
-- Docker
-- Docker Compose
+- git
+- make
+- Docker:
+    - [Mac](https://docs.docker.com/desktop/install/mac-install/)
+    - [Windows](https://docs.docker.com/desktop/install/windows-install/)
 
 
-Clone the repository:
+### 2. Clone the repository
 
 ```bash
 git clone https://github.com/kreneskyp/ix.git
 cd ix
 ```
+
+### 3. Setup env
 
 Setup config in `.env`
 
@@ -117,24 +122,19 @@ cp .env.template .env
 ```
 OPENAI_API_KEY=YOUR_KEY_HERE
 
-# Pinecone
-PINECONE_API_KEY=
-PINECONE_ENV=
-
-# search
+# search (optional)
 GOOGLE_API_KEY=
 GOOGLE_CX_ID=
 WOLFRAM_APP_ID=
 ```
 
-
-Build and run the dev image.
+### Build and run the dev image.
 
 ```
 make dev_setup
 ```
 
-Run the dev server
+### Run the dev server & worker
 
 ```bash
 make server
