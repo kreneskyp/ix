@@ -299,6 +299,21 @@ def fake_chat():
     return chat
 
 
+def fake_artifact(**kwargs) -> Artifact:
+    task = kwargs.get("task", Task.objects.order_by("?").first())
+    options = dict(
+        key="test_artifact_1",
+        artifact_type="file",
+        task=task,
+        name="Test Artifact 1",
+        description="This is a test artifact (1)",
+        storage={"type": "file", "id": "test_artifact"},
+    )
+    options.update(kwargs)
+
+    return Artifact.objects.create(**options)
+
+
 def task_setup():
     try:
         task = Task.objects.get(id=1)
