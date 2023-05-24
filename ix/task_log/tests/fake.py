@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 from ix.chains.models import Chain, ChainNode
 from ix.chat.models import Chat
-from ix.task_log.models import Agent, Task, TaskLogMessage
+from ix.task_log.models import Agent, Task, TaskLogMessage, Artifact
 from faker import Faker
 
 fake = Faker()
