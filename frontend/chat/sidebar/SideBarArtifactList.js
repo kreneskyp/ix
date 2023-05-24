@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { HStack, VStack, Heading, Box, Text } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,6 +25,11 @@ const TypeIcon = ({ artifact }) => {
 const SideBarArtifactList = ({ queryRef }) => {
   const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
   const [artifacts, setArtifacts] = useState(chat.task.artifacts);
+
+  // Reset artifacts when chat.id changes
+  useEffect(() => {
+    setArtifacts(chat.task.artifacts);
+  }, [chat.id]);
 
   const { colorMode } = useColorMode();
 
