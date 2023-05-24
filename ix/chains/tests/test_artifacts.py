@@ -109,6 +109,39 @@ class TestSaveArtifact:
             file_content = file.read()
         assert json.loads(file_content) == MOCK_CONTENT
 
+    def test_artifact_content_path(self, mock_callback_manager, tmp_path):
+        """
+        Test mapping content with `content_path` jsonpath. This allows a value
+        Test mapping content with `content_path` jsonpath. This allows a value
+        within the content object to be saved.
+        """
+        config = deepcopy(ARTIFACT_FROM_ARTIFACT)
+        config["config"]["artifact_storage"] = "write_to_file"
+        temp_file = tmp_path / "temp_file.txt"
+        config["config"]["identifier"] = str(temp_file)
+        config["config"]["content_path"] = "artifact_content.foo"
+        config["config"]["artifact_storage"] = "write_to_file"
+        config["config"]["artifact_storage_id"] = str(temp_file)
+
+        node = ChainNode.objects.create(**config)
+        chain = node.load_chain(mock_callback_manager)
+
+        kwargs = {}
+        if "artifact_from_key" in config["config"]:
+            kwargs["mock_artifact"] = MOCK_ARTIFACT
+        result = chain.run(artifact_content=MOCK_CONTENT, **kwargs)
+
+        artifact = Artifact.objects.get()
+        assert result == str(artifact.id)
+
+        # assert file is written
+        assert temp_file.is_file()
+
+        # assert file contents are correct
+        with open(temp_file, "r") as file:
+            file_content = file.read()
+        assert file_content == "bar"
+
     @pytest.mark.parametrize("config", [ARTIFACT_FROM_ARTIFACT, STATIC_ARTIFACT])
     def test_artifact_type(self, config, mock_callback_manager):
         """Test that artifact_type will be set to the value in the config if set in config"""

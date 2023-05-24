@@ -130,10 +130,11 @@ class SaveArtifact(Chain):
 
         # write to storage (i.e. file, database, or a cache)
         if self.artifact_storage == "write_to_file":
-            # Todo map content with jsonpath
             file_path = artifact.storage["id"]
             logger.debug(f"writing content to file file_path={file_path} {content}")
-            write_to_file(file_path, json.dumps(content))
+            if not isinstance(content, str):
+                content = json.dumps(content)
+            write_to_file(file_path, content)
 
         return {self.output_key: str(artifact.id)}
 
