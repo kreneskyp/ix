@@ -5,10 +5,10 @@ from jsonpath_ng import parse as jsonpath_parse
 from langchain.base_language import BaseLanguageModel
 from langchain.chains import SequentialChain
 from langchain.chains.base import Chain
+from pydantic import root_validator
 
 from ix.agents.callback_manager import IxCallbackManager
-from ix.agents.llm import load_chain
-
+from ix.agents.llm import load_chain, load_memory
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +24,10 @@ class IXSequence(SequentialChain):
         # TODO: pass on llm?
         # llm_config = config["llm"]
         # llm = load_llm(llm_config, callback_manager=callback_manager)
+
+        # initialize memory
+        if "memory" in config:
+            config["memory"] = load_memory(config.pop("memory"))
 
         chains = []
         for i, chain_config in enumerate(config.pop("chains")):
