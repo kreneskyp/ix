@@ -157,13 +157,13 @@ class Artifact(models.Model):
         Return a string representation of this artifact for inclusion in prompts
         """
         return f"""
-        id: {self.id}
-        key: {self.key}
-        type: {self.artifact_type}
-        desc: {self.description}
-        data:
-        {self.data}
-        """
+id: {self.id}
+key: {self.key}
+type: {self.artifact_type}
+desc: {self.description}
+data:
+{self.data}
+"""
 
 
 class Plan(models.Model):
