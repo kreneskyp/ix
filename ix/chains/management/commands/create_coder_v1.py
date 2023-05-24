@@ -197,6 +197,7 @@ SAVE_FILE_ARTIFACT = {
         "artifact_type": "file",
         "artifact_storage": "write_to_file",
         "content_key": "generated_file_json",
+        "content_path": "generated_file_json.file_content",
         "output_key": "generated_file_artifact",
     },
 }
