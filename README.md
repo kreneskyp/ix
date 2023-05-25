@@ -38,7 +38,7 @@ The backend is designed to support multiple agents running in parallel and commu
 may be customized and may utilize parallel processes to complete tasks.
 <br>
 
-Ix uses GPT-4 by default, but agents may be configured to use any model supported by langchain.
+Ix uses GPT-4 by default, but agents may be configured to use any model supported by LangChain.
 </div>
 
 ## How does it work
@@ -79,9 +79,9 @@ View the [documentation](docs/chains/chains.rst) to create custom agents and cha
 - Python 3.11
 - Django 4.2
 - PostgreSQL 14.4
-- Graphql / Graphene / Relay
+- GraphQL / Graphene / Relay
 - React 18
-- Langchain
+- LangChain
 - Integrated with OpenAI GPT models
 - Plugin architecture to support extending agent functionality (e.g. web browsing, writing code, etc)
 - Generic framework for vector database based agent memory
@@ -166,14 +166,14 @@ Here are some helpful commands for developers to set up and manage the developme
 
 ### Building:
 - `make image`: Build the Docker image.
-- `make frontend`: Rebuild the front end (graphql, relay, webpack).
-- `make webpack`: Rebuild javascript only
-- `make webpack-watch`: Rebuild javascript on file changes
+- `make frontend`: Rebuild the front end (GraphQL, relay, webpack).
+- `make webpack`: Rebuild JavaScript only
+- `make webpack-watch`: Rebuild JavaScript on file changes
 
 ### Database
 - `make migrate`: Run Django database migrations.
 - `make migrations`: Generate new Django database migration files.
 
 ### Utility
-- `make bash`: Open a bash shell in the docker container.
+- `make bash`: Open a bash shell in the Docker container.
 - `make shell`: Open a Django shell_plus session.
