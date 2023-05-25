@@ -1,6 +1,7 @@
 import logging
 
 import graphene
+from django.db.models import Q
 from graphene.types.generic import GenericScalar
 from graphene_django import DjangoObjectType
 
@@ -48,3 +49,20 @@ class ArtifactType(DjangoObjectType):
     class Meta:
         model = Artifact
         fields = "__all__"
+
+
+class Query(graphene.ObjectType):
+    search_artifacts = graphene.List(
+        ArtifactType, search=graphene.String(), chat_id=graphene.UUID()
+    )
+
+    def resolve_search_artifacts(self, info, search):
+        # basic search for now, add pg_vector similarity search later
+
+        return (
+            Artifact.objects.filter(
+                Q(name__icontains=search) | Q(key__icontains=search)
+            )
+            .order_by("key", "-created_at")
+            .distinct("key")
+        )
