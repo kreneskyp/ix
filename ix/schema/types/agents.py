@@ -32,7 +32,7 @@ class Query(graphene.ObjectType):
     def resolve_search_agents(self, info, search):
         # basic search for now, add pg_vector similarity search later
         return Agent.objects.filter(
-            Q(name__icontains=search) | Q(purpose__icontains=search)
+            Q(name__icontains=search) | Q(alias__icontains=search)
         )
 
     def resolve_agent(self, info, id):
