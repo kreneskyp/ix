@@ -1,8 +1,8 @@
 import { graphql } from "react-relay/hooks";
 
 export const SearchArtifactsQuery = graphql`
-  query SearchArtifactsQuery($search: String) {
-    searchArtifacts(search: $search) {
+  query SearchArtifactsQuery($search: String, $chatId: UUID!) {
+    searchArtifacts(search: $search, chatId: $chatId) {
       id
       key
       name

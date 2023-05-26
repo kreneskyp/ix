@@ -68,13 +68,13 @@ export const ChatInput = ({ chat }) => {
   const [agentsQueryRef, loadAgentsQuery, disposeAgentsQuery] =
     useQueryLoader(SearchAgentsQuery);
   const searchAgents = useCallback((search) => {
-    loadAgentsQuery({ search }, { fetchPolicy: "store-and-network" });
+    loadAgentsQuery({ search, chatId: chat.id }, { fetchPolicy: "store-and-network" });
   }, []);
 
   const [artifactQueryRef, loadArtifactQuery, disposeArtifactQuery] =
     useQueryLoader(SearchArtifactsQuery);
   const searchArtifacts = useCallback((search) => {
-    loadArtifactQuery({ search }, { fetchPolicy: "store-and-network" });
+    loadArtifactQuery({ search, chatId: chat.id }, { fetchPolicy: "store-and-network" });
   }, []);
 
   useEffect(() => {

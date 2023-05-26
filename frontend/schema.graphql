@@ -1,9 +1,9 @@
 """Aggregation of graphql queries"""
 type Query {
-  searchArtifacts(search: String, chatId: UUID): [ArtifactType]
+  searchArtifacts(search: String, chatId: UUID!): [ArtifactType]
   agent(id: UUID!): AgentType
   agents: [AgentType]
-  searchAgents(search: String): [AgentType]
+  searchAgents(search: String, chatId: UUID): [AgentType]
   chat(id: UUID!): ChatType
   chats: [ChatType]
   chatPage(limit: Int = 10, offset: Int = 0): ChatsPage
