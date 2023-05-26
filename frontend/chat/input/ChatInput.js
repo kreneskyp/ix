@@ -52,7 +52,7 @@ const SearchArtifactsQueryRunner = ({ queryRef, setResults }) => {
 
 export const ChatInput = ({ chat }) => {
   const focusRef = useRef();
-  const [target, setTarget] = useState();
+  const [target, setTarget] = useState(null);
   const [targetType, setTargetType] = useState();
   const [index, setIndex] = useState(0);
   const [search, setSearch] = useState("");
@@ -183,6 +183,11 @@ export const ChatInput = ({ chat }) => {
     // search text for artifact mentions
     if (searchForHighlight(editor, "artifact", /^{(\w+)$/)) {
       return;
+    }
+
+    // no target was found after update, clear target.
+    if (target !== null) {
+      setTarget(null);
     }
   });
 
