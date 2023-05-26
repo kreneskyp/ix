@@ -5,6 +5,7 @@ from django.db.models import Q
 from graphene.types.generic import GenericScalar
 from graphene_django import DjangoObjectType
 
+from ix.chat.models import Chat
 from ix.task_log.models import Task, Artifact, Plan, PlanSteps
 
 logger = logging.getLogger(__name__)
@@ -53,16 +54,20 @@ class ArtifactType(DjangoObjectType):
 
 class Query(graphene.ObjectType):
     search_artifacts = graphene.List(
-        ArtifactType, search=graphene.String(), chat_id=graphene.UUID()
+        ArtifactType, search=graphene.String(), chat_id=graphene.UUID(required=True)
     )
 
-    def resolve_search_artifacts(self, info, search):
+    def resolve_search_artifacts(self, info, search, chat_id):
         # basic search for now, add pg_vector similarity search later
+        chat = Chat.objects.get(pk=chat_id)
 
-        return (
+        artifacts = (
             Artifact.objects.filter(
-                Q(name__icontains=search) | Q(key__icontains=search)
+                (Q(name__icontains=search) | Q(key__icontains=search)),
+                task=chat.task,
             )
             .order_by("key", "-created_at")
             .distinct("key")
         )
+
+        return artifacts
