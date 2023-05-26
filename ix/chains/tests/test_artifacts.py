@@ -153,8 +153,6 @@ class TestSaveArtifact:
         kwargs = {}
         if "artifact_from_key" in config["config"]:
             kwargs["mock_artifact"] = MOCK_ARTIFACT
-        print("kwargs", kwargs)
-        print("config", config)
 
         result = chain.run(artifact_content=MOCK_CONTENT, **kwargs)
 
