@@ -27,13 +27,21 @@ class ResourceType(DjangoObjectType):
 class Query(graphene.ObjectType):
     agent = graphene.Field(AgentType, id=graphene.UUID(required=True))
     agents = graphene.List(AgentType)
-    search_agents = graphene.List(AgentType, search=graphene.String())
+    search_agents = graphene.List(
+        AgentType, search=graphene.String(), chat_id=graphene.UUID(required=False)
+    )
 
-    def resolve_search_agents(self, info, search):
+    def resolve_search_agents(self, info, search, chat_id=None):
         # basic search for now, add pg_vector similarity search later
-        return Agent.objects.filter(
+
+        query = Agent.objects.filter(
             Q(name__icontains=search) | Q(alias__icontains=search)
         )
+
+        if chat_id:
+            query = query.filter(Q(leading_chats__id=chat_id) | Q(chats__id=chat_id))
+
+        return query
 
     def resolve_agent(self, info, id):
         return Agent.objects.get(pk=id)
