@@ -38,7 +38,7 @@ const SearchAgentsQueryRunner = ({ queryRef, setResults }) => {
   const agents = data?.searchAgents;
   useEffect(() => {
     setResults(agents);
-  }, [agents]);
+  }, [queryRef, agents]);
 };
 
 const SearchArtifactsQueryRunner = ({ queryRef, setResults }) => {
@@ -47,7 +47,7 @@ const SearchArtifactsQueryRunner = ({ queryRef, setResults }) => {
   const artifacts = data?.searchArtifacts;
   useEffect(() => {
     setResults(artifacts);
-  }, [artifacts]);
+  }, [queryRef, artifacts]);
 };
 
 export const ChatInput = ({ chat }) => {
