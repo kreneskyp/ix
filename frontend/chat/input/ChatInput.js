@@ -245,6 +245,11 @@ export const ChatInput = ({ chat }) => {
     { bg: "gray.900", color: "gray.100", borderColor: "gray.700" }
   );
 
+  const popoverSx = useColorModeValue(
+    { bg: "gray.100", color: "gray.900", borderColor: "gray.300" },
+      {bg: "gray.800", color: "gray.100", borderColor: "gray.700"}
+  );
+
   return (
     <Box width={800} sx={sx} p={2} border="1px solid" borderRadius={5}>
       {agentSearchRunner}
@@ -259,7 +264,7 @@ export const ChatInput = ({ chat }) => {
           <Box ref={focusRef} width={1}></Box>
         </PopoverAnchor>
         <PopoverContent mb={2} boxShadow="xl">
-          <PopoverBody>{searchComponent}</PopoverBody>
+          <PopoverBody border="1px solid" sx={popoverSx}>{searchComponent}</PopoverBody>
         </PopoverContent>
       </Popover>
 
