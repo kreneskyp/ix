@@ -252,7 +252,7 @@ export const ChatInput = ({ chat }) => {
 
   const popoverSx = useColorModeValue(
     { bg: "gray.100", color: "gray.900", borderColor: "gray.300" },
-      {bg: "gray.800", color: "gray.100", borderColor: "gray.700"}
+    { bg: "gray.800", color: "gray.100", borderColor: "gray.700" }
   );
 
   return (
@@ -269,7 +269,9 @@ export const ChatInput = ({ chat }) => {
           <Box ref={focusRef} width={1}></Box>
         </PopoverAnchor>
         <PopoverContent mb={2} boxShadow="xl">
-          <PopoverBody border="1px solid" sx={popoverSx}>{searchComponent}</PopoverBody>
+          <PopoverBody border="1px solid" sx={popoverSx}>
+            {searchComponent}
+          </PopoverBody>
         </PopoverContent>
       </Popover>
 
