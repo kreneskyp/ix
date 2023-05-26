@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 from ix.chains.models import Chain, ChainNode
 from ix.chat.models import Chat
-from ix.task_log.models import Agent, Task, TaskLogMessage
+from ix.task_log.models import Agent, Task, TaskLogMessage, Artifact
 from faker import Faker
 
 fake = Faker()
@@ -297,6 +297,21 @@ def fake_chat():
     )
 
     return chat
+
+
+def fake_artifact(**kwargs) -> Artifact:
+    task = kwargs.get("task", Task.objects.order_by("?").first())
+    options = dict(
+        key="test_artifact_1",
+        artifact_type="file",
+        task=task,
+        name="Test Artifact 1",
+        description="This is a test artifact (1)",
+        storage={"type": "file", "id": "test_artifact"},
+    )
+    options.update(kwargs)
+
+    return Artifact.objects.create(**options)
 
 
 def task_setup():
