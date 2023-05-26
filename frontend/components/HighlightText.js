@@ -16,14 +16,14 @@ const HighlightText = ({ content }) => {
       if (word.startsWith("@")) {
         // Word is a mention
         return (
-          <Text as="span" color={mention} key={idx}>
+          <Text as="span" sx={mention} key={idx}>
             {word + " "}
           </Text>
         );
       } else if (word.startsWith("{") && word.endsWith("}")) {
         // Word is an artifact
         return (
-          <Text as="span" color={artifact} key={idx}>
+          <Text as="span" sx={artifact} key={idx}>
             {word + " "}
           </Text>
         );
@@ -31,7 +31,7 @@ const HighlightText = ({ content }) => {
         return word + " ";
       }
     });
-  }, [content]);
+  }, [content, mention, artifact]);
 
   return <Box>{formattedContent}</Box>;
 };

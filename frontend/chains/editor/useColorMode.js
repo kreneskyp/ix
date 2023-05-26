@@ -40,7 +40,23 @@ export const useChatColorMode = () => {
 
   return {
     isLight,
-    mention: isLight ? "blue.300" : "blue.400",
-    artifact: isLight ? "yellow.300" : "yellow.300",
+    editorHighlight: isLight ? "gray.200" : "gray.700",
+    autoCompleteSelected: isLight ? "gray.200" : "gray.600",
+    mention: isLight
+      ? {
+          color: "blue.500",
+          fontWeight: "bold",
+        }
+      : {
+          color: "blue.300",
+        },
+    artifact: isLight
+      ? {
+          color: "orange.600",
+          fontWeight: "bold",
+        }
+      : {
+          color: "yellow.300",
+        },
   };
 };
