@@ -72,12 +72,12 @@ class TestLLMChain:
 
     def test_from_config(self, load_llm_mock, callback_manager_mock):
         config = EXAMPLE_CONFIG["config"].copy()
-        result = LLMChain.from_config(config, callback_manager_mock)
+        chain = LLMChain.from_config(config, callback_manager_mock)
 
-        assert isinstance(result, LLMChain)
+        assert isinstance(chain, LLMChain)
         assert (
-            result.prompt.messages[0].prompt.partial_variables
+            chain.prompt.messages[0].prompt.partial_variables
             == EXAMPLE_CONFIG["config"]["messages"][0]["partial_variables"]
         )
-        assert result.prompt.messages[1].prompt.partial_variables == {}
-        assert result.callbacks == callback_manager_mock
+        assert chain.prompt.messages[1].prompt.partial_variables == {}
+        assert chain.callbacks == callback_manager_mock

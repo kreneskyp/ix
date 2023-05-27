@@ -5,7 +5,6 @@ from jsonpath_ng import parse as jsonpath_parse
 from langchain.base_language import BaseLanguageModel
 from langchain.chains import SequentialChain
 from langchain.chains.base import Chain
-from pydantic import root_validator
 
 from ix.agents.callback_manager import IxCallbackManager
 from ix.agents.llm import load_chain, load_memory
