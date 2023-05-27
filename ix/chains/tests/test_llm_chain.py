@@ -15,7 +15,7 @@ EXAMPLE_CONFIG = {
         },
         "memory": {
             "class_path": "ix.chains.tests.mock_memory.MockMemory",
-            "config": {"value_map": {'mock_memory_input': 'mock memory'}},
+            "config": {"value_map": {"mock_memory_input": "mock memory"}},
         },
         "messages": [
             {

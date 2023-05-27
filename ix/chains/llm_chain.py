@@ -58,12 +58,14 @@ class LLMChain(LangchainLLMChain):
     def from_config(cls, config: Dict[str, Any], callback_manager: IxCallbackManager):
         logger.debug(f"Loading IxLLMChain config={config}")
 
-        prepared_config, context = cls.prepare_config(config, callback_manager)
+        prepared_config, message_context = cls.prepare_config(config, callback_manager)
 
         # load message templates and build prompt
         messages = []
         for message in config.pop("messages"):
-            messages.append(cls.create_message(message, prepared_config, context))
+            messages.append(
+                cls.create_message(message, prepared_config, message_context)
+            )
         prompt = ChatPromptTemplate.from_messages(messages)
 
         # initialize memory
