@@ -161,7 +161,7 @@ determined by the order in which they are added, and recorded by the ``key`` fie
     }
 
     # Create root node as a sequence
-    root = ChainNode.objects.create(class_path="ix.chains.base.SequenceChain", node_type="list")
+    root = ChainNode.objects.create(class_path="ix.chains.routing.IXSequence", node_type="list")
 
     # Add the greeting and name-asking operations to the sequence
     root.add_child(**GREET_USER)
