@@ -25,7 +25,7 @@ class IXSequence(SequentialChain):
         # llm = load_llm(llm_config, callback_manager=callback_manager)
 
         # initialize memory
-        if "memory" in config:
+        if config.get("memory", None):
             config["memory"] = load_memory(config.pop("memory"))
 
         chains = []
@@ -113,8 +113,10 @@ class MapSubchain(Chain):
         input_variables = list(config.get("input_variables", []))
 
         # load chains into an IXSequence to simplify setup
+        # pass memory to sequence since this chain just routes
         chain_config = {
             "chains": config.pop("chains"),
+            "memory": config.pop("memory", None),
             "input_variables": input_variables,
         }
 
