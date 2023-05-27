@@ -4,6 +4,7 @@ from langchain.chat_models.openai import ChatOpenAI
 
 from ix.agents.callback_manager import IxCallbackManager
 from ix.chains.llm_chain import LLMChain, TEMPLATE_CLASSES
+from ix.chains.tests.mock_memory import MockMemory
 
 EXAMPLE_CONFIG = {
     "class_path": "ix.chains.tool_chain.LLMToolChain",
@@ -11,6 +12,10 @@ EXAMPLE_CONFIG = {
         "llm": {
             "class_path": "langchain.chat_models.openai.ChatOpenAI",
             "config": {"request_timeout": 120, "temperature": 0.2, "verbose": True},
+        },
+        "memory": {
+            "class_path": "ix.chains.tests.mock_memory.MockMemory",
+            "config": {"value_map": {'mock_memory_input': 'mock memory'}},
         },
         "messages": [
             {
@@ -81,3 +86,5 @@ class TestLLMChain:
         )
         assert chain.prompt.messages[1].prompt.partial_variables == {}
         assert chain.callbacks == callback_manager_mock
+
+        assert isinstance(chain.memory, MockMemory)
