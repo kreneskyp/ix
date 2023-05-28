@@ -34,6 +34,9 @@ class IXSequence(SequentialChain):
             chain = load_chain(chain_config, callback_manager=chain_callback_manager)
             chains.append(chain)
 
+        if not chains:
+            raise ValueError("IXSequence requires at least one chain")
+
         return cls(callback_manager=callback_manager, chains=chains, **config)
 
 
@@ -93,7 +96,6 @@ class MapSubchain(Chain):
             iteration_inputs[map_input_to] = value
             logger.debug(f"MapSubchain iteration_inputs={iteration_inputs}")
             iteration_outputs = self.chain.run(outputs=outputs, **iteration_inputs)
-            logger.error(iteration_outputs)
             iteration_mapped_output = iteration_outputs
             logger.debug(f"MapSubchain response outputs={iteration_mapped_output}")
             outputs.append(iteration_mapped_output)
