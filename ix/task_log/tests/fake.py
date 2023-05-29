@@ -282,12 +282,15 @@ def fake_planner():
 DEFAULT_CHAT_ID = "f0034449-f226-44b2-9036-ca49f7d2348e"
 
 
-def fake_chat():
+def fake_chat(**kwargs):
     Agent.objects.filter(leading_chats__pk=DEFAULT_CHAT_ID).delete()
     Chat.objects.filter(pk=DEFAULT_CHAT_ID).delete()
 
     agent = fake_planner()
-    task = fake_task(agent=agent)
+    if "task" in kwargs:
+        task = kwargs["task"]
+    else:
+        task = fake_task(agent=agent)
     chat = Chat.objects.create(
         id=DEFAULT_CHAT_ID, name="Test Chat", task=task, lead=agent
     )
