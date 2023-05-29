@@ -45,6 +45,13 @@ Routing / flow control:
 * `MapSubchain <./routing.rst#MapSubchain>`_: Run subchain for each item in a list.
 * `ChooseTool <./routing.rst#ChooseTool>`_: chain that chooses a tool with a subchain.
 
+Chain options
+^^^^^^^^^^^^^^
+
+* `Memory <./memory.rst>`_:  Shared and local scoped memory for chains linked to Ix runtime.
+
+
+
 Chain Models
 ------------
 
