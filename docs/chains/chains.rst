@@ -27,8 +27,8 @@ Default chain types
 
 LLM Chains:
 
-* `LLMChain <./llm.rst#LLMChain>`_: wrapper around `langchain.LLMChain` to add Ix config loader.
-* `LLMToolChain <./llm.rst#LLMToolChain>`_: chain that has `tools` available in the prompt.
+* `LLMChain <./llm.rst#LLMChain>`_: wrapper around ``langchain.LLMChain`` to add Ix config loader.
+* `LLMToolChain <./llm.rst#LLMToolChain>`_: chain that has ``tools`` available in the prompt.
 * `LLMReply <./llm.rst#LLMReply>`_: Respond to chat stream with the result of an LLM prompt.
 
 Artifacts:
@@ -44,6 +44,13 @@ Routing / flow control:
 * `IxSequence <./routing.rst#IxSequence>`_: wrapper for Sequence that provides config loader.
 * `MapSubchain <./routing.rst#MapSubchain>`_: Run subchain for each item in a list.
 * `ChooseTool <./routing.rst#ChooseTool>`_: chain that chooses a tool with a subchain.
+
+Chain options
+^^^^^^^^^^^^^^
+
+* `Memory <./memory.rst>`_:  Shared and local scoped memory for chains linked to Ix runtime.
+
+
 
 Chain Models
 ------------
