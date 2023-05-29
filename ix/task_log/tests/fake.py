@@ -289,7 +289,10 @@ def fake_chat(**kwargs):
     Chat.objects.filter(pk=chat_id).delete()
 
     agent = fake_planner()
-    task = fake_task(agent=agent)
+    if "task" in kwargs:
+        task = kwargs["task"]
+    else:
+        task = fake_task(agent=agent)
     chat = Chat.objects.create(id=chat_id, name="Test Chat", task=task, lead=agent)
 
     fake_feedback(
