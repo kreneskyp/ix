@@ -119,7 +119,7 @@ class ChatModerator(Chain):
         # 3. delegate to the agent
         agent = chat.agents.get(alias=alias)
         subtask = chat.task.delegate_to_agent(agent)
-        logger.error(
+        logger.debug(
             f"Delegated to agent={agent.alias} task={subtask.id} input={inputs}"
         )
         start_agent_loop.delay(

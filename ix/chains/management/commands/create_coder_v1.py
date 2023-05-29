@@ -62,6 +62,8 @@ FILE_CONTENT_FORMAT = """
 GENERATE_CODE_V1 = """
 You are a python coder. You will writes files for the user request.
 
+{related_artifacts}
+
 FILE ARTIFACT:
 {file_artifact}
 
@@ -84,6 +86,9 @@ CODER_SEQUENCE = {
     "class_path": "ix.chains.routing.IXSequence",
     "config": {
         "input_variables": ["user_input"],
+        "memory": {
+            "class_path": "ix.memory.artifacts.ArtifactMemory",
+        },
     },
 }
 
@@ -147,7 +152,7 @@ GENERATE_FILES_MAP = {
     "description": "Generates files for each artifact in the input list",
     "class_path": "ix.chains.routing.MapSubchain",
     "config": {
-        "input_variables": ["file_artifacts_json"],
+        "input_variables": ["file_artifacts_json", "related_artifacts"],
         "map_input": "file_artifacts_json",
         "map_input_to": "file_artifact",
         "output_key": "write_file_output",
@@ -171,7 +176,7 @@ GENERATE_FILE = {
             {
                 "role": "system",
                 "template": GENERATE_CODE_V1,
-                "input_variables": ["file_artifact"],
+                "input_variables": ["file_artifact", "related_artifacts"],
                 "partial_variables": {
                     "file_content_format": FILE_CONTENT_FORMAT,
                 },

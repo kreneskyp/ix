@@ -7,8 +7,7 @@ from langchain.chains import SequentialChain
 from langchain.chains.base import Chain
 
 from ix.agents.callback_manager import IxCallbackManager
-from ix.agents.llm import load_chain
-
+from ix.agents.llm import load_chain, load_memory
 
 logger = logging.getLogger(__name__)
 
@@ -25,11 +24,18 @@ class IXSequence(SequentialChain):
         # llm_config = config["llm"]
         # llm = load_llm(llm_config, callback_manager=callback_manager)
 
+        # initialize memory
+        if config.get("memory", None):
+            config["memory"] = load_memory(config.pop("memory"), callback_manager)
+
         chains = []
         for i, chain_config in enumerate(config.pop("chains")):
             chain_callback_manager = callback_manager.child(i)
             chain = load_chain(chain_config, callback_manager=chain_callback_manager)
             chains.append(chain)
+
+        if not chains:
+            raise ValueError("IXSequence requires at least one chain")
 
         return cls(callback_manager=callback_manager, chains=chains, **config)
 
@@ -90,7 +96,6 @@ class MapSubchain(Chain):
             iteration_inputs[map_input_to] = value
             logger.debug(f"MapSubchain iteration_inputs={iteration_inputs}")
             iteration_outputs = self.chain.run(outputs=outputs, **iteration_inputs)
-            logger.error(iteration_outputs)
             iteration_mapped_output = iteration_outputs
             logger.debug(f"MapSubchain response outputs={iteration_mapped_output}")
             outputs.append(iteration_mapped_output)
@@ -110,8 +115,10 @@ class MapSubchain(Chain):
         input_variables = list(config.get("input_variables", []))
 
         # load chains into an IXSequence to simplify setup
+        # pass memory to sequence since this chain just routes
         chain_config = {
             "chains": config.pop("chains"),
+            "memory": config.pop("memory", None),
             "input_variables": input_variables,
         }
 

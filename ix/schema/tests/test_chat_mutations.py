@@ -184,7 +184,11 @@ class TestChatInputMutation:
         mock_start_agent_loop.delay.assert_called_once_with(
             str(chat.task.id),
             str(chat.task.chain.id),
-            inputs={"user_input": "Test input", "chat_id": str(chat.id)},
+            inputs={
+                "user_input": "Test input",
+                "chat_id": str(chat.id),
+                "artifact_keys": [],
+            },
         )
 
     def test_chat_input_non_existent_chat(self):
