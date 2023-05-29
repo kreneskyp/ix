@@ -159,7 +159,7 @@ class TestLoadMemory:
         assert isinstance(instance, ArtifactMemory)
         assert instance.session_id == f"tests_chat_{chat_id}"
 
-    def test_load_llm(self, mock_callback_manager):
+    def test_load_llm(self, mock_callback_manager, mock_openai):
         """
         Memory classes may optionally load an llm. (e.g. SummaryMemory)
         """
