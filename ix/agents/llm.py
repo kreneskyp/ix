@@ -106,14 +106,13 @@ def load_chat_memory_backend(config, callback_manager):
     backend_config = config.get("config", {}).copy()
 
     # always add scope to chat message backend
-    if "session" in backend_config:
-        session_id, session_id_key = get_memory_session(
-            backend_config.pop("session"), callback_manager, backend_class
-        )
-        logger.debug(
-            f"load_chat_memory_backend session_id={session_id} session_id_key={session_id_key}"
-        )
-        backend_config[session_id_key] = session_id
+    session_id, session_id_key = get_memory_session(
+        backend_config.pop("session", {}), callback_manager, backend_class
+    )
+    logger.debug(
+        f"load_chat_memory_backend session_id={session_id} session_id_key={session_id_key}"
+    )
+    backend_config[session_id_key] = session_id
 
     return backend_class(**backend_config)
 

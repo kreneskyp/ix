@@ -217,6 +217,26 @@ class TestLoadChatMemoryBackend:
         backend = load_chat_memory_backend(config, mock_callback_manager)
         assert backend.session_id == f"tests_chat_{chat_id}"
 
+    def test_load_defaults(self, task, mock_callback_manager):
+        """
+        ChatMemoryBackend should always load session_id. If `session` isn't present then
+        load the `chat` scope by default.
+        """
+
+        chat_id = task.leading_chats.first().id
+
+        # Config
+        config = {
+            "class_path": "langchain.memory.RedisChatMessageHistory",
+            "config": {
+                "url": "redis://redis:6379/0",
+            },
+        }
+
+        # Run
+        backend = load_chat_memory_backend(config, mock_callback_manager)
+        assert backend.session_id == f"chat_{chat_id}"
+
 
 @pytest.mark.django_db
 class TestGetMemorySession:
