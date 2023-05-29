@@ -10,6 +10,7 @@ from ix.schema.mutations.agents import Mutation as AgentMutation
 from ix.schema.types.chat import Query as ChatQuery
 from ix.schema.types.agents import Query as AgentQuery
 from ix.schema.types.chains import Query as ChainQuery
+from ix.schema.types.tasks import Query as TaskQuery
 from ix.schema.types.auth import UserType
 from ix.schema.types.messages import TaskLogMessageType
 from ix.schema.types.tasks import TaskType
@@ -18,7 +19,7 @@ from ix.task_log.models import Task, TaskLogMessage
 logger = logging.getLogger(__name__)
 
 
-class Query(ChainQuery, ChatQuery, AgentQuery, graphene.ObjectType):
+class Query(ChainQuery, ChatQuery, AgentQuery, TaskQuery, graphene.ObjectType):
     """
     Aggregation of graphql queries
     """

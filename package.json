@@ -15,6 +15,9 @@
     "package.json": "^2.0.1",
     "react-syntax-highlighter": "^15.5.0",
     "reactflow": "^11.7.0",
+    "slate": "^0.94.1",
+    "slate-history": "^0.93.0",
+    "slate-react": "^0.94.2",
     "subscriptions-transport-ws": "^0.11.0"
   },
   "devDependencies": {
