@@ -20,7 +20,7 @@ class ArtifactMemory(BaseMemory):
 
     # read
     input_key: str = "artifact_keys"
-    variable: str = "related_artifacts"
+    memory_key: str = "related_artifacts"
 
     session_id: str
     supports_session: bool = True
@@ -28,7 +28,7 @@ class ArtifactMemory(BaseMemory):
 
     @property
     def memory_variables(self) -> List[str]:
-        return [self.variable]
+        return [self.memory_key]
 
     def load_memory_variables(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
         """Load related artifacts into memory"""
@@ -67,7 +67,7 @@ class ArtifactMemory(BaseMemory):
 
         # return formatted artifacts
         logger.debug(f"ArtifactMemory.load_memory_variables text={text}")
-        return {self.variable: text}
+        return {self.memory_key: text}
 
     def save_context(self, inputs: Dict[str, Any], outputs: Dict[str, str]) -> None:
         """

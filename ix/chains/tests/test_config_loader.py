@@ -59,7 +59,7 @@ MEMORY_WITH_LLM = {
 MEMORY_WITH_SCOPE = {
     "class_path": "ix.memory.artifacts.ArtifactMemory",
     "config": {
-        "variable": "chat_history",
+        "memory_key": "chat_history",
         "session": {"scope": "chat", "prefix": "tests"},
     },
 }
