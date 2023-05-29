@@ -14,13 +14,13 @@ const HighlightText = ({ content }) => {
     return content.split(/(\s|\n)/).map((segment, idx) => {
       if (segment.startsWith("@")) {
         return (
-          <Text as="span" color={mention} key={idx}>
+          <Text as="span" sx={mention} key={idx}>
             {segment}
           </Text>
         );
       } else if (segment.startsWith("{") && segment.endsWith("}")) {
         return (
-          <Text as="span" color={artifact} key={idx}>
+          <Text as="span" sx={artifact} key={idx}>
             {segment}
           </Text>
         );
