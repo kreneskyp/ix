@@ -38,6 +38,7 @@ class ArtifactMemory(BaseMemory):
 
         # split session id back into chat_id
         chat_id = self.session_id.split("_")[-1]
+        logger.error(f"chat_id={chat_id}")
 
         # search for artifacts
         text = ""
