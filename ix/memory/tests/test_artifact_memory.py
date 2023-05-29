@@ -68,19 +68,18 @@ class TestArtifactMemory:
         ][0]
         assert artifact1.as_memory_text() in message["content"]
 
-    def test_defaults(self):
-        instance = load_memory(ARTIFACT_MEMORY)
+    def test_defaults(self, mock_callback_manager):
+        instance = load_memory(ARTIFACT_MEMORY, mock_callback_manager)
         assert isinstance(instance, ArtifactMemory)
 
         # test memory variables
         assert instance.memory_variables == ["related_artifacts"]
 
-    def test_load_memory(self, task):
+    def test_load_memory(self, task, mock_callback_manager):
         """
         Test various scenarios for loading memory variables.
         """
-        instance = load_memory(ARTIFACT_MEMORY)
-
+        instance = load_memory(ARTIFACT_MEMORY, mock_callback_manager)
         artifact1 = fake_artifact(task=task, key="test_artifact_1")
         artifact2 = fake_artifact(task=task, key="test_artifact_2")
 
@@ -117,13 +116,13 @@ class TestArtifactMemory:
         """Test mapping config input/outputs"""
         pass
 
-    def test_scope(self, task):
-        # artifact from another task, same user
+    def test_scope(self, task, mock_callback_manager):
+        # artifact from another chat
         unrelated_task = fake_task()
-        artifact2 = fake_artifact(task=unrelated_task, key="test_artifact_3")
+        fake_artifact(task=unrelated_task, key="test_artifact_3")
 
-        # artifact from another task, different user
-        unrelated_task = fake_task()
-        artifact3 = fake_artifact(task=unrelated_task, key="test_artifact_3")
-
-        pass
+        # none of the excluded artifacts should be included in the memory
+        instance = load_memory(ARTIFACT_MEMORY, mock_callback_manager)
+        inputs = dict(artifact_keys=["test_artifact_3"])
+        result1 = instance.load_memory_variables(inputs=inputs)
+        assert result1 == {"related_artifacts": ""}

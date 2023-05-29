@@ -21,10 +21,10 @@ class ArtifactMemory(BaseMemory):
     # read
     input_key: str = "artifact_keys"
     variable: str = "related_artifacts"
-    scope: str = None
 
-    # write
-    # TODO
+    session_id: str
+    supports_session: bool = True
+    supported_scopes: set = {"chat"}
 
     @property
     def memory_variables(self) -> List[str]:
@@ -36,15 +36,19 @@ class ArtifactMemory(BaseMemory):
             f"ArtifactMemory.load_memory_variables input_key={self.input_key} inputs={inputs}"
         )
 
+        # split session id back into chat_id
+        chat_id = self.session_id.split("_")[-1]
+
         # search for artifacts
-        # TODO: limit scope of artifact query
-        # TODO: add support for LLM search
-        # TODO: add support for similarity search
         text = ""
         artifact_keys = inputs.get(self.input_key, None)
         if artifact_keys:
             artifacts = Artifact.objects.filter(
-                Q(key__in=artifact_keys) | Q(name__in=artifact_keys)
+                (Q(key__in=artifact_keys) | Q(name__in=artifact_keys)),
+                (
+                    Q(task__leading_chats__id=chat_id)
+                    | Q(task__parent__leading_chats__id=chat_id)
+                ),
             ).order_by("-created_at")
 
             logger.debug(f"Found n={len(artifacts)} artifacts")
@@ -66,8 +70,10 @@ class ArtifactMemory(BaseMemory):
         return {self.variable: text}
 
     def save_context(self, inputs: Dict[str, Any], outputs: Dict[str, str]) -> None:
-        """Save artifacts from step"""
-        # TODO: move SaveArtifact logic here
+        """
+        No-op for now. May move artifact saving here in the future. Artifacts
+        are currently saved by SaveArtifact chain.
+        """
         pass
 
     def clear(self) -> None:
