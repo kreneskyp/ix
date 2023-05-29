@@ -19,13 +19,7 @@ Basic Example:
 
 .. code-block:: python
 
-    PIRATE_PROMPT = """
-    You are a pirate. Talk like a pirate in all responses.
-
-    CHAT_SUMMARY:
-    {chat_summary}
-    """
-
+    # Defining memory class with llm and backend config
     SUMMARY_MEMORY = {
         "class_path": "langchain.memory.summary_buffer.ConversationSummaryBufferMemory",
         "config": {
@@ -45,6 +39,16 @@ Basic Example:
         },
     }
 
+    # Prompt contains {chat_summary} input variable to hold the conversation summary
+    # The variable is set by `memory_key` in the memory config
+    PIRATE_PROMPT = """
+    You are a pirate. Talk like a pirate in all responses.
+
+    CHAT_SUMMARY:
+    {chat_summary}
+    """
+
+    # Chain config with memory
     PIRATE = {
         "class_path": "ix.chains.llm_chain.LLMReply",
         "config": {
