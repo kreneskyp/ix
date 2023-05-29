@@ -84,7 +84,7 @@ class LLMChain(LangchainLLMChain):
         memory = None
         memory_config = config.pop("memory", None)
         if memory_config:
-            memory = load_memory(memory_config)
+            memory = load_memory(memory_config, callback_manager)
 
         # build instance
         chain = cls(

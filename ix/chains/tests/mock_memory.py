@@ -9,7 +9,8 @@ class MockMemory(BaseMemory):
     Used for testing only.
     """
 
-    value_map: Dict[str, str] = {'mock_memory_input': 'mock memory'}
+    value_map: Dict[str, str] = {"mock_memory_input": "mock memory"}
+    session_id: str = "mock_session_id"
 
     @property
     def memory_variables(self) -> List[str]:

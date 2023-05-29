@@ -26,7 +26,7 @@ class IXSequence(SequentialChain):
 
         # initialize memory
         if config.get("memory", None):
-            config["memory"] = load_memory(config.pop("memory"))
+            config["memory"] = load_memory(config.pop("memory"), callback_manager)
 
         chains = []
         for i, chain_config in enumerate(config.pop("chains")):
