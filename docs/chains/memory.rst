@@ -6,6 +6,7 @@ chain.
 
 
 Details on available memory classes:
+
 * `Langchain memory classes <https://python.langchain.com/en/latest/modules/memory/how_to_guides.html>`_
 * `Artifact Memory <docs/chains/artifacts.rst>`_
 
