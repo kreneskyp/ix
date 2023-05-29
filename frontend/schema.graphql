@@ -225,6 +225,7 @@ type TaskLogMessageType {
   tasklogmessageSet: [TaskLogMessageType!]!
 }
 
+"""An enumeration."""
 enum TaskLogTaskLogMessageRoleChoices {
   """system"""
   SYSTEM
