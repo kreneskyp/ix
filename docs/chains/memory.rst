@@ -98,11 +98,11 @@ objects. The memory classes will automatically be combined with ``CombinedMemory
 Configuring Sessions
 ---------------------
 
-Memory session may be scoped to `chat`, `agent`, `task`, `user`. The chain loader builds a `session_id` based on the
-scope and the runtime context. The `chat.id` or other id is included in the `session_id`.
+Memory session may be scoped to ``chat``, ``agent``, ``task``, ``user``. The chain loader builds a ``session_id``
+based on the scope and the runtime context. The ``chat.id`` or other id is included in the ``session_id``.
 
 Sessions may be added to the memory class or the backend depending on the implementation. For example
-`langchain.memory.BaseChatMessageHistory` backends handle sessions for `langchain.memory.BaseChatMemory`.
+``langchain.memory.BaseChatMessageHistory`` backends handle sessions for ``langchain.memory.BaseChatMemory``.
 
 Example session config:
 
@@ -132,7 +132,7 @@ Example session config:
 
 
 
-A prefix may be added to the `session_id` by adding a `prefix` field to the session config. The prefix allows
+A prefix may be added to the ``session_id`` by adding a ``prefix`` field to the session config. The prefix allows
 for memory to be partitioned within the scope. For example, a subset of agents or chains in the chat may share
 a memory partition.
 
@@ -149,8 +149,8 @@ a memory partition.
 Memory Backends
 ----------------
 
-Memory classes such as `ConversationBufferMemory` and `ConversationSummaryBufferMemory` require a backend to store
-the conversation history. The backend is configured by adding a `backend` field to the memory config.
+Memory classes such as ``ConversationBufferMemory`` and ``ConversationSummaryBufferMemory`` require a backend to store
+the conversation history. The backend is configured by adding a ``backend`` field to the memory config.
 
 .. code-block:: python
     REDIS_MEMORY_BACKEND = {
@@ -165,8 +165,8 @@ the conversation history. The backend is configured by adding a `backend` field 
 Memory LLMs
 ------------
 
-Memory classes such as `ConversationSummaryMemory` and `ConversationSummaryBufferMemory` require an LLM to generate
-summarizations of the conversation history. The LLM is configured by adding a `llm` field to the memory config.
+Memory classes such as ``ConversationSummaryMemory`` and ``ConversationSummaryBufferMemory`` require an LLM to generate
+summarizations of the conversation history. The LLM is configured by adding a ``llm`` field to the memory config.
 
 .. code-block:: python
     MEMORY_LLM = {

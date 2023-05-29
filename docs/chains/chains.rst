@@ -27,8 +27,8 @@ Default chain types
 
 LLM Chains:
 
-* `LLMChain <./llm.rst#LLMChain>`_: wrapper around `langchain.LLMChain` to add Ix config loader.
-* `LLMToolChain <./llm.rst#LLMToolChain>`_: chain that has `tools` available in the prompt.
+* `LLMChain <./llm.rst#LLMChain>`_: wrapper around ``langchain.LLMChain`` to add Ix config loader.
+* `LLMToolChain <./llm.rst#LLMToolChain>`_: chain that has ``tools`` available in the prompt.
 * `LLMReply <./llm.rst#LLMReply>`_: Respond to chat stream with the result of an LLM prompt.
 
 Artifacts:

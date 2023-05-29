@@ -4,7 +4,7 @@ Artifacts
 
 Artifacts are used to record milestones, state, objects, and change created by a chain. Artifacts
 provide a reference point to interact with these results in subsequent chains. Artifacts may be saved
-explicitly with `SaveArtifact` and then referenced with `ArtifactMemory`.
+explicitly with ``SaveArtifact`` and then referenced with ``ArtifactMemory``.
 
 Artifact Memory
 ~~~~~~~~~~~~~~~
