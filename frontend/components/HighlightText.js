@@ -11,24 +11,23 @@ const HighlightText = ({ content }) => {
   const { mention, artifact } = useChatColorMode();
 
   const formattedContent = React.useMemo(() => {
-    // Match @mentions and {artifacts} and return an array of Chakra Text components
-    return content.split(" ").map((word, idx) => {
-      if (word.startsWith("@")) {
-        // Word is a mention
+    return content.split(/(\s|\n)/).map((segment, idx) => {
+      if (segment.startsWith("@")) {
         return (
           <Text as="span" color={mention} key={idx}>
-            {word + " "}
+            {segment}
           </Text>
         );
-      } else if (word.startsWith("{") && word.endsWith("}")) {
-        // Word is an artifact
+      } else if (segment.startsWith("{") && segment.endsWith("}")) {
         return (
           <Text as="span" color={artifact} key={idx}>
-            {word + " "}
+            {segment}
           </Text>
         );
+      } else if (segment === "\n") {
+        return <br key={idx} />;
       } else {
-        return word + " ";
+        return segment;
       }
     });
   }, [content]);
