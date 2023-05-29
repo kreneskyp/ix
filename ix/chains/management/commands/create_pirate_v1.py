@@ -22,9 +22,7 @@ PIRATE = {
             "class_path": "langchain.chat_models.openai.ChatOpenAI",
         },
         "memory": [
-            {
-                "class_path": "ix.memory.artifacts.ArtifactMemory"
-            },
+            {"class_path": "ix.memory.artifacts.ArtifactMemory"},
             {
                 "class_path": "langchain.memory.summary_buffer.ConversationSummaryBufferMemory",
                 "config": {
