@@ -31,6 +31,7 @@ def mock_openai_key(monkeypatch):
 def mock_openai(mocker, mock_openai_key):
     # create a mock instance of the class
     mock_llm = MockChatOpenAI()
+    mock_llm.return_value = "mock llm response"
 
     # mock the class to return the instance we're creating here
     mock_class = MagicMock(return_value=mock_llm)
