@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, List
 
 from langchain import LLMChain as LangchainLLMChain, PromptTemplate
 from langchain.prompts.chat import (
@@ -25,6 +25,18 @@ TEMPLATE_CLASSES = {
 
 class LLMChain(LangchainLLMChain):
     """Wrapper around LLMChain to provide from_config initialization"""
+
+    @property
+    def input_keys(self) -> List[str]:
+        """
+        Overridden to filter out memory variables from input_variables.
+        This is to be compatible with Sequence, which will raise a validation
+        error since it does not detect the variable is from memory.
+        """
+        as_set = set(self.prompt.input_variables)
+        if self.memory:
+            as_set -= set(self.memory.memory_variables)
+        return list(as_set)
 
     @staticmethod
     def create_message(
