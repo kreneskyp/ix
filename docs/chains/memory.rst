@@ -48,6 +48,22 @@ Basic Example:
     {chat_summary}
     """
 
+    # The chain must include input_variables required for the memory class.
+    # In this example, the message templates define the input_variables for
+    # the chains.
+    CHAT_MESSAGES_WITH_HISTORY: [
+        {
+            "role": "system",
+            "template": PIRATE_PROMPT,
+            "input_variables": ["chat_summary"],
+        },
+        {
+            "role": "user",
+            "template": "{user_input}",
+            "input_variables": ["user_input"],
+        },
+    ],
+
     # Chain config with memory
     PIRATE = {
         "class_path": "ix.chains.llm_chain.LLMReply",
@@ -56,18 +72,7 @@ Basic Example:
                 "class_path": "langchain.chat_models.openai.ChatOpenAI",
             },
             "memory": SUMMARY_MEMORY,
-            "messages": [
-                {
-                    "role": "system",
-                    "template": PIRATE_PROMPT,
-                    "input_variables": ["chat_summary"],
-                },
-                {
-                    "role": "user",
-                    "template": "{user_input}",
-                    "input_variables": ["user_input"],
-                },
-            ],
+            "messages": CHAT_MESSAGES_WITH_HISTORY,
         },
     }
 

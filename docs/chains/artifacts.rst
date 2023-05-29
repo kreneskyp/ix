@@ -22,18 +22,24 @@ ArtifactMemory loads an artifact from the database and loads it into the prompt 
         }
     }
 
-``ArtifactMemory`` will read from ``input_key`` and load the artifact into ``variable``, if ``load_artifact`` is set
-to ``True``.  Prompts can then output the formatted artifact using ``variable``.
+``ArtifactMemory`` will read from ``input_key`` and load the artifact into ``memory_key``, if ``load_artifact`` is set
+to ``True``.  Prompts can then output the formatted artifact using ``memory_key``.
+
+The prompt should include ``memory_key`` to render the output.
 
 .. code-block:: python
-    # prompt that asks about the artifacts that are referenced in the input
+
     PROMPT = """
     {related_artifacts}
 
     Tell me about the artifact [{artifact_keys}]
     """
 
+Prompt will be rendered with the artifact information.
+
+
 .. code-block:: text
+
     RELATED ARTIFACTS
 
     id: 00000000-0000-0000-0000-000000000000
