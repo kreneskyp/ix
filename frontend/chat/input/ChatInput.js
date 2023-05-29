@@ -256,7 +256,7 @@ export const ChatInput = ({ chat }) => {
   );
 
   return (
-    <Box width={800} sx={sx} p={2} border="1px solid" borderRadius={5}>
+    <Box width={800} sx={sx} p={2} border="1px solid" borderRadius={5} maxH="400px"  overflowY="auto">
       {agentSearchRunner}
       {artifactSearchRunner}
       <Popover
