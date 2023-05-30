@@ -11,7 +11,7 @@ const HighlightText = ({ content }) => {
   const { mention, artifact } = useChatColorMode();
 
   const formattedContent = React.useMemo(() => {
-    return content.split(/(\s|\n)/).map((segment, idx) => {
+    return content.split(/(\s+)/).map((segment, idx) => {
       if (segment.startsWith("@")) {
         return (
           <Text as="span" sx={mention} key={idx}>
@@ -24,15 +24,15 @@ const HighlightText = ({ content }) => {
             {segment}
           </Text>
         );
-      } else if (segment === "\n") {
-        return <br key={idx} />;
       } else {
         return segment;
       }
     });
   }, [content, mention, artifact]);
 
-  return <Box>{formattedContent}</Box>;
+  return (
+    <Box style={{ whiteSpace: "pre-wrap" }}>{formattedContent}</Box>
+  );
 };
 
 HighlightText.propTypes = {
