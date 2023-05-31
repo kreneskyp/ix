@@ -161,6 +161,7 @@ id: {self.id}
 key: {self.key}
 type: {self.artifact_type}
 desc: {self.description}
+storage_id: {self.storage["id"]}
 data:
 {self.data}
 """
