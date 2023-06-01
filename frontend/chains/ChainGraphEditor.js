@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
+import {v4 as uuid4} from 'uuid';
 import { Box, Flex, Text } from "@chakra-ui/react";
 import ReactFlow, {
   Background,
@@ -18,10 +19,6 @@ const nodeTypes = {
   llm: LLMNode,
   prompt: PromptNode,
 };
-
-// TODO: better way to handle this
-let id = 0;
-const getId = () => `node_${id++}`;
 
 const ChainGraphEditor = () => {
   const initialNodes = [];
@@ -57,7 +54,7 @@ const ChainGraphEditor = () => {
         y: event.clientY - reactFlowBounds.top,
       });
       const newNode = {
-        id: getId(),
+        id: uuid4(),
         type: config.type,
         position,
         data: { config, node: config.default },
