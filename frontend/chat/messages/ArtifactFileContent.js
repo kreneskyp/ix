@@ -16,7 +16,7 @@ export const ArtifactFileContent = ({ message }) => {
     <Box my={4}>
       <Text color="blue.300">{message.content.storage.id}</Text>
       <SyntaxHighlighter style={syntaxTheme} wrapLines={true}>
-        {message.content.data.file_content}
+        {message.content.data}
       </SyntaxHighlighter>
     </Box>
   );

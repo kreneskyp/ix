@@ -31,6 +31,7 @@ def mock_openai_key(monkeypatch):
 def mock_openai(mocker, mock_openai_key):
     # create a mock instance of the class
     mock_llm = MockChatOpenAI()
+    mock_llm.return_value = "mock llm response"
 
     # mock the class to return the instance we're creating here
     mock_class = MagicMock(return_value=mock_llm)
@@ -45,6 +46,7 @@ def mock_openai(mocker, mock_openai_key):
 
 @pytest.fixture
 def mock_callback_manager(task):
+    fake_chat(task=task)
     manager = IxCallbackManager(task)
     manager.think_msg = fake_think(task=task)
     yield manager

@@ -1,10 +1,72 @@
-Artifact Chains
-======================
 
-Chains that integrate with the artifact system. Artifacts are used to
-to record milestones, state, objects, and change created by a chain. Artifacts
-provide a reference point to interact with these results in subsequent
-chains.
+Artifacts
+#########
+
+Artifacts are used to record milestones, state, objects, and change created by a chain. Artifacts
+provide a reference point to interact with these results in subsequent chains. Artifacts may be saved
+explicitly with ``SaveArtifact`` and then referenced with ``ArtifactMemory``.
+
+Artifact Memory
+~~~~~~~~~~~~~~~
+
+ArtifactMemory loads an artifact from the database and loads it into the prompt as an input.
+
+.. code-block:: python
+
+    ARTIFACT_MEMORY = {
+        "class_path": "ix.memory.artifacts.ArtifactMemory",
+        "config": {
+            "load_artifact": True
+            "input_key": "artifact_keys",
+            "memory_key": "related_artifacts",
+        }
+    }
+
+``ArtifactMemory`` will read from ``input_key`` and load the artifact into ``memory_key``, if ``load_artifact`` is set
+to ``True``.  Prompts can then output the formatted artifact using ``memory_key``.
+
+The prompt should include ``memory_key`` to render the output.
+
+.. code-block:: python
+
+    PROMPT = """
+    {related_artifacts}
+
+    Tell me about the artifact [{artifact_keys}]
+    """
+
+Prompt will be rendered with the artifact information.
+
+
+.. code-block:: text
+
+    RELATED ARTIFACTS
+
+    id: 00000000-0000-0000-0000-000000000000
+    key: my_key
+    type: my_type
+    name: my_name
+    description: my_description
+    data:
+    data stored in artifact
+
+    Tell me about the artifacts [{my_key}]
+
+Artifact memory matches based on ``artifact_key``. If there are multiple objects with the same key, then the most
+recent object is used.
+
+
+Artifact Memory Scope
+---------------------
+
+Artifact memory scope is limited to the current chat.
+
+
+
+Artifact Chains
+~~~~~~~~~~~~~~~
+
+Chains that integrate with the artifact system.
 
 SaveArtifact
 ------------

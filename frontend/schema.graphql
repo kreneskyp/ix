@@ -1,8 +1,9 @@
 """Aggregation of graphql queries"""
 type Query {
+  searchArtifacts(search: String, chatId: UUID!): [ArtifactType]
   agent(id: UUID!): AgentType
   agents: [AgentType]
-  searchAgents(search: String): [AgentType]
+  searchAgents(search: String, chatId: UUID): [AgentType]
   chat(id: UUID!): ChatType
   chats: [ChatType]
   chatPage(limit: Int = 10, offset: Int = 0): ChatsPage
@@ -16,20 +17,15 @@ type Query {
   task(id: UUID!): TaskType
 }
 
-type AgentType {
+type ArtifactType {
   id: UUID!
+  task: TaskType!
+  key: String!
+  artifactType: String!
   name: String!
-  alias: String!
-  purpose: String!
+  description: String!
   createdAt: DateTime!
-  model: String!
-  config: GenericScalar
-  agentClassPath: String!
-  chain: ChainType
-  resources: [ResourceType!]!
-  taskSet: [TaskType!]!
-  tasklogmessageSet: [TaskLogMessageType!]!
-  leadingChats: [ChatType!]!
+  storage: GenericScalar
   chats: [ChatType!]!
 }
 
@@ -38,52 +34,6 @@ Leverages the internal Python implementation of UUID (uuid.UUID) to provide nati
 in fields, resolvers and input.
 """
 scalar UUID
-
-"""
-The `DateTime` scalar type represents a DateTime
-value as specified by
-[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
-"""
-scalar DateTime
-
-"""
-The `GenericScalar` scalar type represents a generic
-GraphQL scalar value that could be:
-String, Boolean, Int, Float, List or Object.
-"""
-scalar GenericScalar
-
-type ChainType {
-  id: UUID!
-  name: String!
-  description: String!
-  createdAt: DateTime!
-  root: ChainNodeType!
-  agentSet: [AgentType!]!
-  taskSet: [TaskType!]!
-}
-
-type ChainNodeType {
-  id: UUID!
-  classPath: String!
-  config: GenericScalar
-  name: String
-  description: String
-  nodeType: ChainsChainNodeNodeTypeChoices!
-  root: ChainNodeType
-  parent: ChainNodeType
-}
-
-enum ChainsChainNodeNodeTypeChoices {
-  """node"""
-  NODE
-
-  """list"""
-  LIST
-
-  """map"""
-  MAP
-}
 
 type TaskType {
   id: UUID!
@@ -132,50 +82,67 @@ type UserType {
   taskSet: [TaskType!]!
 }
 
-type TaskLogMessageType {
+"""
+The `DateTime` scalar type represents a DateTime
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar DateTime
+
+type AgentType {
   id: UUID!
-  task: TaskType!
-  agent: AgentType
-  createdAt: DateTime!
-  parent: TaskLogMessageType
-  role: TaskLogTaskLogMessageRoleChoices!
-  content: GenericScalar
-  tasklogmessageSet: [TaskLogMessageType!]!
-}
-
-enum TaskLogTaskLogMessageRoleChoices {
-  """system"""
-  SYSTEM
-
-  """assistant"""
-  ASSISTANT
-
-  """user"""
-  USER
-}
-
-type ArtifactType {
-  id: UUID!
-  task: TaskType!
-  key: String!
-  artifactType: String!
   name: String!
-  description: String!
+  alias: String!
+  purpose: String!
   createdAt: DateTime!
-  storage: GenericScalar
+  model: String!
+  config: GenericScalar
+  agentClassPath: String!
+  chain: ChainType
+  resources: [ResourceType!]!
+  taskSet: [TaskType!]!
+  tasklogmessageSet: [TaskLogMessageType!]!
+  leadingChats: [ChatType!]!
   chats: [ChatType!]!
 }
 
-type ChatType {
+"""
+The `GenericScalar` scalar type represents a generic
+GraphQL scalar value that could be:
+String, Boolean, Int, Float, List or Object.
+"""
+scalar GenericScalar
+
+type ChainType {
   id: UUID!
   name: String!
+  description: String!
   createdAt: DateTime!
-  lead: AgentType!
-  agents: [AgentType!]!
-  tasks: [TaskType!]!
-  artifacts: [ArtifactType!]!
-  resources: [ResourceType!]!
-  task: TaskType!
+  root: ChainNodeType!
+  agentSet: [AgentType!]!
+  taskSet: [TaskType!]!
+}
+
+type ChainNodeType {
+  id: UUID!
+  classPath: String!
+  config: GenericScalar
+  name: String
+  description: String
+  nodeType: ChainsChainNodeNodeTypeChoices!
+  root: ChainNodeType
+  parent: ChainNodeType
+}
+
+enum ChainsChainNodeNodeTypeChoices {
+  """node"""
+  NODE
+
+  """list"""
+  LIST
+
+  """map"""
+  MAP
 }
 
 type ResourceType {
@@ -234,6 +201,41 @@ Use of this type is *not recommended* as you lose the benefits of having a defin
 schema (one of the key benefits of GraphQL).
 """
 scalar JSONString
+
+type ChatType {
+  id: UUID!
+  name: String!
+  createdAt: DateTime!
+  lead: AgentType!
+  agents: [AgentType!]!
+  tasks: [TaskType!]!
+  artifacts: [ArtifactType!]!
+  resources: [ResourceType!]!
+  task: TaskType!
+}
+
+type TaskLogMessageType {
+  id: UUID!
+  task: TaskType!
+  agent: AgentType
+  createdAt: DateTime!
+  parent: TaskLogMessageType
+  role: TaskLogTaskLogMessageRoleChoices!
+  content: GenericScalar
+  tasklogmessageSet: [TaskLogMessageType!]!
+}
+
+"""An enumeration."""
+enum TaskLogTaskLogMessageRoleChoices {
+  """system"""
+  SYSTEM
+
+  """assistant"""
+  ASSISTANT
+
+  """user"""
+  USER
+}
 
 type PlanType {
   id: UUID!
@@ -396,6 +398,7 @@ type DeleteResourceMutation {
 """Aggregation of graphql subscriptions"""
 type Subscription {
   chatMessageSubscription(chatId: String): ChatMessageSubscription
+  chatArtifactSubscription(chatId: String): ChatArtifactSubscription
 }
 
 """GraphQL subscription to TaskLogMessage instances."""
@@ -403,4 +406,9 @@ type ChatMessageSubscription {
   taskLogMessage: TaskLogMessageType
   agent: AgentType
   parentId: UUID
+}
+
+"""GraphQL subscription to Artifact instances."""
+type ChatArtifactSubscription {
+  artifact: ArtifactType
 }

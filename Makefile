@@ -1,10 +1,16 @@
-
 DOCKER_COMPOSE=docker-compose.yml
 DOCKERFILE=Dockerfile
 DOCKER_REGISTRY=ghcr.io
 DOCKER_REPOSITORY=${DOCKER_REGISTRY}/ix/sandbox
 HASH_FILES=requirements*.txt package.json Dockerfile
-IMAGE_TAG=$(shell cat $(HASH_FILES) | md5sum | cut -d ' ' -f 1)
+
+# check for md5sum or md5 for hashing
+HASHER := $(shell command -v md5sum 2> /dev/null)
+ifndef HASHER
+    HASHER := md5 -r
+endif
+
+IMAGE_TAG=$(shell cat $(HASH_FILES) | ${HASHER} | cut -d ' ' -f 1)
 IMAGE_URL=$(DOCKER_REPOSITORY):$(IMAGE_TAG)
 IMAGE_SENTINEL=.sentinel/image
 
@@ -140,6 +146,7 @@ dev_fixtures: compose
 	${DOCKER_COMPOSE_RUN} ./manage.py create_coder_v1
 	${DOCKER_COMPOSE_RUN} ./manage.py create_planner_v3
 	${DOCKER_COMPOSE_RUN} ./manage.py create_dad_jokes_v1
+	${DOCKER_COMPOSE_RUN} ./manage.py create_pirate_v1
 
 
 # =========================================================

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 from ix.chains.models import Chain, ChainNode
 from ix.chat.models import Chat
-from ix.task_log.models import Agent, Task, TaskLogMessage
+from ix.task_log.models import Agent, Task, TaskLogMessage, Artifact
 from faker import Faker
 
 fake = Faker()
@@ -282,21 +282,39 @@ def fake_planner():
 DEFAULT_CHAT_ID = "f0034449-f226-44b2-9036-ca49f7d2348e"
 
 
-def fake_chat():
-    Agent.objects.filter(leading_chats__pk=DEFAULT_CHAT_ID).delete()
-    Chat.objects.filter(pk=DEFAULT_CHAT_ID).delete()
+def fake_chat(**kwargs):
+    chat_id = kwargs.get("id", DEFAULT_CHAT_ID)
+
+    Agent.objects.filter(leading_chats__pk=chat_id).delete()
+    Chat.objects.filter(pk=chat_id).delete()
 
     agent = fake_planner()
-    task = fake_task(agent=agent)
-    chat = Chat.objects.create(
-        id=DEFAULT_CHAT_ID, name="Test Chat", task=task, lead=agent
-    )
+    if "task" in kwargs:
+        task = kwargs["task"]
+    else:
+        task = fake_task(agent=agent)
+    chat = Chat.objects.create(id=chat_id, name="Test Chat", task=task, lead=agent)
 
     fake_feedback(
         task=task, feedback="create a django app for cat memes", message_id=-1
     )
 
     return chat
+
+
+def fake_artifact(**kwargs) -> Artifact:
+    task = kwargs.get("task", Task.objects.order_by("?").first())
+    options = dict(
+        key="test_artifact_1",
+        artifact_type="file",
+        task=task,
+        name="Test Artifact 1",
+        description="This is a test artifact (1)",
+        storage={"type": "file", "id": "test_artifact"},
+    )
+    options.update(kwargs)
+
+    return Artifact.objects.create(**options)
 
 
 def task_setup():

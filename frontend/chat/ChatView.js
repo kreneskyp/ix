@@ -4,7 +4,6 @@ import { Box, Center, Spinner, VStack } from "@chakra-ui/react";
 import { usePreloadedQuery } from "react-relay/hooks";
 
 import { TaskProvider } from "tasks/contexts";
-import ChatInput from "chat/ChatInput";
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 import { ScrollableBox } from "site/ScrollableBox";
 import { useQueryLoader } from "react-relay";
@@ -19,6 +18,7 @@ import {
   MessagesContext,
   SubscriptionActiveContext,
 } from "chat/graphql/useChatMessageSubscription";
+import ChatInput from "chat/input/ChatInput";
 
 export const ChatContentShim = ({ queryRef }) => {
   const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
@@ -42,10 +42,8 @@ export const ChatContentShim = ({ queryRef }) => {
           boxShadow="0px -1px 4px rgba(0, 0, 0, 0.1)"
         >
           {/* Bottom aligned section */}
-          <Box mr={10}>
-            <TaskProvider taskId={moderatorTask.id}>
-              <ChatInput chat={chat} />
-            </TaskProvider>
+          <Box ml={95}>
+            <ChatInput chat={chat} />
           </Box>
         </Center>
       </SubscriptionActiveContext.Provider>
