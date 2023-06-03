@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import {v4 as uuid4} from 'uuid';
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { v4 as uuid4 } from "uuid";
+import { Box, Flex, Text, useToast } from "@chakra-ui/react";
 import ReactFlow, {
   Background,
   Controls,
@@ -12,6 +12,8 @@ import ChainNode from "chains/flow/ChainNode";
 import GroupNode from "chains/flow/GroupNode";
 import LLMNode from "chains/flow/LLMNode";
 import PromptNode from "chains/flow/PromptNode";
+import { useChainEditorAPI } from "chains/hooks/useChainEditorAPI";
+import { useNavigate } from "react-router-dom";
 
 const nodeTypes = {
   chain: ChainNode,
@@ -20,18 +22,53 @@ const nodeTypes = {
   prompt: PromptNode,
 };
 
-const ChainGraphEditor = () => {
-  const initialNodes = [];
+const toData = (chain, node) => ({
+  id: node.id,
+  //nodeType: "node",
+  chainId: chain?.id || null,
+  classPath: node.data.config.default.classPath,
+  position: node.position,
+  config: node.data.config.default.config,
+});
 
+const ChainGraphEditor = ({ chain, initialNodes, initialEdges }) => {
   const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes || []);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges || []);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const toast = useToast();
+  const navigate = useNavigate();
+
+  const onAPIError = useCallback((err) => {
+    toast({
+      title: "Error",
+      description: `Failed to save chain. ${err.message}`,
+      status: "error",
+      duration: 10000,
+      isClosable: true,
+    });
+  });
+
+  const api = useChainEditorAPI({ chain, onError: onAPIError });
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
+
+  const onNodeSaved = useCallback(
+    ({ addChainNode }) => {
+      // first node creates the new chain
+      // redirect to the correct URL
+      const { node } = addChainNode;
+      const chain_id = node?.chain?.id;
+
+      if (chain_id && chain === undefined) {
+        navigate(`/proto/${chain_id}`, { replace: true });
+      }
+    },
+    [chain?.id]
+  );
 
   const onDrop = useCallback(
     (event) => {
@@ -47,8 +84,6 @@ const ChainGraphEditor = () => {
         return;
       }
 
-      console.log("DROPPED", config);
-
       const position = reactFlowInstance.project({
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
@@ -61,9 +96,31 @@ const ChainGraphEditor = () => {
       };
 
       setNodes((nds) => nds.concat(newNode));
+
+      const data = {
+        id: node.id,
+        // nodeType: "node",
+        chainId: chain?.id || null,
+        classPath: node.data.config.default.classPath,
+        position: node.position,
+        config: node.data.config.default.config,
+      };
+      api.addNode(data, { onCompleted: onNodeSaved });
     },
     [reactFlowInstance]
   );
+
+  const onNodeDragStop = useCallback((event, node) => {
+    const data = {
+      id: node.id,
+      //nodeType: "node",
+      classPath: node.classPath,
+      description: node.description,
+      position: node.position,
+      config: node.config,
+    };
+    api.updateNode(data);
+  }, []);
 
   return (
     <div className="dndflow">
@@ -75,6 +132,7 @@ const ChainGraphEditor = () => {
             onInit={setReactFlowInstance}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            onNodeDragStop={onNodeDragStop}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             nodeTypes={nodeTypes}

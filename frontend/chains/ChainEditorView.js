@@ -12,10 +12,16 @@ import { ChainGraphEditorSideBar } from "chains/editor/ChainGraphEditorSideBar";
 
 const ChainEditorShim = ({ queryRef }) => {
   const { graph } = usePreloadedQuery(ChainGraphByIdQuery, queryRef);
+  const { chain, nodes, edges } = graph;
   return (
     <>
       <Heading>{graph.chain.name}</Heading>
-      <ChainGraph graph={graph} />;
+      <ChainGraphEditor
+        chain={chain}
+        initialNodes={nodes}
+        initialEdges={edges}
+      />
+      ;
     </>
   );
 };
@@ -35,6 +41,7 @@ export const ChainEditorView = () => {
       content = <Spinner />;
     } else {
       content = <ChainEditorShim queryRef={queryRef} />;
+      leftPane = <ChainGraphEditorSideBar />;
     }
   } else {
     content = <ChainGraphEditor />;

@@ -14,6 +14,7 @@ import { ChatHistoryView } from "chat/history/ChatHistoryView";
 
 export const routes = [
   { path: "/proto", element: <ChainEditorView /> },
+  { path: "/proto/:id", element: <ChainEditorView /> },
   { path: "/tasks", element: <TasksListView /> },
   { path: "/chats/new", element: <NewChatRedirect /> },
   {
