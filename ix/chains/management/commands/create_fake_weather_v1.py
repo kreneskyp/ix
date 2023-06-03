@@ -33,22 +33,24 @@ class Command(BaseCommand):
     help = "Creates planning chain v1"
 
     def handle(self, *args, **options):
-        Chain.objects.filter(id=CHAIN_ID).delete()
+        chain, is_new = Chain.objects.get_or_create(
+            pk=CHAIN_ID,
+            defaults=dict(
+                name="Fake weatherman chain",
+                description="Chain used to generate fake weather predictions",
+            ),
+        )
+        chain.clear_chain()
 
         # Create root node
-        root = ChainNode.objects.create(**FAKE_WEATHERMAN)
+        ChainNode.objects.create(chain=chain, root=True, **FAKE_WEATHERMAN)
 
-        chain = Chain.objects.create(
-            pk=CHAIN_ID,
-            name="Fake weatherman chain",
-            description="Chain used to generate fake weather predictions",
-            root=root,
-        )
-
-        Agent.objects.create(
+        Agent.objects.get_or_create(
             name="Weatherman",
-            alias="weather",
-            purpose="to report the weather",
-            chain=chain,
-            config={},
+            defaults=dict(
+                alias="weather",
+                purpose="to report the weather",
+                chain=chain,
+                config={},
+            ),
         )

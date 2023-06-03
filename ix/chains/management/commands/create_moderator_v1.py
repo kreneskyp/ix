@@ -24,24 +24,26 @@ class Command(BaseCommand):
     help = "Creates planning chain v1"
 
     def handle(self, *args, **options):
-        Chain.objects.filter(id=MODERATOR_CHAIN_V1).delete()
+        chain, _ = Chain.objects.get_or_create(
+            pk=MODERATOR_CHAIN_V1,
+            defaults=dict(
+                name="Chat Moderation Chain",
+                description="Chain used moderate chats. The moderator analyzes user input "
+                "and delegates it to the appropriate agent.",
+            ),
+        )
+        chain.clear_chain()
 
         # Create root node
-        root = ChainNode.objects.create(**CHAT_MODERATOR)
+        ChainNode.objects.create(chain=chain, root=True, **CHAT_MODERATOR)
 
-        chain = Chain.objects.create(
-            pk=MODERATOR_CHAIN_V1,
-            name="Chat Moderation Chain",
-            description="Chain used moderate chats. The moderator analyzes user input "
-            "and delegates it to the appropriate agent.",
-            root=root,
-        )
-
-        Agent.objects.create(
+        Agent.objects.get_or_create(
             id=MODERATOR_AGENT_V1,
-            name="Ix",
-            alias="ix",
-            purpose="Ix is the moderator agent. It analyzes user input and delegates to other agents.",
-            chain=chain,
-            config={},
+            defaults=dict(
+                name="Ix",
+                alias="ix",
+                purpose="Ix is the moderator agent. It analyzes user input and delegates to other agents.",
+                chain=chain,
+                config={},
+            ),
         )

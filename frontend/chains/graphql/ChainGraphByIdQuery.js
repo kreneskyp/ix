@@ -7,22 +7,17 @@ export const ChainGraphByIdQuery = graphql`
         id
         name
         description
-        root {
-          id
-          nodeType
-          classPath
-          config
-          name
-          description
-        }
       }
       nodes {
         id
-        nodeType
         classPath
         config
         name
         description
+        position {
+          x
+          y
+        }
         parent {
           id
         }

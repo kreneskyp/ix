@@ -224,10 +224,19 @@ class Command(BaseCommand):
     help = "Generates planner v4 chain"
 
     def handle(self, *args, **options):
-        Chain.objects.filter(id=CODER_V1_CHAIN).delete()
+        chain, is_new = Chain.objects.get_or_create(
+            pk=CODER_V1_CHAIN,
+            defaults=dict(
+                name="Coder chain v1",
+                description="Chain used to generate code files",
+            ),
+        )
+
+        # clear old nodes
+        chain.clear_chain()
 
         # Coder sequence
-        coder = ChainNode.objects.create(**CODER_SEQUENCE)
+        coder = ChainNode.objects.create(chain=chain, root=True, **CODER_SEQUENCE)
         coder.add_child(**CREATE_CODE_ARTIFACTS)
         coder.add_child(**PARSE_ARTIFACT_LIST_JSON)
         coder.add_child(**SAVE_ARTIFACT_LIST)
@@ -238,18 +247,13 @@ class Command(BaseCommand):
         generate_map.add_child(**PARSE_FILE_JSON)
         generate_map.add_child(**SAVE_FILE_ARTIFACT)
 
-        chain = Chain.objects.create(
-            pk=CODER_V1_CHAIN,
-            name="Coder chain v1",
-            description="Chain used to generate code files",
-            root=coder,
-        )
-
-        Agent.objects.create(
+        Agent.objects.get_or_create(
             id=CODER_V1_AGENT,
-            name="Coder v1",
-            alias="code",
-            purpose="To generate code for a user request. May generate multiple files",
-            chain=chain,
-            config={},
+            defaults=dict(
+                name="Coder v1",
+                alias="code",
+                purpose="To generate code for a user request. May generate multiple files",
+                chain=chain,
+                config={},
+            ),
         )

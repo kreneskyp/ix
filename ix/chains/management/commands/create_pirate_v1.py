@@ -68,23 +68,25 @@ class Command(BaseCommand):
     help = "Creates pirate agent v1"
 
     def handle(self, *args, **options):
-        Chain.objects.filter(id=PIRATE_CHAIN_V1).delete()
+        chain, _ = Chain.objects.get_or_create(
+            pk=PIRATE_CHAIN_V1,
+            defaults=dict(
+                name="Pirate chain",
+                description="Chain used for pirate agent v1",
+            ),
+        )
+        chain.clear_chain()
 
         # Create root node
-        root = ChainNode.objects.create(**PIRATE)
+        ChainNode.objects.create(chain=chain, root=True, **PIRATE)
 
-        chain = Chain.objects.create(
-            pk=PIRATE_CHAIN_V1,
-            name="Pirate chain",
-            description="Chain used for pirate agent v1",
-            root=root,
-        )
-
-        Agent.objects.create(
+        Agent.objects.get_or_create(
             id=PIRATE_AGENT_V1,
-            name="Pirate",
-            alias="pirate",
-            purpose="responds to all inquiries with pirate talk",
-            chain=chain,
-            config={},
+            defaults=dict(
+                name="Pirate",
+                alias="pirate",
+                purpose="responds to all inquiries with pirate talk",
+                chain=chain,
+                config={},
+            ),
         )

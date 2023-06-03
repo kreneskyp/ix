@@ -3,11 +3,44 @@ import uuid
 from typing import Any, Dict, Optional
 
 from django.db import models
-from langchain.chains.base import Chain
+from langchain.chains.base import Chain as LangChain
 
 from ix.utils.importlib import import_class
 
+
 logger = logging.getLogger(__name__)
+
+
+class ChainNodeType(models.Model):
+    TYPES = [
+        ("llm", "llm"),
+        ("agent", "agent"),
+        ("chain", "chain"),
+        ("chain_list", "chain_list"),
+        ("memory", "memory"),
+        ("memory_backend", "memory_backend"),
+        ("tool", "tool"),
+        ("toolkit", "toolkit"),
+        ("index", "index"),
+        ("retriever", "retriever"),
+        ("embeddings", "embeddings"),
+    ]
+
+    name = models.CharField(max_length=255)
+    description = models.TextField(null=True)
+    class_path = models.CharField(max_length=255)
+    type = models.CharField(max_length=255)
+    display_type = models.CharField(
+        max_length=10,
+        default="node",
+        choices=(("node", "node"), ("list", "list"), ("map", "map")),
+    )
+    # connections = models.JSONField(null=True)
+    config = models.JSONField(null=True)
+
+
+def default_position():
+    return {"x": 0, "y": 0}
 
 
 class ChainNode(models.Model):
@@ -17,18 +50,18 @@ class ChainNode(models.Model):
     name = models.CharField(max_length=255, null=True)
     description = models.TextField(null=True)
 
-    node_type = models.CharField(
-        max_length=10,
-        default="node",
-        choices=(("node", "node"), ("list", "list"), ("map", "map")),
-    )
+    # node is root of graph
+    root = models.BooleanField(default=False)
 
-    # denormalized reference to root of graph.
-    # Used for quickly selecting all nodes for a chain
-    root = models.ForeignKey(
-        "self",
+    # graph position
+    position = models.JSONField(default=default_position)
+
+    # node_type = models.ForeignKey(ChainNodeType, on_delete=models.CASCADE)
+
+    chain = models.ForeignKey(
+        "Chain",
         on_delete=models.CASCADE,
-        related_name="descendants",
+        related_name="nodes",
         null=True,
         blank=True,
     )
@@ -39,18 +72,13 @@ class ChainNode(models.Model):
         "self", on_delete=models.CASCADE, related_name="children", null=True, blank=True
     )
 
-    def get_root(self) -> "ChainNode":
-        """return the root of the chain"""
-        return self.root if self.root else self
-
     def add_node(self, key: str = "tools", **kwargs) -> "ChainNode":
         """Add a node to the root"""
         logger.debug(f"adding node to {self.class_path} kwargs={kwargs}")
-        root = self.get_root()
-        node = ChainNode.objects.create(root=root, **kwargs)
+        node = ChainNode.objects.create(root=self.root, **kwargs)
         ChainEdge.objects.create(
-            root=root,
-            source=root,
+            chain_id=self.chain_id,
+            source=self,
             target=node,
             key=key,
         )
@@ -58,7 +86,6 @@ class ChainNode(models.Model):
 
     def add_child(self, key: Optional[str] = None, **kwargs) -> "ChainNode":
         """Add a node as a child"""
-        root = self.get_root()
         parent = self
 
         # auto-set ordering key for edges within lists
@@ -81,9 +108,9 @@ class ChainNode(models.Model):
         source_node = latest_node or parent
 
         logger.debug(f"adding child to {self.class_path} key={key} kwargs={kwargs}")
-        node = ChainNode.objects.create(root=root, parent=parent, **kwargs)
+        node = ChainNode.objects.create(chain_id=self.chain_id, parent=parent, **kwargs)
         ChainEdge.objects.create(
-            root=root,
+            chain_id=self.chain_id,
             source=source_node,
             target=node,
             key=key,
@@ -136,7 +163,9 @@ class ChainEdge(models.Model):
         ChainNode, on_delete=models.CASCADE, related_name="incoming_edges"
     )
     key = models.CharField(max_length=255, null=True)
-    root = models.ForeignKey(ChainNode, on_delete=models.CASCADE, related_name="edges")
+    chain = models.ForeignKey(
+        "Chain", on_delete=models.CASCADE, related_name="edges", null=True
+    )
     input_map = models.JSONField(null=True)
 
 
@@ -151,11 +180,19 @@ class Chain(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    root = models.ForeignKey(ChainNode, on_delete=models.CASCADE, related_name="chains")
 
-    def load_chain(self, callback_manager) -> Chain:
+    @property
+    def root(self) -> ChainNode:
+        return self.nodes.get(root=True)
+
+    def load_chain(self, callback_manager) -> LangChain:
         return self.root.load_chain(callback_manager)
 
     def run(self):
         """Run the chain"""
         self.root.run()
+
+    def clear_chain(self):
+        """removes the chain nodes associated with this chain"""
+        # clear old chain
+        ChainNode.objects.filter(chain_id=self.id).delete()
