@@ -2,7 +2,7 @@ version: "3"
 
 services:
   db:
-    image: postgres:14.7
+    image: ghcr.io/ix/postgres-pg-vector:latest
     environment:
       POSTGRES_PASSWORD: ix
       POSTGRES_USER: ix
