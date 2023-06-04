@@ -28,6 +28,13 @@ jobs:
           path: image.tar
           key: ${{ steps.load_image_url.outputs.image-url }}
 
+      - name: Restore Cache
+        uses: actions/cache@v2
+        id: restore_cache
+        with:
+          path: psql-image.tar
+          key: ${{ steps.load_image_url.outputs.psql-image-url }}
+
       - name: Build Docker image
         id: build
         if: steps.restore_cache.outputs.cache-hit != 'true'
@@ -61,7 +68,7 @@ jobs:
         env:
           cache-name: cache-node-modules
         with:
-          path: psql-docker-image.tar
+          path: psql-image.tar
           key: ${{ steps.load_image_url.outputs.psql-image-url }}
 
   frontend:
