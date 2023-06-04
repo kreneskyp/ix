@@ -45,7 +45,7 @@ jobs:
           key: ${{ steps.load_image_url.outputs.image-url }}
 
       - name: Build Postgres Docker image
-        id: build
+        id: build_psql
         if: steps.restore_cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p .sentinel
