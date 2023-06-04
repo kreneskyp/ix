@@ -29,7 +29,10 @@ jobs:
           images: ix/pg-docker-vector:15.3
 
       - name: Build the Docker image
-        run: docker build . --file psql.Dockerfile --tag $VERSION
+        run: |
+          pwd
+          ls -la
+          docker build . --file psql.Dockerfile --tag $VERSION
       - name: Push the Docker image
         run: |
           docker tag $IMAGE_NAME:$VERSION ghcr.io/ix/$IMAGE_NAME:latest
