@@ -2,7 +2,7 @@ version: "3"
 
 services:
   db:
-    image: ghcr.io/ix/postgres-pg-vector:latest
+    image: ghcr.io/kreneskyp/ix/postgres-pg-vector:15.3
     environment:
       POSTGRES_PASSWORD: ix
       POSTGRES_USER: ix
