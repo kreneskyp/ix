@@ -11,10 +11,9 @@ jobs:
 
   postgres_pg_vector:
     runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME: postgres-pg-vector
-      VERSION: 15.3
     steps:
+      - uses: actions/checkout@v2
+
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
@@ -28,16 +27,14 @@ jobs:
         with:
           images: ix/pg-docker-vector:15.3
 
-      - name: Build the Docker image
-        run: |
-          pwd
-          ls -la
-          docker build . --file psql.Dockerfile --tag $VERSION
-      - name: Push the Docker image
-        run: |
-          docker tag $IMAGE_NAME:$VERSION ghcr.io/ix/$IMAGE_NAME:latest
-          docker push ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:latest
-          docker push ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$VERSION
+      - name: Build and push Docker image
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: .
+          file: psql.Dockerfile
+          push: true
+          tags: 15.3, latest
+          labels: ${{ steps.meta.outputs.labels }}
 
   build:
     runs-on: ubuntu-latest
