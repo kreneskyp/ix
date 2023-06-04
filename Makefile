@@ -39,6 +39,9 @@ image-tag:
 image-url:
 	@echo ${IMAGE_URL}
 
+.PHONY: psql-image-url
+psql-image-url:
+	@echo ${IMAGE_URL_PSQL}
 
 # build existence check
 .sentinel:

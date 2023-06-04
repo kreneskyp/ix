@@ -44,6 +44,24 @@ jobs:
           path: docker-image.tar
           key: ${{ steps.load_image_url.outputs.image-url }}
 
+      - name: Build Postgres Docker image
+        id: build
+        if: steps.restore_cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p .sentinel
+          PSQL_IMAGE_URL=`make psql-image-url`
+          echo "Building Docker image: $PSQL_IMAGE_URL"
+          make image
+          docker save $PSQL_IMAGE_URL > psql-image.tar
+
+      - name: Cache Postgres docker image
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: psql-docker-image.tar
+          key: ${{ steps.load_image_url.outputs.psql-image-url }}
+
   frontend:
     needs: build
     runs-on: ubuntu-latest

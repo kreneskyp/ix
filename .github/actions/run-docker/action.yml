@@ -15,11 +15,14 @@ runs:
       shell: bash
       run: |
         IMAGE_URL=`make image-url`
+        PSQL_IMAGE_URL=`make psql-image-url`
         echo "image-url=$IMAGE_URL" >> "$GITHUB_OUTPUT"
+        echo "psq-image-url=$PSLQ_IMAGE_URL" >> "$GITHUB_OUTPUT"
     - name: setup
       shell: bash
       run: |
         echo "Loading cached image: ${{ steps.load_image_url.outputs.image-url }}"
+        echo "Loading cached image: ${{ steps.load_image_url.outputs.psql-image-url }}"
     - name: Cache docker image
       uses: actions/cache@v2
       with:
@@ -30,6 +33,16 @@ runs:
       run: |
         docker load --input image.tar
         docker tag ${{ steps.load_image_url.outputs.image-url }} ghcr.io/ix/sandbox:latest
+    - name: Cache psql docker image
+      uses: actions/cache@v2
+      with:
+        path: psql-image.tar
+        key: ${{ steps.load_image_url.outputs.psql-image-url }}
+    - name: load psql image
+      shell: bash
+      run: |
+        docker load --input psql-image.tar
+        docker tag ${{ steps.load_image_url.outputs.image-url }} ghcr.io/ix/postgres-pg-vector:latest
     - name: run
       shell: bash
       env:
