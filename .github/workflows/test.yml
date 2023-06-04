@@ -23,21 +23,21 @@ jobs:
 
       - name: Restore Cache
         uses: actions/cache@v2
-        id: restore_cache
+        id: restore_image_cache
         with:
           path: image.tar
           key: ${{ steps.load_image_url.outputs.image-url }}
 
       - name: Restore Cache
         uses: actions/cache@v2
-        id: restore_cache
+        id: restore_psql_image_cache
         with:
           path: psql-image.tar
           key: ${{ steps.load_image_url.outputs.psql-image-url }}
 
       - name: Build Docker image
         id: build
-        if: steps.restore_cache.outputs.cache-hit != 'true'
+        if: steps.restore_image_cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p .sentinel
           IMAGE_URL=`make image-url`
@@ -55,7 +55,7 @@ jobs:
 
       - name: Build Postgres Docker image
         id: build_psql
-        if: steps.restore_cache.outputs.cache-hit != 'true'
+        if: steps.restore_psql_image_cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p .sentinel
           PSQL_IMAGE_URL=`make psql-image-url`
