@@ -12,3 +12,7 @@ LOGGING["loggers"] = {
 
 # do not run celery tasks in the background during tests
 CELERY_TASK_ALWAYS_EAGER = True
+
+INSTALLED_APPS += [
+    "ix.pg_vector.tests.pg_vector_test",
+]
