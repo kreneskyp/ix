@@ -10,7 +10,7 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
 
   web:
-    image: ghcr.io/ix/sandbox:latest
+    image: ghcr.io/kreneskyp/ix/sandbox:latest
     #image: ghcr.io/ix:latest
     command: uvicorn ix.server.asgi:application --host 0.0.0.0 --port 8001 --reload
     ports:
@@ -40,7 +40,7 @@ services:
       - web
 
   worker:
-    image: ghcr.io/ix/sandbox:latest
+    image: ghcr.io/kreneskyp/ix/sandbox:latest
     command: celery.sh
     links:
       - db

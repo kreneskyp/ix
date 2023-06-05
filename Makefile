@@ -9,7 +9,7 @@ endif
 
 # APP IMAGE
 DOCKERFILE=Dockerfile
-DOCKER_REPOSITORY=${DOCKER_REGISTRY}/ix/sandbox
+DOCKER_REPOSITORY=${DOCKER_REGISTRY}/kreneskyp/ix/sandbox
 HASH_FILES=requirements*.txt package.json Dockerfile
 IMAGE_TAG=$(shell cat $(HASH_FILES) | ${HASHER} | cut -d ' ' -f 1)
 IMAGE_URL=$(DOCKER_REPOSITORY):$(IMAGE_TAG)
@@ -17,7 +17,7 @@ IMAGE_SENTINEL=.sentinel/image
 
 # PSQL IMAGE
 DOCKERFILE_PSQL=psql.Dockerfile
-DOCKER_REPOSITORY_PSQL=${DOCKER_REGISTRY}/ix/postgres-pg-vector
+DOCKER_REPOSITORY_PSQL=${DOCKER_REGISTRY}/kreneskyp/ix/postgres-pg-vector
 HASH_FILES_PSQL=psql.Dockerfile
 IMAGE_TAG_PSQL=$(shell cat $(HASH_FILES_PSQL) | ${HASHER} | cut -d ' ' -f 1)
 IMAGE_URL_PSQL=$(DOCKER_REPOSITORY_PSQL):$(IMAGE_TAG_PSQL)
