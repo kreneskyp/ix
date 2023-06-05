@@ -8,34 +8,6 @@ on:
 
 
 jobs:
-
-  postgres_pg_vector:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-        with:
-          images: ghcr.io/kreneskyp/ix/postgres-pg-vector:15.3
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: psql.Dockerfile
-          push: true
-          tags: ghcr.io/kreneskyp/ix/postgres-pg-vector:15.3, ghcr.io/kreneskyp/ix/postgres-pg-vector:latest
-          labels: ${{ steps.meta.outputs.labels }}
-
   build:
     runs-on: ubuntu-latest
     steps:
