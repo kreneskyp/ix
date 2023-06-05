@@ -25,7 +25,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ghcr.io/kreneskyp/ix/pg-docker-vector:15.3
+          images: ghcr.io/kreneskyp/ix/postgres-pg-vector:15.3
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -33,7 +33,7 @@ jobs:
           context: .
           file: psql.Dockerfile
           push: true
-          tags: ghcr.io/kreneskyp/ix/pg-docker-vector:15.3, ghcr.io/kreneskyp/ix/pg-docker-vector:latest
+          tags: ghcr.io/kreneskyp/ix/postgres-pg-vector:15.3, ghcr.io/kreneskyp/ix/postgres-pg-vector:latest
           labels: ${{ steps.meta.outputs.labels }}
 
   build:
