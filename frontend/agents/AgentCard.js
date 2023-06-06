@@ -41,7 +41,7 @@ const AgentCard = () => {
           </Text>
           <Divider />
           <Heading as="h5" size="xs">
-            {agent.chain.name}
+            {agent.chain?.name || "No Chain"}
           </Heading>
           <Box
             maxWidth="350px"
@@ -55,7 +55,7 @@ const AgentCard = () => {
               WebkitLineClamp: 3,
             }}
           >
-            {agent.chain.description}
+            {agent.chain?.description || "No Chain"}
           </Box>
         </VStack>
       </CardBody>
