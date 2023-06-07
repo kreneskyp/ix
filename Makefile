@@ -1,8 +1,5 @@
 DOCKER_COMPOSE=docker-compose.yml
-DOCKERFILE=Dockerfile
 DOCKER_REGISTRY=ghcr.io
-DOCKER_REPOSITORY=${DOCKER_REGISTRY}/ix/sandbox
-HASH_FILES=requirements*.txt package.json Dockerfile
 
 # check for md5sum or md5 for hashing
 HASHER := $(shell command -v md5sum 2> /dev/null)
@@ -10,9 +7,21 @@ ifndef HASHER
     HASHER := md5 -r
 endif
 
+# APP IMAGE
+DOCKERFILE=Dockerfile
+DOCKER_REPOSITORY=${DOCKER_REGISTRY}/kreneskyp/ix/sandbox
+HASH_FILES=requirements*.txt package.json Dockerfile
 IMAGE_TAG=$(shell cat $(HASH_FILES) | ${HASHER} | cut -d ' ' -f 1)
 IMAGE_URL=$(DOCKER_REPOSITORY):$(IMAGE_TAG)
 IMAGE_SENTINEL=.sentinel/image
+
+# PSQL IMAGE
+DOCKERFILE_PSQL=psql.Dockerfile
+DOCKER_REPOSITORY_PSQL=${DOCKER_REGISTRY}/kreneskyp/ix/postgres-pg-vector
+HASH_FILES_PSQL=psql.Dockerfile
+IMAGE_TAG_PSQL=$(shell cat $(HASH_FILES_PSQL) | ${HASHER} | cut -d ' ' -f 1)
+IMAGE_URL_PSQL=$(DOCKER_REPOSITORY_PSQL):$(IMAGE_TAG_PSQL)
+IMAGE_SENTINEL_PSQL=.sentinel/image.psql
 
 DOCKER_COMPOSE_RUN=docker-compose run --rm web
 DOCKER_COMPOSE_RUN_WITH_PORT=docker-compose run -p 8000:8000 --rm web
@@ -35,12 +44,21 @@ image-url:
 .sentinel:
 	mkdir -p .sentinel
 
-# inner build target for image
+# inner build target for sandbox image
 ${IMAGE_SENTINEL}: .sentinel $(HASH_FILES)
 ifneq (${NO_IMAGE_BUILD}, 1)
 	echo building ${IMAGE_URL}
 	docker build -t ${IMAGE_URL} -f $(DOCKERFILE) .
 	docker tag ${IMAGE_URL} ${DOCKER_REPOSITORY}:latest
+	touch $@
+endif
+
+# inner build target for postgres image
+${IMAGE_SENTINEL_PSQL}: .sentinel $(HASH_FILES_PSQL)
+ifneq (${NO_IMAGE_BUILD}, 1)
+	echo building ${IMAGE_URL_PSQL}
+	docker build -t ${IMAGE_URL_PSQL} -f $(DOCKERFILE_PSQL) .
+	docker tag ${IMAGE_URL_PSQL} ${DOCKER_REPOSITORY_PSQL}:latest
 	touch $@
 endif
 
@@ -58,7 +76,7 @@ dev_setup: image frontend migrate dev_fixtures
 
 # build image
 .PHONY: image
-image: ${IMAGE_SENTINEL}
+image: ${IMAGE_SENTINEL} ${IMAGE_SENTINEL_PSQL}
 
 # full frontend build
 .PHONY: frontend
