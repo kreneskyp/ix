@@ -1,6 +1,9 @@
 import React from "react";
 import { Handle } from "reactflow";
-import { Box, VStack, Heading, Text, Divider, HStack } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEditorColorMode } from "chains/editor/useColorMode";
+import { faChain } from "@fortawesome/free-solid-svg-icons";
 
 // Dimensions of ChainNodes and layout
 const CHAIN_NODE_WIDTH = 250;
@@ -8,10 +11,13 @@ const NODE_SPACER = 50;
 const CONTAINER_MARGIN = 10;
 
 export const GroupNode = ({ data }) => {
+  const { type, node, children } = data;
+  const { highlight, highlightColor } = useEditorColorMode();
+
   // calculate width to fit children.
   // if no children default to the size of one child.
   const width =
-    (data.children.length - 1) * (CHAIN_NODE_WIDTH + NODE_SPACER) +
+    (children.length - 1) * (CHAIN_NODE_WIDTH + NODE_SPACER) +
     CHAIN_NODE_WIDTH +
     CONTAINER_MARGIN * 2;
 
@@ -25,8 +31,19 @@ export const GroupNode = ({ data }) => {
       height={165}
       width={width}
     >
-      <Text pl={3}>{data.node.name}</Text>
-
+      <Heading
+        as="h4"
+        size="xs"
+        color={highlightColor}
+        borderTopLeftRadius={7}
+        borderTopRightRadius={7}
+        bg={highlight[type.type]}
+        px={1}
+        py={2}
+        className="drag-handle"
+      >
+        <FontAwesomeIcon icon={faChain} /> {node.name}
+      </Heading>
       <Handle id="in" type="target" position="left" />
       <Handle id="out" type="source" position="right" />
     </Box>
