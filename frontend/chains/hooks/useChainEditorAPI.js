@@ -6,14 +6,33 @@ import { DeleteChainNodeMutation } from "chains/graphql/DeleteChainNodeMutation"
 import { UpdateChainEdgeMutation } from "chains/graphql/UpdateChainEdgeMutation";
 import { DeleteChainEdgeMutation } from "chains/graphql/DeleteChainEdgeMutation";
 import { AddChainNodeMutation } from "chains/graphql/AddChainNodeMutation";
+import { useCallback, useMemo } from "react";
 
-export const useChainEditorAPI = ({ chain, onCompleted, onError }) => {
+// utility for wrapping default onCompleted with onCompleted arg
+const useNestedCallback = (func, callback) => {
+  return (response, errors) => {
+    func(response, errors);
+    if (callback) {
+      callback(response, errors);
+    }
+  };
+};
+
+export const useChainEditorAPI = ({
+  chain,
+  onCompleted,
+  onError,
+  reactFlowInstance,
+}) => {
+  const { setNodes, setEdges } = reactFlowInstance ? reactFlowInstance : {};
+
   const { callback: updateChain, isInFlight: updateChainInFlight } =
     useChainEditorMutation({
       chain,
       onCompleted,
       onError,
       query: UpdateChainMutation,
+      reactFlowInstance,
     });
   const { callback: addNode, isInFlight: addNodeInFlight } =
     useChainEditorMutation({
@@ -21,6 +40,7 @@ export const useChainEditorAPI = ({ chain, onCompleted, onError }) => {
       onCompleted,
       onError,
       query: AddChainNodeMutation,
+      reactFlowInstance,
     });
   const { callback: updateNode, isInFlight: updateNodeInFlight } =
     useChainEditorMutation({
@@ -28,13 +48,16 @@ export const useChainEditorAPI = ({ chain, onCompleted, onError }) => {
       onCompleted,
       onError,
       query: UpdateChainNodeMutation,
+      reactFlowInstance,
     });
+
   const { callback: deleteNode, isInFlight: deleteNodeInFlight } =
     useChainEditorMutation({
       chain,
       onCompleted,
       onError,
       query: DeleteChainNodeMutation,
+      reactFlowInstance,
     });
   const { callback: addEdge, isInFlight: addEdgeInFlight } =
     useChainEditorMutation({
@@ -42,6 +65,7 @@ export const useChainEditorAPI = ({ chain, onCompleted, onError }) => {
       onCompleted,
       onError,
       query: AddChainEdgeMutation,
+      reactFlowInstance,
     });
   const { callback: updateEdge, isInFlight: updateEdgeInFlight } =
     useChainEditorMutation({
@@ -49,32 +73,37 @@ export const useChainEditorAPI = ({ chain, onCompleted, onError }) => {
       onCompleted,
       onError,
       query: UpdateChainEdgeMutation,
+      reactFlowInstance,
     });
   const { callback: deleteEdge, isInFlight: deleteEdgeInFlight } =
     useChainEditorMutation({
       chain,
       onCompleted,
       onError,
-      mutation: DeleteChainEdgeMutation,
+      query: DeleteChainEdgeMutation,
+      reactFlowInstance,
     });
 
-  // aggregate inFlight status
-  const isInFlight =
-    updateChainInFlight ||
-    addNodeInFlight ||
-    updateNodeInFlight ||
-    deleteNodeInFlight ||
-    addEdgeInFlight ||
-    updateEdgeInFlight ||
-    deleteEdgeInFlight;
+  return useMemo(() => {
 
-  return {
-    isInFlight,
-    updateNode,
-    addNode,
-    deleteNode,
-    addEdge,
-    updateEdge,
-    deleteEdge,
-  };
+    // aggregate inFlight status
+    const isInFlight =
+      updateChainInFlight ||
+      addNodeInFlight ||
+      updateNodeInFlight ||
+      deleteNodeInFlight ||
+      addEdgeInFlight ||
+      updateEdgeInFlight ||
+      deleteEdgeInFlight;
+
+    return {
+      isInFlight,
+      updateChain,
+      updateNode,
+      addNode,
+      addEdge,
+      updateEdge,
+      deleteEdge,
+    };
+  }, [chain?.id, onCompleted, onError, reactFlowInstance]);
 };

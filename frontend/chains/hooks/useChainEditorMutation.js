@@ -6,13 +6,14 @@ export const useChainEditorMutation = ({
   query,
   onCompleted: globalOnCompleted,
   onError: globalOnError,
+  reactFlowInstance,
 }) => {
   const [commit, isInFlight] = useMutation(query);
 
   const callback = useCallback(
-    (data = {}, { onError, onCompleted } = {}) => {
+    (variables = {}, { onError, onCompleted } = {}) => {
       commit({
-        variables: { data },
+        variables,
         onCompleted: (response, errors) => {
           if (onCompleted) {
             onCompleted(response, errors);
@@ -31,7 +32,7 @@ export const useChainEditorMutation = ({
         },
       });
     },
-    [commit, chain?.id]
+    [commit, chain?.id, globalOnCompleted, globalOnError, reactFlowInstance]
   );
 
   return {
