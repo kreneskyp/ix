@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React from "react";
 
 import { HStack, Text, VStack } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,9 +7,7 @@ import {
   faChain,
   faMemory,
   faMessage,
-  faPlus,
   faRobot,
-  faToolbox,
   faTools,
 } from "@fortawesome/free-solid-svg-icons";
 import { NodeSelector } from "chains/editor/NodeSelector";
@@ -17,79 +15,12 @@ import {
   useEditorColorMode,
   useSideBarColorMode,
 } from "chains/editor/useColorMode";
+import { usePreloadedQuery } from "react-relay/hooks";
+import { NodeTypesQuery } from "chains/graphql/NodeTypesQuery";
 
-const LLMNodeTypes = [
-  {
-    label: "OpenAI",
-    type: "llm",
-    options: {
-      models: [
-        { value: "gpt-3.5-turbo", label: "GPT-3.5 Turbo" },
-        { value: "gpt-4", label: "GPT-4" },
-      ],
-    },
-    default: {
-      classPath: "langchain.chat_models.openai.ChatOpenAI",
-      model: "gpt-4",
-      config: {
-        temperature: 0,
-        max_tokens: 100,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0,
-        stop_words: "",
-        request_timeout: 60,
-        verbose: false,
-      },
-    },
-  },
-  { label: "PaLM-2", type: "llm" },
-];
 
-const ChainNodeTypes = [
-  {
-    label: "LLMReply",
-    type: "chain",
-    default: {
-      name: "",
-      classPath: "ix.chains.llm.LLMReply",
-      config: { llm: null },
-    },
-  },
-  {
-    label: "LLMToolChain",
-    type: "chain",
-    default: {
-      name: "",
-      classPath: "ix.chains.llm.LLMToolChain",
-      config: { llm: null },
-    },
-  },
-  {
-    label: "LLMChain",
-    type: "chain",
-    default: {
-      name: "",
-      classPath: "ix.chains.tool_chain.LLMChain",
-      config: { llm: null },
-    },
-  },
-];
-
-const PromptNodeTypes = [
-  {
-    label: "ChatPrompt",
-    type: "prompt",
-    default: {
-      messages: null,
-    },
-  },
-];
-
-const AgentNodeTypes = [];
-
-export const NodeSelectorHeader = ({ label, icon, highlight }) => {
-  const { bg, color } = useSideBarColorMode();
+export const NodeSelectorHeader = ({ label, icon }) => {
+  const { color } = useSideBarColorMode();
 
   return (
     <HStack
@@ -110,14 +41,19 @@ export const NodeSelectorHeader = ({ label, icon, highlight }) => {
 export const NodeSelectorList = ({ nodeTypes }) => {
   return (
     <VStack spacing={0}>
-      {nodeTypes.map((config, i) => {
-        return <NodeSelector key={config.label} config={config} />;
+      {nodeTypes.map((type, i) => {
+        return <NodeSelector key={type.id} type={type} />;
       })}
     </VStack>
   );
 };
 
-export const ChainGraphEditorSideBar = () => {
+const filterNodeTypes = (nodeTypes, type) => {
+  return nodeTypes.filter((nodeType) => nodeType.type === type);
+};
+
+export const ChainGraphEditorSideBar = ({ typesQueryRef }) => {
+  const { nodeTypes } = usePreloadedQuery(NodeTypesQuery, typesQueryRef);
   const { highlight } = useEditorColorMode();
 
   return (
@@ -127,19 +63,19 @@ export const ChainGraphEditorSideBar = () => {
         icon={faChain}
         highlight={highlight.chain}
       />
-      <NodeSelectorList nodeTypes={ChainNodeTypes} />
+      <NodeSelectorList nodeTypes={filterNodeTypes(nodeTypes, "chain")} />
       <NodeSelectorHeader
         label="LLM"
         icon={faBrain}
         highlight={highlight.llm}
       />
-      <NodeSelectorList nodeTypes={LLMNodeTypes} />
+      <NodeSelectorList nodeTypes={filterNodeTypes(nodeTypes, "llm")} />
       <NodeSelectorHeader
         label="Prompts"
         icon={faMessage}
         highlight={highlight.prompt}
       />
-      <NodeSelectorList nodeTypes={PromptNodeTypes} />
+      <NodeSelectorList nodeTypes={filterNodeTypes(nodeTypes, "prompt")} />
       <NodeSelectorHeader
         label="Agent"
         icon={faRobot}
@@ -150,11 +86,16 @@ export const ChainGraphEditorSideBar = () => {
         icon={faMemory}
         highlight={highlight.memory}
       />
+      <NodeSelectorList nodeTypes={filterNodeTypes(nodeTypes, "memory")} />
+      <NodeSelectorList
+        nodeTypes={filterNodeTypes(nodeTypes, "memory_backend")}
+      />
       <NodeSelectorHeader
         label="Tool"
         icon={faTools}
         highlight={highlight.tool}
       />
+      <NodeSelectorList nodeTypes={filterNodeTypes(nodeTypes, "tools")} />
     </VStack>
   );
 };

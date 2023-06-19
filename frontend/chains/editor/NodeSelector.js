@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
@@ -9,11 +9,11 @@ import { useSideBarColorMode } from "chains/editor/useColorMode";
  * Expects a nodeSelectorConfig prop that contains the label of the node
  * and other configuration for creating the node in the graph.
  */
-export const NodeSelector = ({ config }) => {
+export const NodeSelector = ({ type }) => {
   const { isLight, color } = useSideBarColorMode();
 
   const handleStart = (event, data) => {
-    event.dataTransfer.setData("application/reactflow", JSON.stringify(config));
+    event.dataTransfer.setData("application/reactflow", JSON.stringify(type));
     event.dataTransfer.effectAllowed = "move";
   };
 
@@ -37,7 +37,7 @@ export const NodeSelector = ({ config }) => {
         width="100%"
         height="100%"
       >
-        <Text fontSize="sm">{config.label}</Text>
+        <Text fontSize="sm">{type.name}</Text>
         <FontAwesomeIcon size="xs" icon={faBars} />
       </Flex>
     </Box>
