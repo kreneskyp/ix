@@ -93,13 +93,12 @@ class AddChainNodeMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, data):
         # create the chain if it isn't given
-        data.pop("node_type", None)
-
         if not data.get("chain_id", None):
             chain = Chain.objects.create(name="Unnamed", description="")
             data["chain_id"] = chain.id
 
-        node = ChainNode.objects.create(**data)
+        node_type = NodeType.objects.get(class_path=data["class_path"])
+        node = ChainNode.objects.create(node_type=node_type, **data)
         return AddChainNodeMutation(node=node)
 
 
