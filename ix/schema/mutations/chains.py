@@ -1,9 +1,11 @@
 import logging
 import graphene
+from django.db.models import Q
 from graphene.types.generic import GenericScalar
 
-from ix.chains.models import ChainNode, Chain, ChainEdge
-from ix.schema.types.chains import ChainNodeType, ChainEdgeType
+from ix.chains.models import ChainNode, Chain, ChainEdge, NodeType
+from ix.schema.types.chains import ChainNodeType, ChainEdgeType, ChainType
+from ix.schema.utils import handle_exceptions
 
 logger = logging.getLogger(__name__)
 
@@ -18,15 +20,24 @@ class UpdateChainMutation(graphene.Mutation):
     class Arguments:
         data = ChainInput(required=True)
 
-    chain = graphene.Field(ChainNodeType)
+    chain = graphene.Field(ChainType)
 
     @staticmethod
+    @handle_exceptions
     def mutate(root, info, data):
-        chain = Chain.objects.pop(id=data["id"])
+        chain = None
+        if "id" in data:
+            try:
+                chain = Chain.objects.get(id=data["id"])
+            except Chain.DoesNotExist:
+                pass
 
-        for field, value in data.items():
-            setattr(chain, field, value)
-        chain.save()
+        if chain:
+            for field, value in data.items():
+                setattr(chain, field, value)
+            chain.save()
+        else:
+            chain = Chain.objects.create(**data)
         return UpdateChainMutation(chain=chain)
 
 
