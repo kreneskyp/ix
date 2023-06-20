@@ -50,24 +50,33 @@ const PromptEditor = ({ data, onChange }) => {
     handleOnChange([...messages, { ...DEFAULT_MESSAGE }]);
   }, [handleOnChange, messages]);
 
-  const deleteMessage = useCallback((index) => {
-    handleOnChange(messages.filter((_, idx) => idx !== index));
-  },[handleOnChange, messages]);
+  const deleteMessage = useCallback(
+    (index) => {
+      handleOnChange(messages.filter((_, idx) => idx !== index));
+    },
+    [handleOnChange, messages]
+  );
 
-  const moveMessage = useCallback((index, direction) => {
-    const updatedMessages = [...messages];
-    const temp = updatedMessages[index];
-    updatedMessages[index] = updatedMessages[index + direction];
-    updatedMessages[index + direction] = temp;
-    handleOnChange(updatedMessages);
-  }, [handleOnChange, messages]);
+  const moveMessage = useCallback(
+    (index, direction) => {
+      const updatedMessages = [...messages];
+      const temp = updatedMessages[index];
+      updatedMessages[index] = updatedMessages[index + direction];
+      updatedMessages[index + direction] = temp;
+      handleOnChange(updatedMessages);
+    },
+    [handleOnChange, messages]
+  );
 
-  const handleMessageChange = useCallback((index, field, value) => {
-    const updatedMessages = [...messages];
-    const updatedMessage = { ...updatedMessages[index], [field]: value };
-    updatedMessages[index] = updatedMessage;
-    handleOnChange(updatedMessages);
-  }, [handleOnChange, messages]);
+  const handleMessageChange = useCallback(
+    (index, field, value) => {
+      const updatedMessages = [...messages];
+      const updatedMessage = { ...updatedMessages[index], [field]: value };
+      updatedMessages[index] = updatedMessage;
+      handleOnChange(updatedMessages);
+    },
+    [handleOnChange, messages]
+  );
 
   return (
     <VStack spacing={1} align="stretch">
