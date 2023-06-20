@@ -7,6 +7,7 @@ import { UpdateChainEdgeMutation } from "chains/graphql/UpdateChainEdgeMutation"
 import { DeleteChainEdgeMutation } from "chains/graphql/DeleteChainEdgeMutation";
 import { AddChainNodeMutation } from "chains/graphql/AddChainNodeMutation";
 import { useCallback, useMemo } from "react";
+import { SetChainRootMutation } from "chains/graphql/SetChainRootMutation";
 
 // utility for wrapping default onCompleted with onCompleted arg
 const useNestedCallback = (func, callback) => {
@@ -32,6 +33,14 @@ export const useChainEditorAPI = ({
       onCompleted,
       onError,
       query: UpdateChainMutation,
+      reactFlowInstance,
+    });
+  const { callback: setRoot, isInFlight: setRootInFlight } =
+    useChainEditorMutation({
+      chain,
+      onCompleted,
+      onError,
+      query: SetChainRootMutation,
       reactFlowInstance,
     });
   const { callback: addNode, isInFlight: addNodeInFlight } =
@@ -85,10 +94,10 @@ export const useChainEditorAPI = ({
     });
 
   return useMemo(() => {
-
     // aggregate inFlight status
     const isInFlight =
       updateChainInFlight ||
+      setRootInFlight ||
       addNodeInFlight ||
       updateNodeInFlight ||
       deleteNodeInFlight ||
@@ -99,6 +108,7 @@ export const useChainEditorAPI = ({
     return {
       isInFlight,
       updateChain,
+      setRoot,
       updateNode,
       addNode,
       addEdge,

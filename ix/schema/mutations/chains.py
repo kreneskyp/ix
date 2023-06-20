@@ -57,6 +57,33 @@ class ChainNodeInput(graphene.InputObjectType):
     node_type = graphene.String(required=False)
 
 
+class SetChainRootMutation(graphene.Mutation):
+    class Arguments:
+        chain_id = graphene.UUID(required=True)
+        node_id = graphene.UUID(required=False)
+
+    old = graphene.Field(ChainNodeType, required=False)
+    root = graphene.Field(ChainNodeType, required=False)
+
+    @staticmethod
+    def mutate(root, info, chain_id, node_id=None):
+        try:
+            old_root = ChainNode.objects.get(chain_id=chain_id, root=True)
+            old_root.root = False
+            old_root.save(update_fields=["root"])
+        except ChainNode.DoesNotExist:
+            old_root = None
+
+        if node_id:
+            node = ChainNode.objects.get(id=node_id)
+            node.root = True
+            node.save(update_fields=["root"])
+        else:
+            node = None
+
+        return SetChainRootMutation(old=old_root, root=node)
+
+
 class AddChainNodeMutation(graphene.Mutation):
     class Arguments:
         data = ChainNodeInput(required=True)
@@ -149,16 +176,25 @@ class DeleteChainEdgeMutation(graphene.Mutation):
     class Arguments:
         id = graphene.UUID(required=True)
 
-    id = graphene.UUID()
+    edge = graphene.Field(ChainEdgeType)
 
     @staticmethod
     def mutate(root, info, id):
-        ChainEdge.objects.get(id=id).delete()
-        return DeleteChainEdgeMutation(id=id)
+        try:
+            edge = ChainEdge.objects.get(id=id)
+        except ChainEdge.DoesNotExist:
+            # ignore if it doesn't exist since desired state is achieved
+            edge = None
+
+        if edge:
+            ChainEdge.objects.get(id=id).delete()
+
+        return DeleteChainEdgeMutation(edge=edge)
 
 
 class Mutation(graphene.ObjectType):
     update_chain = UpdateChainMutation.Field()
+    set_chain_root = SetChainRootMutation.Field()
     add_chain_node = AddChainNodeMutation.Field()
     update_chain_node = UpdateChainNodeMutation.Field()
     delete_chain_node = DeleteChainNodeMutation.Field()
