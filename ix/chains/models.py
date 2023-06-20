@@ -37,17 +37,20 @@ class NodeTypeManager(models.Manager.from_queryset(NodeTypeQuery)):
 
 class NodeType(models.Model):
     TYPES = [
-        ("llm", "llm"),
         ("agent", "agent"),
         ("chain", "chain"),
         ("chain_list", "chain_list"),
+        ("document_loader", "document_loader"),
+        ("embeddings", "embeddings"),
+        ("index", "index"),
+        ("llm", "llm"),
         ("memory", "memory"),
         ("memory_backend", "memory_backend"),
+        ("prompt", "prompt"),
+        ("retriever", "retriever"),
         ("tool", "tool"),
         ("toolkit", "toolkit"),
-        ("index", "index"),
-        ("retriever", "retriever"),
-        ("embeddings", "embeddings"),
+        ("text_splitter", "text_splitter"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
