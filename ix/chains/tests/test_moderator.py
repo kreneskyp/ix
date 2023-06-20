@@ -29,18 +29,3 @@ class TestChatModerator:
 
         assert "task_id" in result
         assert UUID(result["task_id"])
-
-    def test_from_config(self, chat):
-        """Test that the ChatModerator is created with the correct dependencies from config"""
-        callback_manager = IxCallbackManager(chat["chat"].task)
-        config = {
-            "llm": {
-                "class_path": "langchain.chat_models.openai.ChatOpenAI",
-                "config": {"request_timeout": 60, "temperature": 0.2, "verbose": True},
-            }
-        }
-
-        chat_moderator = ChatModerator.from_config(config, callback_manager)
-
-        assert isinstance(chat_moderator.selection_chain, LLMChain)
-        assert chat_moderator.callbacks == callback_manager

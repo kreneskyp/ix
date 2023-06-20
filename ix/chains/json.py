@@ -4,7 +4,6 @@ from typing import Dict, Any, List
 
 from langchain.chains.base import Chain
 
-from ix.agents.callback_manager import IxCallbackManager
 from ix.agents.exceptions import MissingCommandMarkers
 
 
@@ -61,7 +60,3 @@ class ParseJSON(Chain):
 
     async def _acall(self, inputs: Dict[str, str]) -> Dict[str, str]:
         return parse_json(inputs[self.input_key], self.output_key)
-
-    @classmethod
-    def from_config(cls, config: Dict[str, Any], callback_manager: IxCallbackManager):
-        return cls(**config, callback_manager=callback_manager)

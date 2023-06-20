@@ -1,10 +1,9 @@
 import logging
 import json
-from typing import Dict, List, Any
+from typing import Dict, List
 from jsonpath_ng import parse as jsonpath_parse
 from langchain.chains.base import Chain
 
-from ix.agents.callback_manager import IxCallbackManager
 from ix.commands.filesystem import write_to_file
 from ix.task_log.models import Artifact, TaskLogMessage
 
@@ -140,7 +139,3 @@ class SaveArtifact(Chain):
 
     async def _acall(self, inputs: Dict[str, str]) -> Dict[str, str]:
         pass  # pragma: no cover
-
-    @classmethod
-    def from_config(cls, config: Dict[str, Any], callback_manager: IxCallbackManager):
-        return cls(**config, callbacks=callback_manager)

@@ -1,12 +1,10 @@
 import logging
-from typing import Dict, Any, List
+from typing import Dict, List
 
 from langchain.chains.base import Chain
 
-from ix.agents.callback_manager import IxCallbackManager
-from ix.agents.llm import load_llm
 from ix.chains.json import parse_json
-from ix.chains.llm_chain import LLMChain
+from ix.chains.tests.test_config_loader import OPENAI_LLM
 from ix.chat.models import Chat
 from ix.task_log.models import TaskLogMessage
 from ix.task_log.tasks.agent_runner import start_agent_loop
@@ -129,22 +127,3 @@ class ChatModerator(Chain):
 
     async def _acall(self, inputs: Dict[str, str]) -> Dict[str, str]:
         pass
-
-    @classmethod
-    def from_config(cls, config: Dict[str, Any], callback_manager: IxCallbackManager):
-        """Load an instance from a config dictionary and runtime"""
-        llm_config = config["llm"]
-        llm = load_llm(llm_config, callback_manager)
-
-        chooser_config = LLM_CHOOSE_AGENT_CONFIG.copy()
-        chooser_config["llm"] = llm
-        chooser = LLMChain.from_config(chooser_config, callback_manager)
-        chooser.callbacks = callback_manager
-
-        instance = cls(
-            llm=llm,
-            selection_chain=chooser,
-            callback_manager=callback_manager,
-        )
-        instance.llm = llm
-        return instance
