@@ -23,7 +23,7 @@ import { ChainNode } from "chains/flow/ChainNode";
 import { ChainEditorAPIContext } from "chains/editor/ChainEditorAPIContext";
 import { TypeAutoFields } from "chains/flow/TypeAutoFields";
 import { CollapsibleSection } from "chains/flow/CollapsibleSection";
-import {useDebounce} from "utils/hooks/useDebounce";
+import { useDebounce } from "utils/hooks/useDebounce";
 
 const NODE_STYLES = {
   llm: {

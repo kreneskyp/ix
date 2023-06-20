@@ -30,9 +30,7 @@ const HighlightText = ({ content }) => {
     });
   }, [content, mention, artifact]);
 
-  return (
-    <Box style={{ whiteSpace: "pre-wrap" }}>{formattedContent}</Box>
-  );
+  return <Box style={{ whiteSpace: "pre-wrap" }}>{formattedContent}</Box>;
 };
 
 HighlightText.propTypes = {

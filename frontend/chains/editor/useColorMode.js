@@ -24,10 +24,11 @@ export const useEditorColorMode = () => {
         ? {
             color: "gray.200",
             bg: "gray.700",
-        } : {
+          }
+        : {
             color: "gray.400",
             bg: "gray.800",
-        }
+          },
     },
     root: {
       color: isLight ? "gray.800" : "gray.400",
