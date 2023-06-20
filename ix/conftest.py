@@ -1,19 +1,25 @@
-from typing import List
+import logging
+from typing import List, Dict, Any
 from unittest.mock import MagicMock
 
 import pytest
+from django.core.management import call_command
 
 from ix.agents.callback_manager import IxCallbackManager
 from ix.agents.tests.mock_llm import MockChatOpenAI
-from ix.chains.moderator import ChatModerator
+from ix.chains.management.commands.create_moderator_v1 import MODERATOR_CHAIN_V1
+from ix.chains.models import Chain, ChainNode
 from ix.task_log.tests.fake import (
     fake_task,
     fake_task_log_msg,
     fake_chat,
     fake_agent,
     fake_think,
+    fake_chain,
 )
+from ix.utils.importlib import import_class
 
+logger = logging.getLogger(__name__)
 USER_INPUT = {"user_input": "hello agent 1"}
 
 
@@ -27,6 +33,11 @@ def mock_openai_key(monkeypatch):
     monkeypatch.setenv("OPENAI_API_KEY", "MOCK_KEY")
 
 
+MOCKABLE_LLM_CLASSES = [
+    "langchain.chat_models.openai.ChatOpenAI",
+]
+
+
 @pytest.fixture
 def mock_openai(mocker, mock_openai_key):
     # create a mock instance of the class
@@ -36,9 +47,16 @@ def mock_openai(mocker, mock_openai_key):
     # mock the class to return the instance we're creating here
     mock_class = MagicMock(return_value=mock_llm)
 
+    def mock_import_class(class_path):
+        if class_path in MOCKABLE_LLM_CLASSES:
+            return mock_class
+        else:
+            return import_class(class_path)
+
     # mock_import returns the mock class
-    mock_import = mocker.patch("ix.agents.llm.import_llm_class")
-    mock_import.return_value = mock_import.return_value = mock_class
+    mocker.patch(
+        "ix.chains.loaders.core.import_node_class", side_effect=mock_import_class
+    )
 
     # return the mock instance
     yield mock_llm
@@ -61,14 +79,33 @@ def mock_chain(mocker):
     yield mocker.patch("ix.chains.tests.mock_chain.mock_chain_func")
 
 
+@pytest.fixture()
+def load_chain(node_types, mock_callback_manager):
+    """
+    yields a function for creating a mock chain. Used for generating
+    mock functions for other chains and configs. The function takes a
+    config object and generates a chain and nodes. The chain is then
+    loaded and returned.
+    """
+
+    def _mock_chain(
+        config: Dict[str, Any], callback_manager: IxCallbackManager = None
+    ) -> Chain:
+        chain = fake_chain()
+        chain_node = ChainNode.objects.create_from_config(chain, config, root=True)
+        return chain_node.load(callback_manager or mock_callback_manager)
+
+    yield _mock_chain
+
+
 @pytest.fixture
-def task():
+def task(node_types):
     return fake_task()
 
 
 @pytest.fixture()
-def chat(mock_openai_key):
-    chat = fake_chat()
+def chat(node_types, task, load_chain, mock_openai_key):
+    chat = fake_chat(task=task)
     fake_agent_1 = fake_agent(
         name="agent 1", alias="agent_1", purpose="to test selections"
     )
@@ -79,20 +116,15 @@ def chat(mock_openai_key):
     callback_manager = IxCallbackManager(chat.task)
     callback_manager.think_msg = fake_think(task=chat.task)
 
-    config = {
-        "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
-            "config": {"request_timeout": 120, "temperature": 0.2, "verbose": True},
-        }
-    }
+    # load chain
+    model_instance = Chain.objects.get(pk=MODERATOR_CHAIN_V1)
+    moderator = model_instance.load_chain(callback_manager)
 
     yield {
         "chat": chat,
         "fake_agent_1": fake_agent_1,
         "fake_agent_2": fake_agent_2,
-        "instance": ChatModerator.from_config(
-            config, callback_manager=callback_manager
-        ),
+        "instance": moderator,
     }
 
 
@@ -105,3 +137,15 @@ def task_log_msg(task):
 def command_output(mocker):
     """mocks write_output to capture output from `echo` command"""
     yield mocker.patch("ix.agents.tests.echo_command.write_output")
+
+
+def load_fixture(fixture: str) -> None:
+    """calls manage.py loaddata"""
+    call_command("loaddata", fixture)
+
+
+@pytest.fixture()
+def node_types() -> None:
+    """calls manage.py loaddata node_types"""
+    load_fixture("node_types")
+    call_command("create_moderator_v1")
