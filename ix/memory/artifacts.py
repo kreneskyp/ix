@@ -38,7 +38,6 @@ class ArtifactMemory(BaseMemory):
 
         # split session id back into chat_id
         chat_id = self.session_id.split("_")[-1]
-        logger.error(f"chat_id={chat_id}")
 
         # search for artifacts
         text = ""
@@ -67,7 +66,6 @@ class ArtifactMemory(BaseMemory):
                 text = f"REFERENCED ARTIFACTS:\n{artifact_prompt}"
 
         # return formatted artifacts
-        logger.debug(f"ArtifactMemory.load_memory_variables text={text}")
         return {self.memory_key: text}
 
     def save_context(self, inputs: Dict[str, Any], outputs: Dict[str, str]) -> None:

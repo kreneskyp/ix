@@ -4,6 +4,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 
 from ix.chains.models import Chain, ChainNode, ChainEdge
+from ix.chains.tests.test_config_loader import LLM_CHAIN
 from ix.chat.models import Chat
 from ix.task_log.models import Agent, Task, TaskLogMessage, Artifact
 from faker import Faker
@@ -29,23 +30,9 @@ def fake_chain_node(**kwargs):
     Create a fake chain node.
     """
     chain = kwargs.get("chain", fake_chain())
-
-    node = ChainNode.objects.create(
-        id=uuid.uuid4(),
-        root=True,
-        chain=chain,
-        name=fake.unique.name(),
-        description="This is a mock node",
-        class_path="ix.chains.llm_chain.LLMChain",
-        config={
-            "llm": {
-                "class_path": "ix.chains.tests.mock_llm.MockLLM",
-            },
-            "messages": [{"role": "system", "template": "This is a mock node"}],
-        },
-    )
-
-    return node
+    config = kwargs.get("config", LLM_CHAIN)
+    root = kwargs.get("root", True)
+    return ChainNode.objects.create_from_config(chain=chain, config=config, root=root)
 
 
 def fake_chain_edge(**kwargs):
