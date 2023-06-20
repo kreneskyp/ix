@@ -60,10 +60,24 @@ export const useChainEditorAPI = ({
       reactFlowInstance,
     });
 
+  const onDeleteNode = useCallback(
+    useNestedCallback((response) => {
+      // delete nodes and edges from ReactFlow
+      const { node } = response?.deleteChainNode;
+      setNodes((nodes) => nodes.filter((n) => n.id !== node.id));
+      setEdges((edges) =>
+        edges.filter(
+          (edge) => edge.source !== node.id && edge.target !== node.id
+        )
+      );
+    }, onCompleted),
+    [reactFlowInstance]
+  );
+
   const { callback: deleteNode, isInFlight: deleteNodeInFlight } =
     useChainEditorMutation({
       chain,
-      onCompleted,
+      onCompleted: onDeleteNode,
       onError,
       query: DeleteChainNodeMutation,
       reactFlowInstance,
@@ -111,6 +125,7 @@ export const useChainEditorAPI = ({
       setRoot,
       updateNode,
       addNode,
+      deleteNode,
       addEdge,
       updateEdge,
       deleteEdge,

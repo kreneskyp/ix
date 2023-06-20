@@ -124,12 +124,26 @@ class DeleteChainNodeMutation(graphene.Mutation):
     class Arguments:
         id = graphene.UUID(required=True)
 
-    id = graphene.UUID()
+    node = graphene.Field(ChainNodeType, required=False)
+    edges = graphene.List(ChainEdgeType, required=False)
 
     @staticmethod
     def mutate(root, info, id):
-        ChainNode.objects.get(id=id).delete()
-        return DeleteChainNodeMutation(id=id)
+        try:
+            node = ChainNode.objects.get(id=id)
+        except ChainNode.DoesNotExist:
+            # ignore if it doesn't exist since desired state is achieved
+            node = None
+            edges = None
+
+        if node:
+            # delete all edges that reference this node
+            query = ChainEdge.objects.filter(Q(source_id=id) | Q(target_id=id))
+            edges = list(query)
+            query.delete()
+            ChainNode.objects.filter(id=id).delete()
+
+        return DeleteChainNodeMutation(node=node, edges=edges)
 
 
 class ChainEdgeInput(graphene.InputObjectType):
