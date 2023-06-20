@@ -10,6 +10,7 @@ export const ChainGraphByIdQuery = graphql`
       }
       nodes {
         id
+        root
         classPath
         config
         name
@@ -18,8 +19,21 @@ export const ChainGraphByIdQuery = graphql`
           x
           y
         }
-        parent {
+        nodeType {
           id
+          name
+          description
+          classPath
+          type
+          displayType
+          fields
+          childField
+          connectors {
+            key
+            type
+            sourceType
+            multiple
+          }
         }
       }
       edges {
@@ -32,6 +46,7 @@ export const ChainGraphByIdQuery = graphql`
         }
         key
         inputMap
+        relation
       }
     }
   }

@@ -18,7 +18,6 @@ import {
 import { usePreloadedQuery } from "react-relay/hooks";
 import { NodeTypesQuery } from "chains/graphql/NodeTypesQuery";
 
-
 export const NodeSelectorHeader = ({ label, icon }) => {
   const { color } = useSideBarColorMode();
 
