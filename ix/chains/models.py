@@ -1,17 +1,41 @@
 import logging
 import uuid
-from typing import Any, Dict, Optional
+from functools import cached_property
+from typing import Any, Dict
 
 from django.db import models
 from langchain.chains.base import Chain as LangChain
 
-from ix.utils.importlib import import_class
+from ix.pg_vector.tests.models import PGVectorMixin
+from ix.pg_vector.utils import get_embedding
 
 
 logger = logging.getLogger(__name__)
 
 
-class ChainNodeType(models.Model):
+class NodeTypeQuery(PGVectorMixin, models.QuerySet):
+    """Mixing PGVectorMixin into the default QuerySet."""
+
+    pass
+
+
+class NodeTypeManager(models.Manager.from_queryset(NodeTypeQuery)):
+    def create_with_embedding(self, name, description, class_path):
+        """
+        Creates a new NodeType object with a vector embedding generated
+        from the given text using OpenAI's API.
+        """
+        text = f"{name} {description} {class_path}"
+        embedding = get_embedding(text)
+        return self.create(
+            name=name,
+            description=description,
+            class_path=class_path,
+            embedding=embedding,
+        )
+
+
+class NodeType(models.Model):
     TYPES = [
         ("llm", "llm"),
         ("agent", "agent"),
@@ -26,6 +50,7 @@ class ChainNodeType(models.Model):
         ("embeddings", "embeddings"),
     ]
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True)
     class_path = models.CharField(max_length=255)
@@ -35,8 +60,16 @@ class ChainNodeType(models.Model):
         default="node",
         choices=(("node", "node"), ("list", "list"), ("map", "map")),
     )
-    # connections = models.JSONField(null=True)
-    config = models.JSONField(null=True)
+    connectors = models.JSONField(null=True)
+    fields = models.JSONField(null=True)
+
+    # child_field is the name of the field that contains child nodes
+    # used for parsing config objects
+    child_field = models.CharField(max_length=32, null=True)
+
+    @cached_property
+    def connectors_as_dict(self):
+        return {c["key"]: c for c in self.connectors or []}
 
 
 def default_position():
