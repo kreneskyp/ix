@@ -6,9 +6,9 @@ channels==4.0.0
 channels_redis==4.1.0
 colorlog==6.7.0
 daphne==4.0.0
-django==4.2.1
+django==4.2.2
 django-channels-graphql-ws==1.0.0rc6
-django_extensions==3.2.1
+django_extensions==3.2.3
 django-redis==5.2.0
 Faker==18.9.0
 flake8==6.0.0
