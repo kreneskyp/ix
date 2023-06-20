@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Button,
   Flex,
@@ -25,40 +25,49 @@ const DEFAULT_MESSAGE = {
   partial_variables: {},
 };
 
-const PromptEditor = () => {
-  const [messages, setMessages] = useState([
-    {
-      role: "system",
-      template: "CREATE_PLAN_V3",
-      input_variables: ["foo", "bar"],
-      partial_variables: {
-        format: "PLAN_FORMAT_V3",
-        artifact_format: "ARTIFACT_FORMAT",
-      },
+const DEFAULT_MESSAGES = [
+  {
+    role: "system",
+    template: "",
+    input_variables: [],
+    partial_variables: {},
+  },
+];
+
+const PromptEditor = ({ data, onChange }) => {
+  const [messages, setMessages] = useState(data.messages || DEFAULT_MESSAGES);
+  const handleOnChange = useCallback(
+    (updatedMessages) => {
+      if (onChange !== undefined) {
+        onChange({ ...data, messages: updatedMessages });
+      }
+      setMessages(updatedMessages);
     },
-  ]);
+    [onChange]
+  );
 
-  const addMessage = () => {
-    setMessages([...messages, { ...DEFAULT_MESSAGE }]);
-  };
+  const addMessage = useCallback(() => {
+    handleOnChange([...messages, { ...DEFAULT_MESSAGE }]);
+  }, [handleOnChange, messages]);
 
-  const deleteMessage = (index) => {
-    setMessages(messages.filter((_, idx) => idx !== index));
-  };
+  const deleteMessage = useCallback((index) => {
+    handleOnChange(messages.filter((_, idx) => idx !== index));
+  },[handleOnChange, messages]);
 
-  const moveMessage = (index, direction) => {
-    const messagesCopy = [...messages];
-    const temp = messagesCopy[index];
-    messagesCopy[index] = messagesCopy[index + direction];
-    messagesCopy[index + direction] = temp;
-    setMessages(messagesCopy);
-  };
+  const moveMessage = useCallback((index, direction) => {
+    const updatedMessages = [...messages];
+    const temp = updatedMessages[index];
+    updatedMessages[index] = updatedMessages[index + direction];
+    updatedMessages[index + direction] = temp;
+    handleOnChange(updatedMessages);
+  }, [handleOnChange, messages]);
 
-  const handleMessageChange = (index, field, value) => {
-    const messagesCopy = [...messages];
-    messagesCopy[index][field] = value;
-    setMessages(messagesCopy);
-  };
+  const handleMessageChange = useCallback((index, field, value) => {
+    const updatedMessages = [...messages];
+    const updatedMessage = { ...updatedMessages[index], [field]: value };
+    updatedMessages[index] = updatedMessage;
+    handleOnChange(updatedMessages);
+  }, [handleOnChange, messages]);
 
   return (
     <VStack spacing={1} align="stretch">
