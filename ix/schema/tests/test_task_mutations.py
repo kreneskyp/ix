@@ -7,7 +7,7 @@ from ix.task_log.tests.fake import fake_task, fake_user, fake_agent
 
 @pytest.mark.django_db
 class TestSetTaskAutonomousMutation:
-    def test_set_task_autonomous(self):
+    def test_set_task_autonomous(self, node_types):
         task = fake_task()
         client = Client(schema)
 
@@ -59,7 +59,9 @@ CREATE_TASK_MUTATION = """
 
 @pytest.mark.django_db
 class TestCreateTaskMutation:
-    def test_create_task_without_agent_autonomous_flag(self, mocker, mock_openai):
+    def test_create_task_without_agent_autonomous_flag(
+        self, node_types, mocker, mock_openai
+    ):
         mocker.patch("ix.schema.mutations.tasks.start_agent_loop")
         fake_user()
         fake_agent(pk=1)
@@ -80,7 +82,7 @@ class TestCreateTaskMutation:
         task = Task.objects.get(pk=response["data"]["createTask"]["task"]["id"])
         assert task.autonomous is False
 
-    def test_create_task_with_autonomous_flag(self, mocker, mock_openai):
+    def test_create_task_with_autonomous_flag(self, node_types, mocker, mock_openai):
         mocker.patch("ix.schema.mutations.tasks.start_agent_loop")
         fake_user()
         agent = fake_agent()

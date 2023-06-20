@@ -152,6 +152,7 @@ class ChainEdgeInput(graphene.InputObjectType):
     target_id = graphene.UUID(required=True)
     key = graphene.String()
     chain_id = graphene.UUID()
+    relation = graphene.String(choices=["LINK", "PROP"])
     input_map = GenericScalar()
 
 

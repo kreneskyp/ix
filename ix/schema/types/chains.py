@@ -1,13 +1,29 @@
 import graphene
 from graphene.types.generic import GenericScalar
 from graphene_django import DjangoObjectType
-from ix.chains.models import Chain, ChainNode, ChainEdge
+from ix.chains.models import Chain, ChainNode, ChainEdge, NodeType
 from ix.utils.exceptions import catch_and_print_traceback
 
 
 class ChainType(DjangoObjectType):
     class Meta:
         model = Chain
+        fields = "__all__"
+
+
+class ConnectorType(graphene.ObjectType):
+    key = graphene.String()
+    type = graphene.String()
+    source_type = graphene.String()
+    multiple = graphene.Boolean(default_value=False)
+
+
+class NodeTypeType(DjangoObjectType):
+    connectors = graphene.List(ConnectorType)
+    fields = GenericScalar()
+
+    class Meta:
+        model = NodeType
         fields = "__all__"
 
 
@@ -46,6 +62,7 @@ class Query(object):
     chain = graphene.Field(ChainType, id=graphene.UUID(required=True))
     chains = graphene.List(ChainType)
     graph = graphene.Field(ChainWithGraphType, id=graphene.UUID(required=True))
+    node_types = graphene.List(NodeTypeType)
 
     def resolve_chain(self, info, id):
         return Chain.objects.get(pk=id)
@@ -60,3 +77,6 @@ class Query(object):
         edges = chain.edges.all()
 
         return ChainWithGraphType(chain=chain, nodes=nodes, edges=edges)
+
+    def resolve_node_types(self, info):
+        return NodeType.objects.all()

@@ -81,6 +81,7 @@ query SearchAgentsQuery($search: String!) {
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("node_types")
 class TestAuthorizeCommandMutation:
     def test_authorize_command(self, mocker):
         # Create a task, user, agent, and an initial task log message
@@ -139,6 +140,7 @@ class TestAuthorizeCommandMutation:
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("node_types")
 class TestChatInputMutation:
     def test_chat_input(self, mocker):
         # Create a task, user, agent, and an initial task log message
@@ -259,6 +261,7 @@ class TestChatInputMutation:
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("node_types")
 class TestAddRemoveAgentMutation:
     def test_add_remove_agent(self, chat):
         agent = fake_agent()
@@ -322,6 +325,7 @@ class TestAddRemoveAgentMutation:
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("node_types")
 class TestSearchAgents:
     @pytest.fixture(autouse=True)
     def setup(self, chat):
