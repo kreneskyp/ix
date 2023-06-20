@@ -82,6 +82,7 @@ def default_position():
 class ChainNode(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     class_path = models.CharField(max_length=255)
+    node_type = models.ForeignKey(NodeType, on_delete=models.CASCADE, null=True)
     config = models.JSONField(null=True)
     name = models.CharField(max_length=255, null=True)
     description = models.TextField(null=True)
@@ -92,8 +93,7 @@ class ChainNode(models.Model):
     # graph position
     position = models.JSONField(default=default_position)
 
-    # node_type = models.ForeignKey(ChainNodeType, on_delete=models.CASCADE)
-
+    # parent chain
     chain = models.ForeignKey(
         "Chain",
         on_delete=models.CASCADE,
@@ -102,11 +102,7 @@ class ChainNode(models.Model):
         blank=True,
     )
 
-    # reference to parent node that contains this node.
-    # used to describe sequences and maps.
-    parent = models.ForeignKey(
-        "self", on_delete=models.CASCADE, related_name="children", null=True, blank=True
-    )
+    objects = ChainNodeManager()
 
     def add_node(self, key: str = "tools", **kwargs) -> "ChainNode":
         """Add a node to the root"""
@@ -191,6 +187,8 @@ class ChainNode(models.Model):
 
 
 class ChainEdge(models.Model):
+    RELATION_CHOICES = (("PROP", "prop"), ("LINK", "link"))
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     source = models.ForeignKey(
         ChainNode, on_delete=models.CASCADE, related_name="outgoing_edges"
@@ -203,6 +201,9 @@ class ChainEdge(models.Model):
         "Chain", on_delete=models.CASCADE, related_name="edges", null=True
     )
     input_map = models.JSONField(null=True)
+    relation = models.CharField(
+        max_length=4, null=True, choices=RELATION_CHOICES, default="LINK"
+    )
 
 
 class Chain(models.Model):
@@ -219,7 +220,10 @@ class Chain(models.Model):
 
     @property
     def root(self) -> ChainNode:
-        return self.nodes.get(root=True)
+        try:
+            return self.nodes.get(root=True)
+        except ChainNode.DoesNotExist:
+            raise ValueError(f"Chain chain_id={self.id} does not have a root node")
 
     def load_chain(self, callback_manager) -> LangChain:
         return self.root.load_chain(callback_manager)
