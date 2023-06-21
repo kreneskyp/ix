@@ -39,6 +39,14 @@ def get_property_loader(name: str) -> Callable:
     }.get(name, None)
 
 
+def get_sequence_inputs(sequence: List[LangchainChain]) -> List[str]:
+    """Aggregate all inputs for a list of chains"""
+    input_variables = set()
+    for sequence_chain in sequence:
+        input_variables.update(sequence_chain.input_keys)
+    return list(input_variables)
+
+
 def load_node(node: ChainNode, callback_manager: IxCallbackManager, parent=None) -> Any:
     """
     Generic loader for loading the Langchain component a ChainNode represents.
@@ -76,8 +84,18 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, parent=None)
 
         if node_group[0].node_type.type == "chain":
             # load a sequence of linked nodes into a children property
+            # this supports loading as an list of chains or auto-SequentialChain
+            logger.error(f"Loading sequence for key={key}")
             first_instance = load_node(node_group[0], callback_manager, parent=node)
-            config[key] = load_sequence(node_group[0], first_instance, callback_manager)
+            sequence = load_sequence(node_group[0], first_instance, callback_manager)
+            connector = node_type.connectors_as_dict[key]
+            if connector.get("auto_sequence", True):
+                input_variables = get_sequence_inputs(sequence)
+                config[key] = SequentialChain(
+                    chains=sequence, input_variables=input_variables
+                )
+            else:
+                config[key] = sequence
         elif property_loader := get_property_loader(node_group[0].node_type.type):
             # load type specific config options. This is generally for loading
             # ix specific features into the config dict
@@ -106,7 +124,10 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, parent=None)
         # SequentialChain if there is more than one node in the sequence.
         sequential_nodes = load_sequence(node, instance)
         if len(sequential_nodes) > 1:
-            return SequentialChain(chains=sequential_nodes)
+            input_variables = get_sequence_inputs(sequential_nodes)
+            return SequentialChain(
+                chains=sequential_nodes, input_variables=input_variables
+            )
 
     return instance
 
