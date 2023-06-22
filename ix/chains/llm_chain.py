@@ -1,13 +1,17 @@
+import json
 import logging
 from typing import Any, List
 
 from langchain import LLMChain as LangchainLLMChain
+from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
     AIMessagePromptTemplate,
 )
+from langchain.tools import Tool, format_tool_to_openai_function
 
+from ix.chains.functions import FunctionSchema
 from ix.task_log.models import TaskLogMessage
 
 logger = logging.getLogger(__name__)
@@ -20,7 +24,44 @@ TEMPLATE_CLASSES = {
 
 
 class LLMChain(LangchainLLMChain):
-    """Wrapper around LLMChain to provide from_config initialization"""
+    """
+    Extension of LLMChain to provide additional functionality:
+
+    - OpenAI functions may be connected as functions.
+    - input_keys excludes memory variables so that memory may be directly attached.
+    """
+
+    # List of OpenAI functions to include in requests.
+    functions: List[FunctionSchema | Tool] = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.load_functions()
+
+    def load_functions(self) -> None:
+        """Load functions for OpenAI if llm is OpenAI"""
+        if not isinstance(self.llm, ChatOpenAI):
+            logger.error(f"llm is not ChatOpenAI, it is {type(self.llm)}")
+            return
+
+        if not self.functions:
+            return
+
+        if not isinstance(self.llm_kwargs, dict):
+            self.llm_kwargs = {}
+
+        # convert Langchain tools to OpenAI functions. FunctionSchema are already
+        # OpenAI functions, we don't need to convert them.
+        converted_functions = []
+        for function in self.functions:
+            if isinstance(function, Tool):
+                converted_functions.append(format_tool_to_openai_function(function))
+            else:
+                converted = function.copy()
+                converted["parameters"] = json.loads(function["parameters"])
+                converted_functions.append(converted)
+
+        self.llm_kwargs["functions"] = converted_functions
 
     @property
     def input_keys(self) -> List[str]:
