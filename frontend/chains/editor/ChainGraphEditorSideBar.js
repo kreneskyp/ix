@@ -68,7 +68,9 @@ export const ChainGraphEditorSideBar = ({ typesQueryRef }) => {
         icon={faBrain}
         highlight={highlight.llm}
       />
-      <NodeSelectorList nodeTypes={filterNodeTypes(nodeTypes, "output_parser")} />
+      <NodeSelectorList
+        nodeTypes={filterNodeTypes(nodeTypes, "output_parser")}
+      />
       <NodeSelectorHeader
         label="LLM"
         icon={faBrain}
