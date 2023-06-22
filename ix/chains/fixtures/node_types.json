@@ -1,0 +1,594 @@
+[
+{
+  "model": "chains.nodetype",
+  "pk": "01e26ecf-d02b-46ce-a57c-322e3815035b",
+  "fields": {
+    "name": "LLM Reply",
+    "description": "Chain that prompts an LLM for a text completion.",
+    "class_path": "ix.chains.llm_chain.LLMReply",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "151cbfff-6e65-4ed1-9c70-100deee0e873",
+  "fields": {
+    "name": "Parse JSON",
+    "description": "Parses output into json.",
+    "class_path": "ix.chains.json.ParseJSON",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "input_key",
+        "type": "text",
+        "label": "Input Key"
+      },
+      {
+        "name": "output_key",
+        "type": "text",
+        "label": "Output Key"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "1d6315c1-c5fa-416e-9172-66d63c414003",
+  "fields": {
+    "name": "Function Schema",
+    "description": "Describes a function using json. Compatible with OpenAI",
+    "class_path": "ix.chains.functions.FunctionSchema",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "name",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "name": "parameters",
+        "type": "json",
+        "default": ""
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "33fb8e69-b109-4d83-bb0c-80bc5df4f914",
+  "fields": {
+    "name": "LLM Tool Chain",
+    "description": "Chain that prompts an LLM for a completion. It has a set of tools available to the prompt",
+    "class_path": "ix.chains.tool_chain.LLMToolChain",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "7d49f24a-18e2-4db9-8be3-bbbe6aa25440",
+  "fields": {
+    "name": "Mock Memory",
+    "description": "Mock Memory",
+    "class_path": "ix.chains.tests.mock_memory.MockMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": null,
+    "fields": null,
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "7fff77c2-7ccc-4493-9f2b-54244c3d15e0",
+  "fields": {
+    "name": "Conversation Buffer",
+    "description": "Memory that stores conversation history as a buffer.",
+    "class_path": "langchain.memory.ConversationBufferMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "chat_memory",
+        "type": "target",
+        "source_type": "memory_backend"
+      }
+    ],
+    "fields": null,
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "8344d221-f239-4b83-acfa-f167f0dc6e22",
+  "fields": {
+    "name": "MapSubchain",
+    "description": "Runs a subchain for each item in a list.",
+    "class_path": "ix.chains.routing.MapSubchain",
+    "type": "chain",
+    "display_type": "list",
+    "connectors": [
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "chains",
+        "type": "target",
+        "source_type": "chain",
+        "auto_sequence": false
+      }
+    ],
+    "fields": [
+      {
+        "name": "input_variables",
+        "type": "list",
+        "input": "string"
+      },
+      {
+        "name": "map_input",
+        "type": "string",
+        "label": "Map Input"
+      },
+      {
+        "name": "map_input_to",
+        "type": "string",
+        "label": "Map Input To"
+      },
+      {
+        "name": "output_key",
+        "type": "string"
+      }
+    ],
+    "child_field": "chains"
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "8eda99de-d65f-4543-96c3-afd75a6e4bdc",
+  "fields": {
+    "name": "Mock Chain",
+    "description": "Mock Chain",
+    "class_path": "ix.chains.tests.mock_chain.MockChain",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": null,
+    "fields": null,
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "98af8724-a765-490a-bfb6-2adf54102186",
+  "fields": {
+    "name": "Artifact Memory",
+    "description": "Memory that retrieves artifacts from the database.",
+    "class_path": "ix.memory.artifacts.ArtifactMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "save_artifact",
+        "type": "boolean",
+        "label": "Save Artifact",
+        "default": false
+      },
+      {
+        "name": "load_artifact",
+        "type": "boolean",
+        "label": "Load Artifact",
+        "default": true
+      },
+      {
+        "name": "input_key",
+        "type": "string",
+        "default": "artifact_keys"
+      },
+      {
+        "name": "memory_key",
+        "type": "string",
+        "default": "related_artifacts"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "b62000d7-9390-491b-af13-9711c4ec8b44",
+  "fields": {
+    "name": "Chat Prompt Template",
+    "description": "Template for constructing chat prompts from messages.",
+    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "type": "prompt",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "output_parser",
+        "type": "target",
+        "source_type": "output_parser"
+      }
+    ],
+    "fields": null,
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "b7d8f662-12f6-4525-b07b-c9ea7c10001d",
+  "fields": {
+    "name": "IX Chat Moderator",
+    "description": "Chat moderator analyzes user input and delegates it to the appropriate agent.",
+    "class_path": "ix.chains.moderator.ChatModerator",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "selection_chain",
+        "type": "target",
+        "source_type": "chain"
+      }
+    ],
+    "fields": null,
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "bbb7544c-6891-4204-985a-d13d65e02523",
+  "fields": {
+    "name": "OpenAI LLM",
+    "description": "OpenAI LLM",
+    "class_path": "langchain.chat_models.openai.ChatOpenAI",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "model_name",
+        "type": "string",
+        "input": "select",
+        "label": "Model",
+        "choices": [
+          {
+            "label": "GPT-4",
+            "value": "gpt-4"
+          },
+          {
+            "label": "GPT-4 (0613)",
+            "value": "gpt-4-0613"
+          },
+          {
+            "label": "GPT-3.5 ",
+            "value": "gpt-3.5-turbo"
+          },
+          {
+            "label": "GPT-3.5 16k",
+            "value": "gpt-3.5-turbo-16k-0613"
+          }
+        ],
+        "default": "gpt-4",
+        "required": true,
+        "description": "OpenAI model"
+      },
+      {
+        "name": "request_timeout",
+        "type": "number",
+        "label": "Timeout (sec)",
+        "default": 60,
+        "description": "Request Timeout"
+      },
+      {
+        "max": 6,
+        "min": 0,
+        "name": "max_retries",
+        "step": 1,
+        "type": "number",
+        "input": "slider",
+        "default": 6,
+        "description": "Max Retries"
+      },
+      {
+        "max": 2,
+        "min": 0,
+        "name": "temperature",
+        "step": 0.05,
+        "type": "number",
+        "input": "slider",
+        "default": 0,
+        "description": "Temperature"
+      },
+      {
+        "name": "max_tokens",
+        "type": "number",
+        "default": 256
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "c3b2e7f3-f883-46f2-982d-cd01465fb3d1",
+  "fields": {
+    "name": "Function Output Parser",
+    "description": "Parses the output of a function",
+    "class_path": "ix.chains.functions.OpenAIFunctionParser",
+    "type": "output_parser",
+    "display_type": "node",
+    "connectors": null,
+    "fields": null,
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "c51f59a4-f41d-46b6-ba07-5d4636b0a121",
+  "fields": {
+    "name": "Save Artifact",
+    "description": "Saves an input as an artifact",
+    "class_path": "ix.chains.artifacts.SaveArtifact",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "artifact_key",
+        "type": "string",
+        "required": true,
+        "description": "Key of the artifact to save"
+      },
+      {
+        "name": "artifact_name",
+        "type": "string",
+        "required": true,
+        "description": "Name of the artifact to save"
+      },
+      {
+        "name": "artifact_description",
+        "type": "string",
+        "required": true,
+        "description": "Description of the artifact to save"
+      },
+      {
+        "name": "artifact_type",
+        "type": "string",
+        "required": true,
+        "description": "Type of the artifact to save"
+      },
+      {
+        "name": "artifact_storage",
+        "type": "string",
+        "required": true,
+        "description": "Storage of the artifact to save"
+      },
+      {
+        "name": "content_key",
+        "type": "string",
+        "required": true,
+        "description": "Key of the input containing the content to save"
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "required": true,
+        "description": "Key that the artifact will be output to"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "d13aca50-e998-4569-ba3c-b18985a1ca87",
+  "fields": {
+    "name": "Sequence",
+    "description": "Runs a sequence of chains passing outputs from one to the next.",
+    "class_path": "langchain.chains.SequentialChain",
+    "type": "chain",
+    "display_type": "list",
+    "connectors": [
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "chains",
+        "type": "target",
+        "source_type": "chain",
+        "auto_sequence": false
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": "chains"
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "d90b15ac-8202-41ee-84ca-c727376fb9e3",
+  "fields": {
+    "name": "Conversation Summary Buffer",
+    "description": "Memory that stores conversation history as a buffer and summarizes to compress context.",
+    "class_path": "langchain.memory.summary_buffer.ConversationSummaryBufferMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "chat_memory",
+        "type": "target",
+        "source_type": "memory_backend"
+      },
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      }
+    ],
+    "fields": [
+      {
+        "name": "memory_key",
+        "type": "string",
+        "default": "history"
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "default": "output"
+      },
+      {
+        "name": "input_key",
+        "type": "string",
+        "default": "output"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "da5e809a-b158-4f34-8867-8ac375967906",
+  "fields": {
+    "name": "Redis Memory Backend",
+    "description": "Redis Memory Backend",
+    "class_path": "langchain.memory.RedisChatMessageHistory",
+    "type": "memory_backend",
+    "display_type": "node",
+    "connectors": null,
+    "fields": null,
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
+  "fields": {
+    "name": "LLM Chain",
+    "description": "Chain that prompts an LLM for a completion.",
+    "class_path": "ix.chains.llm_chain.LLMChain",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "functions",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      },
+      {
+        "key": "output_parser",
+        "type": "target",
+        "source_type": "output_parser"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "default": "text"
+      }
+    ],
+    "child_field": null
+  }
+}
+]
