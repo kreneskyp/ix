@@ -104,7 +104,9 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, parent=None)
         else:
             # default recursive loading
             if node_type.connectors_as_dict[key].get("multiple", False):
-                config[key] = [edge.source.load(callback_manager) for edge in edges]
+                config[key] = [
+                    prop_node.load(callback_manager) for prop_node in node_group
+                ]
             else:
                 if len(node_group) > 1:
                     raise ValueError(f"Multiple values for {key} not allowed")
