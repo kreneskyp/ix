@@ -74,6 +74,9 @@ class NodeType(models.Model):
     def connectors_as_dict(self):
         return {c["key"]: c for c in self.connectors or []}
 
+    def __str__(self):
+        return f"{self.class_path}"
+
 
 def default_position():
     return {"x": 0, "y": 0}

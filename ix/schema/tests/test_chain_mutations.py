@@ -67,7 +67,7 @@ ADD_CHAIN_EDGE = """
                 key
                 inputMap
                 source {
-                  id          
+                  id
                 }
                 target {
                   id
@@ -85,7 +85,7 @@ UPDATE_CHAIN_EDGE = """
                 key
                 inputMap
                 source {
-                  id          
+                  id
                 }
                 target {
                   id
