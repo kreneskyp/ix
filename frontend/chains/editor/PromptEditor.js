@@ -34,6 +34,18 @@ const DEFAULT_MESSAGES = [
   },
 ];
 
+function parseVariables(str) {
+  const regex = /(?<!{){([a-zA-Z0-9_]+)}(?!})/g;
+  const matches = str.match(regex);
+
+  if (!matches) {
+    return [];
+  }
+
+  const variables = matches.map((match) => match.slice(1, -1));
+  return variables;
+}
+
 const PromptEditor = ({ data, onChange }) => {
   const [messages, setMessages] = useState(data.messages || DEFAULT_MESSAGES);
   const handleOnChange = useCallback(
@@ -72,6 +84,12 @@ const PromptEditor = ({ data, onChange }) => {
     (index, field, value) => {
       const updatedMessages = [...messages];
       const updatedMessage = { ...updatedMessages[index], [field]: value };
+
+      // always updated variables after an edit.
+      updatedMessage["input_variables"] = parseVariables(
+        updatedMessage["template"]
+      );
+
       updatedMessages[index] = updatedMessage;
       handleOnChange(updatedMessages);
     },
