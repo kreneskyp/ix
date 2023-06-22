@@ -1,12 +1,9 @@
 from uuid import UUID
-
 import pytest
-from ix.agents.callback_manager import IxCallbackManager
-from ix.chains.llm_chain import LLMChain
-from ix.chains.moderator import ChatModerator
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("node_types")
 class TestChatModerator:
     def test_agent_prompt(self, chat):
         """Test that the agent prompt is formatted correctly"""

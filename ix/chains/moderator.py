@@ -37,35 +37,36 @@ INSTRUCTION:
 
 
 LLM_CHOOSE_AGENT_CONFIG = {
-    "messages": [
-        {
-            "role": "assistant",
-            "template": MODERATOR_PROMPT,
-            "input_variables": ["agents"],
+    "class_path": "ix.chains.llm_chain.LLMChain",
+    "config": {
+        "llm": OPENAI_LLM,
+        "prompt": {
+            "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+            "config": {
+                "messages": [
+                    {
+                        "role": "assistant",
+                        "template": MODERATOR_PROMPT,
+                        "input_variables": ["agents"],
+                    },
+                    {
+                        "role": "user",
+                        "template": "{user_input}",
+                        "input_variables": ["user_input"],
+                    },
+                ]
+            },
         },
-        {"role": "user", "template": "{user_input}", "input_variables": ["user_input"]},
-    ]
+    },
 }
 
 
 class ChatModerator(Chain):
     """
-    Chain that compares user input to a list of tools and chooses the best tool to handle the task
+    Chain that compares user input to a list of agents and chooses the best agent to handle the task
     """
 
-    llm: Any = None
-    selection_chain: Chain = None
-
-    def __init__(
-        self,
-        callback_manager: Any,
-        selection_chain: Chain,
-        **data,
-    ):
-        super().__init__(**data)
-        self.selection_chain = selection_chain
-        self.callbacks = callback_manager
-        self.llm = data["llm"]
+    selection_chain: Chain
 
     @property
     def _chain_type(self) -> str:
