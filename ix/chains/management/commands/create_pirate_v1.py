@@ -35,7 +35,7 @@ PIRATE = {
                             "verbose": True,
                         },
                     },
-                    "backend": {
+                    "chat_memory": {
                         "class_path": "langchain.memory.RedisChatMessageHistory",
                         "config": {
                             "url": "redis://redis:6379/0",
@@ -45,18 +45,23 @@ PIRATE = {
                 },
             },
         ],
-        "messages": [
-            {
-                "role": "system",
-                "template": PIRATE_PROMPT,
-                "input_variables": ["related_artifacts", "chat_summary"],
+        "prompt": {
+            "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+            "config": {
+                "messages": [
+                    {
+                        "role": "system",
+                        "template": PIRATE_PROMPT,
+                        "input_variables": ["related_artifacts", "chat_summary"],
+                    },
+                    {
+                        "role": "user",
+                        "template": "{user_input}",
+                        "input_variables": ["user_input"],
+                    },
+                ],
             },
-            {
-                "role": "user",
-                "template": "{user_input}",
-                "input_variables": ["user_input"],
-            },
-        ],
+        },
     },
 }
 
@@ -76,9 +81,7 @@ class Command(BaseCommand):
             ),
         )
         chain.clear_chain()
-
-        # Create root node
-        ChainNode.objects.create(chain=chain, root=True, **PIRATE)
+        ChainNode.objects.create_from_config(chain=chain, root=True, config=PIRATE)
 
         Agent.objects.get_or_create(
             id=PIRATE_AGENT_V1,
