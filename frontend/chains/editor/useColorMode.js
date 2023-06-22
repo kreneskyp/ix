@@ -45,7 +45,7 @@ export const useEditorColorMode = () => {
       memory_backend: isLight ? "purple.500" : "purple.300",
       chain: isLight ? "blue.500" : "blue.300",
       agent: isLight ? "green.500" : "green.300",
-      tool: isLight ? "yellow.500" : "yellow.300",
+      tool: isLight ? "yellow.500" : "yellow.600",
     },
   };
 };
