@@ -33,6 +33,10 @@ export const useEditorColorMode = () => {
     root: {
       color: isLight ? "gray.800" : "gray.400",
     },
+    code: {
+      bg: isLight ? "gray.200" : "gray.900",
+      color: isLight ? "gray.800" : "gray.200",
+    },
     highlight: {
       root: isLight ? "gray.300" : "gray.900",
       llm: isLight ? "red.300" : "red.300",

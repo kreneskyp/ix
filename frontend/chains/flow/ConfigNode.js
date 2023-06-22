@@ -25,6 +25,7 @@ import { ChainEditorAPIContext } from "chains/editor/ChainEditorAPIContext";
 import { TypeAutoFields } from "chains/flow/TypeAutoFields";
 import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { useDebounce } from "utils/hooks/useDebounce";
+import { FunctionSchemaNode } from "chains/flow/FunctionSchemaNode";
 
 const NODE_STYLES = {
   llm: {
@@ -54,6 +55,7 @@ const NODE_STYLES = {
 
 const NODE_COMPONENTS = {
   "langchain.prompts.chat.ChatPromptTemplate": PromptNode,
+  "ix.chains.functions.FunctionSchema": FunctionSchemaNode,
 };
 
 const usePropertyTargets = (type) => {
