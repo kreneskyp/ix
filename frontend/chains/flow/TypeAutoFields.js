@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import SliderInput from "components/SliderInput";
 
-const getLabel = (field) => field.label || labelify(field.name);
+const getLabel = (field) => field.label || labelify(field.name || "");
 
 const AutoFieldCheckbox = ({ field, value, onChange }) => {
   const handleChange = useCallback(

@@ -10,6 +10,7 @@ import { Handle, useReactFlow } from "reactflow";
 import {
   faBrain,
   faChain,
+  faGear,
   faRobot,
   faTools,
   faMemory,
@@ -133,7 +134,7 @@ export const ConfigNode = ({ data }) => {
   let NodeComponent = null;
   if (NODE_COMPONENTS[node.classPath]) {
     NodeComponent = NODE_COMPONENTS[node.classPath];
-  } else if (styles.component) {
+  } else if (styles?.component) {
     NodeComponent = styles.component;
   }
   const node_component_props = {
@@ -163,7 +164,7 @@ export const ConfigNode = ({ data }) => {
       border="1px solid"
       borderColor={border}
       backgroundColor={bg}
-      minWidth={styles.width || 250}
+      minWidth={styles?.width || 250}
       color={color}
       boxShadow="md"
     >
@@ -186,7 +187,7 @@ export const ConfigNode = ({ data }) => {
       >
         <Flex alignItems="center" justifyContent="space-between" width="100%">
           <Box>
-            <FontAwesomeIcon icon={styles.icon} />{" "}
+            <FontAwesomeIcon icon={styles?.icon || faGear} />{" "}
             {node.name || node.classPath.split(".").pop()}
           </Box>
           <DeleteIcon node={node} />
