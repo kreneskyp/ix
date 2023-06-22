@@ -37,7 +37,7 @@ export const NodeSelector = ({ type }) => {
         width="100%"
         height="100%"
       >
-        <Text fontSize="sm">{type.name}</Text>
+        <Text fontSize="xs">{type.name}</Text>
         <FontAwesomeIcon size="xs" icon={faBars} />
       </Flex>
     </Box>

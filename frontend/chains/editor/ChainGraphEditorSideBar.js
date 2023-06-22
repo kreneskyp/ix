@@ -64,6 +64,12 @@ export const ChainGraphEditorSideBar = ({ typesQueryRef }) => {
       />
       <NodeSelectorList nodeTypes={filterNodeTypes(nodeTypes, "chain")} />
       <NodeSelectorHeader
+        label="Output Parser"
+        icon={faBrain}
+        highlight={highlight.llm}
+      />
+      <NodeSelectorList nodeTypes={filterNodeTypes(nodeTypes, "output_parser")} />
+      <NodeSelectorHeader
         label="LLM"
         icon={faBrain}
         highlight={highlight.llm}
@@ -94,7 +100,7 @@ export const ChainGraphEditorSideBar = ({ typesQueryRef }) => {
         icon={faTools}
         highlight={highlight.tool}
       />
-      <NodeSelectorList nodeTypes={filterNodeTypes(nodeTypes, "tools")} />
+      <NodeSelectorList nodeTypes={filterNodeTypes(nodeTypes, "tool")} />
     </VStack>
   );
 };
