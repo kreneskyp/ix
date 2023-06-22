@@ -158,13 +158,14 @@ migrations: compose
 # load initial data needed for dev environment
 .PHONY: dev_fixtures
 dev_fixtures: compose
-	${DOCKER_COMPOSE_RUN} ./manage.py loaddata fake_user
+	${DOCKER_COMPOSE_RUN} ./manage.py loaddata fake_user node_types
 	# use management commands for now since fixtures didn't load correctly
 	${DOCKER_COMPOSE_RUN} ./manage.py create_moderator_v1
 	${DOCKER_COMPOSE_RUN} ./manage.py create_coder_v1
-	${DOCKER_COMPOSE_RUN} ./manage.py create_planner_v3
-	${DOCKER_COMPOSE_RUN} ./manage.py create_dad_jokes_v1
-	${DOCKER_COMPOSE_RUN} ./manage.py create_pirate_v1
+	# ${DOCKER_COMPOSE_RUN} ./manage.py create_planner_v3
+	# ${DOCKER_COMPOSE_RUN} ./manage.py create_dad_jokes_v1
+	# ${DOCKER_COMPOSE_RUN} ./manage.py create_pirate_v1
+
 
 
 # =========================================================
