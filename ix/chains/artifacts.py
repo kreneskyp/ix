@@ -90,8 +90,13 @@ class SaveArtifact(Chain):
 
         # extract content from input
         # default path to the content key.
-        jsonpath_expr = jsonpath_parse(self.content_path or self.content_key)
+        jsonpath_input = self.content_path or self.content_key
+        jsonpath_expr = jsonpath_parse(jsonpath_input)
         json_matches = jsonpath_expr.find(inputs)
+
+        if len(json_matches) == 0:
+             raise ValueError(f"SaveArtifact could not find input at {jsonpath_input} for {inputs}")
+
         content = json_matches[0].value
 
         # Associate the artifact with the parent task (chat) until
