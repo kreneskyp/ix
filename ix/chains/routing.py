@@ -71,7 +71,18 @@ class MapSubchain(Chain):
         )
         jsonpath_expr = jsonpath_parse(map_input)
         json_matches = jsonpath_expr.find(inputs)
+
+        if len(json_matches) == 0:
+            raise ValueError(
+                f"MapSubchain could not find input at {map_input} for {map_input_to}"
+            )
+
         values = json_matches[0].value
+        if not isinstance(values, list):
+            raise ValueError(
+                f"MapSubchain input at {map_input} is not a list: {values}"
+            )
+
         chain_inputs = inputs.copy()
 
         # run chain for each value
