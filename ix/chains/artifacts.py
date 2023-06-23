@@ -95,7 +95,9 @@ class SaveArtifact(Chain):
         json_matches = jsonpath_expr.find(inputs)
 
         if len(json_matches) == 0:
-             raise ValueError(f"SaveArtifact could not find input at {jsonpath_input} for {inputs}")
+            raise ValueError(
+                f"SaveArtifact could not find input at {jsonpath_input} for {inputs}"
+            )
 
         content = json_matches[0].value
 
