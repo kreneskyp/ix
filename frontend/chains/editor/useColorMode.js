@@ -59,7 +59,7 @@ export const useSideBarColorMode = () => {
     highlightColor: isLight ? "gray.100" : "gray.100",
     color: isLight ? "gray.800" : "gray.100",
     bg: isLight ? "gray.300" : "gray.700",
-    border: isLight ? "gray.600" : "black",
+    border: isLight ? "gray.400" : "gray.700",
   };
 };
 
