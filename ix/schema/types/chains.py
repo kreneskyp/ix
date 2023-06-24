@@ -1,8 +1,13 @@
 import graphene
+import logging
+from django.db.models import Q
 from graphene.types.generic import GenericScalar
 from graphene_django import DjangoObjectType
 from ix.chains.models import Chain, ChainNode, ChainEdge, NodeType
 from ix.utils.exceptions import catch_and_print_traceback
+
+
+logger = logging.getLogger(__name__)
 
 
 class ChainType(DjangoObjectType):
@@ -64,6 +69,8 @@ class Query(object):
     graph = graphene.Field(ChainWithGraphType, id=graphene.UUID(required=True))
     node_types = graphene.List(NodeTypeType)
 
+    search_node_types = graphene.List(NodeTypeType, search=graphene.String())
+
     def resolve_chain(self, info, id):
         return Chain.objects.get(pk=id)
 
@@ -80,3 +87,12 @@ class Query(object):
 
     def resolve_node_types(self, info):
         return NodeType.objects.all()
+
+    def resolve_search_node_types(self, info, search, chat_id=None):
+        # basic search for now, add pg_vector similarity search later
+        return NodeType.objects.filter(
+            Q(name__icontains=search)
+            | Q(description__icontains=search)
+            | Q(type__icontains=search)
+            | Q(class_path__icontains=search)
+        )
