@@ -7,51 +7,16 @@ import React, {
 } from "react";
 import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
 import { Handle, useReactFlow } from "reactflow";
-import {
-  faBrain,
-  faChain,
-  faGear,
-  faRobot,
-  faTools,
-  faMemory,
-  faMessage,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faGear, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { PromptNode } from "chains/flow/PromptNode";
-import { ChainNode } from "chains/flow/ChainNode";
 import { ChainEditorAPIContext } from "chains/editor/ChainEditorAPIContext";
 import { TypeAutoFields } from "chains/flow/TypeAutoFields";
 import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { useDebounce } from "utils/hooks/useDebounce";
 import { FunctionSchemaNode } from "chains/flow/FunctionSchemaNode";
-
-const NODE_STYLES = {
-  llm: {
-    icon: faBrain,
-  },
-  chain: {
-    icon: faChain,
-    component: ChainNode,
-  },
-  memory: {
-    icon: faMemory,
-  },
-  memory_backend: {
-    icon: faMemory,
-  },
-  prompt: {
-    icon: faMessage,
-    width: 400,
-  },
-  agent: {
-    icon: faRobot,
-  },
-  tool: {
-    icon: faTools,
-  },
-};
+import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
 
 const NODE_COMPONENTS = {
   "langchain.prompts.chat.ChatPromptTemplate": PromptNode,
@@ -99,7 +64,7 @@ const DeleteIcon = ({ node }) => {
 
 export const ConfigNode = ({ data }) => {
   const { type, node } = data;
-  const styles = NODE_STYLES[type.type];
+  const styles = NODE_STYLES[type.type] || DEFAULT_NODE_STYLE;
   const { border, color, highlight, highlightColor, bg } = useEditorColorMode();
   const [config, setConfig] = useState(node.config);
 
@@ -189,7 +154,7 @@ export const ConfigNode = ({ data }) => {
       >
         <Flex alignItems="center" justifyContent="space-between" width="100%">
           <Box>
-            <FontAwesomeIcon icon={styles?.icon || faGear} />{" "}
+            <FontAwesomeIcon icon={styles?.icon} />{" "}
             {node.name || node.classPath.split(".").pop()}
           </Box>
           <DeleteIcon node={node} />
