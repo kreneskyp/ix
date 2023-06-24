@@ -6,6 +6,7 @@ import { createEditor } from "slate";
 import { INITIAL_EDITOR_CONTENT } from "utils/slate";
 import { NodeResizeControl, NodeResizer } from "reactflow";
 import { useEditorColorMode } from "chains/editor/useColorMode";
+import { SCROLLBAR_CSS } from "site/css";
 
 export const FunctionSchemaNode = ({ config, onFieldChange }) => {
   const editor = useMemo(() => withReact(withHistory(createEditor())), []);
@@ -29,6 +30,7 @@ export const FunctionSchemaNode = ({ config, onFieldChange }) => {
           name="description"
           value={config.description}
           onChange={handleChange}
+          css={SCROLLBAR_CSS}
         ></Textarea>
         <FormLabel justify="start">Parameters</FormLabel>
         <Textarea
@@ -40,13 +42,15 @@ export const FunctionSchemaNode = ({ config, onFieldChange }) => {
           fontFamily="monospace"
           font="monospace"
           fontSize="sm"
-        ></Textarea>
+          css={SCROLLBAR_CSS}
+        />
+        <NodeResizeControl
+          variant={"line"}
+          minWidth={250}
+          h={"100%"}
+          style={{ border: 0 }}
+        />
       </Box>
-      <NodeResizeControl
-        variant={"line"}
-        minWidth={250}
-        style={{ border: 0 }}
-      />
     </>
   );
 };

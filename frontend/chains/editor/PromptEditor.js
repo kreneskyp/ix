@@ -15,6 +15,8 @@ import {
   faArrowUp,
   faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
+import { SCROLLBAR_CSS } from "site/css";
+import { NodeResizeControl } from "reactflow";
 
 const ROLE_OPTIONS = ["user", "assistant"];
 
@@ -155,6 +157,7 @@ const PromptEditor = ({ data, onChange }) => {
               handleMessageChange(index, "template", e.target.value)
             }
             isRequired
+            css={SCROLLBAR_CSS}
           />
         </VStack>
       ))}
@@ -169,6 +172,12 @@ const PromptEditor = ({ data, onChange }) => {
           Add Message
         </Button>
       </Flex>
+      <NodeResizeControl
+        variant={"line"}
+        minWidth={400}
+        h={"100%"}
+        style={{ border: 0 }}
+      />
     </VStack>
   );
 };
