@@ -53,6 +53,32 @@ const AutoFieldInput = ({ field, value, onChange }) => {
   );
 };
 
+const AutoFieldSecret = ({ field, value, onChange }) => {
+  const handleChange = useCallback(
+    (event) => {
+      onChange(field.name, event.target.value);
+    },
+    [field, onChange]
+  );
+
+  return (
+    <Flex justifyContent="space-between" wrap="wrap" width="100%">
+      <FormLabel justify="start" whiteSpace="nowrap">
+        {getLabel(field)}
+      </FormLabel>
+      <Input
+        size="sm"
+        value={value}
+        onChange={handleChange}
+        width={field.width || 100}
+        px={1}
+        py={2}
+        type={"password"}
+      />
+    </Flex>
+  );
+};
+
 const AutoFieldSlider = ({ field, value, onChange }) => {
   const handleChange = useCallback(
     (newValue) => {
@@ -105,6 +131,8 @@ const INPUTS = {
   select: AutoFieldSelect,
   checkbox: AutoFieldCheckbox,
   slider: AutoFieldSlider,
+  input: AutoFieldInput,
+  secret: AutoFieldSecret,
 };
 
 // type specific default inputs
