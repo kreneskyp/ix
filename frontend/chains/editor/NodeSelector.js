@@ -10,7 +10,7 @@ import { useSideBarColorMode } from "chains/editor/useColorMode";
  * and other configuration for creating the node in the graph.
  */
 export const NodeSelector = ({ type }) => {
-  const { isLight, color } = useSideBarColorMode();
+  const { isLight } = useSideBarColorMode();
 
   const handleStart = (event, data) => {
     event.dataTransfer.setData("application/reactflow", JSON.stringify(type));
@@ -19,16 +19,18 @@ export const NodeSelector = ({ type }) => {
 
   return (
     <Box
-      p={2}
+      p={1}
       m={2}
-      height={25}
-      width={150}
+      minHeight={25}
+      minWidth={150}
+      width="95%"
       color={isLight ? "gray.800" : "gray.400"}
       bg={isLight ? "gray.100" : "gray.800"}
       border="1px solid"
       borderColor={isLight ? "gray.400" : "gray.700"}
       borderRadius={3}
       onDragStart={(event) => handleStart(event, "input")}
+      cursor={"grab"}
       draggable
     >
       <Flex
