@@ -9,7 +9,6 @@ import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 import { ChainGraphByIdQuery } from "chains/graphql/ChainGraphByIdQuery";
 import ChainGraphEditor from "chains/ChainGraphEditor";
 import { ChainGraphEditorSideBar } from "chains/editor/ChainGraphEditorSideBar";
-import { NodeTypesQuery } from "chains/graphql/NodeTypesQuery";
 
 const ChainEditorShim = ({ chainQueryRef }) => {
   const { graph } = usePreloadedQuery(ChainGraphByIdQuery, chainQueryRef);
@@ -17,13 +16,7 @@ const ChainEditorShim = ({ chainQueryRef }) => {
 };
 
 export const ChainEditorView = () => {
-  const [typesQueryRef, loadTypesQuery] = useQueryLoader(NodeTypesQuery);
   const [chainQueryRef, loadChainQuery] = useQueryLoader(ChainGraphByIdQuery);
-
-  useEffect(() => {
-    loadTypesQuery({ id }, { fetchPolicy: "network-only" });
-  }, []);
-
   const { id } = useParams();
 
   // state for handling whether how to load the data (new vs existing)
@@ -77,15 +70,11 @@ export const ChainEditorView = () => {
     content = <ChainEditorShim chainQueryRef={chainQueryRef} />;
   }
 
-  const leftPane = typesQueryRef ? (
-    <ChainGraphEditorSideBar typesQueryRef={typesQueryRef} />
-  ) : (
-    <Spinner />
-  );
-
   return (
     <Layout>
-      <LayoutLeftPane>{leftPane}</LayoutLeftPane>
+      <LayoutLeftPane>
+        <ChainGraphEditorSideBar />
+      </LayoutLeftPane>
       <LayoutContent>
         <VStack alignItems="start" p={5} spacing={4}>
           {content}
