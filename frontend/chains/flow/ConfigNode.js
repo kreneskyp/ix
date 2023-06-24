@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
 import { Handle, useReactFlow } from "reactflow";
-import { faGear, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { PromptNode } from "chains/flow/PromptNode";
@@ -90,7 +90,6 @@ export const ConfigNode = ({ data }) => {
   const { border, color, highlight, highlightColor, bg } = useEditorColorMode();
   const [config, setConfig] = useState(node.config);
 
-  const propertyTargets = usePropertyTargets(type);
   const api = useContext(ChainEditorAPIContext);
 
   // ref for handlers to access latest config without re-rendering
