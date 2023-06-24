@@ -22,28 +22,23 @@ export const useSendInput = (chat_id) => {
   const [error, setError] = useState(null);
 
   const sendInput = (text) => {
-    return new Promise((resolve) => {
-      commit({
-        variables: {
-          input: {
-            chatId: chat_id,
-            text,
-          },
+    return commit({
+      variables: {
+        input: {
+          chatId: chat_id,
+          text,
         },
-        onCompleted: (response, errors) => {
-          if (errors) {
-            setError(errors[0]);
-            resolve(false);
-          } else {
-            setError(null);
-            resolve(true);
-          }
-        },
-        onError: (err) => {
-          setError(err);
-          resolve(false);
-        },
-      });
+      },
+      onCompleted: (response, errors) => {
+        if (errors) {
+          setError(errors[0]);
+        } else {
+          setError(null);
+        }
+      },
+      onError: (err) => {
+        setError(err);
+      },
     });
   };
 
