@@ -68,7 +68,7 @@ class TestChatPromptTemplate:
 
 @pytest.mark.django_db
 class TestLLMChain:
-    def test_from_config(self, load_chain):
+    def test_from_config(self, load_chain, mock_openai_key):
         config = deepcopy(EXAMPLE_CONFIG)
         chain = load_chain(config)
 

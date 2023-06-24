@@ -13,7 +13,7 @@ from ix.chains.routing import MapSubchain
 @pytest.mark.django_db
 @pytest.mark.usefixtures("node_types")
 class TestCreateCoder:
-    def test_create_coder(self, mock_callback_manager):
+    def test_create_coder(self, mock_callback_manager, mock_openai_key):
         call_command("create_coder_v1")
 
         model_instance = Chain.objects.get(id=CODER_V1_CHAIN)

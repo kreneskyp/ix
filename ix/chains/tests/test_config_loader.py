@@ -157,7 +157,7 @@ class TestLoadMemory:
         instance = load_chain(MEMORY)
         assert isinstance(instance, ConversationBufferMemory)
 
-    def test_load_multiple(self, load_chain):
+    def test_load_multiple(self, load_chain, mock_openai_key):
         """Test loading multiple memories into a CombinedMemory"""
         MEMORY2 = deepcopy(MEMORY)
         MEMORY2["config"]["memory_key"] = "chat_history2"
