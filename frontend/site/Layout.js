@@ -25,7 +25,7 @@ export const Layout = ({ children }) => {
   );
 
   return (
-    <Flex h="100vh">
+    <Flex h="100vh" overflowX="hidden">
       <VStack
         bg={colorMode === "light" ? "gray.200" : "gray.900"}
         width={300}

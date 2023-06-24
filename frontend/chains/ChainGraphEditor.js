@@ -327,7 +327,7 @@ const ChainGraphEditor = ({ graph }) => {
   );
 
   return (
-    <Box>
+    <Box height="93vh">
       <Box pb={1}>
         <Input
           size="sm"
@@ -342,7 +342,7 @@ const ChainGraphEditor = ({ graph }) => {
         />
       </Box>
       <ChainEditorAPIContext.Provider value={api}>
-        <Box ref={reactFlowWrapper} width={1600} height={850}>
+        <Box ref={reactFlowWrapper} width={"85vw"} height={"100%"}>
           <ReactFlow
             nodes={nodes}
             edges={edges}
