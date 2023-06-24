@@ -15,11 +15,15 @@ class FunctionSchema(TypedDict):
 
 class OpenAIFunctionParser(BaseLLMOutputParser):
     """
-    OpenAI function parser. This parser is used to parse the a function call
-    out of the response. This is used in conjunction with functions attached
+    OpenAI function parser. This parser is used to parse a function call
+    out of a response. This is used in conjunction with functions attached
     to the LLMChain.
 
     The function_call is returned if present, otherwise the text is returned.
+
+    if parse_json is True, the function_call is parsed as JSON. Otherwise,
+    it is returned as provided by the LLM component. This may be a string,
+    dict, or combination of both (arguments may be a string).
     """
 
     parse_json: bool = False
