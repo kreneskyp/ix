@@ -44,6 +44,28 @@ export const PropertyTarget = ({ connector }) => {
   );
 };
 
+export const NodeProperties = ({ type }) => {
+  const propertyTargets = usePropertyTargets(type);
+  return (
+    <VStack spacing={0} cursor="default">
+      {propertyTargets?.map((connector, index) => (
+        <PropertyTarget key={index} connector={connector} />
+      ))}
+    </VStack>
+  );
+};
+
+export const DefaultNodeContent = ({ type, config, onFieldChange }) => {
+  return (
+    <>
+      <NodeProperties type={type} />
+      <CollapsibleSection title="Config">
+        <TypeAutoFields type={type} config={config} onChange={onFieldChange} />
+      </CollapsibleSection>
+    </>
+  );
+};
+
 const DeleteIcon = ({ node }) => {
   const api = useContext(ChainEditorAPIContext);
   const { setNodes, setEdges } = useReactFlow();
@@ -114,13 +136,7 @@ export const ConfigNode = ({ data }) => {
   const content = NodeComponent ? (
     <NodeComponent {...node_component_props} />
   ) : (
-    <CollapsibleSection title="Config">
-      <TypeAutoFields
-        type={type}
-        config={config}
-        onChange={handleConfigChange.field}
-      />
-    </CollapsibleSection>
+    <DefaultNodeContent {...node_component_props} />
   );
 
   return (
@@ -160,11 +176,6 @@ export const ConfigNode = ({ data }) => {
           <DeleteIcon node={node} />
         </Flex>
       </Heading>
-      <VStack spacing={0} cursor="default">
-        {propertyTargets?.map((connector, index) => (
-          <PropertyTarget key={index} connector={connector} />
-        ))}
-      </VStack>
       <Box minHeight={25} cursor="default">
         {content}
       </Box>

@@ -3,6 +3,7 @@ import { Handle } from "reactflow";
 import { Box, VStack, Heading, Text, HStack } from "@chakra-ui/react";
 import { TypeAutoFields } from "chains/flow/TypeAutoFields";
 import { CollapsibleSection } from "chains/flow/CollapsibleSection";
+import { NodeProperties } from "chains/flow/ConfigNode";
 
 export const ChainNode = ({ type, node, config, onFieldChange }) => {
   const inputs = null;
@@ -47,7 +48,7 @@ export const ChainNode = ({ type, node, config, onFieldChange }) => {
           </HStack>
         ))}
       </VStack>
-
+      <NodeProperties type={type} />
       <CollapsibleSection title="Config">
         <TypeAutoFields type={type} config={config} onChange={onFieldChange} />
       </CollapsibleSection>
