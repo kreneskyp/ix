@@ -1,0 +1,300 @@
+[
+{
+  "model": "chains.chain",
+  "pk": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+  "fields": {
+    "name": "Pirate chain",
+    "description": "Chain used for pirate agent v1",
+    "created_at": "2023-06-24T16:20:38.654Z"
+  }
+},
+{
+  "model": "chains.chainnode",
+  "pk": "088848d8-a4a5-4cc5-91ed-2f4033b19bad",
+  "fields": {
+    "class_path": "ix.chains.llm_chain.LLMReply",
+    "node_type": "01e26ecf-d02b-46ce-a57c-322e3815035b",
+    "config": {
+      "llm": {
+        "class_path": "langchain.chat_models.openai.ChatOpenAI"
+      },
+      "memory": [
+        {
+          "class_path": "ix.memory.artifacts.ArtifactMemory"
+        },
+        {
+          "config": {
+            "llm": {
+              "config": {
+                "verbose": true
+              },
+              "class_path": "langchain.chat_models.openai.ChatOpenAI"
+            },
+            "input_key": "user_input",
+            "memory_key": "chat_summary",
+            "chat_memory": {
+              "config": {
+                "url": "redis://redis:6379/0",
+                "session": {
+                  "scope": "chat"
+                }
+              },
+              "class_path": "langchain.memory.RedisChatMessageHistory"
+            },
+            "max_token_limit": 1500
+          },
+          "class_path": "langchain.memory.summary_buffer.ConversationSummaryBufferMemory"
+        }
+      ],
+      "prompt": {
+        "config": {
+          "messages": [
+            {
+              "role": "system",
+              "template": "\nYou are a pirate. Talk like a pirate in all responses.\n\n{related_artifacts}\n\nCHAT_SUMMARY:\n{chat_summary}\n",
+              "input_variables": [
+                "related_artifacts",
+                "chat_summary"
+              ]
+            },
+            {
+              "role": "user",
+              "template": "{user_input}",
+              "input_variables": [
+                "user_input"
+              ]
+            }
+          ]
+        },
+        "class_path": "langchain.prompts.chat.ChatPromptTemplate"
+      }
+    },
+    "name": null,
+    "description": null,
+    "root": true,
+    "position": {
+      "x": 501.41300609369995,
+      "y": 285.01370872694525
+    },
+    "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c"
+  }
+},
+{
+  "model": "chains.chainnode",
+  "pk": "58dc216d-e179-4498-bb1e-86900a8822b3",
+  "fields": {
+    "class_path": "langchain.memory.RedisChatMessageHistory",
+    "node_type": "da5e809a-b158-4f34-8867-8ac375967906",
+    "config": {
+      "url": "redis://redis:6379/0",
+      "session": {
+        "scope": "chat"
+      }
+    },
+    "name": null,
+    "description": null,
+    "root": false,
+    "position": {
+      "x": -668.9905107618575,
+      "y": 593.7785598478025
+    },
+    "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c"
+  }
+},
+{
+  "model": "chains.chainnode",
+  "pk": "8cc3fac2-704c-490b-90aa-a4ea01bb4480",
+  "fields": {
+    "class_path": "langchain.chat_models.openai.ChatOpenAI",
+    "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+    "config": null,
+    "name": null,
+    "description": null,
+    "root": false,
+    "position": {
+      "x": 11.875571196956002,
+      "y": 385.29630994568515
+    },
+    "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c"
+  }
+},
+{
+  "model": "chains.chainnode",
+  "pk": "92816329-1641-4b5d-a3c9-3a6a4ac44569",
+  "fields": {
+    "class_path": "ix.memory.artifacts.ArtifactMemory",
+    "node_type": "98af8724-a765-490a-bfb6-2adf54102186",
+    "config": null,
+    "name": null,
+    "description": null,
+    "root": false,
+    "position": {
+      "x": -378.6987703918207,
+      "y": 738.924430032821
+    },
+    "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c"
+  }
+},
+{
+  "model": "chains.chainnode",
+  "pk": "953e128f-da89-46bf-810c-d957f21d2c16",
+  "fields": {
+    "class_path": "langchain.memory.summary_buffer.ConversationSummaryBufferMemory",
+    "node_type": "d90b15ac-8202-41ee-84ca-c727376fb9e3",
+    "config": {
+      "llm": {
+        "config": {
+          "verbose": true
+        },
+        "class_path": "langchain.chat_models.openai.ChatOpenAI"
+      },
+      "input_key": "user_input",
+      "memory_key": "chat_summary",
+      "chat_memory": {
+        "config": {
+          "url": "redis://redis:6379/0",
+          "session": {
+            "scope": "chat"
+          }
+        },
+        "class_path": "langchain.memory.RedisChatMessageHistory"
+      },
+      "max_token_limit": 1500
+    },
+    "name": null,
+    "description": null,
+    "root": false,
+    "position": {
+      "x": -377.3792624810478,
+      "y": 584.5420044723924
+    },
+    "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c"
+  }
+},
+{
+  "model": "chains.chainnode",
+  "pk": "b00f6cec-7ee0-499d-a0c4-25186d9d4fe4",
+  "fields": {
+    "class_path": "langchain.chat_models.openai.ChatOpenAI",
+    "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+    "config": {
+      "verbose": true
+    },
+    "name": null,
+    "description": null,
+    "root": false,
+    "position": {
+      "x": -670.1542104867823,
+      "y": 698.056368150703
+    },
+    "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c"
+  }
+},
+{
+  "model": "chains.chainnode",
+  "pk": "ecd906b4-3bc1-4408-acca-21f626f3a08d",
+  "fields": {
+    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "node_type": "b62000d7-9390-491b-af13-9711c4ec8b44",
+    "config": {
+      "messages": [
+        {
+          "role": "system",
+          "template": "\nYou are a pirate. Talk like a pirate in all responses.\n\n{related_artifacts}\n\nCHAT_SUMMARY:\n{chat_summary}\n",
+          "input_variables": [
+            "related_artifacts",
+            "chat_summary"
+          ]
+        },
+        {
+          "role": "user",
+          "template": "{user_input}",
+          "input_variables": [
+            "user_input"
+          ]
+        }
+      ]
+    },
+    "name": null,
+    "description": null,
+    "root": false,
+    "position": {
+      "x": -22.203407944106175,
+      "y": 646.4655314381594
+    },
+    "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c"
+  }
+},
+{
+  "model": "chains.chainedge",
+  "pk": "05694329-573d-46a2-92c3-a8cdd38e3242",
+  "fields": {
+    "source": "58dc216d-e179-4498-bb1e-86900a8822b3",
+    "target": "953e128f-da89-46bf-810c-d957f21d2c16",
+    "key": "chat_memory",
+    "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+    "input_map": null,
+    "relation": "PROP"
+  }
+},
+{
+  "model": "chains.chainedge",
+  "pk": "4c1e373a-cc01-48af-9ee3-6baa36c4151b",
+  "fields": {
+    "source": "ecd906b4-3bc1-4408-acca-21f626f3a08d",
+    "target": "088848d8-a4a5-4cc5-91ed-2f4033b19bad",
+    "key": "prompt",
+    "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+    "input_map": null,
+    "relation": "PROP"
+  }
+},
+{
+  "model": "chains.chainedge",
+  "pk": "54f8db7c-bc4c-4ba1-8d9f-59d4ecf06550",
+  "fields": {
+    "source": "92816329-1641-4b5d-a3c9-3a6a4ac44569",
+    "target": "088848d8-a4a5-4cc5-91ed-2f4033b19bad",
+    "key": "memory",
+    "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+    "input_map": null,
+    "relation": "PROP"
+  }
+},
+{
+  "model": "chains.chainedge",
+  "pk": "8dbfe501-9e0d-4601-87ff-4ef0dd58b00a",
+  "fields": {
+    "source": "b00f6cec-7ee0-499d-a0c4-25186d9d4fe4",
+    "target": "953e128f-da89-46bf-810c-d957f21d2c16",
+    "key": "llm",
+    "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+    "input_map": null,
+    "relation": "PROP"
+  }
+},
+{
+  "model": "chains.chainedge",
+  "pk": "9f36e710-ae39-4bf8-a4e7-f32454c04124",
+  "fields": {
+    "source": "953e128f-da89-46bf-810c-d957f21d2c16",
+    "target": "088848d8-a4a5-4cc5-91ed-2f4033b19bad",
+    "key": "memory",
+    "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+    "input_map": null,
+    "relation": "PROP"
+  }
+},
+{
+  "model": "chains.chainedge",
+  "pk": "aff63bad-96a3-4884-b941-1d7606c63680",
+  "fields": {
+    "source": "8cc3fac2-704c-490b-90aa-a4ea01bb4480",
+    "target": "088848d8-a4a5-4cc5-91ed-2f4033b19bad",
+    "key": "llm",
+    "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+    "input_map": null,
+    "relation": "PROP"
+  }
+}
+]

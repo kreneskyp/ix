@@ -164,7 +164,7 @@ dev_fixtures: compose
 	${DOCKER_COMPOSE_RUN} ./manage.py create_coder_v1
 	# ${DOCKER_COMPOSE_RUN} ./manage.py create_planner_v3
 	# ${DOCKER_COMPOSE_RUN} ./manage.py create_dad_jokes_v1
-	# ${DOCKER_COMPOSE_RUN} ./manage.py create_pirate_v1
+	${DOCKER_COMPOSE_RUN} ./manage.py loaddata pirate_v1
 
 
 
