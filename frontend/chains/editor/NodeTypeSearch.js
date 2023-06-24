@@ -4,9 +4,9 @@ import { NodeSelector } from "chains/editor/NodeSelector";
 import { useDebounce } from "utils/hooks/useDebounce";
 import { Box, Heading, HStack, Input, Text, VStack } from "@chakra-ui/react";
 import { SearchNodeTypesQuery } from "chains/graphql/SearchNodeTypesQuery";
-import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/flow/ConfigNode";
 import { useSideBarColorMode } from "chains/editor/useColorMode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
 
 const NodeSelectorHeader = ({ label, icon }) => {
   const { color } = useSideBarColorMode();
