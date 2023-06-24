@@ -51,10 +51,6 @@ class TestChatPromptTemplate:
             "partial_variables": {"name": "test user"},
         }
 
-        # TODO: context
-        config = {"config_key": "config_value"}
-        context = {"context_key": "context_value"}
-
         result = create_message(message)
 
         assert isinstance(result, TEMPLATE_CLASSES["user"])

@@ -178,7 +178,7 @@ class ChainNodeManager(models.Manager):
                         chain=chain,
                         source=source_node,
                         target=latest_child,
-                        relation=f"LINK",
+                        relation="LINK",
                     )
 
                 # Add first node as property when visible
@@ -187,7 +187,7 @@ class ChainNodeManager(models.Manager):
                         chain=chain,
                         source=latest_child,
                         target=node,
-                        relation=f"PROP",
+                        relation="PROP",
                         key=node_type.child_field,
                     )
 
