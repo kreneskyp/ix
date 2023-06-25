@@ -126,7 +126,8 @@ class ChatModerator(Chain):
     def agent_prompt(self, chat: Chat) -> str:
         """build prompt for configured tools"""
         lines = []
-        for i, agent in enumerate(chat.agents.all()):
+        agents = chat.agents.all().order_by("alias")
+        for i, agent in enumerate(agents):
             lines.append(f"{i}. {agent.alias}: {agent.purpose}")
         return "\n".join(lines)
 
