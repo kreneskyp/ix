@@ -6,7 +6,7 @@ from django.db.models import Q
 
 from ix.agents.models import Agent
 from ix.chains.management.commands.create_coder_v1 import CODER_V1_AGENT
-from ix.chains.management.commands.create_moderator_v1 import MODERATOR_AGENT_V1
+from ix.chains.management.commands.create_ix_v2 import IX_AGENT_V2
 from ix.chat.models import Chat
 from ix.schema.types.chat import ChatType
 from ix.schema.types.messages import TaskLogMessageType
@@ -49,7 +49,7 @@ class CreateChatMutation(graphene.Mutation):
         if input and input.agent_id:
             lead = Agent.objects.get(pk=input.agent_id)
         else:
-            lead = Agent.objects.get(pk=MODERATOR_AGENT_V1)
+            lead = Agent.objects.get(pk=IX_AGENT_V2)
 
         # spawn subtask
         task = Task.objects.create(

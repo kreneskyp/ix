@@ -7,7 +7,8 @@ from django.core.management import call_command
 
 from ix.agents.callback_manager import IxCallbackManager
 from ix.agents.tests.mock_llm import MockChatOpenAI
-from ix.chains.management.commands.create_moderator_v1 import MODERATOR_CHAIN_V1
+from ix.chains.management.commands.create_ix_v2 import IX_CHAIN_V2
+
 from ix.chains.models import Chain, ChainNode
 from ix.task_log.tests.fake import (
     fake_task,
@@ -117,7 +118,7 @@ def chat(node_types, task, load_chain, mock_openai_key):
     callback_manager.think_msg = fake_think(task=chat.task)
 
     # load chain
-    model_instance = Chain.objects.get(pk=MODERATOR_CHAIN_V1)
+    model_instance = Chain.objects.get(pk=IX_CHAIN_V2)
     moderator = model_instance.load_chain(callback_manager)
 
     yield {
@@ -148,4 +149,4 @@ def load_fixture(fixture: str) -> None:
 def node_types() -> None:
     """calls manage.py loaddata node_types"""
     load_fixture("node_types")
-    call_command("create_moderator_v1")
+    load_fixture("ix_v2")

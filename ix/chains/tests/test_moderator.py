@@ -1,4 +1,3 @@
-from uuid import UUID
 import pytest
 
 
@@ -17,12 +16,14 @@ class TestChatModerator:
         )
 
     def test_call(self, mock_openai, chat):
-        mock_openai.return_value = '{"agent": "agent_1"}'
+        mock_openai.return_value = dict(
+            name="delegate_to_agent", arguments={"agent_id": 1}
+        )
 
         chat_moderator = chat["instance"]
-        result = chat_moderator._call(
+        result = chat_moderator(
             {"user_input": "say hello to agent 1", "chat_id": str(chat["chat"].id)}
         )
 
-        assert "task_id" in result
-        assert UUID(result["task_id"])
+        assert result["text"] == "Delegating to @agent_2"
+        assert "chat_history" in result
