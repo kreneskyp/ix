@@ -74,7 +74,7 @@ class MapSubchain(Chain):
 
         if len(json_matches) == 0:
             raise ValueError(
-                f"MapSubchain could not find input at {map_input} for {map_input_to}"
+                f"MapSubchain could not find input at {map_input} for {map_input_to} searched: {inputs}"
             )
 
         values = json_matches[0].value
