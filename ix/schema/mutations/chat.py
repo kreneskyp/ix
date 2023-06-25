@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 
 from ix.agents.models import Agent
-from ix.chains.management.commands.create_coder_v1 import CODER_V1_AGENT
 from ix.chains.management.commands.create_coder_v2 import CODER_V2_AGENT
 from ix.chains.management.commands.create_ix_v2 import IX_AGENT_V2
 from ix.chat.models import Chat
