@@ -67,7 +67,7 @@ const ChatMessageAvatar = ({ message, isThinking }) => {
         boxSizing: "border-box",
         borderColor: isThinking
           ? "#63B3ED transparent #63B3ED transparent"
-          : border,
+          : "transparent",
         animation: isThinking ? "spin 1.2s linear infinite" : "none",
         zIndex: "1",
         filter: isThinking ? "blur(4px)" : "none",
