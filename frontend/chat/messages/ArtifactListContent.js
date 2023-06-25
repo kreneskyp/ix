@@ -16,7 +16,7 @@ export const ArtifactListContent = ({ message }) => {
         {message.content.data.map((artifact, index) => (
           <ListItem key={index} align="top">
             <HStack align="top">
-              <Text color="blue.300">{artifact.identifier}</Text>
+              <Text color="blue.300">{artifact.filename}</Text>
               <Text color="gray.100">- {artifact.description}</Text>
             </HStack>
           </ListItem>
