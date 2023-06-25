@@ -88,6 +88,14 @@ class SaveArtifact(Chain):
 
         # Storage is always set from the config for now
         if self.artifact_storage:
+            if not self.artifact_storage_id and "identifier" not in artifact:
+                raise ValueError(
+                    f"SaveArtifact requires artifact_storage_id or artifact.identifier "
+                    f"when artifact_storage is set.\n"
+                    f"\n"
+                    f"artifact={artifact}"
+                )
+
             artifact["storage"] = {
                 "type": self.artifact_storage,
                 "id": self.artifact_storage_id or artifact["identifier"],
@@ -114,14 +122,22 @@ class SaveArtifact(Chain):
         task = self.callbacks.task
         artifact_task_id = task.parent_id if task.parent_id else task.id
 
+        # build kwargs
+        try:
+            artifact_kwargs = dict(
+                key=artifact.get("key", None) or artifact["identifier"],
+                name=artifact.get("name", None) or artifact["identifier"],
+                description=artifact["description"],
+                artifact_type=artifact["artifact_type"],
+                storage=artifact["storage"],
+            )
+        except KeyError as e:
+            raise ValueError(f"SaveArtifact missing required key {e} for {artifact}")
+
         # save to artifact storage
         artifact = Artifact.objects.create(
             task_id=artifact_task_id,
-            key=artifact["key"] or artifact["identifier"],
-            name=artifact["name"],
-            description=artifact["description"],
-            artifact_type=artifact["artifact_type"],
-            storage=artifact["storage"],
+            **artifact_kwargs,
         )
 
         # send message to log
