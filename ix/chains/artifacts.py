@@ -42,6 +42,7 @@ class SaveArtifact(Chain):
     artifact_description: str = None
     artifact_storage: str = None
     artifact_storage_id: str = None
+    artifact_storage_id_key: str = None
 
     # intput / output mapping
     content_key: str = "content"
@@ -57,7 +58,6 @@ class SaveArtifact(Chain):
         keys = []
         if self.artifact_from_key:
             keys.append(self.artifact_from_key)
-        logger.debug(f"KEYS: {keys}")
         return keys
 
     @property
@@ -87,18 +87,21 @@ class SaveArtifact(Chain):
             }
 
         # Storage is always set from the config for now
+        storage_id = None
         if self.artifact_storage:
-            if not self.artifact_storage_id and "identifier" not in artifact:
+            storage_id_key = self.artifact_storage_id_key or "identifier"
+            if not self.artifact_storage_id and storage_id_key not in artifact:
                 raise ValueError(
-                    f"SaveArtifact requires artifact_storage_id or artifact.identifier "
+                    f"SaveArtifact requires artifact_storage_id or artifact.{storage_id_key} "
                     f"when artifact_storage is set.\n"
                     f"\n"
                     f"artifact={artifact}"
                 )
 
+            storage_id = self.artifact_storage_id or artifact[storage_id_key]
             artifact["storage"] = {
                 "type": self.artifact_storage,
-                "id": self.artifact_storage_id or artifact["identifier"],
+                "id": storage_id,
             }
         if self.artifact_type:
             artifact["artifact_type"] = self.artifact_type
@@ -125,8 +128,8 @@ class SaveArtifact(Chain):
         # build kwargs
         try:
             artifact_kwargs = dict(
-                key=artifact.get("key", None) or artifact["identifier"],
-                name=artifact.get("name", None) or artifact["identifier"],
+                key=artifact.get("key", None) or storage_id,
+                name=artifact.get("name", None) or storage_id,
                 description=artifact["description"],
                 artifact_type=artifact["artifact_type"],
                 storage=artifact["storage"],
