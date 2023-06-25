@@ -68,7 +68,14 @@ class SaveArtifact(Chain):
         if self.artifact_from_key:
             # load artifact from input key. Use this when a prior step
             # generated the artifact object
-            artifact = inputs.get(self.artifact_from_key, {}).copy()
+            jsonpath_expr = jsonpath_parse(self.artifact_from_key)
+            json_matches = jsonpath_expr.find(inputs)
+            if len(json_matches) == 0:
+                raise ValueError(
+                    f"SaveArtifact could not find input at {self.artifact_from_key} "
+                    f"searched: {inputs}"
+                )
+            artifact = json_matches[0].value.copy()
         else:
             # generating an artifact using only the config
             # use this when the artifact is generated in this step
