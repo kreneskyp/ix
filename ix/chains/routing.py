@@ -31,12 +31,16 @@ class MapSubchain(Chain):
     def __init__(self, *args, **kwargs):
         input_variables = list(kwargs.get("input_variables", []))
         map_input_to = kwargs.get("map_input_to", "map_input")
+        output_key = kwargs.get("output_key", "outputs")
         memory = kwargs.get("memory", None)
         chains = kwargs.get("chains", [])
 
         # add input that will be mapped on each iteration
         if map_input_to not in input_variables:
             input_variables.append(map_input_to)
+
+        if output_key not in input_variables:
+            input_variables.append(output_key)
 
         # create internal chain
         chain = SequentialChain(
@@ -91,8 +95,9 @@ class MapSubchain(Chain):
             logger.debug(f"MapSubchain processing value={value}")
             iteration_inputs = chain_inputs.copy()
             iteration_inputs[map_input_to] = value
+            iteration_inputs[self.output_key] = outputs
             logger.debug(f"MapSubchain iteration_inputs={iteration_inputs}")
-            iteration_outputs = self.chain.run(outputs=outputs, **iteration_inputs)
+            iteration_outputs = self.chain.run(**iteration_inputs)
             iteration_mapped_output = iteration_outputs
             logger.debug(f"MapSubchain response outputs={iteration_mapped_output}")
             outputs.append(iteration_mapped_output)
