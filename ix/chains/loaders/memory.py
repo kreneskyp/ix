@@ -46,7 +46,7 @@ def load_memory_config(
     # load session_id if scope is supported
     if get_memory_option(memory_class, "supports_session", False):
         session_id, session_id_key = get_memory_session(
-            memory_config.pop("session", {}), callback_manager, memory_class
+            memory_config, callback_manager, memory_class
         )
         memory_config[session_id_key] = session_id
 
@@ -62,7 +62,7 @@ def load_chat_memory_backend_config(
 
     # always add scope to chat message backend
     session_id, session_id_key = get_memory_session(
-        backend_config.pop("session", {}), callback_manager, backend_class
+        backend_config, callback_manager, backend_class
     )
     logger.debug(
         f"load_chat_memory_backend session_id={session_id} session_id_key={session_id_key}"
@@ -130,7 +130,7 @@ def get_memory_session(
     """
 
     # fetch scope
-    scope = config.get("scope", "chat")
+    scope = config.pop("session_scope", "chat")
     if scope in {"", None}:
         scope = "chat"
     supported_scopes = get_memory_option(cls, "supported_scopes", False)
@@ -150,11 +150,11 @@ def get_memory_session(
         raise ValueError(f"unknown scope={scope}")
 
     # build session_id
-    prefix = config.get("prefix", None)
+    prefix = config.pop("session_prefix", None)
     if prefix:
         session_id = f"{prefix}_{scope}_{scope_id}"
     else:
         session_id = f"{scope}_{scope_id}"
 
-    key = config.get("key", "session_id")
+    key = config.pop("session_key", "session_id")
     return session_id, key

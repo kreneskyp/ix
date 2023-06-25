@@ -76,7 +76,6 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, parent=None)
 
     # prepare properties for loading. Properties should be grouped by key.
     properties = node.incoming_edges.filter(relation="PROP").order_by("key")
-    logger.error(f"properties={properties}")
     for group in itertools.groupby(properties, lambda x: x.key):
         key, edges = group
         node_group = [edge.source for edge in edges]
@@ -85,7 +84,6 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, parent=None)
         if node_group[0].node_type.type == "chain":
             # load a sequence of linked nodes into a children property
             # this supports loading as an list of chains or auto-SequentialChain
-            logger.error(f"Loading sequence for key={key}")
             first_instance = load_node(node_group[0], callback_manager, parent=node)
             sequence = load_sequence(node_group[0], first_instance, callback_manager)
             connector = node_type.connectors_as_dict[key]

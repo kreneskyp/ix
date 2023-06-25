@@ -46,7 +46,7 @@ MEMORY_WITH_BACKEND = {
         "memory_key": "chat_history",
         "chat_memory": {
             "class_path": "langchain.memory.RedisChatMessageHistory",
-            "config": {"url": "redis://redis:6379/0", "session": {"scope": "task"}},
+            "config": {"url": "redis://redis:6379/0", "session_scope": "task"},
         },
     },
 }
@@ -66,7 +66,8 @@ MEMORY_WITH_SCOPE = {
     "class_path": "ix.memory.artifacts.ArtifactMemory",
     "config": {
         "memory_key": "chat_history",
-        "session": {"scope": "chat", "prefix": "tests"},
+        "session_scope": "chat",
+        "session_prefix": "tests",
     },
 }
 
@@ -223,7 +224,8 @@ class TestLoadMemory:
             {
                 "class_path": "ix.chains.tests.mock_memory.MockMemory",
                 "config": {
-                    "session": {"scope": "chat", "prefix": "tests"},
+                    "session_scope": "chat",
+                    "session_prefix": "tests",
                 },
             },
         )
@@ -241,7 +243,8 @@ class TestLoadChatMemoryBackend:
             "class_path": "langchain.memory.RedisChatMessageHistory",
             "config": {
                 "url": "redis://redis:6379/0",
-                "session": {"scope": "chat", "prefix": "tests"},
+                "session_scope": "chat",
+                "session_prefix": "tests",
             },
         }
 
@@ -279,51 +282,71 @@ class TestGetMemorySession:
         [
             # No scope - defaults to chat
             (
-                {"scope": "", "prefix": "123", "key": "session_id"},
+                {
+                    "session_scope": "",
+                    "session_prefix": "123",
+                    "session_key": "session_id",
+                },
                 BaseChatMessageHistory,
                 ("123_chat_1000", "session_id"),
             ),
             (
-                {"scope": None, "prefix": "123", "key": "session_id"},
+                {
+                    "session_scope": None,
+                    "session_prefix": "123",
+                    "session_key": "session_id",
+                },
                 BaseChatMessageHistory,
                 ("123_chat_1000", "session_id"),
             ),
             (
-                {"prefix": "123", "key": "session_id"},
+                {"session_prefix": "123", "session_key": "session_id"},
                 BaseChatMessageHistory,
                 ("123_chat_1000", "session_id"),
             ),
             # agent, task, user scopes
             (
-                {"scope": "agent", "prefix": "456", "key": "session_id"},
+                {
+                    "session_scope": "agent",
+                    "session_prefix": "456",
+                    "session_key": "session_id",
+                },
                 BaseMemory,
                 ("456_agent_1001", "session_id"),
             ),
             (
-                {"scope": "task", "prefix": "789", "key": "session_id"},
+                {
+                    "session_scope": "task",
+                    "session_prefix": "789",
+                    "session_key": "session_id",
+                },
                 BaseMemory,
                 ("789_task_1002", "session_id"),
             ),
             (
-                {"scope": "user", "prefix": "321", "key": "session_id"},
+                {
+                    "session_scope": "user",
+                    "session_prefix": "321",
+                    "session_key": "session_id",
+                },
                 BaseChatMessageHistory,
                 ("321_user_1003", "session_id"),
             ),
             # custom session_id_key
             (
-                {"scope": "chat", "key": "chat_session"},
+                {"session_scope": "chat", "session_key": "chat_session"},
                 BaseChatMessageHistory,
                 ("chat_1000", "chat_session"),
             ),
             # no session prefix
             (
-                {"scope": "chat", "key": "session_id"},
+                {"session_scope": "chat", "session_key": "session_id"},
                 BaseChatMessageHistory,
                 ("chat_1000", "session_id"),
             ),
             # custom session prefix
             (
-                {"scope": "chat", "prefix": "static_session_id"},
+                {"session_scope": "chat", "session_prefix": "static_session_id"},
                 BaseChatMessageHistory,
                 ("static_session_id_chat_1000", "session_id"),
             ),
@@ -343,7 +366,7 @@ class TestGetMemorySession:
 
     def test_parse_scope_unsupported_scope(self, mock_callback_manager):
         config = {
-            "scope": "unsupported_scope",
+            "session_scope": "unsupported_scope",
             "session_id": "123",
             "session_id_key": "session_id",
         }

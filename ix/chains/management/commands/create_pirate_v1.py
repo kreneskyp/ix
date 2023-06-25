@@ -39,7 +39,7 @@ PIRATE = {
                         "class_path": "langchain.memory.RedisChatMessageHistory",
                         "config": {
                             "url": "redis://redis:6379/0",
-                            "session": {"scope": "chat"},
+                            "session_scope": "chat",
                         },
                     },
                 },
