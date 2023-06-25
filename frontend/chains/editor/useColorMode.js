@@ -71,7 +71,18 @@ export const useChatColorMode = () => {
     isLight,
     editorHighlight: isLight ? "gray.200" : "gray.700",
     autoCompleteSelected: isLight ? "gray.200" : "gray.700",
+    message: {
+      color: isLight ? "gray.800" : "gray.100",
+    },
     mention: isLight
+      ? {
+          color: "blue.500",
+          fontWeight: "bold",
+        }
+      : {
+          color: "blue.300",
+        },
+    link: isLight
       ? {
           color: "blue.500",
           fontWeight: "bold",

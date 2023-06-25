@@ -3,7 +3,6 @@ import { Box, Text, Link, Code } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { useChatColorMode } from "chains/editor/useColorMode";
 
-
 /**
  * HighlightText is a component that takes a string and returns a Chakra Text component with
  * @mentions, {artifacts}, markdown URLs, and inline code references highlighted.
@@ -56,7 +55,6 @@ const HighlightText = ({ content }) => {
 
   return <Box style={{ whiteSpace: "pre-wrap" }}>{formattedContent}</Box>;
 };
-
 
 HighlightText.propTypes = {
   content: PropTypes.string.isRequired,
