@@ -55,6 +55,12 @@ You are a python coder. You will writes files for the user request.
 
 {artifacts}
 
+FILE_LIST:
+{file_list}
+
+GENERATED FILES:
+{file_contents}
+
 FILE_META:
 {file_meta}
 
@@ -166,7 +172,12 @@ GENERATE_FILE = {
                     {
                         "role": "system",
                         "template": GENERATE_CODE,
-                        "input_variables": ["file_meta", "artifacts"],
+                        "input_variables": [
+                            "file_meta",
+                            "artifacts",
+                            "file_contents",
+                            "file_list",
+                        ],
                     },
                     {
                         "role": "user",
@@ -174,6 +185,13 @@ GENERATE_FILE = {
                         "input_variables": ["user_input"],
                     },
                 ],
+            },
+        },
+        "memory": {
+            "class_path": "ix.memory.artifacts.ArtifactMemory",
+            "config": {
+                "input_key": "files",
+                "memory_key": "file_contents",
             },
         },
         "functions": GENERATE_FILE_ACTION_FUNCTION,
@@ -210,7 +228,7 @@ GENERATE_FILES_MAP = {
         "input_variables": ["file_list", "artifacts", "user_input"],
         "map_input": "file_list.arguments.files",
         "map_input_to": "file_meta",
-        "output_key": "write_file_output",
+        "output_key": "files",
         "chains": [
             GENERATE_FILE,
             SAVE_FILE_ARTIFACT,

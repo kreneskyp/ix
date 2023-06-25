@@ -1,103 +1,216 @@
 [
 {
+    "model": "agents.agent",
+    "pk": "b7d8f662-12f6-4525-b07b-c9ea7c10010a",
+    "fields": {
+        "name": "Coder v2",
+        "alias": "code",
+        "purpose": "To generate code for a user request. May generate multiple files",
+        "created_at": "2023-06-25T23:26:41.056Z",
+        "model": "",
+        "config": {},
+        "agent_class_path": "",
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
+    }
+},
+{
     "model": "chains.chain",
     "pk": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
     "fields": {
         "name": "Coder chain v2",
         "description": "Chain used to generate code files",
-        "created_at": "2023-06-25T19:40:44.243Z"
+        "created_at": "2023-06-25T23:26:40.978Z"
     }
 },
 {
     "model": "chains.chainnode",
-    "pk": "00421320-b539-4a94-a548-b22ee038327f",
+    "pk": "193d2e41-5e47-4e71-981f-6a885dafae88",
     "fields": {
-        "class_path": "ix.chains.functions.OpenAIFunctionParser",
-        "node_type": "c3b2e7f3-f883-46f2-982d-cd01465fb3d1",
+        "class_path": "ix.chains.artifacts.SaveArtifact",
+        "node_type": "c51f59a4-f41d-46b6-ba07-5d4636b0a121",
         "config": {
-            "parse_json": true
+            "output_key": "file_artifact",
+            "content_key": "file",
+            "content_path": "file.arguments.content",
+            "artifact_type": "file",
+            "artifact_storage": "write_to_file",
+            "artifact_from_key": "file_meta",
+            "artifact_storage_id_key": "filename"
         },
         "name": null,
         "description": null,
         "root": false,
         "position": {
-            "x": 1344.9287943301983,
-            "y": 1000.9302061840802
+            "x": 2218.4409649291156,
+            "y": 727.7292433192176
         },
         "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
     }
 },
 {
     "model": "chains.chainnode",
-    "pk": "02aaf070-4e26-41e2-ae89-82f264fb6479",
+    "pk": "24f454b0-9733-4498-8466-8bb004010c13",
     "fields": {
-        "class_path": "ix.chains.llm_chain.LLMChain",
-        "node_type": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
+        "class_path": "ix.memory.artifacts.ArtifactMemory",
+        "node_type": "98af8724-a765-490a-bfb6-2adf54102186",
         "config": {
-            "llm": {
-                "config": {
-                    "model": "gpt-4-0613",
-                    "verbose": true,
-                    "max_tokens": 4000,
-                    "temperature": 0.2,
-                    "request_timeout": 240
-                },
-                "class_path": "langchain.chat_models.openai.ChatOpenAI"
-            },
-            "prompt": {
-                "config": {
-                    "messages": [
-                        {
-                            "role": "system",
-                            "template": "\nYou are a python coder. You will writes files for the user request.\n\n{artifacts}\n\nFILE_META:\n{file_meta}\n\nINSTRUCTIONS:\n    - respond with a function call\n    - write the file described by the FILE_META\n",
-                            "input_variables": [
-                                "file_meta",
-                                "artifacts"
-                            ]
+            "input_key": "files",
+            "memory_key": "file_contents"
+        },
+        "name": null,
+        "description": null,
+        "root": false,
+        "position": {
+            "x": 1052.9673127967694,
+            "y": 888.0288239501577
+        },
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "38640ea8-08d2-406a-a3fb-dd1243a0a5cc",
+    "fields": {
+        "class_path": "ix.chains.routing.MapSubchain",
+        "node_type": "8344d221-f239-4b83-acfa-f167f0dc6e22",
+        "config": {
+            "chains": [
+                {
+                    "config": {
+                        "llm": {
+                            "config": {
+                                "model": "gpt-4-0613",
+                                "verbose": true,
+                                "max_tokens": 4000,
+                                "temperature": 0.2,
+                                "request_timeout": 240
+                            },
+                            "class_path": "langchain.chat_models.openai.ChatOpenAI"
                         },
-                        {
-                            "role": "user",
-                            "template": "file artifact list was generated from this input:\n {user_input}",
-                            "input_variables": [
-                                "user_input"
-                            ]
+                        "memory": {
+                            "config": {
+                                "input_key": "files",
+                                "memory_key": "file_contents"
+                            },
+                            "class_path": "ix.memory.artifacts.ArtifactMemory"
+                        },
+                        "prompt": {
+                            "config": {
+                                "messages": [
+                                    {
+                                        "role": "system",
+                                        "template": "\nYou are a python coder. You will writes files for the user request.\n\n{artifacts}\n\nFILE_LIST:\n{file_list}\n\nGENERATED FILES:\n{file_contents}\n\nFILE_META:\n{file_meta}\n\nINSTRUCTIONS:\n    - respond with a function call\n    - write the file described by the FILE_META\n",
+                                        "input_variables": [
+                                            "file_meta",
+                                            "artifacts",
+                                            "file_contents",
+                                            "file_list"
+                                        ]
+                                    },
+                                    {
+                                        "role": "user",
+                                        "template": "file artifact list was generated from this input:\n {user_input}",
+                                        "input_variables": [
+                                            "user_input"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "class_path": "langchain.prompts.chat.ChatPromptTemplate"
+                        },
+                        "verbose": true,
+                        "functions": {
+                            "name": "file_action",
+                            "config": {
+                                "name": "create_file",
+                                "parameters": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"filename\": {\n            \"type\": \"string\"\n        },\n        \"description\": {\n            \"type\": \"string\"\n        },\n        \"content\": {\n            \"type\": \"string\"\n        }\n    },\n    \"required\": [\n        \"filename\",\n        \"description\",\n        \"content\"\n    ]\n}",
+                                "description": "creates a file. Use whenever you need to write a file.."
+                            },
+                            "class_path": "ix.chains.functions.FunctionSchema"
+                        },
+                        "output_key": "file",
+                        "function_call": "create_file",
+                        "output_parser": {
+                            "config": {
+                                "parse_json": true
+                            },
+                            "class_path": "ix.chains.functions.OpenAIFunctionParser"
                         }
+                    },
+                    "class_path": "ix.chains.llm_chain.LLMChain"
+                },
+                {
+                    "config": {
+                        "output_key": "file_artifact",
+                        "content_key": "file",
+                        "content_path": "file.arguments.content",
+                        "artifact_type": "file",
+                        "artifact_storage": "write_to_file",
+                        "artifact_from_key": "file_meta",
+                        "artifact_storage_id_key": "filename"
+                    },
+                    "class_path": "ix.chains.artifacts.SaveArtifact"
+                }
+            ],
+            "map_input": "file_list.arguments.files",
+            "output_key": "files",
+            "map_input_to": "file_meta",
+            "input_variables": [
+                "file_list",
+                "artifacts",
+                "user_input"
+            ]
+        },
+        "name": "generate files",
+        "description": "Generates files for each artifact in the input list",
+        "root": false,
+        "position": {
+            "x": 1335.14161958927,
+            "y": 442.73967814042913
+        },
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "53fb5a69-1b14-445d-85ad-841968e3a729",
+    "fields": {
+        "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+        "node_type": "b62000d7-9390-491b-af13-9711c4ec8b44",
+        "config": {
+            "messages": [
+                {
+                    "role": "system",
+                    "template": "You are a python coder. You will writes files for the user request.\n\n{artifacts}\n\nFILE_LIST:\n{file_list}\n\nGENERATED FILES:\n{file_contents}\n\nFILE_META:\n{file_meta}\n\nINSTRUCTIONS:\n    - respond with a function call\n    - write the file described by the FILE_META\n",
+                    "input_variables": [
+                        "artifacts",
+                        "file_list",
+                        "file_contents",
+                        "file_meta"
                     ]
                 },
-                "class_path": "langchain.prompts.chat.ChatPromptTemplate"
-            },
-            "verbose": true,
-            "functions": {
-                "name": "file_action",
-                "config": {
-                    "name": "create_file",
-                    "parameters": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"filename\": {\n            \"type\": \"string\"\n        },\n        \"description\": {\n            \"type\": \"string\"\n        },\n        \"content\": {\n            \"type\": \"string\"\n        }\n    },\n    \"required\": [\n        \"filename\",\n        \"description\",\n        \"content\"\n    ]\n}",
-                    "description": "creates a file. Use whenever you need to write a file.."
-                },
-                "class_path": "ix.chains.functions.FunctionSchema"
-            },
-            "output_key": "file",
-            "function_call": "create_file",
-            "output_parser": {
-                "config": {
-                    "parse_json": true
-                },
-                "class_path": "ix.chains.functions.OpenAIFunctionParser"
-            }
+                {
+                    "role": "user",
+                    "template": "file artifact list was generated from this input:\n{user_input}",
+                    "input_variables": [
+                        "user_input"
+                    ]
+                }
+            ]
         },
         "name": null,
         "description": null,
         "root": false,
         "position": {
-            "x": 1742.9813236395019,
-            "y": 786.6392176689503
+            "x": 0.0,
+            "y": 0.0
         },
         "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
     }
 },
 {
     "model": "chains.chainnode",
-    "pk": "0520ebfb-534f-48f3-9369-273b38eca2c7",
+    "pk": "57dc072f-4d9a-4ca0-87b7-c27c81454336",
     "fields": {
         "class_path": "langchain.chains.SequentialChain",
         "node_type": "d13aca50-e998-4569-ba3c-b18985a1ca87",
@@ -185,15 +298,24 @@
                                         },
                                         "class_path": "langchain.chat_models.openai.ChatOpenAI"
                                     },
+                                    "memory": {
+                                        "config": {
+                                            "input_key": "files",
+                                            "memory_key": "file_contents"
+                                        },
+                                        "class_path": "ix.memory.artifacts.ArtifactMemory"
+                                    },
                                     "prompt": {
                                         "config": {
                                             "messages": [
                                                 {
                                                     "role": "system",
-                                                    "template": "\nYou are a python coder. You will writes files for the user request.\n\n{artifacts}\n\nFILE_META:\n{file_meta}\n\nINSTRUCTIONS:\n    - respond with a function call\n    - write the file described by the FILE_META\n",
+                                                    "template": "\nYou are a python coder. You will writes files for the user request.\n\n{artifacts}\n\nFILE_LIST:\n{file_list}\n\nGENERATED FILES:\n{file_contents}\n\nFILE_META:\n{file_meta}\n\nINSTRUCTIONS:\n    - respond with a function call\n    - write the file described by the FILE_META\n",
                                                     "input_variables": [
                                                         "file_meta",
-                                                        "artifacts"
+                                                        "artifacts",
+                                                        "file_contents",
+                                                        "file_list"
                                                     ]
                                                 },
                                                 {
@@ -242,7 +364,7 @@
                             }
                         ],
                         "map_input": "file_list.arguments.files",
-                        "output_key": "write_file_output",
+                        "output_key": "files",
                         "map_input_to": "file_meta",
                         "input_variables": [
                             "file_list",
@@ -268,15 +390,15 @@
         "description": "Write new files containing code",
         "root": true,
         "position": {
-            "x": 327.3058928231677,
-            "y": 277.2461810096774
+            "x": 340.01471307912243,
+            "y": 275.68760519928844
         },
         "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
     }
 },
 {
     "model": "chains.chainnode",
-    "pk": "28771993-bdfa-4df3-9cec-317223f53995",
+    "pk": "7678f816-f566-43b8-9e57-2d3b32f1ddd0",
     "fields": {
         "class_path": "ix.chains.functions.FunctionSchema",
         "node_type": "1d6315c1-c5fa-416e-9172-66d63c414003",
@@ -289,262 +411,15 @@
         "description": null,
         "root": false,
         "position": {
-            "x": 1167.5634458543666,
-            "y": 1092.127241795579
+            "x": 1416.2387425250245,
+            "y": 993.2527398155696
         },
         "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
     }
 },
 {
     "model": "chains.chainnode",
-    "pk": "2e4fff06-7b95-4d8a-8429-304a6c6b12f4",
-    "fields": {
-        "class_path": "langchain.chat_models.openai.ChatOpenAI",
-        "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
-        "config": {
-            "model": "gpt-4-0613",
-            "verbose": true,
-            "max_tokens": 4000,
-            "temperature": 0.2,
-            "request_timeout": 240
-        },
-        "name": null,
-        "description": null,
-        "root": false,
-        "position": {
-            "x": 836.101230837956,
-            "y": 960.8583493037842
-        },
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
-    }
-},
-{
-    "model": "chains.chainnode",
-    "pk": "2e69c03d-9ffa-4ea6-950d-6d5b742be1ba",
-    "fields": {
-        "class_path": "ix.chains.artifacts.SaveArtifact",
-        "node_type": "c51f59a4-f41d-46b6-ba07-5d4636b0a121",
-        "config": {
-            "output_key": "file_list_artifact",
-            "content_key": "file_list.arguments.files",
-            "artifact_key": "file_list",
-            "artifact_name": "file_list",
-            "artifact_type": "file_list",
-            "artifact_storage": "write_file",
-            "artifact_description": "list of files that will be generated"
-        },
-        "name": null,
-        "description": null,
-        "root": false,
-        "position": {
-            "x": 1008.2664029413745,
-            "y": 480.3985303258
-        },
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
-    }
-},
-{
-    "model": "chains.chainnode",
-    "pk": "38139fc3-a755-418d-90a9-f9390ac6f278",
-    "fields": {
-        "class_path": "ix.chains.functions.FunctionSchema",
-        "node_type": "1d6315c1-c5fa-416e-9172-66d63c414003",
-        "config": {
-            "name": "create_file_list",
-            "parameters": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"files\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"filename\": {\n                        \"type\": \"string\"\n                    },\n                    \"description\": {\n                        \"type\": \"string\"\n                    }\n                },\n                \"required\": [\n                    \"filename\",\n                    \"description\"\n                ]\n            }\n        }\n    }\n}",
-            "description": "creates a list of files to generate for users request"
-        },
-        "name": "create_action_list",
-        "description": null,
-        "root": false,
-        "position": {
-            "x": 161.34150166777033,
-            "y": 878.4695688771644
-        },
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
-    }
-},
-{
-    "model": "chains.chainnode",
-    "pk": "40209a43-b026-4f04-b152-865bf5271fdb",
-    "fields": {
-        "class_path": "ix.chains.artifacts.SaveArtifact",
-        "node_type": "c51f59a4-f41d-46b6-ba07-5d4636b0a121",
-        "config": {
-            "output_key": "file_artifact",
-            "content_key": "file",
-            "content_path": "file.arguments.content",
-            "artifact_type": "file",
-            "artifact_storage": "write_to_file",
-            "artifact_from_key": "file_meta",
-            "artifact_storage_id_key": "filename"
-        },
-        "name": null,
-        "description": null,
-        "root": false,
-        "position": {
-            "x": 2032.1327587528494,
-            "y": 788.467187929149
-        },
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
-    }
-},
-{
-    "model": "chains.chainnode",
-    "pk": "731551ce-a04c-4735-a16d-84f2ad8ebf16",
-    "fields": {
-        "class_path": "langchain.chat_models.openai.ChatOpenAI",
-        "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
-        "config": {
-            "model": "gpt-4-0613",
-            "verbose": true,
-            "max_tokens": 2000,
-            "temperature": 0.2,
-            "request_timeout": 240
-        },
-        "name": null,
-        "description": null,
-        "root": false,
-        "position": {
-            "x": -148.0689725145627,
-            "y": 538.7940889744797
-        },
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
-    }
-},
-{
-    "model": "chains.chainnode",
-    "pk": "76d8b127-85b8-4e7d-9979-97e4f374c5e9",
-    "fields": {
-        "class_path": "langchain.prompts.chat.ChatPromptTemplate",
-        "node_type": "b62000d7-9390-491b-af13-9711c4ec8b44",
-        "config": {
-            "messages": [
-                {
-                    "role": "system",
-                    "template": "\nYou are a python coder. You will writes files for the user request.\n\n{artifacts}\n\nFILE_META:\n{file_meta}\n\nINSTRUCTIONS:\n    - respond with a function call\n    - write the file described by the FILE_META\n",
-                    "input_variables": [
-                        "file_meta",
-                        "artifacts"
-                    ]
-                },
-                {
-                    "role": "user",
-                    "template": "file artifact list was generated from this input:\n {user_input}",
-                    "input_variables": [
-                        "user_input"
-                    ]
-                }
-            ]
-        },
-        "name": null,
-        "description": null,
-        "root": false,
-        "position": {
-            "x": 697.9367322634988,
-            "y": 1089.0488588358648
-        },
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
-    }
-},
-{
-    "model": "chains.chainnode",
-    "pk": "c1c2b908-acf4-477b-898a-90cc820562e6",
-    "fields": {
-        "class_path": "ix.chains.routing.MapSubchain",
-        "node_type": "8344d221-f239-4b83-acfa-f167f0dc6e22",
-        "config": {
-            "chains": [
-                {
-                    "config": {
-                        "llm": {
-                            "config": {
-                                "model": "gpt-4-0613",
-                                "verbose": true,
-                                "max_tokens": 4000,
-                                "temperature": 0.2,
-                                "request_timeout": 240
-                            },
-                            "class_path": "langchain.chat_models.openai.ChatOpenAI"
-                        },
-                        "prompt": {
-                            "config": {
-                                "messages": [
-                                    {
-                                        "role": "system",
-                                        "template": "\nYou are a python coder. You will writes files for the user request.\n\n{artifacts}\n\nFILE_META:\n{file_meta}\n\nINSTRUCTIONS:\n    - respond with a function call\n    - write the file described by the FILE_META\n",
-                                        "input_variables": [
-                                            "file_meta",
-                                            "artifacts"
-                                        ]
-                                    },
-                                    {
-                                        "role": "user",
-                                        "template": "file artifact list was generated from this input:\n {user_input}",
-                                        "input_variables": [
-                                            "user_input"
-                                        ]
-                                    }
-                                ]
-                            },
-                            "class_path": "langchain.prompts.chat.ChatPromptTemplate"
-                        },
-                        "verbose": true,
-                        "functions": {
-                            "name": "file_action",
-                            "config": {
-                                "name": "create_file",
-                                "parameters": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"filename\": {\n            \"type\": \"string\"\n        },\n        \"description\": {\n            \"type\": \"string\"\n        },\n        \"content\": {\n            \"type\": \"string\"\n        }\n    },\n    \"required\": [\n        \"filename\",\n        \"description\",\n        \"content\"\n    ]\n}",
-                                "description": "creates a file. Use whenever you need to write a file.."
-                            },
-                            "class_path": "ix.chains.functions.FunctionSchema"
-                        },
-                        "output_key": "file",
-                        "function_call": "create_file",
-                        "output_parser": {
-                            "config": {
-                                "parse_json": true
-                            },
-                            "class_path": "ix.chains.functions.OpenAIFunctionParser"
-                        }
-                    },
-                    "class_path": "ix.chains.llm_chain.LLMChain"
-                },
-                {
-                    "config": {
-                        "output_key": "file_artifact",
-                        "content_key": "file",
-                        "content_path": "file.arguments.content",
-                        "artifact_type": "file",
-                        "artifact_storage": "write_to_file",
-                        "artifact_from_key": "file_meta",
-                        "artifact_storage_id_key": "filename"
-                    },
-                    "class_path": "ix.chains.artifacts.SaveArtifact"
-                }
-            ],
-            "map_input": "file_list.arguments.files",
-            "output_key": "write_file_output",
-            "map_input_to": "file_meta",
-            "input_variables": [
-                "file_list",
-                "artifacts",
-                "user_input"
-            ]
-        },
-        "name": "generate files",
-        "description": "Generates files for each artifact in the input list",
-        "root": false,
-        "position": {
-            "x": 1294.2862193948547,
-            "y": 478.81101446410713
-        },
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
-    }
-},
-{
-    "model": "chains.chainnode",
-    "pk": "c69a50e4-bc37-4ebc-8401-c3683da94075",
+    "pk": "7d6b84f6-a6b3-4397-aa09-bfe2fd656645",
     "fields": {
         "class_path": "ix.chains.llm_chain.LLMChain",
         "node_type": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
@@ -603,15 +478,78 @@
         "description": null,
         "root": false,
         "position": {
-            "x": 713.3416784531587,
-            "y": 479.00721403376343
+            "x": 726.5109151376847,
+            "y": 439.57994690283886
         },
         "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
     }
 },
 {
     "model": "chains.chainnode",
-    "pk": "dd31abd1-a422-48dc-aef9-693e2ede74ca",
+    "pk": "8a814597-c726-417c-8e94-fb256b60092d",
+    "fields": {
+        "class_path": "ix.chains.functions.OpenAIFunctionParser",
+        "node_type": "c3b2e7f3-f883-46f2-982d-cd01465fb3d1",
+        "config": {
+            "parse_json": true
+        },
+        "name": null,
+        "description": null,
+        "root": false,
+        "position": {
+            "x": 436.8336874275702,
+            "y": 598.8543988970744
+        },
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "8e81abc3-0e5f-470f-835f-c953f8d86748",
+    "fields": {
+        "class_path": "ix.chains.functions.FunctionSchema",
+        "node_type": "1d6315c1-c5fa-416e-9172-66d63c414003",
+        "config": {
+            "name": "create_file_list",
+            "parameters": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"files\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"filename\": {\n                        \"type\": \"string\"\n                    },\n                    \"description\": {\n                        \"type\": \"string\"\n                    }\n                },\n                \"required\": [\n                    \"filename\",\n                    \"description\"\n                ]\n            }\n        }\n    }\n}",
+            "description": "creates a list of files to generate for users request"
+        },
+        "name": "create_action_list",
+        "description": null,
+        "root": false,
+        "position": {
+            "x": 258.9099143388879,
+            "y": 688.0017289070333
+        },
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "8ff340ad-556e-4a60-8080-2b3f9674ada4",
+    "fields": {
+        "class_path": "langchain.chat_models.openai.ChatOpenAI",
+        "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+        "config": {
+            "model": "gpt-4-0613",
+            "verbose": true,
+            "max_tokens": 4000,
+            "temperature": 0.2,
+            "request_timeout": 240
+        },
+        "name": null,
+        "description": null,
+        "root": false,
+        "position": {
+            "x": 1056.9258365290884,
+            "y": 804.8998255714655
+        },
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "b4b7d373-1ec9-49d4-8a0f-d3295577f440",
     "fields": {
         "class_path": "langchain.prompts.chat.ChatPromptTemplate",
         "node_type": "b62000d7-9390-491b-af13-9711c4ec8b44",
@@ -637,15 +575,115 @@
         "description": null,
         "root": false,
         "position": {
-            "x": -520.2422184803602,
-            "y": 880.1558881435465
+            "x": -248.22562111374157,
+            "y": 685.922110288249
         },
         "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
     }
 },
 {
     "model": "chains.chainnode",
-    "pk": "e8520557-6b9f-4881-8e3f-d37ef660b390",
+    "pk": "b5889267-252e-43bd-98d0-bdca0d997c21",
+    "fields": {
+        "class_path": "langchain.chat_models.openai.ChatOpenAI",
+        "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+        "config": {
+            "model": "gpt-4-0613",
+            "verbose": true,
+            "max_tokens": 2000,
+            "temperature": 0.2,
+            "request_timeout": 240
+        },
+        "name": null,
+        "description": null,
+        "root": false,
+        "position": {
+            "x": -42.2702820272109,
+            "y": 595.4828059225537
+        },
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "b8e27600-1837-4837-8a09-60a10c6adb45",
+    "fields": {
+        "class_path": "ix.chains.llm_chain.LLMChain",
+        "node_type": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
+        "config": {
+            "llm": {
+                "config": {
+                    "model": "gpt-4-0613",
+                    "verbose": true,
+                    "max_tokens": 4000,
+                    "temperature": 0.2,
+                    "request_timeout": 240
+                },
+                "class_path": "langchain.chat_models.openai.ChatOpenAI"
+            },
+            "memory": {
+                "config": {
+                    "input_key": "files",
+                    "memory_key": "file_contents"
+                },
+                "class_path": "ix.memory.artifacts.ArtifactMemory"
+            },
+            "prompt": {
+                "config": {
+                    "messages": [
+                        {
+                            "role": "system",
+                            "template": "\nYou are a python coder. You will writes files for the user request.\n\n{artifacts}\n\nFILE_LIST:\n{file_list}\n\nGENERATED FILES:\n{file_contents}\n\nFILE_META:\n{file_meta}\n\nINSTRUCTIONS:\n    - respond with a function call\n    - write the file described by the FILE_META\n",
+                            "input_variables": [
+                                "file_meta",
+                                "artifacts",
+                                "file_contents",
+                                "file_list"
+                            ]
+                        },
+                        {
+                            "role": "user",
+                            "template": "file artifact list was generated from this input:\n {user_input}",
+                            "input_variables": [
+                                "user_input"
+                            ]
+                        }
+                    ]
+                },
+                "class_path": "langchain.prompts.chat.ChatPromptTemplate"
+            },
+            "verbose": true,
+            "functions": {
+                "name": "file_action",
+                "config": {
+                    "name": "create_file",
+                    "parameters": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"filename\": {\n            \"type\": \"string\"\n        },\n        \"description\": {\n            \"type\": \"string\"\n        },\n        \"content\": {\n            \"type\": \"string\"\n        }\n    },\n    \"required\": [\n        \"filename\",\n        \"description\",\n        \"content\"\n    ]\n}",
+                    "description": "creates a file. Use whenever you need to write a file.."
+                },
+                "class_path": "ix.chains.functions.FunctionSchema"
+            },
+            "output_key": "file",
+            "function_call": "create_file",
+            "output_parser": {
+                "config": {
+                    "parse_json": true
+                },
+                "class_path": "ix.chains.functions.OpenAIFunctionParser"
+            }
+        },
+        "name": null,
+        "description": null,
+        "root": false,
+        "position": {
+            "x": 1917.5781630196745,
+            "y": 723.987126195413
+        },
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "c1e81d02-6a6c-4cee-8571-ff2fa1e034b0",
     "fields": {
         "class_path": "ix.chains.functions.OpenAIFunctionParser",
         "node_type": "c3b2e7f3-f883-46f2-982d-cd01465fb3d1",
@@ -656,15 +694,40 @@
         "description": null,
         "root": false,
         "position": {
-            "x": 361.3187116191266,
-            "y": 787.5043509063846
+            "x": 1597.2464722448703,
+            "y": 895.7997753985015
         },
         "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
     }
 },
 {
     "model": "chains.chainnode",
-    "pk": "f4413290-2fb9-454e-8924-92980f4a6654",
+    "pk": "e61c905a-cd49-4c76-bf5b-fa68888d426c",
+    "fields": {
+        "class_path": "ix.chains.artifacts.SaveArtifact",
+        "node_type": "c51f59a4-f41d-46b6-ba07-5d4636b0a121",
+        "config": {
+            "output_key": "file_list_artifact",
+            "content_key": "file_list.arguments.files",
+            "artifact_key": "file_list",
+            "artifact_name": "file_list",
+            "artifact_type": "file_list",
+            "artifact_storage": "write_file",
+            "artifact_description": "list of files that will be generated"
+        },
+        "name": null,
+        "description": null,
+        "root": false,
+        "position": {
+            "x": 1023.1911948076188,
+            "y": 440.10066231888334
+        },
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "eff5e303-902b-4636-8ef8-71951e7a44f0",
     "fields": {
         "class_path": "ix.memory.artifacts.ArtifactMemory",
         "node_type": "98af8724-a765-490a-bfb6-2adf54102186",
@@ -675,30 +738,18 @@
         "description": null,
         "root": false,
         "position": {
-            "x": 6.806751269290885,
-            "y": 378.81630245322987
+            "x": 0.4909751627460537,
+            "y": 387.57680576589445
         },
         "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
     }
 },
 {
     "model": "chains.chainedge",
-    "pk": "160351c8-ee2f-40b5-a91b-5be131ffc3e7",
+    "pk": "06cddf8d-0aaa-4ca8-892b-64d740b2cdc5",
     "fields": {
-        "source": "2e69c03d-9ffa-4ea6-950d-6d5b742be1ba",
-        "target": "c1c2b908-acf4-477b-898a-90cc820562e6",
-        "key": null,
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
-        "input_map": null,
-        "relation": "LINK"
-    }
-},
-{
-    "model": "chains.chainedge",
-    "pk": "3299dbdd-7171-4024-a8ac-aa3ca437b289",
-    "fields": {
-        "source": "f4413290-2fb9-454e-8924-92980f4a6654",
-        "target": "0520ebfb-534f-48f3-9369-273b38eca2c7",
+        "source": "eff5e303-902b-4636-8ef8-71951e7a44f0",
+        "target": "57dc072f-4d9a-4ca0-87b7-c27c81454336",
         "key": "memory",
         "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
         "input_map": null,
@@ -707,34 +758,10 @@
 },
 {
     "model": "chains.chainedge",
-    "pk": "35fe8174-5c3f-4cbe-8e96-12ae7ae3635d",
+    "pk": "073bbc57-4521-4b4d-ac1e-59ab2050df56",
     "fields": {
-        "source": "dd31abd1-a422-48dc-aef9-693e2ede74ca",
-        "target": "c69a50e4-bc37-4ebc-8401-c3683da94075",
-        "key": "prompt",
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
-        "input_map": null,
-        "relation": "PROP"
-    }
-},
-{
-    "model": "chains.chainedge",
-    "pk": "61ee7f32-b2ab-4043-ae5e-cbe590f4d6b5",
-    "fields": {
-        "source": "00421320-b539-4a94-a548-b22ee038327f",
-        "target": "02aaf070-4e26-41e2-ae89-82f264fb6479",
-        "key": "output_parser",
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
-        "input_map": null,
-        "relation": "PROP"
-    }
-},
-{
-    "model": "chains.chainedge",
-    "pk": "81227747-ae09-418e-9851-6390f672583c",
-    "fields": {
-        "source": "28771993-bdfa-4df3-9cec-317223f53995",
-        "target": "02aaf070-4e26-41e2-ae89-82f264fb6479",
+        "source": "8e81abc3-0e5f-470f-835f-c953f8d86748",
+        "target": "7d6b84f6-a6b3-4397-aa09-bfe2fd656645",
         "key": "functions",
         "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
         "input_map": null,
@@ -743,82 +770,10 @@
 },
 {
     "model": "chains.chainedge",
-    "pk": "85bcc514-03d6-4179-bd17-c9e011426e9a",
+    "pk": "107d670a-a114-4b02-964c-7aa4f1673384",
     "fields": {
-        "source": "02aaf070-4e26-41e2-ae89-82f264fb6479",
-        "target": "c1c2b908-acf4-477b-898a-90cc820562e6",
-        "key": "chains",
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
-        "input_map": null,
-        "relation": "PROP"
-    }
-},
-{
-    "model": "chains.chainedge",
-    "pk": "9ec56dd1-ab0f-4577-b3dd-84e789571b7b",
-    "fields": {
-        "source": "38139fc3-a755-418d-90a9-f9390ac6f278",
-        "target": "c69a50e4-bc37-4ebc-8401-c3683da94075",
-        "key": "functions",
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
-        "input_map": null,
-        "relation": "PROP"
-    }
-},
-{
-    "model": "chains.chainedge",
-    "pk": "adf0a92a-fb84-4243-8188-6e15860e2fc2",
-    "fields": {
-        "source": "02aaf070-4e26-41e2-ae89-82f264fb6479",
-        "target": "40209a43-b026-4f04-b152-865bf5271fdb",
-        "key": null,
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
-        "input_map": null,
-        "relation": "LINK"
-    }
-},
-{
-    "model": "chains.chainedge",
-    "pk": "cbc3c568-d596-4df6-8e14-1f76fc4adfa1",
-    "fields": {
-        "source": "e8520557-6b9f-4881-8e3f-d37ef660b390",
-        "target": "c69a50e4-bc37-4ebc-8401-c3683da94075",
-        "key": "output_parser",
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
-        "input_map": null,
-        "relation": "PROP"
-    }
-},
-{
-    "model": "chains.chainedge",
-    "pk": "cef4a2cc-1c5a-4778-a0cd-8b23b28f47e5",
-    "fields": {
-        "source": "c69a50e4-bc37-4ebc-8401-c3683da94075",
-        "target": "2e69c03d-9ffa-4ea6-950d-6d5b742be1ba",
-        "key": null,
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
-        "input_map": null,
-        "relation": "LINK"
-    }
-},
-{
-    "model": "chains.chainedge",
-    "pk": "d9361683-abf1-450f-931b-afb7d0dbfd0f",
-    "fields": {
-        "source": "2e4fff06-7b95-4d8a-8429-304a6c6b12f4",
-        "target": "02aaf070-4e26-41e2-ae89-82f264fb6479",
-        "key": "llm",
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
-        "input_map": null,
-        "relation": "PROP"
-    }
-},
-{
-    "model": "chains.chainedge",
-    "pk": "ec711b8c-08ba-4afe-9e4c-ac9db4dc2923",
-    "fields": {
-        "source": "76d8b127-85b8-4e7d-9979-97e4f374c5e9",
-        "target": "02aaf070-4e26-41e2-ae89-82f264fb6479",
+        "source": "53fb5a69-1b14-445d-85ad-841968e3a729",
+        "target": "b8e27600-1837-4837-8a09-60a10c6adb45",
         "key": "prompt",
         "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
         "input_map": null,
@@ -827,10 +782,10 @@
 },
 {
     "model": "chains.chainedge",
-    "pk": "f7f2b474-d3fe-498a-a961-84a2702bf7e3",
+    "pk": "233885e7-a572-4311-ac00-3d48c811c848",
     "fields": {
-        "source": "c69a50e4-bc37-4ebc-8401-c3683da94075",
-        "target": "0520ebfb-534f-48f3-9369-273b38eca2c7",
+        "source": "7d6b84f6-a6b3-4397-aa09-bfe2fd656645",
+        "target": "57dc072f-4d9a-4ca0-87b7-c27c81454336",
         "key": "chains",
         "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
         "input_map": null,
@@ -839,10 +794,34 @@
 },
 {
     "model": "chains.chainedge",
-    "pk": "fca7f753-266e-4bee-b3b8-27a12b5be67e",
+    "pk": "302c4017-8208-4f71-86bb-ce71676afb07",
     "fields": {
-        "source": "731551ce-a04c-4735-a16d-84f2ad8ebf16",
-        "target": "c69a50e4-bc37-4ebc-8401-c3683da94075",
+        "source": "8a814597-c726-417c-8e94-fb256b60092d",
+        "target": "7d6b84f6-a6b3-4397-aa09-bfe2fd656645",
+        "key": "output_parser",
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
+        "input_map": null,
+        "relation": "PROP"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "67997770-0f91-4422-bb76-9d1af1971877",
+    "fields": {
+        "source": "7678f816-f566-43b8-9e57-2d3b32f1ddd0",
+        "target": "b8e27600-1837-4837-8a09-60a10c6adb45",
+        "key": "functions",
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
+        "input_map": null,
+        "relation": "PROP"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "80fa3fbd-a17b-4e6c-9dd9-75329c5527ed",
+    "fields": {
+        "source": "b5889267-252e-43bd-98d0-bdca0d997c21",
+        "target": "7d6b84f6-a6b3-4397-aa09-bfe2fd656645",
         "key": "llm",
         "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
         "input_map": null,
@@ -850,17 +829,99 @@
     }
 },
 {
-    "model": "agents.agent",
-    "pk": "b7d8f662-12f6-4525-b07b-c9ea7c10010a",
+    "model": "chains.chainedge",
+    "pk": "af94ed23-f13b-4cd6-b63d-671fc53ae15e",
     "fields": {
-        "name": "Coder v2",
-        "alias": "code",
-        "purpose": "To generate code for a user request. May generate multiple files",
-        "created_at": "2023-06-25T19:40:44.317Z",
-        "model": "",
-        "config": {},
-        "agent_class_path": "",
-        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c"
+        "source": "e61c905a-cd49-4c76-bf5b-fa68888d426c",
+        "target": "38640ea8-08d2-406a-a3fb-dd1243a0a5cc",
+        "key": null,
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
+        "input_map": null,
+        "relation": "LINK"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "b4eb1b7c-e5fa-40f2-910a-0542d4a2e8fb",
+    "fields": {
+        "source": "7d6b84f6-a6b3-4397-aa09-bfe2fd656645",
+        "target": "e61c905a-cd49-4c76-bf5b-fa68888d426c",
+        "key": null,
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
+        "input_map": null,
+        "relation": "LINK"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "bd266891-5a0e-47cd-b83a-c3c6e45c4e60",
+    "fields": {
+        "source": "b8e27600-1837-4837-8a09-60a10c6adb45",
+        "target": "193d2e41-5e47-4e71-981f-6a885dafae88",
+        "key": null,
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
+        "input_map": null,
+        "relation": "LINK"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "d920ca88-be94-4d9a-a73d-a7cbe16963e0",
+    "fields": {
+        "source": "b8e27600-1837-4837-8a09-60a10c6adb45",
+        "target": "38640ea8-08d2-406a-a3fb-dd1243a0a5cc",
+        "key": "chains",
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
+        "input_map": null,
+        "relation": "PROP"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "db51d5fc-4f3c-40f6-898b-975d2337526c",
+    "fields": {
+        "source": "24f454b0-9733-4498-8466-8bb004010c13",
+        "target": "b8e27600-1837-4837-8a09-60a10c6adb45",
+        "key": "memory",
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
+        "input_map": null,
+        "relation": "PROP"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "e0e95811-2b25-41f9-935f-3e2efa56efcd",
+    "fields": {
+        "source": "8ff340ad-556e-4a60-8080-2b3f9674ada4",
+        "target": "b8e27600-1837-4837-8a09-60a10c6adb45",
+        "key": "llm",
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
+        "input_map": null,
+        "relation": "PROP"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "f1b0bdc4-98d4-4082-aa6f-6b6c0f7bbc0d",
+    "fields": {
+        "source": "c1e81d02-6a6c-4cee-8571-ff2fa1e034b0",
+        "target": "b8e27600-1837-4837-8a09-60a10c6adb45",
+        "key": "output_parser",
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
+        "input_map": null,
+        "relation": "PROP"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "f81db8c6-039d-4bd3-8c6a-c0cdcc73d235",
+    "fields": {
+        "source": "b4b7d373-1ec9-49d4-8a0f-d3295577f440",
+        "target": "7d6b84f6-a6b3-4397-aa09-bfe2fd656645",
+        "key": "prompt",
+        "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
+        "input_map": null,
+        "relation": "PROP"
     }
 }
 ]
