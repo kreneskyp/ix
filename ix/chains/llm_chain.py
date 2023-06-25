@@ -33,6 +33,7 @@ class LLMChain(LangchainLLMChain):
 
     # List of OpenAI functions to include in requests.
     functions: List[FunctionSchema | Tool] = None
+    function_call: str = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -49,6 +50,9 @@ class LLMChain(LangchainLLMChain):
 
         if not isinstance(self.llm_kwargs, dict):
             self.llm_kwargs = {}
+
+        if self.function_call:
+            self.llm_kwargs["function_call"] = {"name": self.function_call}
 
         # convert Langchain tools to OpenAI functions. FunctionSchema are already
         # OpenAI functions, we don't need to convert them.
