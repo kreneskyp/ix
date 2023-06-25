@@ -1,8 +1,6 @@
 import React from "react";
 import {
   Box,
-  Flex,
-  VStack,
   Text,
   UnorderedList,
   ListItem,
