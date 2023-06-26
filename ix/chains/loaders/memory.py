@@ -2,38 +2,17 @@ import logging
 from functools import singledispatch
 from typing import Dict, Any, Union, Type, Tuple, List
 
-from langchain.base_language import BaseLanguageModel
 from langchain.memory import CombinedMemory
 from langchain.schema import BaseMemory, BaseChatMessageHistory
 from pydantic import BaseModel
 
 from ix.agents.callback_manager import IxCallbackManager
+from ix.chains.loaders.core import load_node
+from ix.chains.models import ChainNode
 from ix.utils.importlib import import_class
 
 
 logger = logging.getLogger(__name__)
-
-
-# mock point for testing
-import_llm_class = import_class
-
-
-def load_llm(
-    config_or_llm: Union[BaseLanguageModel, Dict[str, Any]],
-    callback_manager: IxCallbackManager,
-) -> BaseLanguageModel:
-    """Load a langchain LLM model from config"""
-    if isinstance(config_or_llm, BaseLanguageModel):
-        return config_or_llm
-
-    config = config_or_llm
-    llm_class = import_llm_class(config["class_path"])
-    logger.debug(f"loading llm config={config}")
-
-    llm_config = config.get("config", {})
-    llm = llm_class(**llm_config)
-    llm.callback_manager = callback_manager
-    return llm
 
 
 # config options for memory classes that do not have Ix specific options
@@ -55,66 +34,60 @@ def get_memory_option(cls: Type[BaseModel], name: str, default: Any):
 
 
 @singledispatch
-def load_memory(
-    config: Union[Dict[str, Any], List[Dict[str, Any]]],
+def load_memory_config(
+    node,
     callback_manager: IxCallbackManager,
 ) -> BaseMemory:
     """Load a memory instance using a config"""
-    memory_class = import_class(config["class_path"])
-    logger.debug(f"loading memory class={memory_class} config={config}")
-    memory_config = config.get("config", {}).copy()
+    memory_class = import_class(node.class_path)
+    logger.debug(f"loading memory class={node.class_path} node={node.id}")
+    memory_config = node.config.copy() if node.config else {}
 
     # load session_id if scope is supported
     if get_memory_option(memory_class, "supports_session", False):
         session_id, session_id_key = get_memory_session(
-            memory_config.pop("session", {}), callback_manager, memory_class
+            memory_config, callback_manager, memory_class
         )
         memory_config[session_id_key] = session_id
 
-    # load chat memory backend when needed
-    if "backend" in memory_config:
-        chat_memory = load_chat_memory_backend(
-            memory_config.pop("backend"), callback_manager
-        )
-        memory_config["chat_memory"] = chat_memory
-
-    # load chat memory llm when needed
-    if "llm" in memory_config and not isinstance(
-        memory_config["llm"], BaseLanguageModel
-    ):
-        llm = load_llm(memory_config.pop("llm"), callback_manager)
-        memory_config["llm"] = llm
-
-    return memory_class(**memory_config)
+    return memory_config
 
 
-@load_memory.register(list)
-def _(config: List[Dict[str, Any]], callback_manager: IxCallbackManager) -> BaseMemory:
-    """
-    Load memories from a list of configs and merge in to a CombinedMemory instance.
-    """
-    logger.debug(f"Combining memory classes config={config}")
-    # auto-merge into CombinedMemory
-    return CombinedMemory(memories=[load_memory(c, callback_manager) for c in config])
-
-
-def load_chat_memory_backend(config, callback_manager):
-    backend_class = import_class(config["class_path"])
-    logger.debug(
-        f"loading BaseChatMessageHistory class={backend_class} config={config}"
-    )
-    backend_config = config.get("config", {}).copy()
+def load_chat_memory_backend_config(
+    node: ChainNode, callback_manager: IxCallbackManager
+):
+    backend_class = import_class(node.class_path)
+    logger.debug(f"loading BaseChatMessageHistory class={backend_class} config={node}")
+    backend_config = node.config.copy()
 
     # always add scope to chat message backend
     session_id, session_id_key = get_memory_session(
-        backend_config.pop("session", {}), callback_manager, backend_class
+        backend_config, callback_manager, backend_class
     )
     logger.debug(
         f"load_chat_memory_backend session_id={session_id} session_id_key={session_id_key}"
     )
     backend_config[session_id_key] = session_id
 
-    return backend_class(**backend_config)
+    return backend_config
+
+
+def load_memory_property(
+    node_group: List[ChainNode], callback_manager: IxCallbackManager
+) -> BaseMemory:
+    """
+    Load memories from a list of configs and merge in to a CombinedMemory instance.
+    """
+    logger.debug(f"Combining memory classes config={node_group}")
+
+    if len(node_group) == 1:
+        # no need to combine
+        return load_node(node_group[0], callback_manager)
+
+    # auto-merge into CombinedMemory
+    return CombinedMemory(
+        memories=[load_node(node, callback_manager) for node in node_group]
+    )
 
 
 def get_memory_session(
@@ -157,7 +130,7 @@ def get_memory_session(
     """
 
     # fetch scope
-    scope = config.get("scope", "chat")
+    scope = config.pop("session_scope", "chat")
     if scope in {"", None}:
         scope = "chat"
     supported_scopes = get_memory_option(cls, "supported_scopes", False)
@@ -177,20 +150,11 @@ def get_memory_session(
         raise ValueError(f"unknown scope={scope}")
 
     # build session_id
-    prefix = config.get("prefix", None)
+    prefix = config.pop("session_prefix", None)
     if prefix:
         session_id = f"{prefix}_{scope}_{scope_id}"
     else:
         session_id = f"{scope}_{scope_id}"
 
-    key = config.get("key", "session_id")
+    key = config.pop("session_key", "session_id")
     return session_id, key
-
-
-def load_chain(config: Dict[str, Any], callback_manager: IxCallbackManager):
-    chain_class = import_class(config["class_path"])
-    logger.debug(f"loading chain config={config}")
-    instance = chain_class.from_config(
-        config.get("config", {}), callback_manager=callback_manager
-    )
-    return instance

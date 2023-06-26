@@ -2,42 +2,10 @@ import logging
 from typing import Dict, Any, List
 
 from jsonpath_ng import parse as jsonpath_parse
-from langchain.base_language import BaseLanguageModel
 from langchain.chains import SequentialChain
 from langchain.chains.base import Chain
 
-from ix.agents.callback_manager import IxCallbackManager
-from ix.agents.llm import load_chain, load_memory
-
 logger = logging.getLogger(__name__)
-
-
-class IXSequence(SequentialChain):
-    """Wrapper around SequentialChain to provide from_config initialization"""
-
-    llm: BaseLanguageModel = None
-
-    @classmethod
-    def from_config(cls, config: Dict[str, Any], callback_manager: IxCallbackManager):
-        """Load an instance from a config dictionary and runtime"""
-        # TODO: pass on llm?
-        # llm_config = config["llm"]
-        # llm = load_llm(llm_config, callback_manager=callback_manager)
-
-        # initialize memory
-        if config.get("memory", None):
-            config["memory"] = load_memory(config.pop("memory"), callback_manager)
-
-        chains = []
-        for i, chain_config in enumerate(config.pop("chains")):
-            chain_callback_manager = callback_manager.child(i)
-            chain = load_chain(chain_config, callback_manager=chain_callback_manager)
-            chains.append(chain)
-
-        if not chains:
-            raise ValueError("IXSequence requires at least one chain")
-
-        return cls(callback_manager=callback_manager, chains=chains, **config)
 
 
 class MapSubchain(Chain):
@@ -53,11 +21,34 @@ class MapSubchain(Chain):
     Results are output as a list under `output_key`
     """
 
-    chain: Chain
+    chain: SequentialChain  #: :meta private:
+    chains: List[Chain]
     input_variables: List[str]
     map_input: str
     map_input_to: str
     output_key: str
+
+    def __init__(self, *args, **kwargs):
+        input_variables = list(kwargs.get("input_variables", []))
+        map_input_to = kwargs.get("map_input_to", "map_input")
+        output_key = kwargs.get("output_key", "outputs")
+        memory = kwargs.get("memory", None)
+        chains = kwargs.get("chains", [])
+
+        # add input that will be mapped on each iteration
+        if map_input_to not in input_variables:
+            input_variables.append(map_input_to)
+
+        if output_key not in input_variables:
+            input_variables.append(output_key)
+
+        # create internal chain
+        chain = SequentialChain(
+            memory=memory, chains=chains, input_variables=input_variables
+        )
+        kwargs["chain"] = chain
+
+        super().__init__(*args, **kwargs)
 
     @property
     def _chain_type(self) -> str:
@@ -84,9 +75,19 @@ class MapSubchain(Chain):
         )
         jsonpath_expr = jsonpath_parse(map_input)
         json_matches = jsonpath_expr.find(inputs)
+
+        if len(json_matches) == 0:
+            raise ValueError(
+                f"MapSubchain could not find input at {map_input} for {map_input_to} searched: {inputs}"
+            )
+
         values = json_matches[0].value
+        if not isinstance(values, list):
+            raise ValueError(
+                f"MapSubchain input at {map_input} is not a list: {values}"
+            )
+
         chain_inputs = inputs.copy()
-        logger.debug(f"MapSubchain mapped values={values}")
 
         # run chain for each value
         outputs = []
@@ -94,38 +95,12 @@ class MapSubchain(Chain):
             logger.debug(f"MapSubchain processing value={value}")
             iteration_inputs = chain_inputs.copy()
             iteration_inputs[map_input_to] = value
+            iteration_inputs[self.output_key] = outputs
             logger.debug(f"MapSubchain iteration_inputs={iteration_inputs}")
-            iteration_outputs = self.chain.run(outputs=outputs, **iteration_inputs)
+            iteration_outputs = self.chain.run(**iteration_inputs)
             iteration_mapped_output = iteration_outputs
             logger.debug(f"MapSubchain response outputs={iteration_mapped_output}")
             outputs.append(iteration_mapped_output)
 
         # return as output_key
         return {self.output_key: outputs}
-
-    @classmethod
-    def from_config(
-        cls, config: Dict[str, Any], callback_manager: "IxCallbackManager"
-    ) -> "MapSubchain":
-        logger.debug(f"Loading MapSubchain config={config}")
-
-        map_input_to = config["map_input_to"]
-
-        # create copy of input_variables
-        input_variables = list(config.get("input_variables", []))
-
-        # load chains into an IXSequence to simplify setup
-        # pass memory to sequence since this chain just routes
-        chain_config = {
-            "chains": config.pop("chains"),
-            "memory": config.pop("memory", None),
-            "input_variables": input_variables,
-        }
-
-        if map_input_to not in chain_config["input_variables"]:
-            chain_config["input_variables"].append(map_input_to)
-
-        chain = IXSequence.from_config(chain_config, callback_manager=callback_manager)
-
-        # build instance
-        return cls(**config, chain=chain)

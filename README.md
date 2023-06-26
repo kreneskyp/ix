@@ -74,21 +74,20 @@ View the [documentation](docs/chains/chains.rst) to create custom agents and cha
 - Extensible model for customizing agents.
 - Deployment using Docker.
 
+### Models
+  - OpenAI
+  - Google PaLM (Experimental)
+  - Anthropic (Experimental)
 
-### Stack:
+
+### Stack
 - Python 3.11
 - Django 4.2
-- PostgreSQL 14.4
+- PostgreSQL 15.3 + pg_vector
 - GraphQL / Graphene / Relay
 - React 18
 - LangChain
 - Integrated with OpenAI GPT models
-- Plugin architecture to support extending agent functionality (e.g. web browsing, writing code, etc)
-- Generic framework for vector database based agent memory
-    - Pinecone
-    - Redis
-    - Milvus (soon)
-    - FAISS (soon)
 
 
 ## Setup

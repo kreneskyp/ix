@@ -13,10 +13,16 @@
   animation: dash 1s linear infinite;
 }
 
-.react-flow__node-chain .react-flow__handle {
-  width: 0px;
-  height: 0px;
-  border-radius: 0px;
-  border: 0;
-  background-color: unset;
+.react-flow__attribution {
+  background-color: transparent;
+}
+
+.react-flow__handle-connecting {
+  background-color: #ff6060;
+  border-color: #ff6060;
+}
+
+.react-flow__handle-valid {
+  background-color: #55dd99;
+  border-color: #55dd99;
 }

@@ -7,9 +7,6 @@ export const ChainByIdQuery = graphql`
       name
       description
       createdAt
-      root {
-        id
-      }
     }
   }
 `;

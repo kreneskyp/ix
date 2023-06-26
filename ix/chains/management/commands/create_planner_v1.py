@@ -149,10 +149,16 @@ class Command(BaseCommand):
     help = "Creates planning chain v1"
 
     def handle(self, *args, **options):
-        Chain.objects.filter(id=CHAIN_ID).delete()
+        chain, _ = Chain.objects.get_or_create(
+            pk=CHAIN_ID,
+            defaults=dict(
+                name="Planning chain",
+                description="Chain used to generate and execute plans",
+            ),
+        )
 
         # Create root node
-        root = ChainNode.objects.create(**PLAN_FLOW_CHOOSER)
+        root = ChainNode.objects.create(chain=chain, root=True, **PLAN_FLOW_CHOOSER)
 
         # Create plan sub-chain
         create_plan_sequence_node = root.add_node(**CREATE_PLAN_SEQUENCE)
@@ -163,10 +169,3 @@ class Command(BaseCommand):
         # Execute sub-chain
         create_plan_sequence_node = root.add_node(**EXECUTE_PLAN_SEQUENCE)
         create_plan_sequence_node.add_child(**EXECUTE_RUN)
-
-        Chain.objects.create(
-            pk=CHAIN_ID,
-            name="Planning chain",
-            description="Chain used to generate and execute plans",
-            root=root,
-        )

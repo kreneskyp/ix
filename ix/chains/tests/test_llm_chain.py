@@ -1,22 +1,17 @@
+from copy import deepcopy
+
 import pytest
-from unittest.mock import MagicMock
-from langchain.chat_models.openai import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate
 
 from ix.agents.callback_manager import IxCallbackManager
 from ix.chains.llm_chain import LLMChain, TEMPLATE_CLASSES
+from ix.chains.loaders.prompts import create_message
 from ix.chains.tests.mock_memory import MockMemory
+from ix.chains.tests.test_config_loader import OPENAI_LLM, MOCK_MEMORY
 
-EXAMPLE_CONFIG = {
-    "class_path": "ix.chains.tool_chain.LLMToolChain",
+PROMPT_TEMPLATE = {
+    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
     "config": {
-        "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
-            "config": {"request_timeout": 120, "temperature": 0.2, "verbose": True},
-        },
-        "memory": {
-            "class_path": "ix.chains.tests.mock_memory.MockMemory",
-            "config": {"value_map": {"mock_memory_input": "mock memory"}},
-        },
         "messages": [
             {
                 "role": "system",
@@ -36,55 +31,54 @@ EXAMPLE_CONFIG = {
 }
 
 
-@pytest.fixture
-def callback_manager_mock(mocker):
-    return mocker.MagicMock(spec=IxCallbackManager)
+EXAMPLE_CONFIG = {
+    "class_path": "ix.chains.tool_chain.LLMToolChain",
+    "config": {
+        "llm": OPENAI_LLM,
+        "memory": MOCK_MEMORY,
+        "prompt": PROMPT_TEMPLATE,
+    },
+}
 
 
-@pytest.fixture
-def load_llm_mock(mocker):
-    return mocker.patch(
-        "ix.chains.llm_chain.load_llm", return_value=MagicMock(spec=ChatOpenAI)
-    )
-
-
-class TestLLMChain:
-    @pytest.mark.parametrize("role", [role for role in TEMPLATE_CLASSES.keys()])
-    def test_create_message(self, role):
+@pytest.mark.django_db
+class TestChatPromptTemplate:
+    def test_create_message(self):
         message = {
-            "role": role,
+            "role": "user",
             "template": "hello {name} i will answer {user_input}",
             "input_variables": ["user_input"],
             "partial_variables": {"name": "test user"},
         }
-        config = {"config_key": "config_value"}
-        context = {"context_key": "context_value"}
 
-        result = LLMChain.create_message(message, config, context)
+        result = create_message(message)
 
-        assert isinstance(result, TEMPLATE_CLASSES[role])
+        assert isinstance(result, TEMPLATE_CLASSES["user"])
         assert result.prompt.partial_variables == {"name": "test user"}
 
-    def test_prepare_config(self, load_llm_mock, callback_manager_mock):
-        config = EXAMPLE_CONFIG["config"].copy()
+    def test_from_config(self, load_chain):
+        config = deepcopy(PROMPT_TEMPLATE)
+        chain = load_chain(config)
+        assert isinstance(chain, ChatPromptTemplate)
+        assert len(chain.messages) == 3
+        assert isinstance(chain.messages[0], TEMPLATE_CLASSES["system"])
+        assert isinstance(chain.messages[1], TEMPLATE_CLASSES["user"])
+        assert isinstance(chain.messages[2], TEMPLATE_CLASSES["assistant"])
 
-        prepared_config, context = LLMChain.prepare_config(
-            config, callback_manager_mock
-        )
 
-        assert prepared_config["llm"] == load_llm_mock.return_value
-        assert context == {}
-
-    def test_from_config(self, load_llm_mock, callback_manager_mock):
-        config = EXAMPLE_CONFIG["config"].copy()
-        chain = LLMChain.from_config(config, callback_manager_mock)
+@pytest.mark.django_db
+class TestLLMChain:
+    def test_from_config(self, load_chain, mock_openai_key):
+        config = deepcopy(EXAMPLE_CONFIG)
+        chain = load_chain(config)
 
         assert isinstance(chain, LLMChain)
         assert (
             chain.prompt.messages[0].prompt.partial_variables
-            == EXAMPLE_CONFIG["config"]["messages"][0]["partial_variables"]
+            == EXAMPLE_CONFIG["config"]["prompt"]["config"]["messages"][0][
+                "partial_variables"
+            ]
         )
         assert chain.prompt.messages[1].prompt.partial_variables == {}
-        assert chain.callbacks == callback_manager_mock
-
+        assert isinstance(chain.callbacks, IxCallbackManager)
         assert isinstance(chain.memory, MockMemory)

@@ -1,10 +1,9 @@
 import logging
 import json
-from typing import Dict, List, Any
+from typing import Dict, List
 from jsonpath_ng import parse as jsonpath_parse
 from langchain.chains.base import Chain
 
-from ix.agents.callback_manager import IxCallbackManager
 from ix.commands.filesystem import write_to_file
 from ix.task_log.models import Artifact, TaskLogMessage
 
@@ -43,6 +42,7 @@ class SaveArtifact(Chain):
     artifact_description: str = None
     artifact_storage: str = None
     artifact_storage_id: str = None
+    artifact_storage_id_key: str = None
 
     # intput / output mapping
     content_key: str = "content"
@@ -58,7 +58,6 @@ class SaveArtifact(Chain):
         keys = []
         if self.artifact_from_key:
             keys.append(self.artifact_from_key)
-        logger.debug(f"KEYS: {keys}")
         return keys
 
     @property
@@ -69,7 +68,14 @@ class SaveArtifact(Chain):
         if self.artifact_from_key:
             # load artifact from input key. Use this when a prior step
             # generated the artifact object
-            artifact = inputs.get(self.artifact_from_key, {}).copy()
+            jsonpath_expr = jsonpath_parse(self.artifact_from_key)
+            json_matches = jsonpath_expr.find(inputs)
+            if len(json_matches) == 0:
+                raise ValueError(
+                    f"SaveArtifact could not find input at {self.artifact_from_key} "
+                    f"searched: {inputs}"
+                )
+            artifact = json_matches[0].value.copy()
         else:
             # generating an artifact using only the config
             # use this when the artifact is generated in this step
@@ -81,18 +87,36 @@ class SaveArtifact(Chain):
             }
 
         # Storage is always set from the config for now
+        storage_id = None
         if self.artifact_storage:
+            storage_id_key = self.artifact_storage_id_key or "identifier"
+            if not self.artifact_storage_id and storage_id_key not in artifact:
+                raise ValueError(
+                    f"SaveArtifact requires artifact_storage_id or artifact.{storage_id_key} "
+                    f"when artifact_storage is set.\n"
+                    f"\n"
+                    f"artifact={artifact}"
+                )
+
+            storage_id = self.artifact_storage_id or artifact[storage_id_key]
             artifact["storage"] = {
                 "type": self.artifact_storage,
-                "id": self.artifact_storage_id or artifact["identifier"],
+                "id": storage_id,
             }
         if self.artifact_type:
             artifact["artifact_type"] = self.artifact_type
 
         # extract content from input
         # default path to the content key.
-        jsonpath_expr = jsonpath_parse(self.content_path or self.content_key)
+        jsonpath_input = self.content_path or self.content_key
+        jsonpath_expr = jsonpath_parse(jsonpath_input)
         json_matches = jsonpath_expr.find(inputs)
+
+        if len(json_matches) == 0:
+            raise ValueError(
+                f"SaveArtifact could not find input at {jsonpath_input} for {inputs}"
+            )
+
         content = json_matches[0].value
 
         # Associate the artifact with the parent task (chat) until
@@ -101,14 +125,22 @@ class SaveArtifact(Chain):
         task = self.callbacks.task
         artifact_task_id = task.parent_id if task.parent_id else task.id
 
+        # build kwargs
+        try:
+            artifact_kwargs = dict(
+                key=artifact.get("key", None) or storage_id,
+                name=artifact.get("name", None) or storage_id,
+                description=artifact["description"],
+                artifact_type=artifact["artifact_type"],
+                storage=artifact["storage"],
+            )
+        except KeyError as e:
+            raise ValueError(f"SaveArtifact missing required key {e} for {artifact}")
+
         # save to artifact storage
         artifact = Artifact.objects.create(
             task_id=artifact_task_id,
-            key=artifact["key"] or artifact["identifier"],
-            name=artifact["name"],
-            description=artifact["description"],
-            artifact_type=artifact["artifact_type"],
-            storage=artifact["storage"],
+            **artifact_kwargs,
         )
 
         # send message to log
@@ -140,7 +172,3 @@ class SaveArtifact(Chain):
 
     async def _acall(self, inputs: Dict[str, str]) -> Dict[str, str]:
         pass  # pragma: no cover
-
-    @classmethod
-    def from_config(cls, config: Dict[str, Any], callback_manager: IxCallbackManager):
-        return cls(**config, callbacks=callback_manager)

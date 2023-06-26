@@ -82,22 +82,8 @@ INSTRUCTIONS:
 """
 
 
-CODER_SEQUENCE = {
-    "name": "create files",
-    "node_type": "list",
-    "description": "Write new files containing code",
-    "class_path": "ix.chains.routing.IXSequence",
-    "config": {
-        "input_variables": ["user_input"],
-        "memory": {
-            "class_path": "ix.memory.artifacts.ArtifactMemory",
-        },
-    },
-}
-
-
 CREATE_CODE_ARTIFACTS = {
-    "class_path": "ix.chains.tool_chain.LLMChain",
+    "class_path": "ix.chains.llm_chain.LLMChain",
     "config": {
         "llm": {
             "class_path": "langchain.chat_models.openai.ChatOpenAI",
@@ -108,21 +94,26 @@ CREATE_CODE_ARTIFACTS = {
                 "verbose": True,
             },
         },
-        "messages": [
-            {
-                "role": "system",
-                "template": CREATE_CODE_ARTIFACTS_V1,
-                "input_variables": ["related_artifacts"],
-                "partial_variables": {
-                    "artifact_format": ARTIFACT_FORMAT,
-                },
+        "prompt": {
+            "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+            "config": {
+                "messages": [
+                    {
+                        "role": "system",
+                        "template": CREATE_CODE_ARTIFACTS_V1,
+                        "input_variables": ["related_artifacts"],
+                        "partial_variables": {
+                            "artifact_format": ARTIFACT_FORMAT,
+                        },
+                    },
+                    {
+                        "role": "user",
+                        "template": "{user_input}",
+                        "input_variables": ["user_input"],
+                    },
+                ],
             },
-            {
-                "role": "user",
-                "template": "{user_input}",
-                "input_variables": ["user_input"],
-            },
-        ],
+        },
     },
 }
 
@@ -150,22 +141,8 @@ SAVE_ARTIFACT_LIST = {
 }
 
 
-GENERATE_FILES_MAP = {
-    "name": "generate files",
-    "node_type": "list",
-    "description": "Generates files for each artifact in the input list",
-    "class_path": "ix.chains.routing.MapSubchain",
-    "config": {
-        "input_variables": ["file_artifacts_json", "related_artifacts", "user_input"],
-        "map_input": "file_artifacts_json",
-        "map_input_to": "file_artifact",
-        "output_key": "write_file_output",
-    },
-}
-
-
 GENERATE_FILE = {
-    "class_path": "ix.chains.tool_chain.LLMChain",
+    "class_path": "ix.chains.llm_chain.LLMChain",
     "config": {
         "llm": {
             "class_path": "langchain.chat_models.openai.ChatOpenAI",
@@ -176,21 +153,26 @@ GENERATE_FILE = {
                 "verbose": True,
             },
         },
-        "messages": [
-            {
-                "role": "system",
-                "template": GENERATE_CODE_V1,
-                "input_variables": ["file_artifact", "related_artifacts"],
-                "partial_variables": {
-                    "file_content_format": FILE_CONTENT_FORMAT,
-                },
+        "prompt": {
+            "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+            "config": {
+                "messages": [
+                    {
+                        "role": "system",
+                        "template": GENERATE_CODE_V1,
+                        "input_variables": ["file_artifact", "related_artifacts"],
+                        "partial_variables": {
+                            "file_content_format": FILE_CONTENT_FORMAT,
+                        },
+                    },
+                    {
+                        "role": "user",
+                        "template": "file artifact list was generated from this input:\n {user_input}",
+                        "input_variables": ["user_input"],
+                    },
+                ],
             },
-            {
-                "role": "user",
-                "template": "file artifact list was generated from this input:\n {user_input}",
-                "input_variables": ["user_input"],
-            },
-        ],
+        },
     },
 }
 
@@ -216,6 +198,45 @@ SAVE_FILE_ARTIFACT = {
     },
 }
 
+
+GENERATE_FILES_MAP = {
+    "name": "generate files",
+    "description": "Generates files for each artifact in the input list",
+    "class_path": "ix.chains.routing.MapSubchain",
+    "config": {
+        "input_variables": ["file_artifacts_json", "related_artifacts", "user_input"],
+        "map_input": "file_artifacts_json",
+        "map_input_to": "file_artifact",
+        "output_key": "write_file_output",
+        "chains": [
+            GENERATE_FILE,
+            PARSE_FILE_JSON,
+            SAVE_FILE_ARTIFACT,
+        ],
+    },
+}
+
+
+CODER_SEQUENCE = {
+    "name": "create files",
+    "description": "Write new files containing code",
+    "class_path": "langchain.chains.SequentialChain",
+    "hidden": False,
+    "config": {
+        "input_variables": ["user_input"],
+        "memory": {
+            "class_path": "ix.memory.artifacts.ArtifactMemory",
+        },
+        "chains": [
+            CREATE_CODE_ARTIFACTS,
+            PARSE_ARTIFACT_LIST_JSON,
+            SAVE_ARTIFACT_LIST,
+            GENERATE_FILES_MAP,
+        ],
+    },
+}
+
+
 CODER_V1_CHAIN = "b7d8f662-12f6-4525-b07b-c9ea7c10000c"
 CODER_V1_AGENT = "b7d8f662-12f6-4525-b07b-c9ea7c10000a"
 
@@ -224,32 +245,27 @@ class Command(BaseCommand):
     help = "Generates planner v4 chain"
 
     def handle(self, *args, **options):
-        Chain.objects.filter(id=CODER_V1_CHAIN).delete()
-
-        # Coder sequence
-        coder = ChainNode.objects.create(**CODER_SEQUENCE)
-        coder.add_child(**CREATE_CODE_ARTIFACTS)
-        coder.add_child(**PARSE_ARTIFACT_LIST_JSON)
-        coder.add_child(**SAVE_ARTIFACT_LIST)
-        generate_map = coder.add_child(**GENERATE_FILES_MAP)
-
-        # Generate file subchain
-        generate_map.add_child(**GENERATE_FILE)
-        generate_map.add_child(**PARSE_FILE_JSON)
-        generate_map.add_child(**SAVE_FILE_ARTIFACT)
-
-        chain = Chain.objects.create(
+        chain, is_new = Chain.objects.get_or_create(
             pk=CODER_V1_CHAIN,
-            name="Coder chain v1",
-            description="Chain used to generate code files",
-            root=coder,
+            defaults=dict(
+                name="Coder chain v1",
+                description="Chain used to generate code files",
+            ),
         )
 
-        Agent.objects.create(
+        # clear old nodes
+        chain.clear_chain()
+        ChainNode.objects.create_from_config(
+            chain=chain, root=True, config=CODER_SEQUENCE
+        )
+
+        Agent.objects.get_or_create(
             id=CODER_V1_AGENT,
-            name="Coder v1",
-            alias="code",
-            purpose="To generate code for a user request. May generate multiple files",
-            chain=chain,
-            config={},
+            defaults=dict(
+                name="Coder v1",
+                alias="code",
+                purpose="To generate code for a user request. May generate multiple files",
+                chain=chain,
+                config={},
+            ),
         )

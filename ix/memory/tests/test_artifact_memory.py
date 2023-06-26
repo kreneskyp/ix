@@ -2,7 +2,6 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from ix.agents.llm import load_memory
 from ix.chains.llm_chain import LLMChain
 from ix.memory.artifacts import ArtifactMemory
 from ix.task_log.tests.fake import fake_artifact, fake_task
@@ -23,20 +22,25 @@ TASK_WITH_ARTIFACT_MEMORY = {
             "config": {"verbose": True},
         },
         "memory": ARTIFACT_MEMORY,
-        "messages": [
-            {
-                "role": "system",
-                "template": "You are {name}! Answer a question about artifacts {related_artifacts}",
-                "input_variables": ["name", "related_artifacts"],
+        "prompt": {
+            "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+            "config": {
+                "messages": [
+                    {
+                        "role": "system",
+                        "template": "You are {name}! Answer a question about artifacts {related_artifacts}",
+                        "input_variables": ["name", "related_artifacts"],
+                    },
+                ],
             },
-        ],
+        },
     },
 }
 
 
 @pytest.mark.django_db
 class TestArtifactMemory:
-    def test_llm_integration(self, task, mock_callback_manager, mock_openai):
+    def test_llm_integration(self, task, load_chain, mock_openai):
         """
         Test memory class when integrated with LLMChain. Tests that langchain
         will detect the memory variables and include them when rendering the prompt.
@@ -48,8 +52,7 @@ class TestArtifactMemory:
         )
 
         # create chain
-        config = TASK_WITH_ARTIFACT_MEMORY["config"].copy()
-        chain = LLMChain.from_config(config, mock_callback_manager)
+        chain = load_chain(TASK_WITH_ARTIFACT_MEMORY)
         assert isinstance(chain, LLMChain)
         assert isinstance(chain.memory, ArtifactMemory)
 
@@ -68,18 +71,18 @@ class TestArtifactMemory:
         ][0]
         assert artifact1.as_memory_text() in message["content"]
 
-    def test_defaults(self, mock_callback_manager):
-        instance = load_memory(ARTIFACT_MEMORY, mock_callback_manager)
+    def test_defaults(self, load_chain):
+        instance = load_chain(ARTIFACT_MEMORY)
         assert isinstance(instance, ArtifactMemory)
 
         # test memory variables
         assert instance.memory_variables == ["related_artifacts"]
 
-    def test_load_memory(self, task, mock_callback_manager):
+    def test_load_memory(self, task, load_chain):
         """
         Test various scenarios for loading memory variables.
         """
-        instance = load_memory(ARTIFACT_MEMORY, mock_callback_manager)
+        instance = load_chain(ARTIFACT_MEMORY)
         artifact1 = fake_artifact(task=task, key="test_artifact_1")
         artifact2 = fake_artifact(task=task, key="test_artifact_2")
 
@@ -116,13 +119,13 @@ class TestArtifactMemory:
         """Test mapping config input/outputs"""
         pass
 
-    def test_scope(self, task, mock_callback_manager):
+    def test_scope(self, task, load_chain):
         # artifact from another chat
         unrelated_task = fake_task()
         fake_artifact(task=unrelated_task, key="test_artifact_3")
 
         # none of the excluded artifacts should be included in the memory
-        instance = load_memory(ARTIFACT_MEMORY, mock_callback_manager)
+        instance = load_chain(ARTIFACT_MEMORY)
         inputs = dict(artifact_keys=["test_artifact_3"])
         result1 = instance.load_memory_variables(inputs=inputs)
         assert result1 == {"related_artifacts": ""}

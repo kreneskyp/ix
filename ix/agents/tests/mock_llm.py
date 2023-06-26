@@ -17,9 +17,15 @@ class MockChatOpenAI(ChatOpenAI):
         self.return_value = return_value
 
     def get_mock_content(self):
-        content = self.return_value or "This is a test."
+        response = self.return_value or "This is a test."
+        message = {"role": "assistant", "content": None}
+        if isinstance(response, dict):
+            message["function_call"] = response
+        else:
+            message["content"] = response
+
         return {
-            "choices": [{"message": {"content": content, "role": "assistant"}}],
+            "choices": [{"message": message}],
             "usage": {"prompt_tokens": 5, "completion_tokens": 7, "total_tokens": 12},
         }
 

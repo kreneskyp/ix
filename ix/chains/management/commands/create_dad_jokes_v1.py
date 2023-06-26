@@ -34,23 +34,25 @@ class Command(BaseCommand):
     help = "Creates planning chain v1"
 
     def handle(self, *args, **options):
-        Chain.objects.filter(id=DAD_JOKES_CHAIN_V1).delete()
+        chain, _ = Chain.objects.get_or_create(
+            pk=DAD_JOKES_CHAIN_V1,
+            defaults=dict(
+                name="Dad jokes chain",
+                description="Chain used to generate dad jokes",
+            ),
+        )
+        chain.clear_chain()
 
         # Create root node
-        root = ChainNode.objects.create(**DAD_JOKESTER)
+        ChainNode.objects.create(chain=chain, root=True, **DAD_JOKESTER)
 
-        chain = Chain.objects.create(
-            pk=DAD_JOKES_CHAIN_V1,
-            name="Dad jokes chain",
-            description="Chain used to generate dad jokes",
-            root=root,
-        )
-
-        Agent.objects.create(
+        Agent.objects.get_or_create(
             id=DAD_JOKES_AGENT_V1,
-            name="Dad Jokester",
-            alias="dad",
-            purpose="to generate dad jokes",
-            chain=chain,
-            config={},
+            defaults=dict(
+                name="Dad Jokester",
+                alias="dad",
+                purpose="to generate dad jokes",
+                chain=chain,
+                config={},
+            ),
         )

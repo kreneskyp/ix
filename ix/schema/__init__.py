@@ -5,6 +5,7 @@ from django.db.models import Q
 
 from ix.schema.subscriptions import Subscription as ChatSubscription
 from ix.schema.mutations.chat import Mutation as ChatMutation
+from ix.schema.mutations.chains import Mutation as ChainMutation
 from ix.schema.mutations.tasks import Mutation as TaskMutation
 from ix.schema.mutations.agents import Mutation as AgentMutation
 from ix.schema.types.chat import Query as ChatQuery
@@ -53,7 +54,9 @@ class Subscription(ChatSubscription, graphene.ObjectType):
     """
 
 
-class Mutation(AgentMutation, TaskMutation, ChatMutation, graphene.ObjectType):
+class Mutation(
+    AgentMutation, TaskMutation, ChatMutation, ChainMutation, graphene.ObjectType
+):
     """
     Aggregation of graphql mutations
     """

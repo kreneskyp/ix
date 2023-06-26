@@ -19,6 +19,7 @@ ARTIFACT_SEARCH = """
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("node_types")
 class TestArtifactSearch:
     def test_artifact_search_name(self):
         """Test basic search by key"""

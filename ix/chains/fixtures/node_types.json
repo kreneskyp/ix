@@ -1,0 +1,1270 @@
+[
+{
+  "model": "chains.nodetype",
+  "pk": "01e26ecf-d02b-46ce-a57c-322e3815035b",
+  "fields": {
+    "name": "LLM Reply",
+    "description": "Chain that prompts an LLM for a text completion.",
+    "class_path": "ix.chains.llm_chain.LLMReply",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "151cbfff-6e65-4ed1-9c70-100deee0e873",
+  "fields": {
+    "name": "Parse JSON",
+    "description": "Parses output into json.",
+    "class_path": "ix.chains.json.ParseJSON",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "input_key",
+        "type": "text",
+        "label": "Input Key"
+      },
+      {
+        "name": "output_key",
+        "type": "text",
+        "label": "Output Key"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "1d6315c1-c5fa-416e-9172-66d63c414003",
+  "fields": {
+    "name": "Function Schema",
+    "description": "Describes a function using json. Compatible with OpenAI",
+    "class_path": "ix.chains.functions.FunctionSchema",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "name",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "name": "parameters",
+        "type": "json",
+        "default": ""
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "267a48b0-967d-4df9-b6ec-dec1dd3992b9",
+  "fields": {
+    "name": "LlamaCpp Embeddings",
+    "description": "LlamaCpp Embeddings",
+    "class_path": "langchain.embeddings.llama_cpp.LlamaCppEmbeddings",
+    "type": "embeddings",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "model_path",
+        "type": "string",
+        "width": "100%",
+        "description": "Path to the Llama model"
+      },
+      {
+        "name": "n_ctx",
+        "type": "number",
+        "default": 512,
+        "description": "Token context window"
+      },
+      {
+        "name": "n_parts",
+        "type": "number",
+        "default": -1,
+        "description": "Number of parts to split the model into"
+      },
+      {
+        "name": "seed",
+        "type": "number",
+        "default": -1,
+        "description": "Seed. If -1, a random seed is used"
+      },
+      {
+        "name": "f16_kv",
+        "type": "boolean",
+        "default": false,
+        "description": "Use half-precision for key/value cache"
+      },
+      {
+        "name": "logits_all",
+        "type": "boolean",
+        "default": false,
+        "description": "Return logits for all tokens, not just the last token"
+      },
+      {
+        "name": "vocab_only",
+        "type": "boolean",
+        "default": false,
+        "description": "Only load the vocabulary, no weights"
+      },
+      {
+        "name": "use_mlock",
+        "type": "boolean",
+        "default": false,
+        "description": "Force system to keep model in RAM"
+      },
+      {
+        "name": "n_threads",
+        "type": "number",
+        "description": "Number of threads to use"
+      },
+      {
+        "name": "n_batch",
+        "type": "number",
+        "default": 8,
+        "description": "Number of tokens to process in parallel"
+      },
+      {
+        "name": "n_gpu_layers",
+        "type": "number",
+        "description": "Number of layers to be loaded into gpu memory"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "29915c83-3ba0-4bbb-be7b-0899ade4e97e",
+  "fields": {
+    "name": "VertexAI Embeddings",
+    "description": "VertexAI Embeddings",
+    "class_path": "langchain.embeddings.vertexai.VertexAIEmbeddings",
+    "type": "embeddings",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "model_name",
+        "type": "string",
+        "input": "select",
+        "label": "Model",
+        "choices": [
+          {
+            "label": "textembedding-gecko",
+            "value": "textembedding-gecko"
+          }
+        ],
+        "default": "textembedding-gecko",
+        "description": "Model name to use"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "33fb8e69-b109-4d83-bb0c-80bc5df4f914",
+  "fields": {
+    "name": "LLM Tool Chain",
+    "description": "Chain that prompts an LLM for a completion. It has a set of tools available to the prompt",
+    "class_path": "ix.chains.tool_chain.LLMToolChain",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "functions",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "function_call",
+        "type": "string"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "3ffc030c-f6cb-4fc2-9cd7-ff1cfd3a5c99",
+  "fields": {
+    "name": "OpenAI Embeddings",
+    "description": "Embeddings from OpenAI's API.",
+    "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
+    "type": "embeddings",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "model",
+        "type": "string",
+        "choices": [
+          [
+            "text-embedding-ada-001",
+            "text-embedding-ada-001"
+          ]
+        ],
+        "default": "text-embedding-ada-002",
+        "description": "The model to use."
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "6f810877-714e-43e6-ac2d-65e86e93a069",
+  "fields": {
+    "name": "MosaicML Instructor Embeddings",
+    "description": "MosaicML Instructor Embeddings",
+    "class_path": "langchain.embeddings.mosaicml.MosaicMLInstructorEmbeddings",
+    "type": "embeddings",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "endpoint_url",
+        "type": "string",
+        "width": "100%",
+        "default": "https://models.hosted-on.mosaicml.hosting/instructor-xl/v1/predict",
+        "description": "Endpoint URL to use"
+      },
+      {
+        "name": "embed_instruction",
+        "type": "string",
+        "default": "Represent the document for retrieval: ",
+        "description": "Instruction used to embed documents"
+      },
+      {
+        "name": "query_instruction",
+        "type": "string",
+        "default": "Represent the question for retrieving supporting documents: ",
+        "description": "Instruction used to embed the query"
+      },
+      {
+        "name": "retry_sleep",
+        "type": "number",
+        "default": 1.0,
+        "description": "How long to try sleeping for if a rate limit is encountered"
+      },
+      {
+        "name": "mosaicml_api_token",
+        "type": "string",
+        "input": "secret",
+        "width": "100%",
+        "description": "MosaicML API token"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "7d49f24a-18e2-4db9-8be3-bbbe6aa25440",
+  "fields": {
+    "name": "Mock Memory",
+    "description": "Mock Memory",
+    "class_path": "ix.chains.tests.mock_memory.MockMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": null,
+    "fields": null,
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "7fff77c2-7ccc-4493-9f2b-54244c3d15e0",
+  "fields": {
+    "name": "Conversation Buffer",
+    "description": "Memory that stores conversation history as a buffer.",
+    "class_path": "langchain.memory.ConversationBufferMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "chat_memory",
+        "type": "target",
+        "source_type": "memory_backend"
+      }
+    ],
+    "fields": [
+      {
+        "name": "memory_key",
+        "type": "string",
+        "default": "history"
+      },
+      {
+        "name": "human_prefix",
+        "type": "string",
+        "default": "Human"
+      },
+      {
+        "name": "ai_prefix",
+        "type": "string",
+        "default": "AI"
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "default": "output"
+      },
+      {
+        "name": "input_key",
+        "type": "string",
+        "default": "input"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "8344d221-f239-4b83-acfa-f167f0dc6e22",
+  "fields": {
+    "name": "MapSubchain",
+    "description": "Runs a subchain for each item in a list.",
+    "class_path": "ix.chains.routing.MapSubchain",
+    "type": "chain",
+    "display_type": "list",
+    "connectors": [
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "chains",
+        "type": "target",
+        "source_type": "chain",
+        "auto_sequence": false
+      }
+    ],
+    "fields": [
+      {
+        "name": "input_variables",
+        "type": "list",
+        "input": "string"
+      },
+      {
+        "name": "map_input",
+        "type": "string",
+        "label": "Map Input"
+      },
+      {
+        "name": "map_input_to",
+        "type": "string",
+        "label": "Map Input To"
+      },
+      {
+        "name": "output_key",
+        "type": "string"
+      }
+    ],
+    "child_field": "chains"
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "83637276-7fdc-45e2-abc3-076f5ca694b8",
+  "fields": {
+    "name": "Google PaLM Embeddings",
+    "description": "Google PaLM Embeddings",
+    "class_path": "langchain.embeddings.google_palm.GooglePalmEmbeddings",
+    "type": "embeddings",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "google_api_key",
+        "type": "string",
+        "description": "Google API key"
+      },
+      {
+        "name": "model_name",
+        "type": "string",
+        "label": "Model",
+        "choices": [
+          {
+            "label": "models/embedding-gecko-001",
+            "value": "models/embedding-gecko-001"
+          }
+        ],
+        "default": "models/embedding-gecko-001",
+        "description": "Model name to use"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "8a49959a-b5bc-414e-a25f-51b8d3ad6249",
+  "fields": {
+    "name": "Conversation Buffer Window",
+    "description": "Memory that stores conversation history as a buffer and summarizes to compress context.",
+    "class_path": "langchain.memory.buffer_window.ConversationBufferWindowMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "k",
+        "type": "number",
+        "label": "Window Size",
+        "default": 5
+      },
+      {
+        "name": "memory_key",
+        "type": "string",
+        "default": "history"
+      },
+      {
+        "name": "human_prefix",
+        "type": "string",
+        "default": "Human"
+      },
+      {
+        "name": "ai_prefix",
+        "type": "string",
+        "default": "AI"
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "default": "output"
+      },
+      {
+        "name": "input_key",
+        "type": "string",
+        "default": "input"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "8eda99de-d65f-4543-96c3-afd75a6e4bdc",
+  "fields": {
+    "name": "Mock Chain",
+    "description": "Mock Chain",
+    "class_path": "ix.chains.tests.mock_chain.MockChain",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": null,
+    "fields": null,
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "912b2b30-0fe8-4c46-af3b-1e7fac4c9b65",
+  "fields": {
+    "name": "Google PaLM",
+    "description": "Google PaLM",
+    "class_path": "langchain.chat_models.google_palm.ChatGooglePalm",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "model_name",
+        "type": "string",
+        "input": "select",
+        "label": "Model",
+        "choices": [
+          {
+            "label": "Bison-001",
+            "value": "models/chat-bison-001"
+          }
+        ],
+        "default": "gpt-4",
+        "required": true,
+        "description": "OpenAI model"
+      },
+      {
+        "name": "google_api_key",
+        "type": "string",
+        "input": "secret",
+        "label": "API Key",
+        "description": "Google API key"
+      },
+      {
+        "max": 2,
+        "min": 0,
+        "name": "temperature",
+        "step": 0.05,
+        "type": "number",
+        "input": "slider",
+        "default": 0,
+        "description": "Temperature"
+      },
+      {
+        "max": 2,
+        "min": 0,
+        "name": "top_p",
+        "step": 0.05,
+        "type": "number",
+        "input": "slider",
+        "default": 0,
+        "description": "Top P"
+      },
+      {
+        "max": 2,
+        "min": 0,
+        "name": "top_k",
+        "step": 0.05,
+        "type": "number",
+        "input": "slider",
+        "default": 0,
+        "description": "Top P"
+      },
+      {
+        "max": 5,
+        "min": 1,
+        "name": "n",
+        "step": 1,
+        "type": "number",
+        "input": "slider",
+        "label": "Sample N responses",
+        "default": 1,
+        "description": "Number of responses to sample"
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "9598e4c1-7e21-4d9d-a5c9-d88e58f507d2",
+  "fields": {
+    "name": "Anthropic",
+    "description": "Anthropic",
+    "class_path": "langchain.chat_models.anthropic.ChatAnthropic",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "max": 2,
+        "min": 0,
+        "name": "temperature",
+        "step": 0.05,
+        "type": "number",
+        "input": "slider",
+        "default": 0,
+        "description": "Temperature"
+      },
+      {
+        "name": "anthropic_api_key",
+        "type": "string",
+        "input": "secret",
+        "width": "100%",
+        "description": "ANTHROPIC_API_KEY"
+      },
+      {
+        "name": "anthropic_api_url",
+        "type": "string",
+        "width": "100%",
+        "default": "https://api.anthropic.com",
+        "description": "API URL"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "98af8724-a765-490a-bfb6-2adf54102186",
+  "fields": {
+    "name": "Artifact Memory",
+    "description": "Memory that retrieves artifacts from the database.",
+    "class_path": "ix.memory.artifacts.ArtifactMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "save_artifact",
+        "type": "boolean",
+        "label": "Save Artifact",
+        "default": false
+      },
+      {
+        "name": "load_artifact",
+        "type": "boolean",
+        "label": "Load Artifact",
+        "default": true
+      },
+      {
+        "name": "input_key",
+        "type": "string",
+        "default": "artifact_keys"
+      },
+      {
+        "name": "memory_key",
+        "type": "string",
+        "default": "related_artifacts"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "9ae5f781-6de9-45b3-bd0f-24cc1efbd9fc",
+  "fields": {
+    "name": "HuggingFace Embeddings",
+    "description": "HuggingFace Embeddings",
+    "class_path": "langchain.embeddings.huggingface.HuggingFaceEmbeddings",
+    "type": "embeddings",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "model_name",
+        "type": "string",
+        "label": "Model",
+        "width": "100%",
+        "choices": [
+          {
+            "label": "all-mpnet-base-v2",
+            "value": "sentence-transformers/all-mpnet-base-v2"
+          }
+        ],
+        "default": "sentence-transformers/all-mpnet-base-v2",
+        "description": "Model name to use"
+      },
+      {
+        "name": "cache_folder",
+        "type": "string",
+        "description": "Path to store models"
+      },
+      {
+        "name": "model_kwargs",
+        "type": "dictionary",
+        "description": "Key word arguments to pass to the model"
+      },
+      {
+        "name": "encode_kwargs",
+        "type": "dictionary",
+        "description": "Key word arguments to pass when calling the `encode` method of the model"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "b029cc5a-e98a-4eb3-9a07-7bfc45dfcd40",
+  "fields": {
+    "name": "Conversation Token Buffer",
+    "description": "Memory that stores conversation history as a buffer with a max token size.",
+    "class_path": "langchain.memory.token_buffer.ConversationTokenBufferMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      }
+    ],
+    "fields": [
+      {
+        "name": "max_token_limit",
+        "type": "number",
+        "default": 2000
+      },
+      {
+        "name": "memory_key",
+        "type": "string",
+        "default": "history"
+      },
+      {
+        "name": "human_prefix",
+        "type": "string",
+        "default": "Human"
+      },
+      {
+        "name": "ai_prefix",
+        "type": "string",
+        "default": "AI"
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "default": "output"
+      },
+      {
+        "name": "input_key",
+        "type": "string",
+        "default": "input"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "b62000d7-9390-491b-af13-9711c4ec8b44",
+  "fields": {
+    "name": "Chat Prompt Template",
+    "description": "Template for constructing chat prompts from messages.",
+    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "type": "prompt",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "output_parser",
+        "type": "target",
+        "source_type": "output_parser"
+      }
+    ],
+    "fields": null,
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "b7d8f662-12f6-4525-b07b-c9ea7c10001d",
+  "fields": {
+    "name": "IX Chat Moderator",
+    "description": "Chat moderator analyzes user input and delegates it to the appropriate agent.",
+    "class_path": "ix.chains.moderator.ChatModerator",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "selection_chain",
+        "type": "target",
+        "source_type": "chain"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      }
+    ],
+    "fields": null,
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "bbb7544c-6891-4204-985a-d13d65e02523",
+  "fields": {
+    "name": "OpenAI LLM",
+    "description": "OpenAI LLM",
+    "class_path": "langchain.chat_models.openai.ChatOpenAI",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "model_name",
+        "type": "string",
+        "input": "select",
+        "label": "Model",
+        "choices": [
+          {
+            "label": "GPT-4",
+            "value": "gpt-4"
+          },
+          {
+            "label": "GPT-4 (0613)",
+            "value": "gpt-4-0613"
+          },
+          {
+            "label": "GPT-3.5 ",
+            "value": "gpt-3.5-turbo"
+          },
+          {
+            "label": "GPT-3.5 16k",
+            "value": "gpt-3.5-turbo-16k-0613"
+          }
+        ],
+        "default": "gpt-4-0613",
+        "required": true,
+        "description": "OpenAI model"
+      },
+      {
+        "name": "request_timeout",
+        "type": "number",
+        "label": "Timeout (sec)",
+        "default": 60,
+        "description": "Request Timeout"
+      },
+      {
+        "max": 6,
+        "min": 0,
+        "name": "max_retries",
+        "step": 1,
+        "type": "number",
+        "input": "slider",
+        "default": 6,
+        "description": "Max Retries"
+      },
+      {
+        "max": 2,
+        "min": 0,
+        "name": "temperature",
+        "step": 0.05,
+        "type": "number",
+        "input": "slider",
+        "default": 0,
+        "description": "Temperature"
+      },
+      {
+        "name": "max_tokens",
+        "type": "number",
+        "default": 256
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "c3b2e7f3-f883-46f2-982d-cd01465fb3d1",
+  "fields": {
+    "name": "Function Output Parser",
+    "description": "Parses the output of a function",
+    "class_path": "ix.chains.functions.OpenAIFunctionParser",
+    "type": "output_parser",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "parse_json",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "c51f59a4-f41d-46b6-ba07-5d4636b0a121",
+  "fields": {
+    "name": "Save Artifact",
+    "description": "Saves an input as an artifact",
+    "class_path": "ix.chains.artifacts.SaveArtifact",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "artifact_key",
+        "type": "string",
+        "label": "Artifact Key",
+        "required": true,
+        "description": "Key of the artifact to save"
+      },
+      {
+        "name": "artifact_name",
+        "type": "string",
+        "required": true,
+        "description": "Name of the artifact to save"
+      },
+      {
+        "name": "artifact_description",
+        "type": "string",
+        "required": true,
+        "description": "Description of the artifact to save"
+      },
+      {
+        "name": "artifact_type",
+        "type": "string",
+        "required": true,
+        "description": "Type of the artifact to save"
+      },
+      {
+        "name": "artifact_storage",
+        "type": "string",
+        "default": "write_to_file",
+        "required": true,
+        "description": "Storage of the artifact to save"
+      },
+      {
+        "name": "artifact_storage_id_key",
+        "type": "string",
+        "label": "Storage ID Key",
+        "required": true,
+        "description": "key within the input containing the storage ID"
+      },
+      {
+        "name": "content_key",
+        "type": "string",
+        "required": true,
+        "description": "Key of the input containing the content to save"
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "required": true,
+        "description": "Key that the artifact will be output to"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "d13aca50-e998-4569-ba3c-b18985a1ca87",
+  "fields": {
+    "name": "Sequence",
+    "description": "Runs a sequence of chains passing outputs from one to the next.",
+    "class_path": "langchain.chains.SequentialChain",
+    "type": "chain",
+    "display_type": "list",
+    "connectors": [
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "chains",
+        "type": "target",
+        "source_type": "chain",
+        "auto_sequence": false
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": "chains"
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "d90b15ac-8202-41ee-84ca-c727376fb9e3",
+  "fields": {
+    "name": "Conversation Summary Buffer",
+    "description": "Memory that stores conversation history as a buffer and summarizes to compress context.",
+    "class_path": "langchain.memory.summary_buffer.ConversationSummaryBufferMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "chat_memory",
+        "type": "target",
+        "source_type": "memory_backend"
+      },
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "max_token_limit",
+        "type": "number",
+        "default": 2000
+      },
+      {
+        "name": "memory_key",
+        "type": "string",
+        "default": "history"
+      },
+      {
+        "name": "human_prefix",
+        "type": "string",
+        "default": "Human"
+      },
+      {
+        "name": "ai_prefix",
+        "type": "string",
+        "default": "AI"
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "default": "output"
+      },
+      {
+        "name": "input_key",
+        "type": "string",
+        "default": "input"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "da5e809a-b158-4f34-8867-8ac375967906",
+  "fields": {
+    "name": "Redis Memory Backend",
+    "description": "Redis Memory Backend",
+    "class_path": "langchain.memory.RedisChatMessageHistory",
+    "type": "memory_backend",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "url",
+        "type": "string",
+        "width": "100%",
+        "default": "redis://redis:6379/0"
+      },
+      {
+        "name": "ttl",
+        "type": "number",
+        "default": 3600
+      },
+      {
+        "name": "session_scope",
+        "type": "string",
+        "input": "select",
+        "choices": [
+          {
+            "label": "chat",
+            "value": "chat"
+          },
+          {
+            "label": "agent",
+            "value": "agent"
+          },
+          {
+            "label": "task",
+            "value": "task"
+          },
+          {
+            "label": "user",
+            "value": "user"
+          }
+        ]
+      },
+      {
+        "name": "session_prefix",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "name": "session_key",
+        "type": "string",
+        "default": "session_id"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "dcc54f24-fa74-474f-986d-3ed2bb65b860",
+  "fields": {
+    "name": "Filesystem Memory Backend",
+    "description": "Stores memories in a local file",
+    "class_path": "langchain.memory.chat_message_histories.file.FileChatMessageHistory",
+    "type": "memory_backend",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "file_path",
+        "type": "string",
+        "width": "100%",
+        "default": "/var/app/workdir/chat_memory.txt"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "e4b75419-1efc-4496-ad5f-94729560c135",
+  "fields": {
+    "name": "Redis Vector Store",
+    "description": "Redis Vector Store",
+    "class_path": "langchain.vectorstores.Redis",
+    "type": "vector_store",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "embeddings",
+        "type": "target",
+        "source_type": "embedding"
+      }
+    ],
+    "fields": [
+      {
+        "name": "redis_url",
+        "type": "string",
+        "width": "100%",
+        "default": "redis://redis:6379/0",
+        "description": "URL of the Redis server"
+      },
+      {
+        "name": "index_name",
+        "type": "string",
+        "description": "Name of the index in the Redis"
+      },
+      {
+        "name": "content_key",
+        "type": "string",
+        "default": "content",
+        "description": "Key for storing content"
+      },
+      {
+        "name": "metadata_key",
+        "type": "string",
+        "default": "metadata",
+        "description": "Key for storing metadata"
+      },
+      {
+        "name": "vector_key",
+        "type": "string",
+        "default": "content_vector",
+        "description": "Key for storing vectors"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
+  "fields": {
+    "name": "LLM Chain",
+    "description": "Chain that prompts an LLM for a completion.",
+    "class_path": "ix.chains.llm_chain.LLMChain",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "functions",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      },
+      {
+        "key": "output_parser",
+        "type": "target",
+        "source_type": "output_parser"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "function_call",
+        "type": "string"
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "default": "text"
+      }
+    ],
+    "child_field": null
+  }
+}
+]

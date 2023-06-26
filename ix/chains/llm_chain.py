@@ -1,17 +1,17 @@
+import json
 import logging
-from typing import Dict, Any, Tuple, List
+from typing import Any, List
 
-from langchain import LLMChain as LangchainLLMChain, PromptTemplate
+from langchain import LLMChain as LangchainLLMChain
+from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import (
-    ChatPromptTemplate,
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
     AIMessagePromptTemplate,
-    BaseStringMessagePromptTemplate,
 )
+from langchain.tools import Tool, format_tool_to_openai_function
 
-from ix.agents.llm import load_llm, load_memory
-from ix.agents.callback_manager import IxCallbackManager
+from ix.chains.functions import FunctionSchema
 from ix.task_log.models import TaskLogMessage
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,48 @@ TEMPLATE_CLASSES = {
 
 
 class LLMChain(LangchainLLMChain):
-    """Wrapper around LLMChain to provide from_config initialization"""
+    """
+    Extension of LLMChain to provide additional functionality:
+
+    - OpenAI functions may be connected as functions.
+    - input_keys excludes memory variables so that memory may be directly attached.
+    """
+
+    # List of OpenAI functions to include in requests.
+    functions: List[FunctionSchema | Tool] = None
+    function_call: str = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.load_functions()
+
+    def load_functions(self) -> None:
+        """Load functions for OpenAI if llm is OpenAI"""
+        if not isinstance(self.llm, ChatOpenAI):
+            logger.error(f"llm is not ChatOpenAI, it is {type(self.llm)}")
+            return
+
+        if not self.functions:
+            return
+
+        if not isinstance(self.llm_kwargs, dict):
+            self.llm_kwargs = {}
+
+        if self.function_call:
+            self.llm_kwargs["function_call"] = {"name": self.function_call}
+
+        # convert Langchain tools to OpenAI functions. FunctionSchema are already
+        # OpenAI functions, we don't need to convert them.
+        converted_functions = []
+        for function in self.functions:
+            if isinstance(function, Tool):
+                converted_functions.append(format_tool_to_openai_function(function))
+            else:
+                converted = function.copy()
+                converted["parameters"] = json.loads(function["parameters"])
+                converted_functions.append(converted)
+
+        self.llm_kwargs["functions"] = converted_functions
 
     @property
     def input_keys(self) -> List[str]:
@@ -37,65 +78,6 @@ class LLMChain(LangchainLLMChain):
         if self.memory:
             as_set -= set(self.memory.memory_variables)
         return list(as_set)
-
-    @staticmethod
-    def create_message(
-        message: Dict[str, Any], config: Dict[str, Any], context: Dict[str, Any]
-    ) -> BaseStringMessagePromptTemplate:
-        """Create a message template"""
-        message_config = message.copy()
-        template_class = TEMPLATE_CLASSES[message_config.pop("role")]
-        prompt_config = {
-            "input_variables": [],
-            "partial_variables": {},
-        }
-        prompt_config.update(message_config)
-        logger.debug(f"LLMChain creating message with prompt_config={prompt_config}")
-        prompt = PromptTemplate(**prompt_config)
-        return template_class(prompt=prompt)
-
-    @staticmethod
-    def prepare_config(
-        config: Dict[str, Any], callback_manager: IxCallbackManager
-    ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-        """
-        Prepare config by initializing values in config. This method also splits
-        config values into context for values that are meant to be available
-        to initialization but are not part of config.
-        """
-        config["llm"] = load_llm(config["llm"], callback_manager)
-        return config, {}
-
-    @classmethod
-    def from_config(cls, config: Dict[str, Any], callback_manager: IxCallbackManager):
-        logger.debug(f"Loading IxLLMChain config={config}")
-
-        prepared_config, message_context = cls.prepare_config(config, callback_manager)
-
-        # load message templates and build prompt
-        messages = []
-        for message in config.pop("messages"):
-            messages.append(
-                cls.create_message(message, prepared_config, message_context)
-            )
-        prompt = ChatPromptTemplate.from_messages(messages)
-
-        # initialize memory
-        memory = None
-        memory_config = config.pop("memory", None)
-        if memory_config:
-            memory = load_memory(memory_config, callback_manager)
-
-        # build instance
-        chain = cls(
-            **config,
-            callback_manager=callback_manager,
-            prompt=prompt,
-            memory=memory,
-            verbose=True,
-        )
-
-        return chain
 
 
 class LLMReply(LLMChain):

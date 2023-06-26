@@ -68,13 +68,19 @@ export const ChatInput = ({ chat }) => {
   const [agentsQueryRef, loadAgentsQuery, disposeAgentsQuery] =
     useQueryLoader(SearchAgentsQuery);
   const searchAgents = useCallback((search) => {
-    loadAgentsQuery({ search, chatId: chat.id }, { fetchPolicy: "store-and-network" });
+    loadAgentsQuery(
+      { search, chatId: chat.id },
+      { fetchPolicy: "store-and-network" }
+    );
   }, []);
 
   const [artifactQueryRef, loadArtifactQuery, disposeArtifactQuery] =
     useQueryLoader(SearchArtifactsQuery);
   const searchArtifacts = useCallback((search) => {
-    loadArtifactQuery({ search, chatId: chat.id }, { fetchPolicy: "store-and-network" });
+    loadArtifactQuery(
+      { search, chatId: chat.id },
+      { fetchPolicy: "store-and-network" }
+    );
   }, []);
 
   useEffect(() => {
@@ -256,7 +262,15 @@ export const ChatInput = ({ chat }) => {
   );
 
   return (
-    <Box width={800} sx={sx} p={2} border="1px solid" borderRadius={5} maxH="400px"  overflowY="auto">
+    <Box
+      width={800}
+      sx={sx}
+      p={2}
+      border="1px solid"
+      borderRadius={5}
+      maxH="400px"
+      overflowY="auto"
+    >
       {agentSearchRunner}
       {artifactSearchRunner}
       <Popover

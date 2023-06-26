@@ -1,16 +1,16 @@
 import React from "react";
 import {
   Box,
-  Flex,
-  VStack,
   Text,
   UnorderedList,
   ListItem,
   HStack,
   Heading,
 } from "@chakra-ui/react";
+import { useChatColorMode } from "chains/editor/useColorMode";
 
 export const ArtifactListContent = ({ message }) => {
+  const { message: messageStyle, link } = useChatColorMode();
   return (
     <Box>
       <Heading size="dm">Generating code:</Heading>
@@ -18,8 +18,8 @@ export const ArtifactListContent = ({ message }) => {
         {message.content.data.map((artifact, index) => (
           <ListItem key={index} align="top">
             <HStack align="top">
-              <Text color="blue.300">{artifact.identifier}</Text>
-              <Text color="gray.100">- {artifact.description}</Text>
+              <Text sx={link}>{artifact.filename}</Text>
+              <Text color={messageStyle.color}>- {artifact.description}</Text>
             </HStack>
           </ListItem>
         ))}

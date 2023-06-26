@@ -1,5 +1,6 @@
 import logging
 from typing import Dict, Any, List
+from uuid import UUID
 
 from django.db.models import Q
 from langchain.schema import BaseMemory
@@ -38,14 +39,22 @@ class ArtifactMemory(BaseMemory):
 
         # split session id back into chat_id
         chat_id = self.session_id.split("_")[-1]
-        logger.error(f"chat_id={chat_id}")
 
         # search for artifacts
         text = ""
         artifact_keys = inputs.get(self.input_key, None)
         if artifact_keys:
+            id_clauses = Q(key__in=artifact_keys) | Q(name__in=artifact_keys)
+            try:
+                id_clauses |= Q(
+                    pk__in=[UUID(artifact_key) for artifact_key in artifact_keys]
+                )
+            except ValueError:
+                # ignore if not UUIDs
+                pass
+
             artifacts = Artifact.objects.filter(
-                (Q(key__in=artifact_keys) | Q(name__in=artifact_keys)),
+                id_clauses,
                 (
                     Q(task__leading_chats__id=chat_id)
                     | Q(task__parent__leading_chats__id=chat_id)
@@ -67,7 +76,6 @@ class ArtifactMemory(BaseMemory):
                 text = f"REFERENCED ARTIFACTS:\n{artifact_prompt}"
 
         # return formatted artifacts
-        logger.debug(f"ArtifactMemory.load_memory_variables text={text}")
         return {self.memory_key: text}
 
     def save_context(self, inputs: Dict[str, Any], outputs: Dict[str, str]) -> None:

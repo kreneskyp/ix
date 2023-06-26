@@ -159,13 +159,24 @@ migrations: compose
 .PHONY: dev_fixtures
 dev_fixtures: compose
 	${DOCKER_COMPOSE_RUN} ./manage.py loaddata fake_user
-	# use management commands for now since fixtures didn't load correctly
-	${DOCKER_COMPOSE_RUN} ./manage.py create_moderator_v1
-	${DOCKER_COMPOSE_RUN} ./manage.py create_coder_v1
-	${DOCKER_COMPOSE_RUN} ./manage.py create_planner_v3
-	${DOCKER_COMPOSE_RUN} ./manage.py create_dad_jokes_v1
-	${DOCKER_COMPOSE_RUN} ./manage.py create_pirate_v1
 
+	# load component NodeTypes
+	${DOCKER_COMPOSE_RUN} ./manage.py import_langchain
+
+ 	# initial agents + chains
+	${DOCKER_COMPOSE_RUN} ./manage.py loaddata ix_v2 code_v2 pirate_v1
+
+
+# Generate fixture for NodeTypes defined in python fixtures.
+# This converts all NodeTypes present in the database into a
+# Django fixture required for unit tests.
+#
+# This will import_langchain and then export both
+# new and existing types from the table.
+.PHONY: node_types_fixture
+node_types_fixture: compose
+	${DOCKER_COMPOSE_RUN} ./manage.py import_langchain
+	${DOCKER_COMPOSE_RUN} ./manage.py dumpdata chains.NodeType --indent 2 > ix/chains/fixtures/node_types.json
 
 # =========================================================
 # Testing

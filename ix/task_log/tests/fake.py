@@ -3,7 +3,8 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 
-from ix.chains.models import Chain, ChainNode
+from ix.chains.models import Chain, ChainNode, ChainEdge
+from ix.chains.tests.test_config_loader import LLM_CHAIN
 from ix.chat.models import Chat
 from ix.task_log.models import Agent, Task, TaskLogMessage, Artifact
 from faker import Faker
@@ -15,36 +16,45 @@ def fake_chain():
     """
     Create a fake chain with a root ChainNode.
     """
-    root_node = fake_chain_node()
-
     chain = Chain.objects.create(
         id=uuid.uuid4(),
         name=fake.unique.name(),
         description=fake.text(),
-        root=root_node,
     )
 
     return chain
 
 
-def fake_chain_node():
+def fake_chain_node(**kwargs):
     """
     Create a fake chain node.
     """
-    node = ChainNode.objects.create(
-        id=uuid.uuid4(),
-        name=fake.unique.name(),
-        description="This is a mock node",
-        class_path="ix.chains.llm_chain.LLMChain",
-        config={
-            "llm": {
-                "class_path": "ix.chains.tests.mock_llm.MockLLM",
-            },
-            "messages": [{"role": "system", "template": "This is a mock node"}],
-        },
+    chain = kwargs.get("chain", fake_chain())
+    config = kwargs.get("config", LLM_CHAIN)
+    root = kwargs.get("root", True)
+    return ChainNode.objects.create_from_config(chain=chain, config=config, root=root)
+
+
+def fake_chain_edge(**kwargs):
+    chain = kwargs.get("chain", fake_chain())
+
+    source_node = kwargs.get("source")
+    if source_node is None:
+        source_node = fake_chain_node(chain=chain)
+
+    target_node = kwargs.get("target")
+    if target_node is None:
+        target_node = fake_chain_node(chain=chain)
+
+    edge = ChainEdge.objects.create(
+        source=source_node,
+        target=target_node,
+        key=kwargs.get("key", "default_key"),
+        chain=chain,
+        input_map=kwargs.get("input_map", {}),
     )
 
-    return node
+    return edge
 
 
 def fake_agent(**kwargs):
@@ -66,6 +76,7 @@ def fake_agent(**kwargs):
     )
 
     chain = kwargs.get("chain", fake_chain())
+    fake_chain_node(chain=chain)
 
     agent = Agent.objects.create(
         pk=kwargs.get("pk"),

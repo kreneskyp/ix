@@ -1,12 +1,8 @@
-from uuid import UUID
-
 import pytest
-from ix.agents.callback_manager import IxCallbackManager
-from ix.chains.llm_chain import LLMChain
-from ix.chains.moderator import ChatModerator
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("node_types")
 class TestChatModerator:
     def test_agent_prompt(self, chat):
         """Test that the agent prompt is formatted correctly"""
@@ -20,27 +16,14 @@ class TestChatModerator:
         )
 
     def test_call(self, mock_openai, chat):
-        mock_openai.return_value = '{"agent": "agent_1"}'
+        mock_openai.return_value = dict(
+            name="delegate_to_agent", arguments={"agent_id": 1}
+        )
 
         chat_moderator = chat["instance"]
-        result = chat_moderator._call(
+        result = chat_moderator(
             {"user_input": "say hello to agent 1", "chat_id": str(chat["chat"].id)}
         )
 
-        assert "task_id" in result
-        assert UUID(result["task_id"])
-
-    def test_from_config(self, chat):
-        """Test that the ChatModerator is created with the correct dependencies from config"""
-        callback_manager = IxCallbackManager(chat["chat"].task)
-        config = {
-            "llm": {
-                "class_path": "langchain.chat_models.openai.ChatOpenAI",
-                "config": {"request_timeout": 60, "temperature": 0.2, "verbose": True},
-            }
-        }
-
-        chat_moderator = ChatModerator.from_config(config, callback_manager)
-
-        assert isinstance(chat_moderator.selection_chain, LLMChain)
-        assert chat_moderator.callbacks == callback_manager
+        assert result["text"] == "Delegating to @agent_2"
+        assert "chat_history" in result

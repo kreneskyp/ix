@@ -5,16 +5,15 @@ import {
   stackoverflowDark,
   stackoverflowLight,
 } from "react-syntax-highlighter/dist/cjs/styles/hljs";
-import { useColorMode } from "@chakra-ui/color-mode";
+import { useChatColorMode } from "chains/editor/useColorMode";
 
 export const ArtifactFileContent = ({ message }) => {
-  const { colorMode } = useColorMode();
-  const syntaxTheme =
-    colorMode === "light" ? stackoverflowLight : stackoverflowDark;
+  const { isLight, link } = useChatColorMode();
+  const syntaxTheme = isLight ? stackoverflowLight : stackoverflowDark;
 
   return (
     <Box my={4}>
-      <Text color="blue.300">{message.content.storage.id}</Text>
+      <Text sx={link}>{message.content.storage.id}</Text>
       <SyntaxHighlighter style={syntaxTheme} wrapLines={true}>
         {message.content.data}
       </SyntaxHighlighter>

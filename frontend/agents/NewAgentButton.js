@@ -11,7 +11,6 @@ export const NewAgentButton = () => {
   return (
     <Link to="/agents/new">
       <Button
-        bg="transparent"
         width="100%"
         border="1px solid"
         borderColor={colorMode === "light" ? "gray.300" : "whiteAlpha.50"}

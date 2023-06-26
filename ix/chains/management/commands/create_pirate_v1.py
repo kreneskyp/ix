@@ -35,28 +35,33 @@ PIRATE = {
                             "verbose": True,
                         },
                     },
-                    "backend": {
+                    "chat_memory": {
                         "class_path": "langchain.memory.RedisChatMessageHistory",
                         "config": {
                             "url": "redis://redis:6379/0",
-                            "session": {"scope": "chat"},
+                            "session_scope": "chat",
                         },
                     },
                 },
             },
         ],
-        "messages": [
-            {
-                "role": "system",
-                "template": PIRATE_PROMPT,
-                "input_variables": ["related_artifacts", "chat_summary"],
+        "prompt": {
+            "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+            "config": {
+                "messages": [
+                    {
+                        "role": "system",
+                        "template": PIRATE_PROMPT,
+                        "input_variables": ["related_artifacts", "chat_summary"],
+                    },
+                    {
+                        "role": "user",
+                        "template": "{user_input}",
+                        "input_variables": ["user_input"],
+                    },
+                ],
             },
-            {
-                "role": "user",
-                "template": "{user_input}",
-                "input_variables": ["user_input"],
-            },
-        ],
+        },
     },
 }
 
@@ -68,23 +73,23 @@ class Command(BaseCommand):
     help = "Creates pirate agent v1"
 
     def handle(self, *args, **options):
-        Chain.objects.filter(id=PIRATE_CHAIN_V1).delete()
-
-        # Create root node
-        root = ChainNode.objects.create(**PIRATE)
-
-        chain = Chain.objects.create(
+        chain, _ = Chain.objects.get_or_create(
             pk=PIRATE_CHAIN_V1,
-            name="Pirate chain",
-            description="Chain used for pirate agent v1",
-            root=root,
+            defaults=dict(
+                name="Pirate chain",
+                description="Chain used for pirate agent v1",
+            ),
         )
+        chain.clear_chain()
+        ChainNode.objects.create_from_config(chain=chain, root=True, config=PIRATE)
 
-        Agent.objects.create(
+        Agent.objects.get_or_create(
             id=PIRATE_AGENT_V1,
-            name="Pirate",
-            alias="pirate",
-            purpose="responds to all inquiries with pirate talk",
-            chain=chain,
-            config={},
+            defaults=dict(
+                name="Pirate",
+                alias="pirate",
+                purpose="responds to all inquiries with pirate talk",
+                chain=chain,
+                config={},
+            ),
         )

@@ -1,47 +1,47 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  Box,
   Flex,
-  Input,
+  FormLabel,
   Slider,
   SliderFilledTrack,
   SliderThumb,
   SliderTrack,
+  Text,
+  VStack,
 } from "@chakra-ui/react";
 
-const SliderInput = ({ min, max, defaultValue, onChange }) => {
-  const [value, setValue] = useState(defaultValue);
-
-  const handleChange = (newValue) => {
-    setValue(newValue);
-    onChange(newValue);
-  };
-
-  return (
-    <Flex alignItems="center" justifyContent="space-between">
-      <Slider
-        aria-label="slider"
-        min={min}
-        max={max}
-        value={value}
-        onChange={handleChange}
-      >
-        <SliderTrack>
-          <SliderFilledTrack />
-        </SliderTrack>
-        <SliderThumb />
-      </Slider>
-      <Box width="100px" marginLeft="1rem">
-        <Input
-          type="number"
-          value={value}
-          min={min}
-          max={max}
-          onChange={(e) => handleChange(e.target.value)}
-        />
-      </Box>
+export const SliderInput = ({
+  label,
+  value,
+  onChange,
+  min = 0,
+  max = 1,
+  step = 0.5,
+}) => (
+  <VStack spacing={0} width="100%">
+    <Flex
+      alignItems="center"
+      justifyContent="space-between"
+      width="100%"
+      height="100%"
+    >
+      <FormLabel>{label}</FormLabel>
+      <Text>{value}</Text>
     </Flex>
-  );
-};
+    <Slider
+      aria-label="slider"
+      min={min}
+      max={max}
+      step={step}
+      value={value || 0}
+      onChange={onChange}
+    >
+      <SliderTrack>
+        <SliderFilledTrack />
+      </SliderTrack>
+      <SliderThumb />
+    </Slider>
+  </VStack>
+);
 
 export default SliderInput;

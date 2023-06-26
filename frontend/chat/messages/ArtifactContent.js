@@ -13,6 +13,7 @@ export const ArtifactContent = ({ message }) => {
       contentComponent = <PlanContent message={message} />;
       break;
     case "artifact_list":
+    case "file_list":
       contentComponent = <ArtifactListContent message={message} />;
       break;
     case "file":

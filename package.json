@@ -18,7 +18,8 @@
     "slate": "^0.94.1",
     "slate-history": "^0.93.0",
     "slate-react": "^0.94.2",
-    "subscriptions-transport-ws": "^0.11.0"
+    "subscriptions-transport-ws": "^0.11.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.3",

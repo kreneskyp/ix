@@ -6,6 +6,7 @@ import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 
 import { ChainsQuery } from "chains/graphql/ChainsQuery";
 import { ChainCardList } from "chains/ChainCardList";
+import { NewChainButton } from "chains/NewChainButton";
 
 export const ChainListView = () => {
   const [queryRef, loadQuery] = useQueryLoader(ChainsQuery);
@@ -23,7 +24,9 @@ export const ChainListView = () => {
 
   return (
     <Layout>
-      <LayoutLeftPane></LayoutLeftPane>
+      <LayoutLeftPane>
+        <NewChainButton />
+      </LayoutLeftPane>
       <LayoutContent>
         <VStack alignItems="start" p={5} spacing={4}>
           <Heading>Chains</Heading>

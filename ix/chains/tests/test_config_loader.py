@@ -12,11 +12,7 @@ from langchain.memory import (
 from langchain.schema import BaseChatMessageHistory, BaseMemory
 
 from ix.agents.callback_manager import IxCallbackManager
-from ix.agents.llm import (
-    get_memory_session,
-    load_chat_memory_backend,
-    load_memory,
-)
+from ix.chains.loaders.memory import get_memory_session
 from ix.chains.tests.mock_memory import MockMemory
 from ix.memory.artifacts import ArtifactMemory
 
@@ -24,6 +20,16 @@ from ix.memory.artifacts import ArtifactMemory
 class TestLoadLLM:
     pass
 
+
+OPENAI_LLM = {
+    "class_path": "langchain.chat_models.openai.ChatOpenAI",
+    "config": {"verbose": True},
+}
+
+MOCK_MEMORY = {
+    "class_path": "ix.chains.tests.mock_memory.MockMemory",
+    "config": {"value_map": {"mock_memory_input": "mock memory"}},
+}
 
 MEMORY = {
     "class_path": "langchain.memory.ConversationBufferMemory",
@@ -38,9 +44,9 @@ MEMORY_WITH_BACKEND = {
     "config": {
         "input_key": "user_input",
         "memory_key": "chat_history",
-        "backend": {
+        "chat_memory": {
             "class_path": "langchain.memory.RedisChatMessageHistory",
-            "config": {"url": "redis://redis:6379/0", "session": {"scope": "task"}},
+            "config": {"url": "redis://redis:6379/0", "session_scope": "task"},
         },
     },
 }
@@ -60,7 +66,8 @@ MEMORY_WITH_SCOPE = {
     "class_path": "ix.memory.artifacts.ArtifactMemory",
     "config": {
         "memory_key": "chat_history",
-        "session": {"scope": "chat", "prefix": "tests"},
+        "session_scope": "chat",
+        "session_prefix": "tests",
     },
 }
 
@@ -89,10 +96,34 @@ CHAT_MESSAGES_WITH_CHAT_HISTORY = [
     },
 ]
 
+PROMPT_CHAT = {
+    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "config": {
+        "messages": CHAT_MESSAGES,
+    },
+}
+
+PROMPT_WITH_CHAT_HISTORY = {
+    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "config": {
+        "messages": CHAT_MESSAGES_WITH_CHAT_HISTORY,
+    },
+}
+
+LLM_CHAIN = {
+    "class_path": "ix.chains.llm_chain.LLMChain",
+    "config": {
+        "prompt": PROMPT_CHAT,
+        "llm": {
+            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+        },
+    },
+}
+
 LLM_REPLY = {
     "class_path": "ix.chains.llm_chain.LLMReply",
     "config": {
-        "messages": CHAT_MESSAGES,
+        "prompt": PROMPT_CHAT,
         "llm": {
             "class_path": "langchain.chat_models.openai.ChatOpenAI",
         },
@@ -102,7 +133,7 @@ LLM_REPLY = {
 LLM_REPLY_WITH_HISTORY = {
     "class_path": "ix.chains.llm_chain.LLMReply",
     "config": {
-        "messages": CHAT_MESSAGES_WITH_CHAT_HISTORY,
+        "prompt": PROMPT_WITH_CHAT_HISTORY,
         "llm": {
             "class_path": "langchain.chat_models.openai.ChatOpenAI",
         },
@@ -112,7 +143,7 @@ LLM_REPLY_WITH_HISTORY = {
 LLM_REPLY_WITH_HISTORY_AND_MEMORY = {
     "class_path": "ix.chains.llm_chain.LLMReply",
     "config": {
-        "messages": CHAT_MESSAGES_WITH_CHAT_HISTORY,
+        "prompt": PROMPT_WITH_CHAT_HISTORY,
         "memory": MEMORY,
         "llm": {
             "class_path": "langchain.chat_models.openai.ChatOpenAI",
@@ -123,31 +154,34 @@ LLM_REPLY_WITH_HISTORY_AND_MEMORY = {
 
 @pytest.mark.django_db
 class TestLoadMemory:
-    def test_load_memory(self, mock_callback_manager):
-        instance = load_memory(MEMORY, mock_callback_manager)
+    def test_load_memory(self, load_chain):
+        instance = load_chain(MEMORY)
         assert isinstance(instance, ConversationBufferMemory)
 
-    def test_load_multiple(self, mock_callback_manager):
+    def test_load_multiple(self, load_chain, mock_openai_key):
         """Test loading multiple memories into a CombinedMemory"""
         MEMORY2 = deepcopy(MEMORY)
         MEMORY2["config"]["memory_key"] = "chat_history2"
 
-        instance = load_memory([MEMORY, MEMORY2], mock_callback_manager)
+        LLM_CONFIG = deepcopy(LLM_REPLY_WITH_HISTORY)
+        LLM_CONFIG["config"]["memory"] = [MEMORY, MEMORY2]
+        chain = load_chain(LLM_CONFIG)
+        instance = chain.memory
         assert isinstance(instance, CombinedMemory)
         assert len(instance.memories) == 2
         assert instance.memories[0].memory_key == "chat_history"
         assert instance.memories[1].memory_key == "chat_history2"
 
-    def test_load_backend(self, mock_callback_manager):
+    def test_load_backend(self, load_chain):
         """
         A memory class can have a backend that separates memory logic from
         the storage system. ChatMemory works this way.
         """
-        instance = load_memory(MEMORY_WITH_BACKEND, mock_callback_manager)
+        instance = load_chain(MEMORY_WITH_BACKEND)
         assert isinstance(instance, ConversationBufferMemory)
         assert isinstance(instance.chat_memory, BaseChatMessageHistory)
 
-    def test_load_memory_with_scope(self, task, mock_callback_manager):
+    def test_load_memory_with_scope(self, task, load_chain):
         """
         Test loading with a scope.
 
@@ -155,19 +189,19 @@ class TestLoadMemory:
         adds scoping to the backend.
         """
         chat_id = task.leading_chats.first().id
-        instance = load_memory(MEMORY_WITH_SCOPE, mock_callback_manager)
+        instance = load_chain(MEMORY_WITH_SCOPE)
         assert isinstance(instance, ArtifactMemory)
         assert instance.session_id == f"tests_chat_{chat_id}"
 
-    def test_load_llm(self, mock_callback_manager, mock_openai):
+    def test_load_llm(self, load_chain, mock_openai):
         """
         Memory classes may optionally load an llm. (e.g. SummaryMemory)
         """
-        instance = load_memory(MEMORY_WITH_LLM, mock_callback_manager)
+        instance = load_chain(MEMORY_WITH_LLM)
         assert isinstance(instance, ConversationSummaryBufferMemory)
         assert isinstance(instance.llm, BaseLanguageModel)
 
-    def test_load_class_with_config(self, task, mocker, mock_callback_manager):
+    def test_load_class_with_config(self, task, mocker, load_chain):
         """
         Test loading a class whose config is defined in MEMORY_CLASSES.
         This tests configuring an external class with the required config
@@ -176,24 +210,24 @@ class TestLoadMemory:
         chat_id = task.leading_chats.first().id
 
         # patch MEMORY_CLASSES to setup the test
-        from ix.agents import llm
+        from ix.chains.loaders import memory
 
         mock_memory_classes = {
             MockMemory: {
                 "supports_session": True,
             }
         }
-        mocker.patch.object(llm, "MEMORY_CLASSES", mock_memory_classes)
+        mocker.patch.object(memory, "MEMORY_CLASSES", mock_memory_classes)
 
         # load a memory that will use the mock class config
-        instance = load_memory(
+        instance = load_chain(
             {
                 "class_path": "ix.chains.tests.mock_memory.MockMemory",
                 "config": {
-                    "session": {"scope": "chat", "prefix": "tests"},
+                    "session_scope": "chat",
+                    "session_prefix": "tests",
                 },
             },
-            mock_callback_manager,
         )
         assert isinstance(instance, MockMemory)
         assert instance.session_id == f"tests_chat_{chat_id}"
@@ -201,7 +235,7 @@ class TestLoadMemory:
 
 @pytest.mark.django_db
 class TestLoadChatMemoryBackend:
-    def test_load_chat_memory_backend(self, task, mock_callback_manager):
+    def test_load_chat_memory_backend(self, task, load_chain):
         chat_id = task.leading_chats.first().id
 
         # Config
@@ -209,15 +243,16 @@ class TestLoadChatMemoryBackend:
             "class_path": "langchain.memory.RedisChatMessageHistory",
             "config": {
                 "url": "redis://redis:6379/0",
-                "session": {"scope": "chat", "prefix": "tests"},
+                "session_scope": "chat",
+                "session_prefix": "tests",
             },
         }
 
         # Run
-        backend = load_chat_memory_backend(config, mock_callback_manager)
+        backend = load_chain(config)
         assert backend.session_id == f"tests_chat_{chat_id}"
 
-    def test_load_defaults(self, task, mock_callback_manager):
+    def test_load_defaults(self, task, load_chain):
         """
         ChatMemoryBackend should always load session_id. If `session` isn't present then
         load the `chat` scope by default.
@@ -234,7 +269,7 @@ class TestLoadChatMemoryBackend:
         }
 
         # Run
-        backend = load_chat_memory_backend(config, mock_callback_manager)
+        backend = load_chain(config)
         assert backend.session_id == f"chat_{chat_id}"
 
 
@@ -247,51 +282,71 @@ class TestGetMemorySession:
         [
             # No scope - defaults to chat
             (
-                {"scope": "", "prefix": "123", "key": "session_id"},
+                {
+                    "session_scope": "",
+                    "session_prefix": "123",
+                    "session_key": "session_id",
+                },
                 BaseChatMessageHistory,
                 ("123_chat_1000", "session_id"),
             ),
             (
-                {"scope": None, "prefix": "123", "key": "session_id"},
+                {
+                    "session_scope": None,
+                    "session_prefix": "123",
+                    "session_key": "session_id",
+                },
                 BaseChatMessageHistory,
                 ("123_chat_1000", "session_id"),
             ),
             (
-                {"prefix": "123", "key": "session_id"},
+                {"session_prefix": "123", "session_key": "session_id"},
                 BaseChatMessageHistory,
                 ("123_chat_1000", "session_id"),
             ),
             # agent, task, user scopes
             (
-                {"scope": "agent", "prefix": "456", "key": "session_id"},
+                {
+                    "session_scope": "agent",
+                    "session_prefix": "456",
+                    "session_key": "session_id",
+                },
                 BaseMemory,
                 ("456_agent_1001", "session_id"),
             ),
             (
-                {"scope": "task", "prefix": "789", "key": "session_id"},
+                {
+                    "session_scope": "task",
+                    "session_prefix": "789",
+                    "session_key": "session_id",
+                },
                 BaseMemory,
                 ("789_task_1002", "session_id"),
             ),
             (
-                {"scope": "user", "prefix": "321", "key": "session_id"},
+                {
+                    "session_scope": "user",
+                    "session_prefix": "321",
+                    "session_key": "session_id",
+                },
                 BaseChatMessageHistory,
                 ("321_user_1003", "session_id"),
             ),
             # custom session_id_key
             (
-                {"scope": "chat", "key": "chat_session"},
+                {"session_scope": "chat", "session_key": "chat_session"},
                 BaseChatMessageHistory,
                 ("chat_1000", "chat_session"),
             ),
             # no session prefix
             (
-                {"scope": "chat", "key": "session_id"},
+                {"session_scope": "chat", "session_key": "session_id"},
                 BaseChatMessageHistory,
                 ("chat_1000", "session_id"),
             ),
             # custom session prefix
             (
-                {"scope": "chat", "prefix": "static_session_id"},
+                {"session_scope": "chat", "session_prefix": "static_session_id"},
                 BaseChatMessageHistory,
                 ("static_session_id_chat_1000", "session_id"),
             ),
@@ -311,7 +366,7 @@ class TestGetMemorySession:
 
     def test_parse_scope_unsupported_scope(self, mock_callback_manager):
         config = {
-            "scope": "unsupported_scope",
+            "session_scope": "unsupported_scope",
             "session_id": "123",
             "session_id_key": "session_id",
         }

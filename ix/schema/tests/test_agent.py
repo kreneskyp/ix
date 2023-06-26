@@ -22,6 +22,7 @@ AGENT_SEARCH = """
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("node_types")
 class TestAgentSearch:
     @pytest.mark.parametrize(
         "pattern,expected_names",
