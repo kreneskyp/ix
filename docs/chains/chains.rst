@@ -10,12 +10,12 @@ Overview
 A Langchain processing chain represents a sequence of actions or processes to be applied on a given input. This chain
 can involve various types of processes, including interactions with Language Models (LLMs).
 
-In the context of ourIx, we model this processing chain using two main entities: ``ChainNode`` and
-``ChainEdge``. This model is used to define the structure of the chain, and is stored in the database. The langchain
-processing chain is generated from this model when it is loaded.
+In the context of Ix, chains are models using three entities: ``NodeType``, ``ChainNode``, and
+``ChainEdge``. These model define the types of components and structure of chains that use them.
+Chains are stored in the database and can be loaded into a LangChain instance.
 
 The graph model supports both defining arbitrary processing chains to run them, and also supports displaying and
-(eventually) editing them visually in the user interface. The model supports asynchronicity, including parallel
+editing them visually in the user interface. The model supports asynchronicity, including parallel
 processing and delegation to other agents.
 
 Chain API Reference
@@ -49,6 +49,17 @@ Chain options
 
 Chain Models
 ------------
+
+NodeType
+^^^^^^^^
+
+A ``NodeType`` defines a LangChain component that may be used in a chain. Both property nodes and chain nodes are
+supported. ``NodeType`` instances describe the type of component, configuration options, and how they may be
+connected to other nodes.
+
+Note, that all LangChain components require a corresponding ``NodeType``. These definitions are required to provide
+support for non-pydantic components including those that use a helper function or wrapper class for loading.
+(e.g. Zapier LangChain component requires loading a client).
 
 ChainNode
 ^^^^^^^^
