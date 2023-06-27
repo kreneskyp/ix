@@ -105,6 +105,9 @@ releases.
 
 Before getting started, ensure you have the following software installed on your system:
 
+- Windows Linux Subsystem (windows only)
+    1. Open powershell
+    2. run `wsl --install` to install and/or activate WSL
 - git
 - make
 - Docker:
