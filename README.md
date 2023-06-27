@@ -78,9 +78,9 @@ releases.
 
 - Scalable model for running a fleet of GPT agents.
 - Responsive user interface for interacting with agents.
+- Graphical "no-code" editor for creating agents and chains.
 - Persistent storage of interactions, processes, and metrics.
 - Message queue for agent jobs and inter-agent communication.
-- Extensible model for customizing agents.
 - Deployment using Docker.
 
 ### Models
@@ -129,11 +129,6 @@ cp .env.template .env
 
 ```
 OPENAI_API_KEY=YOUR_KEY_HERE
-
-# search (optional)
-GOOGLE_API_KEY=
-GOOGLE_CX_ID=
-WOLFRAM_APP_ID=
 ```
 
 ### Build and run the dev image.
@@ -175,8 +170,9 @@ Here are some helpful commands for developers to set up and manage the developme
 ### Building:
 - `make image`: Build the Docker image.
 - `make frontend`: Rebuild the front end (GraphQL, relay, webpack).
-- `make webpack`: Rebuild JavaScript only
-- `make webpack-watch`: Rebuild JavaScript on file changes
+- `make webpack`: Rebuild JavaScript only.
+- `make webpack-watch`: Rebuild JavaScript on file changes.
+- `make dev_setup`: Builds frontend and generates database.
 
 ### Database
 - `make migrate`: Run Django database migrations.
