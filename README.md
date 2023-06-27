@@ -59,10 +59,19 @@ an agent to request a specific agent to complete the task.
 
 ### Creating Custom Agents and Chains
 
-Ix provides the moderator agent Ix, a coder agent, a planning agent, and a few example agents. Additional agents 
-may be built using the chain framework.
+![IX_memory_edit_demo_raw_V2](https://github.com/kreneskyp/ix/assets/68635/0c30c93b-a14d-450b-9ffc-80f6bb89289b)
 
-View the [documentation](docs/chains/chains.rst) to create custom agents and chains.
+Ix provides the moderator agent Ix, a coder agent, and a few example agents. Additional agents 
+may be built using the chain editor or the python API. 
+
+- Chains no-code editor
+- Chains [python API docs](docs/chains/chains.rst)
+
+Agents and chains are built from a graph of LangChain components. Each node in the graph is either a property config
+node or a runnable Chain or Agent node. The graph configures the properties and the flow of the agent. 
+
+Ix doesn't support all LangChain components yet, but it's easy to add new components. More will be added in subsequent
+releases.
 
 
 ## Key Features
