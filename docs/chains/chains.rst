@@ -20,14 +20,14 @@ processing and delegation to other agents.
 
 Chain API Reference
 ------------
-Ix provides custom features on top of langchain that require custom integrations to load.
+Ix provides custom features on top of LangChain that require custom integrations to load.
 
 Default chain types
 ^^^^^^^^^^^^^^^^^^^
 
 LLM Chains:
 
-* `LLMChain <./llm.rst#LLMChain>`_: wrapper around ``langchain.LLMChain`` to add Ix config loader.
+* `LLMChain <./llm.rst#LLMChain>`_: wrapper around ``langchain.LLMChain`` to add Ix runtime.
 * `LLMToolChain <./llm.rst#LLMToolChain>`_: chain that has ``tools`` available in the prompt.
 * `LLMReply <./llm.rst#LLMReply>`_: Respond to chat stream with the result of an LLM prompt.
 
@@ -35,13 +35,8 @@ Artifacts:
 
 * `SaveArtifact <./artifacts.rst#SaveArtifact>`_: Save an artifact to the chat stream.
 
-Data handling:
-
-* `ParseJSON <./data.rst#ParseJSON>`_: chain that parses a JSON string into a python object.
-
 Routing / flow control:
 
-* `IxSequence <./routing.rst#IxSequence>`_: wrapper for Sequence that provides config loader.
 * `MapSubchain <./routing.rst#MapSubchain>`_: Run subchain for each item in a list.
 * `ChooseTool <./routing.rst#ChooseTool>`_: chain that chooses a tool with a subchain.
 
@@ -49,7 +44,7 @@ Chain options
 ^^^^^^^^^^^^^^
 
 * `Memory <./memory.rst>`_:  Shared and local scoped memory for chains linked to Ix runtime.
-
+* `OpenAI Functions <./llm.rst#openai-functions>`_: OpenAI API functions for use in chains.
 
 
 Chain Models
@@ -62,14 +57,8 @@ A ``ChainNode`` represents a single node in the chain. Each node represents a pr
 applied. It stores the configuration necessary for the process, along with additional metadata like its name and
 description.
 
-A ``ChainNode`` also maintains references to its parent and root nodes in the chain, allowing the chain to be traversed
+A ``ChainNode`` also maintains references to its parent ``Chain`` allowing the chain to be traversed
 and manipulated easily.
-
-A node has a type that defines the way the node interacts with its children in the chain:
-
-- ``node``: A basic node with no specific interaction with its children.
-- ``list``: An ordered sequence of children nodes. The order of processing is defined by the order of the children.
-- ``map``: A node that maps its children. The order of processing is not predetermined.
 
 ChainEdge
 ^^^^
@@ -83,20 +72,24 @@ The ``ChainEdge`` model is crucial for defining the structure and flow of the pr
 Usage
 ^^^^
 
-These models are used to dynamically create, modify, and traverse processing chains. You can add nodes to the root or
-as a child of an existing node using the ``add_node`` and ``add_child`` methods respectively in the ``ChainNode``
-model. The ``load_config`` method is used to load the configuration for a particular node, including its child nodes
-if it's of type "list" or "map".
+These models are used to dynamically create, modify, and traverse processing chains. Chains stored
+in the database may be queried and run.
 
-The ``load_chain`` method is used to generate the actual processing chain from the stored models. This method uses
-the ``from_config`` class method of the chain class specified by the ``class_path`` field to create the chain.
+.. code-block:: python
+
+    # fetch chain, initialize task, and run chain
+    chain = Chain.objects.get(pk=CHAIN_ID)
+    task = fake_task(chain=chain)
+    callback_manager = IxCallbackManager(task)
+    langchain_chain = chain.load(callback_manager)
+    langchain_chain.run(user_input="Hello, world!")
 
 
 Creating Chains
 ^^^^^^^^
 
-Chains should be generated through python code run as a management command or via shell_plus. JSON config import is not
-supported yet.
+Chains may be generated through the visual editor or a python code run as a management command or via shell_plus.
+JSON config import is not supported yet.
 
 Here is a simple example of creating a chain that sends a greeting to the user. In this example, a simple chain that
 greets the user is created. The chain consists of a single node that uses the hypothetical class ``GreetUserChain`` to
@@ -121,18 +114,15 @@ send a greeting message to the user. The ``ChatOpenAI`` language model
         },
     }
 
-    # Create root node
-    root = ChainNode.objects.create(**GREET_USER)
-
     # Create the chain
-    Chain.objects.create(
+    chain = Chain.objects.create(
         pk=CHAIN_ID,
         name="Greeting chain",
         description="Chain used to greet the user",
-        root=root,
     )
 
-
+    # Create root node
+    root = ChainNode.objects.create_from_config(chain, GREET_USER, root=True)
 
 
 
@@ -167,18 +157,23 @@ determined by the order in which they are added, and recorded by the ``key`` fie
         },
     }
 
-    # Create root node as a sequence
-    root = ChainNode.objects.create(class_path="ix.chains.routing.IXSequence", node_type="list")
-
-    # Add the greeting and name-asking operations to the sequence
-    root.add_child(**GREET_USER)
-    root.add_child(**ASK_USER_NAME)
+    SEQUENCE = {
+        "class_path": "langchain.chains.SequentialChain",
+        "config": {
+            "chains": [
+                GREET_USER,
+                ASK_USER_NAME,
+            ]
+        }
+    }
 
     # Create the chain
-    Chain.objects.create(
+    chain = Chain.objects.create(
         pk=CHAIN_ID,
         name="Greeting and name asking chain",
         description="Chain used to greet the user and ask their name",
-        root=root,
     )
+
+    # Create root node as a sequence
+    root = ChainNode.objects.create_from_config(chain, SEQUENCE, root=True)
 

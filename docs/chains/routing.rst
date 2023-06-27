@@ -31,27 +31,20 @@ Example
             "llm": {
                 "class_path": "langchain.chat_models.openai.ChatOpenAI",
             },
+            chains: [
+                DAD_JOKESTER
+                FAKE_WEATHERMAN
+            ]
         }
     }
-
-    # create nodes, including two subchains
-    root = ChainNode.objects.create(**CHOOSE_TOOL_CONFIG)
-    root.add_child(
-        name="Dad Joke",
-        description="Respond with a dad joke",
-        **DAD_JOKESTER
-    )
-    root.add_child(
-        name="Fake weather",
-        description="Respond with fake weather",
-        **FAKE_WEATHERMAN
-    )
 
     chain = Chain.objects.create(
         name="Example ToolChooser",
         description="Chooses from subchains based on user input",
-        root=root,
     )
+
+    # create nodes, including two subchains
+    ChainNode.objects.create_from_config(chain, CHOOSE_TOOL_CONFIG, root=True)
 
 
 
@@ -88,18 +81,23 @@ This class method loads a MapSubchain instance from a configuration dictionary.
         'map_input': 'input1',
         'map_input_to': 'mock_chain_input',
         'output_key': 'output1'
+        'chains': [MOCK_CHAIN_CONFIG],
     }
 
     # create nodes
-    node = ChainNode.objects.create(**EXAMPLE_CONFIG)
-    node.add_child(**MOCK_CHAIN_CONFIG)
+    chain = Chain.objects.create(
+        pk=CHAIN_ID,
+        name="Greeting chain",
+        description="Chain used to greet the user",
+    )
+    node = ChainNode.objects.create_from_config(chain, EXAMPLE_CONFIG, root=True)
 
     # load chain
-    chain = node.load_chain(mock_callback_manager)
+    langchain_chain = chain.load(mock_callback_manager)
 
     # run chain
     inputs = {"input1": ["test1", "test2", "test3"]}
-    output = chain.run(**inputs)
+    output = langchain_chain.run(**inputs)
     assert output == ["test1", "test2", "test3"]
 
 Selecting input with ``map_input``

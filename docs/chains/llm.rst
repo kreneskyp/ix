@@ -47,6 +47,8 @@ Example Messages:
         },
     ]
 
+
+
 Example
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -62,12 +64,57 @@ Example
         },
     }
 
-    root = ChainNode.objects.create(**LLMCHAIN_CONFIG)
     chain = Chain.objects.create(
         name="Example LLM Chain",
         description="Chain used to demonstrate LLMChain",
-        root=root,
     )
+    root = ChainNode.objects.create_from_config(chain, LLMCHAIN_CONFIG, root=True)
+
+
+OpenAI Functions
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``LLChain`` and it's subclasses support OpenAI Functions. Connect a list of ``FunctionSchema`` and
+LangChain ``Tool`` objects to the ``functions`` config option. Functions are converted to OpenAI
+spec and sent with the LLM request.
+
+Set ``function_call`` to the name of the function for force a function call.
+
+Example:
+
+.. code-block:: python
+
+    class Cat(BaseModel):
+        name: str
+        breed: str
+
+    CAT_FUNCTION = {
+        "class_path": "ix.chains.functions.FunctionSchema",
+        "config": {
+            "name": "cat",
+            "description": "A function that returns a cat",
+            "parameters": Cat.schema_json(indent=4)
+        },
+    }
+
+    CAT_CHOOSER = {
+        "class_path": "ix.chains.llm_chain.LLMChain",
+        "config": {
+            # Configure functions
+            "functions": [CAT_FUNCTION],
+            "function_call": "cat",
+
+            # Configure parser to extract the function output
+            "output_parser": {
+                "class_path": "ix.chains.functions.OpenAIFunctionParser",
+                "config": {
+                    "parse_json": True,
+               },
+           },
+
+           # ... rest of config ...
+        }
+    }
 
 
 
@@ -120,12 +167,11 @@ Example
         },
     }
 
-    root = ChainNode.objects.create(**LLM_TOOL_CHAIN_CONFIG)
     chain = Chain.objects.create(
         name="Example LLMToolChain",
         description="Chain used to demonstrate LLMToolChain",
-        root=root,
     )
+    ChainNode.objects.create(chain, LLM_TOOL_CHAIN_CONFIG, root=True)
 
 
 
@@ -156,9 +202,9 @@ Example:
         },
     }
 
-    root = ChainNode.objects.create(**DAD_JOKES)
     chain = Chain.objects.create(
         name="Dad jokes chain",
         description="Chain used to generate dad jokes",
         root=root,
     )
+    ChainNode.objects.create_from_config(chain, DAD_JOKES, root=True)

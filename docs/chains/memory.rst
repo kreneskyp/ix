@@ -32,7 +32,7 @@ Basic Example:
                     "verbose": True,
                 },
             },
-            "backend": {
+            "chat_memory": {
                 "class_path": "langchain.memory.RedisChatMessageHistory",
                 "config": {"url": "redis://redis:6379/0"},
             },
@@ -84,9 +84,7 @@ Multiple Memory Classes
 ------------------------
 
 Multiple memory classes may be used in a chain. The ``memory`` field accepts a single config object or a list of
-objects. The memory classes will automatically be combined with ``CombinedMemory`` class.
-
-
+objects. The memory classes will automatically be combined with a LangChain ``CombinedMemory`` class.
 
 .. code-block:: python
 
@@ -107,8 +105,10 @@ objects. The memory classes will automatically be combined with ``CombinedMemory
 Configuring Sessions
 ---------------------
 
-Memory session may be scoped to ``chat``, ``agent``, ``task``, ``user``. The chain loader builds a ``session_id``
-based on the scope and the runtime context. The ``chat.id`` or other id is included in the ``session_id``.
+Memory session may be scoped to ``chat``, ``agent``, ``task``, ``user``.
+
+The chain loader builds a ``session_id`` based on the scope and the runtime context. The identifier for the scope
+is included in the ``session_id``. For ``chat.id`` is included for ``chat`` scope.
 
 Sessions may be added to the memory class or the backend depending on the implementation. For example
 ``langchain.memory.BaseChatMessageHistory`` backends handle sessions for ``langchain.memory.BaseChatMemory``.
@@ -120,7 +120,8 @@ Example session config:
     # memory with this config will be scoped to the agent
     # and use session_id `agent_<agent.id>`
     AGENT_SESSION_CONFIG = {
-        'scope': 'agent'
+        "url": "redis://redis:6379/0"
+        "session_scope": "agent"
     }
 
     AGENT_SCOPED_SUMMARY_MEMORY = {
@@ -132,7 +133,7 @@ Example session config:
             "backend": {
                 "class_path": "langchain.memory.RedisChatMessageHistory",
                 "config": {
-                    "url": "redis://redis:6379/0"
+
                     "session": AGENT_SESSION_CONFIG
                 },
             },
@@ -150,8 +151,9 @@ a memory partition.
     # memory with this config will be scoped to the chat and the prefix
     # the session id will be `group_1_chat_<chat.id>`
     PREFIXED_AGENT_SESSION_CONFIG = {
-        'scope': 'chat',
-        'prefix': 'group_1'
+        "url": "redis://redis:6379/0"
+        "session_scope": "chat",
+        "session_prefix": "group_1"
     }
 
 
@@ -159,15 +161,13 @@ Memory Backends
 ----------------
 
 Memory classes such as ``ConversationBufferMemory`` and ``ConversationSummaryBufferMemory`` require a backend to store
-the conversation history. The backend is configured by adding a ``backend`` field to the memory config.
+the conversation history. The backend is configured by adding a ``chat_memory`` field to the memory config.
 
 .. code-block:: python
+
     REDIS_MEMORY_BACKEND = {
         "class_path": "langchain.memory.RedisChatMessageHistory",
-        "config": {
-            "url": "redis://redis:6379/0"
-            "session": AGENT_SESSION_CONFIG
-        },
+        "config": "PREFIXED_AGENT_SESSION_CONFIG"
     },
 
 
@@ -178,6 +178,7 @@ Memory classes such as ``ConversationSummaryMemory`` and ``ConversationSummaryBu
 summarizations of the conversation history. The LLM is configured by adding a ``llm`` field to the memory config.
 
 .. code-block:: python
+
     MEMORY_LLM = {
         "class_path": "langchain.chat_models.openai.ChatOpenAI",
         "config": {
