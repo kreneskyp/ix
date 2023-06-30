@@ -101,3 +101,19 @@ class LLMReply(LLMChain):
         )
 
         return response
+
+    async def arun(self, *args, **kwargs) -> Any:
+        response = await super().arun(*args, **kwargs)
+        await TaskLogMessage.objects.acreate(
+            task_id=self.callbacks.task.id,
+            role="assistant",
+            parent=self.callbacks.think_msg,
+            content={
+                "type": "ASSISTANT",
+                "text": response,
+                # "agent": str(self.callback_manager.task.agent.id),
+                "agent": self.callbacks.agent.alias,
+            },
+        )
+
+        return response
