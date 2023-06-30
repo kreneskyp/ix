@@ -30,7 +30,6 @@ from ix.task_log.tests.fake import (
 from ix.utils.importlib import import_class
 
 logger = logging.getLogger(__name__)
-pytest_plugins = ("pytest_asyncio",)
 
 
 USER_INPUT = {"user_input": "hello agent 1"}
