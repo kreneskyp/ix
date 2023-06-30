@@ -2,12 +2,16 @@ from typing import Dict, Any
 
 from celery_singleton import Singleton
 
+from ix.agents.models import Agent
 from ix.agents.process import AgentProcess
+from ix.chains.models import Chain
 from ix.chat.models import Chat
 from ix.server.celery import app
 from ix.task_log.models import Task
 
 import logging
+
+from ix.utils.asyncio import sync
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +23,10 @@ logger = logging.getLogger(__name__)
         "chain_id",
     ],
 )
-def start_agent_loop(task_id: str, chain_id: str = None, inputs: Dict[str, Any] = None):
+@sync
+async def start_agent_loop(
+    task_id: str, chain_id: str = None, inputs: Dict[str, Any] = None
+):
     """
     Start agent process loop.
 
@@ -28,13 +35,11 @@ def start_agent_loop(task_id: str, chain_id: str = None, inputs: Dict[str, Any] 
 
     This method expects `task_id` to be a string to be compatible with celery Singleton.
     """
-    task = Task.objects.get(pk=task_id)
-    logger.info(
-        f"Starting agent process for agent={task.agent.name} task_id={task_id} user_input={inputs}"
-    )
-
-    process = AgentProcess(task_id, chain_id)
-    return process.start(inputs)
+    task = await Task.objects.aget(pk=task_id)
+    agent = await Agent.objects.aget(pk=task.agent_id)
+    chain = await Chain.objects.aget(pk=chain_id)
+    process = AgentProcess(task, agent, chain)
+    return await process.start(inputs)
 
 
 @app.task(

@@ -89,7 +89,7 @@ def mock_openai(mocker, mock_openai_key):
 @pytest.fixture
 def mock_callback_manager(task):
     fake_chat(task=task)
-    manager = IxCallbackManager(task)
+    manager = IxCallbackManager(task, task.agent)
     manager.think_msg = fake_think(task=task)
     yield manager
 
@@ -170,7 +170,7 @@ def chat(node_types, task, load_chain, mock_openai_key):
         name="agent 2", alias="agent_2", purpose="to test selections"
     )
     chat.agents.set([fake_agent_1, fake_agent_2])
-    callback_manager = IxCallbackManager(chat.task)
+    callback_manager = IxCallbackManager(chat.task, agent=chat.lead)
     callback_manager.think_msg = fake_think(task=chat.task)
 
     # load chain
