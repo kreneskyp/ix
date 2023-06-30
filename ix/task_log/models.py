@@ -2,6 +2,7 @@ import json
 import uuid
 from typing import TypedDict, Optional
 
+from django.contrib.auth.models import User
 from django.db import models
 from ix.agents.models import Agent
 from ix.chains.models import Chain
@@ -40,6 +41,21 @@ class Task(models.Model):
             chain=agent.chain,
             autonomous=self.autonomous,
             user=self.user,
+        )
+
+    async def adelegate_to_agent(self, agent: Agent) -> "Task":
+        """
+        Create a subtask in which a delegated task will run.
+        """
+        chain = await Chain.objects.aget(id=agent.chain_id)
+        user = await User.objects.aget(id=self.user_id)
+        return await Task.objects.acreate(
+            parent=self,
+            name=f"delegating to agent {agent.alias}",
+            agent_id=agent.id,
+            chain=chain,
+            autonomous=self.autonomous,
+            user=user,
         )
 
 

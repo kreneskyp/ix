@@ -5,7 +5,7 @@ from langchain.chains.base import Chain
 from pydantic import BaseModel
 
 from ix.chat.models import Chat
-from ix.task_log.models import TaskLogMessage
+from ix.task_log.models import TaskLogMessage, Task
 from ix.task_log.tasks.agent_runner import start_agent_loop
 
 logger = logging.getLogger(__name__)
@@ -135,7 +135,7 @@ class ChatModerator(Chain):
         # 0. get chat and agents
         chat_id = inputs["chat_id"]
         chat = Chat.objects.get(id=chat_id)
-        agents = list(chat.agents.all())
+        agents = list(chat.agents.order_by("alias"))
 
         # 1. select agent
         agent_prompt = "\n".join(
@@ -183,4 +183,53 @@ class ChatModerator(Chain):
         return {"text": text, "task_id": task_id}
 
     async def _acall(self, inputs: Dict[str, str]) -> Dict[str, str]:
-        pass
+        # 0. get chat and agents
+        chat_id = inputs["chat_id"]
+        chat = await Chat.objects.aget(id=chat_id)
+        agents = [value async for value in chat.agents.order_by("alias").aiterator()]
+
+        # 1. select agent
+        agent_prompt = "\n".join(
+            [f"{i}. {agent.alias}: {agent.purpose}" for i, agent in enumerate(agents)]
+        )
+        user_input = inputs["user_input"]
+        logger.debug(f"Routing user_input={user_input}")
+        response = await self.selection_chain.arun(agents=agent_prompt, **inputs)
+        logger.debug(f"Moderator returned response={response}")
+
+        # response is either a delegation or a direct text response
+        if isinstance(response, dict):
+            agent_index = response["arguments"]["agent_id"]
+            delegate_to = agents[agent_index].alias
+            text = f"Delegating to @{delegate_to}"
+        else:
+            text = response
+            delegate_to = None
+
+        # 2. send message to chat
+        await TaskLogMessage.objects.acreate(
+            task_id=self.callbacks.task.id,
+            role="assistant",
+            parent=self.callbacks.think_msg,
+            content={
+                "type": "ASSISTANT",
+                "text": text,
+                "agent": self.callbacks.agent.alias,
+            },
+        )
+
+        # 3. delegate to the agent
+        task_id = None
+        if delegate_to is not None:
+            task = await Task.objects.aget(id=chat.task_id)
+            agent = await chat.agents.aget(alias=delegate_to)
+            subtask = await task.adelegate_to_agent(agent)
+            logger.debug(
+                f"Delegated to agent={agent.alias} task={subtask.id} input={inputs}"
+            )
+            start_agent_loop.delay(
+                task_id=str(subtask.id), chain_id=str(agent.chain_id), inputs=inputs
+            )
+            task_id = str(subtask.id)
+
+        return {"text": text, "task_id": task_id}
