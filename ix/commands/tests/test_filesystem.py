@@ -1,3 +1,4 @@
+import aiofiles
 import pytest
 
 from ix.commands.filesystem import (
@@ -6,6 +7,7 @@ from ix.commands.filesystem import (
     delete_file,
     read_file,
     find_files,
+    awrite_to_file,
 )
 
 
@@ -26,6 +28,27 @@ class TestWriteToFile:
         write_to_file(str(file_path), content2)
         with open(file_path, "r") as f:
             assert f.read() == content2
+
+
+class TestAWriteToFile:
+    @pytest.mark.asyncio
+    async def test_write_to_file(self, tmp_path):
+        file_path = tmp_path / "test.txt"
+        content = "Hello, world!"
+        await awrite_to_file(str(file_path), content)
+        assert file_path.exists()
+        async with aiofiles.open(file_path, "r") as f:
+            assert await f.read() == content
+
+    @pytest.mark.asyncio
+    async def test_write_to_existing_file(self, tmp_path):
+        file_path = tmp_path / "test.txt"
+        content1 = "Hello, world!"
+        content2 = "Goodbye, world!"
+        await awrite_to_file(str(file_path), content1)
+        await awrite_to_file(str(file_path), content2)
+        async with aiofiles.open(file_path, "r") as f:
+            assert await f.read() == content2
 
 
 class TestAppendToFile:
