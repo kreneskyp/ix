@@ -1,6 +1,6 @@
 import uuid
+from asgiref.sync import sync_to_async
 from datetime import datetime
-
 from django.contrib.auth.models import User
 
 from ix.chains.models import Chain, ChainNode, ChainEdge
@@ -340,3 +340,10 @@ def task_setup():
 
 def reset_task():
     TaskLogMessage.objects.all().delete()
+
+
+# Async versions of fake functions
+afake_think = sync_to_async(fake_think)
+afake_chat = sync_to_async(fake_chat)
+afake_task = sync_to_async(fake_task)
+afake_artifact = sync_to_async(fake_artifact)
