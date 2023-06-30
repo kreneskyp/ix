@@ -9,6 +9,7 @@ class MockChatOpenAI(ChatOpenAI):
     callback_manager: Any = None
     return_value: Any = None
     raise_exception: Any = None
+    acompletion_with_retry: Any = None
 
     def validate_environment(cls, values: Dict) -> Dict:
         return {}
@@ -32,7 +33,4 @@ class MockChatOpenAI(ChatOpenAI):
     def completion_with_retry(self, *args, **kwargs) -> Dict[str, Any]:
         if self.raise_exception:
             raise self.raise_exception
-        return self.get_mock_content()
-
-    async def _agenerate(self, *args, **kwargs) -> Dict[str, Any]:
         return self.get_mock_content()

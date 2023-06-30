@@ -2,6 +2,9 @@ from pathlib import Path
 from typing import List
 import os
 import glob
+
+import aiofiles
+
 from ix.commands import command
 
 WORKDIR = Path("/var/app/workdir")
@@ -22,6 +25,11 @@ def write_to_file(file_path: str, content: str) -> None:
     create_file_path(WORKDIR / file_path)
     with open(WORKDIR / file_path, "w") as f:
         f.write(content)
+
+
+async def awrite_to_file(file_path, content):
+    async with aiofiles.open(WORKDIR / file_path, "w") as f:
+        await f.write(content)
 
 
 @command(name="append_to_file", description="Append to a file")

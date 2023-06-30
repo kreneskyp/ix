@@ -1,5 +1,7 @@
 import pytest
 from graphene.test import Client
+
+from ix.agents.models import Agent
 from ix.schema import schema
 
 from ix.task_log.tests.fake import fake_chat, fake_agent
@@ -22,7 +24,6 @@ AGENT_SEARCH = """
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures("node_types")
 class TestAgentSearch:
     @pytest.mark.parametrize(
         "pattern,expected_names",
@@ -34,8 +35,11 @@ class TestAgentSearch:
             ["age", ["agent 1", "agent 2"]],
         ],
     )
-    def test_agent_search_name(self, pattern, expected_names):
+    def test_agent_search_name(self, node_types, pattern, expected_names):
         """Test basic search"""
+        # clear agents to avoid conflicts with leaky tests
+        Agent.objects.all().delete()
+
         fake_agent(name="agent 1", alias="one")
         fake_agent(name="agent 2", alias="two")
 
@@ -51,7 +55,7 @@ class TestAgentSearch:
         for i in range(len(expected_names)):
             assert response["data"]["searchAgents"][i]["name"] in expected_names
 
-    def test_filter_chat(self):
+    def test_filter_chat(self, node_types):
         """Test chat filter"""
         agent1 = fake_agent(name="agent 1", alias="one")
         agent2 = fake_agent(name="agent 2", alias="two")

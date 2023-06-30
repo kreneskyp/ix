@@ -4,7 +4,7 @@ import pytest
 
 from ix.chains.llm_chain import LLMChain
 from ix.memory.artifacts import ArtifactMemory
-from ix.task_log.tests.fake import fake_artifact, fake_task
+from ix.task_log.tests.fake import afake_artifact, afake_task
 
 ARTIFACT_MEMORY = {
     "class_path": "ix.memory.artifacts.ArtifactMemory",
@@ -40,7 +40,7 @@ TASK_WITH_ARTIFACT_MEMORY = {
 
 @pytest.mark.django_db
 class TestArtifactMemory:
-    def test_llm_integration(self, task, load_chain, mock_openai):
+    async def test_llm_integration(self, atask, aload_chain, mock_openai):
         """
         Test memory class when integrated with LLMChain. Tests that langchain
         will detect the memory variables and include them when rendering the prompt.
@@ -52,7 +52,7 @@ class TestArtifactMemory:
         )
 
         # create chain
-        chain = load_chain(TASK_WITH_ARTIFACT_MEMORY)
+        chain = await aload_chain(TASK_WITH_ARTIFACT_MEMORY)
         assert isinstance(chain, LLMChain)
         assert isinstance(chain.memory, ArtifactMemory)
 
@@ -61,30 +61,30 @@ class TestArtifactMemory:
         assert chain.input_keys == ["name"]
 
         # run
-        artifact1 = fake_artifact(task=task, key="test_artifact_1")
-        chain.run(name="tester", artifact_keys=["test_artifact_1"])
+        artifact1 = await afake_artifact(task=atask, key="test_artifact_1")
+        await chain.arun(name="tester", artifact_keys=["test_artifact_1"])
 
         # assert artifact was used in prompt
-        mock_openai.completion_with_retry.assert_called_once()
-        message = mock_openai.completion_with_retry.call_args_list[0].kwargs[
+        mock_openai.acompletion_with_retry.assert_called_once()
+        message = mock_openai.acompletion_with_retry.call_args_list[0].kwargs[
             "messages"
         ][0]
         assert artifact1.as_memory_text() in message["content"]
 
-    def test_defaults(self, load_chain):
-        instance = load_chain(ARTIFACT_MEMORY)
+    async def test_defaults(self, aclean_artifacts, aload_chain):
+        instance = await aload_chain(ARTIFACT_MEMORY)
         assert isinstance(instance, ArtifactMemory)
 
         # test memory variables
         assert instance.memory_variables == ["related_artifacts"]
 
-    def test_load_memory(self, task, load_chain):
+    async def test_load_memory(self, atask, aload_chain):
         """
         Test various scenarios for loading memory variables.
         """
-        instance = load_chain(ARTIFACT_MEMORY)
-        artifact1 = fake_artifact(task=task, key="test_artifact_1")
-        artifact2 = fake_artifact(task=task, key="test_artifact_2")
+        instance = await aload_chain(ARTIFACT_MEMORY)
+        artifact1 = await afake_artifact(task=atask, key="test_artifact_1")
+        artifact2 = await afake_artifact(task=atask, key="test_artifact_2")
 
         # test no artifact_keys
         result1 = instance.load_memory_variables(dict())
@@ -119,13 +119,13 @@ class TestArtifactMemory:
         """Test mapping config input/outputs"""
         pass
 
-    def test_scope(self, task, load_chain):
+    async def test_scope(self, aclean_artifacts, atask, aload_chain):
         # artifact from another chat
-        unrelated_task = fake_task()
-        fake_artifact(task=unrelated_task, key="test_artifact_3")
+        unrelated_task = await afake_task()
+        afake_artifact(task=unrelated_task, key="test_artifact_3")
 
         # none of the excluded artifacts should be included in the memory
-        instance = load_chain(ARTIFACT_MEMORY)
+        instance = await aload_chain(ARTIFACT_MEMORY)
         inputs = dict(artifact_keys=["test_artifact_3"])
         result1 = instance.load_memory_variables(inputs=inputs)
         assert result1 == {"related_artifacts": ""}

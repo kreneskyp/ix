@@ -199,6 +199,25 @@ class TestMapSubchain:
         output = chain.run(**inputs)
         assert output == ["test1", "test2", "test3"]
 
+    async def test_acall(self, mock_mapsubchain):
+        chain = mock_mapsubchain
+        inputs = {"input1": ["test1", "test2", "test3"]}
+        output = await chain.arun(**inputs)
+        assert output == ["test1", "test2", "test3"]
+
+    async def test_acall_nested_input_map(
+        self, mock_subchain_config, aload_chain, mock_openai
+    ):
+        # setup nested map_input
+        config = mock_subchain_config["config"]
+        config["map_input"] = "input1.level2"
+        chain = await aload_chain(mock_subchain_config)
+
+        # run test
+        inputs = {"input1": {"level2": ["test1", "test2", "test3"]}}
+        output = await chain.arun(**inputs)
+        assert output == ["test1", "test2", "test3"]
+
     def test_memory(self, load_chain, mock_openai):
         mock_openai.__dict__["completion_with_retry"] = MagicMock(
             return_value=mock_openai.get_mock_content()

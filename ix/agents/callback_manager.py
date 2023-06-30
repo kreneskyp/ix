@@ -4,6 +4,7 @@ from functools import cached_property
 from django.db.models import Q
 from langchain.callbacks.manager import CallbackManager
 
+from ix.agents.models import Agent
 from ix.chat.models import Chat
 from ix.commands import CommandRegistry
 from ix.task_log.models import Task
@@ -23,19 +24,24 @@ class IxCallbackManager(CallbackManager):
     def __init__(
         self,
         task: Task,
+        agent: Agent,
         stack_id: str = None,
         parent: "IxCallbackHandler" = None,  # noqa: F821
     ):
         super().__init__(handlers=[])
 
         self.task = task
+        self.agent = agent
         self.stack_id = stack_id or "root"
         self.parent = parent
 
     def child(self, stack_id: str) -> "IxCallbackManager":
         """Return a child clone with nested stack_id"""
         child = type(self)(
-            parent=self, task=self.task, stack_id=f"{self.stack_id}.{stack_id}"
+            parent=self,
+            task=self.task,
+            agent=self.agent,
+            stack_id=f"{self.stack_id}.{stack_id}",
         )
         child.think_msg = self.think_msg
         return child

@@ -62,9 +62,6 @@ class MapSubchain(Chain):
     def output_keys(self) -> List[str]:
         return [self.output_key]
 
-    async def _acall(self, inputs: Dict[str, str]) -> Dict[str, str]:
-        pass  # pragma: no cover
-
     def _call(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
         map_input = self.map_input
         map_input_to = self.map_input_to
@@ -98,6 +95,46 @@ class MapSubchain(Chain):
             iteration_inputs[self.output_key] = outputs
             logger.debug(f"MapSubchain iteration_inputs={iteration_inputs}")
             iteration_outputs = self.chain.run(**iteration_inputs)
+            iteration_mapped_output = iteration_outputs
+            logger.debug(f"MapSubchain response outputs={iteration_mapped_output}")
+            outputs.append(iteration_mapped_output)
+
+        # return as output_key
+        return {self.output_key: outputs}
+
+    async def _acall(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+        map_input = self.map_input
+        map_input_to = self.map_input_to
+
+        # map input to values list
+        logger.debug(
+            f"MapSubchain mapping values from map_input={map_input} to map_input_to={map_input_to}"
+        )
+        jsonpath_expr = jsonpath_parse(map_input)
+        json_matches = jsonpath_expr.find(inputs)
+
+        if len(json_matches) == 0:
+            raise ValueError(
+                f"MapSubchain could not find input at {map_input} for {map_input_to} searched: {inputs}"
+            )
+
+        values = json_matches[0].value
+        if not isinstance(values, list):
+            raise ValueError(
+                f"MapSubchain input at {map_input} is not a list: {values}"
+            )
+
+        chain_inputs = inputs.copy()
+
+        # run chain for each value
+        outputs = []
+        for value in values:
+            logger.debug(f"MapSubchain processing value={value}")
+            iteration_inputs = chain_inputs.copy()
+            iteration_inputs[map_input_to] = value
+            iteration_inputs[self.output_key] = outputs
+            logger.debug(f"MapSubchain iteration_inputs={iteration_inputs}")
+            iteration_outputs = await self.chain.arun(**iteration_inputs)
             iteration_mapped_output = iteration_outputs
             logger.debug(f"MapSubchain response outputs={iteration_mapped_output}")
             outputs.append(iteration_mapped_output)

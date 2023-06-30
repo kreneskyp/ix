@@ -1,5 +1,6 @@
 import logging
 import uuid
+from asgiref.sync import sync_to_async
 from functools import cached_property
 from typing import Any, Dict
 
@@ -277,6 +278,10 @@ class Chain(models.Model):
 
     def load_chain(self, callback_manager) -> LangChain:
         return self.root.load(callback_manager)
+
+    async def aload_chain(self, callback_manager) -> LangChain:
+        root = await ChainNode.objects.aget(chain_id=self.id, root=True)
+        return await sync_to_async(root.load)(callback_manager)
 
     def clear_chain(self):
         """removes the chain nodes associated with this chain"""
