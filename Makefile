@@ -161,7 +161,7 @@ dev_fixtures: compose
 	${DOCKER_COMPOSE_RUN} ./manage.py loaddata fake_user
 
 	# load component NodeTypes
-	${DOCKER_COMPOSE_RUN} ./manage.py import_langchain
+	${DOCKER_COMPOSE_RUN} ./manage.py loaddata node_types
 
  	# initial agents + chains
 	${DOCKER_COMPOSE_RUN} ./manage.py loaddata ix_v2 code_v2 pirate_v1
