@@ -95,8 +95,7 @@ export const ChatInput = ({ chat }) => {
 
   const { sendInput, error, loading } = useSendInput(chat.id);
 
-  const handleSendInput = async () => {
-    // don't send empty input
+  const handleSendInput = useCallback(async () => {
     const input = serialize(editor.children);
     if (input === "") {
       return;
@@ -105,7 +104,7 @@ export const ChatInput = ({ chat }) => {
     // send input and then clear the input
     await sendInput(input);
     clear_editor(editor);
-  };
+  }, [editor, sendInput]);
 
   // key press handler attached to editor
   const onKeyDown = useCallback(
