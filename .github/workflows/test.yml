@@ -44,7 +44,7 @@ jobs:
           path: docker-image.tar
           key: ${{ steps.load_image_url.outputs.image-url }}
 
-  frontend:
+  dev_setup:
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -55,12 +55,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build frontend
+      - name: Test dev_setup
         uses: ./.github/actions/run-docker
         with:
-          # build frontend
-          # For now just testing that frontend builds
-          command: make frontend
+          command: make dev_setup
 
   pytest:
     needs: build
