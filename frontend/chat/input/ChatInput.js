@@ -144,7 +144,7 @@ export const ChatInput = ({ chat }) => {
         }
       }
     },
-    [results, editor, index, target]
+    [results, editor, index, target, chat.id]
   );
 
   // handler for editor changes
