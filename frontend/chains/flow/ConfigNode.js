@@ -168,9 +168,9 @@ export const ConfigNode = ({ data }) => {
         className="drag-handle"
       >
         <Flex alignItems="center" justifyContent="space-between" width="100%">
-          <Box>
+          <Box pr={5}>
             <FontAwesomeIcon icon={styles?.icon} />{" "}
-            {node.name || node.classPath.split(".").pop()}
+            {node.name || type?.name || node.classPath.split(".").pop()}
           </Box>
           <DeleteIcon node={node} />
         </Flex>
