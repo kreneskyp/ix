@@ -1,7 +1,4 @@
-from langchain import ArxivAPIWrapper
-
 from ix.chains.fixture_src.common import VERBOSE
-from ix.chains.types import FieldConfig
 
 DESCRIPTION = {
     "name": "description",
