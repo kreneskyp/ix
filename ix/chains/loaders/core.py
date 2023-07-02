@@ -112,7 +112,7 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, parent=None)
 
     node_class = import_node_class(node.class_path)
 
-    if node_type.type == "chain":
+    if node_type.type in {"chain", "agent"}:
         config["callback_manager"] = callback_manager
 
     instance = node_class(**config)

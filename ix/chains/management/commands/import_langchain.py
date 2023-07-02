@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 
+from ix.chains.fixture_src.agents import AGENTS
 from ix.chains.fixture_src.artifacts import ARTIFACT_MEMORY, SAVE_ARTIFACT
 from ix.chains.fixture_src.chains import LLM_CHAIN, LLM_TOOL_CHAIN, LLM_REPLY
 from ix.chains.fixture_src.chat_memory_backend import (
@@ -29,6 +30,7 @@ from ix.chains.fixture_src.openai_functions import (
 from ix.chains.fixture_src.prompts import CHAT_PROMPT_TEMPLATE
 from ix.chains.fixture_src.routing import SEQUENCE, MAP_SUBCHAIN
 from ix.chains.fixture_src.testing import MOCK_MEMORY, MOCK_CHAIN
+from ix.chains.fixture_src.tools import TOOLS
 from ix.chains.fixture_src.vectorstores import REDIS_VECTORSTORE
 from ix.chains.models import NodeType
 
@@ -45,6 +47,10 @@ COMPONENTS.extend(
         MOSAICML_INSTRUCTOR_EMBEDDINGS,
     ]
 )
+
+# Agents
+COMPONENTS.extend(AGENTS)
+COMPONENTS.extend(TOOLS)
 
 # LLMS
 COMPONENTS.extend(
