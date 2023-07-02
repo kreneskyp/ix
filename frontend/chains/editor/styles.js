@@ -29,6 +29,7 @@ export const NODE_STYLES = {
   },
   agent: {
     icon: faRobot,
+    component: ChainNode,
   },
   tool: {
     icon: faTools,
