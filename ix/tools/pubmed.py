@@ -8,4 +8,4 @@ from typing import Any
 def get_pubmed(**kwargs: Any) -> BaseTool:
     tool_kwargs = extract_tool_kwargs(kwargs)
     wrapper = PubMedAPIWrapper(**kwargs)
-    return PubmedQueryRun(api_wrapper=wrapper, **tool_kwargs
+    return PubmedQueryRun(api_wrapper=wrapper, **tool_kwargs)
