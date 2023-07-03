@@ -166,7 +166,9 @@ export const ConfigNode = ({ data }) => {
       <Handle
         id={type.type}
         type="source"
-        position={type.type === "chain" || type.type === "agent" ? "left" : "right"}
+        position={
+          type.type === "chain" || type.type === "agent" ? "left" : "right"
+        }
         style={{ top: "15px", transform: "translateX(-2px)" }}
       />
       <Heading

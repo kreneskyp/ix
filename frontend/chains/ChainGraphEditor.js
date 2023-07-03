@@ -207,7 +207,10 @@ const ChainGraphEditor = ({ graph }) => {
       // connection types must match
       // HAX: adding a special case for chain-agent connections until expectedType can be
       //      expanded to be a set of types
-      if (expectedType === providedType || (expectedType === "chain" && providedType === "agent")) {
+      if (
+        expectedType === providedType ||
+        (expectedType === "chain" && providedType === "agent")
+      ) {
         const instanceEdges = reactFlowInstance.getEdges();
         const targetEdges = instanceEdges.filter(
           (e) =>
