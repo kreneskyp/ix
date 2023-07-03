@@ -67,3 +67,10 @@ VECTORSTORE_TARGET = {
     "type": "target",
     "source_type": "vectorstore",
 }
+
+TOOLS_TARGET = {
+    "key": "tools",
+    "type": "target",
+    "source_type": "tool",
+    "multiple": True,
+}

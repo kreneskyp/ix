@@ -3,6 +3,7 @@ from copy import deepcopy
 import pytest
 from unittest.mock import MagicMock
 
+from langchain.agents import AgentExecutor
 from langchain.base_language import BaseLanguageModel
 from langchain.memory import (
     ConversationBufferMemory,
@@ -10,9 +11,13 @@ from langchain.memory import (
     CombinedMemory,
 )
 from langchain.schema import BaseChatMessageHistory, BaseMemory
+from langchain.tools import BaseTool
 
 from ix.agents.callback_manager import IxCallbackManager
+from ix.chains.agents import AgentReply
+from ix.chains.fixture_src.tools import GOOGLE_SEARCH
 from ix.chains.loaders.memory import get_memory_session
+from ix.chains.loaders.tools import extract_tool_kwargs
 from ix.chains.tests.mock_memory import MockMemory
 from ix.memory.artifacts import ArtifactMemory
 
@@ -379,3 +384,108 @@ class TestGetMemorySession:
 class TestLoadChain:
     def test_load_chain(self):
         pass
+
+
+class TestExtractToolKwargs:
+    @pytest.fixture
+    def kwargs(self):
+        return {
+            "description": "value1",
+            "return_direct": False,
+            "verbose": False,
+            "tool_key1": "tool_value1",
+            "tool_key2": "tool_value2",
+        }
+
+    def test_extract_tool_kwargs_returns_dict(self, kwargs):
+        result = extract_tool_kwargs(kwargs)
+        assert isinstance(result, dict)
+
+    def test_extract_tool_kwargs_only_includes_tool_kwargs(self, kwargs):
+        node_kwargs = kwargs.copy()
+        tool_kwargs = extract_tool_kwargs(node_kwargs)
+        expected_node_kwargs = {"tool_key1": "tool_value1", "tool_key2": "tool_value2"}
+        expected_tool_kwargs = {
+            "description": "value1",
+            "return_direct": False,
+            "verbose": False,
+        }
+        assert tool_kwargs == expected_tool_kwargs
+        assert expected_node_kwargs == node_kwargs
+
+
+GOOGLE_SEARCH_CONFIG = {
+    "class_path": GOOGLE_SEARCH["class_path"],
+    "name": "tester",
+    "description": "test",
+    "config": {},
+}
+
+
+@pytest.fixture()
+def mock_google_api_key(monkeypatch):
+    monkeypatch.setenv("GOOGLE_API_KEY", "MOCK_KEY")
+    monkeypatch.setenv("GOOGLE_CSE_ID", "MOCK_ID")
+
+
+@pytest.mark.django_db
+class TestGoogleTools:
+    async def test_load_tools(self, aload_chain, mock_google_api_key):
+        """Test that tools can be loaded."""
+        config = {
+            "class_path": GOOGLE_SEARCH["class_path"],
+            "name": "tester",
+            "description": "test",
+            "config": {},
+        }
+
+        instance = await aload_chain(config)
+        assert isinstance(instance, BaseTool)
+
+
+@pytest.mark.django_db
+class TestLoadAgents:
+    # list of known agents. This list may not be exhaustive
+    # of all agents available since functions are dynamically
+    # loaded from LangChain code.
+    KNOWN_AGENTS = [
+        "initialize_zero_shot_react_description",
+        "initialize_conversational_react_description",
+        "initialize_chat_zero_shot_react_description",
+        "initialize_chat_conversational_react_description",
+        "initialize_structured_chat_zero_shot_react_description",
+        "initialize_openai_functions",
+        "initialize_openai_multi_functions",
+    ]
+
+    def test_init_functions(self):
+        """Test that agent init wrappers were generated."""
+        from ix.chains.loaders.agents import FUNCTION_NAMES
+
+        for name in self.KNOWN_AGENTS:
+            assert name in FUNCTION_NAMES
+
+    async def test_load_agents(self, aload_chain, mock_openai, mock_google_api_key):
+        """Test that agent can be loaded."""
+
+        agents = [
+            "initialize_zero_shot_react_description",
+            "initialize_conversational_react_description",
+            "initialize_chat_zero_shot_react_description",
+            "initialize_chat_conversational_react_description",
+            "initialize_structured_chat_zero_shot_react_description",
+            "initialize_openai_functions",
+            "initialize_openai_multi_functions",
+        ]
+
+        for name in agents:
+            config = {
+                "class_path": f"ix.chains.loaders.agents.{name}",
+                "name": "tester",
+                "description": "test",
+                "config": {"tools": [GOOGLE_SEARCH_CONFIG], "llm": OPENAI_LLM},
+            }
+
+            instance = await aload_chain(config)
+            assert isinstance(instance, AgentReply)
+            assert isinstance(instance.agent_executor, AgentExecutor)

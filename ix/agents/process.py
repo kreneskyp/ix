@@ -133,7 +133,8 @@ class AgentProcess:
 
         start = time.time()
         try:
-            response = await chain.arun(**user_input)
+            # Hax: copy user_input to input to support agents.
+            response = await chain.arun(input=user_input["user_input"], **user_input)
         except:  # noqa: E722
             raise
         finally:

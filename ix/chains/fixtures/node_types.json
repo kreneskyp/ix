@@ -38,6 +38,54 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "01fc1524-9c01-4970-a01f-56ff70218500",
+  "fields": {
+    "name": "React Docstore Agent",
+    "description": "Agent that interacts with the document store to obtain reaction-based information.",
+    "class_path": "ix.chains.loaders.agents.initialize_react_docstore",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "151cbfff-6e65-4ed1-9c70-100deee0e873",
   "fields": {
     "name": "Parse JSON",
@@ -56,6 +104,54 @@
         "name": "output_key",
         "type": "text",
         "label": "Output Key"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "1b76aa58-eca9-41fa-b255-1d572de46aa8",
+  "fields": {
+    "name": "Zero Shot React Description Agent",
+    "description": "Agent that generates descriptions by taking zero-shot approach using reaction information.",
+    "class_path": "ix.chains.loaders.agents.initialize_zero_shot_react_description",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
       }
     ],
     "child_field": null
@@ -248,6 +344,102 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "35152553-b5b4-4130-97e2-bda033ca23b2",
+  "fields": {
+    "name": "Structured Chat Zero Shot React Description Agent",
+    "description": "Agent that generates descriptions in a structured chat context using a zero-shot approach and reaction information.",
+    "class_path": "ix.chains.loaders.agents.initialize_structured_chat_zero_shot_react_description",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "36edc450-6ea3-4fd4-abf6-a5fff02da718",
+  "fields": {
+    "name": "Self Ask with Search Agent",
+    "description": "Agent that asks itself queries and searches for answers in a given context.",
+    "class_path": "ix.chains.loaders.agents.initialize_self_ask_with_search",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "3ffc030c-f6cb-4fc2-9cd7-ff1cfd3a5c99",
   "fields": {
     "name": "OpenAI Embeddings",
@@ -268,6 +460,102 @@
         ],
         "default": "text-embedding-ada-002",
         "description": "The model to use."
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "54d5cfcb-bf9c-4fe2-9692-075d6849ce23",
+  "fields": {
+    "name": "Chat Zero Shot React Description Agent",
+    "description": "Agent that generates descriptions in a chat-based context using a zero-shot approach and reaction information.",
+    "class_path": "ix.chains.loaders.agents.initialize_chat_zero_shot_react_description",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "59a9e9c2-df2e-42be-be5d-d642deff11ae",
+  "fields": {
+    "name": "Conversational React Description Agent",
+    "description": "Agent that provides descriptions in a conversational manner using reaction information.",
+    "class_path": "ix.chains.loaders.agents.initialize_conversational_react_description",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
       }
     ],
     "child_field": null
@@ -315,6 +603,54 @@
         "input": "secret",
         "width": "100%",
         "description": "MosaicML API token"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "74fd7b8b-4be7-49dc-a925-5e522c03bbf4",
+  "fields": {
+    "name": "OpenAI Function Agent",
+    "description": "Agent that uses OpenAI's API to generate text.",
+    "class_path": "ix.chains.loaders.agents.initialize_openai_functions_agent",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
       }
     ],
     "child_field": null
@@ -718,6 +1054,54 @@
         "name": "encode_kwargs",
         "type": "dictionary",
         "description": "Key word arguments to pass when calling the `encode` method of the model"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a3dd72e8-1554-47dd-8f42-0dda58c06f7c",
+  "fields": {
+    "name": "Chat Conversational React Description Agent",
+    "description": "Agent that provides descriptions in a chat-based context in a conversational manner using reaction information.",
+    "class_path": "ix.chains.loaders.agents.initialize_chat_conversational_react_description",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
       }
     ],
     "child_field": null
