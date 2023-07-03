@@ -99,12 +99,25 @@ export const ConfigNode = ({ data }) => {
   const { callback: debouncedUpdateNode } = useDebounce(api.updateNode, 1000);
   const handleConfigChange = useMemo(() => {
     function all(newConfig, delay = 0) {
+      // remove empty fields from config so backend's default value and
+      // logic is used when the input field is empty. e.g. many API keys
+      // will default to an ENV variable if the field is empty, but
+      // wouldn't if it were an empty string or explicitly None.
+      const filteredConfig = Object.entries(newConfig).reduce(
+        (acc, [key, value]) => {
+          if (value !== "") {
+            acc[key] = value;
+          }
+          return acc;
+        }
+      );
+
       const data = {
         id: node.id,
         classPath: node.classPath,
         description: node.description,
         position: node.position,
-        config: newConfig,
+        config: filteredConfig,
       };
       debouncedUpdateNode({ data });
       setConfig(newConfig);
