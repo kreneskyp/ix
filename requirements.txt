@@ -34,6 +34,6 @@ pytest-mock==3.10.0
 redis==4.5.5
 requests==2.31.0
 tiktoken==0.4.0
-wikpedia==1.4.0
+wikipedia==1.4.0
 wolframalpha==5.0.0
 uvicorn[standard]==0.22.0
