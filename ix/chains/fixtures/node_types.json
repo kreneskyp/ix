@@ -43,7 +43,55 @@
     "name": "React Docstore Agent",
     "description": "Agent that interacts with the document store to obtain reaction-based information.",
     "class_path": "ix.chains.loaders.agents.initialize_react_docstore",
-    "type": "chain",
+    "type": "agent",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "072d63be-45ef-4df2-8095-57a6560598ad",
+  "fields": {
+    "name": "OpenAI Multifunction Agent",
+    "description": "Agent that uses OpenAI's API to generate text.",
+    "class_path": "ix.chains.loaders.agents.initialize_openai_multi_functions",
+    "type": "agent",
     "display_type": "node",
     "connectors": [
       {
@@ -116,7 +164,7 @@
     "name": "Zero Shot React Description Agent",
     "description": "Agent that generates descriptions by taking zero-shot approach using reaction information.",
     "class_path": "ix.chains.loaders.agents.initialize_zero_shot_react_description",
-    "type": "chain",
+    "type": "agent",
     "display_type": "node",
     "connectors": [
       {
@@ -349,7 +397,7 @@
     "name": "Structured Chat Zero Shot React Description Agent",
     "description": "Agent that generates descriptions in a structured chat context using a zero-shot approach and reaction information.",
     "class_path": "ix.chains.loaders.agents.initialize_structured_chat_zero_shot_react_description",
-    "type": "chain",
+    "type": "agent",
     "display_type": "node",
     "connectors": [
       {
@@ -397,7 +445,7 @@
     "name": "Self Ask with Search Agent",
     "description": "Agent that asks itself queries and searches for answers in a given context.",
     "class_path": "ix.chains.loaders.agents.initialize_self_ask_with_search",
-    "type": "chain",
+    "type": "agent",
     "display_type": "node",
     "connectors": [
       {
@@ -472,7 +520,7 @@
     "name": "Chat Zero Shot React Description Agent",
     "description": "Agent that generates descriptions in a chat-based context using a zero-shot approach and reaction information.",
     "class_path": "ix.chains.loaders.agents.initialize_chat_zero_shot_react_description",
-    "type": "chain",
+    "type": "agent",
     "display_type": "node",
     "connectors": [
       {
@@ -520,7 +568,7 @@
     "name": "Conversational React Description Agent",
     "description": "Agent that provides descriptions in a conversational manner using reaction information.",
     "class_path": "ix.chains.loaders.agents.initialize_conversational_react_description",
-    "type": "chain",
+    "type": "agent",
     "display_type": "node",
     "connectors": [
       {
@@ -1066,7 +1114,7 @@
     "name": "Chat Conversational React Description Agent",
     "description": "Agent that provides descriptions in a chat-based context in a conversational manner using reaction information.",
     "class_path": "ix.chains.loaders.agents.initialize_chat_conversational_react_description",
-    "type": "chain",
+    "type": "agent",
     "display_type": "node",
     "connectors": [
       {
@@ -1174,7 +1222,67 @@
         "source_type": "output_parser"
       }
     ],
-    "fields": null,
+    "fields": [
+      {
+        "name": "messages",
+        "type": "list",
+        "default": [
+          {
+            "role": "system",
+            "template": "",
+            "input_variables": []
+          }
+        ]
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "b7bdef2c-5127-4084-a5c7-476e3805742b",
+  "fields": {
+    "name": "OpenAI Function Agent",
+    "description": "Agent that uses OpenAI's API to generate text.",
+    "class_path": "ix.chains.loaders.agents.initialize_openai_functions",
+    "type": "agent",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      }
+    ],
     "child_field": null
   }
 },
@@ -1371,6 +1479,42 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "c5ebfff5-5368-45f5-b7eb-c02b9b9c5f63",
+  "fields": {
+    "name": "Wolfram Alpha",
+    "description": "Wolfram Alpha search engine for math and science",
+    "class_path": "ix.tools.wolfram_alpha.get_wolfram_alpha",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "description",
+        "type": "str",
+        "default": ""
+      },
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "wolfram_alpha_app_id",
+        "type": "str",
+        "input": "secret",
+        "label": "Wolfram Alpha App ID"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "d13aca50-e998-4569-ba3c-b18985a1ca87",
   "fields": {
     "name": "Sequence",
@@ -1538,6 +1682,66 @@
         "type": "string",
         "width": "100%",
         "default": "/var/app/workdir/chat_memory.txt"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "e257ed11-5bc7-4483-91a4-deb1f4058ef9",
+  "fields": {
+    "name": "Google Search",
+    "description": "Tool that searches Google for a given query.",
+    "class_path": "ix.tools.google.get_google_search",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "description",
+        "type": "str",
+        "default": ""
+      },
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "google_api_key",
+        "type": "str",
+        "input": "secret",
+        "label": "Google_api_key",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "google_cse_id",
+        "type": "str",
+        "input": "secret",
+        "label": "Google_cse_id",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "k",
+        "type": "int",
+        "label": "K",
+        "default": 10,
+        "required": false
+      },
+      {
+        "name": "siterestrict",
+        "type": "boolean",
+        "label": "Siterestrict",
+        "default": false,
+        "required": false
       }
     ],
     "child_field": null
