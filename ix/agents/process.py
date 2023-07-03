@@ -131,10 +131,16 @@ class AgentProcess:
 
         logger.info(f"Sending request to chain={self.chain.name} prompt={user_input}")
 
+        # auto-map user_input to input if not provided.
+        # work around until chat input key can be configured per chain
+        extra_kwargs = {}
+        if "input" not in user_input:
+            extra_kwargs["input"] = user_input
+
         start = time.time()
         try:
             # Hax: copy user_input to input to support agents.
-            response = await chain.arun(input=user_input["user_input"], **user_input)
+            response = await chain.arun(**extra_kwargs, **user_input)
         except:  # noqa: E722
             raise
         finally:
