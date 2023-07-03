@@ -23,6 +23,14 @@ export const FunctionSchemaNode = ({ config, onFieldChange }) => {
   return (
     <>
       <Box p={2} minWidth={200}>
+        <NodeResizeControl
+          variant={"line"}
+          minWidth={250}
+          position={"left"}
+          h={"100%"}
+          w={"10px"}
+          style={{ border: "5px solid transparent" }}
+        />
         <FormLabel justify="start">Name</FormLabel>
         <Input name="name" value={config.name} onChange={handleChange} />
         <FormLabel justify="start">Description</FormLabel>
@@ -48,7 +56,7 @@ export const FunctionSchemaNode = ({ config, onFieldChange }) => {
           variant={"line"}
           minWidth={250}
           h={"100%"}
-          style={{ border: 0 }}
+          style={{ border: "5px solid transparent" }}
         />
       </Box>
     </>

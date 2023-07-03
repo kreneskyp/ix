@@ -100,6 +100,14 @@ const PromptEditor = ({ data, onChange }) => {
 
   return (
     <VStack spacing={1} align="stretch">
+      <NodeResizeControl
+        variant={"line"}
+        minWidth={400}
+        position={"left"}
+        h={"100%"}
+        style={{ border: "5px solid transparent" }}
+      />
+
       {messages.map((message, index) => (
         <VStack key={index} p={2} spacing={2}>
           <Flex
@@ -176,7 +184,7 @@ const PromptEditor = ({ data, onChange }) => {
         variant={"line"}
         minWidth={400}
         h={"100%"}
-        style={{ border: 0 }}
+        style={{ border: "5px solid transparent" }}
       />
     </VStack>
   );
