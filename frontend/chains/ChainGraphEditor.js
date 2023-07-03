@@ -137,15 +137,12 @@ const ChainGraphEditor = ({ graph }) => {
 
   const onNodeDragStop = useCallback((event, node) => {
     // update node with new position
-    const data = {
-      id: node.id,
-      classPath: node.data.node.classPath,
-      name: node.data.node.name,
-      description: node.data.node.description,
-      config: node.data.node.config,
-      position: node.position,
-    };
-    api.updateNode({ data });
+    api.updateNodePosition({
+      data: {
+        id: node.id,
+        position: node.position,
+      },
+    });
   }, []);
 
   // new edges
@@ -207,7 +204,10 @@ const ChainGraphEditor = ({ graph }) => {
       // connection types must match
       // HAX: adding a special case for chain-agent connections until expectedType can be
       //      expanded to be a set of types
-      if (expectedType === providedType || (expectedType === "chain" && providedType === "agent")) {
+      if (
+        expectedType === providedType ||
+        (expectedType === "chain" && providedType === "agent")
+      ) {
         const instanceEdges = reactFlowInstance.getEdges();
         const targetEdges = instanceEdges.filter(
           (e) =>
