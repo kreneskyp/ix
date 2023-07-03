@@ -2,10 +2,10 @@ from ix.chains.fixture_src.targets import OUTPUT_PARSER_TARGET
 
 DEFAULT_MESSAGES = [
     {
-    "role": "system",
-    "template": "",
-    "input_variables": [],
-  }
+        "role": "system",
+        "template": "",
+        "input_variables": [],
+    }
 ]
 
 CHAT_PROMPT_TEMPLATE = {
@@ -20,6 +20,5 @@ CHAT_PROMPT_TEMPLATE = {
             "type": "list",
             "default": DEFAULT_MESSAGES,
         }
-    ]
-
+    ],
 }
