@@ -120,6 +120,28 @@ class UpdateChainNodeMutation(graphene.Mutation):
         return UpdateChainNodeMutation(node=node)
 
 
+class ChainNodePositionInput(graphene.InputObjectType):
+    id = graphene.UUID()
+    position = PositionInput()
+
+
+class UpdateChainNodePositionMutation(graphene.Mutation):
+    class Arguments:
+        data = ChainNodePositionInput(required=True)
+
+    node = graphene.Field(ChainNodeType)
+
+    @staticmethod
+    def mutate(root, info, data):
+        # don't allow updating the chain
+        data.pop("chain_id", None)
+
+        node = ChainNode.objects.get(id=data["id"])
+        node.position = data["position"]
+        node.save(update_fields=["position"])
+        return UpdateChainNodeMutation(node=node)
+
+
 class DeleteChainNodeMutation(graphene.Mutation):
     class Arguments:
         id = graphene.UUID(required=True)
@@ -211,6 +233,7 @@ class Mutation(graphene.ObjectType):
     set_chain_root = SetChainRootMutation.Field()
     add_chain_node = AddChainNodeMutation.Field()
     update_chain_node = UpdateChainNodeMutation.Field()
+    update_chain_node_position = UpdateChainNodePositionMutation.Field()
     delete_chain_node = DeleteChainNodeMutation.Field()
     add_chain_edge = AddChainEdgeMutation.Field()
     update_chain_edge = UpdateChainEdgeMutation.Field()
