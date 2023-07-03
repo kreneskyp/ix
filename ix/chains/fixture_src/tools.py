@@ -1,3 +1,18 @@
+from langchain import (
+    GoogleSearchAPIWrapper,
+    GoogleSerperAPIWrapper,
+    ArxivAPIWrapper,
+    WikipediaAPIWrapper,
+)
+from langchain.utilities import (
+    BingSearchAPIWrapper,
+    DuckDuckGoSearchAPIWrapper,
+    GraphQLAPIWrapper,
+    LambdaWrapper,
+    PubMedAPIWrapper,
+)
+
+from ix.chains.config import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
 
 DESCRIPTION = {
@@ -14,20 +29,149 @@ RETURN_DIRECT = {
 
 TOOL_BASE_FIELDS = [DESCRIPTION, RETURN_DIRECT, VERBOSE]
 
+ARXIV_SEARCH = {
+    "class_path": "ix.tools.arxiv.get_arxiv",
+    "type": "tool",
+    "name": " search",
+    "description": "Tool that searches Arxiv for a given query.",
+    "fields": TOOL_BASE_FIELDS
+    + NodeTypeField.get_fields(
+        ArxivAPIWrapper,
+        include=[
+            "top_k_results",
+            "ARXIV_MAX_QUERY_LENGTH",
+            "load_max_docs",
+            "load_all_available_meta",
+            "doc_content_chars_max",
+        ],
+    ),
+}
+
+BING_SEARCH = {
+    "class_path": "ix.tools.bing.get_bing_search",
+    "type": "tool",
+    "name": "Bing Search",
+    "description": "Tool that searches Bing for a given query.",
+    "fields": TOOL_BASE_FIELDS
+    + NodeTypeField.get_fields(
+        BingSearchAPIWrapper,
+        include=["bing_subscription_key", "bing_search_url", "k"],
+        field_options={
+            "bing_subscription_key": {
+                "input": "secret",
+            },
+            "bing_search_url": {
+                "style": {"width": "100%"},
+            },
+        },
+    ),
+}
+
+DUCK_DUCK_GO_SEARCH = {
+    "class_path": "ix.tools.duckduckgo.get_ddg_search",
+    "type": "tool",
+    "name": "DuckDuckGo Search",
+    "description": "Tool that searches DuckDuckGo for a given query.",
+    "fields": TOOL_BASE_FIELDS
+    + NodeTypeField.get_fields(
+        DuckDuckGoSearchAPIWrapper,
+        include=["k", "region", "safesearch", "time", "max_results"],
+    ),
+}
+
 GOOGLE_SEARCH = {
     "class_path": "ix.tools.google.get_google_search",
     "type": "tool",
     "name": "Google Search",
     "description": "Tool that searches Google for a given query.",
-    "fields": TOOL_BASE_FIELDS + [],
+    "fields": TOOL_BASE_FIELDS
+    + NodeTypeField.get_fields(
+        GoogleSearchAPIWrapper,
+        include=["google_api_key", "google_cse_id", "k", "siterestrict"],
+        field_options={
+            "google_api_key": {
+                "input": "secret",
+            },
+            "google_cse_id": {
+                "input": "secret",
+            },
+        },
+    ),
 }
 
 GOOGLE_SERPER = {
-    "class_path": "ix.tools.google.get_google_search",
+    "class_path": "ix.tools.google.get_google_serper",
     "type": "tool",
     "name": "Google Search",
     "description": "Tool that searches Google for a given query.",
-    "fields": TOOL_BASE_FIELDS + [],
+    "fields": TOOL_BASE_FIELDS
+    + NodeTypeField.get_fields(
+        GoogleSerperAPIWrapper,
+        include=["k", "gl", "hl", "type", "tbs", "serper_api_key"],
+        field_options={
+            "serper_api_key": {
+                "input": "secret",
+            },
+        },
+    ),
+}
+
+GRAPHQL_TOOL = {
+    "class_path": "ix.tools.graphql.get_graphql_tool",
+    "type": "tool",
+    "name": "GraphQL Tool",
+    "description": "Tool that searches GraphQL for a given query.",
+    "fields": TOOL_BASE_FIELDS
+    + NodeTypeField.get_fields(GraphQLAPIWrapper, include=["graphql_endpoint"]),
+}
+
+LAMBDA_API = {
+    "class_path": "ix.tools.lambda_api.get_lambda_api",
+    "type": "tool",
+    "name": "Lambda API",
+    "description": "Tool that searches Lambda for a given query.",
+    "fields": TOOL_BASE_FIELDS
+    + NodeTypeField.get_fields(
+        LambdaWrapper,
+        include=["function_name", "awslambda_tool_name", "awslambda_tool_description"],
+    ),
+}
+
+PUB_MED = {
+    "name": "Pubmed",
+    "description": "Pubmed search engine",
+    "class_path": "ix.tools.pubmed.get_pubmed",
+    "type": "tool",
+    "fields": TOOL_BASE_FIELDS
+    + NodeTypeField.get_fields(
+        PubMedAPIWrapper,
+        include=[
+            "max_retry",
+            "top_k_results",
+            "load_max_docs",
+            "ARXIV_MAX_QUERY_LENGTH",
+            "doc_content_chars_max",
+            "load_all_available_meta",
+            "email",
+        ],
+    ),
+}
+
+WIKIPEDIA = {
+    "name": "Wikipedia",
+    "description": "Wikipedia search engine",
+    "class_path": "ix.tools.wikipedia.get_wikipedia",
+    "type": "tool",
+    "fields": TOOL_BASE_FIELDS
+    + NodeTypeField.get_fields(
+        WikipediaAPIWrapper,
+        include=[
+            "top_k_results",
+            "lang",
+            "load_all_available_meta",
+            "doc_content_chars_max",
+        ],
+    ),
 }
 
 
@@ -50,6 +194,14 @@ WOLFRAM = {
 
 
 TOOLS = [
+    ARXIV_SEARCH,
+    BING_SEARCH,
+    DUCK_DUCK_GO_SEARCH,
     GOOGLE_SEARCH,
+    GOOGLE_SERPER,
+    GRAPHQL_TOOL,
+    LAMBDA_API,
+    PUB_MED,
+    WIKIPEDIA,
     WOLFRAM,
 ]

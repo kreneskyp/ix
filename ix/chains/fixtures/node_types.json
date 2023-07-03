@@ -237,6 +237,97 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "2281566f-0611-4eef-b870-547e39bacc45",
+  "fields": {
+    "name": "Google Search",
+    "description": "Tool that searches Google for a given query.",
+    "class_path": "ix.tools.google.get_google_serper",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "description",
+        "type": "str",
+        "default": ""
+      },
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "k",
+        "type": "int",
+        "label": "K",
+        "default": 10,
+        "required": false
+      },
+      {
+        "name": "gl",
+        "type": "str",
+        "label": "Gl",
+        "default": "us",
+        "required": false
+      },
+      {
+        "name": "hl",
+        "type": "str",
+        "label": "Hl",
+        "default": "en",
+        "required": false
+      },
+      {
+        "name": "type",
+        "type": "str",
+        "label": "Type",
+        "choices": [
+          {
+            "label": "News",
+            "value": "news"
+          },
+          {
+            "label": "Search",
+            "value": "search"
+          },
+          {
+            "label": "Places",
+            "value": "places"
+          },
+          {
+            "label": "Images",
+            "value": "images"
+          }
+        ],
+        "default": "search",
+        "required": false
+      },
+      {
+        "name": "tbs",
+        "type": "str",
+        "label": "Tbs",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "serper_api_key",
+        "type": "str",
+        "input": "secret",
+        "label": "Serper_api_key",
+        "default": null,
+        "required": false
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "267a48b0-967d-4df9-b6ec-dec1dd3992b9",
   "fields": {
     "name": "LlamaCpp Embeddings",
@@ -488,6 +579,64 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "39414ada-446f-4949-b087-193d1c93cb27",
+  "fields": {
+    "name": "Wikipedia",
+    "description": "Wikipedia search engine",
+    "class_path": "ix.tools.wikipedia.get_wikipedia",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "description",
+        "type": "str",
+        "default": ""
+      },
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "top_k_results",
+        "type": "int",
+        "label": "Top_k_results",
+        "default": 3,
+        "required": false
+      },
+      {
+        "name": "lang",
+        "type": "str",
+        "label": "Lang",
+        "default": "en",
+        "required": false
+      },
+      {
+        "name": "load_all_available_meta",
+        "type": "boolean",
+        "label": "Load_all_available_meta",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "doc_content_chars_max",
+        "type": "int",
+        "label": "Doc_content_chars_max",
+        "default": 4000,
+        "required": false
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "3ffc030c-f6cb-4fc2-9cd7-ff1cfd3a5c99",
   "fields": {
     "name": "OpenAI Embeddings",
@@ -508,6 +657,43 @@
         ],
         "default": "text-embedding-ada-002",
         "description": "The model to use."
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "4eb6a170-d0e4-428e-be8d-09ca1ca8383d",
+  "fields": {
+    "name": "GraphQL Tool",
+    "description": "Tool that searches GraphQL for a given query.",
+    "class_path": "ix.tools.graphql.get_graphql_tool",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "description",
+        "type": "str",
+        "default": ""
+      },
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "graphql_endpoint",
+        "type": "str",
+        "label": "Graphql_endpoint",
+        "default": null,
+        "required": true
       }
     ],
     "child_field": null
@@ -604,6 +790,129 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "62513b96-183d-43cb-a839-b44d024c2101",
+  "fields": {
+    "name": " search",
+    "description": "Tool that searches Arxiv for a given query.",
+    "class_path": "ix.tools.arxiv.get_arxiv",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "description",
+        "type": "str",
+        "default": ""
+      },
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "top_k_results",
+        "type": "int",
+        "label": "Top_k_results",
+        "default": 3,
+        "required": false
+      },
+      {
+        "name": "load_max_docs",
+        "type": "int",
+        "label": "Load_max_docs",
+        "default": 100,
+        "required": false
+      },
+      {
+        "name": "load_all_available_meta",
+        "type": "boolean",
+        "label": "Load_all_available_meta",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "doc_content_chars_max",
+        "type": "int",
+        "label": "Doc_content_chars_max",
+        "default": 4000,
+        "required": false
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "68c6cb60-8ae6-4242-8e68-220d6b0ea472",
+  "fields": {
+    "name": "DuckDuckGo Search",
+    "description": "Tool that searches DuckDuckGo for a given query.",
+    "class_path": "ix.tools.duckduckgo.get_ddg_search",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "description",
+        "type": "str",
+        "default": ""
+      },
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "k",
+        "type": "int",
+        "label": "K",
+        "default": 10,
+        "required": false
+      },
+      {
+        "name": "region",
+        "type": "str",
+        "label": "Region",
+        "default": "wt-wt",
+        "required": false
+      },
+      {
+        "name": "safesearch",
+        "type": "str",
+        "label": "Safesearch",
+        "default": "moderate",
+        "required": false
+      },
+      {
+        "name": "time",
+        "type": "str",
+        "label": "Time",
+        "default": "y",
+        "required": false
+      },
+      {
+        "name": "max_results",
+        "type": "int",
+        "label": "Max_results",
+        "default": 5,
+        "required": false
       }
     ],
     "child_field": null
@@ -1150,6 +1459,71 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a9fb2b5d-78d6-428d-a968-11ff4f43ff1b",
+  "fields": {
+    "name": "Pubmed",
+    "description": "Pubmed search engine",
+    "class_path": "ix.tools.pubmed.get_pubmed",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "description",
+        "type": "str",
+        "default": ""
+      },
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "top_k_results",
+        "type": "int",
+        "label": "Top_k_results",
+        "default": 3,
+        "required": false
+      },
+      {
+        "name": "load_max_docs",
+        "type": "int",
+        "label": "Load_max_docs",
+        "default": 25,
+        "required": false
+      },
+      {
+        "name": "doc_content_chars_max",
+        "type": "int",
+        "label": "Doc_content_chars_max",
+        "default": 2000,
+        "required": false
+      },
+      {
+        "name": "load_all_available_meta",
+        "type": "boolean",
+        "label": "Load_all_available_meta",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "email",
+        "type": "str",
+        "label": "Email",
+        "default": "your_email@example.com",
+        "required": false
       }
     ],
     "child_field": null
@@ -1850,6 +2224,112 @@
         "name": "output_key",
         "type": "string",
         "default": "text"
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "ef8a1cc4-a26c-4b95-b9f7-2d6ce0f176d0",
+  "fields": {
+    "name": "Bing Search",
+    "description": "Tool that searches Bing for a given query.",
+    "class_path": "ix.tools.bing.get_bing_search",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "description",
+        "type": "str",
+        "default": ""
+      },
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "bing_subscription_key",
+        "type": "str",
+        "input": "secret",
+        "label": "Bing_subscription_key",
+        "default": null,
+        "required": true
+      },
+      {
+        "name": "bing_search_url",
+        "type": "str",
+        "label": "Bing_search_url",
+        "style": {
+          "width": "100%"
+        },
+        "default": null,
+        "required": true
+      },
+      {
+        "name": "k",
+        "type": "int",
+        "label": "K",
+        "default": 10,
+        "required": false
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "f1c98a9d-395b-45ed-91c5-448daf7c5b8d",
+  "fields": {
+    "name": "Lambda API",
+    "description": "Tool that searches Lambda for a given query.",
+    "class_path": "ix.tools.lambda_api.get_lambda_api",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "description",
+        "type": "str",
+        "default": ""
+      },
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "function_name",
+        "type": "str",
+        "label": "Function_name",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "awslambda_tool_name",
+        "type": "str",
+        "label": "Awslambda_tool_name",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "awslambda_tool_description",
+        "type": "str",
+        "label": "Awslambda_tool_description",
+        "default": null,
+        "required": false
       }
     ],
     "child_field": null
