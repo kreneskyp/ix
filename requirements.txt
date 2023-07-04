@@ -13,9 +13,11 @@ django_extensions==3.2.3
 django-redis==5.2.0
 Faker==18.9.0
 flake8==6.0.0
+fastapi==0.99.1
 graphene-django==3.1.1
 google-api-python-client==2.85.0
 googlesearch-python==1.2.3
+httpx==0.24.1
 ipython==8.13.2
 isort==5.12.0
 jsonpath-ng==1.5.3
