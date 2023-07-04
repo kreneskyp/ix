@@ -12,7 +12,7 @@ REDIS_VECTORSTORE = {
             "type": "string",
             "description": "URL of the Redis server",
             "default": "redis://redis:6379/0",
-            "width": "100%",
+            "style": {"width": "100%"},
         },
         {
             "name": "index_name",

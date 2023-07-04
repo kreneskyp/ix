@@ -45,9 +45,9 @@ const AutoFieldInput = ({ field, value, onChange }) => {
         size="sm"
         value={value}
         onChange={handleChange}
-        width={field.width || 100}
         px={1}
         py={2}
+        sx={field.style || {width: 100}}
       />
     </Flex>
   );
@@ -70,10 +70,10 @@ const AutoFieldSecret = ({ field, value, onChange }) => {
         size="sm"
         value={value}
         onChange={handleChange}
-        width={field.width || 100}
         px={1}
         py={2}
         type={"password"}
+        sx={field.style || {width: 100}}
       />
     </Flex>
   );
