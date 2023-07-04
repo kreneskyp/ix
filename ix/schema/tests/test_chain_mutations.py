@@ -277,7 +277,7 @@ class TestChainNodeMutation:
 @pytest.mark.django_db
 @pytest.mark.usefixtures("node_types")
 class TestChainNodePositionMutation:
-    def test_add_first_chain_node_mutation(self):
+    def test_update_position(self):
         """
         The first node will create the chain
         """
@@ -303,8 +303,6 @@ class TestChainNodePositionMutation:
         # Execute the GraphQL query
         result = client.execute(UPDATE_CHAIN_NODE_POSITION, variables=variables)
 
-        print(result)
-
         # Assert the result
         assert "errors" not in result
         node_data = result["data"]["updateChainNodePosition"]["node"]
@@ -313,48 +311,6 @@ class TestChainNodePositionMutation:
             "x": 100,
             "y": 200,
         }
-
-    def test_add_chain_node_mutation(self):
-        """
-        subsequent nodes will use the existing chain
-        """
-        # Create a Graphene client
-        client = Client(schema)
-
-        chain = fake_chain()
-
-        # Prepare variables for the GraphQL query
-        variables = {
-            "data": {
-                "chainId": str(chain.id),
-                "classPath": "ix.chains.llm_chain.LLMChain",
-                "config": {},
-                "name": "Custom Node",
-                "description": "Custom Description",
-                "position": {
-                    "x": 10,
-                    "y": 20,
-                },
-            }
-        }
-
-        # Execute the GraphQL query
-        result = client.execute(ADD_CHAIN_NODE, variables=variables)
-
-        # Assert the result
-        assert "errors" not in result
-        node_data = result["data"]["addChainNode"]["node"]
-        assert node_data["id"] is not None
-        assert node_data["name"] == "Custom Node"
-        assert node_data["description"] == "Custom Description"
-        assert node_data["position"] == {
-            "x": 10,
-            "y": 20,
-        }
-
-        # assert models
-        node = ChainNode.objects.get(id=node_data["id"])
-        assert node.chain_id == chain.id
 
 
 @pytest.mark.django_db
