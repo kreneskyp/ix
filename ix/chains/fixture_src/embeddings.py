@@ -53,7 +53,7 @@ LLAMA_CPP_EMBEDDINGS = {
             "name": "model_path",
             "type": "string",
             "description": "Path to the Llama model",
-            "width": "100%",
+            "style": {"width": "100%"},
         },
         {
             "name": "n_ctx",
@@ -154,7 +154,7 @@ HUGGINGFACE_EMBEDDINGS = {
                     "value": "sentence-transformers/all-mpnet-base-v2",
                 },
             ],
-            "width": "100%",
+            "style": {"width": "100%"},
         },
         {
             "name": "cache_folder",
@@ -185,7 +185,7 @@ MOSAICML_INSTRUCTOR_EMBEDDINGS = {
             "type": "string",
             "default": "https://models.hosted-on.mosaicml.hosting/instructor-xl/v1/predict",
             "description": "Endpoint URL to use",
-            "width": "100%",
+            "style": {"width": "100%"},
         },
         {
             "name": "embed_instruction",
@@ -210,7 +210,7 @@ MOSAICML_INSTRUCTOR_EMBEDDINGS = {
             "type": "string",
             "input": "secret",
             "description": "MosaicML API token",
-            "width": "100%",
+            "style": {"width": "100%"},
         },
     ],
 }
