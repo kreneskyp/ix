@@ -25,6 +25,13 @@ def fake_chain():
     return chain
 
 
+async def afake_chain():
+    """
+    Create a fake chain with a root ChainNode.
+    """
+    return await sync_to_async(fake_chain)()
+
+
 def fake_chain_node(**kwargs):
     """
     Create a fake chain node.
@@ -32,7 +39,18 @@ def fake_chain_node(**kwargs):
     chain = kwargs.get("chain", fake_chain())
     config = kwargs.get("config", LLM_CHAIN)
     root = kwargs.get("root", True)
-    return ChainNode.objects.create_from_config(chain=chain, config=config, root=root)
+    return ChainNode.objects.create_from_config(
+        chain=chain,
+        config=config,
+        root=root,
+    )
+
+
+async def afake_chain_node(**kwargs):
+    """
+    Create a fake chain node.
+    """
+    return await sync_to_async(fake_chain_node)(**kwargs)
 
 
 def fake_chain_edge(**kwargs):
@@ -55,6 +73,13 @@ def fake_chain_edge(**kwargs):
     )
 
     return edge
+
+
+async def afake_chain_edge(**kwargs):
+    """
+    Create a fake chain edge.
+    """
+    return await sync_to_async(fake_chain_edge)(**kwargs)
 
 
 def fake_agent(**kwargs):
