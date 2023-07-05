@@ -1,8 +1,11 @@
 import json
 import logging
-from typing import Any, TypedDict, List, TypeVar
-from langchain.schema import BaseLLMOutputParser, Generation
+from typing import Any, TypedDict, List, TypeVar, Tuple, Dict, Callable, Union
 
+from langchain.agents.agent_toolkits.base import BaseToolkit
+from langchain.chains.openai_functions.openapi import openapi_spec_to_openai_fn
+from langchain.schema import BaseLLMOutputParser, Generation
+from langchain.utilities.openapi import OpenAPISpec
 
 T = TypeVar("T")
 
@@ -14,6 +17,31 @@ class FunctionSchema(TypedDict):
     name: str
     description: str
     parameters: Any
+
+
+class OpenAPIFunctionsToolkit(BaseToolkit):
+    name = "OpenAPI Functions"
+    description = "OpenAPI Functions"
+    spec: Union[OpenAPISpec, str]
+
+    def get_tools(self) -> Tuple[List[Dict[str, Any]], Callable]:
+        for conversion in (
+            OpenAPISpec.from_url,
+            OpenAPISpec.from_file,
+            OpenAPISpec.from_text,
+        ):
+            try:
+                spec = conversion(self.spec)
+                break
+            except Exception:
+                pass
+            if isinstance(spec, str):
+                raise ValueError(f"Unable to parse spec from source {spec}")
+        openai_fns, call_api_fn = openapi_spec_to_openai_fn(spec)
+
+        # TODO: Need to convert into a list of tools
+
+        return tools
 
 
 class OpenAIFunctionParser(BaseLLMOutputParser):

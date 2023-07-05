@@ -40,3 +40,20 @@ FUNCTION_CALL = {
     "name": "function_call",
     "type": "string",
 }
+
+OPENAPI_TOOLKIT = {
+    "class_path": "ix.chains.functions.OpenAPIFunctionsToolkit",
+    "type": "tool",
+    "name": "OpenAPI Toolkit",
+    "description": "Toolkit for OpenAPI",
+    "fields": [
+        {
+            "name": "spec",
+            "type": "string",
+            "label": "OpenAPI URL",
+            "style": {
+                "width": "500px",
+            },
+        },
+    ],
+}
