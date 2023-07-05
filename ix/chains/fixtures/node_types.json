@@ -340,7 +340,9 @@
       {
         "name": "model_path",
         "type": "string",
-        "width": "100%",
+        "style": {
+          "width": "100%"
+        },
         "description": "Path to the Llama model"
       },
       {
@@ -932,7 +934,9 @@
       {
         "name": "endpoint_url",
         "type": "string",
-        "width": "100%",
+        "style": {
+          "width": "100%"
+        },
         "default": "https://models.hosted-on.mosaicml.hosting/instructor-xl/v1/predict",
         "description": "Endpoint URL to use"
       },
@@ -958,7 +962,9 @@
         "name": "mosaicml_api_token",
         "type": "string",
         "input": "secret",
-        "width": "100%",
+        "style": {
+          "width": "100%"
+        },
         "description": "MosaicML API token"
       }
     ],
@@ -1321,13 +1327,17 @@
         "name": "anthropic_api_key",
         "type": "string",
         "input": "secret",
-        "width": "100%",
+        "style": {
+          "width": "100%"
+        },
         "description": "ANTHROPIC_API_KEY"
       },
       {
         "name": "anthropic_api_url",
         "type": "string",
-        "width": "100%",
+        "style": {
+          "width": "100%"
+        },
         "default": "https://api.anthropic.com",
         "description": "API URL"
       }
@@ -1387,7 +1397,9 @@
         "name": "model_name",
         "type": "string",
         "label": "Model",
-        "width": "100%",
+        "style": {
+          "width": "100%"
+        },
         "choices": [
           {
             "label": "all-mpnet-base-v2",
@@ -1995,7 +2007,9 @@
       {
         "name": "url",
         "type": "string",
-        "width": "100%",
+        "style": {
+          "width": "100%"
+        },
         "default": "redis://redis:6379/0"
       },
       {
@@ -2054,7 +2068,9 @@
       {
         "name": "file_path",
         "type": "string",
-        "width": "100%",
+        "style": {
+          "width": "100%"
+        },
         "default": "/var/app/workdir/chat_memory.txt"
       }
     ],
@@ -2141,7 +2157,9 @@
       {
         "name": "redis_url",
         "type": "string",
-        "width": "100%",
+        "style": {
+          "width": "100%"
+        },
         "default": "redis://redis:6379/0",
         "description": "URL of the Redis server"
       },
