@@ -26,21 +26,21 @@ def get_google_serper_results_json(**kwargs: Any) -> BaseTool:
     return GoogleSerperResults(api_wrapper=wrapper, **tool_kwargs)
 
 
-class GoogleSearchResults2(GoogleSearchResults):
+class AsyncGoogleSearchResults(GoogleSearchResults):
     async def _arun(
         self,
         query: str,
         run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
     ) -> str:
         """Use the tool asynchronously."""
-        result = await sync_to_async(self.run)(query, run_manager=run_manager)
+        result = await sync_to_async(self._run)(query, run_manager=run_manager)
         return result
 
 
 def get_google_search(**kwargs: Any) -> BaseTool:
     tool_kwargs = extract_tool_kwargs(kwargs)
     wrapper = GoogleSearchAPIWrapper(**kwargs)
-    return GoogleSearchResults2(
+    return AsyncGoogleSearchResults(
         api_wrapper=wrapper, name="google_search", **tool_kwargs
     )
 
@@ -48,7 +48,7 @@ def get_google_search(**kwargs: Any) -> BaseTool:
 def get_google_search_results_json(**kwargs: Any) -> BaseTool:
     tool_kwargs = extract_tool_kwargs(kwargs)
     wrapper = GoogleSearchAPIWrapper(**kwargs)
-    return GoogleSearchResults2(
+    return AsyncGoogleSearchResults(
         api_wrapper=wrapper, name="google_search", **tool_kwargs
     )
 
