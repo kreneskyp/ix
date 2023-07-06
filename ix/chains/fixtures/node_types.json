@@ -239,8 +239,8 @@
   "model": "chains.nodetype",
   "pk": "2281566f-0611-4eef-b870-547e39bacc45",
   "fields": {
-    "name": "Google Search",
-    "description": "Tool that searches Google for a given query.",
+    "name": "Google Serper",
+    "description": "Tool that searches Google for a given query with the serper API.",
     "class_path": "ix.tools.google.get_google_serper",
     "type": "tool",
     "display_type": "node",
