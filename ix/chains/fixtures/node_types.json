@@ -61,6 +61,12 @@
         "key": "prompt",
         "type": "target",
         "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
       }
     ],
     "fields": [
@@ -109,6 +115,12 @@
         "key": "prompt",
         "type": "target",
         "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
       }
     ],
     "fields": [
@@ -182,6 +194,12 @@
         "key": "prompt",
         "type": "target",
         "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
       }
     ],
     "fields": [
@@ -240,7 +258,7 @@
   "pk": "2281566f-0611-4eef-b870-547e39bacc45",
   "fields": {
     "name": "Google Serper",
-    "description": "Tool that searches Google for a given query with the serper API.",
+    "description": "Tool that searches Google for a given query.",
     "class_path": "ix.tools.google.get_google_serper",
     "type": "tool",
     "display_type": "node",
@@ -508,6 +526,12 @@
         "key": "prompt",
         "type": "target",
         "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
       }
     ],
     "fields": [
@@ -556,6 +580,12 @@
         "key": "prompt",
         "type": "target",
         "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
       }
     ],
     "fields": [
@@ -726,6 +756,12 @@
         "key": "prompt",
         "type": "target",
         "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
       }
     ],
     "fields": [
@@ -774,6 +810,12 @@
         "key": "prompt",
         "type": "target",
         "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
       }
     ],
     "fields": [
@@ -1168,7 +1210,13 @@
     "class_path": "langchain.memory.buffer_window.ConversationBufferWindowMemory",
     "type": "memory",
     "display_type": "node",
-    "connectors": null,
+    "connectors": [
+      {
+        "key": "chat_memory",
+        "type": "target",
+        "source_type": "memory_backend"
+      }
+    ],
     "fields": [
       {
         "name": "k",
@@ -1453,6 +1501,12 @@
         "key": "prompt",
         "type": "target",
         "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
       }
     ],
     "fields": [
@@ -1552,6 +1606,11 @@
     "display_type": "node",
     "connectors": [
       {
+        "key": "chat_memory",
+        "type": "target",
+        "source_type": "memory_backend"
+      },
+      {
         "key": "llm",
         "type": "target",
         "source_type": "llm"
@@ -1649,6 +1708,12 @@
         "key": "prompt",
         "type": "target",
         "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
       }
     ],
     "fields": [

@@ -1,4 +1,9 @@
-from ix.chains.fixture_src.targets import PROMPT_TARGET, TOOLS_TARGET, LLM_TARGET, MEMORY_TARGET
+from ix.chains.fixture_src.targets import (
+    PROMPT_TARGET,
+    TOOLS_TARGET,
+    LLM_TARGET,
+    MEMORY_TARGET,
+)
 
 EXECUTOR_BASE_FIELDS = [
     {
