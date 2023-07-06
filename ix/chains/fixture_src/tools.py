@@ -102,7 +102,7 @@ GOOGLE_SEARCH = {
 GOOGLE_SERPER = {
     "class_path": "ix.tools.google.get_google_serper",
     "type": "tool",
-    "name": "Google Search",
+    "name": "Google Serper",
     "description": "Tool that searches Google for a given query.",
     "fields": TOOL_BASE_FIELDS
     + NodeTypeField.get_fields(
