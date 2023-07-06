@@ -1,8 +1,6 @@
-from asgiref.sync import sync_to_async
-from langchain.callbacks.manager import AsyncCallbackManagerForToolRun
-
+from ix.chains.asyncio import SyncToAsync
 from ix.chains.loaders.tools import extract_tool_kwargs
-from typing import Any, Optional
+from typing import Any
 
 from langchain import GoogleSerperAPIWrapper, GoogleSearchAPIWrapper
 from langchain.tools import (
@@ -25,15 +23,8 @@ def get_google_serper_results_json(**kwargs: Any) -> BaseTool:
     return GoogleSerperResults(api_wrapper=wrapper, **tool_kwargs)
 
 
-class AsyncGoogleSearchResults(GoogleSearchResults):
-    async def _arun(
-        self,
-        query: str,
-        run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
-    ) -> str:
-        """Use the tool asynchronously."""
-        result = await sync_to_async(self._run)(query, run_manager=run_manager)
-        return result
+class AsyncGoogleSearchResults(SyncToAsync, GoogleSearchResults):
+    pass
 
 
 def get_google_search(**kwargs: Any) -> BaseTool:
