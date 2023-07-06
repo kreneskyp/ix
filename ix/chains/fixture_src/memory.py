@@ -74,7 +74,7 @@ CONVERSATION_TOKEN_BUFFER_MEMORY = {
     "type": "memory",
     "name": "Conversation Token Buffer",
     "description": "Memory that stores conversation history as a buffer with a max token size.",
-    "connectors": [LLM_TARGET],
+    "connectors": [MEMORY_BACKEND_TARGET, LLM_TARGET],
     "fields": [
         {
             "name": "max_token_limit",
@@ -112,6 +112,7 @@ CONVERSATION_BUFFER_WINDOW_MEMORY = {
     "type": "memory",
     "name": "Conversation Buffer Window",
     "description": "Memory that stores conversation history as a buffer and summarizes to compress context.",
+    "connectors": [MEMORY_BACKEND_TARGET],
     "fields": [
         {
             "name": "k",
