@@ -71,8 +71,16 @@ async def delete_chain(chain_id: UUID):
 
 
 @router.get("/node_types/", response_model=List[NodeTypePydantic])
-async def get_node_types():
-    node_types = NodeType.objects.all()
+async def get_node_types(search: Optional[str] = None):
+    if search:
+        node_types = NodeType.objects.filter(
+            Q(name__icontains=search)
+            | Q(description__icontains=search)
+            | Q(type__icontains=search)
+            | Q(class_path__icontains=search)
+        )
+    else:
+        node_types = NodeType.objects.all()
     return [NodeTypePydantic.from_orm(node_type) async for node_type in node_types]
 
 

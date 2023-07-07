@@ -33,6 +33,22 @@ class TestNodeType:
         # Check that we got a list of node types
         assert len(result) >= 2
 
+    async def test_search_node_types(self, anode_types):
+        search_term = "mock"
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.get(f"/node_types/?search={search_term}")
+
+        assert response.status_code == 200, response.content
+        result = response.json()
+        assert len(result) > 0
+        assert (
+            search_term in result[0]["name"]
+            or search_term in result[0]["description"]
+            or search_term in result[0]["type"]
+            or search_term in result[0]["class_path"]
+        )
+
     async def test_get_node_type_detail(self, amock_node_type):
         # Create a node type
         node_type = amock_node_type
