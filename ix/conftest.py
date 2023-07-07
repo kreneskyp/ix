@@ -14,7 +14,7 @@ from ix.chains.management.commands.create_ix_v2 import (
     IX_CHAIN_V2,
 )
 
-from ix.chains.models import Chain, ChainNode
+from ix.chains.models import Chain, ChainNode, NodeType
 from ix.task_log.models import Artifact
 from ix.task_log.tests.fake import (
     fake_task,
@@ -232,6 +232,8 @@ aload_fixture = sync_to_async(load_fixture)
 @pytest.fixture()
 def node_types() -> None:
     """calls manage.py loaddata node_types"""
+    NodeType.objects.all().delete()
+    Chain.objects.all().delete()
     load_fixture("node_types")
     load_fixture("ix_v2")
 

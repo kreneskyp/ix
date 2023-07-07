@@ -121,9 +121,8 @@ DELETE_CHAIN_EDGE = """
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures("node_types")
 class TestChainNodeMutation:
-    def test_add_first_chain_node_mutation(self):
+    def test_add_first_chain_node_mutation(self, node_types):
         """
         The first node will create the chain
         """
@@ -165,7 +164,7 @@ class TestChainNodeMutation:
         node = ChainNode.objects.get(id=node_data["id"])
         assert node.chain_id is not None
 
-    def test_add_chain_node_mutation(self):
+    def test_add_chain_node_mutation(self, node_types):
         """
         subsequent nodes will use the existing chain
         """
@@ -207,7 +206,7 @@ class TestChainNodeMutation:
         node = ChainNode.objects.get(id=node_data["id"])
         assert node.chain_id == chain.id
 
-    def test_update_chain_node_mutation(self):
+    def test_update_chain_node_mutation(self, node_types):
         # Create a Graphene client
         client = Client(schema)
 
@@ -242,7 +241,7 @@ class TestChainNodeMutation:
             "y": 20,
         }
 
-    def test_delete_chain_node_mutation(self):
+    def test_delete_chain_node_mutation(self, node_types):
         # Create a Graphene client
         client = Client(schema)
 
