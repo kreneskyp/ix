@@ -12,24 +12,25 @@ from faker import Faker
 fake = Faker()
 
 
-def fake_chain():
+def fake_chain(**kwargs):
     """
     Create a fake chain with a root ChainNode.
     """
-    chain = Chain.objects.create(
+    chain_kwargs = dict(
         id=uuid.uuid4(),
         name=fake.unique.name(),
         description=fake.text(),
     )
-
+    chain_kwargs.update(kwargs)
+    chain = Chain.objects.create(**chain_kwargs)
     return chain
 
 
-async def afake_chain():
+async def afake_chain(**kwargs):
     """
     Create a fake chain with a root ChainNode.
     """
-    return await sync_to_async(fake_chain)()
+    return await sync_to_async(fake_chain)(**kwargs)
 
 
 def fake_chain_node(**kwargs):
@@ -41,8 +42,8 @@ def fake_chain_node(**kwargs):
     root = kwargs.get("root", True)
     return ChainNode.objects.create_from_config(
         chain=chain,
-        config=config,
         root=root,
+        config=config,
     )
 
 
