@@ -22,7 +22,7 @@ SEQUENCE = {
             "default": [],
             "style": {
                 "width": "100%",
-            }
+            },
         },
     ],
 }
