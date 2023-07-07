@@ -1,11 +1,11 @@
 from langchain.tools import BaseTool, BingSearchRun
 from langchain.utilities import BingSearchAPIWrapper
 
-from ix.chains.asyncio import SyncToAsync
+from ix.chains.asyncio import SyncToAsyncRun
 from ix.chains.loaders.tools import extract_tool_kwargs
 
 
-class AsyncBingSearchRun(SyncToAsync, BingSearchRun):
+class AsyncBingSearchRun(SyncToAsyncRun, BingSearchRun):
     pass
 
 

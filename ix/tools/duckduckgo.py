@@ -1,11 +1,11 @@
 from langchain.tools import DuckDuckGoSearchRun, BaseTool
 from langchain.utilities import DuckDuckGoSearchAPIWrapper
 
-from ix.chains.asyncio import SyncToAsync
+from ix.chains.asyncio import SyncToAsyncRun
 from ix.chains.loaders.tools import extract_tool_kwargs
 
 
-class AsyncDuckDuckGoSearchRun(SyncToAsync, DuckDuckGoSearchRun):
+class AsyncDuckDuckGoSearchRun(SyncToAsyncRun, DuckDuckGoSearchRun):
     pass
 
 

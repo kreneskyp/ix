@@ -1,9 +1,9 @@
-from typing import Optional
+from typing import Optional, Any, Dict
 from asgiref.sync import sync_to_async
-from langchain.callbacks.manager import AsyncCallbackManagerForToolRun
+from langchain.callbacks.manager import AsyncCallbackManagerForToolRun, CallbackManagerForChainRun
 
 
-class SyncToAsync:
+class SyncToAsyncRun:
     """
     Mixin to convert a chain or tool to run asynchronously by using
     sync_to_async to convert the run method to a coroutine.
