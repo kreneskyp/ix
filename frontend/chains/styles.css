@@ -27,11 +27,6 @@
   border-radius: 10px;
 }
 
-.react-flow__handle:hover {
-  background-color: #fff;
-  border-color: #fff;
-}
-
 .react-flow__handle-connecting {
   background-color: #ff6060;
   border-color: #ff6060;

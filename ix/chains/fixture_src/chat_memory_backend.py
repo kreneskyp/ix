@@ -10,7 +10,7 @@ REDIS_MEMORY_BACKEND = {
             "name": "url",
             "type": "string",
             "default": "redis://redis:6379/0",
-            "width": "100%",
+            "style": {"width": "100%"},
         },
         {
             "name": "ttl",
@@ -32,7 +32,7 @@ FILESYSTEM_MEMORY_BACKEND = {
             "name": "file_path",
             "type": "string",
             "default": "/var/app/workdir/chat_memory.txt",
-            "width": "100%",
+            "style": {"width": "100%"},
         },
     ],
 }

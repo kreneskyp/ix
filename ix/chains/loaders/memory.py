@@ -35,7 +35,7 @@ def get_memory_option(cls: Type[BaseModel], name: str, default: Any):
 
 @singledispatch
 def load_memory_config(
-    node,
+    node: ChainNode,
     callback_manager: IxCallbackManager,
 ) -> BaseMemory:
     """Load a memory instance using a config"""

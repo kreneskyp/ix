@@ -200,7 +200,7 @@ class ChainNode(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     class_path = models.CharField(max_length=255)
     node_type = models.ForeignKey(NodeType, on_delete=models.CASCADE, null=True)
-    config = models.JSONField(null=True)
+    config = models.JSONField(null=True, default=dict)
     name = models.CharField(max_length=255, null=True)
     description = models.TextField(null=True)
 

@@ -1,7 +1,10 @@
 import json
 import logging
-from typing import Any, TypedDict, List
-from langchain.schema import BaseLLMOutputParser, Generation, T
+from typing import Any, TypedDict, List, TypeVar
+from langchain.schema import BaseLLMOutputParser, Generation
+
+
+T = TypeVar("T")
 
 
 logger = logging.getLogger(__name__)
