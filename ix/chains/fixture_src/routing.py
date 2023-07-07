@@ -20,6 +20,9 @@ SEQUENCE = {
             "name": "input_variables",
             "type": "list",
             "default": [],
+            "style": {
+                "width": "100%",
+            }
         },
     ],
 }
