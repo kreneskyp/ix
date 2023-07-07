@@ -25,7 +25,7 @@ class NodeType(BaseModel):
     description: Optional[str] = None
     class_path: str = Field(..., max_length=255)
     type: str = Field(..., max_length=255)
-    display_type: str = Field(..., max_length=10)
+    display_type: str = Field(default="node", max_length=10)
     connectors: Optional[List[dict]] = None
     fields: Optional[List[dict]] = None
     child_field: Optional[str] = Field(None, max_length=32)
