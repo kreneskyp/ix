@@ -23,7 +23,7 @@ import django
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ix.server.settings")
 django.setup()
-from ix.server.fast_api import app as fast_api_app
+from ix.server.fast_api import app as fast_api_app  # noqa: E402
 
 
 class GraphqlWsConsumer(channels_graphql_ws.GraphqlWsConsumer):
