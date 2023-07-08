@@ -14,7 +14,17 @@ SEQUENCE = {
     "type": "chain",
     "child_field": "chains",
     "connectors": [MEMORY_TARGET, SEQUENCE_CHAINS_TARGET],
-    "fields": [VERBOSE],
+    "fields": [
+        VERBOSE,
+        {
+            "name": "input_variables",
+            "type": "list",
+            "default": [],
+            "style": {
+                "width": "100%",
+            },
+        },
+    ],
 }
 
 
