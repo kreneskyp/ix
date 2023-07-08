@@ -26,7 +26,7 @@ def get_openapi_chain_async(**kwargs):
     ):
         # modified to use `user_input` for consistency with other chains
         if "prompt" not in kwargs:
-            kwargs['prompt'] = ChatPromptTemplate.from_template(
+            kwargs["prompt"] = ChatPromptTemplate.from_template(
                 "Use the provided API's to respond to this user query:\n\n{user_input}"
             )
 
