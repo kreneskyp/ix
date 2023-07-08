@@ -1,0 +1,9 @@
+.markdown ul {
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+.markdown ol {
+  margin-left: 20px;
+  margin-bottom: 5px;
+}
