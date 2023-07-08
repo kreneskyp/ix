@@ -1,3 +1,6 @@
+from ix.chains.fixture_src.common import VERBOSE
+from ix.chains.fixture_src.targets import LLM_TARGET, MEMORY_TARGET, PROMPT_TARGET
+
 FUNCTION_SCHEMA = {
     "class_path": "ix.chains.functions.FunctionSchema",
     "type": "tool",
@@ -39,4 +42,23 @@ FUNCTION_OUTPUT_PARSER = {
 FUNCTION_CALL = {
     "name": "function_call",
     "type": "string",
+}
+
+OPENAPI_CHAIN = {
+    "class_path": "ix.chains.openapi.get_openapi_chain_async",
+    "type": "chain",
+    "name": "OpenAPI with OpenAI Functions",
+    "description": "Chain that uses OpenAI Functions to call OpenAPI endpoints.",
+    "connectors": [LLM_TARGET, MEMORY_TARGET, PROMPT_TARGET],
+    "fields": [
+        VERBOSE,
+        {
+            "name": "spec",
+            "type": "string",
+            "label": "OpenAPI URL",
+            "style": {
+                "width": "500px",
+            },
+        },
+    ],
 }

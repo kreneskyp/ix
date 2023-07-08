@@ -1,4 +1,4 @@
-from ix.chains.asyncio import SyncToAsync
+from ix.chains.asyncio import SyncToAsyncRun
 from ix.chains.loaders.tools import extract_tool_kwargs
 from typing import Any
 
@@ -23,7 +23,7 @@ def get_google_serper_results_json(**kwargs: Any) -> BaseTool:
     return GoogleSerperResults(api_wrapper=wrapper, **tool_kwargs)
 
 
-class AsyncGoogleSearchResults(SyncToAsync, GoogleSearchResults):
+class AsyncGoogleSearchResults(SyncToAsyncRun, GoogleSearchResults):
     pass
 
 

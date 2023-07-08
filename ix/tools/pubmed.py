@@ -1,12 +1,12 @@
 from langchain.tools import PubmedQueryRun, BaseTool
 from langchain.utilities import PubMedAPIWrapper
 
-from ix.chains.asyncio import SyncToAsync
+from ix.chains.asyncio import SyncToAsyncRun
 from ix.chains.loaders.tools import extract_tool_kwargs
 from typing import Any
 
 
-class AsyncPubmedQueryRun(SyncToAsync, PubmedQueryRun):
+class AsyncPubmedQueryRun(SyncToAsyncRun, PubmedQueryRun):
     pass
 
 

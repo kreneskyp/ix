@@ -1,12 +1,12 @@
 from langchain import ArxivAPIWrapper
 from langchain.tools import BaseTool, ArxivQueryRun
 
-from ix.chains.asyncio import SyncToAsync
+from ix.chains.asyncio import SyncToAsyncRun
 from ix.chains.loaders.tools import extract_tool_kwargs
 from typing import Any
 
 
-class AsyncArxivQueryRun(SyncToAsync, ArxivQueryRun):
+class AsyncArxivQueryRun(SyncToAsyncRun, ArxivQueryRun):
     pass
 
 

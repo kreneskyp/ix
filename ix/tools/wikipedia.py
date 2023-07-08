@@ -2,11 +2,11 @@ from typing import Any
 from langchain import WikipediaAPIWrapper
 from langchain.tools import WikipediaQueryRun, BaseTool
 
-from ix.chains.asyncio import SyncToAsync
+from ix.chains.asyncio import SyncToAsyncRun
 from ix.chains.loaders.tools import extract_tool_kwargs
 
 
-class AsyncWikipediaQueryRun(SyncToAsync, WikipediaQueryRun):
+class AsyncWikipediaQueryRun(SyncToAsyncRun, WikipediaQueryRun):
     pass
 
 

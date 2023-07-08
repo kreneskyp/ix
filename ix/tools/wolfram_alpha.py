@@ -1,12 +1,12 @@
 from langchain import WolframAlphaAPIWrapper
 from langchain.tools import BaseTool, WolframAlphaQueryRun
 
-from ix.chains.asyncio import SyncToAsync
+from ix.chains.asyncio import SyncToAsyncRun
 from ix.chains.loaders.tools import extract_tool_kwargs
 from typing import Any
 
 
-class AsyncWolframAlphaQueryRun(SyncToAsync, WolframAlphaQueryRun):
+class AsyncWolframAlphaQueryRun(SyncToAsyncRun, WolframAlphaQueryRun):
     pass
 
 

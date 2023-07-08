@@ -1,11 +1,11 @@
 from langchain.tools import BaseTool, BaseGraphQLTool
 from langchain.utilities import GraphQLAPIWrapper
 
-from ix.chains.asyncio import SyncToAsync
+from ix.chains.asyncio import SyncToAsyncRun
 from ix.chains.loaders.tools import extract_tool_kwargs
 
 
-class AsyncGraphQLTool(SyncToAsync, BaseGraphQLTool):
+class AsyncGraphQLTool(SyncToAsyncRun, BaseGraphQLTool):
     pass
 
 
