@@ -113,9 +113,19 @@ class UpdateChainNodeMutation(graphene.Mutation):
         # don't allow updating the chain
         data.pop("chain_id", None)
 
+        # convert field types:
+        #  - list: comma separated string to list
         node = ChainNode.objects.get(id=data["id"])
-        for field, value in data.items():
-            setattr(node, field, value)
+        field_map = {field["name"]: field for field in node.node_type.fields}
+        config = data.get("config", {})
+        for key, value in config.items():
+            field = field_map[key]
+            if field["type"] == "list":
+                if isinstance(value, str):
+                    config[key] = [slice.strip() for slice in value.split(",")]
+
+        for key, value in data.items():
+            setattr(node, key, value)
         node.save()
         return UpdateChainNodeMutation(node=node)
 

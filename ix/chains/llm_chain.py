@@ -86,25 +86,24 @@ class LLMReply(LLMChain):
     This simplifies making simple agents that just reply to messages.
     """
 
-    def run(self, *args, **kwargs) -> Any:
-        response = super().run(*args, **kwargs)
-        TaskLogMessage.objects.create(
+    async def acall(self, *args, **kwargs):
+        response = await super().acall(*args, **kwargs)
+        await TaskLogMessage.objects.acreate(
             task_id=self.callbacks.task.id,
             role="assistant",
             parent=self.callbacks.think_msg,
             content={
                 "type": "ASSISTANT",
-                "text": response,
+                "text": response["text"],
                 # "agent": str(self.callback_manager.task.agent.id),
-                "agent": self.callbacks.task.agent.alias,
+                "agent": self.callbacks.agent.alias,
             },
         )
-
         return response
 
-    async def arun(self, *args, **kwargs) -> Any:
-        response = await super().arun(*args, **kwargs)
-        await TaskLogMessage.objects.acreate(
+    def run(self, *args, **kwargs) -> Any:
+        response = super().run(*args, **kwargs)
+        TaskLogMessage.objects.create(
             task_id=self.callbacks.task.id,
             role="assistant",
             parent=self.callbacks.think_msg,
