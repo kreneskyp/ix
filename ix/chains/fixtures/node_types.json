@@ -85,6 +85,12 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "reply",
+        "type": "boolean",
+        "label": "Reply to user",
+        "default": true
       }
     ],
     "child_field": null
@@ -139,6 +145,12 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "reply",
+        "type": "boolean",
+        "label": "Reply to user",
+        "default": true
       }
     ],
     "child_field": null
@@ -218,6 +230,12 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "reply",
+        "type": "boolean",
+        "label": "Reply to user",
+        "default": true
       }
     ],
     "child_field": null
@@ -595,6 +613,12 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "reply",
+        "type": "boolean",
+        "label": "Reply to user",
+        "default": true
       }
     ],
     "child_field": null
@@ -649,6 +673,12 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "reply",
+        "type": "boolean",
+        "label": "Reply to user",
+        "default": true
       }
     ],
     "child_field": null
@@ -825,6 +855,12 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "reply",
+        "type": "boolean",
+        "label": "Reply to user",
+        "default": true
       }
     ],
     "child_field": null
@@ -879,6 +915,12 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "reply",
+        "type": "boolean",
+        "label": "Reply to user",
+        "default": true
       }
     ],
     "child_field": null
@@ -1570,6 +1612,12 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "reply",
+        "type": "boolean",
+        "label": "Reply to user",
+        "default": true
       }
     ],
     "child_field": null
@@ -1777,6 +1825,12 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "reply",
+        "type": "boolean",
+        "label": "Reply to user",
+        "default": true
       }
     ],
     "child_field": null
