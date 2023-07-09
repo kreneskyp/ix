@@ -1,8 +1,8 @@
 import React from "react";
-import HighlightText from "components/HighlightText";
+import MarkDown from "components/Markdown";
 
 const AssistantContent = ({ message }) => {
-  return <HighlightText content={message.content.text} />;
+  return <MarkDown content={message.content.text} />;
 };
 
 export default AssistantContent;
