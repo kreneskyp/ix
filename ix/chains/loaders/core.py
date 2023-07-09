@@ -86,7 +86,7 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -
         node_group = [edge.source for edge in edges]
         logger.debug(f"Loading property key={key} node_group={node_group}")
 
-        if node_group[0].node_type.type == "chain":
+        if node_group[0].node_type.type in {"chain", "agent"}:
             # load a sequence of linked nodes into a children property
             # this supports loading as a list of chains or auto-SequentialChain
             first_instance = load_node(node_group[0], callback_manager, root=False)
