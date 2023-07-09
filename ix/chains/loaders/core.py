@@ -42,8 +42,13 @@ def get_property_loader(name: str) -> Callable:
 def get_sequence_inputs(sequence: List[LangchainChain]) -> List[str]:
     """Aggregate all inputs for a list of chains"""
     input_variables = set()
+    output_variables = set()
     for sequence_chain in sequence:
-        input_variables.update(sequence_chain.input_keys)
+        # Intermediate outputs are excluded from input_variables.
+        # Filter out any inputs that are already in the output variables
+        filtered_inputs = set(sequence_chain.input_keys) - output_variables
+        input_variables.update(filtered_inputs)
+        output_variables.update(sequence_chain.output_keys)
     return list(input_variables)
 
 
