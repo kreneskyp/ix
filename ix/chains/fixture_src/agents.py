@@ -22,6 +22,13 @@ EXECUTOR_BASE_FIELDS = [
         "type": "float",
         "nullable": True,
     },
+    # included until there is a better way to deal with connecting agent to chat output
+    {
+        "name": "reply",
+        "type": "boolean",
+        "label": "Reply to user",
+        "default": True,
+    },
 ]
 
 

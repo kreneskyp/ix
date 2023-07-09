@@ -8,7 +8,7 @@ from langchain.chains.base import Chain
 from ix.chains.agents import AgentReply
 
 
-def initialize_agent(agent: AgentType, **kwargs) -> Chain:
+def initialize_agent(agent: AgentType, reply: int = True, **kwargs) -> Chain:
     """
     Extended version of the initialize_agent function from ix.chains.agents.
 
@@ -29,6 +29,7 @@ def initialize_agent(agent: AgentType, **kwargs) -> Chain:
     return AgentReply(
         agent_executor=agent_executor,
         callback_manager=kwargs.get("callback_manager", None),
+        reply=reply,
     )
 
 

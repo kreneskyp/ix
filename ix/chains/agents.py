@@ -20,6 +20,7 @@ class AgentReply(Chain):
 
     agent_executor: AgentExecutor
     output_key: str = "output"
+    reply: bool = True
 
     @property
     def _chain_type(self) -> str:
@@ -47,16 +48,17 @@ class AgentReply(Chain):
     ) -> Dict[str, Any]:
         result = await self.agent_executor.acall(inputs, callbacks=run_manager)
 
-        await TaskLogMessage.objects.acreate(
-            task_id=self.callbacks.task.id,
-            role="assistant",
-            parent=self.callbacks.think_msg,
-            content={
-                "type": "ASSISTANT",
-                "text": result[self.output_key],
-                # "agent": str(self.callback_manager.task.agent.id),
-                "agent": self.callbacks.agent.alias,
-            },
-        )
+        if self.reply:
+            await TaskLogMessage.objects.acreate(
+                task_id=self.callbacks.task.id,
+                role="assistant",
+                parent=self.callbacks.think_msg,
+                content={
+                    "type": "ASSISTANT",
+                    "text": result[self.output_key],
+                    # "agent": str(self.callback_manager.task.agent.id),
+                    "agent": self.callbacks.agent.alias,
+                },
+            )
 
         return result
