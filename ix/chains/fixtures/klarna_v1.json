@@ -1,0 +1,180 @@
+[
+{
+    "model": "chains.chain",
+    "pk": "5a3fb153-35b0-492e-9571-03553b3c24e9",
+    "fields": {
+        "name": "klarna",
+        "description": "klarna products search. Uses OpenAPI chain for automatic integration.",
+        "created_at": "2023-07-08T00:23:34.948Z"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "1777422a-0c5d-4551-ba0b-a456cac229b7",
+    "fields": {
+        "class_path": "langchain.chat_models.openai.ChatOpenAI",
+        "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+        "config": {
+            "verbose": false,
+            "max_tokens": "4000",
+            "model_name": "gpt-3.5-turbo-16k-0613",
+            "max_retries": 6,
+            "temperature": 0,
+            "request_timeout": 60
+        },
+        "name": null,
+        "description": null,
+        "root": false,
+        "position": {
+            "x": 456.604251171995,
+            "y": 537.6609414142455
+        },
+        "chain": "5a3fb153-35b0-492e-9571-03553b3c24e9"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "335f59e4-34fd-4bd4-aa3e-3f2920106fd2",
+    "fields": {
+        "class_path": "ix.chains.llm_chain.LLMReply",
+        "node_type": "01e26ecf-d02b-46ce-a57c-322e3815035b",
+        "config": {
+            "verbose": false
+        },
+        "name": null,
+        "description": null,
+        "root": false,
+        "position": {
+            "x": 858.244746348614,
+            "y": 280.37690132858387
+        },
+        "chain": "5a3fb153-35b0-492e-9571-03553b3c24e9"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "6ac9ea62-614c-47b1-bbec-cd19a534a9c8",
+    "fields": {
+        "class_path": "langchain.chat_models.openai.ChatOpenAI",
+        "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+        "config": {
+            "verbose": false,
+            "max_tokens": "2000",
+            "model_name": "gpt-4-0613",
+            "max_retries": 6,
+            "temperature": 0,
+            "request_timeout": 60
+        },
+        "name": null,
+        "description": null,
+        "root": false,
+        "position": {
+            "x": 79.88626468140296,
+            "y": 443.44960785754745
+        },
+        "chain": "5a3fb153-35b0-492e-9571-03553b3c24e9"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "b80ef475-d3bf-46e7-bdb9-37c57b4b875d",
+    "fields": {
+        "class_path": "ix.chains.openapi.get_openapi_chain_async",
+        "node_type": "2201a903-75cb-4073-a50f-67fc53e628e8",
+        "config": {
+            "spec": "https://www.klarna.com/us/shopping/public/openai/v0/api-docs/",
+            "verbose": false
+        },
+        "name": null,
+        "description": null,
+        "root": true,
+        "position": {
+            "x": 388.1316470534272,
+            "y": 275.7644393737203
+        },
+        "chain": "5a3fb153-35b0-492e-9571-03553b3c24e9"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "ecb33667-47b8-4ad6-ab4f-a7b40970fd77",
+    "fields": {
+        "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+        "node_type": "b62000d7-9390-491b-af13-9711c4ec8b44",
+        "config": {
+            "messages": [
+                {
+                    "role": "system",
+                    "template": "You are a markdown formatter. Format the API response from the user's request.",
+                    "input_variables": []
+                },
+                {
+                    "role": "user",
+                    "template": "response:\n{response}\n\nuser_input:\n{user_input}",
+                    "input_variables": [
+                        "response",
+                        "user_input"
+                    ],
+                    "partial_variables": {}
+                }
+            ]
+        },
+        "name": null,
+        "description": null,
+        "root": false,
+        "position": {
+            "x": 313.87052558994014,
+            "y": 646.7127925934922
+        },
+        "chain": "5a3fb153-35b0-492e-9571-03553b3c24e9"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "03988ec6-af2c-4675-bff4-65c1959d22a1",
+    "fields": {
+        "source": "ecb33667-47b8-4ad6-ab4f-a7b40970fd77",
+        "target": "335f59e4-34fd-4bd4-aa3e-3f2920106fd2",
+        "key": "prompt",
+        "chain": "5a3fb153-35b0-492e-9571-03553b3c24e9",
+        "input_map": null,
+        "relation": "PROP"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "978905d8-2add-40c2-9fe7-3588e24a6e52",
+    "fields": {
+        "source": "6ac9ea62-614c-47b1-bbec-cd19a534a9c8",
+        "target": "b80ef475-d3bf-46e7-bdb9-37c57b4b875d",
+        "key": "llm",
+        "chain": "5a3fb153-35b0-492e-9571-03553b3c24e9",
+        "input_map": null,
+        "relation": "PROP"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "e0995e15-c445-4cb0-87c8-e0e299f32db5",
+    "fields": {
+        "source": "b80ef475-d3bf-46e7-bdb9-37c57b4b875d",
+        "target": "335f59e4-34fd-4bd4-aa3e-3f2920106fd2",
+        "key": "in",
+        "chain": "5a3fb153-35b0-492e-9571-03553b3c24e9",
+        "input_map": null,
+        "relation": "LINK"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "f73de217-0412-4967-b51e-69bd5ba8a4ae",
+    "fields": {
+        "source": "1777422a-0c5d-4551-ba0b-a456cac229b7",
+        "target": "335f59e4-34fd-4bd4-aa3e-3f2920106fd2",
+        "key": "llm",
+        "chain": "5a3fb153-35b0-492e-9571-03553b3c24e9",
+        "input_map": null,
+        "relation": "PROP"
+    }
+}
+]
