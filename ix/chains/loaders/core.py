@@ -121,7 +121,11 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -
     if node_type.type in {"chain", "agent"}:
         config["callback_manager"] = callback_manager
 
-    instance = node_class(**config)
+    try:
+        instance = node_class(**config)
+    except Exception:
+        logger.error(f"Exception loading node class={node.class_path}")
+        raise
     logger.debug(f"Loaded node class={node.class_path} in {time.time() - start_time}s")
 
     if node_type == "chain" and not parent:
