@@ -52,7 +52,7 @@ def get_sequence_inputs(sequence: List[LangchainChain]) -> List[str]:
     return list(input_variables)
 
 
-def load_node(node: ChainNode, callback_manager: IxCallbackManager, parent=None) -> Any:
+def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -> Any:
     """
     Generic loader for loading the Langchain component a ChainNode represents.
 
@@ -88,8 +88,8 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, parent=None)
 
         if node_group[0].node_type.type == "chain":
             # load a sequence of linked nodes into a children property
-            # this supports loading as an list of chains or auto-SequentialChain
-            first_instance = load_node(node_group[0], callback_manager, parent=node)
+            # this supports loading as a list of chains or auto-SequentialChain
+            first_instance = load_node(node_group[0], callback_manager, root=False)
             sequence = load_sequence(node_group[0], first_instance, callback_manager)
             connector = node_type.connectors_as_dict[key]
             if connector.get("auto_sequence", True):
@@ -108,12 +108,13 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, parent=None)
             # default recursive loading
             if node_type.connectors_as_dict[key].get("multiple", False):
                 config[key] = [
-                    prop_node.load(callback_manager) for prop_node in node_group
+                    prop_node.load(callback_manager, root=False)
+                    for prop_node in node_group
                 ]
             else:
                 if len(node_group) > 1:
                     raise ValueError(f"Multiple values for {key} not allowed")
-                config[key] = load_node(node_group[0], callback_manager)
+                config[key] = load_node(node_group[0], callback_manager, root=False)
 
     node_class = import_node_class(node.class_path)
 
@@ -159,7 +160,7 @@ def load_sequence(
 
     # traverse the sequence
     while outgoing_link:
-        next_instance = outgoing_link.target.load(callback_manager)
+        next_instance = outgoing_link.target.load(callback_manager, root=False)
         sequential_nodes.append(next_instance)
         try:
             outgoing_link = outgoing_link.target.outgoing_edges.select_related(
