@@ -132,7 +132,7 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -
         # Linked chains but no parent indicates the possible first node in an
         # implicit SequentialChain. Traverse the sequence and create a
         # SequentialChain if there is more than one node in the sequence.
-        sequential_nodes = load_sequence(node, instance)
+        sequential_nodes = load_sequence(node, instance, callback_manager)
         if len(sequential_nodes) > 1:
             input_variables = get_sequence_inputs(sequential_nodes)
             return SequentialChain(
