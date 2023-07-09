@@ -128,7 +128,7 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -
         raise
     logger.debug(f"Loaded node class={node.class_path} in {time.time() - start_time}s")
 
-    if node_type == "chain" and not parent:
+    if node_type.type in {"chain"} and root:
         # Linked chains but no parent indicates the possible first node in an
         # implicit SequentialChain. Traverse the sequence and create a
         # SequentialChain if there is more than one node in the sequence.
