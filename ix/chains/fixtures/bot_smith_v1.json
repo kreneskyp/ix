@@ -1,0 +1,196 @@
+[
+{
+    "model": "chains.chain",
+    "pk": "6cfb45bb-f928-4858-a7c6-113951608671",
+    "fields": {
+        "name": "Bot Smith",
+        "description": "IX API chain. CRUD access for Agents, Chains, and NodeTypes from IX API.",
+        "created_at": "2023-07-07T18:13:04.064Z"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "31186e84-6b6b-4344-bd91-ee1754a25bf8",
+    "fields": {
+        "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+        "node_type": "b62000d7-9390-491b-af13-9711c4ec8b44",
+        "config": {
+            "messages": [
+                {
+                    "role": "system",
+                    "template": "You are a markdown formatter.\n\nFormat the response from the API as markdown. Consider the user's request when formatting.",
+                    "input_variables": []
+                },
+                {
+                    "role": "user",
+                    "template": "USER_INPUT:\n{user_input}\n\nRESPONSE:\n{response}",
+                    "input_variables": [
+                        "user_input",
+                        "response"
+                    ],
+                    "partial_variables": {}
+                }
+            ]
+        },
+        "name": null,
+        "description": null,
+        "root": false,
+        "position": {
+            "x": 255.61612908821917,
+            "y": 613.0106203239052
+        },
+        "chain": "6cfb45bb-f928-4858-a7c6-113951608671"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "70a5f508-68ba-4aee-86dd-dab8237e063f",
+    "fields": {
+        "class_path": "langchain.chat_models.openai.ChatOpenAI",
+        "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+        "config": {
+            "verbose": false,
+            "max_tokens": "4000",
+            "model_name": "gpt-4-0613",
+            "max_retries": 6,
+            "temperature": 0,
+            "request_timeout": 60
+        },
+        "name": null,
+        "description": null,
+        "root": false,
+        "position": {
+            "x": 28.953561265607107,
+            "y": 444.2973707412899
+        },
+        "chain": "6cfb45bb-f928-4858-a7c6-113951608671"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "7c748cc7-6a2d-4619-ab5f-73c7b350a5f5",
+    "fields": {
+        "class_path": "ix.chains.openapi.get_openapi_chain_async",
+        "node_type": "2201a903-75cb-4073-a50f-67fc53e628e8",
+        "config": {
+            "spec": "http://172.17.0.1:8000/api/openapi.json",
+            "verbose": true
+        },
+        "name": null,
+        "description": null,
+        "root": true,
+        "position": {
+            "x": 357.0164693828574,
+            "y": 278.2082873447961
+        },
+        "chain": "6cfb45bb-f928-4858-a7c6-113951608671"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "7f5711ce-9d48-42c9-b2d7-fdee8a6f06ca",
+    "fields": {
+        "class_path": "langchain.chat_models.openai.ChatOpenAI",
+        "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+        "config": {
+            "verbose": false,
+            "max_tokens": "2000",
+            "model_name": "gpt-3.5-turbo-16k-0613",
+            "max_retries": 6,
+            "temperature": 0,
+            "request_timeout": 60
+        },
+        "name": null,
+        "description": null,
+        "root": false,
+        "position": {
+            "x": 403.486764634407,
+            "y": 517.7822022421914
+        },
+        "chain": "6cfb45bb-f928-4858-a7c6-113951608671"
+    }
+},
+{
+    "model": "chains.chainnode",
+    "pk": "c96a49c5-64f8-47c5-a27e-561694a4ace2",
+    "fields": {
+        "class_path": "ix.chains.llm_chain.LLMReply",
+        "node_type": "01e26ecf-d02b-46ce-a57c-322e3815035b",
+        "config": {
+            "verbose": true
+        },
+        "name": null,
+        "description": null,
+        "root": false,
+        "position": {
+            "x": 740.7913527507008,
+            "y": 280.54997171930336
+        },
+        "chain": "6cfb45bb-f928-4858-a7c6-113951608671"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "a8f6beea-a07f-451e-b1ea-f2a19b8fc14f",
+    "fields": {
+        "source": "70a5f508-68ba-4aee-86dd-dab8237e063f",
+        "target": "7c748cc7-6a2d-4619-ab5f-73c7b350a5f5",
+        "key": "llm",
+        "chain": "6cfb45bb-f928-4858-a7c6-113951608671",
+        "input_map": null,
+        "relation": "PROP"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "de589ddc-9ed7-4e8b-b786-c7920eacc3ff",
+    "fields": {
+        "source": "7c748cc7-6a2d-4619-ab5f-73c7b350a5f5",
+        "target": "c96a49c5-64f8-47c5-a27e-561694a4ace2",
+        "key": "in",
+        "chain": "6cfb45bb-f928-4858-a7c6-113951608671",
+        "input_map": null,
+        "relation": "LINK"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "f0c4b271-f2a0-4d07-b104-a18098030de4",
+    "fields": {
+        "source": "31186e84-6b6b-4344-bd91-ee1754a25bf8",
+        "target": "c96a49c5-64f8-47c5-a27e-561694a4ace2",
+        "key": "prompt",
+        "chain": "6cfb45bb-f928-4858-a7c6-113951608671",
+        "input_map": null,
+        "relation": "PROP"
+    }
+},
+{
+    "model": "chains.chainedge",
+    "pk": "f1ae332e-6ca2-4ef6-9da3-59b2d1131b35",
+    "fields": {
+        "source": "7f5711ce-9d48-42c9-b2d7-fdee8a6f06ca",
+        "target": "c96a49c5-64f8-47c5-a27e-561694a4ace2",
+        "key": "llm",
+        "chain": "6cfb45bb-f928-4858-a7c6-113951608671",
+        "input_map": null,
+        "relation": "PROP"
+    }
+},
+{
+    "model": "agents.agent",
+    "pk": "7e806fbb-4654-4224-8e59-d8a43aa3f496",
+    "fields": {
+        "name": "Bot Smith",
+        "alias": "smithy",
+        "purpose": "To use the IX API to retrieve information about and edit NodeTypes, Agents, Chains and their component graphs.",
+        "created_at": "2023-07-09T01:26:12.989Z",
+        "model": "gpt-4",
+        "config": {
+            "temperature": 0.05
+        },
+        "agent_class_path": "",
+        "chain": "6cfb45bb-f928-4858-a7c6-113951608671"
+    }
+}
+]
