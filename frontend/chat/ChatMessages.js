@@ -14,7 +14,7 @@ export const ChatMessages = () => {
   useEffect(scrollToBottom, [messages]);
 
   return (
-    <Box>
+    <Box pt={5}>
       {messages.map((messageGroup) => (
         <ChatMessage key={messageGroup.id} messageGroup={messageGroup} />
       ))}

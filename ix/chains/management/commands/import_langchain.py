@@ -2,7 +2,11 @@ from django.core.management.base import BaseCommand
 
 from ix.chains.fixture_src.agents import AGENTS
 from ix.chains.fixture_src.artifacts import ARTIFACT_MEMORY, SAVE_ARTIFACT
-from ix.chains.fixture_src.chains import LLM_CHAIN, LLM_TOOL_CHAIN, LLM_REPLY
+from ix.chains.fixture_src.chains import (
+    LLM_CHAIN,
+    LLM_TOOL_CHAIN,
+    LLM_REPLY,
+)
 from ix.chains.fixture_src.chat_memory_backend import (
     FILESYSTEM_MEMORY_BACKEND,
     REDIS_MEMORY_BACKEND,
@@ -26,6 +30,7 @@ from ix.chains.fixture_src.memory import (
 from ix.chains.fixture_src.openai_functions import (
     FUNCTION_SCHEMA,
     FUNCTION_OUTPUT_PARSER,
+    OPENAPI_CHAIN,
 )
 from ix.chains.fixture_src.prompts import CHAT_PROMPT_TEMPLATE
 from ix.chains.fixture_src.routing import SEQUENCE, MAP_SUBCHAIN
@@ -77,6 +82,7 @@ COMPONENTS.extend(
     [
         FUNCTION_SCHEMA,
         FUNCTION_OUTPUT_PARSER,
+        OPENAPI_CHAIN,
     ]
 )
 

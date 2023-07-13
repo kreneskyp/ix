@@ -1,3 +1,4 @@
+from asgiref.sync import sync_to_async
 from langchain.tools import BaseTool, Tool
 from langchain.utilities import LambdaWrapper
 
@@ -12,5 +13,6 @@ def get_lambda_api(**kwargs: Any) -> BaseTool:
         name=kwargs["awslambda_tool_name"],
         description=kwargs["awslambda_tool_description"],
         func=wrapper.run,
+        coroutine=sync_to_async(wrapper.run),
         **tool_kwargs
     )

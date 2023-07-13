@@ -1,5 +1,9 @@
-from ix.chains.fixture_src.targets import PROMPT_TARGET, TOOLS_TARGET, LLM_TARGET
-
+from ix.chains.fixture_src.targets import (
+    PROMPT_TARGET,
+    TOOLS_TARGET,
+    LLM_TARGET,
+    MEMORY_TARGET,
+)
 
 EXECUTOR_BASE_FIELDS = [
     {
@@ -18,6 +22,13 @@ EXECUTOR_BASE_FIELDS = [
         "type": "float",
         "nullable": True,
     },
+    # included until there is a better way to deal with connecting agent to chat output
+    {
+        "name": "reply",
+        "type": "boolean",
+        "label": "Reply to user",
+        "default": True,
+    },
 ]
 
 
@@ -26,7 +37,7 @@ OPENAI_FUNCTIONS_AGENT = {
     "type": "agent",
     "name": "OpenAI Function Agent",
     "description": "Agent that uses OpenAI's API to generate text.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -35,7 +46,7 @@ OPENAI_MULTIFUNCTION_AGENT = {
     "type": "agent",
     "name": "OpenAI Multifunction Agent",
     "description": "Agent that uses OpenAI's API to generate text.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -44,7 +55,7 @@ ZERO_SHOT_REACT_DESCRIPTION_AGENT = {
     "type": "agent",
     "name": "Zero Shot React Description Agent",
     "description": "Agent that generates descriptions by taking zero-shot approach using reaction information.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -53,7 +64,7 @@ REACT_DOCSTORE_AGENT = {
     "type": "agent",
     "name": "React Docstore Agent",
     "description": "Agent that interacts with the document store to obtain reaction-based information.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -62,7 +73,7 @@ SELF_ASK_WITH_SEARCH_AGENT = {
     "type": "agent",
     "name": "Self Ask with Search Agent",
     "description": "Agent that asks itself queries and searches for answers in a given context.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -71,7 +82,7 @@ CONVERSATIONAL_REACT_DESCRIPTION_AGENT = {
     "type": "agent",
     "name": "Conversational React Description Agent",
     "description": "Agent that provides descriptions in a conversational manner using reaction information.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -80,7 +91,7 @@ CHAT_ZERO_SHOT_REACT_DESCRIPTION_AGENT = {
     "type": "agent",
     "name": "Chat Zero Shot React Description Agent",
     "description": "Agent that generates descriptions in a chat-based context using a zero-shot approach and reaction information.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -89,7 +100,7 @@ CHAT_CONVERSATIONAL_REACT_DESCRIPTION_AGENT = {
     "type": "agent",
     "name": "Chat Conversational React Description Agent",
     "description": "Agent that provides descriptions in a chat-based context in a conversational manner using reaction information.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -98,7 +109,7 @@ STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION_AGENT = {
     "type": "agent",
     "name": "Structured Chat Zero Shot React Description Agent",
     "description": "Agent that generates descriptions in a structured chat context using a zero-shot approach and reaction information.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 

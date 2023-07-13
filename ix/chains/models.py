@@ -200,7 +200,7 @@ class ChainNode(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     class_path = models.CharField(max_length=255)
     node_type = models.ForeignKey(NodeType, on_delete=models.CASCADE, null=True)
-    config = models.JSONField(null=True)
+    config = models.JSONField(null=True, default=dict)
     name = models.CharField(max_length=255, null=True)
     description = models.TextField(null=True)
 
@@ -224,14 +224,14 @@ class ChainNode(models.Model):
     def __str__(self):
         return f"{str(self.id)[:8]} ({self.class_path})"
 
-    def load(self, callback_manager, parent=None):
+    def load(self, callback_manager, root=True):
         """
         Load this node, traversing the graph and loading all child nodes,
         properties, and downstream nodes.
         """
         from ix.chains.loaders.core import load_node
 
-        return load_node(self, callback_manager, parent=parent)
+        return load_node(self, callback_manager, root=root)
 
 
 class ChainEdge(models.Model):
