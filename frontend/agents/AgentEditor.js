@@ -39,6 +39,18 @@ export const AgentEditor = ({ agent, chainsRef }) => {
     commit({
       variables: { input },
       onCompleted: (response) => {
+        // sometimes graphql returns errors in a successful response
+        if (response.updateAgent.errors) {
+          toast({
+            title: "Error",
+            description: `Failed to save the agent: ${response.updateAgent.errors}`,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+          return;
+        }
+
         if (id === undefined) {
           navigate(`/agents/${response.updateAgent.agent.id}`, {});
         }
