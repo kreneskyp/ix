@@ -44,11 +44,17 @@ image-url:
 .sentinel:
 	mkdir -p .sentinel
 
+# Set LANGCHAIN_DEV to 1 to enable dev mode in docker build
+# local copy of langchain should be checked out to ix/langchain.
+# (docker desktop on windows doesn't support shares outside the project)
+LANGCHAIN_DEV ?=
+DOCKER_BUILD_ARGS = $(if ${LANGCHAIN_DEV},--build-arg LANGCHAIN_DEV=${LANGCHAIN_DEV},)
+
 # inner build target for sandbox image
 ${IMAGE_SENTINEL}: .sentinel $(HASH_FILES)
 ifneq (${NO_IMAGE_BUILD}, 1)
 	echo building ${IMAGE_URL}
-	docker build -t ${IMAGE_URL} -f $(DOCKERFILE) .
+	docker build -t ${IMAGE_URL} -f ${DOCKERFILE} ${DOCKER_BUILD_ARGS} .
 	docker tag ${IMAGE_URL} ${DOCKER_REPOSITORY}:latest
 	touch $@
 endif

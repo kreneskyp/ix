@@ -1,5 +1,7 @@
 FROM python:3.11
 
+ARG LANGCHAIN_DEV
+
 # System setup
 ENV HOME=/root
 ENV APP=/var/app
@@ -52,6 +54,9 @@ RUN pip install -r requirements.txt
 
 # Copy the rest of the application code to the working directory
 COPY . .
+
+# If LANGCHAIN_DEV is set then install the local dev version of LangChain
+RUN if [ -n "${LANGCHAIN_DEV}" ]; then pip install -e /var/app/langchain; fi
 
 # Set the environment variable for selecting between ASGI and Celery
 ENV APP_MODE=asgi
