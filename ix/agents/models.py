@@ -18,7 +18,7 @@ class Agent(models.Model):
 
     # default model config
     model = models.CharField(max_length=255)
-    config = models.JSONField()
+    config = models.JSONField(default=dict)
 
     # agent config
     agent_class_path = models.CharField(max_length=255)
