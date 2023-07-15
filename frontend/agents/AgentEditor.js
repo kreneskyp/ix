@@ -15,10 +15,12 @@ import { AgentMetricsPanel } from "agents/AgentMetricsPanel";
 import { useMutation, usePreloadedQuery } from "react-relay/hooks";
 import { UpdateAgentMutation } from "agents/graphql/AgentMutations";
 import { ChainsQuery } from "chains/graphql/ChainsQuery";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const AgentEditor = ({ agent, chainsRef }) => {
   const { chains } = usePreloadedQuery(ChainsQuery, chainsRef);
   const [commit] = useMutation(UpdateAgentMutation);
+  const { id } = useParams();
 
   // repack agent without data that can't be updated
   const { chain, createdAt, ...agentMinusChain } = agent || {};
@@ -26,15 +28,20 @@ export const AgentEditor = ({ agent, chainsRef }) => {
 
   const [agentData, setAgentData] = useState(initialData);
   const toast = useToast();
+  const navigate = useNavigate();
 
   const updateAgent = () => {
     const input = {
       ...agentData,
+      id: id,
       config: agentData.config,
     };
     commit({
       variables: { input },
-      onCompleted: () => {
+      onCompleted: (response) => {
+        if (id === undefined) {
+          navigate(`/agents/${response.updateAgent.agent.id}`, {});
+        }
         toast({
           title: "Saved",
           description: "Saved agent.",
