@@ -328,11 +328,6 @@
     "connectors": null,
     "fields": [
       {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
-      {
         "name": "return_direct",
         "type": "boolean",
         "default": false
@@ -696,11 +691,6 @@
     "connectors": null,
     "fields": [
       {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
-      {
         "name": "return_direct",
         "type": "boolean",
         "default": false
@@ -938,11 +928,6 @@
     "connectors": null,
     "fields": [
       {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
-      {
         "name": "return_direct",
         "type": "boolean",
         "default": false
@@ -995,11 +980,6 @@
     "display_type": "node",
     "connectors": null,
     "fields": [
-      {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
       {
         "name": "return_direct",
         "type": "boolean",
@@ -1674,11 +1654,6 @@
     "connectors": null,
     "fields": [
       {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
-      {
         "name": "return_direct",
         "type": "boolean",
         "default": false
@@ -2078,11 +2053,6 @@
     "connectors": null,
     "fields": [
       {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
-      {
         "name": "return_direct",
         "type": "boolean",
         "default": false
@@ -2300,11 +2270,6 @@
     "connectors": null,
     "fields": [
       {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
-      {
         "name": "return_direct",
         "type": "boolean",
         "default": false
@@ -2470,11 +2435,6 @@
     "connectors": null,
     "fields": [
       {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
-      {
         "name": "return_direct",
         "type": "boolean",
         "default": false
@@ -2524,11 +2484,6 @@
     "display_type": "node",
     "connectors": null,
     "fields": [
-      {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
       {
         "name": "return_direct",
         "type": "boolean",

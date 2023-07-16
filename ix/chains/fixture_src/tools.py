@@ -27,7 +27,7 @@ RETURN_DIRECT = {
     "default": False,
 }
 
-TOOL_BASE_FIELDS = [DESCRIPTION, RETURN_DIRECT, VERBOSE]
+TOOL_BASE_FIELDS = [RETURN_DIRECT, VERBOSE]
 
 ARXIV_SEARCH = {
     "class_path": "ix.tools.arxiv.get_arxiv",
