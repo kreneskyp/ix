@@ -6,11 +6,10 @@ OPENAI_EMBEDDINGS = {
     "fields": [
         {
             "name": "model",
-            "description": "The model to use.",
             "type": "string",
             "default": "text-embedding-ada-002",
             "choices": [
-                ("text-embedding-ada-001", "text-embedding-ada-001"),
+                {"name": "text-embedding-ada-002", "label": "text-embedding-ada-002"},
             ],
         }
     ],
