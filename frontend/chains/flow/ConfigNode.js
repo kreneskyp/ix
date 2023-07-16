@@ -23,6 +23,21 @@ const NODE_COMPONENTS = {
   "ix.chains.functions.FunctionSchema": FunctionSchemaNode,
 };
 
+const CONNECTOR_CONFIG = {
+  agent: {
+    source_position: "left",
+    target_position: "right",
+  },
+  chain: {
+    source_position: "left",
+    target_position: "right",
+  },
+  tool: {
+    source_position: "left",
+    target_position: "right",
+  }
+}
+
 const usePropertyTargets = (type) => {
   return useMemo(() => {
     return type.connectors?.filter((connector) => connector.type === "target");
@@ -35,7 +50,7 @@ export const PropertyTarget = ({ connector }) => {
       <Handle
         id={connector.key}
         type="target"
-        position={connector.sourceType === "chain" ? "right" : "left"}
+        position={CONNECTOR_CONFIG[connector.sourceType]?.target_position || "left"}
       />
       <Box pl={2} m={0}>
         {connector.key}
@@ -153,9 +168,7 @@ export const ConfigNode = ({ data }) => {
       <Handle
         id={type.type}
         type="source"
-        position={
-          type.type === "chain" || type.type === "agent" ? "left" : "right"
-        }
+        position={CONNECTOR_CONFIG[type.type]?.source_position || "right"}
         style={{ top: "15px", transform: "translateX(-2px)" }}
       />
       <Heading
