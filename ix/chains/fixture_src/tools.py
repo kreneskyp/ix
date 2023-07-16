@@ -19,6 +19,8 @@ DESCRIPTION = {
     "name": "description",
     "type": "str",
     "default": "",
+    "input": "textarea",
+    "style": {"width": "100%"},
 }
 
 RETURN_DIRECT = {
