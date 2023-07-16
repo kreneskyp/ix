@@ -63,7 +63,8 @@ LLM_SYMBOLIC_MATH_CHAIN = {
     ],
     "fields": [
         VERBOSE,
-    ] + NodeTypeField.get_fields(
+    ]
+    + NodeTypeField.get_fields(
         LLMSymbolicMathChain,
         include=["input_key", "output_key"],
         field_options={

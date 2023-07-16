@@ -15,7 +15,7 @@ def import_class(class_path: str) -> Type:
     module_path, class_name = class_path.rsplit(".", 1)
     try:
         module = importlib.import_module(module_path)
-    except ModuleNotFoundError as e:
+    except ModuleNotFoundError:
         # check if the last value was a classmethod or staticmethod
         property_name = class_name
         module_path, class_name = module_path.rsplit(".", 1)
