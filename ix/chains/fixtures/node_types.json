@@ -1123,52 +1123,6 @@
 },
 {
   "model": "chains.nodetype",
-  "pk": "77494e15-9df5-4aaf-a666-49b7ecfb4880",
-  "fields": {
-    "name": "LLM Chain",
-    "description": "Chain that interprets a prompt and executes python code to do math.\n\n    Example:\n        .. code-block:: python\n\n            from langchain import LLMSymbolicMathChain, OpenAI\n            llm_symbolic_math = LLMSymbolicMathChain.from_llm(OpenAI())\n    ",
-    "class_path": "chains.llm_symbolic_math.base.LLMSymbolicMathChain",
-    "type": "chain",
-    "display_type": "node",
-    "connectors": [
-      {
-        "key": "llm",
-        "type": "target",
-        "source_type": "llm"
-      },
-      {
-        "key": "memory",
-        "type": "target",
-        "multiple": true,
-        "source_type": "memory"
-      }
-    ],
-    "fields": [
-      {
-        "name": "verbose",
-        "type": "boolean",
-        "default": false
-      },
-      {
-        "name": "input_key",
-        "type": "str",
-        "label": "Input_key",
-        "default": "question",
-        "required": false
-      },
-      {
-        "name": "output_key",
-        "type": "str",
-        "label": "Output_key",
-        "default": "answer",
-        "required": false
-      }
-    ],
-    "child_field": null
-  }
-},
-{
-  "model": "chains.nodetype",
   "pk": "7d49f24a-18e2-4db9-8be3-bbbe6aa25440",
   "fields": {
     "name": "Mock Memory",
