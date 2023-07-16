@@ -761,6 +761,54 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "4bb2e0e3-d030-494d-a8f3-44ea5147bee8",
+  "fields": {
+    "name": "Chain Tool",
+    "description": "Tool that runs a chain. Any chain may be converted into a tool.",
+    "class_path": "ix.chains.tools.chain_as_tool",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "chain",
+        "type": "target",
+        "source_type": "chain"
+      }
+    ],
+    "fields": [
+      {
+        "name": "name",
+        "type": "str",
+        "style": {
+          "width": "100%"
+        },
+        "default": ""
+      },
+      {
+        "name": "description",
+        "type": "str",
+        "input": "textarea",
+        "style": {
+          "width": "100%"
+        },
+        "default": ""
+      },
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "4eb6a170-d0e4-428e-be8d-09ca1ca8383d",
   "fields": {
     "name": "GraphQL Tool",
@@ -770,11 +818,6 @@
     "display_type": "node",
     "connectors": null,
     "fields": [
-      {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
       {
         "name": "return_direct",
         "type": "boolean",
