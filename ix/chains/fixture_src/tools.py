@@ -13,7 +13,7 @@ from langchain.utilities import (
     PubMedAPIWrapper,
 )
 
-from ix.chains.config import NodeTypeField
+from ix.api.chains.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
 
 NAME = {

@@ -1,7 +1,7 @@
 EMBEDDINGS_TARGET = {
     "key": "embeddings",
     "type": "target",
-    "source_type": "embedding",
+    "source_type": "embeddings",
 }
 
 

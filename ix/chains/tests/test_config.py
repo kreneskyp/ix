@@ -2,7 +2,7 @@ from typing import Literal, Optional
 
 import pytest
 from pydantic import BaseModel
-from ix.chains.config import NodeTypeField, InputType
+from ix.api.chains.types import NodeTypeField, InputType
 
 
 class TestModel(BaseModel):

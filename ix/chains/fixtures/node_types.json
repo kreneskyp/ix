@@ -747,13 +747,12 @@
         "name": "model",
         "type": "string",
         "choices": [
-          [
-            "text-embedding-ada-001",
-            "text-embedding-ada-001"
-          ]
+          {
+            "name": "text-embedding-ada-002",
+            "label": "text-embedding-ada-002"
+          }
         ],
-        "default": "text-embedding-ada-002",
-        "description": "The model to use."
+        "default": "text-embedding-ada-002"
       }
     ],
     "child_field": null
