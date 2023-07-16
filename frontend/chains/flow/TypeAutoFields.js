@@ -6,6 +6,7 @@ import {
   HStack,
   Input,
   Select,
+  Textarea,
   VStack,
 } from "@chakra-ui/react";
 import SliderInput from "components/SliderInput";
@@ -47,7 +48,7 @@ const AutoFieldInput = ({ field, value, onChange }) => {
         onChange={handleChange}
         px={1}
         py={2}
-        sx={field.style || {width: 100}}
+        sx={field.style || { width: 100 }}
       />
     </Flex>
   );
@@ -73,7 +74,32 @@ const AutoFieldSecret = ({ field, value, onChange }) => {
         px={1}
         py={2}
         type={"password"}
-        sx={field.style || {width: 100}}
+        sx={field.style || { width: 100 }}
+      />
+    </Flex>
+  );
+};
+
+const AutoFieldTextArea = ({ field, value, onChange }) => {
+  const handleChange = useCallback(
+    (event) => {
+      onChange(field.name, event.target.value);
+    },
+    [field, onChange]
+  );
+
+  return (
+    <Flex justifyContent="space-between" wrap="wrap" width="100%">
+      <FormLabel justify="start" whiteSpace="nowrap">
+        {getLabel(field)}
+      </FormLabel>
+      <Textarea
+        fontSize="sm"
+        value={value}
+        onChange={handleChange}
+        px={1}
+        py={2}
+        sx={field.style || { width: 200 }}
       />
     </Flex>
   );
@@ -133,6 +159,7 @@ const INPUTS = {
   slider: AutoFieldSlider,
   input: AutoFieldInput,
   secret: AutoFieldSecret,
+  textarea: AutoFieldTextArea,
 };
 
 // type specific default inputs
