@@ -59,12 +59,14 @@ MAP_SUBCHAIN = {
     ],
 }
 
+
 ROUTING_KEYS_FIELD = {
     "name": "routing_keys",
     "type": "list",
     "input": "string",
     "description": "Keys to use for routing.",
 }
+
 
 EMBEDDING_ROUTER_CHAIN = {
     "class_path": "langchain.chains.router.embedding_router.EmbeddingRouterChain",
@@ -124,3 +126,12 @@ MULTI_ROUTE_CHAIN = {
         }
     ],
 }
+
+
+ROUTING_CHAINS = [
+    # EMBEDDING_ROUTER_CHAIN,
+    # LLM_ROUTER_CHAIN,
+    MAP_SUBCHAIN,
+    # MULTI_ROUTE_CHAIN,
+    SEQUENCE,
+]
