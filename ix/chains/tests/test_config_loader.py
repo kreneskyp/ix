@@ -390,7 +390,6 @@ class TestExtractToolKwargs:
     @pytest.fixture
     def kwargs(self):
         return {
-            "description": "value1",
             "return_direct": False,
             "verbose": False,
             "tool_key1": "tool_value1",
@@ -406,7 +405,6 @@ class TestExtractToolKwargs:
         tool_kwargs = extract_tool_kwargs(node_kwargs)
         expected_node_kwargs = {"tool_key1": "tool_value1", "tool_key2": "tool_value2"}
         expected_tool_kwargs = {
-            "description": "value1",
             "return_direct": False,
             "verbose": False,
         }

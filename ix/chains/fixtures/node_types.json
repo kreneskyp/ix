@@ -328,11 +328,6 @@
     "connectors": null,
     "fields": [
       {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
-      {
         "name": "return_direct",
         "type": "boolean",
         "default": false
@@ -696,11 +691,6 @@
     "connectors": null,
     "fields": [
       {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
-      {
         "name": "return_direct",
         "type": "boolean",
         "default": false
@@ -771,6 +761,54 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "4bb2e0e3-d030-494d-a8f3-44ea5147bee8",
+  "fields": {
+    "name": "Chain Tool",
+    "description": "Tool that runs a chain. Any chain may be converted into a tool.",
+    "class_path": "ix.chains.tools.chain_as_tool",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "chain",
+        "type": "target",
+        "source_type": "chain"
+      }
+    ],
+    "fields": [
+      {
+        "name": "name",
+        "type": "str",
+        "style": {
+          "width": "100%"
+        },
+        "default": ""
+      },
+      {
+        "name": "description",
+        "type": "str",
+        "input": "textarea",
+        "style": {
+          "width": "100%"
+        },
+        "default": ""
+      },
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "4eb6a170-d0e4-428e-be8d-09ca1ca8383d",
   "fields": {
     "name": "GraphQL Tool",
@@ -780,11 +818,6 @@
     "display_type": "node",
     "connectors": null,
     "fields": [
-      {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
       {
         "name": "return_direct",
         "type": "boolean",
@@ -928,6 +961,57 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "61654ca2-b73b-4dac-b761-adba7d560ef3",
+  "fields": {
+    "name": "Symbolic Math Chain",
+    "description": "Chain that interprets a prompt and executes python code to do math.\n\n    Example:\n        .. code-block:: python\n\n            from langchain import LLMSymbolicMathChain, OpenAI\n            llm_symbolic_math = LLMSymbolicMathChain.from_llm(OpenAI())\n    ",
+    "class_path": "langchain.chains.llm_symbolic_math.base.LLMSymbolicMathChain.from_llm",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "input_key",
+        "type": "str",
+        "label": "Input_key",
+        "default": "user_input",
+        "required": false
+      },
+      {
+        "name": "output_key",
+        "type": "str",
+        "label": "Output_key",
+        "default": "answer",
+        "required": false
+      }
+    ],
+    "child_field": null
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "62513b96-183d-43cb-a839-b44d024c2101",
   "fields": {
     "name": " search",
@@ -937,11 +1021,6 @@
     "display_type": "node",
     "connectors": null,
     "fields": [
-      {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
       {
         "name": "return_direct",
         "type": "boolean",
@@ -995,11 +1074,6 @@
     "display_type": "node",
     "connectors": null,
     "fields": [
-      {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
       {
         "name": "return_direct",
         "type": "boolean",
@@ -1136,52 +1210,6 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
-      }
-    ],
-    "child_field": null
-  }
-},
-{
-  "model": "chains.nodetype",
-  "pk": "77494e15-9df5-4aaf-a666-49b7ecfb4880",
-  "fields": {
-    "name": "LLM Chain",
-    "description": "Chain that interprets a prompt and executes python code to do math.\n\n    Example:\n        .. code-block:: python\n\n            from langchain import LLMSymbolicMathChain, OpenAI\n            llm_symbolic_math = LLMSymbolicMathChain.from_llm(OpenAI())\n    ",
-    "class_path": "chains.llm_symbolic_math.base.LLMSymbolicMathChain",
-    "type": "chain",
-    "display_type": "node",
-    "connectors": [
-      {
-        "key": "llm",
-        "type": "target",
-        "source_type": "llm"
-      },
-      {
-        "key": "memory",
-        "type": "target",
-        "multiple": true,
-        "source_type": "memory"
-      }
-    ],
-    "fields": [
-      {
-        "name": "verbose",
-        "type": "boolean",
-        "default": false
-      },
-      {
-        "name": "input_key",
-        "type": "str",
-        "label": "Input_key",
-        "default": "question",
-        "required": false
-      },
-      {
-        "name": "output_key",
-        "type": "str",
-        "label": "Output_key",
-        "default": "answer",
-        "required": false
       }
     ],
     "child_field": null
@@ -1674,11 +1702,6 @@
     "connectors": null,
     "fields": [
       {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
-      {
         "name": "return_direct",
         "type": "boolean",
         "default": false
@@ -2078,11 +2101,6 @@
     "connectors": null,
     "fields": [
       {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
-      {
         "name": "return_direct",
         "type": "boolean",
         "default": false
@@ -2300,11 +2318,6 @@
     "connectors": null,
     "fields": [
       {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
-      {
         "name": "return_direct",
         "type": "boolean",
         "default": false
@@ -2470,11 +2483,6 @@
     "connectors": null,
     "fields": [
       {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
-      {
         "name": "return_direct",
         "type": "boolean",
         "default": false
@@ -2524,11 +2532,6 @@
     "display_type": "node",
     "connectors": null,
     "fields": [
-      {
-        "name": "description",
-        "type": "str",
-        "default": ""
-      },
       {
         "name": "return_direct",
         "type": "boolean",

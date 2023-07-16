@@ -1,3 +1,4 @@
+from ix.chains.fixture_src.targets import CHAIN_TARGET
 from langchain import (
     GoogleSearchAPIWrapper,
     GoogleSerperAPIWrapper,
@@ -15,10 +16,19 @@ from langchain.utilities import (
 from ix.chains.config import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
 
+NAME = {
+    "name": "name",
+    "type": "str",
+    "default": "",
+    "style": {"width": "100%"},
+}
+
 DESCRIPTION = {
     "name": "description",
     "type": "str",
     "default": "",
+    "input": "textarea",
+    "style": {"width": "100%"},
 }
 
 RETURN_DIRECT = {
@@ -27,7 +37,7 @@ RETURN_DIRECT = {
     "default": False,
 }
 
-TOOL_BASE_FIELDS = [DESCRIPTION, RETURN_DIRECT, VERBOSE]
+TOOL_BASE_FIELDS = [RETURN_DIRECT, VERBOSE]
 
 ARXIV_SEARCH = {
     "class_path": "ix.tools.arxiv.get_arxiv",
@@ -65,6 +75,15 @@ BING_SEARCH = {
             },
         },
     ),
+}
+
+CHAIN_AS_TOOL = {
+    "class_path": "ix.chains.tools.chain_as_tool",
+    "type": "tool",
+    "name": "Chain Tool",
+    "description": "Tool that runs a chain. Any chain may be converted into a tool.",
+    "connectors": [CHAIN_TARGET],
+    "fields": [NAME, DESCRIPTION] + TOOL_BASE_FIELDS,
 }
 
 DUCK_DUCK_GO_SEARCH = {
@@ -196,6 +215,7 @@ WOLFRAM = {
 TOOLS = [
     ARXIV_SEARCH,
     BING_SEARCH,
+    CHAIN_AS_TOOL,
     DUCK_DUCK_GO_SEARCH,
     GOOGLE_SEARCH,
     GOOGLE_SERPER,
