@@ -1,3 +1,5 @@
+from langchain.chains.llm_symbolic_math.base import LLMSymbolicMathChain
+from ix.chains.config import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
 from ix.chains.fixture_src.openai_functions import FUNCTION_CALL
 from ix.chains.fixture_src.targets import (
@@ -48,3 +50,34 @@ LLM_REPLY = dict(
     connectors=[LLM_TARGET, MEMORY_TARGET, PROMPT_TARGET],
     fields=[VERBOSE],
 )
+
+LLM_SYMBOLIC_MATH_CHAIN = {
+    "class_path": "langchain.chains.llm_symbolic_math.base.LLMSymbolicMathChain.from_llm",
+    "type": "chain",
+    "name": "Symbolic Math Chain",
+    "description": LLMSymbolicMathChain.__doc__,
+    "connectors": [
+        LLM_TARGET,
+        MEMORY_TARGET,
+        PROMPT_TARGET,
+    ],
+    "fields": [
+        VERBOSE,
+    ]
+    + NodeTypeField.get_fields(
+        LLMSymbolicMathChain,
+        include=["input_key", "output_key"],
+        field_options={
+            "input_key": {
+                "default": "user_input",
+            }
+        },
+    ),
+}
+
+CHAINS = [
+    LLM_CHAIN,
+    LLM_TOOL_CHAIN,
+    LLM_REPLY,
+    LLM_SYMBOLIC_MATH_CHAIN,
+]

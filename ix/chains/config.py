@@ -104,7 +104,7 @@ class NodeTypeField(BaseModel):
                 # TODO: cleanup poor naming choice
                 field_type_name = "boolean"
             else:
-                field_type_name = root_field.__name__
+                field_type_name = getattr(root_field, "__name__", str(root_field))
 
             if field_name in exclude:
                 continue

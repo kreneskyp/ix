@@ -1,5 +1,5 @@
 [flake8]
-exclude = node_modules tmp workdir .git .tox .bak
+exclude = node_modules tmp workdir .git .tox .bak langchain
 # Ignore E203,W503,W504 for compatibility with black
 ignore = E501,E203,W503,W504
 max-line-length = 99
