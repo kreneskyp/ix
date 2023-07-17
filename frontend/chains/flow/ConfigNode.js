@@ -175,46 +175,52 @@ export const ConfigNode = ({ data }) => {
   ) : (
     <DefaultNodeContent {...node_component_props} />
   );
+  const position = CONNECTOR_CONFIG[type.type]?.source_position || "right";
 
   return (
-    <Box
-      borderWidth="0px"
-      borderRadius={8}
-      padding="0"
-      border="1px solid"
-      borderColor={border}
-      backgroundColor={bg}
-      minWidth={styles?.width || 250}
-      color={color}
-      boxShadow="md"
-    >
-      <Handle
-        id={type.type}
-        type="source"
-        position={CONNECTOR_CONFIG[type.type]?.source_position || "right"}
-        style={{ top: "15px", transform: "translateX(-2px)" }}
-      />
-      <Heading
-        as="h4"
-        size="xs"
-        color={highlightColor}
-        borderTopLeftRadius={7}
-        borderTopRightRadius={7}
-        bg={highlight[type.type]}
-        px={1}
-        py={2}
-        className="drag-handle"
+    <Box p={5} className="config-node">
+      <Box
+        borderWidth="0px"
+        borderRadius={8}
+        padding="0"
+        border="1px solid"
+        borderColor={border}
+        backgroundColor={bg}
+        minWidth={styles?.width || 250}
+        color={color}
+        boxShadow="md"
       >
-        <Flex alignItems="center" justifyContent="space-between" width="100%">
-          <Box pr={5}>
-            <FontAwesomeIcon icon={styles?.icon} />{" "}
-            {node.name || type?.name || node.classPath.split(".").pop()}
-          </Box>
-          <DeleteIcon node={node} />
-        </Flex>
-      </Heading>
-      <Box minHeight={25} cursor="default">
-        {content}
+        <Handle
+          id={type.type}
+          type="source"
+          position={position}
+          style={{
+            top: "38px",
+            transform: (position === 'left') ? "translateX(23px)" : "translateX(-23px)"
+          }}
+        />
+        <Heading
+          as="h4"
+          size="xs"
+          color={highlightColor}
+          borderTopLeftRadius={7}
+          borderTopRightRadius={7}
+          bg={highlight[type.type]}
+          px={1}
+          py={2}
+          className="drag-handle"
+        >
+          <Flex alignItems="center" justifyContent="space-between" width="100%">
+            <Box pr={5}>
+              <FontAwesomeIcon icon={styles?.icon} />{" "}
+              {node.name || type?.name || node.classPath.split(".").pop()}
+            </Box>
+            <DeleteIcon node={node} />
+          </Flex>
+        </Heading>
+        <Box minHeight={25} cursor="default">
+          {content}
+        </Box>
       </Box>
     </Box>
   );
