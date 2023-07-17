@@ -196,7 +196,8 @@ export const ConfigNode = ({ data }) => {
           position={position}
           style={{
             top: "38px",
-            transform: (position === 'left') ? "translateX(23px)" : "translateX(-23px)"
+            transform:
+              position === "left" ? "translateX(23px)" : "translateX(-23px)",
           }}
         />
         <Heading
