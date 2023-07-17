@@ -33,7 +33,19 @@
         "default": false
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -93,7 +105,34 @@
         "default": true
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "reply"
+      ],
+      "properties": {
+        "reply": {
+          "type": "boolean",
+          "default": true
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -153,7 +192,34 @@
         "default": true
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "reply"
+      ],
+      "properties": {
+        "reply": {
+          "type": "boolean",
+          "default": true
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -178,7 +244,8 @@
         "label": "Output Key"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {}
   }
 },
 {
@@ -238,7 +305,34 @@
         "default": true
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "reply"
+      ],
+      "properties": {
+        "reply": {
+          "type": "boolean",
+          "default": true
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -268,7 +362,29 @@
         "default": ""
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "name",
+        "description",
+        "parameters"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "parameters": {
+          "type": "object",
+          "default": ""
+        },
+        "description": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    }
   }
 },
 {
@@ -313,7 +429,24 @@
         }
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose",
+        "spec"
+      ],
+      "properties": {
+        "spec": {
+          "type": "string",
+          "default": null
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -399,7 +532,48 @@
         "required": false
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "k": {
+          "type": "number",
+          "default": 10
+        },
+        "gl": {
+          "type": "string",
+          "default": "us"
+        },
+        "hl": {
+          "type": "string",
+          "default": "en"
+        },
+        "tbs": {
+          "type": "string",
+          "default": null
+        },
+        "type": {
+          "type": "string",
+          "default": "search"
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "serper_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
   }
 },
 {
@@ -480,7 +654,69 @@
         "description": "Number of layers to be loaded into gpu memory"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "model_path",
+        "n_ctx",
+        "n_parts",
+        "seed",
+        "f16_kv",
+        "logits_all",
+        "vocab_only",
+        "use_mlock",
+        "n_threads",
+        "n_batch",
+        "n_gpu_layers"
+      ],
+      "properties": {
+        "seed": {
+          "type": "number",
+          "default": -1
+        },
+        "n_ctx": {
+          "type": "number",
+          "default": 512
+        },
+        "f16_kv": {
+          "type": "boolean",
+          "default": false
+        },
+        "n_batch": {
+          "type": "number",
+          "default": 8
+        },
+        "n_parts": {
+          "type": "number",
+          "default": -1
+        },
+        "n_threads": {
+          "type": "number",
+          "default": null
+        },
+        "use_mlock": {
+          "type": "boolean",
+          "default": false
+        },
+        "logits_all": {
+          "type": "boolean",
+          "default": false
+        },
+        "model_path": {
+          "type": "string",
+          "default": null
+        },
+        "vocab_only": {
+          "type": "boolean",
+          "default": false
+        },
+        "n_gpu_layers": {
+          "type": "number",
+          "default": null
+        }
+      }
+    }
   }
 },
 {
@@ -509,7 +745,19 @@
         "description": "Model name to use"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "model_name"
+      ],
+      "properties": {
+        "model_name": {
+          "type": "string",
+          "default": "textembedding-gecko"
+        }
+      }
+    }
   }
 },
 {
@@ -556,7 +804,24 @@
         "type": "string"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose",
+        "function_call"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "function_call": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
   }
 },
 {
@@ -616,7 +881,34 @@
         "default": true
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "reply"
+      ],
+      "properties": {
+        "reply": {
+          "type": "boolean",
+          "default": true
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -676,7 +968,34 @@
         "default": true
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "reply"
+      ],
+      "properties": {
+        "reply": {
+          "type": "boolean",
+          "default": true
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -729,7 +1048,40 @@
         "required": false
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "lang": {
+          "type": "string",
+          "default": "en"
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "top_k_results": {
+          "type": "number",
+          "default": 3
+        },
+        "doc_content_chars_max": {
+          "type": "number",
+          "default": 4000
+        },
+        "load_all_available_meta": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -755,7 +1107,19 @@
         "default": "text-embedding-ada-002"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "model"
+      ],
+      "properties": {
+        "model": {
+          "type": "string",
+          "default": "text-embedding-ada-002"
+        }
+      }
+    }
   }
 },
 {
@@ -803,7 +1167,34 @@
         "default": false
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "name",
+        "description",
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "description": {
+          "type": "string",
+          "default": ""
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -835,7 +1226,29 @@
         "required": true
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "graphql_endpoint"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "graphql_endpoint": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
   }
 },
 {
@@ -895,7 +1308,34 @@
         "default": true
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "reply"
+      ],
+      "properties": {
+        "reply": {
+          "type": "boolean",
+          "default": true
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -955,7 +1395,34 @@
         "default": true
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "reply"
+      ],
+      "properties": {
+        "reply": {
+          "type": "boolean",
+          "default": true
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -1006,7 +1473,27 @@
         "required": false
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "input_key": {
+          "type": "string",
+          "default": "user_input"
+        },
+        "output_key": {
+          "type": "string",
+          "default": "answer"
+        }
+      }
+    }
   }
 },
 {
@@ -1059,7 +1546,40 @@
         "required": false
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "load_max_docs": {
+          "type": "number",
+          "default": 100
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "top_k_results": {
+          "type": "number",
+          "default": 3
+        },
+        "doc_content_chars_max": {
+          "type": "number",
+          "default": 4000
+        },
+        "load_all_available_meta": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -1112,7 +1632,40 @@
         "required": false
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "time": {
+          "type": "string",
+          "default": "y"
+        },
+        "region": {
+          "type": "string",
+          "default": "wt-wt"
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "safesearch": {
+          "type": "string",
+          "default": "moderate"
+        },
+        "max_results": {
+          "type": "number",
+          "default": 5
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -1163,7 +1716,39 @@
         "description": "MosaicML API token"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "endpoint_url",
+        "embed_instruction",
+        "query_instruction",
+        "retry_sleep",
+        "mosaicml_api_token"
+      ],
+      "properties": {
+        "retry_sleep": {
+          "type": "number",
+          "default": 1.0
+        },
+        "endpoint_url": {
+          "type": "string",
+          "default": "https://models.hosted-on.mosaicml.hosting/instructor-xl/v1/predict"
+        },
+        "embed_instruction": {
+          "type": "string",
+          "default": "Represent the document for retrieval: "
+        },
+        "query_instruction": {
+          "type": "string",
+          "default": "Represent the question for retrieving supporting documents: "
+        },
+        "mosaicml_api_token": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
   }
 },
 {
@@ -1211,7 +1796,8 @@
         "nullable": true
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {}
   }
 },
 {
@@ -1225,7 +1811,12 @@
     "display_type": "node",
     "connectors": null,
     "fields": null,
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
   }
 },
 {
@@ -1271,7 +1862,39 @@
         "default": "input"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "memory_key",
+        "human_prefix",
+        "ai_prefix",
+        "output_key",
+        "input_key"
+      ],
+      "properties": {
+        "ai_prefix": {
+          "type": "string",
+          "default": "AI"
+        },
+        "input_key": {
+          "type": "string",
+          "default": "input"
+        },
+        "memory_key": {
+          "type": "string",
+          "default": "history"
+        },
+        "output_key": {
+          "type": "string",
+          "default": "output"
+        },
+        "human_prefix": {
+          "type": "string",
+          "default": "Human"
+        }
+      }
+    }
   }
 },
 {
@@ -1318,7 +1941,34 @@
         "type": "string"
       }
     ],
-    "child_field": "chains"
+    "child_field": "chains",
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "input_variables",
+        "map_input",
+        "map_input_to",
+        "output_key"
+      ],
+      "properties": {
+        "map_input": {
+          "type": "string",
+          "default": null
+        },
+        "output_key": {
+          "type": "string",
+          "default": null
+        },
+        "map_input_to": {
+          "type": "string",
+          "default": null
+        },
+        "input_variables": {
+          "type": "object",
+          "default": null
+        }
+      }
+    }
   }
 },
 {
@@ -1351,7 +2001,24 @@
         "description": "Model name to use"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "google_api_key",
+        "model_name"
+      ],
+      "properties": {
+        "model_name": {
+          "type": "string",
+          "default": "models/embedding-gecko-001"
+        },
+        "google_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
   }
 },
 {
@@ -1403,7 +2070,44 @@
         "default": "input"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "k",
+        "memory_key",
+        "human_prefix",
+        "ai_prefix",
+        "output_key",
+        "input_key"
+      ],
+      "properties": {
+        "k": {
+          "type": "number",
+          "default": 5
+        },
+        "ai_prefix": {
+          "type": "string",
+          "default": "AI"
+        },
+        "input_key": {
+          "type": "string",
+          "default": "input"
+        },
+        "memory_key": {
+          "type": "string",
+          "default": "history"
+        },
+        "output_key": {
+          "type": "string",
+          "default": "output"
+        },
+        "human_prefix": {
+          "type": "string",
+          "default": "Human"
+        }
+      }
+    }
   }
 },
 {
@@ -1417,7 +2121,12 @@
     "display_type": "node",
     "connectors": null,
     "fields": null,
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
   }
 },
 {
@@ -1500,7 +2209,49 @@
         "default": false
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "model_name",
+        "google_api_key",
+        "temperature",
+        "top_p",
+        "top_k",
+        "n",
+        "verbose"
+      ],
+      "properties": {
+        "n": {
+          "type": "number",
+          "default": 1
+        },
+        "top_k": {
+          "type": "number",
+          "default": 0
+        },
+        "top_p": {
+          "type": "number",
+          "default": 0
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "model_name": {
+          "type": "string",
+          "default": "gpt-4"
+        },
+        "temperature": {
+          "type": "number",
+          "default": 0
+        },
+        "google_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
   }
 },
 {
@@ -1543,7 +2294,29 @@
         "description": "API URL"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "temperature",
+        "anthropic_api_key",
+        "anthropic_api_url"
+      ],
+      "properties": {
+        "temperature": {
+          "type": "number",
+          "default": 0
+        },
+        "anthropic_api_key": {
+          "type": "string",
+          "default": null
+        },
+        "anthropic_api_url": {
+          "type": "string",
+          "default": "https://api.anthropic.com"
+        }
+      }
+    }
   }
 },
 {
@@ -1580,7 +2353,34 @@
         "default": "related_artifacts"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "save_artifact",
+        "load_artifact",
+        "input_key",
+        "memory_key"
+      ],
+      "properties": {
+        "input_key": {
+          "type": "string",
+          "default": "artifact_keys"
+        },
+        "memory_key": {
+          "type": "string",
+          "default": "related_artifacts"
+        },
+        "load_artifact": {
+          "type": "boolean",
+          "default": true
+        },
+        "save_artifact": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -1626,7 +2426,34 @@
         "description": "Key word arguments to pass when calling the `encode` method of the model"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "model_name",
+        "cache_folder",
+        "model_kwargs",
+        "encode_kwargs"
+      ],
+      "properties": {
+        "model_name": {
+          "type": "string",
+          "default": "sentence-transformers/all-mpnet-base-v2"
+        },
+        "cache_folder": {
+          "type": "string",
+          "default": null
+        },
+        "model_kwargs": {
+          "type": "object",
+          "default": null
+        },
+        "encode_kwargs": {
+          "type": "object",
+          "default": null
+        }
+      }
+    }
   }
 },
 {
@@ -1686,7 +2513,34 @@
         "default": true
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "reply"
+      ],
+      "properties": {
+        "reply": {
+          "type": "boolean",
+          "default": true
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -1746,7 +2600,44 @@
         "required": false
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "email": {
+          "type": "string",
+          "default": "your_email@example.com"
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "load_max_docs": {
+          "type": "number",
+          "default": 25
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "top_k_results": {
+          "type": "number",
+          "default": 3
+        },
+        "doc_content_chars_max": {
+          "type": "number",
+          "default": 2000
+        },
+        "load_all_available_meta": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -1802,7 +2693,44 @@
         "default": "input"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "max_token_limit",
+        "memory_key",
+        "human_prefix",
+        "ai_prefix",
+        "output_key",
+        "input_key"
+      ],
+      "properties": {
+        "ai_prefix": {
+          "type": "string",
+          "default": "AI"
+        },
+        "input_key": {
+          "type": "string",
+          "default": "input"
+        },
+        "memory_key": {
+          "type": "string",
+          "default": "history"
+        },
+        "output_key": {
+          "type": "string",
+          "default": "output"
+        },
+        "human_prefix": {
+          "type": "string",
+          "default": "Human"
+        },
+        "max_token_limit": {
+          "type": "number",
+          "default": 2000
+        }
+      }
+    }
   }
 },
 {
@@ -1834,7 +2762,25 @@
         ]
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "messages"
+      ],
+      "properties": {
+        "messages": {
+          "type": "object",
+          "default": [
+            {
+              "role": "system",
+              "template": "",
+              "input_variables": []
+            }
+          ]
+        }
+      }
+    }
   }
 },
 {
@@ -1894,7 +2840,34 @@
         "default": true
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "reply"
+      ],
+      "properties": {
+        "reply": {
+          "type": "boolean",
+          "default": true
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -1920,7 +2893,12 @@
       }
     ],
     "fields": null,
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
   }
 },
 {
@@ -1999,7 +2977,44 @@
         "default": false
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "model_name",
+        "request_timeout",
+        "max_retries",
+        "temperature",
+        "max_tokens",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_tokens": {
+          "type": "number",
+          "default": 256
+        },
+        "model_name": {
+          "type": "string",
+          "default": "gpt-4-0613"
+        },
+        "max_retries": {
+          "type": "number",
+          "default": 6
+        },
+        "temperature": {
+          "type": "number",
+          "default": 0
+        },
+        "request_timeout": {
+          "type": "number",
+          "default": 60
+        }
+      }
+    }
   }
 },
 {
@@ -2019,7 +3034,19 @@
         "default": false
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "parse_json"
+      ],
+      "properties": {
+        "parse_json": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -2085,7 +3112,54 @@
         "description": "Key that the artifact will be output to"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "artifact_key",
+        "artifact_name",
+        "artifact_description",
+        "artifact_type",
+        "artifact_storage",
+        "artifact_storage_id_key",
+        "content_key",
+        "output_key"
+      ],
+      "properties": {
+        "output_key": {
+          "type": "string",
+          "default": null
+        },
+        "content_key": {
+          "type": "string",
+          "default": null
+        },
+        "artifact_key": {
+          "type": "string",
+          "default": null
+        },
+        "artifact_name": {
+          "type": "string",
+          "default": null
+        },
+        "artifact_type": {
+          "type": "string",
+          "default": null
+        },
+        "artifact_storage": {
+          "type": "string",
+          "default": "write_to_file"
+        },
+        "artifact_description": {
+          "type": "string",
+          "default": null
+        },
+        "artifact_storage_id_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
   }
 },
 {
@@ -2116,7 +3190,29 @@
         "label": "Wolfram Alpha App ID"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "wolfram_alpha_app_id"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "wolfram_alpha_app_id": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
   }
 },
 {
@@ -2157,7 +3253,24 @@
         "default": []
       }
     ],
-    "child_field": "chains"
+    "child_field": "chains",
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose",
+        "input_variables"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "input_variables": {
+          "type": "object",
+          "default": []
+        }
+      }
+    }
   }
 },
 {
@@ -2218,7 +3331,44 @@
         "default": "input"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "max_token_limit",
+        "memory_key",
+        "human_prefix",
+        "ai_prefix",
+        "output_key",
+        "input_key"
+      ],
+      "properties": {
+        "ai_prefix": {
+          "type": "string",
+          "default": "AI"
+        },
+        "input_key": {
+          "type": "string",
+          "default": "input"
+        },
+        "memory_key": {
+          "type": "string",
+          "default": "history"
+        },
+        "output_key": {
+          "type": "string",
+          "default": "output"
+        },
+        "human_prefix": {
+          "type": "string",
+          "default": "Human"
+        },
+        "max_token_limit": {
+          "type": "number",
+          "default": 2000
+        }
+      }
+    }
   }
 },
 {
@@ -2279,7 +3429,39 @@
         "default": "session_id"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "url",
+        "ttl",
+        "session_scope",
+        "session_prefix",
+        "session_key"
+      ],
+      "properties": {
+        "ttl": {
+          "type": "number",
+          "default": 3600
+        },
+        "url": {
+          "type": "string",
+          "default": "redis://redis:6379/0"
+        },
+        "session_key": {
+          "type": "string",
+          "default": "session_id"
+        },
+        "session_scope": {
+          "type": "string",
+          "default": null
+        },
+        "session_prefix": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    }
   }
 },
 {
@@ -2302,7 +3484,19 @@
         "default": "/var/app/workdir/chat_memory.txt"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "file_path"
+      ],
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "default": "/var/app/workdir/chat_memory.txt"
+        }
+      }
+    }
   }
 },
 {
@@ -2357,7 +3551,40 @@
         "required": false
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "k": {
+          "type": "number",
+          "default": 10
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "siterestrict": {
+          "type": "boolean",
+          "default": false
+        },
+        "google_cse_id": {
+          "type": "string",
+          "default": null
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "google_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
   }
 },
 {
@@ -2373,7 +3600,7 @@
       {
         "key": "embeddings",
         "type": "target",
-        "source_type": "embedding"
+        "source_type": "embeddings"
       }
     ],
     "fields": [
@@ -2410,7 +3637,39 @@
         "description": "Key for storing vectors"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "redis_url",
+        "index_name",
+        "content_key",
+        "metadata_key",
+        "vector_key"
+      ],
+      "properties": {
+        "redis_url": {
+          "type": "string",
+          "default": "redis://redis:6379/0"
+        },
+        "index_name": {
+          "type": "string",
+          "default": null
+        },
+        "vector_key": {
+          "type": "string",
+          "default": "content_vector"
+        },
+        "content_key": {
+          "type": "string",
+          "default": "content"
+        },
+        "metadata_key": {
+          "type": "string",
+          "default": "metadata"
+        }
+      }
+    }
   }
 },
 {
@@ -2467,7 +3726,29 @@
         "default": "text"
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose",
+        "function_call",
+        "output_key"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "output_key": {
+          "type": "string",
+          "default": "text"
+        },
+        "function_call": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
   }
 },
 {
@@ -2517,7 +3798,38 @@
         "required": false
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "bing_subscription_key",
+        "bing_search_url"
+      ],
+      "properties": {
+        "k": {
+          "type": "number",
+          "default": 10
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "bing_search_url": {
+          "type": "string",
+          "default": null
+        },
+        "bing_subscription_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
   }
 },
 {
@@ -2563,7 +3875,36 @@
         "required": false
       }
     ],
-    "child_field": null
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "function_name": {
+          "type": "string",
+          "default": null
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "awslambda_tool_name": {
+          "type": "string",
+          "default": null
+        },
+        "awslambda_tool_description": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
   }
 }
 ]
