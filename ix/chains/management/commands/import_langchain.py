@@ -1,5 +1,8 @@
 from django.core.management.base import BaseCommand
 
+from ix.api.chains.types import NodeTypeField
+from ix.api.chains.types import NodeType as NodeTypePydantic
+
 from ix.chains.fixture_src.agents import AGENTS
 from ix.chains.fixture_src.artifacts import ARTIFACT_MEMORY, SAVE_ARTIFACT
 from ix.chains.fixture_src.chains import CHAINS
@@ -156,4 +159,8 @@ class Command(BaseCommand):
                 node_type.save()
             else:
                 # creating new node type
-                NodeType.objects.create(**component)
+                node_type = NodeType.objects.create(**component)
+
+            fields = [NodeTypeField(**field) for field in node_type.fields or []]
+            node_type.config_schema = NodeTypePydantic.generate_config_schema(fields)
+            node_type.save(update_fields=["config_schema"])
