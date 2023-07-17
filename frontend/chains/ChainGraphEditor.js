@@ -363,7 +363,10 @@ const ChainGraphEditor = ({ graph }) => {
             fitView
           >
             <Controls />
-            <Background color="#aaa" gap={16} />
+            <Background
+              color={colorMode === "light" ? "#111" : "#aaa"}
+              gap={16}
+            />
           </ReactFlow>
         </Box>
       </ChainEditorAPIContext.Provider>
