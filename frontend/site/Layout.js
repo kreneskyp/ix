@@ -27,7 +27,7 @@ export const Layout = ({ children }) => {
   return (
     <Flex h="100vh" overflowX="hidden">
       <VStack
-        bg={colorMode === "light" ? "gray.200" : "gray.900"}
+        bg={colorMode === "light" ? "gray.300" : "gray.900"}
         width={300}
         p={2}
         minH="100vh"
@@ -38,15 +38,20 @@ export const Layout = ({ children }) => {
         {leftPane}
         <Spacer />
         <Divider
-          borderColor={colorMode === "light" ? "gray.800" : "whiteAlpha.400"}
+          borderColor={colorMode === "light" ? "gray.700" : "whiteAlpha.400"}
         />
         <Navigation />
         <Divider
-          borderColor={colorMode === "light" ? "gray.800" : "whiteAlpha.400"}
+          borderColor={colorMode === "light" ? "gray.700" : "whiteAlpha.400"}
         />
         <ColorModeButton />
       </VStack>
-      <Flex direction="column" flex="1" h="100%">
+      <Flex
+        direction="column"
+        flex="1"
+        h="100%"
+        bg={colorMode === "light" ? "gray.200" : "gray.800"}
+      >
         {/* main content area */}
         <Suspense fallback={<CenteredSpinner />}>{content}</Suspense>
       </Flex>
