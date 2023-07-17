@@ -1,5 +1,7 @@
+from ix.api.chains.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
-from ix.chains.fixture_src.targets import LLM_TARGET, MEMORY_TARGET, PROMPT_TARGET
+from ix.chains.fixture_src.targets import LLM_TARGET, MEMORY_TARGET, PROMPT_TARGET, OUTPUT_PARSER_TARGET
+from ix.chains.data import GenerateSchema
 
 FUNCTION_SCHEMA = {
     "class_path": "ix.chains.functions.FunctionSchema",
@@ -62,3 +64,25 @@ OPENAPI_CHAIN = {
         },
     ],
 }
+
+GENERATE_SCHEMA = {
+    "class_path": "ix.chains.data.GenerateSchema",
+    "type": "chain",
+    "name": "Generate Schema",
+    "description": "Generate a data object using an OpenAI function to format it",
+    "connectors": [LLM_TARGET, MEMORY_TARGET, PROMPT_TARGET, OUTPUT_PARSER_TARGET],
+    "fields": [VERBOSE] + NodeTypeField.get_fields(
+        GenerateSchema,
+        include=[
+            "input_key",
+            "output_key",
+        ],
+    )
+}
+
+OPEN_AI_FUNCTIONS_CHAINS = [
+    FUNCTION_SCHEMA,
+    FUNCTION_OUTPUT_PARSER,
+    OPENAPI_CHAIN,
+    GENERATE_SCHEMA,
+]

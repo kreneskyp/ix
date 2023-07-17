@@ -26,11 +26,7 @@ from ix.chains.fixture_src.memory import (
     CONVERSATION_BUFFER_WINDOW_MEMORY,
     CONVERSATION_TOKEN_BUFFER_MEMORY,
 )
-from ix.chains.fixture_src.openai_functions import (
-    FUNCTION_SCHEMA,
-    FUNCTION_OUTPUT_PARSER,
-    OPENAPI_CHAIN,
-)
+from ix.chains.fixture_src.openai_functions import OPEN_AI_FUNCTIONS_CHAINS
 from ix.chains.fixture_src.prompts import CHAT_PROMPT_TEMPLATE
 from ix.chains.fixture_src.routing import ROUTING_CHAINS
 from ix.chains.fixture_src.testing import MOCK_MEMORY, MOCK_CHAIN
@@ -70,13 +66,7 @@ COMPONENTS.extend(CHAINS)
 COMPONENTS.extend(ROUTING_CHAINS)
 
 # OpenAI Functions
-COMPONENTS.extend(
-    [
-        FUNCTION_SCHEMA,
-        FUNCTION_OUTPUT_PARSER,
-        OPENAPI_CHAIN,
-    ]
-)
+COMPONENTS.extend(OPEN_AI_FUNCTIONS_CHAINS)
 
 # Prompts
 COMPONENTS.extend(
