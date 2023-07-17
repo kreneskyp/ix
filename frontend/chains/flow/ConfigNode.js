@@ -35,8 +35,8 @@ const CONNECTOR_CONFIG = {
   tool: {
     source_position: "left",
     target_position: "right",
-  }
-}
+  },
+};
 
 const usePropertyTargets = (type) => {
   return useMemo(() => {
@@ -50,9 +50,11 @@ export const PropertyTarget = ({ connector }) => {
       <Handle
         id={connector.key}
         type="target"
-        position={CONNECTOR_CONFIG[connector.sourceType]?.target_position || "left"}
+        position={
+          CONNECTOR_CONFIG[connector.sourceType]?.target_position || "left"
+        }
       />
-      <Box pl={2} m={0}>
+      <Box px={2} m={0}>
         {connector.key}
       </Box>
     </Box>
@@ -61,12 +63,33 @@ export const PropertyTarget = ({ connector }) => {
 
 export const NodeProperties = ({ type }) => {
   const propertyTargets = usePropertyTargets(type);
+
+  // sort properties into left and right
+  const left = [];
+  const right = [];
+  propertyTargets?.forEach((connector) => {
+    const position =
+      CONNECTOR_CONFIG[connector.sourceType]?.target_position || "left";
+    if (position === "right") {
+      right.push(connector);
+    } else {
+      left.push(connector);
+    }
+  });
+
   return (
-    <VStack spacing={0} cursor="default">
-      {propertyTargets?.map((connector, index) => (
-        <PropertyTarget key={index} connector={connector} />
-      ))}
-    </VStack>
+    <Flex justify={"space-between"}>
+      <VStack spacing={0} cursor="default">
+        {left?.map((connector, index) => (
+          <PropertyTarget key={index} connector={connector} />
+        ))}
+      </VStack>
+      <VStack spacing={0} cursor="default">
+        {right?.map((connector, index) => (
+          <PropertyTarget key={index} connector={connector} />
+        ))}
+      </VStack>
+    </Flex>
   );
 };
 
