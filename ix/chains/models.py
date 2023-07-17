@@ -71,6 +71,9 @@ class NodeType(models.Model):
     # used for parsing config objects
     child_field = models.CharField(max_length=32, null=True)
 
+    # JSONSchema for the config object
+    config_schema = models.JSONField(default=dict)
+
     @cached_property
     def connectors_as_dict(self):
         return {c["key"]: c for c in self.connectors or []}
