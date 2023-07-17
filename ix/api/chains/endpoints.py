@@ -84,13 +84,17 @@ async def get_node_types(search: Optional[str] = None):
     return [NodeTypePydantic.from_orm(node_type) async for node_type in node_types]
 
 
-@router.get("/node_types/{node_type_id}", response_model=NodeTypePydantic)
+class NodeTypeDetail(NodeTypePydantic):
+    config_schema: Optional[dict] = None
+
+
+@router.get("/node_types/{node_type_id}", response_model=NodeTypeDetail)
 async def get_node_type_detail(node_type_id: UUID):
     try:
         node_type = await NodeType.objects.aget(id=node_type_id)
     except NodeType.DoesNotExist:
         raise HTTPException(status_code=404, detail="Node type not found")
-    return NodeTypePydantic.from_orm(node_type)
+    return NodeTypeDetail.from_orm(node_type)
 
 
 @router.post("/node_types/", response_model=NodeTypePydantic)

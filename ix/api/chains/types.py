@@ -207,6 +207,40 @@ class NodeType(BaseModel):
     class Config:
         orm_mode = True
 
+    @staticmethod
+    def generate_config_schema(fields: List[NodeTypeField]) -> dict:
+        """Generates a JSON schema from a list of NodeTypeField objects."""
+        schema = {"type": "object", "properties": {}, "required": []}
+        for field in fields:
+            # Determine the type of the field for the JSON schema
+            if field.type == "str":
+                schema_type = "string"
+            elif field.type == "int" or field.type == "float":
+                schema_type = "number"
+            elif field.type == "bool":
+                schema_type = "boolean"
+            else:
+                schema_type = "object"
+
+            schema["properties"][field.name] = {
+                "type": schema_type,
+                "default": field.default,
+            }
+            if field.required:
+                schema["required"].append(field.name)
+
+            if field.input_type == InputType.SLIDER:
+                schema["properties"][field.name]["minimum"] = field.min
+                schema["properties"][field.name]["maximum"] = field.max
+                schema["properties"][field.name]["multipleOf"] = field.step
+
+            elif field.input_type == InputType.SELECT:
+                schema["properties"][field.name]["enum"] = [
+                    choice.value for choice in field.choices
+                ]
+
+        return schema
+
 
 class Node(BaseModel):
     id: UUID = Field(default_factory=uuid4)

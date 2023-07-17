@@ -3,6 +3,7 @@ from uuid import uuid4
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient
+from jsonschema import Draft7Validator
 
 from ix.server.fast_api import app
 from ix.chains.models import ChainEdge, ChainNode, Chain, NodeType
@@ -161,6 +162,19 @@ class TestNodeType:
         assert response.status_code == 404
         result = response.json()
         assert result["detail"] == "Node type not found"
+
+    def test_config_schema(self, node_types):
+        """
+        Validate that all known components have valid config_schema
+        :param node_type:
+        :return:
+        """
+        for node_type in NodeType.objects.all():
+            # Check if the schema is valid by attempting to validate an empty document
+            # This will raise an exception if the schema is not valid
+            validator = Draft7Validator(node_type.config_schema)
+            validator.validate({})
+        # If no exception was raised, the test passes
 
 
 @pytest.mark.django_db
