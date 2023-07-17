@@ -213,11 +213,11 @@ class NodeType(BaseModel):
         schema = {"type": "object", "properties": {}, "required": []}
         for field in fields:
             # Determine the type of the field for the JSON schema
-            if field.type == "str":
+            if field.type in {"str", "string"}:
                 schema_type = "string"
-            elif field.type == "int" or field.type == "float":
+            elif field.type in {"number", "float", "int", "integer"}:
                 schema_type = "number"
-            elif field.type == "bool":
+            elif field.type in {"bool", "boolean"}:
                 schema_type = "boolean"
             else:
                 schema_type = "object"
