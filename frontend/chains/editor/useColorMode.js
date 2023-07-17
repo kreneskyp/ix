@@ -22,8 +22,8 @@ export const useEditorColorMode = () => {
           },
       root: isLight
         ? {
-            color: "gray.200",
-            bg: "gray.700",
+            color: "gray.700",
+            bg: "gray.300",
           }
         : {
             color: "gray.400",
