@@ -52,7 +52,7 @@ export const Layout = ({ children }) => {
         direction="column"
         flex="1"
         h="100%"
-        bg={colorMode === "light" ? "gray.200" : "gray.800"}
+        bg={colorMode === "light" ? "gray.100" : "gray.800"}
       >
         {/* main content area */}
         <Suspense fallback={<CenteredSpinner />}>{content}</Suspense>

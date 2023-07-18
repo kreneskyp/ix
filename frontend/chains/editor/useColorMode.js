@@ -8,7 +8,7 @@ export const useEditorColorMode = () => {
     isLight,
     highlightColor: isLight ? "gray.100" : "gray.100",
     color: isLight ? "gray.800" : "gray.100",
-    bg: isLight ? "gray.50" : "gray.700",
+    bg: isLight ? "white" : "gray.700",
     border: isLight ? "gray.600" : "black",
     node: {
       section: isLight
