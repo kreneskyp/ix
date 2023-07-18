@@ -8,7 +8,7 @@ export const useEditorColorMode = () => {
     isLight,
     highlightColor: isLight ? "gray.100" : "gray.100",
     color: isLight ? "gray.800" : "gray.100",
-    bg: isLight ? "gray.50" : "gray.700",
+    bg: isLight ? "white" : "gray.700",
     border: isLight ? "gray.600" : "black",
     node: {
       section: isLight
@@ -22,8 +22,8 @@ export const useEditorColorMode = () => {
           },
       root: isLight
         ? {
-            color: "gray.200",
-            bg: "gray.700",
+            color: "gray.700",
+            bg: "gray.300",
           }
         : {
             color: "gray.400",
@@ -46,6 +46,10 @@ export const useEditorColorMode = () => {
       chain: isLight ? "blue.500" : "blue.300",
       agent: isLight ? "green.500" : "green.600",
       tool: isLight ? "yellow.500" : "yellow.600",
+      embeddings: isLight ? "gray.400" : "gray.700",
+      output_parser: isLight ? "gray.400" : "gray.700",
+      vectorstore: isLight ? "gray.400" : "gray.700",
+      default: isLight ? "gray.400" : "gray.700",
     },
   };
 };

@@ -196,7 +196,8 @@ export const ConfigNode = ({ data }) => {
           position={position}
           style={{
             top: "38px",
-            transform: (position === 'left') ? "translateX(23px)" : "translateX(-23px)"
+            transform:
+              position === "left" ? "translateX(23px)" : "translateX(-23px)",
           }}
         />
         <Heading
@@ -205,7 +206,7 @@ export const ConfigNode = ({ data }) => {
           color={highlightColor}
           borderTopLeftRadius={7}
           borderTopRightRadius={7}
-          bg={highlight[type.type]}
+          bg={highlight[type.type] || highlight.default}
           px={1}
           py={2}
           className="drag-handle"

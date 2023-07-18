@@ -32,21 +32,28 @@ export const Layout = ({ children }) => {
         p={2}
         minH="100vh"
         align="left"
+        borderRightColor={colorMode === "light" ? "gray.400" : "transparent"}
+        borderRightWidth={1}
       >
         {/* left sidebar */}
         <NewChatButton />
         {leftPane}
         <Spacer />
         <Divider
-          borderColor={colorMode === "light" ? "gray.800" : "whiteAlpha.400"}
+          borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
         />
         <Navigation />
         <Divider
-          borderColor={colorMode === "light" ? "gray.800" : "whiteAlpha.400"}
+          borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
         />
         <ColorModeButton />
       </VStack>
-      <Flex direction="column" flex="1" h="100%">
+      <Flex
+        direction="column"
+        flex="1"
+        h="100%"
+        bg={colorMode === "light" ? "gray.100" : "gray.800"}
+      >
         {/* main content area */}
         <Suspense fallback={<CenteredSpinner />}>{content}</Suspense>
       </Flex>

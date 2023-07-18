@@ -180,7 +180,7 @@ const ChatMessage = ({ messageGroup }) => {
         </Text>
       </VStack>
       <Flex
-        bg={colorMode === "light" ? "gray.100" : "gray.700"}
+        bg={colorMode === "light" ? "white" : "gray.700"}
         width="800px"
         borderRadius={8}
         border="1px solid"
