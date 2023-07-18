@@ -27,22 +27,24 @@ export const Layout = ({ children }) => {
   return (
     <Flex h="100vh" overflowX="hidden">
       <VStack
-        bg={colorMode === "light" ? "gray.300" : "gray.900"}
+        bg={colorMode === "light" ? "gray.200" : "gray.900"}
         width={300}
         p={2}
         minH="100vh"
         align="left"
+        borderRightColor={colorMode === "light" ? "gray.400" : "transparent"}
+        borderRightWidth={1}
       >
         {/* left sidebar */}
         <NewChatButton />
         {leftPane}
         <Spacer />
         <Divider
-          borderColor={colorMode === "light" ? "gray.700" : "whiteAlpha.400"}
+          borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
         />
         <Navigation />
         <Divider
-          borderColor={colorMode === "light" ? "gray.700" : "whiteAlpha.400"}
+          borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
         />
         <ColorModeButton />
       </VStack>
