@@ -46,6 +46,10 @@ export const useEditorColorMode = () => {
       chain: isLight ? "blue.500" : "blue.300",
       agent: isLight ? "green.500" : "green.600",
       tool: isLight ? "yellow.500" : "yellow.600",
+      embeddings: isLight ? "gray.400" : "gray.700",
+      output_parser: isLight ? "gray.400" : "gray.700",
+      vectorstore: isLight ? "gray.400" : "gray.700",
+      default: isLight ? "gray.400" : "gray.700",
     },
   };
 };
