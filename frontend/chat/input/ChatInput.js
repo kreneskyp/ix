@@ -251,7 +251,7 @@ export const ChatInput = ({ chat }) => {
   );
 
   const sx = useColorModeValue(
-    { bg: "gray.100", color: "gray.900", borderColor: "gray.300" },
+    { bg: "gray.50", color: "gray.900", borderColor: "gray.300" },
     { bg: "gray.900", color: "gray.100", borderColor: "gray.700" }
   );
 
