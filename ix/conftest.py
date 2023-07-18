@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict, Any
+from typing import Dict, Any
 from unittest.mock import MagicMock
 
 import pytest
@@ -33,11 +33,6 @@ logger = logging.getLogger(__name__)
 
 
 USER_INPUT = {"user_input": "hello agent 1"}
-
-
-@pytest.fixture()
-def mock_embeddings(mocker) -> List[float]:
-    yield mocker.patch("ix.memory.plugin.get_embeddings", return_value=[0.1, 0.2, 0.3])
 
 
 @pytest.fixture

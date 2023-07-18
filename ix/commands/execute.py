@@ -1,7 +1,6 @@
 import logging
 import subprocess
 
-from ix.commands import command as registry_command
 from ix.commands.filesystem import WORKDIR
 
 
@@ -12,7 +11,6 @@ class ExecuteException(Exception):
     pass
 
 
-@registry_command(description="execute a python file", name="execute_python_file")
 def execute_python_file(filename: str):
     """Execute a python file"""
     try:
@@ -23,7 +21,6 @@ def execute_python_file(filename: str):
         raise ExecuteException(f"Error: {e.output.strip()}")
 
 
-@registry_command(description="execute a bash command", name="execute_bash_command")
 def execute_bash_command(command: str) -> str:
     # XXX: turn on once dockerfile users are setup
     # command = f"sudo -u {user} {command}"
