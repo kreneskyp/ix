@@ -1,7 +1,6 @@
 import React from "react";
 
 import { TasksListView } from "tasks/TasksListView";
-import { TaskLogView } from "task_log/TaskLogView";
 import { AgentEditorView } from "agents/AgentEditorView";
 import { AgentsListView } from "agents/AgentsListView";
 import { ChatView } from "chat/ChatView";
@@ -15,10 +14,6 @@ import { ChatHistoryView } from "chat/history/ChatHistoryView";
 export const routes = [
   { path: "/tasks", element: <TasksListView /> },
   { path: "/chats/new", element: <NewChatRedirect /> },
-  {
-    path: "/tasks/chat/:id",
-    element: <TaskLogView />,
-  },
   {
     path: "/chat/:id",
     element: <ChatView />,

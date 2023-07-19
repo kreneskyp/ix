@@ -15,7 +15,7 @@ ARTIFACT_MEMORY = {
 
 
 TASK_WITH_ARTIFACT_MEMORY = {
-    "class_path": "ix.chains.tool_chain.LLMToolChain",
+    "class_path": "ix.chains.llm_chain.LLMChain",
     "config": {
         "llm": {
             "class_path": "langchain.chat_models.openai.ChatOpenAI",

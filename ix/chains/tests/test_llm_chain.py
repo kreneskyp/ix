@@ -32,7 +32,7 @@ PROMPT_TEMPLATE = {
 
 
 EXAMPLE_CONFIG = {
-    "class_path": "ix.chains.tool_chain.LLMToolChain",
+    "class_path": "ix.chains.llm_chain.LLMChain",
     "config": {
         "llm": OPENAI_LLM,
         "memory": MOCK_MEMORY,
