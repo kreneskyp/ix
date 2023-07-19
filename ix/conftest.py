@@ -213,7 +213,7 @@ def chat(node_types, task, load_chain, mock_openai_key, ix_context, clean_redis)
 
 
 @pytest_asyncio.fixture
-async def achat(anode_types, atask, aix_agent, aix_context):
+async def achat(anode_types, atask, aix_agent, aix_context, mock_openai_key):
     chat = await sync_to_async(fake_chat)(task=atask)
     fake_agent_1 = await sync_to_async(fake_agent)(
         name="agent 1", alias="agent_1", purpose="to test selections"
@@ -272,7 +272,7 @@ async def aix_agent(anode_types):
 @pytest_asyncio.fixture
 async def anode_types() -> None:
     """calls manage.py loaddata node_types"""
-    await sync_to_async(call_command)("import_langchain")
+    await sync_to_async(call_command)("loaddata", "node_types")
 
 
 @pytest.fixture()

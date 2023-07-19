@@ -71,14 +71,14 @@ class TestArtifactMemory:
         ][0]
         assert artifact1.as_memory_text() in message["content"]
 
-    async def test_defaults(self, aclean_artifacts, aload_chain):
+    async def test_defaults(self, aclean_artifacts, aload_chain, mock_openai_key):
         instance = await aload_chain(ARTIFACT_MEMORY)
         assert isinstance(instance, ArtifactMemory)
 
         # test memory variables
         assert instance.memory_variables == ["related_artifacts"]
 
-    async def test_load_memory(self, atask, aload_chain):
+    async def test_load_memory(self, atask, aload_chain, mock_openai_key):
         """
         Test various scenarios for loading memory variables.
         """

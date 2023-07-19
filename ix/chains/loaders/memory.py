@@ -70,9 +70,7 @@ def load_chat_memory_backend_config(node: ChainNode, ix_handler: IxHandler):
     return backend_config
 
 
-def load_memory_property(
-    node_group: List[ChainNode], context: IxContext
-) -> BaseMemory:
+def load_memory_property(node_group: List[ChainNode], context: IxContext) -> BaseMemory:
     """
     Load memories from a list of configs and merge in to a CombinedMemory instance.
     """
