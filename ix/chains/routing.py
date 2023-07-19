@@ -1,7 +1,9 @@
 import logging
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 from jsonpath_ng import parse as jsonpath_parse
+from langchain.callbacks.manager import AsyncCallbackManagerForChainRun
+
 from langchain.chains import SequentialChain
 from langchain.chains.base import Chain
 
@@ -102,7 +104,11 @@ class MapSubchain(Chain):
         # return as output_key
         return {self.output_key: outputs}
 
-    async def _acall(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    async def _acall(
+        self,
+        inputs: Dict[str, Any],
+        run_manager: Optional[AsyncCallbackManagerForChainRun] = None,
+    ) -> Dict[str, Any]:
         map_input = self.map_input
         map_input_to = self.map_input_to
 
@@ -125,6 +131,7 @@ class MapSubchain(Chain):
             )
 
         chain_inputs = inputs.copy()
+        _run_manager = run_manager or AsyncCallbackManagerForChainRun.get_noop_manager()
 
         # run chain for each value
         outputs = []
@@ -134,7 +141,9 @@ class MapSubchain(Chain):
             iteration_inputs[map_input_to] = value
             iteration_inputs[self.output_key] = outputs
             logger.debug(f"MapSubchain iteration_inputs={iteration_inputs}")
-            iteration_outputs = await self.chain.arun(**iteration_inputs)
+            iteration_outputs = await self.chain.arun(
+                callbacks=_run_manager.get_child(), **iteration_inputs
+            )
             iteration_mapped_output = iteration_outputs
             logger.debug(f"MapSubchain response outputs={iteration_mapped_output}")
             outputs.append(iteration_mapped_output)
