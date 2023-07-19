@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { fetchQuery, useRelayEnvironment } from "react-relay/hooks";
 import { useChatMessageSubscription } from "chat/graphql/useChatMessageSubscription";
-import { TaskLogMessagesQuery } from "task_log/graphql/TaskLogMessagesQuery";
+import { TaskLogMessagesQuery } from "chat/graphql/TaskLogMessagesQuery";
 import { findIndexFromEnd } from "utils/array";
 
 /**

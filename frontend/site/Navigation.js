@@ -42,12 +42,6 @@ function Navigation() {
             Agents
           </Link>
         </HStack>
-        <HStack align="center" space={3}>
-          <FontAwesomeIcon icon={faListCheck} />
-          <Link ml={3} to="/tasks">
-            Tasks
-          </Link>
-        </HStack>
         {false && (
           <HStack align="center">
             <FontAwesomeIcon icon={faServer} />

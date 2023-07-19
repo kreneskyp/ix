@@ -16,16 +16,6 @@ from ix.chains.models import Chain as ChainModel
 from ix.task_log.models import Task, TaskLogMessage
 
 
-# config defaults
-DEFAULT_COMMANDS = [
-    "ix.commands.google",
-    "ix.commands.filesystem",
-    "ix.commands.execute",
-]
-DEFAULT_MEMORY = "ix.memory.redis.RedisVectorMemory"
-DEFAULT_MEMORY_OPTIONS = {"host": "redis"}
-
-
 # logging
 logger = logging.getLogger(__name__)
 

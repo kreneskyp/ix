@@ -1,7 +1,6 @@
 import pytest
 import json
 from asgiref.sync import sync_to_async
-from typing import List
 
 from ix.agents.process import AgentProcess
 from ix.conftest import USER_INPUT, load_fixture
@@ -13,11 +12,6 @@ from ix.task_log.tests.fake import (
 )
 
 NEXT_COMMAND = {"user_input": "NEXT COMMAND"}
-
-
-@pytest.fixture()
-def mock_embeddings(mocker) -> List[float]:
-    yield mocker.patch("ix.memory.redis.get_embeddings", return_value=[0.1, 0.2, 0.3])
 
 
 class MockTicker:
@@ -53,7 +47,7 @@ class MessageTeardown:
 
 @pytest.mark.django_db
 class TestAgentProcessStart:
-    async def test_start_task(self, mock_openai, mock_embeddings):
+    async def test_start_task(self, mock_openai):
         """Run task for the first time with no auth to run commands"""
         await sync_to_async(load_fixture)("node_types")
         task = await sync_to_async(fake_task)()
@@ -84,7 +78,7 @@ class TestAgentProcessStart:
         #      "total_tokens": 12,
         #  }
 
-    async def test_start_task_with_input(self, mock_openai, mock_embeddings):
+    async def test_start_task_with_input(self, mock_openai):
         """
         Test that if `input` is included in inputs then it will be
         used instead of the default `user_input -> input` mapping.

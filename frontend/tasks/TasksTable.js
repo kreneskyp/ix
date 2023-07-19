@@ -33,11 +33,7 @@ export const TasksTable = ({ queryRef }) => {
         <Tbody>
           {tasks.map((task) => (
             <Tr key={task.id}>
-              <Td>
-                <Link as={RouterLink} to={`/tasks/chat/${task.id}`}>
-                  {task.name}
-                </Link>
-              </Td>
+              <Td>{task.name}</Td>
               <Td>{task.agent.name}</Td>
               <Td>{task.agent.model}</Td>
               <Td>{task.createdAt}</Td>
