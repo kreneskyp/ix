@@ -1,7 +1,10 @@
 import json
 import logging
-from typing import Any, List
+from typing import Any, List, Dict, Optional
 
+from langchain.callbacks.manager import AsyncCallbackManagerForChainRun
+
+from ix.chains.callbacks import IxHandler
 from langchain import LLMChain as LangchainLLMChain
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import (
@@ -86,19 +89,14 @@ class LLMReply(LLMChain):
     This simplifies making simple agents that just reply to messages.
     """
 
-    async def acall(self, *args, **kwargs):
-        response = await super().acall(*args, **kwargs)
-        await TaskLogMessage.objects.acreate(
-            task_id=self.callbacks.task.id,
-            role="assistant",
-            parent=self.callbacks.think_msg,
-            content={
-                "type": "ASSISTANT",
-                "text": response["text"],
-                # "agent": str(self.callback_manager.task.agent.id),
-                "agent": self.callbacks.agent.alias,
-            },
-        )
+    async def _acall(
+        self,
+        inputs: Dict[str, Any],
+        run_manager: Optional[AsyncCallbackManagerForChainRun] = None,
+    ) -> Dict[str, str]:
+        response = await super()._acall(inputs=inputs, run_manager=run_manager)
+        ix_handler = IxHandler.from_manager(run_manager)
+        await ix_handler.send_agent_msg(response["text"])
         return response
 
     def run(self, *args, **kwargs) -> Any:

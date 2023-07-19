@@ -1,6 +1,7 @@
 import logging
 from typing import Dict, Any
 
+from ix.chains.loaders.context import IxContext
 from langchain import PromptTemplate
 from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
@@ -9,7 +10,6 @@ from langchain.prompts.chat import (
     BaseStringMessagePromptTemplate,
 )
 
-from ix.agents.callback_manager import IxCallbackManager
 from ix.chains.models import ChainNode
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ TEMPLATE_CLASSES = {
 }
 
 
-def load_prompt(node: ChainNode, callback_manager: IxCallbackManager) -> Dict[str, Any]:
+def load_prompt(node: ChainNode, context: IxContext) -> Dict[str, Any]:
     """
     Loading helper for Langchain prompt template classes
     """

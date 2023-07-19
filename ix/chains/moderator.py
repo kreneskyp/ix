@@ -1,11 +1,17 @@
 import logging
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
+from langchain.callbacks.manager import (
+    AsyncCallbackManagerForChainRun,
+    CallbackManagerForChainRun,
+)
+
+from ix.chains.callbacks import IxHandler
 from langchain.chains.base import Chain
 from pydantic import BaseModel
 
 from ix.chat.models import Chat
-from ix.task_log.models import TaskLogMessage, Task
+from ix.task_log.models import Task
 from ix.task_log.tasks.agent_runner import start_agent_loop
 
 logger = logging.getLogger(__name__)
@@ -131,7 +137,11 @@ class ChatModerator(Chain):
             lines.append(f"{i}. {agent.alias}: {agent.purpose}")
         return "\n".join(lines)
 
-    def _call(self, inputs: Dict[str, str]) -> Dict[str, Optional[str]]:
+    def _call(
+        self,
+        inputs: Dict[str, Any],
+        run_manager: Optional[CallbackManagerForChainRun] = None,
+    ) -> Dict[str, Any]:
         # 0. get chat and agents
         chat_id = inputs["chat_id"]
         chat = Chat.objects.get(id=chat_id)
@@ -143,29 +153,26 @@ class ChatModerator(Chain):
         )
         user_input = inputs["user_input"]
         logger.debug(f"Routing user_input={user_input}")
-        response = self.selection_chain.run(agents=agent_prompt, **inputs)
-        logger.debug(f"Moderator returned response={response}")
+        inputs_mutable = inputs.copy()
+        inputs_mutable["agents"] = agent_prompt
+        response = self.selection_chain(
+            inputs=inputs_mutable, callbacks=run_manager.get_child()
+        )
+        delegation_or_text = response["delegation_or_text"]
+        logger.debug(f"Moderator returned response={delegation_or_text}")
 
         # response is either a delegation or a direct text response
-        if isinstance(response, dict):
-            agent_index = response["arguments"]["agent_id"]
+        if isinstance(delegation_or_text, dict):
+            agent_index = delegation_or_text["arguments"]["agent_id"]
             delegate_to = agents[agent_index].alias
             text = f"Delegating to @{delegate_to}"
         else:
-            text = response
+            text = delegation_or_text
             delegate_to = None
 
         # 2. send message to chat
-        TaskLogMessage.objects.create(
-            task_id=self.callbacks.task.id,
-            role="assistant",
-            parent=self.callbacks.think_msg,
-            content={
-                "type": "ASSISTANT",
-                "text": text,
-                "agent": self.callbacks.task.agent.alias,
-            },
-        )
+        ix_handler = IxHandler.from_manager(run_manager)
+        ix_handler.send_agent_msg(text)
 
         # 3. delegate to the agent
         task_id = None
@@ -182,7 +189,11 @@ class ChatModerator(Chain):
 
         return {"text": text, "task_id": task_id}
 
-    async def _acall(self, inputs: Dict[str, str]) -> Dict[str, str]:
+    async def _acall(
+        self,
+        inputs: Dict[str, str],
+        run_manager: Optional[AsyncCallbackManagerForChainRun] = None,
+    ) -> Dict[str, str]:
         # 0. get chat and agents
         chat_id = inputs["chat_id"]
         chat = await Chat.objects.aget(id=chat_id)
@@ -194,29 +205,26 @@ class ChatModerator(Chain):
         )
         user_input = inputs["user_input"]
         logger.debug(f"Routing user_input={user_input}")
-        response = await self.selection_chain.arun(agents=agent_prompt, **inputs)
-        logger.debug(f"Moderator returned response={response}")
+        inputs_mutable = inputs.copy()
+        inputs_mutable["agents"] = agent_prompt
+        response = await self.selection_chain.acall(
+            inputs=inputs_mutable, callbacks=run_manager.get_child()
+        )
+        delegation_or_text = response["delegation_or_text"]
+        logger.debug(f"Moderator returned response={delegation_or_text}")
 
         # response is either a delegation or a direct text response
-        if isinstance(response, dict):
-            agent_index = response["arguments"]["agent_id"]
+        if isinstance(delegation_or_text, dict):
+            agent_index = delegation_or_text["arguments"]["agent_id"]
             delegate_to = agents[agent_index].alias
             text = f"Delegating to @{delegate_to}"
         else:
-            text = response
+            text = delegation_or_text
             delegate_to = None
 
         # 2. send message to chat
-        await TaskLogMessage.objects.acreate(
-            task_id=self.callbacks.task.id,
-            role="assistant",
-            parent=self.callbacks.think_msg,
-            content={
-                "type": "ASSISTANT",
-                "text": text,
-                "agent": self.callbacks.agent.alias,
-            },
-        )
+        ix_handler = IxHandler.from_manager(run_manager)
+        await ix_handler.send_agent_msg(text)
 
         # 3. delegate to the agent
         task_id = None

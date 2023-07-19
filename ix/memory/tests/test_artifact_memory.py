@@ -122,7 +122,7 @@ class TestArtifactMemory:
     async def test_scope(self, aclean_artifacts, atask, aload_chain):
         # artifact from another chat
         unrelated_task = await afake_task()
-        afake_artifact(task=unrelated_task, key="test_artifact_3")
+        await afake_artifact(task=unrelated_task, key="test_artifact_3")
 
         # none of the excluded artifacts should be included in the memory
         instance = await aload_chain(ARTIFACT_MEMORY)

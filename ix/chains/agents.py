@@ -1,5 +1,6 @@
 from typing import List, Dict, Any, Optional
 
+from ix.chains.callbacks import IxHandler
 from langchain.agents import AgentExecutor
 from langchain.callbacks.manager import (
     AsyncCallbackManagerForChainRun,
@@ -47,17 +48,17 @@ class AgentReply(Chain):
         run_manager: Optional[AsyncCallbackManagerForChainRun] = None,
     ) -> Dict[str, Any]:
         result = await self.agent_executor.acall(inputs, callbacks=run_manager)
+        ix_handler = IxHandler.from_manager(run_manager)
 
         if self.reply:
             await TaskLogMessage.objects.acreate(
-                task_id=self.callbacks.task.id,
+                task_id=ix_handler.task.id,
                 role="assistant",
-                parent=self.callbacks.think_msg,
+                parent=ix_handler.parent_think_msg,
                 content={
                     "type": "ASSISTANT",
                     "text": result[self.output_key],
-                    # "agent": str(self.callback_manager.task.agent.id),
-                    "agent": self.callbacks.agent.alias,
+                    "agent": ix_handler.agent.alias,
                 },
             )
 

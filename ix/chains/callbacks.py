@@ -188,8 +188,14 @@ class IxHandler(AsyncCallbackHandler):
 
     @staticmethod
     def from_manager(run_manager: AsyncCallbackManagerForChainRun):
-        return [
+        """Helper method for finding the IxHandler in a run_manager."""
+        ix_handlers = [
             handler
             for handler in run_manager.handlers
             if isinstance(handler, IxHandler)
-        ][0]
+        ]
+        if len(ix_handlers) == 0:
+            raise ValueError("Expected at least one IxHandler in run_manager")
+        if len(ix_handlers) != 1:
+            raise ValueError("Expected exactly one IxHandler in run_manager")
+        return ix_handlers[0]

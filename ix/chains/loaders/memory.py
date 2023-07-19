@@ -2,12 +2,12 @@ import logging
 from functools import singledispatch
 from typing import Dict, Any, Union, Type, Tuple, List
 
+from ix.chains.callbacks import IxHandler
 from langchain.memory import CombinedMemory
 from langchain.schema import BaseMemory, BaseChatMessageHistory
 from pydantic import BaseModel
 
-from ix.agents.callback_manager import IxCallbackManager
-from ix.chains.loaders.core import load_node
+from ix.chains.loaders.core import load_node, IxContext
 from ix.chains.models import ChainNode
 from ix.utils.importlib import import_class
 
@@ -36,7 +36,7 @@ def get_memory_option(cls: Type[BaseModel], name: str, default: Any):
 @singledispatch
 def load_memory_config(
     node: ChainNode,
-    callback_manager: IxCallbackManager,
+    context: IxContext,
 ) -> BaseMemory:
     """Load a memory instance using a config"""
     memory_class = import_class(node.class_path)
@@ -46,23 +46,21 @@ def load_memory_config(
     # load session_id if scope is supported
     if get_memory_option(memory_class, "supports_session", False):
         session_id, session_id_key = get_memory_session(
-            memory_config, callback_manager, memory_class
+            memory_config, context, memory_class
         )
         memory_config[session_id_key] = session_id
 
     return memory_config
 
 
-def load_chat_memory_backend_config(
-    node: ChainNode, callback_manager: IxCallbackManager
-):
+def load_chat_memory_backend_config(node: ChainNode, ix_handler: IxHandler):
     backend_class = import_class(node.class_path)
     logger.debug(f"loading BaseChatMessageHistory class={backend_class} config={node}")
     backend_config = node.config.copy()
 
     # always add scope to chat message backend
     session_id, session_id_key = get_memory_session(
-        backend_config, callback_manager, backend_class
+        backend_config, ix_handler, backend_class
     )
     logger.debug(
         f"load_chat_memory_backend session_id={session_id} session_id_key={session_id_key}"
@@ -73,7 +71,7 @@ def load_chat_memory_backend_config(
 
 
 def load_memory_property(
-    node_group: List[ChainNode], callback_manager: IxCallbackManager
+    node_group: List[ChainNode], context: IxContext
 ) -> BaseMemory:
     """
     Load memories from a list of configs and merge in to a CombinedMemory instance.
@@ -82,17 +80,15 @@ def load_memory_property(
 
     if len(node_group) == 1:
         # no need to combine
-        return load_node(node_group[0], callback_manager)
+        return load_node(node_group[0], context)
 
     # auto-merge into CombinedMemory
-    return CombinedMemory(
-        memories=[load_node(node, callback_manager) for node in node_group]
-    )
+    return CombinedMemory(memories=[load_node(node, context) for node in node_group])
 
 
 def get_memory_session(
     config: Dict[str, Any],
-    callback_manager: IxCallbackManager,
+    context: IxContext,
     cls: Union[BaseMemory, BaseChatMessageHistory],
 ) -> Tuple[str, str]:
     """
@@ -139,13 +135,13 @@ def get_memory_session(
 
     # load session_id from context based on scope
     if scope == "chat":
-        scope_id = callback_manager.chat_id
+        scope_id = context.chat_id
     elif scope == "agent":
-        scope_id = callback_manager.agent_id
+        scope_id = context.agent.id
     elif scope == "task":
-        scope_id = callback_manager.task_id
+        scope_id = context.task.id
     elif scope == "user":
-        scope_id = callback_manager.user_id
+        scope_id = context.user_id
     else:
         raise ValueError(f"unknown scope={scope}")
 

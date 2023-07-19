@@ -28,7 +28,6 @@ def initialize_agent(agent: AgentType, reply: int = True, **kwargs) -> Chain:
     agent_executor = initialize_agent_base(agent=agent, **kwargs)
     return AgentReply(
         agent_executor=agent_executor,
-        callback_manager=kwargs.get("callback_manager", None),
         reply=reply,
     )
 
