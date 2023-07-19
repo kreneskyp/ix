@@ -11,6 +11,11 @@ const HighlightText = ({ content }) => {
   const { mention, artifact } = useChatColorMode();
 
   const formattedContent = React.useMemo(() => {
+
+    if (content === undefined) {
+      return <div>"no content field"</div>;
+    }
+
     return content.split(/(\s+)/).map((segment, idx) => {
       if (segment.startsWith("@")) {
         return (
