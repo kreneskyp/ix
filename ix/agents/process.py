@@ -1,4 +1,5 @@
 import logging
+import os
 import time
 import traceback
 
@@ -123,17 +124,18 @@ class AgentProcess:
 
         # auto-map user_input to input if not provided.
         # work around until chat input key can be configured per chain
-        extra_kwargs = {}
+        inputs = user_input.copy()
         if "input" not in user_input:
-            extra_kwargs["input"] = user_input
+            inputs["input"] = user_input
 
         start = time.time()
         try:
             # Hax: copy user_input to input to support agents.
-            response = await chain.arun(**extra_kwargs, **user_input)
+            response = await chain.acall(inputs, include_run_info=True)
         except:  # noqa: E722
             raise
         finally:
+            run_id = response["__run"].run_id
             end = time.time()
             await TaskLogMessage.objects.acreate(
                 task_id=self.task.id,
@@ -144,6 +146,9 @@ class AgentProcess:
                     # TODO: add usage in somewhere else, it's not provided by langchain
                     # "usage": response["usage"],
                     "runtime": end - start,
+                    "run_id": str(run_id),
+                    "langsmith": os.environ.get("LANGCHAIN_API_KEY", False)
+                    is not False,
                 },
             )
         return response
