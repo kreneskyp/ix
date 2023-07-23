@@ -44,7 +44,7 @@ ENV WEBPACK_OUTPUT=/var/compiled-static
 
 # Set the working directory
 WORKDIR $APP
-
+RUN mkdir -p $APP/workdir
 
 # Copy requirements.txt to the working directory
 COPY requirements.txt .
@@ -66,6 +66,7 @@ EXPOSE 8000
 
 
 WORKDIR /var/app
+RUN mkdir -p $APP/workdir
 
 # Start the application using either ASGI or Celery depending on APP_MODE
 # XXX: disabling until this is tested more
