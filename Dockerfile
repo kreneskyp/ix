@@ -44,7 +44,7 @@ ENV WEBPACK_OUTPUT=/var/compiled-static
 
 # Set the working directory
 WORKDIR $APP
-
+RUN mkdir -p $APP/workdir
 
 # Copy requirements.txt to the working directory
 COPY requirements.txt .
