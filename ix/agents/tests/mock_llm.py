@@ -6,7 +6,6 @@ from langchain.chat_models import ChatOpenAI
 class MockChatOpenAI(ChatOpenAI):
     """Mock ChatOpenAI for testing"""
 
-    callback_manager: Any = None
     return_value: Any = None
     raise_exception: Any = None
     acompletion_with_retry: Any = None

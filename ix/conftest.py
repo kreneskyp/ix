@@ -4,18 +4,20 @@ from unittest.mock import MagicMock
 
 import pytest
 import pytest_asyncio
+import redis
 from asgiref.sync import sync_to_async
 from django.core.management import call_command
 
-from ix.agents.callback_manager import IxCallbackManager
 from ix.agents.models import Agent
 from ix.agents.tests.mock_llm import MockChatOpenAI
+from ix.chains.callbacks import IxHandler
+from ix.chains.loaders.context import IxContext
 from ix.chains.management.commands.create_ix_v2 import (
     IX_CHAIN_V2,
 )
 
 from ix.chains.models import Chain, ChainNode, NodeType
-from ix.task_log.models import Artifact
+from ix.task_log.models import Artifact, Task
 from ix.task_log.tests.fake import (
     fake_task,
     fake_task_log_msg,
@@ -24,7 +26,6 @@ from ix.task_log.tests.fake import (
     fake_think,
     fake_chain,
     afake_think,
-    afake_chat,
     afake_task,
 )
 from ix.utils.importlib import import_class
@@ -33,6 +34,15 @@ logger = logging.getLogger(__name__)
 
 
 USER_INPUT = {"user_input": "hello agent 1"}
+
+
+@pytest.fixture
+def clean_redis():
+    """Ensure redis is clean before and after tests"""
+    redis_client = redis.Redis(host="redis", port=6379, db=0)
+    redis_client.flushall()
+    yield
+    redis_client.flushall()
 
 
 @pytest.fixture
@@ -81,20 +91,37 @@ def mock_openai(mocker, mock_openai_key):
 
 
 @pytest.fixture
-def mock_callback_manager(task):
-    fake_chat(task=task)
-    manager = IxCallbackManager(task, task.agent)
-    manager.think_msg = fake_think(task=task)
-    yield manager
+def ix_context(task):
+    return IxContext(agent=task.agent, chain=task.chain, task=task)
+
+
+@pytest_asyncio.fixture
+async def aix_context(atask):
+    agent = await Agent.objects.aget(id=atask.agent_id)
+    chain = await Chain.objects.aget(id=atask.chain_id)
+    yield IxContext(agent=agent, chain=chain, task=atask)
 
 
 @pytest.fixture
-async def amock_callback_manager(atask):
-    await afake_chat(task=atask)
-    agent = await Agent.objects.aget(id=atask.agent_id)
-    manager = IxCallbackManager(atask, agent)
-    manager.think_msg = await afake_think(task=atask)
-    yield manager
+def ix_handler(chat):
+    chat = chat["chat"]
+    task = Task.objects.get(id=chat.task_id)
+    agent = Agent.objects.get(id=task.agent_id)
+    chain = Chain.objects.get(id=task.chain_id)
+    handler = IxHandler(agent=agent, chain=chain, task=task)
+    handler.parent_think_msg = fake_think(task=task)
+    yield handler
+
+
+@pytest_asyncio.fixture
+async def aix_handler(achat):
+    chat = achat["chat"]
+    task = await Task.objects.aget(id=chat.task_id)
+    agent = await Agent.objects.aget(id=task.agent_id)
+    chain = await Chain.objects.aget(id=task.chain_id)
+    handler = IxHandler(agent=agent, chain=chain, task=task)
+    handler.parent_think_msg = await afake_think(task=task)
+    yield handler
 
 
 @pytest.fixture
@@ -107,7 +134,7 @@ def mock_chain(mocker):
 
 
 @pytest.fixture()
-def load_chain(node_types, mock_callback_manager):
+def load_chain(node_types, task, clean_redis):
     """
     yields a function for creating a mock chain. Used for generating
     mock functions for other chains and configs. The function takes a
@@ -115,18 +142,19 @@ def load_chain(node_types, mock_callback_manager):
     loaded and returned.
     """
 
-    def _mock_chain(
-        config: Dict[str, Any], callback_manager: IxCallbackManager = None
-    ) -> Chain:
+    def _mock_chain(config: Dict[str, Any], context: IxContext = None) -> Chain:
         chain = fake_chain()
         chain_node = ChainNode.objects.create_from_config(chain, config, root=True)
-        return chain_node.load(callback_manager or mock_callback_manager)
+
+        return chain_node.load(
+            context or IxContext(agent=task.agent, task=task, chain=task.chain)
+        )
 
     yield _mock_chain
 
 
 @pytest_asyncio.fixture
-async def aload_chain(anode_types, amock_callback_manager):
+async def aload_chain(anode_types, achat):
     """
     yields a function for creating a mock chain. Used for generating
     mock functions for other chains and configs. The function takes a
@@ -134,14 +162,20 @@ async def aload_chain(anode_types, amock_callback_manager):
     loaded and returned.
     """
 
-    def _mock_chain(
-        config: Dict[str, Any], callback_manager: IxCallbackManager = None
-    ) -> Chain:
-        chain = fake_chain()
-        chain_node = ChainNode.objects.create_from_config(chain, config, root=True)
-        return chain_node.load(callback_manager or amock_callback_manager)
+    chat = achat["chat"]
+    task = await Task.objects.aget(id=chat.task_id)
+    agent = await Agent.objects.aget(id=chat.lead_id)
+    chain = await Chain.objects.aget(id=task.chain_id)
 
-    yield sync_to_async(_mock_chain)
+    async def _mock_chain(config: Dict[str, Any], context: IxContext = None) -> Chain:
+        chain_node = await sync_to_async(ChainNode.objects.create_from_config)(
+            chain, config, root=True
+        )
+        return await sync_to_async(chain_node.load)(
+            context or IxContext(agent=agent, task=task, chain=chain)
+        )
+
+    yield _mock_chain
 
 
 @pytest.fixture
@@ -155,7 +189,7 @@ async def atask(anode_types):
 
 
 @pytest.fixture()
-def chat(node_types, task, load_chain, mock_openai_key):
+def chat(node_types, task, load_chain, mock_openai_key, ix_context, clean_redis):
     chat = fake_chat(task=task)
     fake_agent_1 = fake_agent(
         name="agent 1", alias="agent_1", purpose="to test selections"
@@ -163,13 +197,12 @@ def chat(node_types, task, load_chain, mock_openai_key):
     fake_agent_2 = fake_agent(
         name="agent 2", alias="agent_2", purpose="to test selections"
     )
-    chat.agents.set([fake_agent_1, fake_agent_2])
-    callback_manager = IxCallbackManager(chat.task, agent=chat.lead)
-    callback_manager.think_msg = fake_think(task=chat.task)
+    chat.agents.add(fake_agent_1)
+    chat.agents.add(fake_agent_2)
 
     # load chain
     model_instance = Chain.objects.get(pk=IX_CHAIN_V2)
-    moderator = model_instance.load_chain(callback_manager)
+    moderator = model_instance.load_chain(context=ix_context)
 
     yield {
         "chat": chat,
@@ -180,7 +213,7 @@ def chat(node_types, task, load_chain, mock_openai_key):
 
 
 @pytest_asyncio.fixture
-async def achat(atask, aix_agent):
+async def achat(anode_types, atask, aix_agent, aix_context, mock_openai_key):
     chat = await sync_to_async(fake_chat)(task=atask)
     fake_agent_1 = await sync_to_async(fake_agent)(
         name="agent 1", alias="agent_1", purpose="to test selections"
@@ -189,13 +222,10 @@ async def achat(atask, aix_agent):
         name="agent 2", alias="agent_2", purpose="to test selections"
     )
     await chat.agents.aset([fake_agent_1, fake_agent_2])
-    lead = await Agent.objects.aget(pk=chat.lead_id)
-    callback_manager = IxCallbackManager(atask, agent=lead)
-    callback_manager.think_msg = await sync_to_async(fake_think)(task=atask)
 
     # load chain
     model_instance = await Chain.objects.aget(pk=IX_CHAIN_V2)
-    moderator = await model_instance.aload_chain(callback_manager)
+    moderator = await model_instance.aload_chain(context=aix_context)
 
     return {
         "chat": chat,
@@ -234,7 +264,7 @@ def node_types() -> None:
 
 
 @pytest_asyncio.fixture
-async def aix_agent():
+async def aix_agent(anode_types):
     """async version of ix_agent fixture"""
     await sync_to_async(call_command)("loaddata", "ix_v2")
 
@@ -242,7 +272,7 @@ async def aix_agent():
 @pytest_asyncio.fixture
 async def anode_types() -> None:
     """calls manage.py loaddata node_types"""
-    await sync_to_async(call_command)("import_langchain")
+    await sync_to_async(call_command)("loaddata", "node_types")
 
 
 @pytest.fixture()

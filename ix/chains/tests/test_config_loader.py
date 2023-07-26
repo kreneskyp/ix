@@ -3,6 +3,7 @@ from copy import deepcopy
 import pytest
 from unittest.mock import MagicMock
 
+from ix.chains.loaders.context import IxContext
 from langchain.agents import AgentExecutor
 from langchain.base_language import BaseLanguageModel
 from langchain.memory import (
@@ -13,7 +14,6 @@ from langchain.memory import (
 from langchain.schema import BaseChatMessageHistory, BaseMemory
 from langchain.tools import BaseTool
 
-from ix.agents.callback_manager import IxCallbackManager
 from ix.chains.agents import AgentReply
 from ix.chains.fixture_src.tools import GOOGLE_SEARCH
 from ix.chains.loaders.memory import get_memory_session
@@ -186,14 +186,15 @@ class TestLoadMemory:
         assert isinstance(instance, ConversationBufferMemory)
         assert isinstance(instance.chat_memory, BaseChatMessageHistory)
 
-    def test_load_memory_with_scope(self, task, load_chain):
+    def test_load_memory_with_scope(self, chat, load_chain):
         """
         Test loading with a scope.
 
         Not all memories support sessions, for example ChatMemory
         adds scoping to the backend.
         """
-        chat_id = task.leading_chats.first().id
+        chat = chat["chat"]
+        chat_id = chat.task.leading_chats.first().id
         instance = load_chain(MEMORY_WITH_SCOPE)
         assert isinstance(instance, ArtifactMemory)
         assert instance.session_id == f"tests_chat_{chat_id}"
@@ -206,13 +207,14 @@ class TestLoadMemory:
         assert isinstance(instance, ConversationSummaryBufferMemory)
         assert isinstance(instance.llm, BaseLanguageModel)
 
-    def test_load_class_with_config(self, task, mocker, load_chain):
+    def test_load_class_with_config(self, chat, mocker, load_chain):
         """
         Test loading a class whose config is defined in MEMORY_CLASSES.
         This tests configuring an external class with the required config
         to integrate into Ix
         """
-        chat_id = task.leading_chats.first().id
+        chat = chat["chat"]
+        chat_id = chat.task.leading_chats.first().id
 
         # patch MEMORY_CLASSES to setup the test
         from ix.chains.loaders import memory
@@ -240,8 +242,9 @@ class TestLoadMemory:
 
 @pytest.mark.django_db
 class TestLoadChatMemoryBackend:
-    def test_load_chat_memory_backend(self, task, load_chain):
-        chat_id = task.leading_chats.first().id
+    def test_load_chat_memory_backend(self, chat, load_chain):
+        chat = chat["chat"]
+        chat_id = chat.task.leading_chats.first().id
 
         # Config
         config = {
@@ -257,13 +260,13 @@ class TestLoadChatMemoryBackend:
         backend = load_chain(config)
         assert backend.session_id == f"tests_chat_{chat_id}"
 
-    def test_load_defaults(self, task, load_chain):
+    def test_load_defaults(self, chat, load_chain):
         """
         ChatMemoryBackend should always load session_id. If `session` isn't present then
         load the `chat` scope by default.
         """
-
-        chat_id = task.leading_chats.first().id
+        chat = chat["chat"]
+        chat_id = chat.task.leading_chats.first().id
 
         # Config
         config = {
@@ -359,25 +362,26 @@ class TestGetMemorySession:
     )
     def test_get_memory_session(self, task, config, cls, expected):
         """Test various scope configurations."""
-        callback_manager = MagicMock(spec=IxCallbackManager)
-        callback_manager.task = task
-        callback_manager.chat_id = "1000"
-        callback_manager.agent_id = "1001"
-        callback_manager.task_id = "1002"
-        callback_manager.user_id = "1003"
+        context = MagicMock()
+        context.task = task
+        context.chat_id = "1000"
+        context.agent.id = "1001"
+        context.task.id = "1002"
+        context.user_id = "1003"
 
-        result = get_memory_session(config, callback_manager, cls)
+        result = get_memory_session(config, context, cls)
         assert result == expected
 
-    def test_parse_scope_unsupported_scope(self, mock_callback_manager):
+    def test_parse_scope_unsupported_scope(self, task):
         config = {
             "session_scope": "unsupported_scope",
             "session_id": "123",
             "session_id_key": "session_id",
         }
         cls = BaseChatMessageHistory
+        context = IxContext(agent=task.agent, chain=task.chain, task=task)
         with pytest.raises(ValueError) as excinfo:
-            get_memory_session(config, mock_callback_manager, cls)
+            get_memory_session(config, context, cls)
         assert "unknown scope" in str(excinfo.value)
 
 

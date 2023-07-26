@@ -3,10 +3,10 @@ import logging
 import time
 from typing import Callable, Any, List
 
+from ix.chains.loaders.context import IxContext
 from langchain.chains import SequentialChain
 from langchain.chains.base import Chain as LangchainChain
 
-from ix.agents.callback_manager import IxCallbackManager
 from ix.chains.loaders.prompts import load_prompt
 from ix.chains.models import NodeType, ChainNode, ChainEdge
 from ix.utils.importlib import import_class
@@ -52,7 +52,7 @@ def get_sequence_inputs(sequence: List[LangchainChain]) -> List[str]:
     return list(input_variables)
 
 
-def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -> Any:
+def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
     """
     Generic loader for loading the Langchain component a ChainNode represents.
 
@@ -77,7 +77,7 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -
         logger.debug(
             f"Loading config with node config loader for type={node_type.type}"
         )
-        config = node_loader(node, callback_manager)
+        config = node_loader(node, context)
 
     # prepare properties for loading. Properties should be grouped by key.
     properties = node.incoming_edges.filter(relation="PROP").order_by("key")
@@ -89,8 +89,8 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -
         if node_group[0].node_type.type in {"chain", "agent"}:
             # load a sequence of linked nodes into a children property
             # this supports loading as a list of chains or auto-SequentialChain
-            first_instance = load_node(node_group[0], callback_manager, root=False)
-            sequence = load_sequence(node_group[0], first_instance, callback_manager)
+            first_instance = load_node(node_group[0], context, root=False)
+            sequence = load_sequence(node_group[0], first_instance, context)
             connector = node_type.connectors_as_dict[key]
             if connector.get("auto_sequence", True):
                 input_variables = get_sequence_inputs(sequence)
@@ -103,23 +103,19 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -
             # load type specific config options. This is generally for loading
             # ix specific features into the config dict
             logger.debug(f"Loading with property loader for type={node_type.type}")
-            config[key] = property_loader(node_group, callback_manager)
+            config[key] = property_loader(node_group, context)
         else:
             # default recursive loading
             if node_type.connectors_as_dict[key].get("multiple", False):
                 config[key] = [
-                    prop_node.load(callback_manager, root=False)
-                    for prop_node in node_group
+                    prop_node.load(context, root=False) for prop_node in node_group
                 ]
             else:
                 if len(node_group) > 1:
                     raise ValueError(f"Multiple values for {key} not allowed")
-                config[key] = load_node(node_group[0], callback_manager, root=False)
+                config[key] = load_node(node_group[0], context, root=False)
 
     node_class = import_node_class(node.class_path)
-
-    if node_type.type in {"chain", "agent"}:
-        config["callback_manager"] = callback_manager
 
     try:
         instance = node_class(**config)
@@ -132,7 +128,7 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -
         # Linked chains but no parent indicates the possible first node in an
         # implicit SequentialChain. Traverse the sequence and create a
         # SequentialChain if there is more than one node in the sequence.
-        sequential_nodes = load_sequence(node, instance, callback_manager)
+        sequential_nodes = load_sequence(node, instance, context)
         if len(sequential_nodes) > 1:
             input_variables = get_sequence_inputs(sequential_nodes)
             return SequentialChain(
@@ -145,7 +141,7 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -
 def load_sequence(
     first_node: ChainNode,
     first_instance: LangchainChain,
-    callback_manager: IxCallbackManager,
+    context: IxContext,
 ) -> List[LangchainChain]:
     """
     Load a sequence of nodes.
@@ -164,7 +160,7 @@ def load_sequence(
 
     # traverse the sequence
     while outgoing_link:
-        next_instance = outgoing_link.target.load(callback_manager, root=False)
+        next_instance = outgoing_link.target.load(context, root=False)
         sequential_nodes.append(next_instance)
         try:
             outgoing_link = outgoing_link.target.outgoing_edges.select_related(

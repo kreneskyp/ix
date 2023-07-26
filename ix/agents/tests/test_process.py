@@ -67,7 +67,10 @@ class TestAgentProcessStart:
         think_msg = messages[0]
         thought_msg = messages[1]
         assert think_msg.content["type"] == "THINK"
-        assert think_msg.content["input"] == {"user_input": "hello agent 1"}
+        assert think_msg.content["input"] == {
+            "user_input": "hello agent 1",
+            "input": "hello agent 1",
+        }
         assert thought_msg.content["type"] == "THOUGHT"
         assert isinstance(thought_msg.content["runtime"], float)
 
