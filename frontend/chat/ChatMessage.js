@@ -16,7 +16,10 @@ import CommandContent from "chat/CommandContent";
 
 import { useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowUpRightFromSquare,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 import HighlightText from "components/HighlightText";
 import { ArtifactContent } from "chat/messages/ArtifactContent";
 
@@ -114,6 +117,25 @@ const ChatMessageAuthorizations = ({ authorizations }) => {
   );
 };
 
+const LangSmithLink = ({ thought }) => {
+  const { colorMode } = useColorMode();
+  if (thought?.content?.run_id === undefined || !thought?.content?.langsmith) {
+    return null;
+  }
+
+  return (
+    <Text
+      fontSize="xs"
+      color={colorMode === "light" ? "gray.800" : "gray.500"}
+      as={"span"}
+    >
+      <a target="_langsmith" href={`/langsmith/${thought.content.run_id}/`}>
+        <b>LangSmith</b> <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+      </a>
+    </Text>
+  );
+};
+
 const ChatMessageFooter = ({ groupedMessages }) => {
   const { colorMode } = useColorMode();
   const { thought, authorizations } = groupedMessages;
@@ -133,7 +155,8 @@ const ChatMessageFooter = ({ groupedMessages }) => {
           fontSize="xs"
           color={colorMode === "light" ? "gray.800" : "gray.500"}
         >
-          <b>Runtime:</b> {thought?.content.runtime?.toFixed(2)} seconds.
+          <b>Runtime:</b> {thought?.content.runtime?.toFixed(2)} seconds.{" "}
+          <LangSmithLink thought={thought} />
         </Text>
       )}
     </Flex>
