@@ -1366,7 +1366,7 @@
   "pk": "61654ca2-b73b-4dac-b761-adba7d560ef3",
   "fields": {
     "name": "Symbolic Math Chain",
-    "description": "Chain that interprets a prompt and executes python code to do math.\n\n    Example:\n        .. code-block:: python\n\n            from langchain import LLMSymbolicMathChain, OpenAI\n            llm_symbolic_math = LLMSymbolicMathChain.from_llm(OpenAI())\n    ",
+    "description": "Chain that interprets a prompt and executes python code to do symbolic math.\n\n    Example:\n        .. code-block:: python\n\n            from langchain import LLMSymbolicMathChain, OpenAI\n            llm_symbolic_math = LLMSymbolicMathChain.from_llm(OpenAI())\n    ",
     "class_path": "langchain.chains.llm_symbolic_math.base.LLMSymbolicMathChain.from_llm",
     "type": "chain",
     "display_type": "node",
@@ -2041,6 +2041,97 @@
         "human_prefix": {
           "type": "string",
           "default": "Human"
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "8e6158bc-0061-4959-b056-58d8f38e3347",
+  "fields": {
+    "name": "DelegateToAgent",
+    "description": "Delegate a request to another agent. Does not wait for a response.",
+    "class_path": "ix.chains.agent_interaction.DelegateToAgentChain",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "tags",
+        "type": "list",
+        "style": {
+          "width": "100%"
+        },
+        "default": []
+      },
+      {
+        "name": "output_key",
+        "type": "str",
+        "label": "Output_key",
+        "default": "delegate_to",
+        "required": false
+      },
+      {
+        "name": "target_alias",
+        "type": "str",
+        "label": "Target_alias",
+        "default": null,
+        "required": true
+      },
+      {
+        "name": "delegate_inputs",
+        "type": "list",
+        "label": "Delegate_inputs",
+        "default": null,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose",
+        "tags",
+        "target_alias"
+      ],
+      "properties": {
+        "tags": {
+          "type": "object",
+          "default": []
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "output_key": {
+          "type": "string",
+          "default": "delegate_to"
+        },
+        "target_alias": {
+          "type": "string",
+          "default": null
+        },
+        "delegate_inputs": {
+          "type": "object",
+          "default": null
         }
       }
     }

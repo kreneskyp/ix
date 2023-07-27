@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 
 from ix.api.chains.types import NodeTypeField
 from ix.api.chains.types import NodeType as NodeTypePydantic
+from ix.chains.fixture_src.agent_interaction import AGENT_INTERACTION_CHAINS
 
 from ix.chains.fixture_src.agents import AGENTS
 from ix.chains.fixture_src.artifacts import ARTIFACT_MEMORY, SAVE_ARTIFACT
@@ -112,6 +113,7 @@ COMPONENTS.extend(
 
 # IX Misc
 COMPONENTS.extend([CHAT_MODERATOR_TYPE])
+COMPONENTS.extend(AGENT_INTERACTION_CHAINS)
 
 # IX Artifacts
 COMPONENTS.extend(
