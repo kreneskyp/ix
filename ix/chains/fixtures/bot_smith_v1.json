@@ -189,7 +189,6 @@
         "config": {
             "temperature": 0.05
         },
-        "agent_class_path": "",
         "chain": "6cfb45bb-f928-4858-a7c6-113951608671"
     }
 }

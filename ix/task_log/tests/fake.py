@@ -91,9 +91,6 @@ def fake_agent(**kwargs):
     alias = kwargs.get("alias", name)
     purpose = kwargs.get("purpose", fake.text())
     model = kwargs.get("model", "gpt-3.5-turbo")
-    agent_class_path = kwargs.get(
-        "agent_class_path", "ix.agents.planning_agent.PlanningAgent"
-    )
     config = kwargs.get(
         "config",
         {
@@ -304,7 +301,6 @@ def fake_planner():
     agent = fake_agent(
         name="Planner",
         purpose="Plan tasks for other agents to perform",
-        agent_class_path="ix.agents.process.AgentProcess",
         system_prompt="",
         commands=[],
         config={
