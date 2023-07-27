@@ -78,7 +78,9 @@ class DelegateToAgentChain(Chain):
         inputs: Dict[str, Any],
         run_manager: Optional[CallbackManagerForChainRun] = None,
     ) -> Dict[str, Any]:
-        raise NotImplementedError("DelegateChain does not support sync calls")  # pragma: no cover
+        raise NotImplementedError(
+            "DelegateChain does not support sync calls"
+        )  # pragma: no cover
 
     async def _acall(
         self,
