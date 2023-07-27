@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 
+from ix.api.agents.endpoints import router as agents_router
 from ix.api.chains.endpoints import router as chains_router
 
 app = FastAPI(
@@ -8,6 +9,7 @@ app = FastAPI(
     description="API for editing Agents, Chains, and node_type components",
 )
 app.include_router(chains_router)
+app.include_router(agents_router)
 
 
 def custom_openapi():
