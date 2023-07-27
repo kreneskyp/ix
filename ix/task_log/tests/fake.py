@@ -113,6 +113,10 @@ def fake_agent(**kwargs):
     return agent
 
 
+async def afake_agent(**kwargs):
+    return await sync_to_async(fake_agent)(**kwargs)
+
+
 def fake_user(**kwargs):
     username = kwargs.get("username", fake.unique.user_name())
     email = kwargs.get("email", fake.unique.email())
