@@ -250,6 +250,70 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "1890914a-e481-43f0-a6de-7869a0106359",
+  "fields": {
+    "name": "LLM Tool Chain",
+    "description": "Chain that prompts an LLM for a completion. It has a set of tools available to the prompt",
+    "class_path": "ix.chains.tool_chain.LLMToolChain",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "functions",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "function_call",
+        "type": "string"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose",
+        "function_call"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "function_call": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "1b76aa58-eca9-41fa-b255-1d572de46aa8",
   "fields": {
     "name": "Zero Shot React Description Agent",
@@ -938,9 +1002,9 @@
   "model": "chains.nodetype",
   "pk": "39414ada-446f-4949-b087-193d1c93cb27",
   "fields": {
-    "name": "Wikipedia",
-    "description": "Wikipedia search engine",
-    "class_path": "ix.tools.wikipedia.get_wikipedia",
+    "name": "Metaphor",
+    "description": "Metaphor search engine",
+    "class_path": "ix.tools.metaphor.get_metaphor",
     "type": "tool",
     "display_type": "node",
     "connectors": null,
@@ -956,31 +1020,17 @@
         "default": false
       },
       {
-        "name": "top_k_results",
-        "type": "int",
-        "label": "Top_k_results",
-        "default": 3,
-        "required": false
-      },
-      {
-        "name": "lang",
+        "name": "metaphor_api_key",
         "type": "str",
-        "label": "Lang",
-        "default": "en",
-        "required": false
+        "label": "Metaphor_api_key",
+        "default": null,
+        "required": true
       },
       {
-        "name": "load_all_available_meta",
-        "type": "boolean",
-        "label": "Load_all_available_meta",
-        "default": false,
-        "required": false
-      },
-      {
-        "name": "doc_content_chars_max",
+        "name": "k",
         "type": "int",
-        "label": "Doc_content_chars_max",
-        "default": 4000,
+        "label": "K",
+        "default": 10,
         "required": false
       }
     ],
@@ -989,12 +1039,13 @@
       "type": "object",
       "required": [
         "return_direct",
-        "verbose"
+        "verbose",
+        "metaphor_api_key"
       ],
       "properties": {
-        "lang": {
-          "type": "string",
-          "default": "en"
+        "k": {
+          "type": "number",
+          "default": 10
         },
         "verbose": {
           "type": "boolean",
@@ -1004,17 +1055,9 @@
           "type": "boolean",
           "default": false
         },
-        "top_k_results": {
-          "type": "number",
-          "default": 3
-        },
-        "doc_content_chars_max": {
-          "type": "number",
-          "default": 4000
-        },
-        "load_all_available_meta": {
-          "type": "boolean",
-          "default": false
+        "metaphor_api_key": {
+          "type": "string",
+          "default": null
         }
       }
     }
@@ -1366,7 +1409,7 @@
   "pk": "61654ca2-b73b-4dac-b761-adba7d560ef3",
   "fields": {
     "name": "Symbolic Math Chain",
-    "description": "Chain that interprets a prompt and executes python code to do math.\n\n    Example:\n        .. code-block:: python\n\n            from langchain import LLMSymbolicMathChain, OpenAI\n            llm_symbolic_math = LLMSymbolicMathChain.from_llm(OpenAI())\n    ",
+    "description": "Chain that interprets a prompt and executes python code to do symbolic math.\n\n    Example:\n        .. code-block:: python\n\n            from langchain import LLMSymbolicMathChain, OpenAI\n            llm_symbolic_math = LLMSymbolicMathChain.from_llm(OpenAI())\n    ",
     "class_path": "langchain.chains.llm_symbolic_math.base.LLMSymbolicMathChain.from_llm",
     "type": "chain",
     "display_type": "node",
@@ -2472,6 +2515,92 @@
           "default": null
         },
         "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a8ffd3b0-dfb4-4e1b-b5bf-90a2ec959ff8",
+  "fields": {
+    "name": "Wikipedia",
+    "description": "Wikipedia search engine",
+    "class_path": "ix.tools.wikipedia.get_wikipedia",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "top_k_results",
+        "type": "int",
+        "label": "Top_k_results",
+        "default": 3,
+        "required": false
+      },
+      {
+        "name": "lang",
+        "type": "str",
+        "label": "Lang",
+        "default": "en",
+        "required": false
+      },
+      {
+        "name": "load_all_available_meta",
+        "type": "boolean",
+        "label": "Load_all_available_meta",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "doc_content_chars_max",
+        "type": "int",
+        "label": "Doc_content_chars_max",
+        "default": 4000,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "lang": {
+          "type": "string",
+          "default": "en"
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "top_k_results": {
+          "type": "number",
+          "default": 3
+        },
+        "doc_content_chars_max": {
+          "type": "number",
+          "default": 4000
+        },
+        "load_all_available_meta": {
           "type": "boolean",
           "default": false
         }

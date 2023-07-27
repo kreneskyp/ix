@@ -11,6 +11,7 @@ from langchain.utilities import (
     GraphQLAPIWrapper,
     LambdaWrapper,
     PubMedAPIWrapper,
+    MetaphorSearchAPIWrapper,
 )
 
 from ix.api.chains.types import NodeTypeField
@@ -193,6 +194,21 @@ WIKIPEDIA = {
     ),
 }
 
+METAPHOR = {
+    "name": "Metaphor",
+    "description": "Metaphor search engine",
+    "class_path": "ix.tools.metaphor.get_metaphor",
+    "type": "tool",
+    "fields": TOOL_BASE_FIELDS
+    + NodeTypeField.get_fields(
+        MetaphorSearchAPIWrapper,
+        include=[
+            "k",
+            "metaphor_api_key",
+        ],
+    ),
+}
+
 
 WOLFRAM = {
     "name": "Wolfram Alpha",
@@ -223,5 +239,6 @@ TOOLS = [
     LAMBDA_API,
     PUB_MED,
     WIKIPEDIA,
+    METAPHOR,
     WOLFRAM,
 ]

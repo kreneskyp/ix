@@ -26,3 +26,4 @@ workdir
 
 #local copy of langchain if it exists
 langchain
+/.bash_history
