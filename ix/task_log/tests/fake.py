@@ -109,7 +109,6 @@ def fake_agent(**kwargs):
         model=model,
         config=config,
         chain=chain,
-        agent_class_path=agent_class_path,
     )
     return agent
 
