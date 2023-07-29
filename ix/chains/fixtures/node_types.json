@@ -1789,6 +1789,11 @@
         "name": "input_key",
         "type": "string",
         "default": "input"
+      },
+      {
+        "name": "return_messages",
+        "type": "boolean",
+        "default": false
       }
     ],
     "child_field": null,
@@ -1821,6 +1826,10 @@
         "human_prefix": {
           "type": "string",
           "default": "Human"
+        },
+        "return_messages": {
+          "type": "boolean",
+          "default": false
         }
       }
     }
@@ -2034,6 +2043,10 @@
         "human_prefix": {
           "type": "string",
           "default": "Human"
+        },
+        "return_messages": {
+          "type": "boolean",
+          "default": false
         }
       }
     }
@@ -2710,6 +2723,11 @@
         "name": "input_key",
         "type": "string",
         "default": "input"
+      },
+      {
+        "name": "return_messages",
+        "type": "boolean",
+        "default": false
       }
     ],
     "child_field": null,
@@ -2747,6 +2765,10 @@
         "max_token_limit": {
           "type": "number",
           "default": 2000
+        },
+        "return_messages": {
+          "type": "boolean",
+          "default": false
         }
       }
     }
@@ -3357,6 +3379,11 @@
         "name": "input_key",
         "type": "string",
         "default": "input"
+      },
+      {
+        "name": "return_messages",
+        "type": "boolean",
+        "default": false,
       }
     ],
     "child_field": null,
@@ -3394,6 +3421,10 @@
         "max_token_limit": {
           "type": "number",
           "default": 2000
+        },
+        "return_messages": {
+          "type": "boolean",
+          "default": false
         }
       }
     }
