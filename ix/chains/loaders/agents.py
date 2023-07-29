@@ -1,6 +1,8 @@
 import sys
 from typing import Callable
 
+from langchain.prompts import MessagesPlaceholder
+
 from langchain.agents import AgentType, AgentExecutor
 from langchain.agents import initialize_agent as initialize_agent_base
 from langchain.chains.base import Chain
@@ -15,7 +17,27 @@ def initialize_agent(agent: AgentType, **kwargs) -> Chain:
       A flattened config simplifies the UX integration such that it works with TypeAutoFields
     """
     # Re-pack agent_kwargs__* arguments into agent_kwargs
-    agent_kwargs = {}
+    agent_kwargs = {
+        "extra_prompt_messages": [MessagesPlaceholder(variable_name="memory")],
+    }
+
+    # Inject placeholders into prompt for memory if provided
+    if memories := kwargs.get("memory", None):
+        if not isinstance(memories, list):
+            memories = [memories]
+        placeholders = []
+        for component in memories:
+            if not hasattr(component, "memory_key"):
+                raise ValueError(
+                    f"Memory component {component} does not have a memory_key attribute."
+                )
+            if getattr(component, "return_messages", False):
+                raise ValueError(
+                    f"Memory component {component} has return_messages=True. Agents require "
+                    f"return_messages=False."
+                )
+            placeholders.append(MessagesPlaceholder(variable_name=component.memory_key))
+
     for key, value in kwargs.items():
         if key.startswith("agent_kwargs__"):
             agent_kwargs[key[15:]] = value
