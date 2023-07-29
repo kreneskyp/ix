@@ -57,5 +57,9 @@ class AgentProcess:
             extra_kwargs["input"] = user_input["user_input"]
 
         # Hax: copy user_input to input to support agents.
-        response = await chain.arun(callbacks=[handler], **extra_kwargs, **user_input)
-        return response
+        try:
+            return await chain.arun(callbacks=[handler], **extra_kwargs, **user_input)
+        except Exception as e:
+            # validation errors aren't caught by callbacks.
+            await handler.send_error_msg(e)
+            return None
