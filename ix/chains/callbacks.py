@@ -119,7 +119,9 @@ class IxHandler(AsyncCallbackHandler):
     ) -> Any:
         """Stream tokens over django-channels to clients subscribed via graphql"""
         context = self.contexts[parent_run_id]
-        context.tokens.append(token)
+        # sometimes the first token is None
+        if isinstance(token, str):
+            context.tokens.append(token)
         await ChatMessageTokenSubscription.on_new_token(
             task=self.task,
             message_id=context.message.id,
