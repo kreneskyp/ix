@@ -50,57 +50,6 @@
         "class_path": "ix.chains.llm_chain.LLMChain",
         "node_type": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
         "config": {
-            "llm": {
-                "class_path": "langchain.chat_models.openai.ChatOpenAI"
-            },
-            "memory": [
-                {
-                    "class_path": "ix.memory.artifacts.ArtifactMemory"
-                },
-                {
-                    "config": {
-                        "llm": {
-                            "config": {
-                                "verbose": true
-                            },
-                            "class_path": "langchain.chat_models.openai.ChatOpenAI"
-                        },
-                        "input_key": "user_input",
-                        "memory_key": "chat_summary",
-                        "chat_memory": {
-                            "config": {
-                                "url": "redis://redis:6379/0",
-                                "session_scope": "chat"
-                            },
-                            "class_path": "langchain.memory.RedisChatMessageHistory"
-                        },
-                        "max_token_limit": 1500
-                    },
-                    "class_path": "langchain.memory.summary_buffer.ConversationSummaryBufferMemory"
-                }
-            ],
-            "prompt": {
-                "config": {
-                    "messages": [
-                        {
-                            "role": "system",
-                            "template": "\nYou are a pirate. Talk like a pirate in all responses.\n\n{related_artifacts}\n\nCHAT_SUMMARY:\n{chat_summary}\n",
-                            "input_variables": [
-                                "related_artifacts",
-                                "chat_summary"
-                            ]
-                        },
-                        {
-                            "role": "user",
-                            "template": "{user_input}",
-                            "input_variables": [
-                                "user_input"
-                            ]
-                        }
-                    ]
-                },
-                "class_path": "langchain.prompts.chat.ChatPromptTemplate"
-            }
         },
         "name": null,
         "description": null,
@@ -176,21 +125,8 @@
         "class_path": "langchain.memory.summary_buffer.ConversationSummaryBufferMemory",
         "node_type": "d90b15ac-8202-41ee-84ca-c727376fb9e3",
         "config": {
-            "llm": {
-                "config": {
-                    "verbose": true
-                },
-                "class_path": "langchain.chat_models.openai.ChatOpenAI"
-            },
             "input_key": "user_input",
             "memory_key": "chat_summary",
-            "chat_memory": {
-                "config": {
-                    "url": "redis://redis:6379/0",
-                    "session_scope": "chat"
-                },
-                "class_path": "langchain.memory.RedisChatMessageHistory"
-            },
             "max_token_limit": 1500
         },
         "name": null,
