@@ -3002,6 +3002,11 @@
         "name": "verbose",
         "type": "boolean",
         "default": false
+      },
+      {
+        "name": "streaming",
+        "type": "boolean",
+        "default": false
       }
     ],
     "child_field": null,
@@ -3013,10 +3018,15 @@
         "max_retries",
         "temperature",
         "max_tokens",
-        "verbose"
+        "verbose",
+        "streaming"
       ],
       "properties": {
         "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "streaming": {
           "type": "boolean",
           "default": false
         },

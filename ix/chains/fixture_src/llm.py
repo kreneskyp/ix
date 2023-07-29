@@ -56,6 +56,11 @@ OPENAI_LLM = {
             "type": "boolean",
             "default": False,
         },
+        {
+            "name": "streaming",
+            "type": "boolean",
+            "default": False,
+        },
     ],
 }
 
