@@ -11,7 +11,6 @@ const HighlightText = ({ content }) => {
   const { mention, artifact } = useChatColorMode();
 
   const formattedContent = React.useMemo(() => {
-
     if (content === undefined) {
       return <div>"no content field"</div>;
     }
