@@ -91,6 +91,59 @@ def mock_openai(mocker, mock_openai_key):
 
 
 @pytest.fixture
+def mock_openai_streaming(mocker, mock_openai_key):
+    # create a mock instance of the class
+    mock_llm = MockChatOpenAI()
+    mock_llm.return_value = "mock llm response"
+
+    async def _mock_acompletion_with_retry(*args, **kwargs):
+        if mock_llm.raise_exception:
+            raise mock_llm.raise_exception
+        if mock_llm.streaming:
+            content = mock_llm.return_value
+            split = content.split(" ")
+            words = []
+            for split_word in split[:-1]:
+                words.append(split_word)
+                words.append(" ")
+            words.append(split[-1])
+            for word in words:
+                yield {
+                    "choices": [
+                        {
+                            "delta": {
+                                "role": "system",
+                                "content": word,
+                                "function_call": None,
+                            }
+                        }
+                    ]
+                }
+
+    # async completions are outside the class and need to be mocked separately
+    mock_acomplete = mocker.patch("langchain.chat_models.openai.acompletion_with_retry")
+    mock_acomplete.side_effect = _mock_acompletion_with_retry
+    mock_llm.acompletion_with_retry = mock_acomplete
+
+    # mock the class to return the instance we're creating here
+    mock_class = MagicMock(return_value=mock_llm)
+
+    def mock_import_class(class_path):
+        if class_path in MOCKABLE_LLM_CLASSES:
+            return mock_class
+        else:
+            return import_class(class_path)
+
+    # mock_import returns the mock class
+    mocker.patch(
+        "ix.chains.loaders.core.import_node_class", side_effect=mock_import_class
+    )
+
+    # return the mock instance
+    yield mock_llm
+
+
+@pytest.fixture
 def ix_context(task):
     return IxContext(agent=task.agent, chain=task.chain, task=task)
 

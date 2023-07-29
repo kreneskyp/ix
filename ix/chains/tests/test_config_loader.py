@@ -14,7 +14,6 @@ from langchain.memory import (
 from langchain.schema import BaseChatMessageHistory, BaseMemory
 from langchain.tools import BaseTool
 
-from ix.chains.agents import AgentReply
 from ix.chains.fixture_src.tools import GOOGLE_SEARCH
 from ix.chains.loaders.memory import get_memory_session
 from ix.chains.loaders.tools import extract_tool_kwargs
@@ -489,5 +488,4 @@ class TestLoadAgents:
             }
 
             instance = await aload_chain(config)
-            assert isinstance(instance, AgentReply)
-            assert isinstance(instance.agent_executor, AgentExecutor)
+            assert isinstance(instance, AgentExecutor)

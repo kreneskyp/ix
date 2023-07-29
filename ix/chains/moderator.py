@@ -78,6 +78,7 @@ LLM_CHOOSE_AGENT_CONFIG = {
                 "temperature": 0,
                 "verbose": True,
                 "max_tokens": 1000,
+                "streaming": True,
             },
         },
         "prompt": {

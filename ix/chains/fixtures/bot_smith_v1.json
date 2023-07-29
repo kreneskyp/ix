@@ -54,7 +54,8 @@
             "model_name": "gpt-4-0613",
             "max_retries": 6,
             "temperature": 0,
-            "request_timeout": 60
+            "request_timeout": 60,
+            "streaming": true
         },
         "name": null,
         "description": null,
@@ -98,7 +99,8 @@
             "model_name": "gpt-3.5-turbo-16k-0613",
             "max_retries": 6,
             "temperature": 0,
-            "request_timeout": 60
+            "request_timeout": 60,
+            "streaming": true
         },
         "name": null,
         "description": null,
@@ -114,8 +116,8 @@
     "model": "chains.chainnode",
     "pk": "c96a49c5-64f8-47c5-a27e-561694a4ace2",
     "fields": {
-        "class_path": "ix.chains.llm_chain.LLMReply",
-        "node_type": "01e26ecf-d02b-46ce-a57c-322e3815035b",
+        "class_path": "ix.chains.llm_chain.LLMChain",
+        "node_type": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
         "config": {
             "verbose": true
         },

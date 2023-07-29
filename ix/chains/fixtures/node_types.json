@@ -97,12 +97,6 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
-      },
-      {
-        "name": "reply",
-        "type": "boolean",
-        "label": "Reply to user",
-        "default": true
       }
     ],
     "child_field": null,
@@ -111,14 +105,9 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time",
-        "reply"
+        "max_execution_time"
       ],
       "properties": {
-        "reply": {
-          "type": "boolean",
-          "default": true
-        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -184,12 +173,6 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
-      },
-      {
-        "name": "reply",
-        "type": "boolean",
-        "label": "Reply to user",
-        "default": true
       }
     ],
     "child_field": null,
@@ -198,14 +181,9 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time",
-        "reply"
+        "max_execution_time"
       ],
       "properties": {
-        "reply": {
-          "type": "boolean",
-          "default": true
-        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -297,12 +275,6 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
-      },
-      {
-        "name": "reply",
-        "type": "boolean",
-        "label": "Reply to user",
-        "default": true
       }
     ],
     "child_field": null,
@@ -311,14 +283,9 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time",
-        "reply"
+        "max_execution_time"
       ],
       "properties": {
-        "reply": {
-          "type": "boolean",
-          "default": true
-        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -809,12 +776,6 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
-      },
-      {
-        "name": "reply",
-        "type": "boolean",
-        "label": "Reply to user",
-        "default": true
       }
     ],
     "child_field": null,
@@ -823,14 +784,9 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time",
-        "reply"
+        "max_execution_time"
       ],
       "properties": {
-        "reply": {
-          "type": "boolean",
-          "default": true
-        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -896,12 +852,6 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
-      },
-      {
-        "name": "reply",
-        "type": "boolean",
-        "label": "Reply to user",
-        "default": true
       }
     ],
     "child_field": null,
@@ -910,14 +860,9 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time",
-        "reply"
+        "max_execution_time"
       ],
       "properties": {
-        "reply": {
-          "type": "boolean",
-          "default": true
-        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -1236,12 +1181,6 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
-      },
-      {
-        "name": "reply",
-        "type": "boolean",
-        "label": "Reply to user",
-        "default": true
       }
     ],
     "child_field": null,
@@ -1250,14 +1189,9 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time",
-        "reply"
+        "max_execution_time"
       ],
       "properties": {
-        "reply": {
-          "type": "boolean",
-          "default": true
-        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -1323,12 +1257,6 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
-      },
-      {
-        "name": "reply",
-        "type": "boolean",
-        "label": "Reply to user",
-        "default": true
       }
     ],
     "child_field": null,
@@ -1337,14 +1265,9 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time",
-        "reply"
+        "max_execution_time"
       ],
       "properties": {
-        "reply": {
-          "type": "boolean",
-          "default": true
-        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -2532,12 +2455,6 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
-      },
-      {
-        "name": "reply",
-        "type": "boolean",
-        "label": "Reply to user",
-        "default": true
       }
     ],
     "child_field": null,
@@ -2546,14 +2463,9 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time",
-        "reply"
+        "max_execution_time"
       ],
       "properties": {
-        "reply": {
-          "type": "boolean",
-          "default": true
-        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -2859,12 +2771,6 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
-      },
-      {
-        "name": "reply",
-        "type": "boolean",
-        "label": "Reply to user",
-        "default": true
       }
     ],
     "child_field": null,
@@ -2873,14 +2779,9 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time",
-        "reply"
+        "max_execution_time"
       ],
       "properties": {
-        "reply": {
-          "type": "boolean",
-          "default": true
-        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -3002,6 +2903,11 @@
         "name": "verbose",
         "type": "boolean",
         "default": false
+      },
+      {
+        "name": "streaming",
+        "type": "boolean",
+        "default": true
       }
     ],
     "child_field": null,
@@ -3013,12 +2919,17 @@
         "max_retries",
         "temperature",
         "max_tokens",
-        "verbose"
+        "verbose",
+        "streaming"
       ],
       "properties": {
         "verbose": {
           "type": "boolean",
           "default": false
+        },
+        "streaming": {
+          "type": "boolean",
+          "default": true
         },
         "max_tokens": {
           "type": "number",

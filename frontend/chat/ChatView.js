@@ -19,35 +19,38 @@ import {
   SubscriptionActiveContext,
 } from "chat/graphql/useChatMessageSubscription";
 import ChatInput from "chat/input/ChatInput";
+import { MessagesTokenContext } from "chat/graphql/useChatMessageTokenSubscription";
 
 export const ChatContentShim = ({ queryRef }) => {
   const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
   const moderatorTask = chat.task;
-  const { messages, subscriptionActive } = useMessageStream(chat);
+  const { messages, streams, subscriptionActive } = useMessageStream(chat);
 
   return (
-    <MessagesContext.Provider value={messages}>
-      <SubscriptionActiveContext.Provider value={subscriptionActive}>
-        <ScrollableBox>
-          <Suspense>
-            <TaskProvider taskId={moderatorTask.id}>
-              <ChatMessages chat={chat} />
-            </TaskProvider>
-          </Suspense>
-        </ScrollableBox>
-        <Center
-          w="100%"
-          p={4}
-          mb={4}
-          boxShadow="0px -1px 4px rgba(0, 0, 0, 0.1)"
-        >
-          {/* Bottom aligned section */}
-          <Box ml={95}>
-            <ChatInput chat={chat} />
-          </Box>
-        </Center>
-      </SubscriptionActiveContext.Provider>
-    </MessagesContext.Provider>
+    <MessagesTokenContext.Provider value={streams}>
+      <MessagesContext.Provider value={messages}>
+        <SubscriptionActiveContext.Provider value={subscriptionActive}>
+          <ScrollableBox>
+            <Suspense>
+              <TaskProvider taskId={moderatorTask.id}>
+                <ChatMessages chat={chat} />
+              </TaskProvider>
+            </Suspense>
+          </ScrollableBox>
+          <Center
+            w="100%"
+            p={4}
+            mb={4}
+            boxShadow="0px -1px 4px rgba(0, 0, 0, 0.1)"
+          >
+            {/* Bottom aligned section */}
+            <Box ml={95}>
+              <ChatInput chat={chat} />
+            </Box>
+          </Center>
+        </SubscriptionActiveContext.Provider>
+      </MessagesContext.Provider>
+    </MessagesTokenContext.Provider>
   );
 };
 
