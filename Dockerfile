@@ -45,7 +45,6 @@ ENV WEBPACK_OUTPUT=/var/compiled-static
 # Set the working directory
 WORKDIR $APP
 
-
 # Copy requirements.txt to the working directory
 COPY requirements.txt .
 
@@ -63,7 +62,6 @@ ENV APP_MODE=asgi
 
 # Expose port 8000 for ASGI, or leave it unexposed for Celery
 EXPOSE 8000
-
 
 WORKDIR /var/app
 
