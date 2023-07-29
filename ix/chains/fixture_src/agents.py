@@ -1,3 +1,4 @@
+from ix.chains.fixture_src.common import VERBOSE
 from ix.chains.fixture_src.targets import (
     PROMPT_TARGET,
     TOOLS_TARGET,
@@ -22,6 +23,7 @@ EXECUTOR_BASE_FIELDS = [
         "type": "float",
         "nullable": True,
     },
+    VERBOSE,
 ]
 
 

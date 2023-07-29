@@ -97,6 +97,11 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
       }
     ],
     "child_field": null,
@@ -105,9 +110,14 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time"
+        "max_execution_time",
+        "verbose"
       ],
       "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -173,6 +183,11 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
       }
     ],
     "child_field": null,
@@ -181,9 +196,14 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time"
+        "max_execution_time",
+        "verbose"
       ],
       "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -275,6 +295,11 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
       }
     ],
     "child_field": null,
@@ -283,9 +308,14 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time"
+        "max_execution_time",
+        "verbose"
       ],
       "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -776,6 +806,11 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
       }
     ],
     "child_field": null,
@@ -784,9 +819,14 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time"
+        "max_execution_time",
+        "verbose"
       ],
       "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -852,6 +892,11 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
       }
     ],
     "child_field": null,
@@ -860,9 +905,14 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time"
+        "max_execution_time",
+        "verbose"
       ],
       "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -1181,6 +1231,11 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
       }
     ],
     "child_field": null,
@@ -1189,9 +1244,14 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time"
+        "max_execution_time",
+        "verbose"
       ],
       "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -1257,6 +1317,11 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
       }
     ],
     "child_field": null,
@@ -1265,9 +1330,14 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time"
+        "max_execution_time",
+        "verbose"
       ],
       "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -2455,6 +2525,11 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
       }
     ],
     "child_field": null,
@@ -2463,9 +2538,14 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time"
+        "max_execution_time",
+        "verbose"
       ],
       "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
         "max_iterations": {
           "type": "number",
           "default": 15
@@ -2771,6 +2851,11 @@
         "name": "max_execution_time",
         "type": "float",
         "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
       }
     ],
     "child_field": null,
@@ -2779,9 +2864,14 @@
       "required": [
         "return_intermediate_steps",
         "max_iterations",
-        "max_execution_time"
+        "max_execution_time",
+        "verbose"
       ],
       "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
         "max_iterations": {
           "type": "number",
           "default": 15
