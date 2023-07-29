@@ -3006,7 +3006,7 @@
       {
         "name": "streaming",
         "type": "boolean",
-        "default": false
+        "default": true
       }
     ],
     "child_field": null,
@@ -3028,7 +3028,7 @@
         },
         "streaming": {
           "type": "boolean",
-          "default": false
+          "default": true
         },
         "max_tokens": {
           "type": "number",
