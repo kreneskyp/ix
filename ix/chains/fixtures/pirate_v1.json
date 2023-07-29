@@ -47,8 +47,8 @@
     "model": "chains.chainnode",
     "pk": "4f257c0e-4164-49d4-a3a6-b83450b99071",
     "fields": {
-        "class_path": "ix.chains.llm_chain.LLMReply",
-        "node_type": "01e26ecf-d02b-46ce-a57c-322e3815035b",
+        "class_path": "ix.chains.llm_chain.LLMChain",
+        "node_type": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
         "config": {
             "llm": {
                 "class_path": "langchain.chat_models.openai.ChatOpenAI"
@@ -156,7 +156,8 @@
         "class_path": "langchain.chat_models.openai.ChatOpenAI",
         "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
         "config": {
-            "verbose": true
+            "verbose": false,
+            "streaming": false
         },
         "name": null,
         "description": null,
@@ -208,7 +209,10 @@
     "fields": {
         "class_path": "langchain.chat_models.openai.ChatOpenAI",
         "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
-        "config": null,
+        "config": {
+           "verbose": true,
+           "streaming": true
+        },
         "name": null,
         "description": null,
         "root": false,
