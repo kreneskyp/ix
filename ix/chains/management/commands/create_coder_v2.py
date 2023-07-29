@@ -78,7 +78,7 @@ CREATE_CODE_ARTIFACTS = {
         "llm": {
             "class_path": "langchain.chat_models.openai.ChatOpenAI",
             "config": {
-                "model": "gpt-4-0613",
+                "model_name": "gpt-4-0613",
                 "request_timeout": 240,
                 "temperature": 0.2,
                 "verbose": True,
@@ -158,7 +158,7 @@ GENERATE_FILE = {
         "llm": {
             "class_path": "langchain.chat_models.openai.ChatOpenAI",
             "config": {
-                "model": "gpt-4-0613",
+                "model_name": "gpt-4-0613",
                 "request_timeout": 240,
                 "temperature": 0.2,
                 "verbose": True,
