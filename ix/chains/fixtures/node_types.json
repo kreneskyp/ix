@@ -3383,7 +3383,7 @@
       {
         "name": "return_messages",
         "type": "boolean",
-        "default": false,
+        "default": false
       }
     ],
     "child_field": null,
