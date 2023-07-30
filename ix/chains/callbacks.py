@@ -52,6 +52,38 @@ class RunContext:
         await self.message.asave(update_fields=["content"])
 
 
+def exception_to_string(excp: Exception) -> str:
+    """Print a traceback to a string and return it"""
+    stack_trace = traceback.extract_stack()[
+        :-2
+    ]  # Remove the call to exception_to_string from the stack trace
+    if excp is not None:
+        trace = traceback.extract_tb(
+            excp.__traceback__
+        )  # Get the traceback of the exception
+        stack_trace = stack_trace + trace  # Add it to the stack trace
+    else:
+        stack_trace = stack_trace[:-1]  # Remove call to print_stack
+
+    # HAX: incredibly hacky way to remove the celery stack trace from the error.
+    #      this drops ~60 lines from the traceback.
+    start_index = 0
+    for i, trace in enumerate(stack_trace):
+        if [trace.filename, trace.name] == [
+            "/usr/local/lib/python3.11/site-packages/celery/app/trace.py",
+            "__protected_call__",
+        ]:
+            start_index = i + 1
+            break
+
+    traceback_str = ""
+    for i in stack_trace[start_index:]:
+        traceback_str += (
+            f'File "{i.filename}", line {i.lineno}, in {i.name}\n    {i.line}\n'
+        )
+    return traceback_str
+
+
 class IxHandler(AsyncCallbackHandler):
     task: Task = None
     chain: Chain = None
@@ -193,28 +225,7 @@ class IxHandler(AsyncCallbackHandler):
         **kwargs: Any,
     ) -> None:
         """Run when chain errors."""
-        assert isinstance(error, Exception), error
-        traceback_list = traceback.format_exception(
-            type(error), error, error.__traceback__
-        )
-        traceback_string = "".join(traceback_list)
-        error_type = type(error).__name__
-        think_msg_id = self.parent_think_msg.id if self.parent_think_msg else None
-        failure_msg = await TaskLogMessage.objects.acreate(
-            task_id=self.task.id,
-            parent_id=think_msg_id,
-            role="assistant",
-            content={
-                "type": "EXECUTE_ERROR",
-                "error_type": error_type,
-                "text": str(error),
-                "details": traceback_string,
-            },
-        )
-        logger.error(
-            f"@@@@ EXECUTE ERROR logged as id={failure_msg.id} message_id={think_msg_id} error_type={error_type}"
-        )
-        logger.error(f"@@@@ EXECUTE ERROR {failure_msg.content['text']}")
+        await self.send_error_msg(error)
 
     async def on_tool_start(
         self, serialized: Dict[str, Any], input_str: str, **kwargs: Any
@@ -241,6 +252,35 @@ class IxHandler(AsyncCallbackHandler):
                 "stream": stream,
             },
         )
+
+    async def send_error_msg(self, error: Exception) -> TaskLogMessage:
+        """
+        Send an error message to the user.
+        """
+        assert isinstance(error, Exception), error
+        traceback_list = traceback.format_exception(
+            type(error), error, error.__traceback__
+        )
+        traceback_string = "".join(traceback_list)
+        error_type = type(error).__name__
+        parent_id = self.parent_think_msg.id if self.parent_think_msg else None
+        failure_msg = await TaskLogMessage.objects.acreate(
+            task_id=self.task.id,
+            parent_id=parent_id,
+            role="assistant",
+            content={
+                "type": "EXECUTE_ERROR",
+                "error_type": error_type,
+                "text": str(error),
+                "details": traceback_string,
+            },
+        )
+        logger.error(
+            f"@@@@ EXECUTE ERROR logged as id={failure_msg.id} message_id={parent_id} error_type={error_type}"
+        )
+        logger.error(f"@@@@ EXECUTE ERROR {failure_msg.content['text']}")
+        logger.error(exception_to_string(error))
+        return failure_msg
 
     @staticmethod
     def from_manager(run_manager: AsyncCallbackManagerForChainRun):

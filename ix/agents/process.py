@@ -5,7 +5,7 @@ from asgiref.sync import sync_to_async
 from ix.agents.models import Agent
 from ix.chains.callbacks import IxHandler
 from ix.chains.models import Chain as ChainModel
-from ix.task_log.models import Task, TaskLogMessage
+from ix.task_log.models import Task
 
 
 # logging
@@ -42,20 +42,27 @@ class AgentProcess:
         logger.debug(f"Response from model, task_id={self.task.id} response={response}")
         return True
 
-    async def chat_with_ai(self, user_input: Dict[str, Any]) -> TaskLogMessage:
+    async def chat_with_ai(self, user_input: Dict[str, Any]) -> Any:
         handler = IxHandler(agent=self.agent, chain=self.chain, task=self.task)
 
-        # TODO: chain loading needs to be made async
-        chain = await sync_to_async(self.chain.load_chain)(handler)
+        try:
+            # TODO: chain loading needs to be made async
+            chain = await sync_to_async(self.chain.load_chain)(handler)
 
-        logger.info(f"Sending request to chain={self.chain.name} prompt={user_input}")
+            logger.info(
+                f"Sending request to chain={self.chain.name} prompt={user_input}"
+            )
 
-        # auto-map user_input to input if not provided.
-        # work around until chat input key can be configured per chain
-        extra_kwargs = {}
-        if "input" not in user_input:
-            extra_kwargs["input"] = user_input["user_input"]
+            # auto-map user_input to input if not provided.
+            # work around until chat input key can be configured per chain
+            extra_kwargs = {}
+            if "input" not in user_input:
+                extra_kwargs["input"] = user_input["user_input"]
 
-        # Hax: copy user_input to input to support agents.
-        response = await chain.arun(callbacks=[handler], **extra_kwargs, **user_input)
-        return response
+            # Hax: copy user_input to input to support agents.
+
+            return await chain.arun(callbacks=[handler], **extra_kwargs, **user_input)
+        except Exception as e:
+            # validation errors aren't caught by callbacks.
+            await handler.send_error_msg(e)
+            return None
