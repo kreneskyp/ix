@@ -31,10 +31,10 @@ def initialize_agent(agent: AgentType, **kwargs) -> Chain:
                 raise ValueError(
                     f"Memory component {component} does not have a memory_key attribute."
                 )
-            if getattr(component, "return_messages", False):
+            if not getattr(component, "return_messages", False):
                 raise ValueError(
-                    f"Memory component {component} has return_messages=True. Agents require "
-                    f"return_messages=False."
+                    f"Memory component {component} has return_messages=False. Agents require "
+                    f"return_messages=True."
                 )
             placeholders.append(MessagesPlaceholder(variable_name=component.memory_key))
 
