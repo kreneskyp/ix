@@ -184,7 +184,11 @@ class IxHandler(AsyncCallbackHandler):
             think_msg = await TaskLogMessage.objects.acreate(
                 task_id=self.task.id,
                 role="system",
-                content={"type": "THINK", "input": inputs, "agent": self.agent.alias},
+                content={
+                    "type": "THINK",
+                    "input": {"user_input": inputs["user_input"]},
+                    "agent": self.agent.alias,
+                },
             )
             self.parent_think_msg = think_msg
 

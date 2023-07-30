@@ -69,7 +69,6 @@ class TestAgentProcessStart:
         assert think_msg.content["type"] == "THINK"
         assert think_msg.content["input"] == {
             "user_input": "hello agent 1",
-            "input": "hello agent 1",
         }
         assert thought_msg.content["type"] == "THOUGHT"
         assert isinstance(thought_msg.content["runtime"], float)
@@ -95,7 +94,7 @@ class TestAgentProcessStart:
         assert count == 0
         agent_process = AgentProcess(task=task, agent=task.agent, chain=task.chain)
 
-        inputs = {"user_input": "hello agent 1", "input": "existing input"}
+        inputs = {"user_input": "hello agent 1"}
         return_value = await agent_process.start(inputs)
         assert return_value is True
 
