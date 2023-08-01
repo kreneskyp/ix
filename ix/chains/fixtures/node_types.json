@@ -1804,7 +1804,8 @@
         "human_prefix",
         "ai_prefix",
         "output_key",
-        "input_key"
+        "input_key",
+        "return_messages"
       ],
       "properties": {
         "ai_prefix": {
@@ -2006,6 +2007,11 @@
         "name": "input_key",
         "type": "string",
         "default": "input"
+      },
+      {
+        "name": "return_messages",
+        "type": "boolean",
+        "default": false
       }
     ],
     "child_field": null,
@@ -2017,7 +2023,8 @@
         "human_prefix",
         "ai_prefix",
         "output_key",
-        "input_key"
+        "input_key",
+        "return_messages"
       ],
       "properties": {
         "k": {
@@ -2739,7 +2746,8 @@
         "human_prefix",
         "ai_prefix",
         "output_key",
-        "input_key"
+        "input_key",
+        "return_messages"
       ],
       "properties": {
         "ai_prefix": {
@@ -3395,7 +3403,8 @@
         "human_prefix",
         "ai_prefix",
         "output_key",
-        "input_key"
+        "input_key",
+        "return_messages"
       ],
       "properties": {
         "ai_prefix": {
