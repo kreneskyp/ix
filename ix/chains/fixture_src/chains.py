@@ -33,15 +33,6 @@ LLM_CHAIN = {
     ],
 }
 
-LLM_TOOL_CHAIN = dict(
-    class_path="ix.chains.tool_chain.LLMToolChain",
-    type="chain",
-    name="LLM Tool Chain",
-    description="Chain that prompts an LLM for a completion. It has a set of tools available to the prompt",
-    connectors=[LLM_TARGET, MEMORY_TARGET, PROMPT_TARGET, FUNCTION_TARGET],
-    fields=[VERBOSE, FUNCTION_CALL],
-)
-
 LLM_REPLY = dict(
     class_path="ix.chains.llm_chain.LLMReply",
     type="chain",
@@ -77,7 +68,6 @@ LLM_SYMBOLIC_MATH_CHAIN = {
 
 CHAINS = [
     LLM_CHAIN,
-    LLM_TOOL_CHAIN,
     LLM_REPLY,
     LLM_SYMBOLIC_MATH_CHAIN,
 ]
