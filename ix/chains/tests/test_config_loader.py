@@ -19,6 +19,7 @@ from ix.chains.loaders.memory import get_memory_session
 from ix.chains.loaders.tools import extract_tool_kwargs
 from ix.chains.tests.mock_memory import MockMemory
 from ix.memory.artifacts import ArtifactMemory
+from ix.utils.importlib import import_class
 
 
 class TestLoadLLM:
@@ -63,6 +64,16 @@ MEMORY_WITH_LLM = {
         "llm": {
             "class_path": "langchain.chat_models.openai.ChatOpenAI",
         },
+    },
+}
+
+AGENT_MEMORY = {
+    "class_path": "langchain.memory.ConversationBufferMemory",
+    "config": {
+        "input_key": "user_input",
+        "memory_key": "chat_history",
+        # agent requires return_messages=True
+        "return_messages": True,
     },
 }
 
@@ -489,3 +500,42 @@ class TestLoadAgents:
 
             instance = await aload_chain(config)
             assert isinstance(instance, AgentExecutor)
+
+    async def test_agent_memory(self, mock_openai, aload_chain, mock_google_api_key):
+        config = {
+            "class_path": f"ix.chains.loaders.agents.initialize_zero_shot_react_description",
+            "name": "tester",
+            "description": "test",
+            "config": {
+                "tools": [GOOGLE_SEARCH_CONFIG],
+                "llm": OPENAI_LLM,
+                "memory": AGENT_MEMORY,
+            },
+        }
+        executor = await aload_chain(config)
+        assert isinstance(executor, AgentExecutor)  # sanity check
+        # TODO: need additional tests to verify memory is working:
+        # 1. test that prompt includes placeholders
+        # 2. test that memory keys are correct
+        # 3. test that memory is loaded for agent
+        raise NotImplementedError()
+
+    async def test_agent_memory_misconfigured(
+        self, mock_openai, aload_chain, mock_google_api_key
+    ):
+        """test agent/memory misconfigurations that should raise errors
+            - memory class must have `return_messages=True`
+        """
+        config = {
+            "class_path": f"ix.chains.loaders.agents.initialize_zero_shot_react_description",
+            "name": "tester",
+            "description": "test",
+            "config": {
+                "tools": [GOOGLE_SEARCH_CONFIG],
+                "llm": OPENAI_LLM,
+                "memory": MEMORY,
+            },
+        }
+        with pytest.raises(ValueError) as excinfo:
+            await aload_chain(config)
+            assert "Agents require return_messages=True" in str(excinfo.value)
