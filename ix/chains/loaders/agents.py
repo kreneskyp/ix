@@ -16,27 +16,25 @@ def initialize_agent(agent: AgentType, **kwargs) -> Chain:
     - unpacks agent_kwargs: allows agent_kwargs to be flattened into the ChainNode config
       A flattened config simplifies the UX integration such that it works with TypeAutoFields
     """
-    # Re-pack agent_kwargs__* arguments into agent_kwargs
-    agent_kwargs = {
-        "extra_prompt_messages": [MessagesPlaceholder(variable_name="memory")],
-    }
-
     # Inject placeholders into prompt for memory if provided
+    placeholders = []
     if memories := kwargs.get("memory", None):
         if not isinstance(memories, list):
             memories = [memories]
         placeholders = []
         for component in memories:
-            if not hasattr(component, "memory_key"):
-                raise ValueError(
-                    f"Memory component {component} does not have a memory_key attribute."
-                )
             if not getattr(component, "return_messages", False):
                 raise ValueError(
                     f"Memory component {component} has return_messages=False. Agents require "
                     f"return_messages=True."
                 )
-            placeholders.append(MessagesPlaceholder(variable_name=component.memory_key))
+            for memory_key in component.memory_variables:
+                placeholders.append(MessagesPlaceholder(variable_name=memory_key))
+
+    # Re-pack agent_kwargs__* arguments into agent_kwargs
+    agent_kwargs = {
+        "extra_prompt_messages": placeholders,
+    }
 
     for key, value in kwargs.items():
         if key.startswith("agent_kwargs__"):
