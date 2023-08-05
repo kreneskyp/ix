@@ -3,6 +3,7 @@ from fastapi.openapi.utils import get_openapi
 
 from ix.api.agents.endpoints import router as agents_router
 from ix.api.chains.endpoints import router as chains_router
+from ix.api.chats.endpoints import router as chats_router
 
 app = FastAPI(
     title="IX agent editor API",
@@ -10,6 +11,7 @@ app = FastAPI(
 )
 app.include_router(chains_router)
 app.include_router(agents_router)
+app.include_router(chats_router)
 
 
 def custom_openapi():
