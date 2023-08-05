@@ -19,7 +19,6 @@ from ix.chains.loaders.memory import get_memory_session
 from ix.chains.loaders.tools import extract_tool_kwargs
 from ix.chains.tests.mock_memory import MockMemory
 from ix.memory.artifacts import ArtifactMemory
-from ix.utils.importlib import import_class
 
 
 class TestLoadLLM:
@@ -503,7 +502,7 @@ class TestLoadAgents:
 
     async def test_agent_memory(self, mock_openai, aload_chain, mock_google_api_key):
         config = {
-            "class_path": f"ix.chains.loaders.agents.initialize_zero_shot_react_description",
+            "class_path": "ix.chains.loaders.agents.initialize_zero_shot_react_description",
             "name": "tester",
             "description": "test",
             "config": {
@@ -524,10 +523,10 @@ class TestLoadAgents:
         self, mock_openai, aload_chain, mock_google_api_key
     ):
         """test agent/memory misconfigurations that should raise errors
-            - memory class must have `return_messages=True`
+        - memory class must have `return_messages=True`
         """
         config = {
-            "class_path": f"ix.chains.loaders.agents.initialize_zero_shot_react_description",
+            "class_path": "ix.chains.loaders.agents.initialize_zero_shot_react_description",
             "name": "tester",
             "description": "test",
             "config": {
