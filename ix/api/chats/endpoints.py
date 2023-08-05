@@ -157,7 +157,7 @@ async def add_agent(chat_id: UUID, agent_id: UUID):
         raise HTTPException(status_code=404, detail="Agent does not exist.")
 
 
-@router.get("/chats/{chat_id}/graph", response_model=ChatGraph)
+@router.get("/chats/{chat_id}/graph", response_model=ChatGraph, tags=["Chats"])
 async def get_chat_graph(chat_id: str):
     """Chat and related objects
 
@@ -197,7 +197,7 @@ def get_artifacts(user_input):
     return matches
 
 
-@router.post("/chats/{chat_id}/messages", response_model=ChatMessage)
+@router.post("/chats/{chat_id}/messages", response_model=ChatMessage, tags=["Chats"])
 async def send_message(chat_id: str, chat_input: ChatInput):
     chat = await Chat.objects.aget(pk=chat_id)
     text = chat_input.text
