@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, TypeVar, Generic
 
 from pydantic import BaseModel
 from django.core.paginator import Paginator
@@ -54,7 +54,10 @@ class GenericPage(ObjectType):
         )
 
 
-class QueryPage(BaseModel):
+T = TypeVar("T")
+
+
+class QueryPage(BaseModel, Generic[T]):
     """
     Represents a paginated result set with metadata.
 
@@ -71,7 +74,7 @@ class QueryPage(BaseModel):
     count: int
     has_next: bool
     has_previous: bool
-    objects: List[Dict[str, Any]]
+    objects: List[T]
 
     @classmethod
     def paginate(
