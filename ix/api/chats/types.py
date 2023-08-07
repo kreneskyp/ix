@@ -117,3 +117,8 @@ class ChatMessage(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class ChatMessageQueryPage(QueryPage[ChatMessage]):
+    # override objects, FastAPI isn't detecting QueryPage type
+    objects: List[ChatMessage]

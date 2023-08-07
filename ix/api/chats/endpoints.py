@@ -199,6 +199,20 @@ def get_artifacts(user_input):
     return matches
 
 
+@router.get(
+    "/chats/{chat_id}/messages", response_model=ChatMessageQueryPage, tags=["Chats"]
+)
+async def get_messages(chat_id, limit: int = 10, offset: int = 0):
+    query = TaskLogMessage.objects.filter(task__leading_chats__id=chat_id).order_by(
+        "created_at"
+    )
+
+    # punting on async implementation of pagination until later
+    return await sync_to_async(ChatMessageQueryPage.paginate)(
+        output_model=ChatMessage, queryset=query, limit=limit, offset=offset
+    )
+
+
 @router.post("/chats/{chat_id}/messages", response_model=ChatMessage, tags=["Chats"])
 async def send_message(chat_id: str, chat_input: ChatInput):
     chat = await Chat.objects.aget(pk=chat_id)
