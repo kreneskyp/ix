@@ -55,6 +55,7 @@ class ChatInList(Chat):
             name=instance.name,
             created_at=instance.created_at,
             lead_id=instance.lead_id,
+            task_id=instance.task_id,
             agents=agents,
         )
 

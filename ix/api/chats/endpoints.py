@@ -278,5 +278,4 @@ async def start_agent(task_id: UUID, agent: Agent, inputs: Dict[str, Any]):
     The async decorator on start_agent_loop sometimes causes issues in tests.
     Moving the function into this shim allows it to work correctly.
     """
-    print(">>>> ", start_agent_loop)
     return start_agent_loop.delay(str(task_id), str(agent.chain_id), inputs=inputs)

@@ -13,6 +13,7 @@ from ix.task_log.tests.fake import (
     afake_chat,
     afake_artifact,
     afake_user,
+    afake_system,
 )
 
 CHAT_ID_1 = uuid4()
@@ -416,3 +417,25 @@ class TestChatMessage:
             str(agent.chain_id),
             inputs={"user_input": text, "chat_id": str(chat.id), "artifact_keys": []},
         )
+
+    async def test_get_messages(self, anode_types):
+        chat = await afake_chat()
+        task = await Task.objects.aget(id=chat.task_id)
+        msg1 = await afake_system("test1", task=task)
+        msg2 = await afake_system("test2", task=task)
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.get(f"/chats/{chat.id}/messages")
+
+        assert response.status_code == 200, response.content
+        result = response.json()
+        msgs = result["objects"]
+
+        assert len(msgs) == 3
+        assert msgs[0]["content"]["type"] == "FEEDBACK"
+        assert msgs[1]["id"] == str(msg1.id)
+        assert msgs[1]["content"]["type"] == "SYSTEM"
+        assert msgs[1]["content"]["message"] == "test1"
+        assert msgs[2]["id"] == str(msg2.id)
+        assert msgs[2]["content"]["type"] == "SYSTEM"
+        assert msgs[2]["content"]["message"] == "test2"
