@@ -25,9 +25,11 @@ from ix.api.chats.types import (
     ChatAgentAction,
     ChatMessage,
     ChatInput,
+    ChatInList,
+    ChatQueryPage,
+    ChatMessageQueryPage,
 )
 from ix.task_log.models import UserFeedback, TaskLogMessage
-from ix.utils.graphene.pagination import QueryPage
 from ix.task_log.tasks.agent_runner import (
     start_agent_loop,
 )
@@ -83,7 +85,7 @@ async def get_chat(chat_id: UUID):
     return ChatPydantic.from_orm(chat)
 
 
-@router.get("/chats/", response_model=QueryPage, tags=["Chats"])
+@router.get("/chats/", response_model=ChatQueryPage, tags=["Chats"])
 async def get_chats(search: Optional[str] = None, limit: int = 10, offset: int = 0):
     query = (
         Chat.objects.filter(Q(name__icontains=search)) if search else Chat.objects.all()
@@ -91,8 +93,8 @@ async def get_chats(search: Optional[str] = None, limit: int = 10, offset: int =
     query = query.order_by("-created_at")
 
     # punting on async implementation of pagination until later
-    return await sync_to_async(QueryPage.paginate)(
-        output_model=ChatPydantic, queryset=query, limit=limit, offset=offset
+    return await sync_to_async(ChatQueryPage.paginate)(
+        output_model=ChatInList, queryset=query, limit=limit, offset=offset
     )
 
 

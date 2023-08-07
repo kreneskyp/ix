@@ -6,6 +6,8 @@ from uuid import UUID
 from datetime import datetime
 from ix.api.agents.types import Agent
 from ix.api.artifacts.types import Artifact
+from ix.agents.models import Agent as AgentModel
+from ix.utils.graphene.pagination import QueryPage
 
 
 class ChatNew(BaseModel):
@@ -20,6 +22,7 @@ class Chat(BaseModel):
     created_at: datetime
     lead_id: UUID
     autonomous: bool = False
+    task_id: UUID
 
     class Config:
         orm_mode = True
@@ -31,6 +34,28 @@ class Chat(BaseModel):
             name=instance.name,
             created_at=instance.created_at,
             lead_id=instance.lead_id,
+            task_id=instance.task_id,
+        )
+
+
+class ChatQueryPage(QueryPage[Chat]):
+    # override objects, FastAPI isn't detecting QueryPage type
+    objects: List[Chat]
+
+
+class ChatInList(Chat):
+    agents: List[Agent]
+
+    @classmethod
+    def from_orm(cls, instance: Any) -> "Chat":
+        agent_query = AgentModel.objects.filter(chats__id=instance.id)
+        agents = [Agent.from_orm(agent) for agent in agent_query]
+        return cls(
+            id=instance.id,
+            name=instance.name,
+            created_at=instance.created_at,
+            lead_id=instance.lead_id,
+            agents=agents,
         )
 
 
