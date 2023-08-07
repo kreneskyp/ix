@@ -113,7 +113,7 @@ class ChatMessage(BaseModel):
     agent_id: Optional[UUID]
     created_at: datetime
     parent_id: Optional[UUID]
-    role: RoleChoice
+    role: str
     content: Dict[str, Any]
 
     class Config:
