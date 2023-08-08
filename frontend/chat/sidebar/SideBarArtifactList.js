@@ -7,8 +7,6 @@ import {
   faFile,
   faListCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { usePreloadedQuery } from "react-relay/hooks";
-import { ChatByIdQuery } from "chat/graphql/ChatByIdQuery";
 import ArtifactModalButton from "chat/sidebar/ArtifactModalButton";
 import { useChatArtifactSubscription } from "chat/graphql/useChatArtifactSubscription";
 import { SCROLLBAR_CSS } from "site/css";
@@ -23,13 +21,12 @@ const TypeIcon = ({ artifact }) => {
   return <FontAwesomeIcon icon={icon} />;
 };
 
-const SideBarArtifactList = ({ queryRef }) => {
-  const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
-  const [artifacts, setArtifacts] = useState(chat.task.artifacts);
+const SideBarArtifactList = ({ chat, artifacts: initialArtifacts }) => {
+  const [artifacts, setArtifacts] = useState(initialArtifacts);
 
   // Reset artifacts when chat.id changes
   useEffect(() => {
-    setArtifacts(chat.task.artifacts);
+    setArtifacts(initialArtifacts);
   }, [chat.id]);
 
   const { colorMode } = useColorMode();
@@ -66,7 +63,7 @@ const SideBarArtifactList = ({ queryRef }) => {
         spacing={2}
         width="100%"
       >
-        {artifacts?.length === 0 ? (
+        {!artifacts || artifacts?.length === 0 ? (
           <Text
             p={2}
             fontSize="xs"
