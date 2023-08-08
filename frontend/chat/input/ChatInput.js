@@ -26,20 +26,11 @@ import {
 import { MentionSearchResults } from "chat/input/MentionSearchResults";
 import { ArtifactSearchResults } from "chat/input/ArtifactSearchResults";
 import { usePreloadedQuery, useQueryLoader } from "react-relay/hooks";
-import { SearchAgentsQuery } from "chat/graphql/SearchAgentsQuery";
 import { SearchArtifactsQuery } from "chat/graphql/SearchArtifactsQuery";
 import { useSendInput } from "chat/graphql/useSendInput";
 import { clear_editor, INITIAL_EDITOR_CONTENT } from "utils/slate";
 import { useChatColorMode } from "chains/editor/useColorMode";
-
-const SearchAgentsQueryRunner = ({ queryRef, setResults }) => {
-  // load query and then update state
-  const data = usePreloadedQuery(SearchAgentsQuery, queryRef);
-  const agents = data?.searchAgents;
-  useEffect(() => {
-    setResults(agents);
-  }, [queryRef, agents]);
-};
+import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
 const SearchArtifactsQueryRunner = ({ queryRef, setResults }) => {
   // load query and then update state
@@ -64,15 +55,19 @@ export const ChatInput = ({ chat }) => {
     []
   );
 
-  // queries
-  const [agentsQueryRef, loadAgentsQuery, disposeAgentsQuery] =
-    useQueryLoader(SearchAgentsQuery);
+  const { load: loadAgents, page } = usePaginatedAPI(`/api/agents/`, {
+    load: false,
+  });
+
   const searchAgents = useCallback((search) => {
-    loadAgentsQuery(
-      { search, chatId: chat.id },
-      { fetchPolicy: "store-and-network" }
-    );
+    loadAgents({ search });
   }, []);
+
+  useEffect(() => {
+    if (page) {
+      setResults(page.objects);
+    }
+  }, [page]);
 
   const [artifactQueryRef, loadArtifactQuery, disposeArtifactQuery] =
     useQueryLoader(SearchArtifactsQuery);
@@ -198,9 +193,6 @@ export const ChatInput = ({ chat }) => {
 
   const onClose = useCallback(() => {
     // clear query refs
-    if (agentsQueryRef !== null) {
-      disposeAgentsQuery();
-    }
     if (artifactQueryRef !== null) {
       disposeArtifactQuery();
     }
@@ -236,13 +228,6 @@ export const ChatInput = ({ chat }) => {
   // QueryRunner components render empty but will fetch the query
   // data then update the results state. This is a huge hack but
   // it works for now.
-  const agentSearchRunner = agentsQueryRef !== null && (
-    <SearchAgentsQueryRunner
-      queryRef={agentsQueryRef}
-      setResults={setResults}
-    />
-  );
-
   const artifactSearchRunner = artifactQueryRef !== null && (
     <SearchArtifactsQueryRunner
       queryRef={artifactQueryRef}
@@ -270,7 +255,6 @@ export const ChatInput = ({ chat }) => {
       maxH="400px"
       overflowY="auto"
     >
-      {agentSearchRunner}
       {artifactSearchRunner}
       <Popover
         isOpen={isOpen}

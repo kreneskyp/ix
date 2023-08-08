@@ -1,49 +1,35 @@
 import { useCallback, useState } from "react";
-import { useMutation, graphql } from "react-relay/hooks";
-
-const SEND_FEEDBACK_MUTATION = graphql`
-  mutation useSendInputMutation($input: ChatInput!) {
-    sendInput(input: $input) {
-      taskLogMessage {
-        id
-        role
-        content
-        parent {
-          id
-        }
-      }
-      errors
-    }
-  }
-`;
+import axios from "axios";
 
 export const useSendInput = (chat_id) => {
-  const [commit, isInFlight] = useMutation(SEND_FEEDBACK_MUTATION);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const url = `/api/chats/${chat_id}/messages`;
 
   const sendInput = useCallback(
-    (text) => {
-      return commit({
-        variables: {
-          input: {
-            chatId: chat_id,
-            text,
-          },
-        },
-        onCompleted: (response, errors) => {
-          if (errors) {
-            setError(errors[0]);
-          } else {
-            setError(null);
-          }
-        },
-        onError: (err) => {
-          setError(err);
-        },
-      });
+    async (text) => {
+      const data = {
+        chat_id: chat_id,
+        text: text,
+      };
+
+      setIsLoading(true);
+      try {
+        const response = await axios.post(url, data);
+        setIsLoading(false);
+        return response.data;
+      } catch (err) {
+        setIsLoading(false);
+        setError(err);
+        throw err;
+      }
     },
     [chat_id]
   );
 
-  return { sendInput, error, loading: isInFlight };
+  return {
+    sendInput,
+    isLoading,
+    error,
+  };
 };
