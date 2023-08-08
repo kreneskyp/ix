@@ -307,7 +307,7 @@ class TestChainRoot:
         data = {"node_id": str(node.id)}
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chain/{chain.id}/set_root/", json=data)
+            response = await ac.post(f"/chains/{chain.id}/set_root/", json=data)
 
         assert response.status_code == 200
         result = response.json()
@@ -323,7 +323,7 @@ class TestChainRoot:
 
         data = {"node_id": str(new_root.id), "chain_id": str(chain.id)}
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chain/{chain.id}/set_root/", json=data)
+            response = await ac.post(f"/chains/{chain.id}/set_root/", json=data)
 
         assert response.status_code == 200
         result = response.json()
@@ -340,7 +340,7 @@ class TestChainRoot:
         data = {"node_id": None, "chain_id": str(chain.id)}
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chain/{chain.id}/set_root/", json=data)
+            response = await ac.post(f"/chains/{chain.id}/set_root/", json=data)
 
         assert response.status_code == 200, response.content
         result = response.json()
@@ -367,7 +367,7 @@ class TestNode:
 
         # Execute the API request
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post("/chain/nodes", json=data)
+            response = await ac.post("/chains/nodes", json=data)
 
         # Assert the result
         assert response.status_code == 200, response.json()
@@ -400,7 +400,7 @@ class TestNode:
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.put(f"/chain/nodes/{node.id}", json=data)
+            response = await ac.put(f"/chains/nodes/{node.id}", json=data)
 
         # Assert the result
         assert response.status_code == 200, response.json()
@@ -422,7 +422,7 @@ class TestNode:
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.put(
-                f"/chain/nodes/{non_existent_node_id}", json=update_data
+                f"/chains/nodes/{non_existent_node_id}", json=update_data
             )
 
         assert response.status_code == 404, response.content
@@ -437,7 +437,7 @@ class TestNode:
 
         # Execute the API request
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.delete(f"/chain/nodes/{node.id}")
+            response = await ac.delete(f"/chains/nodes/{node.id}")
 
         # Assert the result
         assert response.status_code == 200
@@ -466,7 +466,7 @@ class TestNodePosition:
 
         # Execute the API request
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chain/nodes/{node.id}/position", json=data)
+            response = await ac.post(f"/chains/nodes/{node.id}/position", json=data)
 
         # Assert the result
         assert response.status_code == 200, response.json()
@@ -499,7 +499,7 @@ class TestChainEdge:
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post("/chain/edges", json=data)
+            response = await ac.post("/chains/edges", json=data)
 
         # Assert the result
         assert response.status_code == 200, response.json()
@@ -528,7 +528,7 @@ class TestChainEdge:
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.put(f"/chain/edges/{edge.id}", json=data)
+            response = await ac.put(f"/chains/edges/{edge.id}", json=data)
 
         # Assert the result
         assert response.status_code == 200, response.json()
@@ -542,7 +542,7 @@ class TestChainEdge:
         edge = await afake_chain_edge()
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.delete(f"/chain/edges/{edge.id}")
+            response = await ac.delete(f"/chains/edges/{edge.id}")
 
         # Assert the result
         assert response.status_code == 200
@@ -568,7 +568,7 @@ class TestChainEdge:
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.put(f"/chain/edges/{non_existent_edge_id}", json=data)
+            response = await ac.put(f"/chains/edges/{non_existent_edge_id}", json=data)
 
         assert response.status_code == 404, response.content
 
@@ -582,7 +582,7 @@ class TestChainGraph:
         await afake_chain_edge(source=node1, target=node2)
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.get(f"/chain/{chain.id}/graph")
+            response = await ac.get(f"/chains/{chain.id}/graph")
 
         assert response.status_code == 200, response.content
         data = response.json()
