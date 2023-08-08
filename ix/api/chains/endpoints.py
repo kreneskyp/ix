@@ -289,6 +289,7 @@ class GraphModel(BaseModel):
     chain: ChainPydantic
     nodes: List[NodePydantic]
     edges: List[EdgePydantic]
+    types: List[NodeTypePydantic]
 
 
 @router.get("/chains/{chain_id}/graph", response_model=GraphModel, tags=["Chains"])
@@ -306,8 +307,12 @@ async def get_chain_graph(chain_id: UUID):
     async for edge in edge_queryset:
         edges.append(EdgePydantic.from_orm(edge))
 
+    types_in_chain = NodeType.objects.filter(chainnode__chain_id=chain_id)
+    types = [NodeTypePydantic.from_orm(node_type) async for node_type in types_in_chain]
+
     return GraphModel(
         chain=ChainPydantic.from_orm(chain),
         nodes=nodes,
         edges=edges,
+        types=types,
     )
