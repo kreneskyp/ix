@@ -11,6 +11,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "axios": "^1.4.0",
     "dagre": "^0.8.5",
     "package.json": "^2.0.1",
     "react-syntax-highlighter": "^15.5.0",
