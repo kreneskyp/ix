@@ -320,6 +320,7 @@ def node_types() -> None:
 async def aix_agent(anode_types):
     """async version of ix_agent fixture"""
     await sync_to_async(call_command)("loaddata", "ix_v2")
+    await sync_to_async(call_command)("loaddata", "code_v2")
 
 
 @pytest_asyncio.fixture

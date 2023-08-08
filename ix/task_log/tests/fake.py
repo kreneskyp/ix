@@ -126,6 +126,10 @@ def fake_user(**kwargs):
     return user
 
 
+async def afake_user(**kwargs):
+    return await sync_to_async(fake_user)(**kwargs)
+
+
 def fake_task(**kwargs):
     user = kwargs.get("user") or fake_user()
     agent = kwargs.get("agent") or fake_agent()
@@ -320,6 +324,7 @@ DEFAULT_CHAT_ID = "f0034449-f226-44b2-9036-ca49f7d2348e"
 
 def fake_chat(**kwargs):
     chat_id = kwargs.get("id", DEFAULT_CHAT_ID)
+    name = kwargs.get("name", "Test Chat")
 
     Agent.objects.filter(leading_chats__pk=chat_id).delete()
     Chat.objects.filter(pk=chat_id).delete()
@@ -329,7 +334,7 @@ def fake_chat(**kwargs):
         task = kwargs["task"]
     else:
         task = fake_task(agent=agent)
-    chat = Chat.objects.create(id=chat_id, name="Test Chat", task=task, lead=agent)
+    chat = Chat.objects.create(id=chat_id, name=name, task=task, lead=agent)
 
     fake_feedback(
         task=task, feedback="create a django app for cat memes", message_id=-1
@@ -372,3 +377,4 @@ afake_think = sync_to_async(fake_think)
 afake_chat = sync_to_async(fake_chat)
 afake_task = sync_to_async(fake_task)
 afake_artifact = sync_to_async(fake_artifact)
+afake_system = sync_to_async(fake_system)

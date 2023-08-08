@@ -1,10 +1,10 @@
 import logging
 import graphene
-import re
 from django.contrib.auth.models import User
 from django.db.models import Q
 
 from ix.agents.models import Agent
+from ix.api.chats.endpoints import get_artifacts
 from ix.chains.management.commands.create_coder_v2 import CODER_V2_AGENT
 from ix.chains.management.commands.create_ix_v2 import IX_AGENT_V2
 from ix.chat.models import Chat
@@ -183,19 +183,6 @@ class TaskLogMessageResponse(graphene.ObjectType):
 class ChatInput(graphene.InputObjectType):
     chat_id = graphene.UUID(required=True)
     text = graphene.String(required=True)
-
-
-def get_artifacts(user_input):
-    """Find all references to artifacts in user input."""
-    # Pattern to find all instances of text enclosed in curly braces.
-    pattern = r"\{(.*?)\}"
-
-    # re.findall returns all non-overlapping matches of pattern in string, as a list of strings.
-    # The string is scanned left-to-right, and matches are returned in the order found.
-    matches = re.findall(pattern, user_input)
-
-    # Return the list of matches.
-    return matches
 
 
 class ChatInputMutation(graphene.Mutation):
