@@ -55,10 +55,10 @@ export const AgentGeneralEditor = ({ agentData, setAgentData, chains }) => {
         </Box>
         <Select
           placeholder="Select chain"
-          value={agentData.chainId}
+          value={agentData.chain_id}
           mb={5}
           onChange={(e) =>
-            setAgentData({ ...agentData, chainId: e.target.value })
+            setAgentData({ ...agentData, chain_id: e.target.value })
           }
         >
           {chains.map((chain) => (
