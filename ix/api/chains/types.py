@@ -4,6 +4,8 @@ from typing import Dict, List, Any, Optional, Type, Literal, get_args, get_origi
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field, root_validator
 
+from ix.utils.graphene.pagination import QueryPage
+
 
 class InputType(str, Enum):
     SLIDER = "slider"
@@ -35,6 +37,11 @@ class Chain(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class ChainQueryPage(QueryPage[Chain]):
+    # override objects, FastAPI isn't detecting QueryPage type
+    objects: List[Chain]
 
 
 class Position(BaseModel):

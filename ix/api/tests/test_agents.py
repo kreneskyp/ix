@@ -16,11 +16,12 @@ class TestAgent:
             response = await ac.get("/agents/")
 
         assert response.status_code == 200, response.content
-        result = response.json()
+        page = response.json()
 
         # Check that we got a list of agents
-        assert len(result) >= 2
-        agent_ids = [agent["id"] for agent in result]
+        objects = page["objects"]
+        assert len(objects) >= 2
+        agent_ids = [agent["id"] for agent in objects]
         assert str(agent_1.id) in agent_ids
         assert str(agent_2.id) in agent_ids
 
@@ -31,12 +32,13 @@ class TestAgent:
             response = await ac.get(f"/agents/?search={search_term}")
 
         assert response.status_code == 200, response.content
-        result = response.json()
-        assert len(result) > 0
+        page = response.json()
+        objects = page["objects"]
+        assert len(objects) > 0
         assert (
-            search_term in result[0]["name"]
-            or search_term in result[0]["purpose"]
-            or search_term in result[0]["alias"]
+            search_term in objects[0]["name"]
+            or search_term in objects[0]["purpose"]
+            or search_term in objects[0]["alias"]
         )
 
     async def test_get_agent_detail(self, anode_types):

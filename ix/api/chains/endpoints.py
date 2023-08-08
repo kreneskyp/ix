@@ -1,13 +1,14 @@
 from typing import Optional, List, Literal
 from uuid import UUID
 
+from asgiref.sync import sync_to_async
 from django.db.models import Q
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from ix.chains.models import Chain, ChainNode, NodeType, ChainEdge
 
-from ix.api.chains.types import Chain as ChainPydantic
+from ix.api.chains.types import Chain as ChainPydantic, ChainQueryPage
 from ix.api.chains.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic
 from ix.api.chains.types import Edge as EdgePydantic
@@ -20,10 +21,19 @@ class DeletedItem(BaseModel):
     id: UUID
 
 
-@router.get("/chains/", response_model=List[ChainPydantic], tags=["Chains"])
-async def get_chains():
-    chains = Chain.objects.all()
-    return [ChainPydantic.from_orm(chain) async for chain in chains]
+@router.get("/chains/", response_model=ChainQueryPage, tags=["Chains"])
+async def get_chains(search: Optional[str] = None, limit: int = 10, offset: int = 0):
+    query = (
+        Chain.objects.filter(Q(name__icontains=search))
+        if search
+        else Chain.objects.all()
+    )
+    query = query.order_by("-created_at")
+
+    # punting on async implementation of pagination until later
+    return await sync_to_async(ChainQueryPage.paginate)(
+        output_model=ChainPydantic, queryset=query, limit=limit, offset=offset
+    )
 
 
 @router.post("/chains/", response_model=ChainPydantic, tags=["Chains"])
@@ -144,7 +154,7 @@ class UpdateRoot(BaseModel):
 
 
 @router.post(
-    "/chain/{chain_id}/set_root/", response_model=UpdatedRoot, tags=["Chain Editor"]
+    "/chains/{chain_id}/set_root/", response_model=UpdatedRoot, tags=["Chain Editor"]
 )
 async def set_chain_root(chain_id: UUID, update_root: UpdateRoot):
     # update old roots:
@@ -176,7 +186,7 @@ class AddNode(BaseModel):
     position: Optional[Position]
 
 
-@router.post("/chain/nodes", response_model=NodePydantic, tags=["Chain Editor"])
+@router.post("/chains/nodes", response_model=NodePydantic, tags=["Chain Editor"])
 async def add_chain_node(node: AddNode):
     if not node.chain_id:
         chain = Chain(name="Unnamed", description="")
@@ -197,7 +207,7 @@ class UpdateNode(BaseModel):
 
 
 @router.put(
-    "/chain/nodes/{node_id}", response_model=NodePydantic, tags=["Chain Editor"]
+    "/chains/nodes/{node_id}", response_model=NodePydantic, tags=["Chain Editor"]
 )
 async def update_chain_node(node_id: UUID, data: UpdateNode):
     try:
@@ -212,7 +222,7 @@ async def update_chain_node(node_id: UUID, data: UpdateNode):
 
 
 @router.post(
-    "/chain/nodes/{node_id}/position",
+    "/chains/nodes/{node_id}/position",
     response_model=NodePydantic,
     tags=["Chain Editor"],
 )
@@ -224,7 +234,7 @@ async def update_chain_node_position(node_id: UUID, position: Position):
 
 
 @router.delete(
-    "/chain/nodes/{node_id}", response_model=DeletedItem, tags=["Chain Editor"]
+    "/chains/nodes/{node_id}", response_model=DeletedItem, tags=["Chain Editor"]
 )
 async def delete_chain_node(node_id: UUID):
     node = await ChainNode.objects.aget(id=node_id)
@@ -235,7 +245,7 @@ async def delete_chain_node(node_id: UUID):
     return DeletedItem(id=node_id)
 
 
-@router.post("/chain/edges", response_model=EdgePydantic, tags=["Chain Editor"])
+@router.post("/chains/edges", response_model=EdgePydantic, tags=["Chain Editor"])
 async def add_chain_edge(edge: EdgePydantic):
     new_edge = ChainEdge(**edge.dict())
     await new_edge.asave()
@@ -251,7 +261,7 @@ class UpdateEdge(BaseModel):
 
 
 @router.put(
-    "/chain/edges/{edge_id}", response_model=EdgePydantic, tags=["Chain Editor"]
+    "/chains/edges/{edge_id}", response_model=EdgePydantic, tags=["Chain Editor"]
 )
 async def update_chain_edge(edge_id: UUID, edge: UpdateEdge):
     try:
@@ -266,7 +276,7 @@ async def update_chain_edge(edge_id: UUID, edge: UpdateEdge):
 
 
 @router.delete(
-    "/chain/edges/{edge_id}", response_model=DeletedItem, tags=["Chain Editor"]
+    "/chains/edges/{edge_id}", response_model=DeletedItem, tags=["Chain Editor"]
 )
 async def delete_chain_edge(edge_id: UUID):
     edge = await ChainEdge.objects.aget(id=edge_id)
@@ -279,9 +289,10 @@ class GraphModel(BaseModel):
     chain: ChainPydantic
     nodes: List[NodePydantic]
     edges: List[EdgePydantic]
+    types: List[NodeTypePydantic]
 
 
-@router.get("/chain/{chain_id}/graph", response_model=GraphModel, tags=["Chains"])
+@router.get("/chains/{chain_id}/graph", response_model=GraphModel, tags=["Chains"])
 async def get_chain_graph(chain_id: UUID):
     """Return chain and all it's nodes and edges."""
     chain = await Chain.objects.aget(id=chain_id)
@@ -296,8 +307,12 @@ async def get_chain_graph(chain_id: UUID):
     async for edge in edge_queryset:
         edges.append(EdgePydantic.from_orm(edge))
 
+    types_in_chain = NodeType.objects.filter(chainnode__chain_id=chain_id)
+    types = [NodeTypePydantic.from_orm(node_type) async for node_type in types_in_chain]
+
     return GraphModel(
         chain=ChainPydantic.from_orm(chain),
         nodes=nodes,
         edges=edges,
+        types=types,
     )
