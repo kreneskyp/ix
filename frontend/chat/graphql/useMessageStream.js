@@ -4,7 +4,8 @@ import { useChatMessageSubscription } from "chat/graphql/useChatMessageSubscript
 import { TaskLogMessagesQuery } from "chat/graphql/TaskLogMessagesQuery";
 import { findIndexFromEnd } from "utils/array";
 import { useChatMessageTokenSubscription } from "chat/graphql/useChatMessageTokenSubscription";
-import {groupBy} from "graphql/jsutils/groupBy";
+import { groupBy } from "graphql/jsutils/groupBy";
+import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
 /**
  * Helper for adding a token to an array of tokens. Tokens are ordered, but
@@ -60,22 +61,23 @@ export const useMessageStream = (chat) => {
         // or append to the end of the group.
         return prevMessages.map((group, index) => {
           if (index === parentIndex) {
-            const messageIndex = group.messages.findIndex((message) => message.id === newMessage.id);
+            const messageIndex = group.messages.findIndex(
+              (message) => message.id === newMessage.id
+            );
             if (messageIndex !== -1) {
               // update existing message
               const updatedMessages = [...group.messages];
               updatedMessages[messageIndex] = newMessage;
-              return {...group, messages: updatedMessages};
+              return { ...group, messages: updatedMessages };
             }
 
             // new message, append to the end of the group
-            return {...group, messages: [...group.messages, newMessage]};
+            return { ...group, messages: [...group.messages, newMessage] };
           }
 
           // not the group we are looking for
           return group;
         });
-
       } else {
         // new message group
         return [...prevMessages, { id: parentID, messages: [newMessage] }];
@@ -84,8 +86,11 @@ export const useMessageStream = (chat) => {
 
     setStreams((prevStreams) => {
       // remove stream cache if complete message has arrived
-      if (newMessage.content?.stream === false && prevStreams[newMessage.id] !== undefined) {
-        const newStreams = {...prevStreams};
+      if (
+        newMessage.content?.stream === false &&
+        prevStreams[newMessage.id] !== undefined
+      ) {
+        const newStreams = { ...prevStreams };
         delete newStreams[newMessage.id];
         return newStreams;
       }
@@ -119,36 +124,41 @@ export const useMessageStream = (chat) => {
     handleToken
   );
 
+  const { page, load } = usePaginatedAPI(`/api/chats/${chat.id}/messages`, {
+    limit: 100000,
+  });
+
   // Load initial messages synchronously
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchQuery(environment, TaskLogMessagesQuery, {
-        taskId: chat.task.id,
-      }).toPromise();
-
-      // Roll up messages into groups
-      const rolledUpMessages = data.taskLogMessages.reduce((acc, message) => {
-        const parentID = message.parent?.id || message.id;
-        const parentIndex = findIndexFromEnd(
-          acc,
-          (group) => group.id === parentID
-        );
-
-        if (parentIndex !== -1) {
-          return acc.map((group, index) =>
-            index === parentIndex
-              ? { ...group, messages: [...group.messages, message] }
-              : group
-          );
-        } else {
-          return [...acc, { id: parentID, messages: [message] }];
-        }
-      }, []);
-
-      setMessages(rolledUpMessages);
-    };
-    fetchData();
+    load();
   }, [environment, chat.id]);
+
+  useEffect(() => {
+    if (!page) return;
+
+    // Roll up messages into groups
+    const rolledUpMessages = page?.objects.reduce((acc, message) => {
+      const parentID = message.parent_id || message.id;
+      const parentIndex = findIndexFromEnd(
+        acc,
+        (group) => group.id === parentID
+      );
+
+      if (parentIndex !== -1) {
+        return acc.map((group, index) =>
+          index === parentIndex
+            ? { ...group, messages: [...group.messages, message] }
+            : group
+        );
+      } else {
+        return [...acc, { id: parentID, messages: [message] }];
+      }
+    }, []);
+
+    if (rolledUpMessages) {
+      setMessages(rolledUpMessages);
+    }
+  }, [page]);
 
   return { messages, setMessages, streams, subscriptionActive };
 };

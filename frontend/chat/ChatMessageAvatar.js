@@ -84,7 +84,7 @@ const ChatMessageAvatar = ({ message, isThinking }) => {
 ChatMessageAvatar.propTypes = {
   message: PropTypes.shape({
     role: PropTypes.oneOf(["USER", "ASSISTANT", "SYSTEM"]).isRequired,
-    createdAt: PropTypes.string.isRequired,
+    created_at: PropTypes.string.isRequired,
   }).isRequired,
 };
 
