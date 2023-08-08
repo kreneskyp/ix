@@ -1,13 +1,9 @@
 import React, { Suspense, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Center, Spinner, VStack } from "@chakra-ui/react";
-import { usePreloadedQuery } from "react-relay/hooks";
 
-import { TaskProvider } from "tasks/contexts";
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 import { ScrollableBox } from "site/ScrollableBox";
-import { useQueryLoader } from "react-relay";
-import { ChatByIdQuery } from "chat/graphql/ChatByIdQuery";
 import { useMessageStream } from "chat/graphql/useMessageStream";
 import SideBarPlanList from "chat/SideBarPlanList";
 import SideBarArtifactList from "chat/sidebar/SideBarArtifactList";
@@ -20,11 +16,12 @@ import {
 } from "chat/graphql/useChatMessageSubscription";
 import ChatInput from "chat/input/ChatInput";
 import { MessagesTokenContext } from "chat/graphql/useChatMessageTokenSubscription";
+import { useDetailAPI } from "utils/hooks/useDetailAPI";
 
-export const ChatContentShim = ({ queryRef }) => {
-  const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
-  const moderatorTask = chat.task;
-  const { messages, streams, subscriptionActive } = useMessageStream(chat);
+export const ChatContentShim = ({ graph }) => {
+  const { messages, streams, subscriptionActive } = useMessageStream(
+    graph.chat
+  );
 
   return (
     <MessagesTokenContext.Provider value={streams}>
@@ -32,9 +29,7 @@ export const ChatContentShim = ({ queryRef }) => {
         <SubscriptionActiveContext.Provider value={subscriptionActive}>
           <ScrollableBox>
             <Suspense>
-              <TaskProvider taskId={moderatorTask.id}>
-                <ChatMessages chat={chat} />
-              </TaskProvider>
+              <ChatMessages chat={graph.chat} />
             </Suspense>
           </ScrollableBox>
           <Center
@@ -45,7 +40,7 @@ export const ChatContentShim = ({ queryRef }) => {
           >
             {/* Bottom aligned section */}
             <Box ml={95}>
-              <ChatInput chat={chat} />
+              <ChatInput chat={graph.chat} />
             </Box>
           </Center>
         </SubscriptionActiveContext.Provider>
@@ -54,36 +49,41 @@ export const ChatContentShim = ({ queryRef }) => {
   );
 };
 
-export const ChatLeftPaneShim = ({ queryRef }) => {
-  const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
-  const moderatorTask = chat.task;
-
+export const ChatLeftPaneShim = ({ graph, loadGraph }) => {
   return (
     <Suspense>
       <VStack spacing={4} align="stretch">
-        <SideBarAgentList queryRef={queryRef} />
-        <SideBarPlanList queryRef={queryRef} />
-        <SideBarArtifactList queryRef={queryRef} />
+        <SideBarAgentList graph={graph} loadGraph={loadGraph} />
+        <SideBarPlanList plans={graph.plans} />
+        <SideBarArtifactList chat={graph.chat} />
       </VStack>
     </Suspense>
   );
 };
 
+export const useChatGraph = (id) => {
+  return useDetailAPI(`/api/chats/${id}/graph`, { load: false });
+};
+
 export const ChatView = () => {
   const { id } = useParams();
-  const [queryRef, loadQuery] = useQueryLoader(ChatByIdQuery);
+  const { data: graph, load: loadGraph, isLoading } = useChatGraph(id);
 
   useEffect(() => {
-    loadQuery({ id }, { fetchPolicy: "network-only" });
+    loadGraph();
   }, [id]);
 
   return (
     <Layout>
       <LayoutLeftPane>
-        {!queryRef ? <Spinner /> : <ChatLeftPaneShim queryRef={queryRef} />}
+        {isLoading || !graph ? (
+          <Spinner />
+        ) : (
+          <ChatLeftPaneShim graph={graph} loadGraph={loadGraph} />
+        )}
       </LayoutLeftPane>
       <LayoutContent>
-        {!queryRef ? <Spinner /> : <ChatContentShim queryRef={queryRef} />}
+        {isLoading || !graph ? <Spinner /> : <ChatContentShim graph={graph} />}
       </LayoutContent>
     </Layout>
   );
