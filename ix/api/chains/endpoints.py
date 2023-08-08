@@ -1,13 +1,14 @@
 from typing import Optional, List, Literal
 from uuid import UUID
 
+from asgiref.sync import sync_to_async
 from django.db.models import Q
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from ix.chains.models import Chain, ChainNode, NodeType, ChainEdge
 
-from ix.api.chains.types import Chain as ChainPydantic
+from ix.api.chains.types import Chain as ChainPydantic, ChainQueryPage
 from ix.api.chains.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic
 from ix.api.chains.types import Edge as EdgePydantic
@@ -20,10 +21,19 @@ class DeletedItem(BaseModel):
     id: UUID
 
 
-@router.get("/chains/", response_model=List[ChainPydantic], tags=["Chains"])
-async def get_chains():
-    chains = Chain.objects.all()
-    return [ChainPydantic.from_orm(chain) async for chain in chains]
+@router.get("/chains/", response_model=ChainQueryPage, tags=["Chains"])
+async def get_chains(search: Optional[str] = None, limit: int = 10, offset: int = 0):
+    query = (
+        Chain.objects.filter(Q(name__icontains=search))
+        if search
+        else Chain.objects.all()
+    )
+    query = query.order_by("-created_at")
+
+    # punting on async implementation of pagination until later
+    return await sync_to_async(ChainQueryPage.paginate)(
+        output_model=ChainPydantic, queryset=query, limit=limit, offset=offset
+    )
 
 
 @router.post("/chains/", response_model=ChainPydantic, tags=["Chains"])

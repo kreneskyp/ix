@@ -180,8 +180,9 @@ class TestChain:
         result = response.json()
 
         # Check that we got the correct chains back
-        assert len(result) == 2
-        chain_ids = {chain["id"] for chain in result}
+        objects = result["objects"]
+        assert len(objects) == 2
+        chain_ids = {chain["id"] for chain in objects}
         assert str(chain1.id) in chain_ids
         assert str(chain2.id) in chain_ids
 
