@@ -103,7 +103,7 @@ class LLMReply(LLMChain):
         response = super().run(*args, **kwargs)
         TaskLogMessage.objects.create(
             task_id=self.callbacks.task.id,
-            role="assistant",
+            role="ASSISTANT",
             parent=self.callbacks.think_msg,
             content={
                 "type": "ASSISTANT",

@@ -85,7 +85,7 @@ class SetTaskAutonomousMutation(graphene.Mutation):
         # log message
         TaskLogMessage.objects.create(
             task=task,
-            role="user",
+            role="USER",
             content={"type": "AUTONOMOUS", "enabled": task.autonomous},
         )
 
