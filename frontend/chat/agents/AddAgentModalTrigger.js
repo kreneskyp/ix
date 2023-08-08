@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useQueryLoader, usePreloadedQuery, graphql } from "react-relay/hooks";
 import {
   Button,
   Modal,
@@ -9,49 +8,22 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Input,
-  InputGroup,
-  InputLeftElement,
   VStack,
 } from "@chakra-ui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { AddAgentCard } from "chat/agents/AddAgentCard";
 import { AgentToggleButton } from "chat/agents/AgentToggleButton";
+import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
-const AGENTS_QUERY = graphql`
-  query AddAgentModalTriggerQuery($search: String) {
-    searchAgents(search: $search) {
-      id
-      name
-      alias
-      purpose
-      chain {
-        id
-        name
-        description
-      }
-    }
-  }
-`;
-
-const AddAgentModal = ({
-  chat,
-  isOpen,
-  onClose,
-  loadQuery,
-  queryReference,
-}) => {
-  const data = usePreloadedQuery(AGENTS_QUERY, queryReference);
+const AddAgentModal = ({ graph, agents, isOpen, onClose, onSuccess }) => {
   const [search, setSearch] = useState("");
+  const { chat } = graph;
 
   const handleSearch = (event) => {
     setSearch(event.target.value);
     loadQuery({ search: event.target.value }); // Load agents that match the search
   };
 
-  const agents = data?.searchAgents;
-  const agentSet = new Set(chat?.agents?.map((agent) => agent.id));
+  const agentSet = new Set(graph?.agents?.map((agent) => agent.id));
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
@@ -62,11 +34,17 @@ const AddAgentModal = ({
         <ModalBody>
           <VStack maxH="md" overflowY="auto" spacing={5}>
             {agents?.map((agent) => (
-              <AgentToggleButton chat={chat} agent={agent} key={agent.id}>
+              <AgentToggleButton
+                chat={chat}
+                chatAgents={graph.agents}
+                agent={agent}
+                key={agent.id}
+                onSuccess={onSuccess}
+              >
                 <AddAgentCard
                   agent={agent}
                   inChat={agentSet.has(agent.id)}
-                  isLead={agent.id === chat.lead.id}
+                  isLead={agent.id === chat.lead_id}
                 />
               </AgentToggleButton>
             ))}
@@ -83,18 +61,19 @@ const AddAgentModal = ({
   );
 };
 
-export const AddAgentModalTrigger = ({ chat, children }) => {
+export const AddAgentModalTrigger = ({ graph, onSuccess, children }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [queryReference, loadQuery, disposeQuery] =
-    useQueryLoader(AGENTS_QUERY);
+  const { page, load } = usePaginatedAPI("/api/agents/", {
+    limit: 1000,
+    load: false,
+  });
 
   const handleClick = () => {
-    loadQuery({ search: "" }); // Load initial agents
+    load(); // Load initial agents
     setIsOpen(true);
   };
 
   const handleClose = () => {
-    disposeQuery(); // Dispose of the query data when closing the modal
     setIsOpen(false);
   };
 
@@ -103,11 +82,11 @@ export const AddAgentModalTrigger = ({ chat, children }) => {
       {children}
       {isOpen && (
         <AddAgentModal
-          chat={chat}
+          graph={graph}
+          agents={page?.objects}
           isOpen={isOpen}
           onClose={handleClose}
-          queryReference={queryReference}
-          loadQuery={loadQuery}
+          onSuccess={onSuccess}
         />
       )}
     </div>
