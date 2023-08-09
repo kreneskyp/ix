@@ -45,10 +45,16 @@ export const useMessageStream = (chat) => {
 
   // Handle incoming new messages and update message groups
   const handleNewMessage = useCallback((newMessage) => {
+    // convert graphql message
+    const msg = {
+      ...newMessage,
+      created_at: newMessage.createdAt,
+    };
+
     // update messages
     setMessages((prevMessages) => {
       // find group using parent id.
-      const parentID = newMessage.parent?.id || newMessage.id;
+      const parentID = msg.parent?.id || msg.id;
       const parentIndex = findIndexFromEnd(
         prevMessages,
         (group) => group.id === parentID
@@ -60,17 +66,17 @@ export const useMessageStream = (chat) => {
         return prevMessages.map((group, index) => {
           if (index === parentIndex) {
             const messageIndex = group.messages.findIndex(
-              (message) => message.id === newMessage.id
+              (message) => message.id === msg.id
             );
             if (messageIndex !== -1) {
               // update existing message
               const updatedMessages = [...group.messages];
-              updatedMessages[messageIndex] = newMessage;
+              updatedMessages[messageIndex] = msg;
               return { ...group, messages: updatedMessages };
             }
 
             // new message, append to the end of the group
-            return { ...group, messages: [...group.messages, newMessage] };
+            return { ...group, messages: [...group.messages, msg] };
           }
 
           // not the group we are looking for
@@ -78,18 +84,15 @@ export const useMessageStream = (chat) => {
         });
       } else {
         // new message group
-        return [...prevMessages, { id: parentID, messages: [newMessage] }];
+        return [...prevMessages, { id: parentID, messages: [msg] }];
       }
     });
 
     setStreams((prevStreams) => {
       // remove stream cache if complete message has arrived
-      if (
-        newMessage.content?.stream === false &&
-        prevStreams[newMessage.id] !== undefined
-      ) {
+      if (msg.content?.stream === false && prevStreams[msg.id] !== undefined) {
         const newStreams = { ...prevStreams };
-        delete newStreams[newMessage.id];
+        delete newStreams[msg.id];
         return newStreams;
       }
       return prevStreams;
