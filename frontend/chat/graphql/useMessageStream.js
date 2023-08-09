@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { fetchQuery, useRelayEnvironment } from "react-relay/hooks";
+import { useRelayEnvironment } from "react-relay/hooks";
 import { useChatMessageSubscription } from "chat/graphql/useChatMessageSubscription";
-import { TaskLogMessagesQuery } from "chat/graphql/TaskLogMessagesQuery";
 import { findIndexFromEnd } from "utils/array";
 import { useChatMessageTokenSubscription } from "chat/graphql/useChatMessageTokenSubscription";
-import { groupBy } from "graphql/jsutils/groupBy";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
 /**
