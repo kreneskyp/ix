@@ -52,15 +52,17 @@ export const AgentToggleButton = ({
       return;
     }
 
-    let result;
+    let request;
     if (isAgentInChat) {
-      result = removeAgent();
+      request = removeAgent();
     } else {
-      result = addAgent();
+      request = addAgent();
     }
-    if (onSuccess) {
-      onSuccess(result);
-    }
+    request.then((result) => {
+      if (onSuccess) {
+        onSuccess(result);
+      }
+    });
   };
 
   return (
