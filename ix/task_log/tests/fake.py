@@ -131,9 +131,9 @@ async def afake_user(**kwargs):
 
 
 def fake_task(**kwargs):
-    user = kwargs.get("user") or fake_user()
-    agent = kwargs.get("agent") or fake_agent()
-    task = Task.objects.create(user=user, agent=agent, chain=agent.chain)
+    user = kwargs.pop("user", None) or fake_user()
+    agent = kwargs.pop("agent", None) or fake_agent()
+    task = Task.objects.create(user=user, agent=agent, chain=agent.chain, **kwargs)
     return task
 
 
