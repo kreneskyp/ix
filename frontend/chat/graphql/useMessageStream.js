@@ -127,12 +127,13 @@ export const useMessageStream = (chat) => {
 
   const { page, load } = usePaginatedAPI(`/api/chats/${chat.id}/messages`, {
     limit: 100000,
+    load: false,
   });
 
   // Load initial messages synchronously
   useEffect(() => {
     load();
-  }, [environment, chat.id]);
+  }, [chat.id]);
 
   useEffect(() => {
     if (!page) return;
