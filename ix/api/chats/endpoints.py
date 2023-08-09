@@ -13,7 +13,7 @@ from ix.chains.management.commands.create_coder_v2 import CODER_V2_AGENT
 from ix.chains.management.commands.create_ix_v2 import IX_AGENT_V2
 from ix.chat.models import Chat, Task
 from ix.agents.models import Agent
-from ix.api.agents.types import Agent as AgentPydantic
+from ix.api.agents.types import Agent as AgentPydantic, AgentPage
 from ix.api.chats.types import (
     ChatGraph,
     ChatNew,
@@ -121,6 +121,16 @@ async def delete_chat(chat_id: UUID):
         return DeletedItem(id=chat_id)
     except Chat.DoesNotExist:
         raise HTTPException(status_code=404, detail="Chat not found")
+
+
+@router.get("/chats/{chat_id}/agents", response_model=AgentPage, tags=["Chats"])
+async def get_chat_agents(chat_id: UUID, limit: int = 10000, offset: int = 0):
+    query = Agent.objects.filter(chats__id=chat_id)
+
+    # punting on async implementation of pagination until later
+    return await sync_to_async(AgentPage.paginate)(
+        output_model=AgentPydantic, queryset=query, limit=limit, offset=offset
+    )
 
 
 @router.delete(
