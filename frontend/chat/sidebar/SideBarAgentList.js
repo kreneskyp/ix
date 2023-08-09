@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, {useCallback} from "react";
 import { HStack, VStack, Text, Box, useColorModeValue } from "@chakra-ui/react";
 import AssistantAvatar from "chat/AssistantAvatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,6 +6,7 @@ import { faSquareMinus, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import RemoveAgentModalTrigger from "chat/agents/RemoveAgentModalTrigger";
 import AddAgentModalTrigger from "chat/agents/AddAgentModalTrigger";
 import { useColorMode } from "@chakra-ui/color-mode";
+import {usePaginatedAPI} from "utils/hooks/usePaginatedAPI";
 
 const AgentListItem = ({ chat, agent, onUpdateAgents }) => {
   const avatarColor = useColorModeValue("gray.700", "gray.400");
@@ -37,13 +38,15 @@ const AgentListItem = ({ chat, agent, onUpdateAgents }) => {
     </Box>
   );
 };
-const SideBarAgentList = ({ graph, loadGraph }) => {
+
+const SideBarAgentList = ({ graph }) => {
   const { colorMode } = useColorMode();
   const lead = graph.lead;
-  const agents = graph.agents;
+  const { load: loadAgents, page } = usePaginatedAPI(`/api/chats/${graph.chat.id}/agents`, {limit: 10000})
+  const agents = page?.objects;
   const onUpdateAgents = useCallback(() => {
-    loadGraph();
-  }, [loadGraph]);
+    loadAgents();
+  }, [loadAgents]);
 
   return (
     <Box
@@ -66,7 +69,7 @@ const SideBarAgentList = ({ graph, loadGraph }) => {
           Agents
         </Text>
         <Box width="100%" align="right">
-          <AddAgentModalTrigger graph={graph} onSuccess={onUpdateAgents}>
+          <AddAgentModalTrigger graph={graph} chatAgents={agents} onSuccess={onUpdateAgents}>
             <FontAwesomeIcon icon={faUserPlus} />
           </AddAgentModalTrigger>
         </Box>

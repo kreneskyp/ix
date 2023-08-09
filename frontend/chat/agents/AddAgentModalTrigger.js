@@ -14,7 +14,7 @@ import { AddAgentCard } from "chat/agents/AddAgentCard";
 import { AgentToggleButton } from "chat/agents/AgentToggleButton";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
-const AddAgentModal = ({ graph, agents, isOpen, onClose, onSuccess }) => {
+const AddAgentModal = ({ graph, chatAgents, agents, isOpen, onClose, onSuccess }) => {
   const [search, setSearch] = useState("");
   const { chat } = graph;
 
@@ -23,7 +23,7 @@ const AddAgentModal = ({ graph, agents, isOpen, onClose, onSuccess }) => {
     loadQuery({ search: event.target.value }); // Load agents that match the search
   };
 
-  const agentSet = new Set(graph?.agents?.map((agent) => agent.id));
+  const agentSet = new Set(chatAgents?.map((agent) => agent.id));
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
@@ -36,7 +36,7 @@ const AddAgentModal = ({ graph, agents, isOpen, onClose, onSuccess }) => {
             {agents?.map((agent) => (
               <AgentToggleButton
                 chat={chat}
-                chatAgents={graph.agents}
+                chatAgents={chatAgents}
                 agent={agent}
                 key={agent.id}
                 onSuccess={onSuccess}
@@ -61,7 +61,7 @@ const AddAgentModal = ({ graph, agents, isOpen, onClose, onSuccess }) => {
   );
 };
 
-export const AddAgentModalTrigger = ({ graph, onSuccess, children }) => {
+export const AddAgentModalTrigger = ({ graph, chatAgents, onSuccess, children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { page, load } = usePaginatedAPI("/api/agents/", {
     limit: 1000,
@@ -83,6 +83,7 @@ export const AddAgentModalTrigger = ({ graph, onSuccess, children }) => {
       {isOpen && (
         <AddAgentModal
           graph={graph}
+          chatAgents={chatAgents}
           agents={page?.objects}
           isOpen={isOpen}
           onClose={handleClose}
