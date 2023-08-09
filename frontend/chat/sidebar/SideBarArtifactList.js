@@ -34,7 +34,7 @@ const SideBarArtifactList = ({ chat, artifacts: initialArtifacts }) => {
   // Handle incoming new messages and update message groups
   const handleNewArtifact = useCallback((artifact) => {
     setArtifacts((prevArtifacts) => {
-      return [...prevArtifacts, artifact];
+      return [...(prevArtifacts || []), artifact];
     });
   }, []);
 
