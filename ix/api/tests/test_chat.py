@@ -14,6 +14,7 @@ from ix.task_log.tests.fake import (
     afake_artifact,
     afake_user,
     afake_system,
+    afake_task,
 )
 
 CHAT_ID_1 = uuid4()
@@ -421,8 +422,9 @@ class TestChatMessage:
     async def test_get_messages(self, anode_types):
         chat = await afake_chat()
         task = await Task.objects.aget(id=chat.task_id)
+        subtask = await afake_task(parent=task)
         msg1 = await afake_system("test1", task=task)
-        msg2 = await afake_system("test2", task=task)
+        msg2 = await afake_system("test2", task=subtask)
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.get(f"/chats/{chat.id}/messages")

@@ -203,9 +203,11 @@ def get_artifacts(user_input):
     "/chats/{chat_id}/messages", response_model=ChatMessageQueryPage, tags=["Chats"]
 )
 async def get_messages(chat_id, limit: int = 10, offset: int = 0):
-    query = TaskLogMessage.objects.filter(task__leading_chats__id=chat_id).order_by(
-        "created_at"
-    )
+    chat = await Chat.objects.aget(pk=chat_id)
+    task_id = chat.task_id
+    query = TaskLogMessage.objects.filter(
+        Q(task_id=task_id) | Q(task__parent_id=task_id)
+    ).order_by("created_at")
 
     # punting on async implementation of pagination until later
     return await sync_to_async(ChatMessageQueryPage.paginate)(
