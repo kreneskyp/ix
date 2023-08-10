@@ -19,6 +19,7 @@ def backwards(apps, schema_editor):
 
 class Migration(migrations.Migration):
     """Converts all TaskLogMessage roles to uppercase for conversion to FastAPI enum"""
+
     dependencies = [
         ("task_log", "0008_alter_task_parent"),
     ]
