@@ -192,7 +192,7 @@ class TestChatAgents:
         await chat.agents.aadd(agent_2)
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.get(f"/chats/{chat.id}/agents")
+            response = await ac.get("/agents/", params={"chat_id": chat.id})
 
         assert response.status_code == 200, response.content
         result = response.json()
