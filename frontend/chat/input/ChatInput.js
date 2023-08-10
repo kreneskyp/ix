@@ -25,30 +25,11 @@ import {
 } from "@chakra-ui/react";
 import { MentionSearchResults } from "chat/input/MentionSearchResults";
 import { ArtifactSearchResults } from "chat/input/ArtifactSearchResults";
-import { usePreloadedQuery, useQueryLoader } from "react-relay/hooks";
-import { SearchAgentsQuery } from "chat/graphql/SearchAgentsQuery";
-import { SearchArtifactsQuery } from "chat/graphql/SearchArtifactsQuery";
 import { useSendInput } from "chat/graphql/useSendInput";
 import { clear_editor, INITIAL_EDITOR_CONTENT } from "utils/slate";
 import { useChatColorMode } from "chains/editor/useColorMode";
+import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
-const SearchAgentsQueryRunner = ({ queryRef, setResults }) => {
-  // load query and then update state
-  const data = usePreloadedQuery(SearchAgentsQuery, queryRef);
-  const agents = data?.searchAgents;
-  useEffect(() => {
-    setResults(agents);
-  }, [queryRef, agents]);
-};
-
-const SearchArtifactsQueryRunner = ({ queryRef, setResults }) => {
-  // load query and then update state
-  const data = usePreloadedQuery(SearchArtifactsQuery, queryRef);
-  const artifacts = data?.searchArtifacts;
-  useEffect(() => {
-    setResults(artifacts);
-  }, [queryRef, artifacts]);
-};
 
 export const ChatInput = ({ chat }) => {
   const focusRef = useRef();
@@ -64,24 +45,33 @@ export const ChatInput = ({ chat }) => {
     []
   );
 
-  // queries
-  const [agentsQueryRef, loadAgentsQuery, disposeAgentsQuery] =
-    useQueryLoader(SearchAgentsQuery);
+  const { load: loadAgents, page: agentPage } = usePaginatedAPI(`/api/agents/`, {
+    load: false,
+  });
+
+  const { load: loadArtifacts, page: artifactPage } = usePaginatedAPI(`/api/artifacts/`, {
+    load: false,
+  });
+
   const searchAgents = useCallback((search) => {
-    loadAgentsQuery(
-      { search, chatId: chat.id },
-      { fetchPolicy: "store-and-network" }
-    );
+    loadAgents({ search, chat_id: chat.id });
   }, []);
 
-  const [artifactQueryRef, loadArtifactQuery, disposeArtifactQuery] =
-    useQueryLoader(SearchArtifactsQuery);
   const searchArtifacts = useCallback((search) => {
-    loadArtifactQuery(
-      { search, chatId: chat.id },
-      { fetchPolicy: "store-and-network" }
-    );
+    loadArtifacts({ search, chat_id: chat.id});
   }, []);
+
+  useEffect(() => {
+    if (agentPage) {
+      setResults(agentPage.objects);
+    }
+  }, [agentPage]);
+
+  useEffect(() => {
+    if (artifactPage) {
+      setResults(artifactPage.objects);
+    }
+  }, [artifactPage]);
 
   useEffect(() => {
     if (target) {
@@ -196,16 +186,6 @@ export const ChatInput = ({ chat }) => {
     }
   });
 
-  const onClose = useCallback(() => {
-    // clear query refs
-    if (agentsQueryRef !== null) {
-      disposeAgentsQuery();
-    }
-    if (artifactQueryRef !== null) {
-      disposeArtifactQuery();
-    }
-  });
-
   // Search results popover content
   const isOpen = target && results.length > 0;
   let searchComponent = null;
@@ -229,27 +209,6 @@ export const ChatInput = ({ chat }) => {
     }
   }
 
-  // Couldn't determine a good pattern for using relay to fetch
-  // search updates for the autocomplete. The results are needed
-  // here to decide whether to render the popover or not.
-  //
-  // QueryRunner components render empty but will fetch the query
-  // data then update the results state. This is a huge hack but
-  // it works for now.
-  const agentSearchRunner = agentsQueryRef !== null && (
-    <SearchAgentsQueryRunner
-      queryRef={agentsQueryRef}
-      setResults={setResults}
-    />
-  );
-
-  const artifactSearchRunner = artifactQueryRef !== null && (
-    <SearchArtifactsQueryRunner
-      queryRef={artifactQueryRef}
-      setResults={setResults}
-    />
-  );
-
   const sx = useColorModeValue(
     { bg: "gray.50", color: "gray.900", borderColor: "gray.300" },
     { bg: "gray.900", color: "gray.100", borderColor: "gray.700" }
@@ -270,11 +229,8 @@ export const ChatInput = ({ chat }) => {
       maxH="400px"
       overflowY="auto"
     >
-      {agentSearchRunner}
-      {artifactSearchRunner}
       <Popover
         isOpen={isOpen}
-        onClose={onClose}
         placement="top-start"
         initialFocusRef={focusRef}
       >

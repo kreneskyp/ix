@@ -1,6 +1,8 @@
 from pydantic import BaseModel, UUID4
-from typing import Dict, Any, Optional
+from typing import Dict, Any, List
 from datetime import datetime
+
+from ix.utils.graphene.pagination import QueryPage
 
 
 class ArtifactBase(BaseModel):
@@ -17,12 +19,7 @@ class ArtifactCreate(ArtifactBase):
 
 
 class ArtifactUpdate(ArtifactBase):
-    task_id: Optional[UUID4] = None
-    key: Optional[str] = None
-    artifact_type: Optional[str] = None
-    name: Optional[str] = None
-    description: Optional[str] = None
-    storage: Optional[Dict[str, Any]] = None
+    pass
 
 
 class Artifact(ArtifactBase):
@@ -31,3 +28,8 @@ class Artifact(ArtifactBase):
 
     class Config:
         orm_mode = True
+
+
+class ArtifactPage(QueryPage[Artifact]):
+    # override objects, FastAPI isn't detecting QueryPage type
+    objects: List[Artifact]

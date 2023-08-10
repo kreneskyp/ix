@@ -14,6 +14,7 @@ from ix.task_log.tests.fake import (
     afake_artifact,
     afake_user,
     afake_system,
+    afake_task,
 )
 
 CHAT_ID_1 = uuid4()
@@ -182,6 +183,26 @@ class TestChat:
 
 @pytest.mark.django_db
 class TestChatAgents:
+    async def test_get_agents(self, anode_types):
+        await Chat.objects.all().adelete()
+        chat = await afake_chat(name="Chat 1", id=CHAT_ID_1)
+        agent_1 = await afake_agent(name="Agent 1")
+        agent_2 = await afake_agent(name="Agent 2")
+        await chat.agents.aadd(agent_1)
+        await chat.agents.aadd(agent_2)
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.get("/agents/", params={"chat_id": chat.id})
+
+        assert response.status_code == 200, response.content
+        result = response.json()
+
+        # Check if we got a list of chats
+        assert len(result["objects"]) == 2
+        agent_ids = [agent["id"] for agent in result["objects"]]
+        assert str(agent_1.id) in agent_ids
+        assert str(agent_2.id) in agent_ids
+
     async def test_add_agent_to_chat(self, anode_types):
         chat = await afake_chat()
         agent = await afake_agent()
@@ -350,8 +371,6 @@ class TestChatMessage:
         assert result["agent_id"] is None
         assert message.agent_id is None
 
-        call_args = mock_start_agent_loop.delay.call_args_list
-        print(call_args)
         mock_start_agent_loop.delay.assert_called_once_with(
             str(chat.task_id),
             str(lead.chain_id),
@@ -369,7 +388,6 @@ class TestChatMessage:
         assert response.status_code == 200, response.content
         result = response.json()
 
-        print(result)
         assert result["content"]["type"] == "FEEDBACK"
         assert result["content"]["feedback"] == text
         assert result["agent_id"] is None
@@ -378,8 +396,6 @@ class TestChatMessage:
         assert message.content["type"] == "FEEDBACK"
         assert message.content["feedback"] == text
 
-        call_args = mock_start_agent_loop.delay.call_args_list
-        print(call_args)
         mock_start_agent_loop.delay.assert_called_once_with(
             str(chat.task_id),
             str(lead.chain_id),
@@ -421,8 +437,9 @@ class TestChatMessage:
     async def test_get_messages(self, anode_types):
         chat = await afake_chat()
         task = await Task.objects.aget(id=chat.task_id)
+        subtask = await afake_task(parent=task)
         msg1 = await afake_system("test1", task=task)
-        msg2 = await afake_system("test2", task=task)
+        msg2 = await afake_system("test2", task=subtask)
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.get(f"/chats/{chat.id}/messages")

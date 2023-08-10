@@ -4,8 +4,6 @@ import { useColorMode } from "@chakra-ui/color-mode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { faSquareCheck } from "@fortawesome/free-solid-svg-icons";
-import { usePreloadedQuery } from "react-relay/hooks";
-import { ChatByIdQuery } from "chat/graphql/ChatByIdQuery";
 
 const StatusIcon = ({ isComplete, isRunning }) => {
   if (isComplete) {
@@ -20,15 +18,14 @@ const StatusIcon = ({ isComplete, isRunning }) => {
   return <FontAwesomeIcon icon={faClock} />;
 };
 
-const SideBarPlanList = ({ queryRef }) => {
-  const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
+const SideBarPlanList = ({ plans }) => {
   const { colorMode } = useColorMode();
   return (
     <VStack spacing={1}>
       <Heading as="h3" size="md" width="100%" align="left" mt={5}>
         Tasks
       </Heading>
-      {chat.task.createdPlans?.length === 0 ? (
+      {!plans || plans?.length === 0 ? (
         <Text
           p={2}
           fontSize="xs"
@@ -39,7 +36,7 @@ const SideBarPlanList = ({ queryRef }) => {
           agents.
         </Text>
       ) : null}
-      {chat.task.createdPlans?.map((plan, i) => (
+      {plans?.map((plan, i) => (
         <Box
           key={i}
           bg="transparent"

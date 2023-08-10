@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useMutation } from "react-relay";
 import {
   Button,
   Modal,
@@ -11,28 +10,30 @@ import {
   ModalCloseButton,
   Box,
 } from "@chakra-ui/react";
-import RemoveAgentMutation from "chat/graphql/RemoveAgentMutation";
+import { useDeleteAPI } from "utils/hooks/useDeleteAPI";
 
 export const RemoveAgentModalTrigger = ({
   chat,
   agent,
   children,
+  onSuccess,
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [commitMutation, isInFlight] = useMutation(RemoveAgentMutation);
+  const { call: callDelete, isLoading } = useDeleteAPI(
+    `/api/chats/${chat.id}/agents/${agent.id}`
+  );
 
   const handleClick = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
-
-  const handleConfirm = () => {
-    commitMutation({
-      variables: { chatId: chat.id, agentId: agent.id },
-      onCompleted: () => {
-        setIsOpen(false);
-      },
-      onError: (err) => console.error(err),
-    });
+  const handleConfirm = async () => {
+    try {
+      await callDelete();
+      setIsOpen(false);
+      onSuccess();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -50,7 +51,7 @@ export const RemoveAgentModalTrigger = ({
               colorScheme="blue"
               mr={3}
               onClick={handleConfirm}
-              isLoading={isInFlight}
+              isLoading={isLoading}
             >
               Yes
             </Button>

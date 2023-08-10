@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { fetchQuery, useRelayEnvironment } from "react-relay/hooks";
+import { useRelayEnvironment } from "react-relay/hooks";
 import { useChatMessageSubscription } from "chat/graphql/useChatMessageSubscription";
-import { TaskLogMessagesQuery } from "chat/graphql/TaskLogMessagesQuery";
 import { findIndexFromEnd } from "utils/array";
 import { useChatMessageTokenSubscription } from "chat/graphql/useChatMessageTokenSubscription";
-import {groupBy} from "graphql/jsutils/groupBy";
+import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
 /**
  * Helper for adding a token to an array of tokens. Tokens are ordered, but
@@ -46,10 +45,16 @@ export const useMessageStream = (chat) => {
 
   // Handle incoming new messages and update message groups
   const handleNewMessage = useCallback((newMessage) => {
+    // convert graphql message
+    const msg = {
+      ...newMessage,
+      created_at: newMessage.createdAt,
+    };
+
     // update messages
     setMessages((prevMessages) => {
       // find group using parent id.
-      const parentID = newMessage.parent?.id || newMessage.id;
+      const parentID = msg.parent?.id || msg.id;
       const parentIndex = findIndexFromEnd(
         prevMessages,
         (group) => group.id === parentID
@@ -60,33 +65,34 @@ export const useMessageStream = (chat) => {
         // or append to the end of the group.
         return prevMessages.map((group, index) => {
           if (index === parentIndex) {
-            const messageIndex = group.messages.findIndex((message) => message.id === newMessage.id);
+            const messageIndex = group.messages.findIndex(
+              (message) => message.id === msg.id
+            );
             if (messageIndex !== -1) {
               // update existing message
               const updatedMessages = [...group.messages];
-              updatedMessages[messageIndex] = newMessage;
-              return {...group, messages: updatedMessages};
+              updatedMessages[messageIndex] = msg;
+              return { ...group, messages: updatedMessages };
             }
 
             // new message, append to the end of the group
-            return {...group, messages: [...group.messages, newMessage]};
+            return { ...group, messages: [...group.messages, msg] };
           }
 
           // not the group we are looking for
           return group;
         });
-
       } else {
         // new message group
-        return [...prevMessages, { id: parentID, messages: [newMessage] }];
+        return [...prevMessages, { id: parentID, messages: [msg] }];
       }
     });
 
     setStreams((prevStreams) => {
       // remove stream cache if complete message has arrived
-      if (newMessage.content?.stream === false && prevStreams[newMessage.id] !== undefined) {
-        const newStreams = {...prevStreams};
-        delete newStreams[newMessage.id];
+      if (msg.content?.stream === false && prevStreams[msg.id] !== undefined) {
+        const newStreams = { ...prevStreams };
+        delete newStreams[msg.id];
         return newStreams;
       }
       return prevStreams;
@@ -119,36 +125,42 @@ export const useMessageStream = (chat) => {
     handleToken
   );
 
+  const { page, load } = usePaginatedAPI(`/api/chats/${chat.id}/messages`, {
+    limit: 100000,
+    load: false,
+  });
+
   // Load initial messages synchronously
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchQuery(environment, TaskLogMessagesQuery, {
-        taskId: chat.task.id,
-      }).toPromise();
+    load();
+  }, [chat.id]);
 
-      // Roll up messages into groups
-      const rolledUpMessages = data.taskLogMessages.reduce((acc, message) => {
-        const parentID = message.parent?.id || message.id;
-        const parentIndex = findIndexFromEnd(
-          acc,
-          (group) => group.id === parentID
+  useEffect(() => {
+    if (!page) return;
+
+    // Roll up messages into groups
+    const rolledUpMessages = page?.objects.reduce((acc, message) => {
+      const parentID = message.parent_id || message.id;
+      const parentIndex = findIndexFromEnd(
+        acc,
+        (group) => group.id === parentID
+      );
+
+      if (parentIndex !== -1) {
+        return acc.map((group, index) =>
+          index === parentIndex
+            ? { ...group, messages: [...group.messages, message] }
+            : group
         );
+      } else {
+        return [...acc, { id: parentID, messages: [message] }];
+      }
+    }, []);
 
-        if (parentIndex !== -1) {
-          return acc.map((group, index) =>
-            index === parentIndex
-              ? { ...group, messages: [...group.messages, message] }
-              : group
-          );
-        } else {
-          return [...acc, { id: parentID, messages: [message] }];
-        }
-      }, []);
-
+    if (rolledUpMessages) {
       setMessages(rolledUpMessages);
-    };
-    fetchData();
-  }, [environment, chat.id]);
+    }
+  }, [page]);
 
   return { messages, setMessages, streams, subscriptionActive };
 };

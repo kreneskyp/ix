@@ -53,7 +53,7 @@ class AgentReply(Chain):
         if self.reply:
             await TaskLogMessage.objects.acreate(
                 task_id=ix_handler.task.id,
-                role="assistant",
+                role="ASSISTANT",
                 parent=ix_handler.parent_think_msg,
                 content={
                     "type": "ASSISTANT",

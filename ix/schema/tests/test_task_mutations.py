@@ -37,7 +37,7 @@ class TestSetTaskAutonomousMutation:
         assert task.autonomous is False
 
         log_message = TaskLogMessage.objects.get(task=task)
-        assert log_message.role == "user"
+        assert log_message.role == "USER"
         assert log_message.content["enabled"] == task.autonomous
 
 

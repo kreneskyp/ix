@@ -9,12 +9,9 @@ export function usePaginatedAPI(
   const [isLoading, setIsLoading] = useState(true);
 
   const _load = useCallback(
-    async ({ search } = {}) => {
+    async (args = {}) => {
       setIsLoading(true);
-      const params = { limit, offset };
-      if (search) {
-        params.search = search;
-      }
+      const params = { limit, offset, ...args };
       try {
         const response = await axios.get(endpoint, {
           params,
