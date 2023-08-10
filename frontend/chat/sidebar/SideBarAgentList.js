@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useEffect} from "react";
 import { HStack, VStack, Text, Box, useColorModeValue } from "@chakra-ui/react";
 import AssistantAvatar from "chat/AssistantAvatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -42,11 +42,14 @@ const AgentListItem = ({ chat, agent, onUpdateAgents }) => {
 const SideBarAgentList = ({ graph }) => {
   const { colorMode } = useColorMode();
   const lead = graph.lead;
-  const { load: loadAgents, page } = usePaginatedAPI(`/api/chats/${graph.chat.id}/agents`, {limit: 10000})
-  const agents = page?.objects;
+  const { load: loadAgents, page: agentPage } = usePaginatedAPI(`/api/agents/`, {limit: 10000, load: false})
+  const agents = agentPage?.objects;
+  const queryArgs = {chat_id: graph.chat.id};
   const onUpdateAgents = useCallback(() => {
-    loadAgents();
+    loadAgents(queryArgs);
   }, [loadAgents]);
+
+  useEffect(() => {loadAgents(queryArgs)}, [loadAgents, graph.chat.id])
 
   return (
     <Box

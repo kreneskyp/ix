@@ -55,7 +55,7 @@ export const ChatLeftPaneShim = ({ graph, loadGraph }) => {
       <VStack spacing={4} align="stretch">
         <SideBarAgentList graph={graph} loadGraph={loadGraph} />
         <SideBarPlanList plans={graph.plans} />
-        <SideBarArtifactList chat={graph.chat} />
+        <SideBarArtifactList chat={graph.chat} artifacts={graph.artifacts} />
       </VStack>
     </Suspense>
   );
