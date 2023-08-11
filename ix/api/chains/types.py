@@ -280,3 +280,8 @@ class Edge(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class PositionUpdate(BaseModel):
+    x: float
+    y: float

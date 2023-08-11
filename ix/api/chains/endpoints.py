@@ -240,9 +240,9 @@ async def update_chain_node(node_id: UUID, data: UpdateNode):
     response_model=NodePydantic,
     tags=["Chain Editor"],
 )
-async def update_chain_node_position(node_id: UUID, position: Position):
+async def update_chain_node_position(node_id: UUID, data: PositionUpdate):
     node = await ChainNode.objects.aget(id=node_id)
-    node.position = position.dict()
+    node.position = data.dict()
     await node.asave(update_fields=["position"])
     return NodePydantic.from_orm(node)
 
@@ -260,8 +260,8 @@ async def delete_chain_node(node_id: UUID):
 
 
 @router.post("/chains/edges", response_model=EdgePydantic, tags=["Chain Editor"])
-async def add_chain_edge(edge: EdgePydantic):
-    new_edge = ChainEdge(**edge.dict())
+async def add_chain_edge(data: EdgePydantic):
+    new_edge = ChainEdge(**data.dict())
     await new_edge.asave()
     return EdgePydantic.from_orm(new_edge)
 
@@ -277,12 +277,12 @@ class UpdateEdge(BaseModel):
 @router.put(
     "/chains/edges/{edge_id}", response_model=EdgePydantic, tags=["Chain Editor"]
 )
-async def update_chain_edge(edge_id: UUID, edge: UpdateEdge):
+async def update_chain_edge(edge_id, data: UpdateEdge):
     try:
         existing_edge = await ChainEdge.objects.aget(id=edge_id)
     except ChainEdge.DoesNotExist:
         raise HTTPException(status_code=404, detail="Edge not found")
-    as_dict = edge.dict()
+    as_dict = data.dict()
     for field, value in as_dict.items():
         setattr(existing_edge, field, value)
     await existing_edge.asave(update_fields=as_dict.keys())
