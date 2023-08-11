@@ -524,9 +524,6 @@ class TestChainEdge:
         data = {
             "source_id": str(node1.id),
             "target_id": str(node2.id),
-            "key": "Updated Key",
-            "relation": "LINK",
-            "input_map": {"param1": "value1", "param2": "value2"},
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -536,8 +533,6 @@ class TestChainEdge:
         assert response.status_code == 200, response.json()
         edge_data = response.json()
         assert edge_data["id"] == str(edge.id)
-        assert edge_data["key"] == "Updated Key"
-        assert edge_data["input_map"] == {"param1": "value1", "param2": "value2"}
 
     async def test_delete_chain_edge(self, anode_types):
         # Create a chain edge to delete

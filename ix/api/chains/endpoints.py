@@ -269,9 +269,6 @@ async def add_chain_edge(data: EdgePydantic):
 class UpdateEdge(BaseModel):
     source_id: UUID
     target_id: UUID
-    key: str
-    relation: Literal["LINK", "PROP"]
-    input_map: Optional[dict]
 
 
 @router.put(
