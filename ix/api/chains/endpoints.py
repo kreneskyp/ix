@@ -194,8 +194,8 @@ class AddNode(BaseModel):
     id: Optional[UUID]
     chain_id: Optional[UUID]
     class_path: str
-    name: str
-    description: str
+    name: Optional[str]
+    description: Optional[str]
     config: Optional[dict]
     position: Optional[Position]
 
