@@ -309,7 +309,7 @@ class TestChainRoot:
         data = {"node_id": str(node.id)}
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chains/{chain.id}/set_root/", json=data)
+            response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200
         result = response.json()
@@ -325,7 +325,7 @@ class TestChainRoot:
 
         data = {"node_id": str(new_root.id), "chain_id": str(chain.id)}
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chains/{chain.id}/set_root/", json=data)
+            response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200
         result = response.json()
@@ -342,7 +342,7 @@ class TestChainRoot:
         data = {"node_id": None, "chain_id": str(chain.id)}
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chains/{chain.id}/set_root/", json=data)
+            response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200, response.content
         result = response.json()

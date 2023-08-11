@@ -168,7 +168,7 @@ class UpdateRoot(BaseModel):
 
 
 @router.post(
-    "/chains/{chain_id}/set_root/", response_model=UpdatedRoot, tags=["Chain Editor"]
+    "/chains/{chain_id}/set_root", response_model=UpdatedRoot, tags=["Chain Editor"]
 )
 async def set_chain_root(chain_id: UUID, update_root: UpdateRoot):
     # update old roots:
