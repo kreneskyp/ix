@@ -1,4 +1,5 @@
-from typing import Optional, List, Literal
+import logging
+from typing import Optional, List
 from uuid import UUID
 
 from asgiref.sync import sync_to_async
@@ -8,12 +9,19 @@ from pydantic import BaseModel
 
 from ix.chains.models import Chain, ChainNode, NodeType, ChainEdge
 
-from ix.api.chains.types import Chain as ChainPydantic, ChainQueryPage
+from ix.api.chains.types import (
+    Chain as ChainPydantic,
+    ChainQueryPage,
+    PositionUpdate,
+    NodeTypePage,
+)
 from ix.api.chains.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic
 from ix.api.chains.types import Edge as EdgePydantic
 from ix.api.chains.types import Position
 
+
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -80,18 +88,24 @@ async def delete_chain(chain_id: UUID):
     return DeletedItem(id=chain_id)
 
 
-@router.get("/node_types/", response_model=List[NodeTypePydantic], tags=["Components"])
-async def get_node_types(search: Optional[str] = None):
+@router.get("/node_types/", response_model=NodeTypePage, tags=["Components"])
+async def get_node_types(
+    search: Optional[str] = None, limit: int = 50, offset: int = 0
+):
     if search:
-        node_types = NodeType.objects.filter(
+        query = NodeType.objects.filter(
             Q(name__icontains=search)
             | Q(description__icontains=search)
             | Q(type__icontains=search)
             | Q(class_path__icontains=search)
         )
     else:
-        node_types = NodeType.objects.all()
-    return [NodeTypePydantic.from_orm(node_type) async for node_type in node_types]
+        query = NodeType.objects.all()
+
+    # punting on async implementation of pagination until later
+    return await sync_to_async(NodeTypePage.paginate)(
+        output_model=NodeTypePydantic, queryset=query, limit=limit, offset=offset
+    )
 
 
 class NodeTypeDetail(NodeTypePydantic):

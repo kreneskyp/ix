@@ -249,6 +249,11 @@ class NodeType(BaseModel):
         return schema
 
 
+class NodeTypePage(QueryPage[NodeType]):
+    # override objects, FastAPI isn't detecting QueryPage type
+    objects: List[NodeType]
+
+
 class Node(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     chain_id: UUID

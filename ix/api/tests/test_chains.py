@@ -28,10 +28,11 @@ class TestNodeType:
             response = await ac.get("/node_types/")
 
         assert response.status_code == 200, response.content
-        result = response.json()
+        page = response.json()
 
         # Check that we got a list of node types
-        assert len(result) >= 2
+        objects = page["objects"]
+        assert len(objects) >= 2
 
     async def test_search_node_types(self, anode_types):
         search_term = "mock"
@@ -40,13 +41,14 @@ class TestNodeType:
             response = await ac.get(f"/node_types/?search={search_term}")
 
         assert response.status_code == 200, response.content
-        result = response.json()
-        assert len(result) > 0
+        page = response.json()
+        objects = page["objects"]
+        assert len(objects) > 0
         assert (
-            search_term in result[0]["name"]
-            or search_term in result[0]["description"]
-            or search_term in result[0]["type"]
-            or search_term in result[0]["class_path"]
+            search_term in objects[0]["name"]
+            or search_term in objects[0]["description"]
+            or search_term in objects[0]["type"]
+            or search_term in objects[0]["class_path"]
         )
 
     async def test_get_node_type_detail(self, amock_node_type):
