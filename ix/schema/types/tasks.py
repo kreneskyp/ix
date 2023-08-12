@@ -1,12 +1,9 @@
 import logging
 
 import graphene
-from django.db.models import Q
-from graphene.types.generic import GenericScalar
 from graphene_django import DjangoObjectType
 
-from ix.chat.models import Chat
-from ix.task_log.models import Task, Artifact, Plan, PlanSteps
+from ix.task_log.models import Task, Plan, PlanSteps
 
 logger = logging.getLogger(__name__)
 
