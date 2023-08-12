@@ -10,12 +10,9 @@ import { useObjectEditorView } from "utils/hooks/useObjectEditorView";
 
 export const ChainEditorView = () => {
   const { id } = useParams();
-  const {
-    data: graph,
-    load,
-    isLoading,
-  } = useDetailAPI(`/api/chains/${id}/graph`);
-  const { isNew, idRef } = useObjectEditorView(id, load);
+  const { response, call, isLoading } = useDetailAPI(`/api/chains/${id}/graph`);
+  const { isNew, idRef } = useObjectEditorView(id, call);
+  const graph = response?.data;
 
   let content;
   if (isNew) {

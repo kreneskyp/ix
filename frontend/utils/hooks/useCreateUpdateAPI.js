@@ -9,7 +9,7 @@ import useUpdateAPI from "utils/hooks/useUpdateAPI";
  */
 export const useCreateUpdateAPI = (createURL, updateURL) => {
   const { create, isLoading: isCreateLoading } = useCreateAPI(createURL);
-  const { update, isLoading: isUpdateLoading } = useUpdateAPI(updateURL);
+  const { call: update, isLoading: isUpdateLoading } = useUpdateAPI(updateURL);
 
   const save = async (data) => {
     if (data.id) {

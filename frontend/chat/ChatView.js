@@ -62,7 +62,7 @@ export const ChatLeftPaneShim = ({ graph, loadGraph }) => {
 };
 
 export const useChatGraph = (id) => {
-  return useDetailAPI(`/api/chats/${id}/graph`, { load: false });
+  return useDetailAPI(`/api/chats/${id}/graph`);
 };
 
 export const ChatView = () => {

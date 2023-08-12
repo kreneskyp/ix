@@ -45,13 +45,10 @@ export const ChatInput = ({ chat }) => {
     []
   );
 
-  const { load: loadAgents, page: agentPage } = usePaginatedAPI(`/api/agents/`, {
-    load: false,
-  });
+  const { load: loadAgents, page: agentPage } = usePaginatedAPI(`/api/agents/`);
 
-  const { load: loadArtifacts, page: artifactPage } = usePaginatedAPI(`/api/artifacts/`, {
-    load: false,
-  });
+  const { load: loadArtifacts, page: artifactPage } =
+    usePaginatedAPI(`/api/artifacts/`);
 
   const searchAgents = useCallback((search) => {
     loadAgents({ search, chat_id: chat.id });

@@ -1,28 +1,25 @@
-import { useCallback, useState } from "react";
-import axios from "axios";
+import { useCallback } from "react";
+import { useAxios } from "utils/hooks/useAxios";
 
-const useUpdateAPI = (url, { onSuccess, onError } = {}) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+const useUpdateAPI = (
+  url,
+  { onSuccess, onError, method = "put", dependencies = [] } = {}
+) => {
+  const { call, isLoading, error, response } = useAxios(
+    { onSuccess, onError, method },
+    dependencies
+  );
 
   const update = useCallback(
-    async (data) => {
-      setIsLoading(true);
-      try {
-        const response = await axios.put(url, data);
-        setIsLoading(false);
-        return response.data;
-      } catch (err) {
-        setIsLoading(false);
-        setError(err);
-        throw err;
-      }
+    (data, config = {}) => {
+      return call(url, { data, ...config });
     },
-    [url]
+    [url, call]
   );
 
   return {
-    update,
+    call: update,
+    response,
     isLoading,
     error,
   };
