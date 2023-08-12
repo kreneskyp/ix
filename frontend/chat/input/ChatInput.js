@@ -30,7 +30,6 @@ import { clear_editor, INITIAL_EDITOR_CONTENT } from "utils/slate";
 import { useChatColorMode } from "chains/editor/useColorMode";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
-
 export const ChatInput = ({ chat }) => {
   const focusRef = useRef();
   const [target, setTarget] = useState(null);
@@ -55,7 +54,7 @@ export const ChatInput = ({ chat }) => {
   }, []);
 
   const searchArtifacts = useCallback((search) => {
-    loadArtifacts({ search, chat_id: chat.id});
+    loadArtifacts({ search, chat_id: chat.id });
   }, []);
 
   useEffect(() => {
@@ -226,11 +225,7 @@ export const ChatInput = ({ chat }) => {
       maxH="400px"
       overflowY="auto"
     >
-      <Popover
-        isOpen={isOpen}
-        placement="top-start"
-        initialFocusRef={focusRef}
-      >
+      <Popover isOpen={isOpen} placement="top-start" initialFocusRef={focusRef}>
         <PopoverAnchor>
           <Box ref={focusRef} width={1}></Box>
         </PopoverAnchor>
