@@ -8,7 +8,7 @@ import {
   faListCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import ArtifactModalButton from "chat/sidebar/ArtifactModalButton";
-import { useChatArtifactSubscription } from "chat/graphql/useChatArtifactSubscription";
+import { useChatArtifactSubscription } from "chat/hooks/useChatArtifactSubscription";
 import { SCROLLBAR_CSS } from "site/css";
 
 const ARTIFACT_TYPE_ICONS = {

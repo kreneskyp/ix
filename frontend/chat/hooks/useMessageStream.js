@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useRelayEnvironment } from "react-relay/hooks";
-import { useChatMessageSubscription } from "chat/graphql/useChatMessageSubscription";
+import { useChatMessageSubscription } from "chat/hooks/useChatMessageSubscription";
 import { findIndexFromEnd } from "utils/array";
-import { useChatMessageTokenSubscription } from "chat/graphql/useChatMessageTokenSubscription";
+import { useChatMessageTokenSubscription } from "chat/hooks/useChatMessageTokenSubscription";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
 /**

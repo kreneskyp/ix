@@ -4,7 +4,7 @@ import { Box, Center, Spinner, VStack } from "@chakra-ui/react";
 
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 import { ScrollableBox } from "site/ScrollableBox";
-import { useMessageStream } from "chat/graphql/useMessageStream";
+import { useMessageStream } from "chat/hooks/useMessageStream";
 import SideBarPlanList from "chat/SideBarPlanList";
 import SideBarArtifactList from "chat/sidebar/SideBarArtifactList";
 import SideBarAgentList from "chat/sidebar/SideBarAgentList";
@@ -13,9 +13,9 @@ import ChatMessages from "chat/ChatMessages";
 import {
   MessagesContext,
   SubscriptionActiveContext,
-} from "chat/graphql/useChatMessageSubscription";
+} from "chat/hooks/useChatMessageSubscription";
 import ChatInput from "chat/input/ChatInput";
-import { MessagesTokenContext } from "chat/graphql/useChatMessageTokenSubscription";
+import { MessagesTokenContext } from "chat/hooks/useChatMessageTokenSubscription";
 import { useDetailAPI } from "utils/hooks/useDetailAPI";
 
 export const ChatContentShim = ({ graph }) => {
