@@ -67,7 +67,8 @@ export const useChatGraph = (id) => {
 
 export const ChatView = () => {
   const { id } = useParams();
-  const { data: graph, load: loadGraph, isLoading } = useChatGraph(id);
+  const { response, call: loadGraph, isLoading } = useChatGraph(id);
+  const graph = response?.data;
 
   useEffect(() => {
     loadGraph();
