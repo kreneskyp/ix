@@ -264,6 +264,7 @@ class Node(BaseModel):
     chain_id: UUID
     class_path: str = Field(..., title="The path to the class")
     node_type_id: Optional[UUID]
+    root: bool = False
 
     config: dict = Field(default_factory=dict)
     name: Optional[str]
