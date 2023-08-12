@@ -201,12 +201,8 @@ class IxHandler(AsyncCallbackHandler):
             self.start = time.time()
             think_msg = await TaskLogMessage.objects.acreate(
                 task_id=self.task.id,
-                role="system",
-                content={
-                    "type": "THINK",
-                    "input": {"user_input": inputs["user_input"]},
-                    "agent": self.agent.alias,
-                },
+                role="SYSTEM",
+                content={"type": "THINK", "input": inputs, "agent": self.agent.alias},
             )
             self.parent_think_msg = think_msg
 
@@ -228,7 +224,7 @@ class IxHandler(AsyncCallbackHandler):
         if not parent_run_id:
             await TaskLogMessage.objects.acreate(
                 task_id=self.task.id,
-                role="system",
+                role="SYSTEM",
                 parent_id=self.parent_think_msg.id,
                 content={
                     "type": "THOUGHT",
@@ -266,7 +262,7 @@ class IxHandler(AsyncCallbackHandler):
         """
         return await TaskLogMessage.objects.acreate(
             task_id=self.task.id,
-            role="assistant",
+            role="ASSISTANT",
             parent=self.parent_think_msg,
             content={
                 "type": "ASSISTANT",
@@ -290,7 +286,7 @@ class IxHandler(AsyncCallbackHandler):
         failure_msg = await TaskLogMessage.objects.acreate(
             task_id=self.task.id,
             parent_id=parent_id,
-            role="assistant",
+            role="ASSISTANT",
             content={
                 "type": "EXECUTE_ERROR",
                 "error_type": error_type,

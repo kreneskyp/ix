@@ -7,10 +7,8 @@ import {
   faFile,
   faListCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { usePreloadedQuery } from "react-relay/hooks";
-import { ChatByIdQuery } from "chat/graphql/ChatByIdQuery";
 import ArtifactModalButton from "chat/sidebar/ArtifactModalButton";
-import { useChatArtifactSubscription } from "chat/graphql/useChatArtifactSubscription";
+import { useChatArtifactSubscription } from "chat/hooks/useChatArtifactSubscription";
 import { SCROLLBAR_CSS } from "site/css";
 
 const ARTIFACT_TYPE_ICONS = {
@@ -23,13 +21,12 @@ const TypeIcon = ({ artifact }) => {
   return <FontAwesomeIcon icon={icon} />;
 };
 
-const SideBarArtifactList = ({ queryRef }) => {
-  const { chat } = usePreloadedQuery(ChatByIdQuery, queryRef);
-  const [artifacts, setArtifacts] = useState(chat.task.artifacts);
+const SideBarArtifactList = ({ chat, artifacts: initialArtifacts }) => {
+  const [artifacts, setArtifacts] = useState(initialArtifacts);
 
   // Reset artifacts when chat.id changes
   useEffect(() => {
-    setArtifacts(chat.task.artifacts);
+    setArtifacts(initialArtifacts);
   }, [chat.id]);
 
   const { colorMode } = useColorMode();
@@ -37,7 +34,7 @@ const SideBarArtifactList = ({ queryRef }) => {
   // Handle incoming new messages and update message groups
   const handleNewArtifact = useCallback((artifact) => {
     setArtifacts((prevArtifacts) => {
-      return [...prevArtifacts, artifact];
+      return [...(prevArtifacts || []), artifact];
     });
   }, []);
 
@@ -66,7 +63,7 @@ const SideBarArtifactList = ({ queryRef }) => {
         spacing={2}
         width="100%"
       >
-        {artifacts?.length === 0 ? (
+        {!artifacts || artifacts?.length === 0 ? (
           <Text
             p={2}
             fontSize="xs"

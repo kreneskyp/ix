@@ -159,7 +159,7 @@ class SaveArtifact(Chain):
 
         # send message to log
         TaskLogMessage.objects.create(
-            role="assistant",
+            role="ASSISTANT",
             task=ix_handler.task,
             agent=ix_handler.agent,
             parent=ix_handler.parent_think_msg,
@@ -269,7 +269,7 @@ class SaveArtifact(Chain):
         # send message to log
         save_artifact = artifact.asave()
         msg = TaskLogMessage.objects.acreate(
-            role="assistant",
+            role="ASSISTANT",
             task=ix_handler.task,
             agent=ix_handler.agent,
             parent=ix_handler.parent_think_msg,

@@ -1,6 +1,6 @@
 import React from "react";
 import HighlightText from "components/HighlightText";
-import { useStreamContent } from "chat/graphql/useChatMessageTokenSubscription";
+import { useStreamContent } from "chat/hooks/useChatMessageTokenSubscription";
 
 const AssistantContent = ({ message }) => {
   // Use stream content when in streaming mode

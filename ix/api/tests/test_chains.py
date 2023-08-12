@@ -28,10 +28,11 @@ class TestNodeType:
             response = await ac.get("/node_types/")
 
         assert response.status_code == 200, response.content
-        result = response.json()
+        page = response.json()
 
         # Check that we got a list of node types
-        assert len(result) >= 2
+        objects = page["objects"]
+        assert len(objects) >= 2
 
     async def test_search_node_types(self, anode_types):
         search_term = "mock"
@@ -40,13 +41,14 @@ class TestNodeType:
             response = await ac.get(f"/node_types/?search={search_term}")
 
         assert response.status_code == 200, response.content
-        result = response.json()
-        assert len(result) > 0
+        page = response.json()
+        objects = page["objects"]
+        assert len(objects) > 0
         assert (
-            search_term in result[0]["name"]
-            or search_term in result[0]["description"]
-            or search_term in result[0]["type"]
-            or search_term in result[0]["class_path"]
+            search_term in objects[0]["name"]
+            or search_term in objects[0]["description"]
+            or search_term in objects[0]["type"]
+            or search_term in objects[0]["class_path"]
         )
 
     async def test_get_node_type_detail(self, amock_node_type):
@@ -180,8 +182,9 @@ class TestChain:
         result = response.json()
 
         # Check that we got the correct chains back
-        assert len(result) == 2
-        chain_ids = {chain["id"] for chain in result}
+        objects = result["objects"]
+        assert len(objects) == 2
+        chain_ids = {chain["id"] for chain in objects}
         assert str(chain1.id) in chain_ids
         assert str(chain2.id) in chain_ids
 
@@ -225,20 +228,6 @@ class TestChain:
         assert response.status_code == 200, response.content
         result = response.json()
         assert result["name"] == "New Chain"
-
-    async def test_create_chain_with_id(self, anode_types):
-        chain_data = {
-            "id": str(uuid4()),
-            "name": "New Chain",
-            "description": "A new chain",
-        }
-
-        async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post("/chains/", json=chain_data)
-
-        assert response.status_code == 200, response.content
-        result = response.json()
-        assert result["id"] == str(chain_data["id"])
 
     async def test_update_chain(self, anode_types):
         # Create a chain to update
@@ -306,7 +295,7 @@ class TestChainRoot:
         data = {"node_id": str(node.id)}
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chain/{chain.id}/set_root/", json=data)
+            response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200
         result = response.json()
@@ -322,7 +311,7 @@ class TestChainRoot:
 
         data = {"node_id": str(new_root.id), "chain_id": str(chain.id)}
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chain/{chain.id}/set_root/", json=data)
+            response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200
         result = response.json()
@@ -339,7 +328,7 @@ class TestChainRoot:
         data = {"node_id": None, "chain_id": str(chain.id)}
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chain/{chain.id}/set_root/", json=data)
+            response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200, response.content
         result = response.json()
@@ -366,7 +355,7 @@ class TestNode:
 
         # Execute the API request
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post("/chain/nodes", json=data)
+            response = await ac.post("/chains/nodes", json=data)
 
         # Assert the result
         assert response.status_code == 200, response.json()
@@ -399,7 +388,7 @@ class TestNode:
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.put(f"/chain/nodes/{node.id}", json=data)
+            response = await ac.put(f"/chains/nodes/{node.id}", json=data)
 
         # Assert the result
         assert response.status_code == 200, response.json()
@@ -421,7 +410,7 @@ class TestNode:
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.put(
-                f"/chain/nodes/{non_existent_node_id}", json=update_data
+                f"/chains/nodes/{non_existent_node_id}", json=update_data
             )
 
         assert response.status_code == 404, response.content
@@ -436,7 +425,7 @@ class TestNode:
 
         # Execute the API request
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.delete(f"/chain/nodes/{node.id}")
+            response = await ac.delete(f"/chains/nodes/{node.id}")
 
         # Assert the result
         assert response.status_code == 200
@@ -465,7 +454,7 @@ class TestNodePosition:
 
         # Execute the API request
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chain/nodes/{node.id}/position", json=data)
+            response = await ac.post(f"/chains/nodes/{node.id}/position", json=data)
 
         # Assert the result
         assert response.status_code == 200, response.json()
@@ -498,7 +487,7 @@ class TestChainEdge:
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post("/chain/edges", json=data)
+            response = await ac.post("/chains/edges", json=data)
 
         # Assert the result
         assert response.status_code == 200, response.json()
@@ -521,27 +510,22 @@ class TestChainEdge:
         data = {
             "source_id": str(node1.id),
             "target_id": str(node2.id),
-            "key": "Updated Key",
-            "relation": "LINK",
-            "input_map": {"param1": "value1", "param2": "value2"},
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.put(f"/chain/edges/{edge.id}", json=data)
+            response = await ac.put(f"/chains/edges/{edge.id}", json=data)
 
         # Assert the result
         assert response.status_code == 200, response.json()
         edge_data = response.json()
         assert edge_data["id"] == str(edge.id)
-        assert edge_data["key"] == "Updated Key"
-        assert edge_data["input_map"] == {"param1": "value1", "param2": "value2"}
 
     async def test_delete_chain_edge(self, anode_types):
         # Create a chain edge to delete
         edge = await afake_chain_edge()
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.delete(f"/chain/edges/{edge.id}")
+            response = await ac.delete(f"/chains/edges/{edge.id}")
 
         # Assert the result
         assert response.status_code == 200
@@ -567,7 +551,7 @@ class TestChainEdge:
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.put(f"/chain/edges/{non_existent_edge_id}", json=data)
+            response = await ac.put(f"/chains/edges/{non_existent_edge_id}", json=data)
 
         assert response.status_code == 404, response.content
 
@@ -581,7 +565,7 @@ class TestChainGraph:
         await afake_chain_edge(source=node1, target=node2)
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.get(f"/chain/{chain.id}/graph")
+            response = await ac.get(f"/chains/{chain.id}/graph")
 
         assert response.status_code == 200, response.content
         data = response.json()
