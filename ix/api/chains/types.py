@@ -39,6 +39,11 @@ class Chain(BaseModel):
         orm_mode = True
 
 
+class CreateChain(BaseModel):
+    name: str
+    description: Optional[str]
+
+
 class ChainQueryPage(QueryPage[Chain]):
     # override objects, FastAPI isn't detecting QueryPage type
     objects: List[Chain]

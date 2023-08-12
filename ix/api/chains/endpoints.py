@@ -14,6 +14,7 @@ from ix.api.chains.types import (
     ChainQueryPage,
     PositionUpdate,
     NodeTypePage,
+    CreateChain,
 )
 from ix.api.chains.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic
@@ -45,7 +46,7 @@ async def get_chains(search: Optional[str] = None, limit: int = 10, offset: int 
 
 
 @router.post("/chains/", response_model=ChainPydantic, tags=["Chains"])
-async def create_chain(chain: ChainPydantic):
+async def create_chain(chain: CreateChain):
     new_chain = Chain(**chain.dict())
     await new_chain.asave()
     return ChainPydantic.from_orm(new_chain)

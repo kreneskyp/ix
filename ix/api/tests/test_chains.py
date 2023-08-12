@@ -229,20 +229,6 @@ class TestChain:
         result = response.json()
         assert result["name"] == "New Chain"
 
-    async def test_create_chain_with_id(self, anode_types):
-        chain_data = {
-            "id": str(uuid4()),
-            "name": "New Chain",
-            "description": "A new chain",
-        }
-
-        async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post("/chains/", json=chain_data)
-
-        assert response.status_code == 200, response.content
-        result = response.json()
-        assert result["id"] == str(chain_data["id"])
-
     async def test_update_chain(self, anode_types):
         # Create a chain to update
         chain = await afake_chain()
