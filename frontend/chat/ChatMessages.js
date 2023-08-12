@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { Box } from "@chakra-ui/react";
 import ChatMessage from "chat/ChatMessage";
-import { useMessagesContext } from "chat/graphql/useChatMessageSubscription";
-import { useMessagesTokenContext } from "chat/graphql/useChatMessageTokenSubscription";
+import { useMessagesContext } from "chat/hooks/useChatMessageSubscription";
+import { useMessagesTokenContext } from "chat/hooks/useChatMessageTokenSubscription";
 
 export const ChatMessages = () => {
   const messages = useMessagesContext();
