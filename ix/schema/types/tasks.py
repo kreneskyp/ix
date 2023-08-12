@@ -42,32 +42,3 @@ class TaskType(DjangoObjectType):
             return self.created_plans.all()
         else:
             return self.created_plans.filter(is_draft=is_draft)
-
-
-class ArtifactType(DjangoObjectType):
-    storage = GenericScalar()
-
-    class Meta:
-        model = Artifact
-        fields = "__all__"
-
-
-class Query(graphene.ObjectType):
-    search_artifacts = graphene.List(
-        ArtifactType, search=graphene.String(), chat_id=graphene.UUID(required=True)
-    )
-
-    def resolve_search_artifacts(self, info, search, chat_id):
-        # basic search for now, add pg_vector similarity search later
-        chat = Chat.objects.get(pk=chat_id)
-
-        artifacts = (
-            Artifact.objects.filter(
-                (Q(name__icontains=search) | Q(key__icontains=search)),
-                task=chat.task,
-            )
-            .order_by("key", "-created_at")
-            .distinct("key")
-        )
-
-        return artifacts

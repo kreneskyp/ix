@@ -3,13 +3,38 @@ from uuid import UUID
 
 import graphene
 import channels_graphql_ws
+from graphene.types.generic import GenericScalar
+from graphene_django import DjangoObjectType
 
+from ix.agents.models import Agent
 from ix.chat.models import Chat
-from ix.schema.types.agents import AgentType
-from ix.schema.types.messages import TaskLogMessageType
-from ix.schema.types.tasks import ArtifactType
+from ix.task_log.models import TaskLogMessage, Artifact
 
 logger = logging.getLogger(__name__)
+
+
+class AgentType(DjangoObjectType):
+    class Meta:
+        model = Agent
+        fields = "__all__"
+
+    config = GenericScalar()
+
+
+class TaskLogMessageType(DjangoObjectType):
+    class Meta:
+        model = TaskLogMessage
+        fields = "__all__"
+
+    content = GenericScalar()
+
+
+class ArtifactType(DjangoObjectType):
+    storage = GenericScalar()
+
+    class Meta:
+        model = Artifact
+        fields = "__all__"
 
 
 class ChatMessageSubscription(channels_graphql_ws.Subscription):
