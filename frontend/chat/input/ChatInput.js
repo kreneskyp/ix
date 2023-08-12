@@ -25,7 +25,7 @@ import {
 } from "@chakra-ui/react";
 import { MentionSearchResults } from "chat/input/MentionSearchResults";
 import { ArtifactSearchResults } from "chat/input/ArtifactSearchResults";
-import { useSendInput } from "chat/graphql/useSendInput";
+import { useSendInput } from "chat/hooks/useSendInput";
 import { clear_editor, INITIAL_EDITOR_CONTENT } from "utils/slate";
 import { useChatColorMode } from "chains/editor/useColorMode";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
