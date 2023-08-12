@@ -14,7 +14,14 @@ import { AddAgentCard } from "chat/agents/AddAgentCard";
 import { AgentToggleButton } from "chat/agents/AgentToggleButton";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
-const AddAgentModal = ({ graph, chatAgents, agents, isOpen, onClose, onSuccess }) => {
+const AddAgentModal = ({
+  graph,
+  chatAgents,
+  agents,
+  isOpen,
+  onClose,
+  onSuccess,
+}) => {
   const [search, setSearch] = useState("");
   const { chat } = graph;
 
@@ -61,7 +68,12 @@ const AddAgentModal = ({ graph, chatAgents, agents, isOpen, onClose, onSuccess }
   );
 };
 
-export const AddAgentModalTrigger = ({ graph, chatAgents, onSuccess, children }) => {
+export const AddAgentModalTrigger = ({
+  graph,
+  chatAgents,
+  onSuccess,
+  children,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const { page, load } = usePaginatedAPI("/api/agents/", {
     limit: 1000,

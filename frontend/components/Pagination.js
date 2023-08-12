@@ -16,7 +16,7 @@ export const Pagination = ({
 }) => {
   const handleClick = (page) => {
     const offset = (page - 1) * 10;
-    load(10, offset);
+    load({limit: 10, offset});
   };
 
   return (

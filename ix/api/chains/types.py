@@ -39,6 +39,11 @@ class Chain(BaseModel):
         orm_mode = True
 
 
+class CreateChain(BaseModel):
+    name: str
+    description: Optional[str]
+
+
 class ChainQueryPage(QueryPage[Chain]):
     # override objects, FastAPI isn't detecting QueryPage type
     objects: List[Chain]
@@ -259,6 +264,7 @@ class Node(BaseModel):
     chain_id: UUID
     class_path: str = Field(..., title="The path to the class")
     node_type_id: Optional[UUID]
+    root: bool = False
 
     config: dict = Field(default_factory=dict)
     name: Optional[str]
@@ -280,3 +286,8 @@ class Edge(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class PositionUpdate(BaseModel):
+    x: float
+    y: float

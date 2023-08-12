@@ -14,6 +14,7 @@ from ix.api.chains.types import (
     ChainQueryPage,
     PositionUpdate,
     NodeTypePage,
+    CreateChain,
 )
 from ix.api.chains.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic
@@ -45,7 +46,7 @@ async def get_chains(search: Optional[str] = None, limit: int = 10, offset: int 
 
 
 @router.post("/chains/", response_model=ChainPydantic, tags=["Chains"])
-async def create_chain(chain: ChainPydantic):
+async def create_chain(chain: CreateChain):
     new_chain = Chain(**chain.dict())
     await new_chain.asave()
     return ChainPydantic.from_orm(new_chain)
@@ -194,8 +195,8 @@ class AddNode(BaseModel):
     id: Optional[UUID]
     chain_id: Optional[UUID]
     class_path: str
-    name: str
-    description: str
+    name: Optional[str]
+    description: Optional[str]
     config: Optional[dict]
     position: Optional[Position]
 
@@ -240,9 +241,9 @@ async def update_chain_node(node_id: UUID, data: UpdateNode):
     response_model=NodePydantic,
     tags=["Chain Editor"],
 )
-async def update_chain_node_position(node_id: UUID, position: Position):
+async def update_chain_node_position(node_id: UUID, data: PositionUpdate):
     node = await ChainNode.objects.aget(id=node_id)
-    node.position = position.dict()
+    node.position = data.dict()
     await node.asave(update_fields=["position"])
     return NodePydantic.from_orm(node)
 
@@ -260,8 +261,8 @@ async def delete_chain_node(node_id: UUID):
 
 
 @router.post("/chains/edges", response_model=EdgePydantic, tags=["Chain Editor"])
-async def add_chain_edge(edge: EdgePydantic):
-    new_edge = ChainEdge(**edge.dict())
+async def add_chain_edge(data: EdgePydantic):
+    new_edge = ChainEdge(**data.dict())
     await new_edge.asave()
     return EdgePydantic.from_orm(new_edge)
 
@@ -269,20 +270,17 @@ async def add_chain_edge(edge: EdgePydantic):
 class UpdateEdge(BaseModel):
     source_id: UUID
     target_id: UUID
-    key: str
-    relation: Literal["LINK", "PROP"]
-    input_map: Optional[dict]
 
 
 @router.put(
     "/chains/edges/{edge_id}", response_model=EdgePydantic, tags=["Chain Editor"]
 )
-async def update_chain_edge(edge_id: UUID, edge: UpdateEdge):
+async def update_chain_edge(edge_id, data: UpdateEdge):
     try:
         existing_edge = await ChainEdge.objects.aget(id=edge_id)
     except ChainEdge.DoesNotExist:
         raise HTTPException(status_code=404, detail="Edge not found")
-    as_dict = edge.dict()
+    as_dict = data.dict()
     for field, value in as_dict.items():
         setattr(existing_edge, field, value)
     await existing_edge.asave(update_fields=as_dict.keys())
