@@ -110,7 +110,7 @@ const DeleteIcon = ({ node }) => {
 
   const onClick = useCallback(
     (event) => {
-      api.deleteNode({ id: node.id });
+      api.deleteNode(node.id);
     },
     [node.id, api]
   );
@@ -138,13 +138,12 @@ export const ConfigNode = ({ data }) => {
   const handleConfigChange = useMemo(() => {
     function all(newConfig, delay = 0) {
       const data = {
-        id: node.id,
-        classPath: node.classPath,
+        class_path: node.class_path,
         description: node.description,
         position: node.position,
         config: newConfig,
       };
-      debouncedUpdateNode({ data });
+      debouncedUpdateNode(node.id, data);
       setConfig(newConfig);
     }
 
@@ -158,8 +157,8 @@ export const ConfigNode = ({ data }) => {
 
   // node type specific content
   let NodeComponent = null;
-  if (NODE_COMPONENTS[node.classPath]) {
-    NodeComponent = NODE_COMPONENTS[node.classPath];
+  if (NODE_COMPONENTS[node.class_path]) {
+    NodeComponent = NODE_COMPONENTS[node.class_path];
   } else if (styles?.component) {
     NodeComponent = styles.component;
   }
@@ -214,7 +213,7 @@ export const ConfigNode = ({ data }) => {
           <Flex alignItems="center" justifyContent="space-between" width="100%">
             <Box pr={5}>
               <FontAwesomeIcon icon={styles?.icon} />{" "}
-              {node.name || type?.name || node.classPath.split(".").pop()}
+              {node.name || type?.name || node.class_path.split(".").pop()}
             </Box>
             <DeleteIcon node={node} />
           </Flex>

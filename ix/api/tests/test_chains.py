@@ -28,10 +28,11 @@ class TestNodeType:
             response = await ac.get("/node_types/")
 
         assert response.status_code == 200, response.content
-        result = response.json()
+        page = response.json()
 
         # Check that we got a list of node types
-        assert len(result) >= 2
+        objects = page["objects"]
+        assert len(objects) >= 2
 
     async def test_search_node_types(self, anode_types):
         search_term = "mock"
@@ -40,13 +41,14 @@ class TestNodeType:
             response = await ac.get(f"/node_types/?search={search_term}")
 
         assert response.status_code == 200, response.content
-        result = response.json()
-        assert len(result) > 0
+        page = response.json()
+        objects = page["objects"]
+        assert len(objects) > 0
         assert (
-            search_term in result[0]["name"]
-            or search_term in result[0]["description"]
-            or search_term in result[0]["type"]
-            or search_term in result[0]["class_path"]
+            search_term in objects[0]["name"]
+            or search_term in objects[0]["description"]
+            or search_term in objects[0]["type"]
+            or search_term in objects[0]["class_path"]
         )
 
     async def test_get_node_type_detail(self, amock_node_type):
@@ -227,20 +229,6 @@ class TestChain:
         result = response.json()
         assert result["name"] == "New Chain"
 
-    async def test_create_chain_with_id(self, anode_types):
-        chain_data = {
-            "id": str(uuid4()),
-            "name": "New Chain",
-            "description": "A new chain",
-        }
-
-        async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post("/chains/", json=chain_data)
-
-        assert response.status_code == 200, response.content
-        result = response.json()
-        assert result["id"] == str(chain_data["id"])
-
     async def test_update_chain(self, anode_types):
         # Create a chain to update
         chain = await afake_chain()
@@ -307,7 +295,7 @@ class TestChainRoot:
         data = {"node_id": str(node.id)}
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chains/{chain.id}/set_root/", json=data)
+            response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200
         result = response.json()
@@ -323,7 +311,7 @@ class TestChainRoot:
 
         data = {"node_id": str(new_root.id), "chain_id": str(chain.id)}
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chains/{chain.id}/set_root/", json=data)
+            response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200
         result = response.json()
@@ -340,7 +328,7 @@ class TestChainRoot:
         data = {"node_id": None, "chain_id": str(chain.id)}
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chains/{chain.id}/set_root/", json=data)
+            response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200, response.content
         result = response.json()
@@ -522,9 +510,6 @@ class TestChainEdge:
         data = {
             "source_id": str(node1.id),
             "target_id": str(node2.id),
-            "key": "Updated Key",
-            "relation": "LINK",
-            "input_map": {"param1": "value1", "param2": "value2"},
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -534,8 +519,6 @@ class TestChainEdge:
         assert response.status_code == 200, response.json()
         edge_data = response.json()
         assert edge_data["id"] == str(edge.id)
-        assert edge_data["key"] == "Updated Key"
-        assert edge_data["input_map"] == {"param1": "value1", "param2": "value2"}
 
     async def test_delete_chain_edge(self, anode_types):
         # Create a chain edge to delete

@@ -15,13 +15,14 @@ export const useChains = () => {
 export const AgentEditorView = () => {
   const { id } = useParams();
   const {
-    data: agent,
-    load,
+    response,
+    call,
     error: agentError,
-  } = useDetailAPI(`/api/agents/${id}`, { load: false });
+  } = useDetailAPI(`/api/agents/${id}`);
   const { page: chainsPage, error: chainsError } = useChains();
   const chains = chainsPage?.objects;
-  const { isNew, idRef } = useObjectEditorView(id, load);
+  const { isNew, idRef } = useObjectEditorView(id, call);
+  const agent = response?.data;
 
   let content;
   if (!chains) {

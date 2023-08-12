@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from "react";
+import React, { useCallback, useEffect } from "react";
 import { HStack, VStack, Text, Box, useColorModeValue } from "@chakra-ui/react";
 import AssistantAvatar from "chat/AssistantAvatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,7 +6,7 @@ import { faSquareMinus, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import RemoveAgentModalTrigger from "chat/agents/RemoveAgentModalTrigger";
 import AddAgentModalTrigger from "chat/agents/AddAgentModalTrigger";
 import { useColorMode } from "@chakra-ui/color-mode";
-import {usePaginatedAPI} from "utils/hooks/usePaginatedAPI";
+import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
 const AgentListItem = ({ chat, agent, onUpdateAgents }) => {
   const avatarColor = useColorModeValue("gray.700", "gray.400");
@@ -42,14 +42,19 @@ const AgentListItem = ({ chat, agent, onUpdateAgents }) => {
 const SideBarAgentList = ({ graph }) => {
   const { colorMode } = useColorMode();
   const lead = graph.lead;
-  const { load: loadAgents, page: agentPage } = usePaginatedAPI(`/api/agents/`, {limit: 10000, load: false})
+  const { load: loadAgents, page: agentPage } = usePaginatedAPI(
+    `/api/agents/`,
+    { limit: 10000, load: false }
+  );
   const agents = agentPage?.objects;
-  const queryArgs = {chat_id: graph.chat.id};
+  const queryArgs = { chat_id: graph.chat.id };
   const onUpdateAgents = useCallback(() => {
     loadAgents(queryArgs);
   }, [loadAgents]);
 
-  useEffect(() => {loadAgents(queryArgs)}, [loadAgents, graph.chat.id])
+  useEffect(() => {
+    loadAgents(queryArgs);
+  }, [loadAgents, graph.chat.id]);
 
   return (
     <Box
@@ -72,7 +77,11 @@ const SideBarAgentList = ({ graph }) => {
           Agents
         </Text>
         <Box width="100%" align="right">
-          <AddAgentModalTrigger graph={graph} chatAgents={agents} onSuccess={onUpdateAgents}>
+          <AddAgentModalTrigger
+            graph={graph}
+            chatAgents={agents}
+            onSuccess={onUpdateAgents}
+          >
             <FontAwesomeIcon icon={faUserPlus} />
           </AddAgentModalTrigger>
         </Box>

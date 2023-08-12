@@ -1,32 +1,26 @@
-import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import { useAxios } from "utils/hooks/useAxios";
+import { useCallback } from "react";
 
-export const useDetailAPI = (endpoint, { load = true } = {}) => {
-  const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+export const useDetailAPI = (
+  url,
+  { onSuccess, onError, auto = false } = {},
+  dependencies = []
+) => {
+  const { call, isLoading, error, response } = useAxios(
+    { onSuccess, onError, method: "get" },
+    dependencies
+  );
 
-  const loadData = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const response = await axios.get(endpoint);
-      setData(response.data);
-    } catch (err) {
-      setError(err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [endpoint]);
-
-  useEffect(() => {
-    if (load) {
-      loadData();
-    }
-  }, [endpoint, load]);
+  const get = useCallback(
+    (args) => {
+      return call(url, ...(args || []));
+    },
+    [url, call]
+  );
 
   return {
-    data,
-    load: loadData,
+    response,
+    call: get,
     isLoading,
     error,
   };
