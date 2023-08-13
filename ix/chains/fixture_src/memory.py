@@ -26,7 +26,7 @@ SCOPED_MEMORY_FIELDS = [
     {
         "name": "session_scope",
         "type": "string",
-        "input": "select",
+        "input_type": "select",
         "choices": [
             {"label": "chat", "value": "chat"},
             {"label": "agent", "value": "agent"},
