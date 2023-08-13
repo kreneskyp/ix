@@ -523,10 +523,10 @@
       {
         "name": "serper_api_key",
         "type": "str",
-        "input": "secret",
         "label": "Serper_api_key",
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": "secret"
       }
     ],
     "child_field": null,
@@ -730,7 +730,6 @@
       {
         "name": "model_name",
         "type": "string",
-        "input": "select",
         "label": "Model",
         "choices": [
           {
@@ -739,6 +738,7 @@
           }
         ],
         "default": "textembedding-gecko",
+        "input_type": "select",
         "description": "Model name to use"
       }
     ],
@@ -1081,11 +1081,11 @@
       {
         "name": "description",
         "type": "str",
-        "input": "textarea",
         "style": {
           "width": "100%"
         },
-        "default": ""
+        "default": "",
+        "input_type": "textarea"
       },
       {
         "name": "return_direct",
@@ -1638,10 +1638,10 @@
       {
         "name": "mosaicml_api_token",
         "type": "string",
-        "input": "secret",
         "style": {
           "width": "100%"
         },
+        "input_type": "secret",
         "description": "MosaicML API token"
       }
     ],
@@ -1852,8 +1852,7 @@
     "fields": [
       {
         "name": "input_variables",
-        "type": "list",
-        "input": "string"
+        "type": "list"
       },
       {
         "name": "map_input",
@@ -2163,7 +2162,6 @@
       {
         "name": "model_name",
         "type": "string",
-        "input": "select",
         "label": "Model",
         "choices": [
           {
@@ -2173,13 +2171,14 @@
         ],
         "default": "gpt-4",
         "required": true,
+        "input_type": "select",
         "description": "OpenAI model"
       },
       {
         "name": "google_api_key",
         "type": "string",
-        "input": "secret",
         "label": "API Key",
+        "input_type": "secret",
         "description": "Google API key"
       },
       {
@@ -2188,8 +2187,8 @@
         "name": "temperature",
         "step": 0.05,
         "type": "number",
-        "input": "slider",
         "default": 0,
+        "input_type": "slider",
         "description": "Temperature"
       },
       {
@@ -2198,8 +2197,8 @@
         "name": "top_p",
         "step": 0.05,
         "type": "number",
-        "input": "slider",
         "default": 0,
+        "input_type": "slider",
         "description": "Top P"
       },
       {
@@ -2208,8 +2207,8 @@
         "name": "top_k",
         "step": 0.05,
         "type": "number",
-        "input": "slider",
         "default": 0,
+        "input_type": "slider",
         "description": "Top P"
       },
       {
@@ -2218,9 +2217,9 @@
         "name": "n",
         "step": 1,
         "type": "number",
-        "input": "slider",
         "label": "Sample N responses",
         "default": 1,
+        "input_type": "slider",
         "description": "Number of responses to sample"
       },
       {
@@ -2291,17 +2290,17 @@
         "name": "temperature",
         "step": 0.05,
         "type": "number",
-        "input": "slider",
         "default": 0,
+        "input_type": "slider",
         "description": "Temperature"
       },
       {
         "name": "anthropic_api_key",
         "type": "string",
-        "input": "secret",
         "style": {
           "width": "100%"
         },
+        "input_type": "secret",
         "description": "ANTHROPIC_API_KEY"
       },
       {
@@ -2933,7 +2932,6 @@
       {
         "name": "model_name",
         "type": "string",
-        "input": "select",
         "label": "Model",
         "choices": [
           {
@@ -2955,6 +2953,7 @@
         ],
         "default": "gpt-4-0613",
         "required": true,
+        "input_type": "select",
         "description": "OpenAI model"
       },
       {
@@ -2970,8 +2969,8 @@
         "name": "max_retries",
         "step": 1,
         "type": "number",
-        "input": "slider",
         "default": 6,
+        "input_type": "slider",
         "description": "Max Retries"
       },
       {
@@ -2980,8 +2979,8 @@
         "name": "temperature",
         "step": 0.05,
         "type": "number",
-        "input": "slider",
         "default": 0,
+        "input_type": "slider",
         "description": "Temperature"
       },
       {
@@ -3214,8 +3213,8 @@
       {
         "name": "wolfram_alpha_app_id",
         "type": "str",
-        "input": "secret",
-        "label": "Wolfram Alpha App ID"
+        "label": "Wolfram Alpha App ID",
+        "input_type": "secret"
       }
     ],
     "child_field": null,
@@ -3426,7 +3425,6 @@
       {
         "name": "session_scope",
         "type": "string",
-        "input": "select",
         "choices": [
           {
             "label": "chat",
@@ -3444,7 +3442,8 @@
             "label": "user",
             "value": "user"
           }
-        ]
+        ],
+        "input_type": "select"
       },
       {
         "name": "session_prefix",
@@ -3551,18 +3550,18 @@
       {
         "name": "google_api_key",
         "type": "str",
-        "input": "secret",
         "label": "Google_api_key",
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": "secret"
       },
       {
         "name": "google_cse_id",
         "type": "str",
-        "input": "secret",
         "label": "Google_cse_id",
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": "secret"
       },
       {
         "name": "k",
@@ -3803,10 +3802,10 @@
       {
         "name": "bing_subscription_key",
         "type": "str",
-        "input": "secret",
         "label": "Bing_subscription_key",
         "default": null,
-        "required": true
+        "required": true,
+        "input_type": "secret"
       },
       {
         "name": "bing_search_url",

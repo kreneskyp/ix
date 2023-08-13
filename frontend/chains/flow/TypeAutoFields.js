@@ -192,7 +192,7 @@ export const getDefaults = (nodeType) => {
 export const TypeAutoField = ({ field, config, onChange }) => {
   // Select component based on explicit input type, field type, or default in that order.
   const FieldComponent =
-    INPUTS[field.input || TYPE_INPUTS[field.type]] || DEFAULT_COMPONENT;
+    INPUTS[field.input_type || TYPE_INPUTS[field.type]] || DEFAULT_COMPONENT;
   const value =
     config && field.name in config ? config[field.name] : field.default;
 

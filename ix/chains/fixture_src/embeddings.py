@@ -125,7 +125,7 @@ VERTEXAI_EMBEDDINGS = {
             "name": "model_name",
             "label": "Model",
             "type": "string",
-            "input": "select",
+            "input_type": "select",
             "default": "textembedding-gecko",
             "description": "Model name to use",
             "choices": [
@@ -207,7 +207,7 @@ MOSAICML_INSTRUCTOR_EMBEDDINGS = {
         {
             "name": "mosaicml_api_token",
             "type": "string",
-            "input": "secret",
+            "input_type": "secret",
             "description": "MosaicML API token",
             "style": {"width": "100%"},
         },

@@ -8,9 +8,10 @@ from ix.utils.graphene.pagination import QueryPage
 
 
 class InputType(str, Enum):
+    INPUT = "input"
     SLIDER = "slider"
     SECRET = "secret"
-    TEXT = "text"
+    TEXTAREA = "textarea"
     SELECT = "select"
 
 
@@ -80,7 +81,7 @@ class NodeTypeField(BaseModel):
     type: str
     default: Optional[Any]
     required: bool = True
-    input_type: InputType = InputType.TEXT
+    input_type: InputType = None
     min: Optional[float] = None
     max: Optional[float] = None
     choices: Optional[List[Choice]] = None
