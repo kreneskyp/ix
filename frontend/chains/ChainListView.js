@@ -12,6 +12,7 @@ export const ChainListView = () => {
   const location = useLocation();
   const { page, isLoading } = usePaginatedAPI("/api/chains/", {
     loadDependencies: [location],
+    limit: 90000,
   });
 
   return (

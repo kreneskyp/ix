@@ -11,6 +11,7 @@ export const AgentsListView = () => {
   const location = useLocation();
   const { page, isLoading } = usePaginatedAPI("/api/agents/", {
     loadDependencies: [location],
+    limit: 90000,
   });
 
   return (
