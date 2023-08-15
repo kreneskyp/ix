@@ -51,7 +51,7 @@ export const PropertyTarget = ({ connector }) => {
         id={connector.key}
         type="target"
         position={
-          CONNECTOR_CONFIG[connector.sourceType]?.target_position || "left"
+          CONNECTOR_CONFIG[connector.source_type]?.target_position || "left"
         }
       />
       <Box px={2} m={0}>
@@ -69,7 +69,7 @@ export const NodeProperties = ({ type }) => {
   const right = [];
   propertyTargets?.forEach((connector) => {
     const position =
-      CONNECTOR_CONFIG[connector.sourceType]?.target_position || "left";
+      CONNECTOR_CONFIG[connector.source_type]?.target_position || "left";
     if (position === "right") {
       right.push(connector);
     } else {
