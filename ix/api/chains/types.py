@@ -280,13 +280,20 @@ class Edge(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     source_id: UUID
     target_id: UUID
-    key: str
+    key: Optional[str]
     chain_id: UUID
     relation: Literal["LINK", "PROP"]
     input_map: Optional[dict]
 
     class Config:
         orm_mode = True
+
+    @root_validator
+    def validate_edge(cls, values):
+        if values.get("relation") == "PROP" and not values.get("key"):
+            raise ValueError("'key' is required for 'PROP' relation type.")
+
+        return values
 
 
 class PositionUpdate(BaseModel):
