@@ -14,6 +14,7 @@ import { AgentGeneralEditor } from "agents/AgentGeneralEditor";
 import { AgentMetricsPanel } from "agents/AgentMetricsPanel";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCreateUpdateAPI } from "utils/hooks/useCreateUpdateAPI";
+import { APIErrorList } from "components/APIErrorList";
 
 export const AgentEditor = ({ agent, chains }) => {
   const { id } = useParams();
@@ -43,7 +44,7 @@ export const AgentEditor = ({ agent, chains }) => {
     } catch (error) {
       toast({
         title: "Error",
-        description: `Failed to save the agent: ${error}`,
+        description: <APIErrorList error={error} />,
         status: "error",
         duration: 5000,
         isClosable: true,
