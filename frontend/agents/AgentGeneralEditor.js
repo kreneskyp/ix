@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { AGENT_MODELS } from "chains/constants";
+import { RequiredAsterisk } from "components/RequiredAsterisk";
 
 export const AgentGeneralEditor = ({ agentData, setAgentData, chains }) => {
   const ModelConfigForm = AGENT_MODELS[agentData?.model]?.configComponent;
@@ -23,14 +24,18 @@ export const AgentGeneralEditor = ({ agentData, setAgentData, chains }) => {
   return (
     <VStack spacing={4}>
       <FormControl>
-        <FormLabel>Agent Name</FormLabel>
+        <FormLabel>
+          Agent Name <RequiredAsterisk />
+        </FormLabel>
         <Input
           placeholder="Model"
           value={agentData?.name || ""}
           p={5}
           onChange={(e) => setAgentData({ ...agentData, name: e.target.value })}
         />
-        <FormLabel>Alias (chat tag)</FormLabel>
+        <FormLabel>
+          Alias (chat tag) <RequiredAsterisk />
+        </FormLabel>
         <Input
           placeholder="alias"
           value={agentData?.alias || ""}
@@ -39,7 +44,9 @@ export const AgentGeneralEditor = ({ agentData, setAgentData, chains }) => {
             setAgentData({ ...agentData, alias: e.target.value })
           }
         />
-        <FormLabel>Purpose</FormLabel>
+        <FormLabel>
+          Purpose <RequiredAsterisk />
+        </FormLabel>
         <Input
           placeholder="Purpose"
           value={agentData?.purpose || ""}
@@ -48,7 +55,9 @@ export const AgentGeneralEditor = ({ agentData, setAgentData, chains }) => {
           }
         />
         <Divider my={10} />
-        <FormLabel>Chain</FormLabel>
+        <FormLabel>
+          Chain <RequiredAsterisk />
+        </FormLabel>
         <Box p={5} my={5} bg="blackAlpha.300">
           The agent's chain is called in response to inputs. The chain defines
           the behavior and capabilities of the agent.
