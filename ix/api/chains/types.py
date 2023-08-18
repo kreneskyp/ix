@@ -1,6 +1,19 @@
+import inspect
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Dict, List, Any, Optional, Type, Literal, get_args, get_origin, Union
+from typing import (
+    Dict,
+    List,
+    Any,
+    Optional,
+    Type,
+    Literal,
+    get_args,
+    get_origin,
+    Union,
+    Callable,
+)
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field, root_validator
 
@@ -55,12 +68,28 @@ class Position(BaseModel):
     y: float
 
 
+@dataclass
+class ParsedField:
+    """Field parsed from a pydantic model or a method signature."""
+
+    name: str
+    type_: Any
+    default: Any = None
+    required: bool = False
+    choices: List[Dict[str, str]] = None
+
+
+def parse_enum_choices(enum_cls: Enum) -> List[Dict[str, str]]:
+    return [{"label": lang.name, "value": lang.value} for lang in enum_cls]
+
+
 class NodeTypeField(BaseModel):
     """
     Represents a field in a component that can be configured. This includes both
     typing information and UX information.
 
-    This class includes `get_fields` helper for auto-importing fields from a Pydantic model.
+    This class includes `get_fields_from_model` and `get_fields_from_method` helpers
+     for auto-importing fields from Pydantic model and python methods respectively.
 
     Args:
         name (str): The name of the field. Used to set and retrieve the value on the object.
@@ -107,28 +136,87 @@ class NodeTypeField(BaseModel):
 
         return values
 
-    @staticmethod
-    def get_fields(
+    @classmethod
+    def get_fields_from_model(
+        cls,
         model: Type[BaseModel],
         include: Optional[List[str]] = None,
         exclude: Optional[List[str]] = None,
         field_options: Optional[Dict[str, Dict[str, Any]]] = None,
     ) -> List[Dict[str, Any]]:
-        """Import fields from a pydantic model."""
+        field_objs = []
+
+        for field_name, field_type in model.__annotations__.items():
+            if include and field_name not in include:
+                continue
+            if exclude and field_name in exclude:
+                continue
+
+            if isinstance(field_type, type) and issubclass(field_type, BaseModel):
+                continue
+            model_field = model.__fields__.get(field_name)
+            field_objs.append(
+                ParsedField(
+                    name=field_name,
+                    type_=field_type,
+                    default=model_field.default,
+                    required=model_field.required,
+                )
+            )
+
+        return cls.get_fields(field_objs, field_options)
+
+    @classmethod
+    def get_fields_from_method(
+        cls,
+        method: Callable,
+        include: Optional[List[str]] = None,
+        exclude: Optional[List[str]] = None,
+        field_options: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> List[Dict[str, Any]]:
         fields = []
-        exclude = exclude or []
-        include = include or []
+        signature = inspect.signature(method)
 
-        for field_name, field in model.__annotations__.items():
-            origin = get_origin(field)
+        for param_name, param in signature.parameters.items():
+            if include and param_name not in include:
+                continue
+            if exclude and param_name in exclude:
+                continue
+
+            if param.default is inspect._empty:
+                is_required = True
+                default = None
+            else:
+                is_required = False
+                default = param.default
+            fields.append(
+                ParsedField(
+                    name=param_name,
+                    type_=param.annotation,
+                    default=default,
+                    required=is_required,
+                )
+            )
+
+        return cls.get_fields(fields, field_options)
+
+    @staticmethod
+    def get_fields(
+        fields: List[ParsedField],
+        field_options: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> List[Dict[str, Any]]:
+        results = []
+
+        for field in fields:
+            origin = get_origin(field.type_)
             is_literal = origin is Literal
-            _is_optional = is_optional(field)
+            _is_optional = is_optional(field.type_)
 
-            root_field = field
+            root_field = field.type_
             if is_literal:
                 root_field = str
             elif _is_optional:
-                root_field = get_args(field)[0]
+                root_field = get_args(field.type_)[0]
 
             if root_field is bool:
                 # Backwards compatibility for "boolean" type
@@ -137,33 +225,26 @@ class NodeTypeField(BaseModel):
             else:
                 field_type_name = getattr(root_field, "__name__", str(root_field))
 
-            if field_name in exclude:
-                continue
-            if include and field_name not in include:
-                continue
-            if isinstance(field, type) and issubclass(field, BaseModel):
-                continue
-
-            model_field = model.__fields__.get(field_name)
             field_info = {
-                "name": field_name,
-                "label": cap_first(field_name),
+                "name": field.name,
+                "label": cap_first(field.name),
                 "type": field_type_name,
-                "default": model_field.default,
-                "required": model_field.required,
+                "default": field.default,
+                "required": field.required,
             }
 
             if is_literal:
                 field_info["choices"] = [
-                    {"label": cap_first(arg), "value": arg} for arg in get_args(field)
+                    {"label": cap_first(arg), "value": arg}
+                    for arg in get_args(field.type_)
                 ]
 
-            if field_options and field_name in field_options:
-                field_info.update(field_options[field_name])
+            if field_options and field.name in field_options:
+                field_info.update(field_options[field.name])
 
-            fields.append(field_info)
+            results.append(field_info)
 
-        return fields
+        return results
 
 
 NodeTypes = Literal[
