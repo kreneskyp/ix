@@ -11,12 +11,14 @@ from django.core.management import call_command
 from ix.agents.models import Agent
 from ix.agents.tests.mock_llm import MockChatOpenAI
 from ix.chains.callbacks import IxHandler
+from ix.chains.fixture_src.embeddings import OPENAI_EMBEDDINGS_CLASS_PATH
 from ix.chains.loaders.context import IxContext
 from ix.chains.management.commands.create_ix_v2 import (
     IX_CHAIN_V2,
 )
 
 from ix.chains.models import Chain, ChainNode, NodeType
+from ix.chains.tests.mock_vector_embeddings import MOCK_VECTORSTORE_EMBEDDINGS
 from ix.task_log.models import Artifact, Task
 from ix.task_log.tests.fake import (
     fake_task,
@@ -163,6 +165,21 @@ def mock_openai_streaming(mocker, mock_openai_key):
 
     # return the mock instance
     yield mock_llm
+
+
+@pytest.fixture
+def mock_openai_embeddings(mock_import_class, mock_openai_key):
+    """Mocks OpenAIEmbeddings to return a mock response
+
+    The mock embedding was generated for files test_data/documents
+    with the real OpenAIEmbeddings component
+    """
+    mock_instance = MagicMock()
+    mock_instance().embed_documents.return_value = MOCK_VECTORSTORE_EMBEDDINGS
+    mock_import_class(
+        OPENAI_EMBEDDINGS_CLASS_PATH,
+        mock_instance,
+    )
 
 
 @pytest.fixture
