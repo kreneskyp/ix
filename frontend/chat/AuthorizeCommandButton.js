@@ -3,7 +3,7 @@ import { Button, useToast } from "@chakra-ui/react";
 
 export const AuthorizeCommandButton = ({ messageId }) => {
   // no-op until this endpoint is created.
-  const authorizeCommand = () => { };
+  const authorizeCommand = () => {};
   const toast = useToast();
 
   const handleClick = async () => {
