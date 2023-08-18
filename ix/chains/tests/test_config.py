@@ -1,8 +1,14 @@
+from enum import Enum
 from typing import Literal, Optional
 
 import pytest
 from pydantic import BaseModel
 from ix.api.chains.types import NodeTypeField, InputType
+
+
+class ChoicesEnum(str, Enum):
+    CPP = "cpp"
+    GO = "go"
 
 
 class TestModel(BaseModel):
@@ -11,6 +17,7 @@ class TestModel(BaseModel):
     field3: bool = False
     literal: Literal["foo", "bar"] = "bar"
     optional: Optional[str] = None
+    choices_enum: ChoicesEnum
 
     @staticmethod
     def loader(
@@ -110,6 +117,7 @@ class GetFieldsBase:
                 "name": "literal",
                 "label": "Literal",
                 "type": "str",
+                "input_type": "select",
                 "default": "bar",
                 "required": False,
                 "choices": [
@@ -173,6 +181,28 @@ class GetFieldsBase:
             )
             == expected_fields_exclude
         )
+
+    def test_get_enum_choices(self, field_overrides):
+        expected = [
+            {
+                "name": "choices_enum",
+                "label": "Choices_enum",
+                "default": None,
+                "type": "str",
+                "input_type": "select",
+                "required": True,
+                "choices": [
+                    {"label": "CPP", "value": "cpp"},
+                    {"label": "GO", "value": "go"},
+                ],
+            },
+        ]
+
+        fields = self.get_fields(
+            TestModel,
+            include=["choices_enum"],
+        )
+        assert fields == expected
 
 
 class TestGetFieldsFromModel(GetFieldsBase):

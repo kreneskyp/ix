@@ -80,7 +80,10 @@ class ParsedField:
 
 
 def parse_enum_choices(enum_cls: Enum) -> List[Dict[str, str]]:
-    return [{"label": lang.name, "value": lang.value} for lang in enum_cls]
+    return [
+        {"label": name, "value": value.value}
+        for name, value in enum_cls.__members__.items()
+    ]
 
 
 class NodeTypeField(BaseModel):
@@ -189,6 +192,7 @@ class NodeTypeField(BaseModel):
             else:
                 is_required = False
                 default = param.default
+
             fields.append(
                 ParsedField(
                     name=param_name,
@@ -238,6 +242,12 @@ class NodeTypeField(BaseModel):
                     {"label": cap_first(arg), "value": arg}
                     for arg in get_args(field.type_)
                 ]
+            elif isinstance(root_field, type) and issubclass(root_field, Enum):
+                field_info["type"] = "str"
+                field_info["choices"] = parse_enum_choices(root_field)
+
+            if field_info.get("choices", None):
+                field_info["input_type"] = "select"
 
             if field_options and field.name in field_options:
                 field_info.update(field_options[field.name])

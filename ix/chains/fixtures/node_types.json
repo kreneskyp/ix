@@ -511,7 +511,8 @@
           }
         ],
         "default": "search",
-        "required": false
+        "required": false,
+        "input_type": "select"
       },
       {
         "name": "tbs",
@@ -554,6 +555,12 @@
           "default": null
         },
         "type": {
+          "enum": [
+            "news",
+            "search",
+            "places",
+            "images"
+          ],
           "type": "string",
           "default": "search"
         },
