@@ -511,7 +511,8 @@
           }
         ],
         "default": "search",
-        "required": false
+        "required": false,
+        "input_type": "select"
       },
       {
         "name": "tbs",
@@ -554,6 +555,12 @@
           "default": null
         },
         "type": {
+          "enum": [
+            "news",
+            "search",
+            "places",
+            "images"
+          ],
           "type": "string",
           "default": "search"
         },
@@ -750,6 +757,9 @@
       ],
       "properties": {
         "model_name": {
+          "enum": [
+            "textembedding-gecko"
+          ],
           "type": "string",
           "default": "textembedding-gecko"
         }
@@ -2243,27 +2253,42 @@
       "properties": {
         "n": {
           "type": "number",
-          "default": 1
+          "default": 1,
+          "maximum": 5.0,
+          "minimum": 1.0,
+          "multipleOf": 1.0
         },
         "top_k": {
           "type": "number",
-          "default": 0
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
         },
         "top_p": {
           "type": "number",
-          "default": 0
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
         },
         "verbose": {
           "type": "boolean",
           "default": false
         },
         "model_name": {
+          "enum": [
+            "models/chat-bison-001"
+          ],
           "type": "string",
           "default": "gpt-4"
         },
         "temperature": {
           "type": "number",
-          "default": 0
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
         },
         "google_api_key": {
           "type": "string",
@@ -2324,7 +2349,10 @@
       "properties": {
         "temperature": {
           "type": "number",
-          "default": 0
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
         },
         "anthropic_api_key": {
           "type": "string",
@@ -2590,24 +2618,10 @@
         "required": false
       },
       {
-        "name": "load_max_docs",
-        "type": "int",
-        "label": "Load_max_docs",
-        "default": 25,
-        "required": false
-      },
-      {
         "name": "doc_content_chars_max",
         "type": "int",
         "label": "Doc_content_chars_max",
         "default": 2000,
-        "required": false
-      },
-      {
-        "name": "load_all_available_meta",
-        "type": "boolean",
-        "label": "Load_all_available_meta",
-        "default": false,
         "required": false
       },
       {
@@ -2634,10 +2648,6 @@
           "type": "boolean",
           "default": false
         },
-        "load_max_docs": {
-          "type": "number",
-          "default": 25
-        },
         "return_direct": {
           "type": "boolean",
           "default": false
@@ -2649,10 +2659,6 @@
         "doc_content_chars_max": {
           "type": "number",
           "default": 2000
-        },
-        "load_all_available_meta": {
-          "type": "boolean",
-          "default": false
         }
       }
     }
@@ -3025,16 +3031,28 @@
           "default": 256
         },
         "model_name": {
+          "enum": [
+            "gpt-4",
+            "gpt-4-0613",
+            "gpt-3.5-turbo",
+            "gpt-3.5-turbo-16k-0613"
+          ],
           "type": "string",
           "default": "gpt-4-0613"
         },
         "max_retries": {
           "type": "number",
-          "default": 6
+          "default": 6,
+          "maximum": 6.0,
+          "minimum": 0.0,
+          "multipleOf": 1.0
         },
         "temperature": {
           "type": "number",
-          "default": 0
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
         },
         "request_timeout": {
           "type": "number",
@@ -3480,6 +3498,12 @@
           "default": "session_id"
         },
         "session_scope": {
+          "enum": [
+            "chat",
+            "agent",
+            "task",
+            "user"
+          ],
           "type": "string",
           "default": null
         },
