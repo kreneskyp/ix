@@ -1036,18 +1036,64 @@
           }
         ],
         "default": "text-embedding-ada-002"
+      },
+      {
+        "name": "allowed_special",
+        "type": "list"
+      },
+      {
+        "name": "disallowed_special",
+        "type": "list",
+        "default": "all"
+      },
+      {
+        "name": "chunk_size",
+        "type": "int",
+        "default": 1000
+      },
+      {
+        "max": 6,
+        "min": 0,
+        "name": "max_retries",
+        "step": 1,
+        "type": "int",
+        "default": "6",
+        "input_type": "slider"
       }
     ],
     "child_field": null,
     "config_schema": {
       "type": "object",
       "required": [
-        "model"
+        "model",
+        "allowed_special",
+        "disallowed_special",
+        "chunk_size",
+        "max_retries"
       ],
       "properties": {
         "model": {
           "type": "string",
           "default": "text-embedding-ada-002"
+        },
+        "chunk_size": {
+          "type": "number",
+          "default": 1000
+        },
+        "max_retries": {
+          "type": "number",
+          "default": "6",
+          "maximum": 6.0,
+          "minimum": 0.0,
+          "multipleOf": 1.0
+        },
+        "allowed_special": {
+          "type": "object",
+          "default": null
+        },
+        "disallowed_special": {
+          "type": "object",
+          "default": "all"
         }
       }
     }

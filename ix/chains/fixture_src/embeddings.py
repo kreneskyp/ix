@@ -1,7 +1,8 @@
+OPENAI_EMBEDDINGS_CLASS_PATH = "langchain.embeddings.openai.OpenAIEmbeddings"
 OPENAI_EMBEDDINGS = {
     "name": "OpenAI Embeddings",
     "description": "Embeddings from OpenAI's API.",
-    "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
+    "class_path": OPENAI_EMBEDDINGS_CLASS_PATH,
     "type": "embeddings",
     "fields": [
         {
@@ -11,7 +12,30 @@ OPENAI_EMBEDDINGS = {
             "choices": [
                 {"name": "text-embedding-ada-002", "label": "text-embedding-ada-002"},
             ],
-        }
+        },
+        {
+            "name": "allowed_special",
+            "type": "list",
+        },
+        {
+            "name": "disallowed_special",
+            "type": "list",
+            "default": "all",
+        },
+        {
+            "name": "chunk_size",
+            "type": "int",
+            "default": 1000,
+        },
+        {
+            "name": "max_retries",
+            "type": "int",
+            "default": "6",
+            "min": 0,
+            "max": 6,
+            "step": 1,
+            "input_type": "slider",
+        },
     ],
 }
 
