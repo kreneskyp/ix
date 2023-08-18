@@ -45,7 +45,7 @@ ARXIV_SEARCH = {
     "name": " search",
     "description": "Tool that searches Arxiv for a given query.",
     "fields": TOOL_BASE_FIELDS
-    + NodeTypeField.get_fields(
+    + NodeTypeField.get_fields_from_model(
         ArxivAPIWrapper,
         include=[
             "top_k_results",
@@ -63,7 +63,7 @@ BING_SEARCH = {
     "name": "Bing Search",
     "description": "Tool that searches Bing for a given query.",
     "fields": TOOL_BASE_FIELDS
-    + NodeTypeField.get_fields(
+    + NodeTypeField.get_fields_from_model(
         BingSearchAPIWrapper,
         include=["bing_subscription_key", "bing_search_url", "k"],
         field_options={
@@ -92,7 +92,7 @@ DUCK_DUCK_GO_SEARCH = {
     "name": "DuckDuckGo Search",
     "description": "Tool that searches DuckDuckGo for a given query.",
     "fields": TOOL_BASE_FIELDS
-    + NodeTypeField.get_fields(
+    + NodeTypeField.get_fields_from_model(
         DuckDuckGoSearchAPIWrapper,
         include=["k", "region", "safesearch", "time", "max_results"],
     ),
@@ -104,7 +104,7 @@ GOOGLE_SEARCH = {
     "name": "Google Search",
     "description": "Tool that searches Google for a given query.",
     "fields": TOOL_BASE_FIELDS
-    + NodeTypeField.get_fields(
+    + NodeTypeField.get_fields_from_model(
         GoogleSearchAPIWrapper,
         include=["google_api_key", "google_cse_id", "k", "siterestrict"],
         field_options={
@@ -124,7 +124,7 @@ GOOGLE_SERPER = {
     "name": "Google Serper",
     "description": "Tool that searches Google for a given query.",
     "fields": TOOL_BASE_FIELDS
-    + NodeTypeField.get_fields(
+    + NodeTypeField.get_fields_from_model(
         GoogleSerperAPIWrapper,
         include=["k", "gl", "hl", "type", "tbs", "serper_api_key"],
         field_options={
@@ -141,7 +141,9 @@ GRAPHQL_TOOL = {
     "name": "GraphQL Tool",
     "description": "Tool that searches GraphQL for a given query.",
     "fields": TOOL_BASE_FIELDS
-    + NodeTypeField.get_fields(GraphQLAPIWrapper, include=["graphql_endpoint"]),
+    + NodeTypeField.get_fields_from_model(
+        GraphQLAPIWrapper, include=["graphql_endpoint"]
+    ),
 }
 
 LAMBDA_API = {
@@ -150,7 +152,7 @@ LAMBDA_API = {
     "name": "Lambda API",
     "description": "Tool that searches Lambda for a given query.",
     "fields": TOOL_BASE_FIELDS
-    + NodeTypeField.get_fields(
+    + NodeTypeField.get_fields_from_model(
         LambdaWrapper,
         include=["function_name", "awslambda_tool_name", "awslambda_tool_description"],
     ),
@@ -162,15 +164,13 @@ PUB_MED = {
     "class_path": "ix.tools.pubmed.get_pubmed",
     "type": "tool",
     "fields": TOOL_BASE_FIELDS
-    + NodeTypeField.get_fields(
+    + NodeTypeField.get_fields_from_model(
         PubMedAPIWrapper,
         include=[
             "max_retry",
             "top_k_results",
-            "load_max_docs",
             "ARXIV_MAX_QUERY_LENGTH",
             "doc_content_chars_max",
-            "load_all_available_meta",
             "email",
         ],
     ),
@@ -182,7 +182,7 @@ WIKIPEDIA = {
     "class_path": "ix.tools.wikipedia.get_wikipedia",
     "type": "tool",
     "fields": TOOL_BASE_FIELDS
-    + NodeTypeField.get_fields(
+    + NodeTypeField.get_fields_from_model(
         WikipediaAPIWrapper,
         include=[
             "top_k_results",
