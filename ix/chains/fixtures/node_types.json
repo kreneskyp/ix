@@ -2246,15 +2246,24 @@
       "properties": {
         "n": {
           "type": "number",
-          "default": 1
+          "default": 1,
+          "maximum": 5.0,
+          "minimum": 1.0,
+          "multipleOf": 1.0
         },
         "top_k": {
           "type": "number",
-          "default": 0
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
         },
         "top_p": {
           "type": "number",
-          "default": 0
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
         },
         "verbose": {
           "type": "boolean",
@@ -2269,7 +2278,10 @@
         },
         "temperature": {
           "type": "number",
-          "default": 0
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
         },
         "google_api_key": {
           "type": "string",
@@ -2330,7 +2342,10 @@
       "properties": {
         "temperature": {
           "type": "number",
-          "default": 0
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
         },
         "anthropic_api_key": {
           "type": "string",
@@ -3042,11 +3057,17 @@
         },
         "max_retries": {
           "type": "number",
-          "default": 6
+          "default": 6,
+          "maximum": 6.0,
+          "minimum": 0.0,
+          "multipleOf": 1.0
         },
         "temperature": {
           "type": "number",
-          "default": 0
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
         },
         "request_timeout": {
           "type": "number",
