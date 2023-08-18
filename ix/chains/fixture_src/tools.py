@@ -167,10 +167,8 @@ PUB_MED = {
         include=[
             "max_retry",
             "top_k_results",
-            "load_max_docs",
             "ARXIV_MAX_QUERY_LENGTH",
             "doc_content_chars_max",
-            "load_all_available_meta",
             "email",
         ],
     ),

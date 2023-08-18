@@ -2611,24 +2611,10 @@
         "required": false
       },
       {
-        "name": "load_max_docs",
-        "type": "int",
-        "label": "Load_max_docs",
-        "default": 25,
-        "required": false
-      },
-      {
         "name": "doc_content_chars_max",
         "type": "int",
         "label": "Doc_content_chars_max",
         "default": 2000,
-        "required": false
-      },
-      {
-        "name": "load_all_available_meta",
-        "type": "boolean",
-        "label": "Load_all_available_meta",
-        "default": false,
         "required": false
       },
       {
@@ -2655,10 +2641,6 @@
           "type": "boolean",
           "default": false
         },
-        "load_max_docs": {
-          "type": "number",
-          "default": 25
-        },
         "return_direct": {
           "type": "boolean",
           "default": false
@@ -2670,10 +2652,6 @@
         "doc_content_chars_max": {
           "type": "number",
           "default": 2000
-        },
-        "load_all_available_meta": {
-          "type": "boolean",
-          "default": false
         }
       }
     }
