@@ -28,7 +28,7 @@ from ix.task_log.tests.fake import (
     afake_think,
     afake_task,
 )
-from ix.utils.importlib import import_class
+from ix.utils.importlib import import_class, _import_class
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +43,28 @@ def clean_redis():
     redis_client.flushall()
     yield
     redis_client.flushall()
+
+
+@pytest.fixture
+def mock_import_class(mocker):
+    """Fixture for mocking import_class.
+
+    Used to mock specific components (e.g. OpenAIEmbeddings) in tests.
+    """
+    original_import_class = _import_class
+    mock_class_paths = {}
+
+    def mock_fn(class_path):
+        if class_path in mock_class_paths:
+            return mock_class_paths[class_path]
+        else:
+            return original_import_class(class_path)
+
+    def add_mock_path(class_path, mock_result):
+        mock_class_paths[class_path] = mock_result
+
+    mocker.patch("ix.utils.importlib._import_class", side_effect=mock_fn)
+    return add_mock_path
 
 
 @pytest.fixture
