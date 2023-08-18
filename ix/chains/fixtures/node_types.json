@@ -750,6 +750,9 @@
       ],
       "properties": {
         "model_name": {
+          "enum": [
+            "textembedding-gecko"
+          ],
           "type": "string",
           "default": "textembedding-gecko"
         }
@@ -2258,6 +2261,9 @@
           "default": false
         },
         "model_name": {
+          "enum": [
+            "models/chat-bison-001"
+          ],
           "type": "string",
           "default": "gpt-4"
         },
@@ -3025,6 +3031,12 @@
           "default": 256
         },
         "model_name": {
+          "enum": [
+            "gpt-4",
+            "gpt-4-0613",
+            "gpt-3.5-turbo",
+            "gpt-3.5-turbo-16k-0613"
+          ],
           "type": "string",
           "default": "gpt-4-0613"
         },
@@ -3480,6 +3492,12 @@
           "default": "session_id"
         },
         "session_scope": {
+          "enum": [
+            "chat",
+            "agent",
+            "task",
+            "user"
+          ],
           "type": "string",
           "default": null
         },
