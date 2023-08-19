@@ -53,13 +53,13 @@ class AgentProcess:
                 f"Sending request to chain={self.chain.name} prompt={user_input}"
             )
 
-            # auto-map user_input to input if not provided.
+            # auto-map user_input to other input keys if not provided.
             # work around until chat input key can be configured per chain
             extra_kwargs = {}
             if "input" not in user_input:
                 extra_kwargs["input"] = user_input["user_input"]
-
-            # Hax: copy user_input to input to support agents.
+            if "question" not in user_input:
+                extra_kwargs["question"] = user_input["user_input"]
 
             return await chain.arun(callbacks=[handler], **extra_kwargs, **user_input)
         except Exception as e:

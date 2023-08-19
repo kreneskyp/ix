@@ -1,9 +1,8 @@
 EMBEDDINGS_TARGET = {
-    "key": "embeddings",
+    "key": "embedding",
     "type": "target",
     "source_type": "embeddings",
 }
-
 
 LLM_TARGET = {
     "key": "llm",
