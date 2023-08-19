@@ -19,7 +19,9 @@ logger = logging.getLogger(__name__)
 
 def get_node_loader(name: str) -> Callable:
     """
-    Get a node config loader by node type
+    Get a node config loader by node type.
+
+    Used to manipulate a nodes config before loading it
     """
     from ix.chains.loaders.memory import load_memory_config
     from ix.chains.loaders.memory import load_chat_memory_backend_config
@@ -37,6 +39,17 @@ def get_property_loader(name: str) -> Callable:
     return {
         "memory": load_memory_property,
     }.get(name, None)
+
+
+def get_node_initializer(node_type: str) -> Callable:
+    """Get a node initializer
+
+    Fetches a custom initializer to be used instead of the class initializer.
+    Used to add shims around specific types of nodes.
+    """
+
+    return {
+    }.get(node_type, None)
 
 
 def get_sequence_inputs(sequence: List[LangchainChain]) -> List[str]:
@@ -121,10 +134,15 @@ def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
                     raise ValueError(f"Multiple values for {key} not allowed")
                 config[key] = load_node(node_group[0], context, root=False)
 
+    # load component class and initialize. A type specific initializer may be used here
+    # for initialization common to all components of that type.
     node_class = import_node_class(node.class_path)
-
+    node_initializer = get_node_initializer(node_type.type)
     try:
-        instance = node_class(**config)
+        if node_initializer:
+            instance = node_initializer(node.class_path, config)
+        else:
+            instance = node_class(**config)
     except Exception:
         logger.error(f"Exception loading node class={node.class_path}")
         raise
