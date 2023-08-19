@@ -1,4 +1,3 @@
-from langchain.vectorstores import Chroma, PGVector
 from langchain.vectorstores.base import VectorStoreRetriever
 from langchain.vectorstores.redis import RedisVectorStoreRetriever
 
