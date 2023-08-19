@@ -86,12 +86,18 @@ def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
         node_group = [edge.source for edge in edges]
         logger.debug(f"Loading property key={key} node_group={node_group}")
 
+        # choose the type the incoming connection is processed as. If the source node
+        # will be converted to another type, use the as_type defined on the connection
+        # this allows a single property loader to encapsulate any necessary conversions.
+        # e.g. retriever converting Vectorstore.
+        connector = node_type.connectors_as_dict[key]
+        as_type = connector.get("as_type", None) or node_group[0].node_type.type
+
         if node_group[0].node_type.type in {"chain", "agent"}:
             # load a sequence of linked nodes into a children property
             # this supports loading as a list of chains or auto-SequentialChain
             first_instance = load_node(node_group[0], context, root=False)
             sequence = load_sequence(node_group[0], first_instance, context)
-            connector = node_type.connectors_as_dict[key]
             if connector.get("auto_sequence", True):
                 input_variables = get_sequence_inputs(sequence)
                 config[key] = SequentialChain(
@@ -99,14 +105,14 @@ def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
                 )
             else:
                 config[key] = sequence
-        elif property_loader := get_property_loader(node_group[0].node_type.type):
+        elif property_loader := get_property_loader(as_type):
             # load type specific config options. This is generally for loading
             # ix specific features into the config dict
             logger.debug(f"Loading with property loader for type={node_type.type}")
             config[key] = property_loader(node_group, context)
         else:
             # default recursive loading
-            if node_type.connectors_as_dict[key].get("multiple", False):
+            if connector.get("multiple", False):
                 config[key] = [
                     prop_node.load(context, root=False) for prop_node in node_group
                 ]

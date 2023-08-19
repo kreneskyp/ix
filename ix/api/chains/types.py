@@ -289,6 +289,10 @@ class Connector(BaseModel):
     # can't be checked in JS so these categories are used for a proxy instead.
     source_type: NodeTypes | List[NodeTypes]
 
+    # The object type this should be converted to. Used when the source will
+    # be converted to another type. e.g. VectorStore.as_retriever()
+    as_type: Optional[NodeTypes]
+
     # Allow more than one connection to this connector
     multiple: bool = False
 
