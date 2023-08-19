@@ -3894,6 +3894,116 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "dbcd3e60-e809-4074-b69a-042d08aeaf26",
+  "fields": {
+    "name": "ConversationalRetrievalChain",
+    "description": "Chain for having a conversation based on retrieved documents.",
+    "class_path": "langchain.chains.conversational_retrieval.base.ConversationalRetrievalChain.from_llm",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "retriever",
+        "type": "target",
+        "as_type": "retriever",
+        "source_type": "vectorstore"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "output_key",
+        "type": "str",
+        "label": "Output_key",
+        "default": "answer",
+        "required": false
+      },
+      {
+        "name": "rephrase_question",
+        "type": "bool",
+        "label": "Rephrase_question",
+        "default": true,
+        "required": false
+      },
+      {
+        "name": "return_source_documents",
+        "type": "bool",
+        "label": "Return_source_documents",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "return_generated_question",
+        "type": "bool",
+        "label": "Return_generated_question",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "max_tokens_limit",
+        "type": "Optional[int]",
+        "label": "Max_tokens_limit",
+        "default": null,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "output_key": {
+          "type": "string",
+          "default": "answer"
+        },
+        "max_tokens_limit": {
+          "type": "object",
+          "default": null
+        },
+        "rephrase_question": {
+          "type": "boolean",
+          "default": true
+        },
+        "return_source_documents": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_generated_question": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "dcc54f24-fa74-474f-986d-3ed2bb65b860",
   "fields": {
     "name": "Filesystem Memory Backend",
