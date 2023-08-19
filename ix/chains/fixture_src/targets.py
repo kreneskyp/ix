@@ -55,12 +55,6 @@ FUNCTION_TARGET = {
     "multiple": True,
 }
 
-OUTPUT_PARSER_TARGET = {
-    "key": "output_parser",
-    "type": "target",
-    "source_type": "output_parser",
-}
-
 VECTORSTORE_TARGET = {
     "key": "vectorstore",
     "type": "target",
