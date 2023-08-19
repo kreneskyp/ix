@@ -582,6 +582,276 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "24959705-d346-405b-9d8f-1de3e5490b7e",
+  "fields": {
+    "name": "Redis Vector Store",
+    "description": "Redis Vector Store",
+    "class_path": "ix.chains.components.vectorstores.AsyncRedisVectorstore",
+    "type": "vectorstore",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "embedding",
+        "type": "target",
+        "source_type": "embeddings"
+      },
+      {
+        "key": "documents",
+        "type": "target",
+        "source_type": "text_splitter"
+      }
+    ],
+    "fields": [
+      {
+        "name": "redis_url",
+        "type": "string",
+        "style": {
+          "width": "100%"
+        },
+        "default": "redis://redis:6379/0",
+        "description": "URL of the Redis server"
+      },
+      {
+        "name": "index_name",
+        "type": "string",
+        "description": "Name of the index in the Redis"
+      },
+      {
+        "name": "content_key",
+        "type": "string",
+        "default": "content",
+        "description": "Key for storing content"
+      },
+      {
+        "name": "metadata_key",
+        "type": "string",
+        "default": "metadata",
+        "description": "Key for storing metadata"
+      },
+      {
+        "name": "vector_key",
+        "type": "string",
+        "default": "content_vector",
+        "description": "Key for storing vectors"
+      },
+      {
+        "name": "allowed_search_types",
+        "type": "list",
+        "default": [
+          "similarity",
+          "similarity_score_threshold",
+          "mmr"
+        ],
+        "required": true
+      },
+      {
+        "name": "search_type",
+        "type": "str",
+        "label": "Search_type",
+        "default": "similarity",
+        "required": false
+      },
+      {
+        "name": "k",
+        "type": "int",
+        "label": "K",
+        "default": 4,
+        "required": false
+      },
+      {
+        "name": "score_threshold",
+        "type": "float",
+        "label": "Score_threshold",
+        "default": 0.4,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "redis_url",
+        "index_name",
+        "content_key",
+        "metadata_key",
+        "vector_key",
+        "allowed_search_types"
+      ],
+      "properties": {
+        "k": {
+          "type": "number",
+          "default": 4
+        },
+        "redis_url": {
+          "type": "string",
+          "default": "redis://redis:6379/0"
+        },
+        "index_name": {
+          "type": "string",
+          "default": null
+        },
+        "vector_key": {
+          "type": "string",
+          "default": "content_vector"
+        },
+        "content_key": {
+          "type": "string",
+          "default": "content"
+        },
+        "search_type": {
+          "type": "string",
+          "default": "similarity"
+        },
+        "metadata_key": {
+          "type": "string",
+          "default": "metadata"
+        },
+        "score_threshold": {
+          "type": "number",
+          "default": 0.4
+        },
+        "allowed_search_types": {
+          "type": "object",
+          "default": [
+            "similarity",
+            "similarity_score_threshold",
+            "mmr"
+          ]
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "2612aa8b-9eba-4a81-99e1-6f8e89167ce9",
+  "fields": {
+    "name": "Language Parser",
+    "description": "Parse code for various programming languages.",
+    "class_path": "langchain.document_loaders.parsers.language.language_parser.LanguageParser",
+    "type": "parser",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "language",
+        "type": "str",
+        "label": "Language",
+        "choices": [
+          {
+            "label": "CPP",
+            "value": "cpp"
+          },
+          {
+            "label": "GO",
+            "value": "go"
+          },
+          {
+            "label": "JAVA",
+            "value": "java"
+          },
+          {
+            "label": "JS",
+            "value": "js"
+          },
+          {
+            "label": "PHP",
+            "value": "php"
+          },
+          {
+            "label": "PROTO",
+            "value": "proto"
+          },
+          {
+            "label": "PYTHON",
+            "value": "python"
+          },
+          {
+            "label": "RST",
+            "value": "rst"
+          },
+          {
+            "label": "RUBY",
+            "value": "ruby"
+          },
+          {
+            "label": "RUST",
+            "value": "rust"
+          },
+          {
+            "label": "SCALA",
+            "value": "scala"
+          },
+          {
+            "label": "SWIFT",
+            "value": "swift"
+          },
+          {
+            "label": "MARKDOWN",
+            "value": "markdown"
+          },
+          {
+            "label": "LATEX",
+            "value": "latex"
+          },
+          {
+            "label": "HTML",
+            "value": "html"
+          },
+          {
+            "label": "SOL",
+            "value": "sol"
+          }
+        ],
+        "default": null,
+        "required": false,
+        "input_type": "select"
+      },
+      {
+        "name": "parser_threshold",
+        "type": "int",
+        "label": "Parser_threshold",
+        "default": 0,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "language": {
+          "enum": [
+            "cpp",
+            "go",
+            "java",
+            "js",
+            "php",
+            "proto",
+            "python",
+            "rst",
+            "ruby",
+            "rust",
+            "scala",
+            "swift",
+            "markdown",
+            "latex",
+            "html",
+            "sol"
+          ],
+          "type": "string",
+          "default": null
+        },
+        "parser_threshold": {
+          "type": "number",
+          "default": 0
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "267a48b0-967d-4df9-b6ec-dec1dd3992b9",
   "fields": {
     "name": "LlamaCpp Embeddings",
@@ -2712,6 +2982,67 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "ad389ad4-2e35-4a8f-8363-d7ed96a1429a",
+  "fields": {
+    "name": "Filesystem Loader",
+    "description": "Load documents from the filesystem.",
+    "class_path": "langchain.document_loaders.generic.GenericLoader.from_filesystem",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "parser",
+        "type": "target",
+        "source_type": "parser"
+      }
+    ],
+    "fields": [
+      {
+        "name": "path",
+        "type": "str",
+        "label": "Path",
+        "required": true
+      },
+      {
+        "name": "suffixes",
+        "type": "list",
+        "label": "Suffixes",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "glob",
+        "type": "str",
+        "label": "Glob",
+        "default": "**/[!.]*",
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "path"
+      ],
+      "properties": {
+        "glob": {
+          "type": "string",
+          "default": "**/[!.]*"
+        },
+        "path": {
+          "type": "string",
+          "default": null
+        },
+        "suffixes": {
+          "type": "object",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "b029cc5a-e98a-4eb3-9a07-7bfc45dfcd40",
   "fields": {
     "name": "Conversation Token Buffer",
@@ -3999,6 +4330,174 @@
         "awslambda_tool_description": {
           "type": "string",
           "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "f4789b2b-7eae-4ea9-a92f-c3bff954cac8",
+  "fields": {
+    "name": "RecursiveCharacterTextSplitter",
+    "description": "Splitting text by recursively look at characters.\n\n    Recursively tries to split by different characters to find one\n    that works.\n    ",
+    "class_path": "langchain.text_splitter.RecursiveCharacterTextSplitter.from_language",
+    "type": "text_splitter",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "document_loader",
+        "type": "target",
+        "source_type": "document_loader"
+      }
+    ],
+    "fields": [
+      {
+        "name": "language",
+        "type": "string",
+        "choices": [
+          {
+            "label": "CPP",
+            "value": "cpp"
+          },
+          {
+            "label": "GO",
+            "value": "go"
+          },
+          {
+            "label": "JAVA",
+            "value": "java"
+          },
+          {
+            "label": "JS",
+            "value": "js"
+          },
+          {
+            "label": "PHP",
+            "value": "php"
+          },
+          {
+            "label": "PROTO",
+            "value": "proto"
+          },
+          {
+            "label": "PYTHON",
+            "value": "python"
+          },
+          {
+            "label": "RST",
+            "value": "rst"
+          },
+          {
+            "label": "RUBY",
+            "value": "ruby"
+          },
+          {
+            "label": "RUST",
+            "value": "rust"
+          },
+          {
+            "label": "SCALA",
+            "value": "scala"
+          },
+          {
+            "label": "SWIFT",
+            "value": "swift"
+          },
+          {
+            "label": "MARKDOWN",
+            "value": "markdown"
+          },
+          {
+            "label": "LATEX",
+            "value": "latex"
+          },
+          {
+            "label": "HTML",
+            "value": "html"
+          },
+          {
+            "label": "SOL",
+            "value": "sol"
+          }
+        ],
+        "default": "python",
+        "required": true,
+        "input_type": "select"
+      },
+      {
+        "name": "chunk_size",
+        "type": "int",
+        "label": "Chunk_size",
+        "default": 4000,
+        "required": false
+      },
+      {
+        "name": "chunk_overlap",
+        "type": "int",
+        "label": "Chunk_overlap",
+        "default": 200,
+        "required": false
+      },
+      {
+        "name": "keep_separator",
+        "type": "bool",
+        "label": "Keep_separator",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "add_start_index",
+        "type": "bool",
+        "label": "Add_start_index",
+        "default": false,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "language"
+      ],
+      "properties": {
+        "language": {
+          "enum": [
+            "cpp",
+            "go",
+            "java",
+            "js",
+            "php",
+            "proto",
+            "python",
+            "rst",
+            "ruby",
+            "rust",
+            "scala",
+            "swift",
+            "markdown",
+            "latex",
+            "html",
+            "sol"
+          ],
+          "type": "string",
+          "default": "python"
+        },
+        "chunk_size": {
+          "type": "number",
+          "default": 4000
+        },
+        "chunk_overlap": {
+          "type": "number",
+          "default": 200
+        },
+        "keep_separator": {
+          "type": "boolean",
+          "default": false
+        },
+        "add_start_index": {
+          "type": "boolean",
+          "default": false
         }
       }
     }

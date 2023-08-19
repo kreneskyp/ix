@@ -11,6 +11,7 @@ from ix.chains.fixture_src.chat_memory_backend import (
     FILESYSTEM_MEMORY_BACKEND,
     REDIS_MEMORY_BACKEND,
 )
+from ix.chains.fixture_src.document_loaders import DOCUMENT_LOADERS
 from ix.chains.fixture_src.embeddings import (
     OPENAI_EMBEDDINGS,
     GOOGLE_PALM_EMBEDDINGS,
@@ -32,11 +33,14 @@ from ix.chains.fixture_src.openai_functions import (
     FUNCTION_OUTPUT_PARSER,
     OPENAPI_CHAIN,
 )
+from ix.chains.fixture_src.parsers import PARSERS
 from ix.chains.fixture_src.prompts import CHAT_PROMPT_TEMPLATE
+from ix.chains.fixture_src.retriever import RETRIEVERS
 from ix.chains.fixture_src.routing import ROUTING_CHAINS
 from ix.chains.fixture_src.testing import MOCK_MEMORY, MOCK_CHAIN
+from ix.chains.fixture_src.text_splitter import TEXT_SPLITTERS
 from ix.chains.fixture_src.tools import TOOLS
-from ix.chains.fixture_src.vectorstores import REDIS_VECTORSTORE
+from ix.chains.fixture_src.vectorstores import VECTORSTORES
 from ix.chains.models import NodeType
 
 COMPONENTS = []
@@ -104,12 +108,12 @@ COMPONENTS.extend(
     ]
 )
 
-# Vectorstores
-COMPONENTS.extend(
-    [
-        REDIS_VECTORSTORE,
-    ]
-)
+# Document retrieval
+COMPONENTS.extend(PARSERS)
+COMPONENTS.extend(TEXT_SPLITTERS)
+COMPONENTS.extend(DOCUMENT_LOADERS)
+COMPONENTS.extend(VECTORSTORES)
+COMPONENTS.extend(RETRIEVERS)
 
 # IX Misc
 COMPONENTS.extend([CHAT_MODERATOR_TYPE])

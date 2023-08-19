@@ -34,10 +34,16 @@ def get_node_loader(name: str) -> Callable:
 
 
 def get_property_loader(name: str) -> Callable:
+    """Get a property loader.
+
+    Used to customize loading a property by key.
+    """
     from ix.chains.loaders.memory import load_memory_property
+    from ix.chains.loaders.retriever import load_retriever_property
 
     return {
         "memory": load_memory_property,
+        "retriever": load_retriever_property,
     }.get(name, None)
 
 
@@ -47,8 +53,12 @@ def get_node_initializer(node_type: str) -> Callable:
     Fetches a custom initializer to be used instead of the class initializer.
     Used to add shims around specific types of nodes.
     """
+    from ix.chains.loaders.text_splitter import initialize_text_splitter
+    from ix.chains.loaders.vectorstore import initialize_vectorstore
 
     return {
+        "text_splitter": initialize_text_splitter,
+        "vectorstore": initialize_vectorstore,
     }.get(node_type, None)
 
 

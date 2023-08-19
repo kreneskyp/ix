@@ -268,6 +268,7 @@ NodeTypes = Literal[
     "memory",
     "memory_backend",
     "output_parser",
+    "parser",
     "prompt",
     "retriever",
     "tool",
