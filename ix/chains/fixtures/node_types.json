@@ -3001,6 +3001,9 @@
         "name": "path",
         "type": "str",
         "label": "Path",
+        "style": {
+          "width": "100%"
+        },
         "required": true
       },
       {

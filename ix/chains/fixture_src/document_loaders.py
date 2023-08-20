@@ -17,6 +17,7 @@ PATH_FIELD = {
     "name": "path",
     "required": True,
     "type": "str",
+    "style": {"width": "100%"},
 }
 
 
