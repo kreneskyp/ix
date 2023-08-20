@@ -222,6 +222,48 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "0f840af2-aaf3-41a2-8a7d-05afd290661a",
+  "fields": {
+    "name": "http_delete",
+    "description": "wrapper around python http requests delete method",
+    "class_path": "ix.tools.requests.get_tools_requests_delete",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "151cbfff-6e65-4ed1-9c70-100deee0e873",
   "fields": {
     "name": "Parse JSON",
@@ -2053,6 +2095,90 @@
     ],
     "child_field": null,
     "config_schema": {}
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "7b699786-50ec-47d5-9286-7c793e21e57f",
+  "fields": {
+    "name": "http_put",
+    "description": "wrapper around python http requests put method",
+    "class_path": "ix.tools.requests.get_tools_requests_put",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "7b9cedf1-598d-4852-a88c-293f9f512f8f",
+  "fields": {
+    "name": "http_patch",
+    "description": "wrapper around python http requests patch method",
+    "class_path": "ix.tools.requests.get_tools_requests_patch",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
   }
 },
 {
@@ -4209,6 +4335,48 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "eda09bfa-d5ed-423e-91c4-b1544cce1db0",
+  "fields": {
+    "name": "http_post",
+    "description": "wrapper around python http requests post method",
+    "class_path": "ix.tools.requests.get_tools_requests_post",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "ef8a1cc4-a26c-4b95-b9f7-2d6ce0f176d0",
   "fields": {
     "name": "Bing Search",
@@ -4524,6 +4692,48 @@
           "default": false
         },
         "add_start_index": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "f9b3cc07-6224-4b0d-9970-2fd67b36703b",
+  "fields": {
+    "name": "http_get",
+    "description": "wrapper around python http requests get method. Used tofetch response from a URL",
+    "class_path": "ix.tools.requests.get_tools_requests_get",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
           "type": "boolean",
           "default": false
         }

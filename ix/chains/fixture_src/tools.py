@@ -176,6 +176,47 @@ PUB_MED = {
     ),
 }
 
+REQUESTS_DELETE = {
+    "name": "http_delete",
+    "description": "wrapper around python http requests delete method",
+    "class_path": "ix.tools.requests.get_tools_requests_delete",
+    "type": "tool",
+    "fields": TOOL_BASE_FIELDS,
+}
+
+REQUESTS_GET = {
+    "name": "http_get",
+    "description": "wrapper around python http requests get method. Used to"
+    "fetch response from a URL",
+    "class_path": "ix.tools.requests.get_tools_requests_get",
+    "type": "tool",
+    "fields": TOOL_BASE_FIELDS,
+}
+
+REQUESTS_PATCH = {
+    "name": "http_patch",
+    "description": "wrapper around python http requests patch method",
+    "class_path": "ix.tools.requests.get_tools_requests_patch",
+    "type": "tool",
+    "fields": TOOL_BASE_FIELDS,
+}
+
+REQUESTS_POST = {
+    "name": "http_post",
+    "description": "wrapper around python http requests post method",
+    "class_path": "ix.tools.requests.get_tools_requests_post",
+    "type": "tool",
+    "fields": TOOL_BASE_FIELDS,
+}
+
+REQUESTS_PUT = {
+    "name": "http_put",
+    "description": "wrapper around python http requests put method",
+    "class_path": "ix.tools.requests.get_tools_requests_put",
+    "type": "tool",
+    "fields": TOOL_BASE_FIELDS,
+}
+
 WIKIPEDIA = {
     "name": "Wikipedia",
     "description": "Wikipedia search engine",
@@ -192,7 +233,6 @@ WIKIPEDIA = {
         ],
     ),
 }
-
 
 WOLFRAM = {
     "name": "Wolfram Alpha",
@@ -222,6 +262,11 @@ TOOLS = [
     GRAPHQL_TOOL,
     LAMBDA_API,
     PUB_MED,
+    REQUESTS_DELETE,
+    REQUESTS_GET,
+    REQUESTS_PATCH,
+    REQUESTS_POST,
+    REQUESTS_PUT,
     WIKIPEDIA,
     WOLFRAM,
 ]
