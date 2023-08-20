@@ -1,12 +1,23 @@
 import importlib
+import logging
 from typing import Type
+
+
+logger = logging.getLogger(__name__)
 
 
 def _import_class(class_path: str) -> Type:
     """
     inner class to facilitate test mocking across all uses of `import_class`
     """
-    module_path, class_name = class_path.rsplit(".", 1)
+    try:
+        module_path, class_name = class_path.rsplit(".", 1)
+    except Exception as e:
+        logger.error(
+            f"Error splitting class_path={class_path} into module and class name: {e}"
+        )
+        raise e
+
     try:
         module = importlib.import_module(module_path)
     except ModuleNotFoundError:
