@@ -200,6 +200,9 @@ class NodeTypeField(BaseModel):
         fields = []
         signature = inspect.signature(method)
 
+        # TODO: does not support @staticmethod, which drops first argument
+        #       when using inspect.signature.
+
         for param_name, param in signature.parameters.items():
             if include and param_name not in include:
                 continue
