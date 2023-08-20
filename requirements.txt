@@ -34,7 +34,7 @@ pytest_asyncio==0.21.0
 pytest-cov==4.1.0
 pytest-django==4.5.2
 pytest-mock==3.10.0
-redis==4.5.5
+redis==4.6.0
 requests==2.31.0
 tiktoken==0.4.0
 wikipedia==1.4.0

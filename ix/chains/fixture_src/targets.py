@@ -1,9 +1,8 @@
 EMBEDDINGS_TARGET = {
-    "key": "embeddings",
+    "key": "embedding",
     "type": "target",
     "source_type": "embeddings",
 }
-
 
 LLM_TARGET = {
     "key": "llm",
@@ -56,12 +55,6 @@ FUNCTION_TARGET = {
     "multiple": True,
 }
 
-OUTPUT_PARSER_TARGET = {
-    "key": "output_parser",
-    "type": "target",
-    "source_type": "output_parser",
-}
-
 VECTORSTORE_TARGET = {
     "key": "vectorstore",
     "type": "target",
@@ -73,4 +66,29 @@ TOOLS_TARGET = {
     "type": "target",
     "source_type": "tool",
     "multiple": True,
+}
+
+PARSER_TARGET = {
+    "key": "parser",
+    "type": "target",
+    "source_type": "parser",
+}
+
+DOCUMENT_LOADER_TARGET = {
+    "key": "document_loader",
+    "type": "target",
+    "source_type": "document_loader",
+}
+
+DOCUMENTS_TARGET = {
+    "key": "documents",
+    "type": "target",
+    "source_type": "text_splitter",
+}
+
+RETRIEVER_TARGET = {
+    "key": "retriever",
+    "type": "target",
+    "source_type": "vectorstore",
+    "as_type": "retriever",
 }

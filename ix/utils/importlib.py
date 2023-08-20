@@ -2,15 +2,9 @@ import importlib
 from typing import Type
 
 
-def import_class(class_path: str) -> Type:
+def _import_class(class_path: str) -> Type:
     """
-    Import a class from a string representation of its fully qualified name.
-
-    Args:
-        class_path: A string that represents the fully qualified name of the class to import.
-
-    Returns:
-        The imported class object.
+    inner class to facilitate test mocking across all uses of `import_class`
     """
     module_path, class_name = class_path.rsplit(".", 1)
     try:
@@ -24,3 +18,16 @@ def import_class(class_path: str) -> Type:
         return getattr(class_, property_name)
 
     return getattr(module, class_name)
+
+
+def import_class(class_path: str) -> Type:
+    """
+    Import a class from a string representation of its fully qualified name.
+
+    Args:
+        class_path: A string that represents the fully qualified name of the class to import.
+
+    Returns:
+        The imported class object.
+    """
+    return _import_class(class_path)

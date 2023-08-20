@@ -165,6 +165,7 @@ const INPUTS = {
 // type specific default inputs
 const TYPE_INPUTS = {
   boolean: "checkbox",
+  bool: "checkbox",
 };
 
 const DEFAULT_COMPONENT = AutoFieldInput;
