@@ -18,7 +18,7 @@ VECTORSTORE_RETRIEVER = {
             "default": ["similarity", "similarity_score_threshold", "mmr"],
         }
     ]
-    + NodeTypeField.get_fields_from_model(
+    + NodeTypeField.get_fields(
         VectorStoreRetriever,
         include=[
             "search_type",

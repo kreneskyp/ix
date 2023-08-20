@@ -23,7 +23,7 @@ LANGUAGE_PARSER = {
     "name": "Language Parser",
     "description": "Parse code for various programming languages.",
     "fields": []
-    + NodeTypeField.get_fields_from_method(
+    + NodeTypeField.get_fields(
         LanguageParser.__init__,
         include=["parser_threshold", "language"],
     ),

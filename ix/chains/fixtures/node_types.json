@@ -2842,20 +2842,6 @@
     ],
     "fields": [
       {
-        "name": "collection_name",
-        "type": "str",
-        "label": "Collection_name",
-        "default": "langchain",
-        "required": false
-      },
-      {
-        "name": "persist_directory",
-        "type": "Optional[str]",
-        "label": "Persist_directory",
-        "default": null,
-        "required": false
-      },
-      {
         "name": "allowed_search_types",
         "type": "list",
         "default": [
@@ -2883,14 +2869,6 @@
         "search_type": {
           "type": "string",
           "default": "similarity"
-        },
-        "collection_name": {
-          "type": "string",
-          "default": "langchain"
-        },
-        "persist_directory": {
-          "type": "object",
-          "default": null
         },
         "allowed_search_types": {
           "type": "object",

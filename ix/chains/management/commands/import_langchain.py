@@ -156,7 +156,7 @@ class Command(BaseCommand):
             class_path = component.get("class_path")
             if NodeType.objects.filter(class_path=class_path).exists():
                 # updating existing node type
-                print(f"Updating component: {component['class_path']}")
+                print(f"Updating component: {class_path}")
                 node_type = NodeType.objects.get(class_path=class_path)
                 for key, value in component.items():
                     if key == "class_path":

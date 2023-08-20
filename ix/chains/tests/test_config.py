@@ -1,3 +1,4 @@
+from abc import ABC
 from enum import Enum
 from typing import Literal, Optional
 
@@ -19,15 +20,26 @@ class TestModel(BaseModel):
     optional: Optional[str] = None
     choices_enum: ChoicesEnum
 
-    @staticmethod
+    @classmethod
     def loader(
+        cls,
         field1: str,
         field2: int,
+        choices_enum: ChoicesEnum,
         field3: bool = False,
         literal: Literal["foo", "bar"] = "bar",
         optional: Optional[str] = None,
     ):
         pass
+
+
+class TestABC(ABC):
+    field1: str
+    field2: int
+    field3: bool = False
+    literal: Literal["foo", "bar"] = "bar"
+    optional: Optional[str] = None
+    choices_enum: ChoicesEnum
 
 
 @pytest.fixture
@@ -81,8 +93,7 @@ class TestFieldConfig:
 class GetFieldsBase:
     """Base for common tests for getting fields from a model or method"""
 
-    def get_fields(self, *args, **kwargs):
-        raise NotImplementedError
+    field_source = None
 
     def test_get_fields_overrides_include(self, field_overrides):
         expected_fields_include = [
@@ -103,8 +114,8 @@ class GetFieldsBase:
         ]
 
         assert (
-            self.get_fields(
-                TestModel,
+            NodeTypeField.get_fields(
+                self.field_source,
                 include=["field1", "field2"],
                 field_options=field_overrides,
             )
@@ -128,8 +139,8 @@ class GetFieldsBase:
         ]
 
         assert (
-            self.get_fields(
-                TestModel,
+            NodeTypeField.get_fields(
+                self.field_source,
                 include=["literal"],
             )
             == expected
@@ -147,8 +158,8 @@ class GetFieldsBase:
         ]
 
         assert (
-            self.get_fields(
-                TestModel,
+            NodeTypeField.get_fields(
+                self.field_source,
                 include=["optional"],
             )
             == expected
@@ -173,8 +184,8 @@ class GetFieldsBase:
         ]
 
         assert (
-            self.get_fields(
-                TestModel,
+            NodeTypeField.get_fields(
+                self.field_source,
                 include=["field1", "field2", "field3"],
                 exclude=["field1"],
                 field_options=field_overrides,
@@ -198,16 +209,15 @@ class GetFieldsBase:
             },
         ]
 
-        fields = self.get_fields(
-            TestModel,
+        fields = NodeTypeField.get_fields(
+            self.field_source,
             include=["choices_enum"],
         )
         assert fields == expected
 
 
 class TestGetFieldsFromModel(GetFieldsBase):
-    def get_fields(self, *args, **kwargs):
-        return NodeTypeField.get_fields_from_model(*args, **kwargs)
+    field_source = TestModel
 
     def test_exclude_non_allowed_type(self, field_overrides):
         # Extend TestModel with a field of non-allowed type
@@ -235,11 +245,14 @@ class TestGetFieldsFromModel(GetFieldsBase):
         ]
 
         assert (
-            self.get_fields(TestModel2, include=["field1", "field2", "field4"])
+            NodeTypeField.get_fields(TestModel2, include=["field1", "field2", "field4"])
             == expected_fields
         )
 
 
 class TestGetFieldsFromMethod(GetFieldsBase):
-    def get_fields(self, *args, **kwargs):
-        return NodeTypeField.get_fields_from_method(*args, **kwargs)
+    field_source = TestModel.loader
+
+
+class TestGetFieldsFromABC(GetFieldsBase):
+    field_source = TestABC
