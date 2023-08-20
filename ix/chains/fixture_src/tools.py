@@ -141,9 +141,7 @@ GRAPHQL_TOOL = {
     "name": "GraphQL Tool",
     "description": "Tool that searches GraphQL for a given query.",
     "fields": TOOL_BASE_FIELDS
-    + NodeTypeField.get_fields(
-        GraphQLAPIWrapper, include=["graphql_endpoint"]
-    ),
+    + NodeTypeField.get_fields(GraphQLAPIWrapper, include=["graphql_endpoint"]),
 }
 
 LAMBDA_API = {
