@@ -11,7 +11,7 @@ DELEGATE_TO_AGENT_CHAIN = {
     "type": "chain",
     "connectors": [MEMORY_TARGET, PROMPT_TARGET],
     "fields": CHAIN_BASE_FIELDS
-    + NodeTypeField.get_fields_from_model(
+    + NodeTypeField.get_fields(
         DelegateToAgentChain,
         include=[
             "output_key",

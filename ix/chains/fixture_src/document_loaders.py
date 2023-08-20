@@ -30,7 +30,7 @@ GENERIC_LOADER = {
     "name": "Filesystem Loader",
     "description": "Load documents from the filesystem.",
     "fields": [PATH_FIELD, FILE_SUFFIXES_FIELD]
-    + NodeTypeField.get_fields_from_method(
+    + NodeTypeField.get_fields(
         GenericLoader.from_filesystem,
         include=[
             "glob",

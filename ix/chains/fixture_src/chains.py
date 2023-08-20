@@ -60,7 +60,7 @@ LLM_SYMBOLIC_MATH_CHAIN = {
     "fields": [
         VERBOSE,
     ]
-    + NodeTypeField.get_fields_from_model(
+    + NodeTypeField.get_fields(
         LLMSymbolicMathChain,
         include=["input_key", "output_key"],
         field_options={
@@ -71,7 +71,7 @@ LLM_SYMBOLIC_MATH_CHAIN = {
     ),
 }
 
-BASE_CONVERSATIONAL_RETRIEVAL_CHAIN_FIELDS = NodeTypeField.get_fields_from_model(
+BASE_CONVERSATIONAL_RETRIEVAL_CHAIN_FIELDS = NodeTypeField.get_fields(
     BaseConversationalRetrievalChain,
     include=[
         "output_key",
@@ -98,7 +98,7 @@ CONVERSATIONAL_RETRIEVAL_CHAIN = {
         VERBOSE,
     ]
     + BASE_CONVERSATIONAL_RETRIEVAL_CHAIN_FIELDS
-    + NodeTypeField.get_fields_from_model(
+    + NodeTypeField.get_fields(
         ConversationalRetrievalChain,
         include=["max_tokens_limit"],
     ),

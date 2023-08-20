@@ -16,7 +16,7 @@ VECTORSTORE_RETRIEVER_FIELDS = [
         "required": True,
         "default": ["similarity", "similarity_score_threshold", "mmr"],
     }
-] + NodeTypeField.get_fields_from_model(
+] + NodeTypeField.get_fields(
     VectorStoreRetriever,
     include=[
         "search_type",
@@ -28,7 +28,7 @@ REDIS_VECTORSTORE_CLASS_PATH = "ix.chains.components.vectorstores.AsyncRedisVect
 
 REDIS_VECTORSTORE_RETRIEVER_FIELDS = (
     VECTORSTORE_RETRIEVER_FIELDS
-    + NodeTypeField.get_fields_from_model(
+    + NodeTypeField.get_fields(
         RedisVectorStoreRetriever,
         include=[
             "k",
@@ -85,7 +85,7 @@ CHROMA = {
     "name": "Chroma",
     "description": "Chroma vector database",
     "connectors": VECTORSTORE_CONNECTORS,
-    "fields": NodeTypeField.get_fields_from_method(
+    "fields": NodeTypeField.get_fields(
         Chroma,
         include=[
             "collection_name",

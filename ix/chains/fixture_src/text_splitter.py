@@ -15,7 +15,7 @@ RECURSIVE_CHARACTER_SPLITTER = {
     "name": "RecursiveCharacterTextSplitter",
     "description": RecursiveCharacterTextSplitter.__doc__,
     "fields": [LANGUAGE]
-    + NodeTypeField.get_fields_from_method(
+    + NodeTypeField.get_fields(
         TextSplitter.__init__,
         include=[
             "chunk_size",

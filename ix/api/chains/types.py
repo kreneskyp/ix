@@ -187,7 +187,7 @@ class NodeTypeField(BaseModel):
                 )
             )
 
-        return cls.get_fields(field_objs, field_options)
+        return cls._get_fields(field_objs, field_options)
 
     @classmethod
     def get_fields_from_method(
@@ -212,7 +212,6 @@ class NodeTypeField(BaseModel):
             else:
                 is_required = False
                 default = param.default
-
             fields.append(
                 ParsedField(
                     name=param_name,
@@ -222,10 +221,10 @@ class NodeTypeField(BaseModel):
                 )
             )
 
-        return cls.get_fields(fields, field_options)
+        return cls._get_fields(fields, field_options)
 
     @staticmethod
-    def get_fields(
+    def _get_fields(
         fields: List[ParsedField],
         field_options: Optional[Dict[str, Dict[str, Any]]] = None,
     ) -> List[Dict[str, Any]]:
@@ -275,6 +274,25 @@ class NodeTypeField(BaseModel):
             results.append(field_info)
 
         return results
+
+    @classmethod
+    def get_fields(
+        cls,
+        obj: Callable | Type[BaseModel] | Type[ABC],
+        include: Optional[List[str]] = None,
+        exclude: Optional[List[str]] = None,
+        field_options: Optional[Dict[str, Dict[str, Any]]] = None,
+    ):
+        if isinstance(obj, type) and issubclass(obj, BaseModel | ABC):
+            return cls.get_fields_from_model(
+                obj, include=include, exclude=exclude, field_options=field_options
+            )
+        elif isinstance(obj, Callable):
+            return cls.get_fields_from_method(
+                obj, include=include, exclude=exclude, field_options=field_options
+            )
+
+        raise ValueError(f"Invalid object type: {type(obj)}")
 
 
 NodeTypes = Literal[
