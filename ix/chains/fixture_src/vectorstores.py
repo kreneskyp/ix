@@ -1,3 +1,4 @@
+from langchain.vectorstores import Chroma
 from langchain.vectorstores.base import VectorStoreRetriever
 from langchain.vectorstores.redis import RedisVectorStoreRetriever
 
@@ -77,6 +78,24 @@ REDIS_VECTORSTORE = {
     + REDIS_VECTORSTORE_RETRIEVER_FIELDS,
 }
 
+CHROMA_CLASS_PATH = "ix.chains.components.vectorstores.AsyncChromaVectorstore"
+CHROMA = {
+    "class_path": CHROMA_CLASS_PATH,
+    "type": "vectorstore",
+    "name": "Chroma",
+    "description": "Chroma vector database",
+    "connectors": VECTORSTORE_CONNECTORS,
+    "fields": NodeTypeField.get_fields_from_method(
+        Chroma,
+        include=[
+            "collection_name",
+            "persist_directory",
+            "persist_directory",
+        ],
+    )
+    + VECTORSTORE_RETRIEVER_FIELDS,
+}
+
 
 def get_vectorstore_retriever_fieldnames(class_path: str):
     fields = {REDIS_VECTORSTORE_CLASS_PATH: REDIS_VECTORSTORE_RETRIEVER_FIELDS}.get(
@@ -85,5 +104,5 @@ def get_vectorstore_retriever_fieldnames(class_path: str):
     return [field["name"] for field in fields]
 
 
-VECTORSTORES = [REDIS_VECTORSTORE]
+VECTORSTORES = [REDIS_VECTORSTORE, CHROMA]
 __all__ = ["VECTORSTORES"]

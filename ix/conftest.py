@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, List
 from unittest.mock import MagicMock
 
 import pytest
@@ -167,6 +167,11 @@ def mock_openai_streaming(mocker, mock_openai_key):
     yield mock_llm
 
 
+def fake_embeddings(n: int = 1) -> List[List[float]]:
+    """Fake a list of embeddings."""
+    return [[0.5 for x in range(1536)] for n in range(n)]
+
+
 @pytest.fixture
 def mock_openai_embeddings(mock_import_class, mock_openai_key):
     """Mocks OpenAIEmbeddings to return a mock response
@@ -174,12 +179,12 @@ def mock_openai_embeddings(mock_import_class, mock_openai_key):
     The mock embedding was generated for files test_data/documents
     with the real OpenAIEmbeddings component
     """
-    mock_instance = MagicMock()
-    mock_instance().embed_documents.return_value = MOCK_VECTORSTORE_EMBEDDINGS
-    mock_import_class(
-        OPENAI_EMBEDDINGS_CLASS_PATH,
-        mock_instance,
-    )
+    mock_class = MagicMock()
+    mock_class.instance = mock_class()
+    mock_class.instance.embed_documents.return_value = MOCK_VECTORSTORE_EMBEDDINGS
+    mock_class.instance.embed_query.return_value = fake_embeddings(n=1)[0]
+    mock_import_class(OPENAI_EMBEDDINGS_CLASS_PATH, mock_class)
+    yield mock_class.instance
 
 
 @pytest.fixture
