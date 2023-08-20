@@ -22,7 +22,10 @@ class AsyncAddTextsMixin:
 
 class AsyncGetRelevantDocumentsMixin:
     async def _aget_relevant_documents(
-        self, query: str, *, run_manager: AsyncCallbackManagerForRetrieverRun
+        self: VectorStore,
+        query: str,
+        *,
+        run_manager: AsyncCallbackManagerForRetrieverRun,
     ) -> List[Document]:
         return await sync_to_async(self._get_relevant_documents)(
             query, run_manager=run_manager
@@ -35,7 +38,7 @@ class AsyncRedisVectorStoreRetriever(
     pass
 
 
-class AsyncRedisVectorstore(Redis):
+class AsyncRedisVectorstore(AsyncAddTextsMixin, Redis):
     """Extension of Langchain Redis vectorstore implementation to add async support"""
 
     def as_retriever(self, **kwargs: Any) -> AsyncRedisVectorStoreRetriever:
