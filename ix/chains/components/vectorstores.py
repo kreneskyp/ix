@@ -3,7 +3,7 @@ from typing import Any, List, Iterable, Optional
 from asgiref.sync import sync_to_async
 from langchain.callbacks.manager import AsyncCallbackManagerForRetrieverRun
 from langchain.schema import Document
-from langchain.vectorstores import Redis, VectorStore
+from langchain.vectorstores import Redis, Chroma, VectorStore
 from langchain.vectorstores.redis import RedisVectorStoreRetriever
 
 
@@ -45,3 +45,7 @@ class AsyncRedisVectorstore(AsyncAddTextsMixin, Redis):
         tags = kwargs.pop("tags", None) or []
         tags.extend(self._get_retriever_tags())
         return AsyncRedisVectorStoreRetriever(vectorstore=self, **kwargs, tags=tags)
+
+
+class AsyncChromaVectorstore(AsyncAddTextsMixin, Chroma):
+    """Extension of Langchain Chroma vectorstore implementation to add async support"""

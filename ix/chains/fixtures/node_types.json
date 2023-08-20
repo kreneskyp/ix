@@ -2821,6 +2821,91 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "9e8d970a-55ba-4afd-add9-bd33a52fc30c",
+  "fields": {
+    "name": "Chroma",
+    "description": "Chroma vector database",
+    "class_path": "ix.chains.components.vectorstores.AsyncChromaVectorstore",
+    "type": "vectorstore",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "embedding",
+        "type": "target",
+        "source_type": "embeddings"
+      },
+      {
+        "key": "documents",
+        "type": "target",
+        "source_type": "text_splitter"
+      }
+    ],
+    "fields": [
+      {
+        "name": "collection_name",
+        "type": "str",
+        "label": "Collection_name",
+        "default": "langchain",
+        "required": false
+      },
+      {
+        "name": "persist_directory",
+        "type": "Optional[str]",
+        "label": "Persist_directory",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "allowed_search_types",
+        "type": "list",
+        "default": [
+          "similarity",
+          "similarity_score_threshold",
+          "mmr"
+        ],
+        "required": true
+      },
+      {
+        "name": "search_type",
+        "type": "str",
+        "label": "Search_type",
+        "default": "similarity",
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "allowed_search_types"
+      ],
+      "properties": {
+        "search_type": {
+          "type": "string",
+          "default": "similarity"
+        },
+        "collection_name": {
+          "type": "string",
+          "default": "langchain"
+        },
+        "persist_directory": {
+          "type": "object",
+          "default": null
+        },
+        "allowed_search_types": {
+          "type": "object",
+          "default": [
+            "similarity",
+            "similarity_score_threshold",
+            "mmr"
+          ]
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "a3dd72e8-1554-47dd-8f42-0dda58c06f7c",
   "fields": {
     "name": "Chat Conversational React Description Agent",
