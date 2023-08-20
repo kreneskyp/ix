@@ -1,3 +1,4 @@
+from abc import ABC
 from enum import Enum
 from typing import Literal, Optional
 
@@ -28,6 +29,15 @@ class TestModel(BaseModel):
         optional: Optional[str] = None,
     ):
         pass
+
+
+class TestABC(ABC):
+    field1: str
+    field2: int
+    field3: bool = False
+    literal: Literal["foo", "bar"] = "bar"
+    optional: Optional[str] = None
+    choices_enum: ChoicesEnum
 
 
 @pytest.fixture
@@ -241,5 +251,8 @@ class TestGetFieldsFromModel(GetFieldsBase):
 
 
 class TestGetFieldsFromMethod(GetFieldsBase):
-    def get_fields(self, *args, **kwargs):
-        return NodeTypeField.get_fields_from_method(*args, **kwargs)
+    field_source = TestModel.loader
+
+
+class TestGetFieldsFromABC(GetFieldsBase):
+    field_source = TestABC

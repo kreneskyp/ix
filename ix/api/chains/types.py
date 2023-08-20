@@ -1,4 +1,5 @@
 import inspect
+from abc import ABC
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
@@ -142,14 +143,22 @@ class NodeTypeField(BaseModel):
     @classmethod
     def get_fields_from_model(
         cls,
-        model: Type[BaseModel],
+        model: Type[BaseModel] | Type[ABC],
         include: Optional[List[str]] = None,
         exclude: Optional[List[str]] = None,
         field_options: Optional[Dict[str, Dict[str, Any]]] = None,
     ) -> List[Dict[str, Any]]:
         field_objs = []
 
-        for field_name, field_type in model.__annotations__.items():
+        annotations = {}
+        if hasattr(model, "__annotations__"):
+            annotations.update(model.__annotations__)
+        if issubclass(model, ABC):
+            for base in model.__bases__:
+                if hasattr(base, "__annotations__"):
+                    annotations.update(base.__annotations__)
+
+        for field_name, field_type in annotations.items():
             if include and field_name not in include:
                 continue
             if exclude and field_name in exclude:
@@ -157,13 +166,24 @@ class NodeTypeField(BaseModel):
 
             if isinstance(field_type, type) and issubclass(field_type, BaseModel):
                 continue
-            model_field = model.__fields__.get(field_name)
+
+            default = None
+            required = False
+            if hasattr(model, "__fields__"):
+                model_field = model.__fields__.get(field_name)
+                if model_field:
+                    default = model_field.default
+                    required = model_field.required
+            elif hasattr(model, "__dict__"):
+                default = model.__dict__.get(field_name, None)
+                required = default is None and not is_optional(field_type)
+
             field_objs.append(
                 ParsedField(
                     name=field_name,
                     type_=field_type,
-                    default=model_field.default,
-                    required=model_field.required,
+                    default=default,
+                    required=required,
                 )
             )
 
