@@ -1,11 +1,16 @@
+import logging
 from copy import deepcopy
 from typing import Dict, Any, Type
 
+from langchain.document_loaders.base import BaseLoader
 from langchain.vectorstores import VectorStore
 
 from ix.chains.fixture_src.vectorstores import get_vectorstore_retriever_fieldnames
 from ix.chains.loaders.text_splitter import TextSplitterShim
 from ix.utils.importlib import import_class
+
+
+logger = logging.getLogger(__name__)
 
 
 def initialize_vectorstore(class_path: str, config: Dict[str, Any]) -> VectorStore:
@@ -22,7 +27,12 @@ def initialize_vectorstore(class_path: str, config: Dict[str, Any]) -> VectorSto
     for field in retriever_fields:
         config.pop(field, None)
 
-    # auto load documents from TextSplitters and BaseLoaders
+    # initialize vectorstore
+    vectorstore_class: Type[VectorStore] = import_class(class_path)
+    vectorstore = None
+
+    # Ingest and load from documents if TextSplitters or BaseLoaders
+    # is configured as a document source.
     document_source = config.pop("documents", None)
     if document_source:
         if isinstance(document_source, TextSplitterShim):
@@ -30,20 +40,25 @@ def initialize_vectorstore(class_path: str, config: Dict[str, Any]) -> VectorSto
             documents = document_source.text_splitter.split_documents(
                 document_loader.load()
             )
+        elif isinstance(document_source, BaseLoader):
+            documents = document_source.load()
+
         else:
             raise ValueError(
                 f"unsupported document_source type: {type(document_source)}"
             )
-    else:
-        # Initialize without loading documents. This is useful for vectorstores that
-        # are initialized separately from the chain.
-        #
-        # TODO: this won't work for VectorStores that expect at least one entry.
-        #       e.g. Redis reads the dimensions from the first embedding rather
-        #       than from the embeddings component. Revisit this in phase 2 to
-        #       support splitting ingestion and querying.
-        documents = []
 
-    # initialize vectorstore
-    vectorstore_class: Type[VectorStore] = import_class(class_path)
-    return vectorstore_class.from_documents(documents=documents, **config)
+        if documents:
+            vectorstore = vectorstore_class.from_documents(
+                documents=documents, **config
+            )
+
+    # Initialize vectorstore without ingesting documents. The vectorstore will
+    # only have access to documents that are already in the database.
+    if not vectorstore:
+        embedding_function = config.pop("embedding", None)
+        if embedding_function:
+            config["embedding_function"] = embedding_function
+        vectorstore = vectorstore_class(**config)
+
+    return vectorstore
