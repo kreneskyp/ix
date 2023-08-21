@@ -2277,6 +2277,71 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "851f01f8-374e-44e8-882e-db68a34d24b2",
+  "fields": {
+    "name": "Conversational Retrieval agent",
+    "description": "Agent that generates descriptions in a structured chat context using a zero-shot approach and reaction information.",
+    "class_path": "langchain.agents.agent_toolkits.conversational_retrieval.openai_functions.create_conversational_retrieval_agent",
+    "type": "agent",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      }
+    ],
+    "fields": [
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "max_iterations",
+        "max_execution_time",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "8a49959a-b5bc-414e-a25f-51b8d3ad6249",
   "fields": {
     "name": "Conversation Buffer Window",
@@ -3854,6 +3919,62 @@
         "max_token_limit": {
           "type": "number",
           "default": 2000
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "da4b8229-8856-498e-a123-07107bb304f6",
+  "fields": {
+    "name": "Retriever Tool",
+    "description": "Create a tool to do retrieval of documents.",
+    "class_path": "langchain.agents.agent_toolkits.create_retriever_tool",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "retriever",
+        "type": "target",
+        "as_type": "retriever",
+        "source_type": "vectorstore"
+      }
+    ],
+    "fields": [
+      {
+        "name": "name",
+        "type": "str",
+        "style": {
+          "width": "100%"
+        },
+        "default": ""
+      },
+      {
+        "name": "description",
+        "type": "str",
+        "style": {
+          "width": "100%"
+        },
+        "default": "",
+        "input_type": "textarea"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "name",
+        "description"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "description": {
+          "type": "string",
+          "default": ""
         }
       }
     }
