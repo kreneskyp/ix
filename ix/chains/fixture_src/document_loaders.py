@@ -1,3 +1,4 @@
+from langchain.document_loaders import WebBaseLoader
 from langchain.document_loaders.generic import GenericLoader
 
 from ix.api.chains.types import NodeTypeField
@@ -39,6 +40,32 @@ GENERIC_LOADER = {
     "connectors": [PARSER_TARGET],
 }
 
-DOCUMENT_LOADERS = [GENERIC_LOADER]
+
+WEB_BASE_LOADER_CLASS_PATH = "langchain.document_loaders.web_base.WebBaseLoader"
+WEB_BASE_LOADER = {
+    "class_path": WEB_BASE_LOADER_CLASS_PATH,
+    "type": "document_loader",
+    "name": "Web Loader",
+    "description": "Load documents from the web and parse them with BeautifulSoup.",
+    "connectors": [PARSER_TARGET],
+    "fields": [
+        {
+            "name": "web_path",
+            "type": "list",
+            "description": "URL(s) of the web page",
+            "style": {"width": "100%"},
+        }
+    ]
+    + NodeTypeField.get_fields(
+        WebBaseLoader.__init__,
+        include=[
+            "verify_ssl",
+            "continue_on_failure",
+        ],
+    ),
+}
+
+
+DOCUMENT_LOADERS = [GENERIC_LOADER, WEB_BASE_LOADER]
 
 __all__ = ["DOCUMENT_LOADERS", "GENERIC_LOADER_CLASS_PATH"]
