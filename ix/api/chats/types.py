@@ -12,7 +12,7 @@ from ix.utils.graphene.pagination import QueryPage
 
 class ChatNew(BaseModel):
     name: Optional[str]
-    lead_id: Optional[UUID]
+    lead_id: Optional[UUID] = None
     autonomous: bool = False
 
 
@@ -68,7 +68,7 @@ class ChatUpdate(BaseModel):
 
 class ChatAgentAction(BaseModel):
     chat_id: UUID
-    agent_id: Optional[UUID]
+    agent_id: Optional[UUID] = None
 
 
 class Task(BaseModel):

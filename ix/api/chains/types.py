@@ -110,11 +110,11 @@ class NodeTypeField(BaseModel):
     """
 
     name: str
-    label: Optional[str]
+    label: Optional[str] = None
     type: str
-    default: Optional[Any]
+    default: Optional[Any] = None
     required: bool = True
-    input_type: InputType = None
+    input_type: Optional[InputType] = None
     min: Optional[float] = None
     max: Optional[float] = None
     choices: Optional[List[Choice]] = None
@@ -333,7 +333,7 @@ class Connector(BaseModel):
 
     # The object type this should be converted to. Used when the source will
     # be converted to another type. e.g. VectorStore.as_retriever()
-    as_type: Optional[NodeTypes]
+    as_type: Optional[NodeTypes] = None
 
     # Allow more than one connection to this connector
     multiple: bool = False
@@ -345,7 +345,7 @@ class Connector(BaseModel):
 
 class NodeType(BaseModel):
     id: UUID = Field(default_factory=uuid4)
-    name: str = Field(..., max_length=255)
+    name: Optional[str] = Field(default=None, max_length=255)
     description: Optional[str] = None
     class_path: str = Field(..., max_length=255)
     type: str = Field(..., max_length=255)
@@ -420,7 +420,7 @@ class Edge(BaseModel):
     key: Optional[str]
     chain_id: UUID
     relation: Literal["LINK", "PROP"]
-    input_map: Optional[dict]
+    input_map: Optional[dict] = None
 
     class Config:
         from_attributes = True

@@ -192,11 +192,11 @@ async def set_chain_root(chain_id: UUID, update_root: UpdateRoot):
 
 
 class AddNode(BaseModel):
-    id: Optional[UUID]
-    chain_id: Optional[UUID]
+    id: Optional[UUID] = None
+    chain_id: Optional[UUID] = None
     class_path: str
-    name: Optional[str]
-    description: Optional[str]
+    name: Optional[str] = None
+    description: Optional[str] = None
     config: Optional[dict]
     position: Optional[Position]
 
@@ -216,8 +216,8 @@ async def add_chain_node(node: AddNode):
 
 class UpdateNode(BaseModel):
     config: Optional[dict]
-    name: Optional[str]
-    description: Optional[str]
+    name: Optional[str] = None
+    description: Optional[str] = None
     position: Optional[Position]
 
 
