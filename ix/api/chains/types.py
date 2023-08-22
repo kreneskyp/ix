@@ -16,9 +16,11 @@ from typing import (
     Callable,
 )
 from uuid import UUID, uuid4
-from pydantic import BaseModel, Field, root_validator
+from pydantic import BaseModel, Field, model_validator
+from pydantic_core import PydanticUndefined
 
 from ix.utils.graphene.pagination import QueryPage
+from ix.utils.pydantic import get_model_fields
 
 
 class InputType(str, Enum):
@@ -164,19 +166,25 @@ class NodeTypeField(BaseModel):
             if exclude and field_name in exclude:
                 continue
 
-            if isinstance(field_type, type) and issubclass(field_type, BaseModel):
+            # skip fields that aren't primitive types. objects are handled separately
+            # as connectors.
+            if isinstance(field_type, type) and issubclass(
+                field_type, (BaseModel, ABC)
+            ):
                 continue
 
             default = None
-            required = False
-            if hasattr(model, "__fields__"):
-                model_field = model.__fields__.get(field_name)
+            if issubclass(model, BaseModel):
+                # Pydantic v2 compat: __fields__ renamed to model_fields
+                model_fields = get_model_fields(model)
+                model_field = model_fields.get(field_name)
                 if model_field:
                     default = model_field.default
-                    required = model_field.required
-            elif hasattr(model, "__dict__"):
+                    if default is PydanticUndefined:
+                        default = None
+            elif issubclass(model, ABC):
                 default = model.__dict__.get(field_name, None)
-                required = default is None and not is_optional(field_type)
+            required = default is None and not is_optional(field_type)
 
             field_objs.append(
                 ParsedField(
