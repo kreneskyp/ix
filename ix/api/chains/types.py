@@ -51,7 +51,7 @@ class Chain(BaseModel):
     created_at: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CreateChain(BaseModel):
@@ -355,7 +355,7 @@ class NodeType(BaseModel):
     child_field: Optional[str] = Field(None, max_length=32)
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
     @staticmethod
     def generate_config_schema(fields: List[NodeTypeField]) -> dict:
@@ -410,7 +410,7 @@ class Node(BaseModel):
     position: Position = {"x": 0, "y": 0}
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Edge(BaseModel):
@@ -423,7 +423,7 @@ class Edge(BaseModel):
     input_map: Optional[dict]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
     @root_validator
     def validate_edge(cls, values):

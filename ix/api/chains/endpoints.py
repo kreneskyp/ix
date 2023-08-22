@@ -47,9 +47,9 @@ async def get_chains(search: Optional[str] = None, limit: int = 10, offset: int 
 
 @router.post("/chains/", response_model=ChainPydantic, tags=["Chains"])
 async def create_chain(chain: CreateChain):
-    new_chain = Chain(**chain.dict())
+    new_chain = Chain(**chain.model_dump())
     await new_chain.asave()
-    return ChainPydantic.from_orm(new_chain)
+    return ChainPydantic.model_validate(new_chain)
 
 
 @router.get("/chains/{chain_id}", response_model=ChainPydantic, tags=["Chains"])
@@ -58,7 +58,7 @@ async def get_chain_detail(chain_id: UUID):
         chain = await Chain.objects.aget(id=chain_id)
     except Chain.DoesNotExist:
         raise HTTPException(status_code=404, detail="Chain not found")
-    return ChainPydantic.from_orm(chain)
+    return ChainPydantic.model_validate(chain)
 
 
 class UpdateChain(BaseModel):
@@ -72,11 +72,11 @@ async def update_chain(chain_id: UUID, chain: UpdateChain):
         existing_chain = await Chain.objects.aget(id=chain_id)
     except Chain.DoesNotExist:
         raise HTTPException(status_code=404, detail="Chain not found")
-    as_dict = chain.dict()
+    as_dict = chain.model_dump()
     for field, value in as_dict.items():
         setattr(existing_chain, field, value)
     await existing_chain.asave(update_fields=as_dict.keys())
-    return ChainPydantic.from_orm(existing_chain)
+    return ChainPydantic.model_validate(existing_chain)
 
 
 @router.delete("/chains/{chain_id}", response_model=DeletedItem, tags=["Chains"])
@@ -121,14 +121,14 @@ async def get_node_type_detail(node_type_id: UUID):
         node_type = await NodeType.objects.aget(id=node_type_id)
     except NodeType.DoesNotExist:
         raise HTTPException(status_code=404, detail="Node type not found")
-    return NodeTypeDetail.from_orm(node_type)
+    return NodeTypeDetail.model_validate(node_type)
 
 
 @router.post("/node_types/", response_model=NodeTypePydantic, tags=["Components"])
 async def create_node_type(node_type: NodeTypePydantic):
-    node_type_obj = NodeType(**node_type.dict())
+    node_type_obj = NodeType(**node_type.model_dump())
     await node_type_obj.asave()
-    return NodeTypePydantic.from_orm(node_type_obj)
+    return NodeTypePydantic.model_validate(node_type_obj)
 
 
 @router.put(
@@ -144,7 +144,7 @@ async def update_node_type(node_type_id: UUID, node_type: NodeTypePydantic):
         setattr(existing_node_type, field, value)
 
     await existing_node_type.asave()
-    return NodeTypePydantic.from_orm(existing_node_type)
+    return NodeTypePydantic.model_validate(existing_node_type)
 
 
 @router.delete(
@@ -209,9 +209,9 @@ async def add_chain_node(node: AddNode):
         node.chain_id = chain.id
 
     node_type = await NodeType.objects.aget(class_path=node.class_path)
-    new_node = ChainNode(node_type=node_type, **node.dict())
+    new_node = ChainNode(node_type=node_type, **node.model_dump())
     await new_node.asave()
-    return NodePydantic.from_orm(new_node)
+    return NodePydantic.model_validate(new_node)
 
 
 class UpdateNode(BaseModel):
@@ -229,11 +229,11 @@ async def update_chain_node(node_id: UUID, data: UpdateNode):
         existing_node = await ChainNode.objects.aget(id=node_id)
     except ChainNode.DoesNotExist:
         raise HTTPException(status_code=404, detail="Node not found")
-    as_dict = data.dict()
+    as_dict = data.model_dump()
     for field, value in as_dict.items():
         setattr(existing_node, field, value)
     await existing_node.asave(update_fields=as_dict.keys())
-    return NodePydantic.from_orm(existing_node)
+    return NodePydantic.model_validate(existing_node)
 
 
 @router.post(
@@ -243,9 +243,9 @@ async def update_chain_node(node_id: UUID, data: UpdateNode):
 )
 async def update_chain_node_position(node_id: UUID, data: PositionUpdate):
     node = await ChainNode.objects.aget(id=node_id)
-    node.position = data.dict()
+    node.position = data.model_dump()
     await node.asave(update_fields=["position"])
-    return NodePydantic.from_orm(node)
+    return NodePydantic.model_validate(node)
 
 
 @router.delete(
@@ -262,9 +262,9 @@ async def delete_chain_node(node_id: UUID):
 
 @router.post("/chains/edges", response_model=EdgePydantic, tags=["Chain Editor"])
 async def add_chain_edge(data: EdgePydantic):
-    new_edge = ChainEdge(**data.dict())
+    new_edge = ChainEdge(**data.model_dump())
     await new_edge.asave()
-    return EdgePydantic.from_orm(new_edge)
+    return EdgePydantic.model_validate(new_edge)
 
 
 class UpdateEdge(BaseModel):
@@ -280,11 +280,11 @@ async def update_chain_edge(edge_id, data: UpdateEdge):
         existing_edge = await ChainEdge.objects.aget(id=edge_id)
     except ChainEdge.DoesNotExist:
         raise HTTPException(status_code=404, detail="Edge not found")
-    as_dict = data.dict()
+    as_dict = data.model_dump()
     for field, value in as_dict.items():
         setattr(existing_edge, field, value)
     await existing_edge.asave(update_fields=as_dict.keys())
-    return EdgePydantic.from_orm(existing_edge)
+    return EdgePydantic.model_validate(existing_edge)
 
 
 @router.delete(
@@ -312,18 +312,20 @@ async def get_chain_graph(chain_id: UUID):
     nodes = []
     node_queryset = ChainNode.objects.filter(chain_id=chain_id)
     async for node in node_queryset:
-        nodes.append(NodePydantic.from_orm(node))
+        nodes.append(NodePydantic.model_validate(node))
 
     edges = []
     edge_queryset = ChainEdge.objects.filter(chain_id=chain_id)
     async for edge in edge_queryset:
-        edges.append(EdgePydantic.from_orm(edge))
+        edges.append(EdgePydantic.model_validate(edge))
 
     types_in_chain = NodeType.objects.filter(chainnode__chain_id=chain_id)
-    types = [NodeTypePydantic.from_orm(node_type) async for node_type in types_in_chain]
+    types = [
+        NodeTypePydantic.model_validate(node_type) async for node_type in types_in_chain
+    ]
 
     return GraphModel(
-        chain=ChainPydantic.from_orm(chain),
+        chain=ChainPydantic.model_validate(chain),
         nodes=nodes,
         edges=edges,
         types=types,

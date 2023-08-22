@@ -19,9 +19,9 @@ __all__ = ["router"]
 
 @router.post("/artifacts/", response_model=ArtifactPydantic, tags=["Artifacts"])
 async def create_artifact(data: ArtifactCreate):
-    instance = Artifact(**data.dict())
+    instance = Artifact(**data.model_dump())
     await instance.asave()
-    return ArtifactPydantic.from_orm(instance)
+    return ArtifactPydantic.model_validate(instance)
 
 
 @router.get(
@@ -32,7 +32,7 @@ async def get_artifact(artifact_id: str):
         artifact = await Artifact.objects.aget(pk=artifact_id)
     except Artifact.DoesNotExist:
         raise HTTPException(status_code=404, detail="Artifact not found")
-    return ArtifactPydantic.from_orm(artifact)
+    return ArtifactPydantic.model_validate(artifact)
 
 
 @router.get("/artifacts/", response_model=ArtifactPage, tags=["Artifacts"])
@@ -64,7 +64,7 @@ async def update_artifact(artifact_id: str, data: ArtifactUpdate):
         instance = await Artifact.objects.aget(pk=artifact_id)
     except Artifact.DoesNotExist:
         raise HTTPException(status_code=404, detail="Artifact not found")
-    for attr, value in data.dict().items():
+    for attr, value in data.model_dump().items():
         setattr(instance, attr, value)
     await instance.asave()
-    return ArtifactPydantic.from_orm(instance)
+    return ArtifactPydantic.model_validate(instance)
