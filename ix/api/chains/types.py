@@ -123,7 +123,7 @@ class NodeTypeField(BaseModel):
     step: Optional[float] = None
     style: Optional[Dict[str, Any]] = None
 
-    @root_validator
+    @model_validator(mode="before")
     def validate_min_max(cls, values):
         input_type = values.get("input_type")
         min_value = values.get("min")
@@ -433,12 +433,12 @@ class Edge(BaseModel):
     class Config:
         from_attributes = True
 
-    @root_validator
-    def validate_edge(cls, values):
-        if values.get("relation") == "PROP" and not values.get("key"):
+    @model_validator(mode="after")
+    def validate_edge(cls, instance: "Edge") -> "Edge":
+        if instance.relation == "PROP" and not instance.key:
             raise ValueError("'key' is required for 'PROP' relation type.")
 
-        return values
+        return instance
 
 
 class PositionUpdate(BaseModel):
