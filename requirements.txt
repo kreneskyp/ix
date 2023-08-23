@@ -25,6 +25,7 @@ jsonpath-ng==1.5.3
 jsonschema==4.0.1
 langchain==0.0.271
 openai==0.27.8
+openapi-schema-pydantic==1.2.4
 pinecone-client==2.2.1
 pyright==1.1.301
 # Note: django reset_db requires psycopg2 to be installed
