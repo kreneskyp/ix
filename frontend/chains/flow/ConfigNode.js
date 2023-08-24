@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
-import { Handle, useReactFlow } from "reactflow";
+import { Handle, useEdges, useReactFlow } from "reactflow";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEditorColorMode } from "chains/editor/useColorMode";
@@ -17,6 +17,7 @@ import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { useDebounce } from "utils/hooks/useDebounce";
 import { FunctionSchemaNode } from "chains/flow/FunctionSchemaNode";
 import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
+import { RequiredAsterisk } from "components/RequiredAsterisk";
 
 const NODE_COMPONENTS = {
   "langchain.prompts.chat.ChatPromptTemplate": PromptNode,
@@ -38,13 +39,36 @@ const CONNECTOR_CONFIG = {
   },
 };
 
-const usePropertyTargets = (type) => {
+const usePropertyTargets = (node, type) => {
+  const edges = useEdges();
+
   return useMemo(() => {
-    return type.connectors?.filter((connector) => connector.type === "target");
-  }, [type]);
+    const connectors = type.connectors?.filter(
+      (connector) => connector.type === "target"
+    );
+    return connectors?.map((connector) => {
+      const edge = edges?.find(
+        (edge) => edge.target === node.id && edge.targetHandle === connector.key
+      );
+      return { ...connector, connected: !!edge };
+    });
+  }, [type, edges, node.id]);
 };
 
+export const useConnectorColor = (connector) => {
+  const { connector: connectorStyle } = useEditorColorMode();
+  if (connector.connected) {
+    return connectorStyle.connected;
+  } else if (connector.required) {
+    return connectorStyle.required;
+  } else {
+    return connectorStyle.default;
+  }
+}
+
 export const PropertyTarget = ({ connector }) => {
+  const color = useConnectorColor(connector);
+
   return (
     <Box position="relative" width="100%">
       <Handle
@@ -54,15 +78,15 @@ export const PropertyTarget = ({ connector }) => {
           CONNECTOR_CONFIG[connector.source_type]?.target_position || "left"
         }
       />
-      <Box px={2} m={0}>
-        {connector.key}
+      <Box px={2} m={0} color={color}>
+        {connector.key} {connector.required && <RequiredAsterisk color={color} />}
       </Box>
     </Box>
   );
 };
 
-export const NodeProperties = ({ type }) => {
-  const propertyTargets = usePropertyTargets(type);
+export const NodeProperties = ({ node, type }) => {
+  const propertyTargets = usePropertyTargets(node, type);
 
   // sort properties into left and right
   const left = [];
@@ -93,10 +117,10 @@ export const NodeProperties = ({ type }) => {
   );
 };
 
-export const DefaultNodeContent = ({ type, config, onFieldChange }) => {
+export const DefaultNodeContent = ({ type, config, node, onFieldChange }) => {
   return (
     <>
-      <NodeProperties type={type} />
+      <NodeProperties node={node} type={type} />
       <CollapsibleSection title="Config">
         <TypeAutoFields type={type} config={config} onChange={onFieldChange} />
       </CollapsibleSection>

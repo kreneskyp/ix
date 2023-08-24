@@ -8,6 +8,7 @@ import ReactFlow, {
   Controls,
   useNodesState,
   useEdgesState,
+  ReactFlowProvider,
 } from "reactflow";
 import ConfigNode from "chains/flow/ConfigNode";
 import { useChainEditorAPI } from "chains/hooks/useChainEditorAPI";
@@ -345,29 +346,31 @@ const ChainGraphEditor = ({ graph }) => {
       </Box>
       <ChainEditorAPIContext.Provider value={api}>
         <Box ref={reactFlowWrapper} width={"85vw"} height={"100%"}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            isValidConnection={isValidConnection}
-            onInit={setReactFlowInstance}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onNodeDragStop={onNodeDragStop}
-            onNodesChange={onFilteredNodesChange}
-            onEdgesChange={onEdgesChange}
-            onEdgeUpdate={onEdgeUpdate}
-            onEdgeUpdateStart={onEdgeUpdateStart}
-            onEdgeUpdateEnd={onEdgeUpdateEnd}
-            nodeTypes={nodeTypes}
-            onConnect={onConnect}
-            fitView
-          >
-            <Controls />
-            <Background
-              color={colorMode === "light" ? "#111" : "#aaa"}
-              gap={16}
-            />
-          </ReactFlow>
+          <ReactFlowProvider>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              isValidConnection={isValidConnection}
+              onInit={setReactFlowInstance}
+              onDrop={onDrop}
+              onDragOver={onDragOver}
+              onNodeDragStop={onNodeDragStop}
+              onNodesChange={onFilteredNodesChange}
+              onEdgesChange={onEdgesChange}
+              onEdgeUpdate={onEdgeUpdate}
+              onEdgeUpdateStart={onEdgeUpdateStart}
+              onEdgeUpdateEnd={onEdgeUpdateEnd}
+              nodeTypes={nodeTypes}
+              onConnect={onConnect}
+              fitView
+            >
+              <Controls />
+              <Background
+                color={colorMode === "light" ? "#111" : "#aaa"}
+                gap={16}
+              />
+            </ReactFlow>
+          </ReactFlowProvider>
         </Box>
       </ChainEditorAPIContext.Provider>
     </Box>

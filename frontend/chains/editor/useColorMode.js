@@ -39,6 +39,11 @@ export const useEditorColorMode = () => {
       bg: isLight ? "gray.200" : "gray.900",
       color: isLight ? "gray.800" : "gray.200",
     },
+    connector: {
+      connected: isLight ? "gray.800" : "gray.100",
+      required: isLight ? "red.800" : "red.300",
+      default: isLight ? "gray.400" : "gray.500",
+    },
     highlight: {
       root: isLight ? "gray.300" : "gray.900",
       document_loader: retrieval,
