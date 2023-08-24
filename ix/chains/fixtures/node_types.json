@@ -12,6 +12,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -61,6 +62,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -147,6 +149,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -259,6 +262,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -397,6 +401,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -1050,6 +1055,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -1136,6 +1142,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -1521,6 +1528,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -1607,6 +1615,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -1693,6 +1702,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -2150,6 +2160,7 @@
       {
         "key": "chat_memory",
         "type": "target",
+        "required": true,
         "source_type": "memory_backend"
       }
     ],
@@ -2351,6 +2362,7 @@
       {
         "key": "chat_memory",
         "type": "target",
+        "required": true,
         "source_type": "memory_backend"
       }
     ],
@@ -2958,6 +2970,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -3183,11 +3196,13 @@
       {
         "key": "chat_memory",
         "type": "target",
+        "required": true,
         "source_type": "memory_backend"
       },
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       }
     ],
@@ -3326,6 +3341,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -3837,11 +3853,13 @@
       {
         "key": "chat_memory",
         "type": "target",
+        "required": true,
         "source_type": "memory_backend"
       },
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -4034,6 +4052,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -4051,6 +4070,7 @@
         "key": "retriever",
         "type": "target",
         "as_type": "retriever",
+        "required": true,
         "source_type": "vectorstore"
       }
     ],
@@ -4267,6 +4287,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -4502,6 +4523,7 @@
       {
         "key": "document_loader",
         "type": "target",
+        "required": true,
         "source_type": "document_loader"
       }
     ],

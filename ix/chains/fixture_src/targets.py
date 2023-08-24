@@ -8,12 +8,14 @@ LLM_TARGET = {
     "key": "llm",
     "type": "target",
     "source_type": "llm",
+    "required": True,
 }
 
 MEMORY_BACKEND_TARGET = {
     "key": "chat_memory",
     "type": "target",
     "source_type": "memory_backend",
+    "required": True,
 }
 
 OUTPUT_PARSER_TARGET = {
@@ -59,6 +61,7 @@ VECTORSTORE_TARGET = {
     "key": "vectorstore",
     "type": "target",
     "source_type": "vectorstore",
+    "required": True,
 }
 
 TOOLS_TARGET = {
@@ -78,6 +81,7 @@ DOCUMENT_LOADER_TARGET = {
     "key": "document_loader",
     "type": "target",
     "source_type": "document_loader",
+    "required": True,
 }
 
 DOCUMENTS_TARGET = {
@@ -91,4 +95,5 @@ RETRIEVER_TARGET = {
     "type": "target",
     "source_type": "vectorstore",
     "as_type": "retriever",
+    "required": True,
 }
