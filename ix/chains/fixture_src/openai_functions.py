@@ -44,8 +44,9 @@ FUNCTION_CALL = {
     "type": "string",
 }
 
+OPENAPI_CHAIN_CLASS_PATH = "ix.chains.openapi.get_openapi_chain_async"
 OPENAPI_CHAIN = {
-    "class_path": "ix.chains.openapi.get_openapi_chain_async",
+    "class_path": OPENAPI_CHAIN_CLASS_PATH,
     "type": "chain",
     "name": "OpenAPI with OpenAI Functions",
     "description": "Chain that uses OpenAI Functions to call OpenAPI endpoints.",

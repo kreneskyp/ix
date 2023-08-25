@@ -326,6 +326,7 @@ class Connector(BaseModel):
 
     key: str
     type: Literal["source", "target"]
+    required: bool = False
 
     # Simplified categorization of LangChain components. Class inheritance
     # can't be checked in JS so these categories are used for a proxy instead.

@@ -12,6 +12,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -61,6 +62,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -147,6 +149,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -259,6 +262,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -397,6 +401,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -1050,6 +1055,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -1136,6 +1142,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -1521,6 +1528,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -1607,6 +1615,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -1693,6 +1702,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -2044,6 +2054,69 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "7477a8ad-ca83-4714-aeaf-4df8cbb900ea",
+  "fields": {
+    "name": "Web Loader",
+    "description": "Load documents from the web and parse them with BeautifulSoup.",
+    "class_path": "langchain.document_loaders.web_base.WebBaseLoader",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "parser",
+        "type": "target",
+        "source_type": "parser"
+      }
+    ],
+    "fields": [
+      {
+        "name": "web_path",
+        "type": "list",
+        "style": {
+          "width": "100%"
+        },
+        "description": "URL(s) of the web page"
+      },
+      {
+        "name": "verify_ssl",
+        "type": "boolean",
+        "label": "Verify_ssl",
+        "default": true,
+        "required": false
+      },
+      {
+        "name": "continue_on_failure",
+        "type": "boolean",
+        "label": "Continue_on_failure",
+        "default": false,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "web_path"
+      ],
+      "properties": {
+        "web_path": {
+          "type": "object",
+          "default": null
+        },
+        "verify_ssl": {
+          "type": "boolean",
+          "default": true
+        },
+        "continue_on_failure": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "74fd7b8b-4be7-49dc-a925-5e522c03bbf4",
   "fields": {
     "name": "OpenAI Function Agent",
@@ -2123,6 +2196,7 @@
       {
         "key": "chat_memory",
         "type": "target",
+        "required": true,
         "source_type": "memory_backend"
       }
     ],
@@ -2324,6 +2398,7 @@
       {
         "key": "chat_memory",
         "type": "target",
+        "required": true,
         "source_type": "memory_backend"
       }
     ],
@@ -2931,6 +3006,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -3156,11 +3232,13 @@
       {
         "key": "chat_memory",
         "type": "target",
+        "required": true,
         "source_type": "memory_backend"
       },
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       }
     ],
@@ -3299,6 +3377,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -3810,11 +3889,13 @@
       {
         "key": "chat_memory",
         "type": "target",
+        "required": true,
         "source_type": "memory_backend"
       },
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -4007,6 +4088,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -4024,6 +4106,7 @@
         "key": "retriever",
         "type": "target",
         "as_type": "retriever",
+        "required": true,
         "source_type": "vectorstore"
       }
     ],
@@ -4240,6 +4323,7 @@
       {
         "key": "llm",
         "type": "target",
+        "required": true,
         "source_type": "llm"
       },
       {
@@ -4475,6 +4559,7 @@
       {
         "key": "document_loader",
         "type": "target",
+        "required": true,
         "source_type": "document_loader"
       }
     ],
