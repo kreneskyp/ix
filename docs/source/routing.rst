@@ -101,7 +101,7 @@ This class method loads a MapSubchain instance from a configuration dictionary.
     assert output == ["test1", "test2", "test3"]
 
 Selecting input with ``map_input``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``map_input`` attribute uses a jsonpath expression to extract
 the required data from the input. This can either refer to a

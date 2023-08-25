@@ -19,7 +19,7 @@ editing them visually in the user interface. The model supports asynchronicity, 
 processing and delegation to other agents.
 
 Chain API Reference
-------------
+-------------------
 Ix provides custom features on top of LangChain that require custom integrations to load.
 
 Default chain types
@@ -41,7 +41,7 @@ Routing / flow control:
 * `ChooseTool <./routing.rst#ChooseTool>`_: chain that chooses a tool with a subchain.
 
 Chain options
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^
 
 * `Memory <./memory.rst>`_:  Shared and local scoped memory for chains linked to Ix runtime.
 * `OpenAI Functions <./llm.rst#openai-functions>`_: OpenAI API functions for use in chains.
@@ -62,7 +62,7 @@ support for non-pydantic components including those that use a helper function o
 (e.g. Zapier LangChain component requires loading a client).
 
 ChainNode
-^^^^^^^^
+^^^^^^^^^
 
 A ``ChainNode`` represents a single node in the chain. Each node represents a processing step or operation that can be
 applied. It stores the configuration necessary for the process, along with additional metadata like its name and
@@ -72,7 +72,7 @@ A ``ChainNode`` also maintains references to its parent ``Chain`` allowing the c
 and manipulated easily.
 
 ChainEdge
-^^^^
+^^^^^^^^^
 
 A ``ChainEdge`` represents the connection or link between two ``ChainNode`` instances in the chain. It defines the
 source and target nodes of the connection, and contains additional information such as the root node of the chain it
@@ -81,7 +81,7 @@ belongs to, and an optional input map.
 The ``ChainEdge`` model is crucial for defining the structure and flow of the processing chain.
 
 Usage
-^^^^
+^^^^^
 
 These models are used to dynamically create, modify, and traverse processing chains. Chains stored
 in the database may be queried and run.
@@ -97,7 +97,7 @@ in the database may be queried and run.
 
 
 Creating Chains
-^^^^^^^^
+^^^^^^^^^^^^^^^
 
 Chains may be generated through the visual editor or a python code run as a management command or via shell_plus.
 JSON config import is not supported yet.
@@ -138,7 +138,7 @@ send a greeting message to the user. The ``ChatOpenAI`` language model
 
 
 Creating a Sequence
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 In this next example, a chain with a sequence of actions is created. The chain consists of two nodes: one that uses
 the previously defined ``GREET_USER`` and another that asks the user for their name.

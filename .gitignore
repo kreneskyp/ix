@@ -13,6 +13,9 @@ frontend/schema.graphql
 .ipython
 
 __pycache__
+.pytest_cache
+.bash_profile
+.vs
 
 # tmp
 auto
@@ -26,3 +29,6 @@ workdir
 
 #local copy of langchain if it exists
 langchain
+
+# docs
+docs/build

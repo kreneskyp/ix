@@ -78,7 +78,7 @@ compose: image
 
 # dev setup - runs all initial setup steps in one go
 .PHONY: dev_setup
-dev_setup: image frontend migrate dev_fixtures
+dev_setup: image frontend migrate dev_fixtures docs
 
 # build image
 .PHONY: image
@@ -222,6 +222,18 @@ pyright: compose
 	${DOCKER_COMPOSE_RUN} pyright
 
 
+# =========================================================
+#  Documentation
+# =========================================================
+
+.PHONY: docs
+docs: compose
+	rm -rf .compiled-static/docs
+	rm -rf docs/build
+	pip install -r docs/requirements.txt
+	cd ./docs && make html
+	mkdir -p .compiled-static/docs
+	cp -r docs/build/html/* .compiled-static/docs/
 
 # =========================================================
 # Cleanup
