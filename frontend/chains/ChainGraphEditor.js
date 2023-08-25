@@ -184,12 +184,14 @@ const ChainGraphEditor = ({ graph }) => {
       // target
       const target = reactFlowInstance.getNode(connection.target);
       const connectors = target.data.type.connectors;
-      let connector, expectedType;
+      let connector, expectedTypes;
       if (connection.targetHandle === "in") {
-        expectedType = "chain-link";
+        expectedTypes = new Set(["chain-link"]);
       } else {
         connector = connectors.find((c) => c.key === connection.targetHandle);
-        expectedType = connector?.source_type;
+        expectedTypes = Array.isArray(connector?.source_type)
+          ? new Set(connector.source_type)
+          : new Set([connector.source_type]);
       }
       const supportsMultiple = connector?.multiple || false;
 
@@ -204,8 +206,8 @@ const ChainGraphEditor = ({ graph }) => {
       // HAX: adding a special case for chain-agent connections until expectedType can be
       //      expanded to be a set of types
       if (
-        expectedType === providedType ||
-        (expectedType === "chain" && providedType === "agent")
+        expectedTypes.has(providedType) ||
+        (expectedTypes.has("chain") && providedType === "agent")
       ) {
         const instanceEdges = reactFlowInstance.getEdges();
         const targetEdges = instanceEdges.filter(
