@@ -7,7 +7,7 @@ import {
   faListCheck,
   faServer,
   faChain,
-  faMessage,
+  faMessage, faCircleQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
@@ -50,6 +50,12 @@ function Navigation() {
             </Link>
           </HStack>
         )}
+        <HStack align="center" spacing={3}>
+          <FontAwesomeIcon icon={faCircleQuestion} />
+          <a href="/static/docs/index.html">
+            Help
+          </a>
+        </HStack>
         <HStack align="center">
           <FontAwesomeIcon icon={faCog} />
           <Link ml={3} to="#">
