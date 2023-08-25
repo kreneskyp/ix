@@ -4071,7 +4071,10 @@
         "type": "target",
         "as_type": "retriever",
         "required": true,
-        "source_type": "vectorstore"
+        "source_type": [
+          "retriever",
+          "vectorstore"
+        ]
       }
     ],
     "fields": [
