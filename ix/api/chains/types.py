@@ -312,6 +312,7 @@ NodeTypes = Literal[
     "parser",
     "prompt",
     "retriever",
+    "store",
     "tool",
     "toolkit",
     "text_splitter",

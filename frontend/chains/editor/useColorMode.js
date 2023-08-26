@@ -59,6 +59,7 @@ export const useEditorColorMode = () => {
       tool: isLight ? "yellow.500" : "yellow.600",
       embeddings: retrieval,
       output_parser: isLight ? "gray.400" : "gray.700",
+      store: retrieval,
       vectorstore: retrieval,
       default: isLight ? "gray.400" : "gray.700",
     },
