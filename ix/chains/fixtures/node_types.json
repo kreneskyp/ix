@@ -1935,42 +1935,6 @@
 },
 {
   "model": "chains.nodetype",
-  "pk": "6b8d0961-5a6a-4d46-b21f-5e5daab2eb2f",
-  "fields": {
-    "name": "MultiQueryRetriever",
-    "description": "MultiQueryRetriever",
-    "class_path": "libs.langchain.langchain.retrievers.multi_query.MultiQueryRetriever.from_llm",
-    "type": "retriever",
-    "display_type": "node",
-    "connectors": [
-      {
-        "key": "retriever",
-        "type": "target",
-        "as_type": "retriever",
-        "source_type": "vectorstore"
-      },
-      {
-        "key": "llm",
-        "type": "target",
-        "source_type": "llm"
-      },
-      {
-        "key": "prompt",
-        "type": "target",
-        "source_type": "prompt"
-      }
-    ],
-    "fields": [],
-    "child_field": null,
-    "config_schema": {
-      "type": "object",
-      "required": [],
-      "properties": {}
-    }
-  }
-},
-{
-  "model": "chains.nodetype",
   "pk": "6f810877-714e-43e6-ac2d-65e86e93a069",
   "fields": {
     "name": "MosaicML Instructor Embeddings",
