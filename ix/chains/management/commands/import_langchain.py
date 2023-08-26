@@ -37,6 +37,7 @@ from ix.chains.fixture_src.parsers import PARSERS
 from ix.chains.fixture_src.prompts import CHAT_PROMPT_TEMPLATE
 from ix.chains.fixture_src.retriever import RETRIEVERS
 from ix.chains.fixture_src.routing import ROUTING_CHAINS
+from ix.chains.fixture_src.storage import STORAGE
 from ix.chains.fixture_src.testing import MOCK_MEMORY, MOCK_CHAIN
 from ix.chains.fixture_src.text_splitter import TEXT_SPLITTERS
 from ix.chains.fixture_src.tools import TOOLS
@@ -113,6 +114,7 @@ COMPONENTS.extend(PARSERS)
 COMPONENTS.extend(TEXT_SPLITTERS)
 COMPONENTS.extend(DOCUMENT_LOADERS)
 COMPONENTS.extend(VECTORSTORES)
+COMPONENTS.extend(STORAGE)
 COMPONENTS.extend(RETRIEVERS)
 
 # IX Misc

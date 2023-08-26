@@ -1304,6 +1304,67 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "3cd58bd8-6342-45d3-892f-5c0aa1172520",
+  "fields": {
+    "name": "Redis Store",
+    "description": "BaseStore implementation using Redis as the underlying store.\n\n    Examples:\n        Create a RedisStore instance and perform operations on it:\n\n        .. code-block:: python\n\n            # Instantiate the RedisStore with a Redis connection\n            from langchain.storage import RedisStore\n            from langchain.utilities.redis import get_client\n\n            client = get_client('redis://localhost:6379')\n            redis_store = RedisStore(client)\n\n            # Set values for keys\n            redis_store.mset([(\"key1\", b\"value1\"), (\"key2\", b\"value2\")])\n\n            # Get values for keys\n            values = redis_store.mget([\"key1\", \"key2\"])\n            # [b\"value1\", b\"value2\"]\n\n            # Delete keys\n            redis_store.mdelete([\"key1\"])\n\n            # Iterate over keys\n            for key in redis_store.yield_keys():\n                print(key)\n    ",
+    "class_path": "langchain.storage.redis.RedisStore",
+    "type": "store",
+    "display_type": "node",
+    "connectors": [],
+    "fields": [
+      {
+        "name": "redis_url",
+        "type": "str",
+        "label": "Redis_url",
+        "default": "redis://redis:6379/0",
+        "required": false
+      },
+      {
+        "max": 12000,
+        "min": 0,
+        "name": "ttl",
+        "step": 10,
+        "type": "int",
+        "label": "Ttl",
+        "default": 3600,
+        "required": false,
+        "input_type": "slider"
+      },
+      {
+        "name": "namespace",
+        "type": "str",
+        "label": "Namespace",
+        "default": null,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "ttl": {
+          "type": "number",
+          "default": 3600,
+          "maximum": 12000.0,
+          "minimum": 0.0,
+          "multipleOf": 10.0
+        },
+        "namespace": {
+          "type": "string",
+          "default": null
+        },
+        "redis_url": {
+          "type": "string",
+          "default": "redis://redis:6379/0"
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "3ffc030c-f6cb-4fc2-9cd7-ff1cfd3a5c99",
   "fields": {
     "name": "OpenAI Embeddings",
