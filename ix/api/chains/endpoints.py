@@ -91,7 +91,7 @@ async def delete_chain(chain_id: UUID):
 
 @router.get("/node_types/", response_model=NodeTypePage, tags=["Components"])
 async def get_node_types(
-    search: Optional[str] = None, limit: int = 50, offset: int = 0
+    search: Optional[str] = None, type: List[str] = None, limit: int = 50, offset: int = 0
 ):
     if search:
         query = NodeType.objects.filter(
@@ -102,6 +102,9 @@ async def get_node_types(
         )
     else:
         query = NodeType.objects.all()
+
+    if type:
+        query = query.filter(type__in=type)
 
     # punting on async implementation of pagination until later
     return await sync_to_async(NodeTypePage.paginate)(
