@@ -2166,6 +2166,47 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "7b954f7c-4449-46b4-9013-382ce3c94c2a",
+  "fields": {
+    "name": "MultiQueryRetriever",
+    "description": "MultiQueryRetriever",
+    "class_path": "langchain.retrievers.multi_query.MultiQueryRetriever.from_llm",
+    "type": "retriever",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "retriever",
+        "type": "target",
+        "as_type": "retriever",
+        "required": true,
+        "source_type": [
+          "retriever",
+          "vectorstore"
+        ]
+      },
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "7d49f24a-18e2-4db9-8be3-bbbe6aa25440",
   "fields": {
     "name": "Mock Memory",

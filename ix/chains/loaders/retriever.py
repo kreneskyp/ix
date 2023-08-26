@@ -25,7 +25,7 @@ def load_retriever_property(
     node = node_group[0]
     component_class = import_class(node.class_path)
 
-    if issubclass(component_class, VectorStore):
+    if isinstance(component_class, type) and issubclass(component_class, VectorStore):
         # unpack retriever fields from vectorstore config
         config = deepcopy(node.config)
         retriever_fields = get_vectorstore_retriever_fieldnames(node.class_path)
