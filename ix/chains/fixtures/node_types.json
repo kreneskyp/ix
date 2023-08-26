@@ -138,6 +138,86 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "05c2a0b5-4abd-4e37-a508-7aafcd149dfb",
+  "fields": {
+    "name": "JSON Loader",
+    "description": "Load a `JSON` file using a `jq` schema.\n\n    Example:\n        [{\"text\": ...}, {\"text\": ...}, {\"text\": ...}] -> schema = .[].text\n        {\"key\": [{\"text\": ...}, {\"text\": ...}, {\"text\": ...}]} -> schema = .key[].text\n        [\"\", \"\", \"\"] -> schema = .[]\n    ",
+    "class_path": "langchain.document_loaders.JSONLoader",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "file_path",
+        "type": "Union",
+        "label": "File_path",
+        "default": null,
+        "required": true
+      },
+      {
+        "name": "jq_schema",
+        "type": "str",
+        "label": "Jq_schema",
+        "default": null,
+        "required": true,
+        "input_type": "textarea"
+      },
+      {
+        "name": "content_key",
+        "type": "str",
+        "label": "Content_key",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "text_content",
+        "type": "boolean",
+        "label": "Text_content",
+        "default": true,
+        "required": false
+      },
+      {
+        "name": "json_lines",
+        "type": "boolean",
+        "label": "Json_lines",
+        "default": false,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "file_path",
+        "jq_schema"
+      ],
+      "properties": {
+        "file_path": {
+          "type": "object",
+          "default": null
+        },
+        "jq_schema": {
+          "type": "string",
+          "default": null
+        },
+        "json_lines": {
+          "type": "boolean",
+          "default": false
+        },
+        "content_key": {
+          "type": "string",
+          "default": null
+        },
+        "text_content": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "072d63be-45ef-4df2-8095-57a6560598ad",
   "fields": {
     "name": "OpenAI Multifunction Agent",
@@ -247,6 +327,25 @@
     ],
     "child_field": null,
     "config_schema": {}
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "19e42ab4-a56a-407e-a463-b4b9dcb26c7f",
+  "fields": {
+    "name": "Unstructured HTML Loader",
+    "description": "Load `HTML` files using `Unstructured`.\n\n    You can run the loader in one of two modes: \"single\" and \"elements\".\n    If you use \"single\" mode, the document will be returned as a single\n    langchain Document object. If you use \"elements\" mode, the unstructured\n    library will split the document into elements such as Title and NarrativeText.\n    You can pass in additional unstructured kwargs after mode to apply\n    different unstructured settings.\n\n    Examples\n    --------\n    from langchain.document_loaders import UnstructuredHTMLLoader\n\n    loader = UnstructuredHTMLLoader(\n        \"example.html\", mode=\"elements\", strategy=\"fast\",\n    )\n    docs = loader.load()\n\n    References\n    ----------\n    https://unstructured-io.github.io/unstructured/bricks.html#partition-html\n    ",
+    "class_path": "langchain.document_loaders.UnstructuredHTMLLoader",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
   }
 },
 {
@@ -1517,6 +1616,62 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "504aa6f6-45e7-4bbd-8f4f-80b39cebace9",
+  "fields": {
+    "name": "Beautiful Soup HTML Loader",
+    "description": "Load `HTML` files and parse them with `beautiful soup`.",
+    "class_path": "langchain.document_loaders.BSHTMLLoader",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "file_path",
+        "type": "str",
+        "label": "File_path",
+        "default": null,
+        "required": true
+      },
+      {
+        "name": "open_encoding",
+        "type": "str",
+        "label": "Open_encoding",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "get_text_separator",
+        "type": "str",
+        "label": "Get_text_separator",
+        "default": "",
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "file_path"
+      ],
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "default": null
+        },
+        "open_encoding": {
+          "type": "string",
+          "default": null
+        },
+        "get_text_separator": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "54d5cfcb-bf9c-4fe2-9692-075d6849ce23",
   "fields": {
     "name": "Chat Zero Shot React Description Agent",
@@ -2221,6 +2376,51 @@
         "human_prefix": {
           "type": "string",
           "default": "Human"
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "8268f595-438f-4921-80d7-3d31b3020755",
+  "fields": {
+    "name": "PDF Loader",
+    "description": "Load `PDF using `pypdf` and chunks at character level.\n\n    Loader also stores page numbers in metadata.\n    ",
+    "class_path": "langchain.document_loaders.PyPDFLoader",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "file_path",
+        "type": "str",
+        "label": "File_path",
+        "default": null,
+        "required": true
+      },
+      {
+        "name": "password",
+        "type": "str",
+        "label": "Password",
+        "default": null,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "file_path"
+      ],
+      "properties": {
+        "password": {
+          "type": "string",
+          "default": null
+        },
+        "file_path": {
+          "type": "string",
+          "default": null
         }
       }
     }
@@ -4674,6 +4874,62 @@
         "add_start_index": {
           "type": "boolean",
           "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "fd7f6d9b-f050-4276-bdf1-409833080f5e",
+  "fields": {
+    "name": "CSV Loader",
+    "description": "Load a `CSV` file into a list of Documents.\n\n    Each document represents one row of the CSV file. Every row is converted into a\n    key/value pair and outputted to a new line in the document's page_content.\n\n    The source for each document loaded from csv is set to the value of the\n    `file_path` argument for all documents by default.\n    You can override this by setting the `source_column` argument to the\n    name of a column in the CSV file.\n    The source of each document will then be set to the value of the column\n    with the name specified in `source_column`.\n\n    Output Example:\n        .. code-block:: txt\n\n            column1: value1\n            column2: value2\n            column3: value3\n    ",
+    "class_path": "langchain.document_loaders.csv_loader.CSVLoader",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "file_path",
+        "type": "str",
+        "label": "File_path",
+        "default": null,
+        "required": true
+      },
+      {
+        "name": "source_column",
+        "type": "str",
+        "label": "Source_column",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "encoding",
+        "type": "str",
+        "label": "Encoding",
+        "default": null,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "file_path"
+      ],
+      "properties": {
+        "encoding": {
+          "type": "string",
+          "default": null
+        },
+        "file_path": {
+          "type": "string",
+          "default": null
+        },
+        "source_column": {
+          "type": "string",
+          "default": null
         }
       }
     }
