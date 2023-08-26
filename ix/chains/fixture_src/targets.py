@@ -93,7 +93,7 @@ DOCUMENTS_TARGET = {
 RETRIEVER_TARGET = {
     "key": "retriever",
     "type": "target",
-    "source_type": "vectorstore",
+    "source_type": ["retriever", "vectorstore"],
     "as_type": "retriever",
     "required": True,
 }
