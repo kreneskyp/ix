@@ -12,14 +12,7 @@ from ix.chains.fixture_src.chat_memory_backend import (
     REDIS_MEMORY_BACKEND,
 )
 from ix.chains.fixture_src.document_loaders import DOCUMENT_LOADERS
-from ix.chains.fixture_src.embeddings import (
-    OPENAI_EMBEDDINGS,
-    GOOGLE_PALM_EMBEDDINGS,
-    LLAMA_CPP_EMBEDDINGS,
-    VERTEXAI_EMBEDDINGS,
-    HUGGINGFACE_EMBEDDINGS,
-    MOSAICML_INSTRUCTOR_EMBEDDINGS,
-)
+from ix.chains.fixture_src.embeddings import EMBEDDINGS
 from ix.chains.fixture_src.ix import CHAT_MODERATOR_TYPE
 from ix.chains.fixture_src.llm import OPENAI_LLM, GOOGLE_PALM, ANTHROPIC_LLM
 from ix.chains.fixture_src.memory import (
@@ -46,23 +39,12 @@ from ix.chains.models import NodeType
 
 COMPONENTS = []
 
-# Embeddings
-COMPONENTS.extend(
-    [
-        OPENAI_EMBEDDINGS,
-        GOOGLE_PALM_EMBEDDINGS,
-        LLAMA_CPP_EMBEDDINGS,
-        VERTEXAI_EMBEDDINGS,
-        HUGGINGFACE_EMBEDDINGS,
-        MOSAICML_INSTRUCTOR_EMBEDDINGS,
-    ]
-)
-
 # Agents
 COMPONENTS.extend(AGENTS)
 COMPONENTS.extend(TOOLS)
 
 # LLMS
+COMPONENTS.extend(EMBEDDINGS)
 COMPONENTS.extend(
     [
         OPENAI_LLM,

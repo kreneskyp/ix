@@ -1218,6 +1218,42 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "36ee2059-721b-42ec-b314-792c6fdbb686",
+  "fields": {
+    "name": "Cache Backed Embeddings",
+    "description": "Interface for caching results from embedding models.\n\n    The interface allows works with any store that implements\n    the abstract store interface accepting keys of type str and values of list of\n    floats.\n\n    If need be, the interface can be extended to accept other implementations\n    of the value serializer and deserializer, as well as the key encoder.\n\n    Examples:\n\n        .. code-block: python\n\n            from langchain.embeddings import CacheBackedEmbeddings, OpenAIEmbeddings\n            from langchain.storage import LocalFileStore\n\n            store = LocalFileStore('./my_cache')\n\n            underlying_embedder = OpenAIEmbeddings()\n            embedder = CacheBackedEmbeddings.from_bytes_store(\n                underlying_embedder, store, namespace=underlying_embedder.model\n            )\n\n            # Embedding is computed and cached\n            embeddings = embedder.embed_documents([\"hello\", \"goodbye\"])\n\n            # Embeddings are retrieved from the cache, no computation is done\n            embeddings = embedder.embed_documents([\"hello\", \"goodbye\"])\n    ",
+    "class_path": "langchain.embeddings.CacheBackedEmbeddings",
+    "type": "embeddings",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "underlying_embeddings",
+        "type": "target",
+        "required": true,
+        "source_type": [
+          "embeddings"
+        ]
+      },
+      {
+        "key": "document_embedding_store",
+        "type": "target",
+        "required": true,
+        "source_type": [
+          "store"
+        ]
+      }
+    ],
+    "fields": [],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "39414ada-446f-4949-b087-193d1c93cb27",
   "fields": {
     "name": "Wikipedia",

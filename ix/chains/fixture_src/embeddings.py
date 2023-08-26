@@ -1,3 +1,30 @@
+from langchain.embeddings import CacheBackedEmbeddings
+
+
+EMBEDDINGS_CACHE_CLASS_PATH = "langchain.embeddings.CacheBackedEmbeddings"
+EMBEDDINGS_CACHE = {
+    "class_path": EMBEDDINGS_CACHE_CLASS_PATH,
+    "type": "embeddings",
+    "name": "Cache Backed Embeddings",
+    "description": CacheBackedEmbeddings.__doc__,
+    "connectors": [
+        {
+            "key": "underlying_embeddings",
+            "type": "target",
+            "source_type": ["embeddings"],
+            "required": True,
+        },
+        {
+            "key": "document_embedding_store",
+            "type": "target",
+            "source_type": ["store"],
+            "required": True,
+        },
+    ],
+    "fields": [],
+}
+
+
 OPENAI_EMBEDDINGS_CLASS_PATH = "langchain.embeddings.openai.OpenAIEmbeddings"
 OPENAI_EMBEDDINGS = {
     "name": "OpenAI Embeddings",
@@ -237,3 +264,14 @@ MOSAICML_INSTRUCTOR_EMBEDDINGS = {
         },
     ],
 }
+
+
+EMBEDDINGS = [
+    EMBEDDINGS_CACHE,
+    GOOGLE_PALM_EMBEDDINGS,
+    HUGGINGFACE_EMBEDDINGS,
+    LLAMA_CPP_EMBEDDINGS,
+    MOSAICML_INSTRUCTOR_EMBEDDINGS,
+    OPENAI_EMBEDDINGS,
+    VERTEXAI_EMBEDDINGS,
+]
