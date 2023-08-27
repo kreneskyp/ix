@@ -2,8 +2,9 @@ from langchain import LlamaCpp
 
 from ix.api.chains.types import NodeTypeField
 
+OPENAI_LLM_CLASS_PATH = "langchain.chat_models.openai.ChatOpenAI"
 OPENAI_LLM = {
-    "class_path": "langchain.chat_models.openai.ChatOpenAI",
+    "class_path": OPENAI_LLM_CLASS_PATH,
     "type": "llm",
     "name": "OpenAI LLM",
     "description": "OpenAI LLM",
