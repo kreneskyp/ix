@@ -16,7 +16,7 @@ export const getEdgeStyle = (colorMode, type) => {
 export const toReactFlowNode = (node, nodeType) => {
   return {
     id: node.id,
-    type: nodeType.displayType,
+    type: nodeType.display_type,
     dragHandle: ".drag-handle",
     position: node.position,
     data: {
@@ -33,6 +33,14 @@ export const toReactFlowNode = (node, nodeType) => {
 export const useGraphForReactFlow = (graph) => {
   const { colorMode } = useColorMode();
 
+  const nodeTypes = useMemo(() => {
+    const nodeTypes = {};
+    graph?.types?.forEach((type) => {
+      nodeTypes[type.id] = type;
+    });
+    return nodeTypes;
+  }, [graph]);
+
   return useMemo(() => {
     let root = null;
     const nodeMap = {};
@@ -45,7 +53,7 @@ export const useGraphForReactFlow = (graph) => {
         if (node.root) {
           root = node;
         }
-        return toReactFlowNode(node, node.nodeType);
+        return toReactFlowNode(node, nodeTypes[node.node_type_id]);
       }) || [];
 
     const chainPropEdgeStyle = getEdgeStyle(colorMode, "chain");
@@ -53,12 +61,12 @@ export const useGraphForReactFlow = (graph) => {
 
     const edges =
       graph?.edges?.map((edge) => {
-        const sourceType = nodeMap[edge.source.id].nodeType.type;
+        const sourceType = nodeTypes[nodeMap[edge.source_id].node_type_id].type;
         return {
           id: edge.id,
           type: "default",
-          source: edge.source.id,
-          target: edge.target.id,
+          source: edge.source_id,
+          target: edge.target_id,
           sourceHandle: edge.relation === "PROP" ? sourceType : "out",
           targetHandle: edge.relation === "PROP" ? edge.key : "in",
           style: sourceType === "chain" ? chainPropEdgeStyle : defaultEdgeStyle,

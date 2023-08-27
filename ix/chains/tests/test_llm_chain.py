@@ -3,7 +3,6 @@ from copy import deepcopy
 import pytest
 from langchain.prompts import ChatPromptTemplate
 
-from ix.agents.callback_manager import IxCallbackManager
 from ix.chains.llm_chain import LLMChain, TEMPLATE_CLASSES
 from ix.chains.loaders.prompts import create_message
 from ix.chains.tests.mock_memory import MockMemory
@@ -80,5 +79,4 @@ class TestLLMChain:
             ]
         )
         assert chain.prompt.messages[1].prompt.partial_variables == {}
-        assert isinstance(chain.callbacks, IxCallbackManager)
         assert isinstance(chain.memory, MockMemory)

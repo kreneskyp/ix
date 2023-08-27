@@ -88,6 +88,9 @@ const ChatMessageContent = ({ message }) => {
     case "ARTIFACT":
       contentComponent = <ArtifactContent message={message} />;
       break;
+    case "THOUGHT":
+      contentComponent = null;
+      break;
     default:
       contentComponent = <HighlightText content={content.message} />;
       break;

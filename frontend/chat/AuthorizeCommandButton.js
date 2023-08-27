@@ -1,9 +1,9 @@
 import React from "react";
 import { Button, useToast } from "@chakra-ui/react";
-import { useAuthorizeCommand } from "chat/graphql/useAuthorizeCommand";
 
 export const AuthorizeCommandButton = ({ messageId }) => {
-  const { authorizeCommand, error, loading } = useAuthorizeCommand();
+  // no-op until this endpoint is created.
+  const authorizeCommand = () => {};
   const toast = useToast();
 
   const handleClick = async () => {

@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
-import { Handle, useReactFlow } from "reactflow";
+import { Handle, useEdges, useReactFlow } from "reactflow";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEditorColorMode } from "chains/editor/useColorMode";
@@ -17,6 +17,7 @@ import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { useDebounce } from "utils/hooks/useDebounce";
 import { FunctionSchemaNode } from "chains/flow/FunctionSchemaNode";
 import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
+import { RequiredAsterisk } from "components/RequiredAsterisk";
 
 const NODE_COMPONENTS = {
   "langchain.prompts.chat.ChatPromptTemplate": PromptNode,
@@ -38,38 +39,61 @@ const CONNECTOR_CONFIG = {
   },
 };
 
-const usePropertyTargets = (type) => {
+const usePropertyTargets = (node, type) => {
+  const edges = useEdges();
+
   return useMemo(() => {
-    return type.connectors?.filter((connector) => connector.type === "target");
-  }, [type]);
+    const connectors = type.connectors?.filter(
+      (connector) => connector.type === "target"
+    );
+    return connectors?.map((connector) => {
+      const edge = edges?.find(
+        (edge) => edge.target === node.id && edge.targetHandle === connector.key
+      );
+      return { ...connector, connected: !!edge };
+    });
+  }, [type, edges, node.id]);
 };
 
+export const useConnectorColor = (connector) => {
+  const { connector: connectorStyle } = useEditorColorMode();
+  if (connector.connected) {
+    return connectorStyle.connected;
+  } else if (connector.required) {
+    return connectorStyle.required;
+  } else {
+    return connectorStyle.default;
+  }
+}
+
 export const PropertyTarget = ({ connector }) => {
+  const color = useConnectorColor(connector);
+
   return (
     <Box position="relative" width="100%">
       <Handle
         id={connector.key}
         type="target"
         position={
-          CONNECTOR_CONFIG[connector.sourceType]?.target_position || "left"
+          CONNECTOR_CONFIG[connector.source_type]?.target_position || "left"
         }
       />
-      <Box px={2} m={0}>
-        {connector.key}
+      <Box px={2} m={0} color={color}>
+        {connector.key} {connector.required && <RequiredAsterisk color={color} />}
       </Box>
     </Box>
   );
 };
 
-export const NodeProperties = ({ type }) => {
-  const propertyTargets = usePropertyTargets(type);
+export const NodeProperties = ({ node, type }) => {
+  const propertyTargets = usePropertyTargets(node, type);
 
   // sort properties into left and right
   const left = [];
   const right = [];
   propertyTargets?.forEach((connector) => {
     const position =
-      CONNECTOR_CONFIG[connector.sourceType]?.target_position || "left";
+      CONNECTOR_CONFIG[connector.source_type]?.target_position || "left";
     if (position === "right") {
       right.push(connector);
     } else {
@@ -93,10 +117,10 @@ export const NodeProperties = ({ type }) => {
   );
 };
 
-export const DefaultNodeContent = ({ type, config, onFieldChange }) => {
+export const DefaultNodeContent = ({ type, config, node, onFieldChange }) => {
   return (
     <>
-      <NodeProperties type={type} />
+      <NodeProperties node={node} type={type} />
       <CollapsibleSection title="Config">
         <TypeAutoFields type={type} config={config} onChange={onFieldChange} />
       </CollapsibleSection>
@@ -110,7 +134,7 @@ const DeleteIcon = ({ node }) => {
 
   const onClick = useCallback(
     (event) => {
-      api.deleteNode({ id: node.id });
+      api.deleteNode(node.id);
     },
     [node.id, api]
   );
@@ -138,13 +162,12 @@ export const ConfigNode = ({ data }) => {
   const handleConfigChange = useMemo(() => {
     function all(newConfig, delay = 0) {
       const data = {
-        id: node.id,
-        classPath: node.classPath,
+        class_path: node.class_path,
         description: node.description,
         position: node.position,
         config: newConfig,
       };
-      debouncedUpdateNode({ data });
+      debouncedUpdateNode(node.id, data);
       setConfig(newConfig);
     }
 
@@ -158,8 +181,8 @@ export const ConfigNode = ({ data }) => {
 
   // node type specific content
   let NodeComponent = null;
-  if (NODE_COMPONENTS[node.classPath]) {
-    NodeComponent = NODE_COMPONENTS[node.classPath];
+  if (NODE_COMPONENTS[node.class_path]) {
+    NodeComponent = NODE_COMPONENTS[node.class_path];
   } else if (styles?.component) {
     NodeComponent = styles.component;
   }
@@ -214,7 +237,7 @@ export const ConfigNode = ({ data }) => {
           <Flex alignItems="center" justifyContent="space-between" width="100%">
             <Box pr={5}>
               <FontAwesomeIcon icon={styles?.icon} />{" "}
-              {node.name || type?.name || node.classPath.split(".").pop()}
+              {node.name || type?.name || node.class_path.split(".").pop()}
             </Box>
             <DeleteIcon node={node} />
           </Flex>

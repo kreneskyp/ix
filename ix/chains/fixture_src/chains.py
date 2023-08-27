@@ -1,3 +1,7 @@
+from langchain.chains import ConversationalRetrievalChain
+from langchain.chains.conversational_retrieval.base import (
+    BaseConversationalRetrievalChain,
+)
 from langchain.chains.llm_symbolic_math.base import LLMSymbolicMathChain
 from ix.api.chains.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
@@ -8,6 +12,7 @@ from ix.chains.fixture_src.targets import (
     LLM_TARGET,
     FUNCTION_TARGET,
     OUTPUT_PARSER_TARGET,
+    RETRIEVER_TARGET,
 )
 
 LLM_CHAIN = {
@@ -32,15 +37,6 @@ LLM_CHAIN = {
         },
     ],
 }
-
-LLM_TOOL_CHAIN = dict(
-    class_path="ix.chains.tool_chain.LLMToolChain",
-    type="chain",
-    name="LLM Tool Chain",
-    description="Chain that prompts an LLM for a completion. It has a set of tools available to the prompt",
-    connectors=[LLM_TARGET, MEMORY_TARGET, PROMPT_TARGET, FUNCTION_TARGET],
-    fields=[VERBOSE, FUNCTION_CALL],
-)
 
 LLM_REPLY = dict(
     class_path="ix.chains.llm_chain.LLMReply",
@@ -75,9 +71,38 @@ LLM_SYMBOLIC_MATH_CHAIN = {
     ),
 }
 
-CHAINS = [
-    LLM_CHAIN,
-    LLM_TOOL_CHAIN,
-    LLM_REPLY,
-    LLM_SYMBOLIC_MATH_CHAIN,
-]
+BASE_CONVERSATIONAL_RETRIEVAL_CHAIN_FIELDS = NodeTypeField.get_fields(
+    BaseConversationalRetrievalChain,
+    include=[
+        "output_key",
+        "rephrase_question",
+        "return_source_documents",
+        "return_generated_question",
+    ],
+)
+
+
+CONVERSATIONAL_RETRIEVAL_CHAIN_CLASS_PATH = "langchain.chains.conversational_retrieval.base.ConversationalRetrievalChain.from_llm"
+CONVERSATIONAL_RETRIEVAL_CHAIN = {
+    "class_path": CONVERSATIONAL_RETRIEVAL_CHAIN_CLASS_PATH,
+    "type": "chain",
+    "name": "ConversationalRetrievalChain",
+    "description": "Chain for having a conversation based on retrieved documents.",
+    "connectors": [
+        LLM_TARGET,
+        MEMORY_TARGET,
+        PROMPT_TARGET,
+        RETRIEVER_TARGET,
+    ],
+    "fields": [
+        VERBOSE,
+    ]
+    + BASE_CONVERSATIONAL_RETRIEVAL_CHAIN_FIELDS
+    + NodeTypeField.get_fields(
+        ConversationalRetrievalChain,
+        include=["max_tokens_limit"],
+    ),
+}
+
+CHAINS = [LLM_CHAIN, LLM_REPLY, LLM_SYMBOLIC_MATH_CHAIN, CONVERSATIONAL_RETRIEVAL_CHAIN]
+__all__ = ["CHAINS"]

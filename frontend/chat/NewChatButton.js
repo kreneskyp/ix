@@ -2,7 +2,7 @@ import { Button, Icon } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
-import useCreateChat from "chat/graphql/useCreateChat";
+import useCreateChat from "chat/hooks/useCreateChat";
 import { useColorMode } from "@chakra-ui/color-mode";
 
 export const NewChatButton = () => {

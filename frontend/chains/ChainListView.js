@@ -1,26 +1,19 @@
-import React, { useEffect } from "react";
-import { useQueryLoader } from "react-relay";
+import React from "react";
 import { Heading, Spinner, VStack } from "@chakra-ui/react";
 import { ScrollableBox } from "site/ScrollableBox";
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 
-import { ChainsQuery } from "chains/graphql/ChainsQuery";
 import { ChainCardList } from "chains/ChainCardList";
 import { NewChainButton } from "chains/NewChainButton";
+import { useLocation } from "react-router-dom";
+import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
 export const ChainListView = () => {
-  const [queryRef, loadQuery] = useQueryLoader(ChainsQuery);
-
-  useEffect(() => {
-    loadQuery({}, { fetchPolicy: "network-only" });
-  }, []);
-
-  let content;
-  if (!queryRef) {
-    return <Spinner />;
-  } else {
-    content = <ChainCardList queryRef={queryRef} />;
-  }
+  const location = useLocation();
+  const { page, isLoading } = usePaginatedAPI("/api/chains/", {
+    loadDependencies: [location],
+    limit: 90000,
+  });
 
   return (
     <Layout>
@@ -30,7 +23,9 @@ export const ChainListView = () => {
       <LayoutContent>
         <VStack alignItems="start" p={5} spacing={4}>
           <Heading>Chains</Heading>
-          <ScrollableBox>{content}</ScrollableBox>
+          <ScrollableBox>
+            {isLoading ? <Spinner /> : <ChainCardList page={page} />}
+          </ScrollableBox>
         </VStack>
       </LayoutContent>
     </Layout>

@@ -33,6 +33,7 @@ PIRATE = {
                         "class_path": "langchain.chat_models.openai.ChatOpenAI",
                         "config": {
                             "verbose": True,
+                            "streaming": True,
                         },
                     },
                     "chat_memory": {

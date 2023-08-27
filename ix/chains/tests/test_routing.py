@@ -170,13 +170,13 @@ def mock_mapsubchain(load_chain) -> MapSubchain:
 
 @pytest.mark.django_db
 class TestMapSubchain:
-    def test_from_config(self, node_types, mock_subchain_config, mock_callback_manager):
+    def test_from_config(self, node_types, mock_subchain_config, ix_context):
         """Testing importing from a config object"""
         chain = fake_chain()
         chain_node = ChainNode.objects.create_from_config(
             chain, mock_subchain_config, root=True
         )
-        instance = chain_node.load(mock_callback_manager)
+        instance = chain_node.load(ix_context)
         assert isinstance(instance, MapSubchain)
 
     def test_load_chain(self, mock_mapsubchain):

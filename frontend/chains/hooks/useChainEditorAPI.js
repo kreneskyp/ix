@@ -1,14 +1,7 @@
-import { useChainEditorMutation } from "chains/hooks/useChainEditorMutation";
-import { UpdateChainMutation } from "chains/graphql/UpdateChainMutation";
-import { AddChainEdgeMutation } from "chains/graphql/AddChainEdgeMutation";
-import { UpdateChainNodeMutation } from "chains/graphql/UpdateChainNodeMutation";
-import { DeleteChainNodeMutation } from "chains/graphql/DeleteChainNodeMutation";
-import { UpdateChainEdgeMutation } from "chains/graphql/UpdateChainEdgeMutation";
-import { DeleteChainEdgeMutation } from "chains/graphql/DeleteChainEdgeMutation";
-import { AddChainNodeMutation } from "chains/graphql/AddChainNodeMutation";
 import { useCallback, useMemo } from "react";
-import { SetChainRootMutation } from "chains/graphql/SetChainRootMutation";
-import { UpdateChainNodePositionMutation } from "chains/graphql/UpdateChainNodePositionMutation";
+import useUpdateAPI from "utils/hooks/useUpdateAPI";
+import { useAxiosDelete } from "utils/hooks/useAxiosDelete";
+import { useAxios } from "utils/hooks/useAxios";
 
 // utility for wrapping default onCompleted with onCompleted arg
 const useNestedCallback = (func, callback) => {
@@ -26,114 +19,175 @@ export const useChainEditorAPI = ({
   onError,
   reactFlowInstance,
 }) => {
-  const { setNodes, setEdges } = reactFlowInstance ? reactFlowInstance : {};
+  const chainId = chain?.id;
+  const { setNodes, setEdges } = reactFlowInstance || {};
+  const onSuccess = onCompleted;
 
-  const { callback: updateChain, isInFlight: updateChainInFlight } =
-    useChainEditorMutation({
-      chain,
-      onCompleted,
+  const { call: createChain, isLoading: createChainLoading } = useUpdateAPI(
+    `/api/chains/`,
+    {
+      onSuccess,
       onError,
-      query: UpdateChainMutation,
-      reactFlowInstance,
-    });
-  const { callback: setRoot, isInFlight: setRootInFlight } =
-    useChainEditorMutation({
-      chain,
-      onCompleted,
+      method: "post",
+    }
+  );
+
+  const { call: updateChain, isLoading: updateChainLoading } = useUpdateAPI(
+    `/api/chains/${chainId}`,
+    {
+      onSuccess,
       onError,
-      query: SetChainRootMutation,
-      reactFlowInstance,
-    });
-  const { callback: addNode, isInFlight: addNodeInFlight } =
-    useChainEditorMutation({
-      chain,
-      onCompleted,
+    }
+  );
+
+  const { call: axiosSetRoot, isLoading: setRootLoading } = useAxios(
+    {
+      onSuccess,
       onError,
-      query: AddChainNodeMutation,
-      reactFlowInstance,
-    });
-  const { callback: updateNode, isInFlight: updateNodeInFlight } =
-    useChainEditorMutation({
-      chain,
-      onCompleted,
+      method: "post",
+    },
+    []
+  );
+
+  const setRoot = useCallback(
+    (chainId, data) => {
+      return axiosSetRoot(`/api/chains/${chainId}/set_root`, { data });
+    },
+    [axiosUpdateNode]
+  );
+
+  const { call: addNode, isLoading: addNodeLoading } = useUpdateAPI(
+    `/api/chains/nodes`,
+    {
+      onSuccess,
       onError,
-      query: UpdateChainNodeMutation,
-      reactFlowInstance,
-    });
+      method: "post",
+    }
+  );
+
+  const { call: axiosUpdateNode, isLoading: updateNodeLoading } = useAxios(
+    {
+      onSuccess,
+      onError,
+      method: "put",
+    },
+    []
+  );
+
+  const updateNode = useCallback(
+    (node_id, data) => {
+      return axiosUpdateNode(`/api/chains/nodes/${node_id}`, { data });
+    },
+    [axiosUpdateNode]
+  );
 
   const {
-    callback: updateNodePosition,
-    isInFlight: updateNodePositionInFlight,
-  } = useChainEditorMutation({
-    chain,
-    onCompleted,
-    onError,
-    query: UpdateChainNodePositionMutation,
-    reactFlowInstance,
-  });
+    call: axiosUpdateNodePosition,
+    isLoading: updateNodePositionLoading,
+  } = useAxios(
+    {
+      onSuccess,
+      onError,
+      method: "post",
+    },
+    []
+  );
+
+  const updateNodePosition = useCallback(
+    (node_id, data) => {
+      return axiosUpdateNodePosition(`/api/chains/nodes/${node_id}/position`, {
+        data,
+      });
+    },
+    [axiosUpdateNodePosition]
+  );
 
   const onDeleteNode = useCallback(
     useNestedCallback((response) => {
-      // delete nodes and edges from ReactFlow
-      const { node } = response?.deleteChainNode;
-      setNodes((nodes) => nodes.filter((n) => n.id !== node.id));
+      const { id: node_id } = response.data;
+      setNodes((nodes) => nodes.filter((n) => n.id !== node_id));
       setEdges((edges) =>
         edges.filter(
-          (edge) => edge.source !== node.id && edge.target !== node.id
+          (edge) => edge.source !== node_id && edge.target !== node_id
         )
       );
     }, onCompleted),
     [reactFlowInstance]
   );
 
-  const { callback: deleteNode, isInFlight: deleteNodeInFlight } =
-    useChainEditorMutation({
-      chain,
-      onCompleted: onDeleteNode,
+  const { call: axiosDeleteNode, isLoading: deleteNodeLoading } =
+    useAxiosDelete(
+      {
+        onSuccess: onDeleteNode,
+        onError,
+      },
+      [onDeleteNode]
+    );
+
+  const deleteNode = useCallback(
+    (node_id) => {
+      return axiosDeleteNode(`/api/chains/nodes/${node_id}`);
+    },
+    [axiosDeleteNode]
+  );
+
+  const { call: addEdge, isLoading: addEdgeLoading } = useUpdateAPI(
+    `/api/chains/edges`,
+    {
+      onSuccess,
       onError,
-      query: DeleteChainNodeMutation,
-      reactFlowInstance,
-    });
-  const { callback: addEdge, isInFlight: addEdgeInFlight } =
-    useChainEditorMutation({
-      chain,
-      onCompleted,
+      method: "post",
+    }
+  );
+
+  const { call: axiosUpdateEdge, isLoading: updateEdgeLoading } = useAxios(
+    {
+      onSuccess,
       onError,
-      query: AddChainEdgeMutation,
-      reactFlowInstance,
-    });
-  const { callback: updateEdge, isInFlight: updateEdgeInFlight } =
-    useChainEditorMutation({
-      chain,
-      onCompleted,
-      onError,
-      query: UpdateChainEdgeMutation,
-      reactFlowInstance,
-    });
-  const { callback: deleteEdge, isInFlight: deleteEdgeInFlight } =
-    useChainEditorMutation({
-      chain,
-      onCompleted,
-      onError,
-      query: DeleteChainEdgeMutation,
-      reactFlowInstance,
-    });
+      method: "put",
+    },
+    []
+  );
+
+  const updateEdge = useCallback(
+    (edge_id, data) => {
+      return axiosUpdateEdge(`/api/chains/edges/${edge_id}`, { data });
+    },
+    [axiosUpdateEdge]
+  );
+
+  const { call: axiosDeleteEdge, isLoading: deleteEdgeLoading } =
+    useAxiosDelete(
+      {
+        onSuccess,
+        onError,
+      },
+      []
+    );
+
+  const deleteEdge = useCallback(
+    (edge_id) => {
+      return axiosDeleteEdge(`/api/chains/edges/${edge_id}`);
+    },
+    [axiosDeleteEdge]
+  );
 
   return useMemo(() => {
-    // aggregate inFlight status
-    const isInFlight =
-      updateChainInFlight ||
-      setRootInFlight ||
-      addNodeInFlight ||
-      updateNodeInFlight ||
-      updateNodePositionInFlight ||
-      deleteNodeInFlight ||
-      addEdgeInFlight ||
-      updateEdgeInFlight ||
-      deleteEdgeInFlight;
+    const isLoading =
+      createChainLoading ||
+      updateChainLoading ||
+      setRootLoading ||
+      addNodeLoading ||
+      updateNodeLoading ||
+      updateNodePositionLoading ||
+      deleteNodeLoading ||
+      addEdgeLoading ||
+      updateEdgeLoading ||
+      deleteEdgeLoading;
 
     return {
-      isInFlight,
+      isLoading,
+      createChain,
       updateChain,
       setRoot,
       updateNode,

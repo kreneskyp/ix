@@ -20,7 +20,8 @@
             "model_name": "gpt-4-0613",
             "max_retries": 6,
             "temperature": 0,
-            "request_timeout": 60
+            "request_timeout": 60,
+            "streaming": true
         },
         "name": null,
         "description": null,
@@ -112,7 +113,6 @@
         "config": {
             "temperature": 0.1
         },
-        "agent_class_path": "",
         "chain": "99e28f55-002c-405c-979d-26fb61f900bb"
     }
 }

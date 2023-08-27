@@ -12,11 +12,11 @@ from ix.chains.routing import MapSubchain
 @pytest.mark.django_db
 @pytest.mark.usefixtures("node_types")
 class TestCreateCoder:
-    def test_create_coder(self, mock_callback_manager, mock_openai_key):
+    def test_create_coder(self, mock_openai_key, ix_context):
         call_command("create_coder_v2")
 
         model_instance = Chain.objects.get(id=CODER_V2_CHAIN)
-        chain = model_instance.load_chain(mock_callback_manager)
+        chain = model_instance.load_chain(ix_context)
 
         # assert structure of main sequence
         assert isinstance(chain, SequentialChain)
