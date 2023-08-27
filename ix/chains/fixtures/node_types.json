@@ -1463,6 +1463,315 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "4bfd56af-222c-4428-bc5a-31c4e5a99871",
+  "fields": {
+    "name": "Llama Cpp",
+    "description": "Llama Cpp wrapper for llama models",
+    "class_path": "langchain.llms.llamacpp.LlamaCpp",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "model_path",
+        "type": "str",
+        "label": "Model_path",
+        "default": null,
+        "required": true
+      },
+      {
+        "name": "lora_base",
+        "type": "str",
+        "label": "Lora_base",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "n_ctx",
+        "type": "int",
+        "label": "N_ctx",
+        "default": 512,
+        "required": false
+      },
+      {
+        "name": "n_parts",
+        "type": "int",
+        "label": "N_parts",
+        "default": -1,
+        "required": false
+      },
+      {
+        "name": "seed",
+        "type": "int",
+        "label": "Seed",
+        "default": -1,
+        "required": false
+      },
+      {
+        "name": "f16_kv",
+        "type": "boolean",
+        "label": "F16_kv",
+        "default": true,
+        "required": false
+      },
+      {
+        "name": "logits_all",
+        "type": "boolean",
+        "label": "Logits_all",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "vocab_only",
+        "type": "boolean",
+        "label": "Vocab_only",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "use_mlock",
+        "type": "boolean",
+        "label": "Use_mlock",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "n_threads",
+        "type": "int",
+        "label": "N_threads",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "n_batch",
+        "type": "int",
+        "label": "N_batch",
+        "default": 8,
+        "required": false
+      },
+      {
+        "name": "n_gpu_layers",
+        "type": "int",
+        "label": "N_gpu_layers",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "suffix",
+        "type": "str",
+        "label": "Suffix",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "max_tokens",
+        "type": "int",
+        "label": "Max_tokens",
+        "default": 256,
+        "required": false
+      },
+      {
+        "name": "temperature",
+        "type": "float",
+        "label": "Temperature",
+        "default": 0.8,
+        "required": false
+      },
+      {
+        "name": "top_p",
+        "type": "float",
+        "label": "Top_p",
+        "default": 0.95,
+        "required": false
+      },
+      {
+        "name": "logprobs",
+        "type": "int",
+        "label": "Logprobs",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "echo",
+        "type": "boolean",
+        "label": "Echo",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "stop",
+        "type": "List",
+        "label": "Stop",
+        "default": [],
+        "required": false
+      },
+      {
+        "name": "repeat_penalty",
+        "type": "float",
+        "label": "Repeat_penalty",
+        "default": 1.1,
+        "required": false
+      },
+      {
+        "name": "last_n_tokens_size",
+        "type": "int",
+        "label": "Last_n_tokens_size",
+        "default": 64,
+        "required": false
+      },
+      {
+        "name": "use_mmap",
+        "type": "boolean",
+        "label": "Use_mmap",
+        "default": true,
+        "required": false
+      },
+      {
+        "name": "rope_freq_scale",
+        "type": "float",
+        "label": "Rope_freq_scale",
+        "default": 1.0,
+        "required": false
+      },
+      {
+        "name": "rope_freq_base",
+        "type": "float",
+        "label": "Rope_freq_base",
+        "default": 10000.0,
+        "required": false
+      },
+      {
+        "name": "streaming",
+        "type": "boolean",
+        "label": "Streaming",
+        "default": true,
+        "required": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "label": "Verbose",
+        "default": true,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "model_path"
+      ],
+      "properties": {
+        "echo": {
+          "type": "boolean",
+          "default": false
+        },
+        "seed": {
+          "type": "number",
+          "default": -1
+        },
+        "stop": {
+          "type": "object",
+          "default": []
+        },
+        "n_ctx": {
+          "type": "number",
+          "default": 512
+        },
+        "top_p": {
+          "type": "number",
+          "default": 0.95
+        },
+        "f16_kv": {
+          "type": "boolean",
+          "default": true
+        },
+        "suffix": {
+          "type": "string",
+          "default": null
+        },
+        "n_batch": {
+          "type": "number",
+          "default": 8
+        },
+        "n_parts": {
+          "type": "number",
+          "default": -1
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": true
+        },
+        "logprobs": {
+          "type": "number",
+          "default": null
+        },
+        "use_mmap": {
+          "type": "boolean",
+          "default": true
+        },
+        "lora_base": {
+          "type": "string",
+          "default": null
+        },
+        "n_threads": {
+          "type": "number",
+          "default": null
+        },
+        "streaming": {
+          "type": "boolean",
+          "default": true
+        },
+        "use_mlock": {
+          "type": "boolean",
+          "default": false
+        },
+        "logits_all": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_tokens": {
+          "type": "number",
+          "default": 256
+        },
+        "model_path": {
+          "type": "string",
+          "default": null
+        },
+        "vocab_only": {
+          "type": "boolean",
+          "default": false
+        },
+        "temperature": {
+          "type": "number",
+          "default": 0.8
+        },
+        "n_gpu_layers": {
+          "type": "number",
+          "default": null
+        },
+        "repeat_penalty": {
+          "type": "number",
+          "default": 1.1
+        },
+        "rope_freq_base": {
+          "type": "number",
+          "default": 10000.0
+        },
+        "rope_freq_scale": {
+          "type": "number",
+          "default": 1.0
+        },
+        "last_n_tokens_size": {
+          "type": "number",
+          "default": 64
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "4eb6a170-d0e4-428e-be8d-09ca1ca8383d",
   "fields": {
     "name": "GraphQL Tool",
