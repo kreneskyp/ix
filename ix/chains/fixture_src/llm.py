@@ -1,3 +1,7 @@
+from langchain import LlamaCpp
+
+from ix.api.chains.types import NodeTypeField
+
 OPENAI_LLM = {
     "class_path": "langchain.chat_models.openai.ChatOpenAI",
     "type": "llm",
@@ -170,3 +174,46 @@ ANTHROPIC_LLM = {
         },
     ],
 }
+
+LLAMA_CPP_LLM_CLASS_PATH = "langchain.llms.llamacpp.LlamaCpp"
+LLAMA_CPP_LLM = {
+    "class_path": LLAMA_CPP_LLM_CLASS_PATH,
+    "type": "llm",
+    "name": "Llama Cpp",
+    "description": "Llama Cpp wrapper for llama models",
+    "fields": NodeTypeField.get_fields(
+        LlamaCpp,
+        include=[
+            "model_path",
+            "lora_base",
+            "n_ctx",
+            "n_parts",
+            "seed",
+            "f16_kv",
+            "logits_all",
+            "vocab_only",
+            "use_mlock",
+            "n_threads",
+            "n_batch",
+            "n_gpu_layers",
+            "suffix",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "logprobs",
+            "echo",
+            "stop",
+            "repeat_penalty",
+            "last_n_tokens_size",
+            "use_mmap",
+            "rope_freq_scale",
+            "rope_freq_base",
+            # "model_kwargs",
+            "streaming",
+            "verbose",
+        ],
+    ),
+}
+
+
+LLMS = [ANTHROPIC_LLM, GOOGLE_PALM, LLAMA_CPP_LLM, OPENAI_LLM]
