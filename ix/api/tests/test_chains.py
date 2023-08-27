@@ -55,7 +55,7 @@ class TestNodeType:
 
     async def test_search_node_types_types(self, anode_types):
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.get(f"/node_types/?types=memory&types=llm")
+            response = await ac.get("/node_types/?types=memory&types=llm")
 
         assert response.status_code == 200, response.content
         page = response.json()
