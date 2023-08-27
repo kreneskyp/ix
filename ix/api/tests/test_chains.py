@@ -4,6 +4,8 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 
+from ix.chains.fixture_src.document_loaders import GENERIC_LOADER_CLASS_PATH
+from ix.chains.fixture_src.llm import LLAMA_CPP_LLM_CLASS_PATH, OPENAI_LLM_CLASS_PATH
 from ix.server.fast_api import app
 from ix.chains.models import ChainEdge, ChainNode, Chain, NodeType
 from ix.chains.tests.mock_chain import MOCK_CHAIN_CONFIG
@@ -50,6 +52,23 @@ class TestNodeType:
             or search_term in objects[0]["type"]
             or search_term in objects[0]["class_path"]
         )
+
+    async def test_search_node_types_types(self, anode_types):
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.get(f"/node_types/?types=memory&types=llm")
+
+        assert response.status_code == 200, response.content
+        page = response.json()
+        objects = page["objects"]
+        assert len(objects) > 0
+        class_paths = [o["class_path"] for o in objects]
+
+        # assert types that match are included
+        assert LLAMA_CPP_LLM_CLASS_PATH in class_paths, class_paths
+        assert OPENAI_LLM_CLASS_PATH in class_paths, class_paths
+
+        # assert that filter excluded types that don't match
+        assert GENERIC_LOADER_CLASS_PATH not in class_paths, class_paths
 
     async def test_get_node_type_detail(self, amock_node_type):
         # Create a node type

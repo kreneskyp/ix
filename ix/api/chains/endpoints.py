@@ -4,7 +4,7 @@ from uuid import UUID
 
 from asgiref.sync import sync_to_async
 from django.db.models import Q
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 
 from ix.chains.models import Chain, ChainNode, NodeType, ChainEdge
@@ -91,7 +91,10 @@ async def delete_chain(chain_id: UUID):
 
 @router.get("/node_types/", response_model=NodeTypePage, tags=["Components"])
 async def get_node_types(
-    search: Optional[str] = None, limit: int = 50, offset: int = 0
+    search: Optional[str] = None,
+    types: Optional[List[str]] = Query(None, alias="types"),
+    limit: int = 50,
+    offset: int = 0,
 ):
     if search:
         query = NodeType.objects.filter(
@@ -102,6 +105,9 @@ async def get_node_types(
         )
     else:
         query = NodeType.objects.all()
+
+    if types:
+        query = query.filter(type__in=types)
 
     # punting on async implementation of pagination until later
     return await sync_to_async(NodeTypePage.paginate)(
