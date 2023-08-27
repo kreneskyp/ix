@@ -58,7 +58,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # If LANGCHAIN_DEV is set then install the local dev version of LangChain
-RUN if [ -n "${LANGCHAIN_DEV}" ]; then pip install -e /var/app/langchain; fi
+RUN if [ -n "${LANGCHAIN_DEV}" ]; then pip install -e /var/app/langchain/libs/langchain; fi
 
 # Set the environment variable for selecting between ASGI and Celery
 ENV APP_MODE=asgi
