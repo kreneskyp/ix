@@ -21,7 +21,7 @@ from ix.chains.fixture_src.embeddings import (
     MOSAICML_INSTRUCTOR_EMBEDDINGS,
 )
 from ix.chains.fixture_src.ix import CHAT_MODERATOR_TYPE
-from ix.chains.fixture_src.llm import OPENAI_LLM, GOOGLE_PALM, ANTHROPIC_LLM
+from ix.chains.fixture_src.llm import LLMS
 from ix.chains.fixture_src.memory import (
     CONVERSATION_BUFFER_MEMORY,
     CONVERSATION_SUMMARY_BUFFER_MEMORY,
@@ -62,13 +62,7 @@ COMPONENTS.extend(AGENTS)
 COMPONENTS.extend(TOOLS)
 
 # LLMS
-COMPONENTS.extend(
-    [
-        OPENAI_LLM,
-        GOOGLE_PALM,
-        ANTHROPIC_LLM,
-    ]
-)
+COMPONENTS.extend(LLMS)
 
 # Chains
 COMPONENTS.extend(CHAINS)
