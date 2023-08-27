@@ -45,6 +45,8 @@ ENV WEBPACK_OUTPUT=/var/compiled-static
 # Set the working directory
 WORKDIR $APP
 
+# Llama-cpp GPU support disabled until image has required libraries
+#ENV LLAMA_CUBLAS=1
 
 # Copy requirements.txt to the working directory
 COPY requirements.txt .
