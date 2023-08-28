@@ -1,6 +1,5 @@
 from typing import Any
 from langchain.utilities import MetaphorSearchAPIWrapper
-from langchain.tools import MetaphorSearchResults
 from langchain.tools import BaseTool, MetaphorSearchResults  # metaphorQueryRun
 
 from ix.chains.asyncio import SyncToAsyncRun
