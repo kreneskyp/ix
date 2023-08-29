@@ -69,7 +69,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -156,7 +159,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -269,7 +275,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1062,7 +1071,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1149,7 +1161,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1844,7 +1859,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1931,7 +1949,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -3286,7 +3307,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -3657,7 +3681,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -4617,7 +4644,10 @@
         "key": "functions",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "output_parser",
