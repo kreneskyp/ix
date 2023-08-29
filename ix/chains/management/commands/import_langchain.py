@@ -39,6 +39,7 @@ from ix.chains.fixture_src.retriever import RETRIEVERS
 from ix.chains.fixture_src.routing import ROUTING_CHAINS
 from ix.chains.fixture_src.testing import MOCK_MEMORY, MOCK_CHAIN
 from ix.chains.fixture_src.text_splitter import TEXT_SPLITTERS
+from ix.chains.fixture_src.toolkit import TOOLKITS
 from ix.chains.fixture_src.tools import TOOLS
 from ix.chains.fixture_src.vectorstores import VECTORSTORES
 from ix.chains.models import NodeType
@@ -60,6 +61,7 @@ COMPONENTS.extend(
 # Agents
 COMPONENTS.extend(AGENTS)
 COMPONENTS.extend(TOOLS)
+COMPONENTS.extend(TOOLKITS)
 
 # LLMS
 COMPONENTS.extend(LLMS)

@@ -69,7 +69,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -156,7 +159,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -269,7 +275,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1062,7 +1071,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1149,7 +1161,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1844,7 +1859,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1931,7 +1949,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -3286,7 +3307,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -3657,7 +3681,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -4617,7 +4644,10 @@
         "key": "functions",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "output_parser",
@@ -4986,6 +5016,38 @@
         "add_start_index": {
           "type": "boolean",
           "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "fba24100-d583-45e1-aec5-a2f9cf6edf9b",
+  "fields": {
+    "name": "File Management",
+    "description": "Toolkit for interacting with a Local Files.",
+    "class_path": "langchain.agents.agent_toolkits.file_management.toolkit.FileManagementToolkit",
+    "type": "toolkit",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "root_dir",
+        "type": "Optional[str]",
+        "label": "Root_dir",
+        "default": "/var/app/workdir",
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "root_dir": {
+          "type": "object",
+          "default": "/var/app/workdir"
         }
       }
     }
