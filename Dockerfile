@@ -66,7 +66,6 @@ ENV APP_MODE=asgi
 # Expose port 8000 for ASGI, or leave it unexposed for Celery
 EXPOSE 8000
 
-
 WORKDIR /var/app
 
 # Start the application using either ASGI or Celery depending on APP_MODE
