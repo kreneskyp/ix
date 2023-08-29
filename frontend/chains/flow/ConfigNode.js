@@ -37,6 +37,10 @@ const CONNECTOR_CONFIG = {
     source_position: "left",
     target_position: "right",
   },
+  toolkit: {
+    source_position: "left",
+    target_position: "right",
+  },
 };
 
 const usePropertyTargets = (node, type) => {
