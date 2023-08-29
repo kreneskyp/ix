@@ -10,6 +10,7 @@ from langchain.chains.base import Chain
 
 logger = logging.getLogger(__name__)
 
+
 def initialize_agent(agent: AgentType, **kwargs) -> Chain:
     """
     Extended version of the initialize_agent function from ix.chains.agents.

@@ -40,7 +40,11 @@ class TestToolkitIntegrations:
     async def test_load_chain_functions(self, aload_chain):
         component = await aload_chain(LLM_CHAIN)
         assert isinstance(component, LLMChain)
-        assert len(component.functions) == 7
+
+        # chain doesn't unpack tools until load_functions is called
+        assert len(component.functions) == 1
+        assert isinstance(component.functions[0], FileManagementToolkit)
+        assert len(component.llm_kwargs.get("functions", [])) == 7
 
     async def test_load_agent_toolkit(self, aload_chain):
         component = await aload_chain(AGENT_WITH_TOOLKIT)

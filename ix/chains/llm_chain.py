@@ -36,7 +36,7 @@ class LLMChain(LangchainLLMChain):
     """
 
     # List of OpenAI functions to include in requests.
-    functions: List[FunctionSchema | Tool] = None
+    functions: List[FunctionSchema | Tool | BaseToolkit] = None
     function_call: str = None
 
     def __init__(self, *args, **kwargs):
@@ -64,9 +64,10 @@ class LLMChain(LangchainLLMChain):
         for function in self.functions:
             if isinstance(function, Tool):
                 converted_functions.append(format_tool_to_openai_function(function))
-            if isinstance(function, BaseToolkit):
+            elif isinstance(function, BaseToolkit):
                 converted_functions.extend(
-                    format_tool_to_openai_function(tool_func) for tool_func in function.get_tools()
+                    format_tool_to_openai_function(tool_func)
+                    for tool_func in function.get_tools()
                 )
             else:
                 converted = function.copy()
