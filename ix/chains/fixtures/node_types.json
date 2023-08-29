@@ -5020,5 +5020,37 @@
       }
     }
   }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "fba24100-d583-45e1-aec5-a2f9cf6edf9b",
+  "fields": {
+    "name": "File Management",
+    "description": "Toolkit for interacting with a Local Files.",
+    "class_path": "langchain.agents.agent_toolkits.file_management.toolkit.FileManagementToolkit",
+    "type": "toolkit",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "root_dir",
+        "type": "Optional[str]",
+        "label": "Root_dir",
+        "default": "/var/app/workdir",
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "root_dir": {
+          "type": "object",
+          "default": "/var/app/workdir"
+        }
+      }
+    }
+  }
 }
 ]
