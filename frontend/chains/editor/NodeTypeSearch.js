@@ -1,12 +1,11 @@
-import { usePreloadedQuery, useQueryLoader } from "react-relay/hooks";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { NodeSelector } from "chains/editor/NodeSelector";
 import { useDebounce } from "utils/hooks/useDebounce";
 import { Box, Heading, HStack, Input, Text, VStack } from "@chakra-ui/react";
-import { SearchNodeTypesQuery } from "chains/graphql/SearchNodeTypesQuery";
 import { useSideBarColorMode } from "chains/editor/useColorMode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
+import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
 const NodeSelectorHeader = ({ label, icon }) => {
   const { color } = useSideBarColorMode();
@@ -25,15 +24,6 @@ const NodeSelectorHeader = ({ label, icon }) => {
       <Text>{label}</Text>
     </HStack>
   );
-};
-
-const SearchNodeTypesQueryRunner = ({ queryRef, setResults }) => {
-  // load query and then update state
-  const data = usePreloadedQuery(SearchNodeTypesQuery, queryRef);
-  const nodeTypes = data?.searchNodeTypes;
-  useEffect(() => {
-    setResults(nodeTypes);
-  }, [queryRef, nodeTypes]);
 };
 
 const SCROLLBAR_CSS = {
@@ -117,51 +107,30 @@ const NodeTypeGroup = ({ typeKey, group }) => {
  * Searching queries SearchNodeTypeQuery
  */
 export const NodeTypeSearch = () => {
-  const [results, setResults] = useState([]);
   const { border } = useSideBarColorMode();
 
   // queries
-  const [nodeTypesQueryRef, loadNodeTypesQuery, disposeNodeTypesQuery] =
-    useQueryLoader(SearchNodeTypesQuery);
+  const { load, page } = usePaginatedAPI(`/api/node_types/`, { load: false });
   const { callback: searchNodeTypes, clear } = useDebounce(
     useCallback((search) => {
-      loadNodeTypesQuery({ search }, { fetchPolicy: "store-and-network" });
+      load({ search });
     }, []),
     500
   );
 
+  // callback for search bar changing
   const onSearchChange = useCallback((event) => {
     const search = event.target.value;
     if (search) {
       searchNodeTypes(search);
     } else {
       clear();
-      if (nodeTypesQueryRef) {
-        disposeNodeTypesQuery();
-      }
-      if (results) {
-        setResults([]);
-      }
     }
   }, []);
 
-  // Couldn't determine a good pattern for using relay to fetch
-  // search updates for the autocomplete. The results are needed
-  // here to decide whether to render the popover or not.
-  //
-  // QueryRunner components render empty but will fetch the query
-  // data then update the results state. This is a huge hack but
-  // it works for now.
-  const nodeTypeSearchRunner = nodeTypesQueryRef !== null && (
-    <SearchNodeTypesQueryRunner
-      queryRef={nodeTypesQueryRef}
-      setResults={setResults}
-    />
-  );
-
   const groupedTypes = useMemo(() => {
-    return groupByNodeTypeGroup(results || []);
-  }, [results]);
+    return groupByNodeTypeGroup(page?.objects || []);
+  }, [page]);
 
   return (
     <Box
@@ -172,7 +141,6 @@ export const NodeTypeSearch = () => {
       minWidth={170}
       overflowY={"hidden"}
     >
-      {nodeTypeSearchRunner}
       <Heading as="h3" size="xs" mb={2}>
         Components
       </Heading>

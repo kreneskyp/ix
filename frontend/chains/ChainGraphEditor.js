@@ -8,6 +8,7 @@ import ReactFlow, {
   Controls,
   useNodesState,
   useEdgesState,
+  ReactFlowProvider,
 } from "reactflow";
 import ConfigNode from "chains/flow/ConfigNode";
 import { useChainEditorAPI } from "chains/hooks/useChainEditorAPI";
@@ -25,12 +26,13 @@ import { useColorMode } from "@chakra-ui/color-mode";
 import { RootNode } from "chains/flow/RootNode";
 import { getDefaults } from "chains/flow/TypeAutoFields";
 import { useDebounce } from "utils/hooks/useDebounce";
+import { useAxios } from "utils/hooks/useAxios";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
 const nodeTypes = {
-  NODE: ConfigNode,
-  LIST: ConfigNode,
+  node: ConfigNode,
+  list: ConfigNode,
   root: RootNode,
 };
 
@@ -39,6 +41,7 @@ const ChainGraphEditor = ({ graph }) => {
   const edgeUpdate = useRef(true);
   const [chainRef, setChainRef] = useState(graph?.chain);
   const [chainLoaded, setChainLoaded] = useState(graph?.chain !== undefined);
+  const { call: loadChain } = useAxios();
 
   const reactFlowGraph = useGraphForReactFlow(graph);
   const [nodes, setNodes, onNodesChange] = useNodesState(reactFlowGraph.nodes);
@@ -59,7 +62,7 @@ const ChainGraphEditor = ({ graph }) => {
   }, []);
 
   const api = useChainEditorAPI({
-    chainRef,
+    chain: chainRef,
     onError: onAPIError,
     reactFlowInstance,
   });
@@ -71,16 +74,17 @@ const ChainGraphEditor = ({ graph }) => {
   }, []);
 
   const onNodeSaved = useCallback(
-    ({ addChainNode }) => {
+    (response) => {
       // first node creates the new chain
       // redirect to the correct URL
-      const { node } = addChainNode;
-      const chain_id = node?.chain?.id;
-
       if (!chainLoaded) {
-        navigate(`/chains/${chain_id}`, { replace: true });
-        setChainLoaded(true);
-        setChainRef(node?.chain);
+        navigate(`/chains/${response.data.chain_id}`, { replace: true });
+        loadChain(`/api/chains/${response.data.chain_id}`, {
+          onSuccess: (response) => {
+            setChainRef(response.data);
+            setChainLoaded(true);
+          },
+        });
       }
     },
     [chainRef?.id, chainLoaded]
@@ -108,8 +112,8 @@ const ChainGraphEditor = ({ graph }) => {
       // create data object instead of waiting for graphql
       const data = {
         id: uuid4(),
-        chainId: chainRef?.id || null,
-        classPath: nodeType.classPath,
+        chain_id: chainRef?.id || null,
+        class_path: nodeType.class_path,
         position: position,
         config: getDefaults(nodeType),
       };
@@ -118,7 +122,7 @@ const ChainGraphEditor = ({ graph }) => {
       const flowNode = toReactFlowNode(data, nodeType);
 
       // add to API and ReactFlow
-      api.addNode({ data }, { onCompleted: onNodeSaved });
+      api.addNode(data, { onSuccess: onNodeSaved });
       setNodes((nds) => nds.concat(flowNode));
     },
     [reactFlowInstance, chainRef?.id]
@@ -137,12 +141,7 @@ const ChainGraphEditor = ({ graph }) => {
 
   const onNodeDragStop = useCallback((event, node) => {
     // update node with new position
-    api.updateNodePosition({
-      data: {
-        id: node.id,
-        position: node.position,
-      },
-    });
+    api.updateNodePosition(node.id, node.position);
   }, []);
 
   // new edges
@@ -159,18 +158,18 @@ const ChainGraphEditor = ({ graph }) => {
       // save via API
       if (source.id === "root") {
         // link from root node uses setRoot since it's not stored as an edge
-        api.setRoot({ chainId: chainRef.id, nodeId: params.target });
+        api.setRoot(chainRef.id, { node_id: params.target });
       } else {
         // normal link and prop edges
         const data = {
           id,
-          sourceId: params.source,
-          targetId: params.target,
+          source_id: params.source,
+          target_id: params.target,
           key: params.targetHandle,
-          chainId: chainRef?.id,
+          chain_id: chainRef?.id,
           relation: params.sourceHandle === "out" ? "LINK" : "PROP",
         };
-        api.addEdge({ data });
+        api.addEdge(data);
       }
     },
     [chainRef, reactFlowInstance, colorMode]
@@ -185,12 +184,14 @@ const ChainGraphEditor = ({ graph }) => {
       // target
       const target = reactFlowInstance.getNode(connection.target);
       const connectors = target.data.type.connectors;
-      let connector, expectedType;
+      let connector, expectedTypes;
       if (connection.targetHandle === "in") {
-        expectedType = "chain-link";
+        expectedTypes = new Set(["chain-link"]);
       } else {
         connector = connectors.find((c) => c.key === connection.targetHandle);
-        expectedType = connector?.sourceType;
+        expectedTypes = Array.isArray(connector?.source_type)
+          ? new Set(connector.source_type)
+          : new Set([connector.source_type]);
       }
       const supportsMultiple = connector?.multiple || false;
 
@@ -205,8 +206,8 @@ const ChainGraphEditor = ({ graph }) => {
       // HAX: adding a special case for chain-agent connections until expectedType can be
       //      expanded to be a set of types
       if (
-        expectedType === providedType ||
-        (expectedType === "chain" && providedType === "agent")
+        expectedTypes.has(providedType) ||
+        (expectedTypes.has("chain") && providedType === "agent")
       ) {
         const instanceEdges = reactFlowInstance.getEdges();
         const targetEdges = instanceEdges.filter(
@@ -263,19 +264,16 @@ const ChainGraphEditor = ({ graph }) => {
       setEdges((els) => updateEdge(oldEdge, newConnection, els));
       if (newConnection.source === "root") {
         if (oldEdge.target !== newConnection.target) {
-          api.setRoot({ chainId: chainRef.id, nodeId: newConnection.target });
+          api.setRoot({ chain_id: chainRef.id, node_id: newConnection.target });
         }
       } else {
         const isSame =
           oldEdge.source === newConnection.source &&
           oldEdge.target === newConnection.target;
         if (!isSame) {
-          api.updateEdge({
-            data: {
-              id: oldEdge.data.id,
-              sourceId: newConnection.source,
-              targetId: newConnection.target,
-            },
+          api.updateEdge(oldEdge.data.id, {
+            source_id: newConnection.source,
+            target_id: newConnection.target,
           });
         }
       }
@@ -289,9 +287,9 @@ const ChainGraphEditor = ({ graph }) => {
       if (!edgeUpdate.toHandle) {
         setEdges((eds) => eds.filter((e) => e.id !== edge.id));
         if (edge.source === "root") {
-          api.setRoot({ chainId: chainRef.id, nodeId: null });
+          api.setRoot(chainRef.id, { node_id: null });
         } else {
-          api.deleteEdge({ id: edge.data.id });
+          api.deleteEdge(edge.data.id);
         }
       }
       edgeUpdate.edge = null;
@@ -303,25 +301,30 @@ const ChainGraphEditor = ({ graph }) => {
     api.updateChain(...args);
   }, 1000);
 
+  const { callback: debouncedChainCreate } = useDebounce((...args) => {
+    api.createChain(...args);
+  }, 1000);
+
   const onTitleChange = useCallback(
     (event) => {
       setChainRef({ ...chainRef, name: event.target.value });
       if (!chainLoaded) {
-        debouncedChainUpdate(
-          { data: { name: event.target.value } },
+        debouncedChainCreate(
+          { name: event.target.value, description: "" },
           {
-            onCompleted: (data) => {
-              navigate(`/chains/${data.updateChain.chain.id}`, {
+            onSuccess: (response) => {
+              navigate(`/chains/${response.data.id}`, {
                 replace: true,
               });
-              setChainRef(data.updateChain.chain);
+              setChainRef(response.data);
               setChainLoaded(true);
             },
           }
         );
       } else {
         debouncedChainUpdate({
-          data: { ...chainRef, name: event.target.value },
+          ...chainRef,
+          name: event.target.value,
         });
       }
     },
@@ -345,26 +348,31 @@ const ChainGraphEditor = ({ graph }) => {
       </Box>
       <ChainEditorAPIContext.Provider value={api}>
         <Box ref={reactFlowWrapper} width={"85vw"} height={"100%"}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            isValidConnection={isValidConnection}
-            onInit={setReactFlowInstance}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onNodeDragStop={onNodeDragStop}
-            onNodesChange={onFilteredNodesChange}
-            onEdgesChange={onEdgesChange}
-            onEdgeUpdate={onEdgeUpdate}
-            onEdgeUpdateStart={onEdgeUpdateStart}
-            onEdgeUpdateEnd={onEdgeUpdateEnd}
-            nodeTypes={nodeTypes}
-            onConnect={onConnect}
-            fitView
-          >
-            <Controls />
-            <Background color="#aaa" gap={16} />
-          </ReactFlow>
+          <ReactFlowProvider>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              isValidConnection={isValidConnection}
+              onInit={setReactFlowInstance}
+              onDrop={onDrop}
+              onDragOver={onDragOver}
+              onNodeDragStop={onNodeDragStop}
+              onNodesChange={onFilteredNodesChange}
+              onEdgesChange={onEdgesChange}
+              onEdgeUpdate={onEdgeUpdate}
+              onEdgeUpdateStart={onEdgeUpdateStart}
+              onEdgeUpdateEnd={onEdgeUpdateEnd}
+              nodeTypes={nodeTypes}
+              onConnect={onConnect}
+              fitView
+            >
+              <Controls />
+              <Background
+                color={colorMode === "light" ? "#111" : "#aaa"}
+                gap={16}
+              />
+            </ReactFlow>
+          </ReactFlowProvider>
         </Box>
       </ChainEditorAPIContext.Provider>
     </Box>

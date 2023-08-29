@@ -10,48 +10,83 @@ import { useChatColorMode } from "chains/editor/useColorMode";
 const HighlightText = ({ content }) => {
   const { mention, artifact } = useChatColorMode();
 
-  const formattedContent = React.useMemo(() => {
-    return content.split(/(\s+)/).map((segment, idx) => {
-      if (segment.startsWith("@")) {
-        return (
+  const regexComponentPairs = React.useMemo(
+    () => [
+      {
+        regex: /@\w+/g,
+        component: (match, idx) => (
           <Text as="span" sx={mention} key={idx}>
-            {segment}
+            {match}
           </Text>
-        );
-      } else if (segment.startsWith("{") && segment.endsWith("}")) {
-        return (
+        ),
+      },
+      {
+        regex: /\{[^\}]+\}/g,
+        component: (match, idx) => (
           <Text as="span" sx={artifact} key={idx}>
-            {segment}
+            {match}
           </Text>
-        );
-      } else {
-        const markdownLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-        const matchMarkdownLink = markdownLinkRegex.exec(segment);
+        ),
+      },
+      {
+        regex: /\*\*([^*]+)\*\*/g,
+        component: (match, idx, execResult) => (
+          <strong key={idx}>{execResult[1]}</strong>
+        ),
+      }, // Markdown Bold
+      {
+        regex: /\[([^\]]+)\]\(([^)]+)\)/g,
+        component: (match, idx, execResult) => (
+          <Link href={execResult[2]} key={idx} isExternal color={"blue.400"}>
+            {execResult[1]}
+          </Link>
+        ),
+      },
+      {
+        regex: /`([^`]+)`/g,
+        component: (match, idx, execResult) => (
+          <Code key={idx}>{execResult[1]}</Code>
+        ),
+      },
+    ],
+    [mention, artifact]
+  );
 
-        if (matchMarkdownLink) {
-          const text = matchMarkdownLink[1];
-          const url = matchMarkdownLink[2];
+  const formattedContent = React.useMemo(() => {
+    if (content === undefined) {
+      return <div>"no content field"</div>;
+    }
 
-          return (
-            <Link href={url} key={idx} isExternal color={"blue.400"}>
-              {text}
-            </Link>
-          );
-        } else {
-          const codeRegex = /`([^`]+)`/g;
-          const matchCode = codeRegex.exec(segment);
+    let segments = [content];
 
-          if (matchCode) {
-            const code = matchCode[1];
+    regexComponentPairs.forEach(({ regex, component }) => {
+      let newSegments = [];
+      segments.forEach((segment, idx) => {
+        if (typeof segment === "string") {
+          let lastIndex = 0;
+          let match;
+          regex.lastIndex = 0; // Reset lastIndex due to the 'g' flag
 
-            return <Code key={idx}>{code}</Code>;
+          while ((match = regex.exec(segment)) !== null) {
+            const matchedText = match[0];
+            const prefix = segment.substring(lastIndex, match.index);
+            lastIndex = regex.lastIndex;
+
+            if (prefix) newSegments.push(prefix);
+            newSegments.push(component(matchedText, idx, match));
           }
-        }
 
-        return segment;
-      }
+          const postfix = segment.substring(lastIndex);
+          if (postfix) newSegments.push(postfix);
+        } else {
+          newSegments.push(segment);
+        }
+      });
+      segments = newSegments;
     });
-  }, [content, mention, artifact]);
+
+    return segments;
+  }, [content, regexComponentPairs]);
 
   return <Box style={{ whiteSpace: "pre-wrap" }}>{formattedContent}</Box>;
 };

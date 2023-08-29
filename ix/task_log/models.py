@@ -72,9 +72,9 @@ class TaskLogMessage(models.Model):
     """
 
     ROLE_CHOICES = [
-        ("system", "system"),
-        ("assistant", "assistant"),
-        ("user", "user"),
+        ("SYSTEM", "SYSTEM"),
+        ("ASSISTANT", "ASSISTANT"),
+        ("USER", "USER"),
     ]
 
     TYPE_CHOICES = [

@@ -6,7 +6,6 @@ from langchain.callbacks.manager import CallbackManager
 
 from ix.agents.models import Agent
 from ix.chat.models import Chat
-from ix.commands import CommandRegistry
 from ix.task_log.models import Task
 
 logger = logging.getLogger(__name__)
@@ -19,7 +18,6 @@ class IxCallbackManager(CallbackManager):
 
     stack_id: str
     task: Task
-    command_registry: CommandRegistry
 
     def __init__(
         self,

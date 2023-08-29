@@ -1,10 +1,13 @@
 import asyncio
 import logging
 import json
-from typing import Dict, List
+from typing import Dict, List, Optional
 from uuid import uuid4
 
 from jsonpath_ng import parse as jsonpath_parse
+from langchain.callbacks.manager import AsyncCallbackManagerForChainRun
+
+from ix.chains.callbacks import IxHandler
 from langchain.chains.base import Chain
 
 from ix.commands.filesystem import write_to_file, awrite_to_file
@@ -67,7 +70,13 @@ class SaveArtifact(Chain):
     def output_keys(self) -> List[str]:
         return [self.output_key]
 
-    def _call(self, inputs: Dict[str, str]) -> Dict[str, str]:
+    def _call(
+        self,
+        inputs: Dict[str, str],
+        run_manager: Optional[AsyncCallbackManagerForChainRun] = None,
+    ) -> Dict[str, str]:
+        ix_handler = IxHandler.from_manager(run_manager)
+
         if self.artifact_from_key:
             # load artifact from input key. Use this when a prior step
             # generated the artifact object
@@ -86,7 +95,7 @@ class SaveArtifact(Chain):
                 "key": self.artifact_key,
                 "name": self.artifact_name,
                 "description": self.artifact_description,
-                "identifier": f"{self.artifact_key}_{self.callbacks.think_msg.id}",
+                "identifier": f"{self.artifact_key}_{ix_handler.parent_think_msg.id}",
             }
 
         # Storage is always set from the config for now
@@ -125,7 +134,7 @@ class SaveArtifact(Chain):
         # Associate the artifact with the parent task (chat) until
         # frontend API call can include artifacts from any descendant
         # of the Chat's task.
-        task = self.callbacks.task
+        task = ix_handler.task
         artifact_task_id = task.parent_id if task.parent_id else task.id
 
         # build kwargs
@@ -146,12 +155,14 @@ class SaveArtifact(Chain):
             **artifact_kwargs,
         )
 
+        ix_handler = IxHandler.from_manager(run_manager)
+
         # send message to log
         TaskLogMessage.objects.create(
-            role="assistant",
-            task=self.callbacks.task,
-            agent=self.callbacks.task.agent,
-            parent=self.callbacks.think_msg,
+            role="ASSISTANT",
+            task=ix_handler.task,
+            agent=ix_handler.agent,
+            parent=ix_handler.parent_think_msg,
             content={
                 "type": "ARTIFACT",
                 "artifact_type": artifact.artifact_type,
@@ -173,7 +184,13 @@ class SaveArtifact(Chain):
 
         return {self.output_key: str(artifact.id)}
 
-    async def _acall(self, inputs: Dict[str, str]) -> Dict[str, str]:
+    async def _acall(
+        self,
+        inputs: Dict[str, str],
+        run_manager: Optional[AsyncCallbackManagerForChainRun] = None,
+    ) -> Dict[str, str]:
+        ix_handler = IxHandler.from_manager(run_manager)
+
         if self.artifact_from_key:
             # load artifact from input key. Use this when a prior step
             # generated the artifact object
@@ -192,7 +209,7 @@ class SaveArtifact(Chain):
                 "key": self.artifact_key,
                 "name": self.artifact_name,
                 "description": self.artifact_description,
-                "identifier": f"{self.artifact_key}_{self.callbacks.think_msg.id}",
+                "identifier": f"{self.artifact_key}_{ix_handler.parent_think_msg.id}",
             }
 
         # Storage is always set from the config for now
@@ -231,7 +248,7 @@ class SaveArtifact(Chain):
         # Associate the artifact with the parent task (chat) until
         # frontend API call can include artifacts from any descendant
         # of the Chat's task.
-        task = self.callbacks.task
+        task = ix_handler.task
         artifact_task_id = task.parent_id if task.parent_id else task.id
 
         # build kwargs
@@ -252,10 +269,10 @@ class SaveArtifact(Chain):
         # send message to log
         save_artifact = artifact.asave()
         msg = TaskLogMessage.objects.acreate(
-            role="assistant",
-            task=self.callbacks.task,
-            agent=self.callbacks.agent,
-            parent=self.callbacks.think_msg,
+            role="ASSISTANT",
+            task=ix_handler.task,
+            agent=ix_handler.agent,
+            parent=ix_handler.parent_think_msg,
             content={
                 "type": "ARTIFACT",
                 "artifact_type": artifact.artifact_type,

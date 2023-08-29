@@ -3,10 +3,10 @@ import logging
 import time
 from typing import Callable, Any, List
 
+from ix.chains.loaders.context import IxContext
 from langchain.chains import SequentialChain
 from langchain.chains.base import Chain as LangchainChain
 
-from ix.agents.callback_manager import IxCallbackManager
 from ix.chains.loaders.prompts import load_prompt
 from ix.chains.models import NodeType, ChainNode, ChainEdge
 from ix.utils.importlib import import_class
@@ -19,7 +19,9 @@ logger = logging.getLogger(__name__)
 
 def get_node_loader(name: str) -> Callable:
     """
-    Get a node config loader by node type
+    Get a node config loader by node type.
+
+    Used to manipulate a nodes config before loading it
     """
     from ix.chains.loaders.memory import load_memory_config
     from ix.chains.loaders.memory import load_chat_memory_backend_config
@@ -32,11 +34,32 @@ def get_node_loader(name: str) -> Callable:
 
 
 def get_property_loader(name: str) -> Callable:
+    """Get a property loader.
+
+    Used to customize loading a property by key.
+    """
     from ix.chains.loaders.memory import load_memory_property
+    from ix.chains.loaders.retriever import load_retriever_property
 
     return {
         "memory": load_memory_property,
+        "retriever": load_retriever_property,
     }.get(name, None)
+
+
+def get_node_initializer(node_type: str) -> Callable:
+    """Get a node initializer
+
+    Fetches a custom initializer to be used instead of the class initializer.
+    Used to add shims around specific types of nodes.
+    """
+    from ix.chains.loaders.text_splitter import initialize_text_splitter
+    from ix.chains.loaders.vectorstore import initialize_vectorstore
+
+    return {
+        "text_splitter": initialize_text_splitter,
+        "vectorstore": initialize_vectorstore,
+    }.get(node_type, None)
 
 
 def get_sequence_inputs(sequence: List[LangchainChain]) -> List[str]:
@@ -52,7 +75,7 @@ def get_sequence_inputs(sequence: List[LangchainChain]) -> List[str]:
     return list(input_variables)
 
 
-def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -> Any:
+def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
     """
     Generic loader for loading the Langchain component a ChainNode represents.
 
@@ -77,7 +100,7 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -
         logger.debug(
             f"Loading config with node config loader for type={node_type.type}"
         )
-        config = node_loader(node, callback_manager)
+        config = node_loader(node, context)
 
     # prepare properties for loading. Properties should be grouped by key.
     properties = node.incoming_edges.filter(relation="PROP").order_by("key")
@@ -86,12 +109,18 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -
         node_group = [edge.source for edge in edges]
         logger.debug(f"Loading property key={key} node_group={node_group}")
 
+        # choose the type the incoming connection is processed as. If the source node
+        # will be converted to another type, use the as_type defined on the connection
+        # this allows a single property loader to encapsulate any necessary conversions.
+        # e.g. retriever converting Vectorstore.
+        connector = node_type.connectors_as_dict[key]
+        as_type = connector.get("as_type", None) or node_group[0].node_type.type
+
         if node_group[0].node_type.type in {"chain", "agent"}:
             # load a sequence of linked nodes into a children property
             # this supports loading as a list of chains or auto-SequentialChain
-            first_instance = load_node(node_group[0], callback_manager, root=False)
-            sequence = load_sequence(node_group[0], first_instance, callback_manager)
-            connector = node_type.connectors_as_dict[key]
+            first_instance = load_node(node_group[0], context, root=False)
+            sequence = load_sequence(node_group[0], first_instance, context)
             if connector.get("auto_sequence", True):
                 input_variables = get_sequence_inputs(sequence)
                 config[key] = SequentialChain(
@@ -99,30 +128,31 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -
                 )
             else:
                 config[key] = sequence
-        elif property_loader := get_property_loader(node_group[0].node_type.type):
+        elif property_loader := get_property_loader(as_type):
             # load type specific config options. This is generally for loading
             # ix specific features into the config dict
             logger.debug(f"Loading with property loader for type={node_type.type}")
-            config[key] = property_loader(node_group, callback_manager)
+            config[key] = property_loader(node_group, context)
         else:
             # default recursive loading
-            if node_type.connectors_as_dict[key].get("multiple", False):
+            if connector.get("multiple", False):
                 config[key] = [
-                    prop_node.load(callback_manager, root=False)
-                    for prop_node in node_group
+                    prop_node.load(context, root=False) for prop_node in node_group
                 ]
             else:
                 if len(node_group) > 1:
                     raise ValueError(f"Multiple values for {key} not allowed")
-                config[key] = load_node(node_group[0], callback_manager, root=False)
+                config[key] = load_node(node_group[0], context, root=False)
 
+    # load component class and initialize. A type specific initializer may be used here
+    # for initialization common to all components of that type.
     node_class = import_node_class(node.class_path)
-
-    if node_type.type in {"chain", "agent"}:
-        config["callback_manager"] = callback_manager
-
+    node_initializer = get_node_initializer(node_type.type)
     try:
-        instance = node_class(**config)
+        if node_initializer:
+            instance = node_initializer(node.class_path, config)
+        else:
+            instance = node_class(**config)
     except Exception:
         logger.error(f"Exception loading node class={node.class_path}")
         raise
@@ -132,7 +162,7 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -
         # Linked chains but no parent indicates the possible first node in an
         # implicit SequentialChain. Traverse the sequence and create a
         # SequentialChain if there is more than one node in the sequence.
-        sequential_nodes = load_sequence(node, instance, callback_manager)
+        sequential_nodes = load_sequence(node, instance, context)
         if len(sequential_nodes) > 1:
             input_variables = get_sequence_inputs(sequential_nodes)
             return SequentialChain(
@@ -145,7 +175,7 @@ def load_node(node: ChainNode, callback_manager: IxCallbackManager, root=True) -
 def load_sequence(
     first_node: ChainNode,
     first_instance: LangchainChain,
-    callback_manager: IxCallbackManager,
+    context: IxContext,
 ) -> List[LangchainChain]:
     """
     Load a sequence of nodes.
@@ -164,7 +194,7 @@ def load_sequence(
 
     # traverse the sequence
     while outgoing_link:
-        next_instance = outgoing_link.target.load(callback_manager, root=False)
+        next_instance = outgoing_link.target.load(context, root=False)
         sequential_nodes.append(next_instance)
         try:
             outgoing_link = outgoing_link.target.outgoing_edges.select_related(

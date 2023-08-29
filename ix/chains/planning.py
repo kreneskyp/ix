@@ -57,7 +57,7 @@ class SavePlan(Chain):
         )
 
         TaskLogMessage.objects.create(
-            role="assistant",
+            role="ASSISTANT",
             task=self.callbacks.task,
             agent=self.callbacks.task.agent,
             parent=self.callbacks.think_msg,
@@ -145,7 +145,7 @@ class RunPlan(Chain):
             TaskLogMessage.objects.create(
                 task_id=self.callbacks.task.id,
                 parent=self.callbacks.think_msg,
-                role="assistant",
+                role="ASSISTANT",
                 content={
                     "type": "EXECUTED",
                     "output": f"{tool_name} executed, results={results}",

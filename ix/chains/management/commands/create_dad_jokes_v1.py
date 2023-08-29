@@ -14,6 +14,7 @@ DAD_JOKESTER = {
     "config": {
         "llm": {
             "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "config": {"streaming": True},
         },
         "messages": [
             {"role": "system", "template": FAKE_DAD_JOKES_PROMPT},

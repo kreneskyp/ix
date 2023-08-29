@@ -1,16 +1,17 @@
 from django.core.management.base import BaseCommand
 
+from ix.api.chains.types import NodeTypeField
+from ix.api.chains.types import NodeType as NodeTypePydantic
+from ix.chains.fixture_src.agent_interaction import AGENT_INTERACTION_CHAINS
+
 from ix.chains.fixture_src.agents import AGENTS
 from ix.chains.fixture_src.artifacts import ARTIFACT_MEMORY, SAVE_ARTIFACT
-from ix.chains.fixture_src.chains import (
-    LLM_CHAIN,
-    LLM_TOOL_CHAIN,
-    LLM_REPLY,
-)
+from ix.chains.fixture_src.chains import CHAINS
 from ix.chains.fixture_src.chat_memory_backend import (
     FILESYSTEM_MEMORY_BACKEND,
     REDIS_MEMORY_BACKEND,
 )
+from ix.chains.fixture_src.document_loaders import DOCUMENT_LOADERS
 from ix.chains.fixture_src.embeddings import (
     OPENAI_EMBEDDINGS,
     GOOGLE_PALM_EMBEDDINGS,
@@ -20,7 +21,7 @@ from ix.chains.fixture_src.embeddings import (
     MOSAICML_INSTRUCTOR_EMBEDDINGS,
 )
 from ix.chains.fixture_src.ix import CHAT_MODERATOR_TYPE
-from ix.chains.fixture_src.llm import OPENAI_LLM, GOOGLE_PALM, ANTHROPIC_LLM
+from ix.chains.fixture_src.llm import LLMS
 from ix.chains.fixture_src.memory import (
     CONVERSATION_BUFFER_MEMORY,
     CONVERSATION_SUMMARY_BUFFER_MEMORY,
@@ -32,11 +33,14 @@ from ix.chains.fixture_src.openai_functions import (
     FUNCTION_OUTPUT_PARSER,
     OPENAPI_CHAIN,
 )
+from ix.chains.fixture_src.parsers import PARSERS
 from ix.chains.fixture_src.prompts import CHAT_PROMPT_TEMPLATE
-from ix.chains.fixture_src.routing import SEQUENCE, MAP_SUBCHAIN
+from ix.chains.fixture_src.retriever import RETRIEVERS
+from ix.chains.fixture_src.routing import ROUTING_CHAINS
 from ix.chains.fixture_src.testing import MOCK_MEMORY, MOCK_CHAIN
+from ix.chains.fixture_src.text_splitter import TEXT_SPLITTERS
 from ix.chains.fixture_src.tools import TOOLS
-from ix.chains.fixture_src.vectorstores import REDIS_VECTORSTORE
+from ix.chains.fixture_src.vectorstores import VECTORSTORES
 from ix.chains.models import NodeType
 
 COMPONENTS = []
@@ -58,24 +62,11 @@ COMPONENTS.extend(AGENTS)
 COMPONENTS.extend(TOOLS)
 
 # LLMS
-COMPONENTS.extend(
-    [
-        OPENAI_LLM,
-        GOOGLE_PALM,
-        ANTHROPIC_LLM,
-    ]
-)
+COMPONENTS.extend(LLMS)
 
 # Chains
-COMPONENTS.extend(
-    [
-        LLM_CHAIN,
-        LLM_TOOL_CHAIN,
-        LLM_REPLY,
-        SEQUENCE,
-        MAP_SUBCHAIN,
-    ]
-)
+COMPONENTS.extend(CHAINS)
+COMPONENTS.extend(ROUTING_CHAINS)
 
 # OpenAI Functions
 COMPONENTS.extend(
@@ -111,15 +102,16 @@ COMPONENTS.extend(
     ]
 )
 
-# Vectorstores
-COMPONENTS.extend(
-    [
-        REDIS_VECTORSTORE,
-    ]
-)
+# Document retrieval
+COMPONENTS.extend(PARSERS)
+COMPONENTS.extend(TEXT_SPLITTERS)
+COMPONENTS.extend(DOCUMENT_LOADERS)
+COMPONENTS.extend(VECTORSTORES)
+COMPONENTS.extend(RETRIEVERS)
 
 # IX Misc
 COMPONENTS.extend([CHAT_MODERATOR_TYPE])
+COMPONENTS.extend(AGENT_INTERACTION_CHAINS)
 
 # IX Artifacts
 COMPONENTS.extend(
@@ -158,7 +150,7 @@ class Command(BaseCommand):
             class_path = component.get("class_path")
             if NodeType.objects.filter(class_path=class_path).exists():
                 # updating existing node type
-                print(f"Updating component: {component['class_path']}")
+                print(f"Updating component: {class_path}")
                 node_type = NodeType.objects.get(class_path=class_path)
                 for key, value in component.items():
                     if key == "class_path":
@@ -167,4 +159,8 @@ class Command(BaseCommand):
                 node_type.save()
             else:
                 # creating new node type
-                NodeType.objects.create(**component)
+                node_type = NodeType.objects.create(**component)
+
+            fields = [NodeTypeField(**field) for field in node_type.fields or []]
+            node_type.config_schema = NodeTypePydantic.generate_config_schema(fields)
+            node_type.save(update_fields=["config_schema"])

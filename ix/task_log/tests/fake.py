@@ -91,9 +91,6 @@ def fake_agent(**kwargs):
     alias = kwargs.get("alias", name)
     purpose = kwargs.get("purpose", fake.text())
     model = kwargs.get("model", "gpt-3.5-turbo")
-    agent_class_path = kwargs.get(
-        "agent_class_path", "ix.agents.planning_agent.PlanningAgent"
-    )
     config = kwargs.get(
         "config",
         {
@@ -112,9 +109,12 @@ def fake_agent(**kwargs):
         model=model,
         config=config,
         chain=chain,
-        agent_class_path=agent_class_path,
     )
     return agent
+
+
+async def afake_agent(**kwargs):
+    return await sync_to_async(fake_agent)(**kwargs)
 
 
 def fake_user(**kwargs):
@@ -126,16 +126,20 @@ def fake_user(**kwargs):
     return user
 
 
+async def afake_user(**kwargs):
+    return await sync_to_async(fake_user)(**kwargs)
+
+
 def fake_task(**kwargs):
-    user = kwargs.get("user") or fake_user()
-    agent = kwargs.get("agent") or fake_agent()
-    task = Task.objects.create(user=user, agent=agent, chain=agent.chain)
+    user = kwargs.pop("user", None) or fake_user()
+    agent = kwargs.pop("agent", None) or fake_agent()
+    task = Task.objects.create(user=user, agent=agent, chain=agent.chain, **kwargs)
     return task
 
 
 def fake_think(**kwargs):
     content = {"type": "THINK", "input": {"user_input": "Test message"}}
-    return fake_task_log_msg(role="assistant", content=content, **kwargs)
+    return fake_task_log_msg(role="ASSISTANT", content=content, **kwargs)
 
 
 def fake_command_reply(**kwargs):
@@ -150,7 +154,7 @@ def fake_command_reply(**kwargs):
         },
         "command": {"name": "echo", "args": {"output": "this is a test"}},
     }
-    return fake_task_log_msg(role="assistant", content=content, **kwargs)
+    return fake_task_log_msg(role="ASSISTANT", content=content, **kwargs)
 
 
 def fake_feedback_request(task: Task = None, question: str = None, **kwargs):
@@ -158,14 +162,14 @@ def fake_feedback_request(task: Task = None, question: str = None, **kwargs):
         "type": "FEEDBACK_REQUEST",
         "question": question or "this is a fake question",
     }
-    return fake_task_log_msg(role="assistant", content=content, task=task, **kwargs)
+    return fake_task_log_msg(role="ASSISTANT", content=content, task=task, **kwargs)
 
 
 def fake_auth_request(task: Task = None, message_id: uuid.UUID = None, **kwargs):
     if not message_id:
         message_id = fake_command_reply(task=task).id
     content = {"type": "AUTH_REQUEST", "message_id": str(message_id)}
-    return fake_task_log_msg(role="assistant", content=content, task=task, **kwargs)
+    return fake_task_log_msg(role="ASSISTANT", content=content, task=task, **kwargs)
 
 
 def fake_execute(task: Task = None, message_id: uuid.UUID = None, **kwargs):
@@ -176,7 +180,7 @@ def fake_execute(task: Task = None, message_id: uuid.UUID = None, **kwargs):
         "message_id": str(message_id),
         "output": "fake output from mock command",
     }
-    return fake_task_log_msg(role="assistant", content=content, task=task, **kwargs)
+    return fake_task_log_msg(role="ASSISTANT", content=content, task=task, **kwargs)
 
 
 def fake_feedback(
@@ -187,24 +191,24 @@ def fake_feedback(
         feedback_request = fake_feedback_request(task=task, question="test question")
         content["message_id"] = str(feedback_request.id)
 
-    return fake_task_log_msg(role="user", content=content, task=task, **kwargs)
+    return fake_task_log_msg(role="USER", content=content, task=task, **kwargs)
 
 
 def fake_authorize(task: Task = None, message_id: uuid.UUID = None, **kwargs):
     if not message_id:
         message_id = fake_feedback_request(task=task).id
     content = {"type": "AUTHORIZE", "message_id": str(message_id), "n": 1}
-    return fake_task_log_msg(role="user", content=content, **kwargs)
+    return fake_task_log_msg(role="USER", content=content, **kwargs)
 
 
 def fake_autonomous_toggle(enabled: int = 1, **kwargs):
     content = {"type": "AUTONOMOUS", "enabled": enabled}
-    return fake_task_log_msg(role="user", content=content, **kwargs)
+    return fake_task_log_msg(role="USER", content=content, **kwargs)
 
 
 def fake_system(message: str, **kwargs):
     content = {"type": "SYSTEM", "message": message}
-    return fake_task_log_msg(role="system", content=content, **kwargs)
+    return fake_task_log_msg(role="SYSTEM", content=content, **kwargs)
 
 
 def fake_execute_error(task: Task = None, message_id: uuid.UUID = None, **kwargs):
@@ -216,7 +220,7 @@ def fake_execute_error(task: Task = None, message_id: uuid.UUID = None, **kwargs
         "error_type": "test error",
         "text": "test error text",
     }
-    return fake_task_log_msg(role="system", content=content, **kwargs)
+    return fake_task_log_msg(role="SYSTEM", content=content, **kwargs)
 
 
 def fake_task_log_msg_type(content_type, **kwargs):
@@ -304,7 +308,6 @@ def fake_planner():
     agent = fake_agent(
         name="Planner",
         purpose="Plan tasks for other agents to perform",
-        agent_class_path="ix.agents.process.AgentProcess",
         system_prompt="",
         commands=[],
         config={
@@ -321,6 +324,7 @@ DEFAULT_CHAT_ID = "f0034449-f226-44b2-9036-ca49f7d2348e"
 
 def fake_chat(**kwargs):
     chat_id = kwargs.get("id", DEFAULT_CHAT_ID)
+    name = kwargs.get("name", "Test Chat")
 
     Agent.objects.filter(leading_chats__pk=chat_id).delete()
     Chat.objects.filter(pk=chat_id).delete()
@@ -330,7 +334,7 @@ def fake_chat(**kwargs):
         task = kwargs["task"]
     else:
         task = fake_task(agent=agent)
-    chat = Chat.objects.create(id=chat_id, name="Test Chat", task=task, lead=agent)
+    chat = Chat.objects.create(id=chat_id, name=name, task=task, lead=agent)
 
     fake_feedback(
         task=task, feedback="create a django app for cat memes", message_id=-1
@@ -373,3 +377,4 @@ afake_think = sync_to_async(fake_think)
 afake_chat = sync_to_async(fake_chat)
 afake_task = sync_to_async(fake_task)
 afake_artifact = sync_to_async(fake_artifact)
+afake_system = sync_to_async(fake_system)

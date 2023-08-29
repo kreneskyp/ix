@@ -49,7 +49,8 @@
                     "verbose": true,
                     "max_tokens": 1000,
                     "temperature": 0,
-                    "request_timeout": 240
+                    "request_timeout": 240,
+                    "streaming": true
                 },
                 "class_path": "langchain.chat_models.openai.ChatOpenAI"
             },
@@ -155,7 +156,8 @@
                             "verbose": true,
                             "max_tokens": 1000,
                             "temperature": 0,
-                            "request_timeout": 240
+                            "request_timeout": 240,
+                            "streaming": true
                         },
                         "class_path": "langchain.chat_models.openai.ChatOpenAI"
                     },
@@ -406,7 +408,6 @@
         "created_at": "2023-06-25T20:44:01.305Z",
         "model": "",
         "config": {},
-        "agent_class_path": "",
         "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10001c"
     }
 }

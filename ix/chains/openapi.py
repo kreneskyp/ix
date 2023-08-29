@@ -1,5 +1,7 @@
 import logging
 from unittest import mock
+
+from langchain.chains import SequentialChain
 from langchain.chains.openai_functions.openapi import (
     get_openapi_chain,
     SimpleRequestChain,
@@ -15,7 +17,7 @@ class AsyncSimpleRequestChainRun(SyncToAsyncCall, SimpleRequestChain):
     pass
 
 
-def get_openapi_chain_async(**kwargs):
+def get_openapi_chain_async(**kwargs) -> SequentialChain:
     """
     Extremely hacky way of injecting asyncio support into LangChain's function.
     Done within this wrapper function to limit the scope of the patch.

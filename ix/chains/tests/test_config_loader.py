@@ -1,8 +1,25 @@
 from copy import deepcopy
+from pathlib import Path
 
 import pytest
 from unittest.mock import MagicMock
 
+from langchain.chains import ConversationalRetrievalChain
+from langchain.document_loaders.generic import GenericLoader
+from langchain.document_loaders.parsers import LanguageParser
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.text_splitter import TextSplitter
+from langchain.vectorstores import Redis
+
+from ix.chains.fixture_src.chains import CONVERSATIONAL_RETRIEVAL_CHAIN_CLASS_PATH
+from ix.chains.fixture_src.document_loaders import GENERIC_LOADER_CLASS_PATH
+from ix.chains.fixture_src.embeddings import OPENAI_EMBEDDINGS_CLASS_PATH
+from ix.chains.fixture_src.parsers import LANGUAGE_PARSER_CLASS_PATH
+from ix.chains.fixture_src.text_splitter import RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH
+from ix.chains.fixture_src.vectorstores import (
+    REDIS_VECTORSTORE_CLASS_PATH,
+)
+from ix.chains.loaders.context import IxContext
 from langchain.agents import AgentExecutor
 from langchain.base_language import BaseLanguageModel
 from langchain.memory import (
@@ -13,10 +30,9 @@ from langchain.memory import (
 from langchain.schema import BaseChatMessageHistory, BaseMemory
 from langchain.tools import BaseTool
 
-from ix.agents.callback_manager import IxCallbackManager
-from ix.chains.agents import AgentReply
 from ix.chains.fixture_src.tools import GOOGLE_SEARCH
 from ix.chains.loaders.memory import get_memory_session
+from ix.chains.loaders.text_splitter import TextSplitterShim
 from ix.chains.loaders.tools import extract_tool_kwargs
 from ix.chains.tests.mock_memory import MockMemory
 from ix.memory.artifacts import ArtifactMemory
@@ -186,14 +202,15 @@ class TestLoadMemory:
         assert isinstance(instance, ConversationBufferMemory)
         assert isinstance(instance.chat_memory, BaseChatMessageHistory)
 
-    def test_load_memory_with_scope(self, task, load_chain):
+    def test_load_memory_with_scope(self, chat, load_chain):
         """
         Test loading with a scope.
 
         Not all memories support sessions, for example ChatMemory
         adds scoping to the backend.
         """
-        chat_id = task.leading_chats.first().id
+        chat = chat["chat"]
+        chat_id = chat.task.leading_chats.first().id
         instance = load_chain(MEMORY_WITH_SCOPE)
         assert isinstance(instance, ArtifactMemory)
         assert instance.session_id == f"tests_chat_{chat_id}"
@@ -206,13 +223,14 @@ class TestLoadMemory:
         assert isinstance(instance, ConversationSummaryBufferMemory)
         assert isinstance(instance.llm, BaseLanguageModel)
 
-    def test_load_class_with_config(self, task, mocker, load_chain):
+    def test_load_class_with_config(self, chat, mocker, load_chain):
         """
         Test loading a class whose config is defined in MEMORY_CLASSES.
         This tests configuring an external class with the required config
         to integrate into Ix
         """
-        chat_id = task.leading_chats.first().id
+        chat = chat["chat"]
+        chat_id = chat.task.leading_chats.first().id
 
         # patch MEMORY_CLASSES to setup the test
         from ix.chains.loaders import memory
@@ -240,8 +258,9 @@ class TestLoadMemory:
 
 @pytest.mark.django_db
 class TestLoadChatMemoryBackend:
-    def test_load_chat_memory_backend(self, task, load_chain):
-        chat_id = task.leading_chats.first().id
+    def test_load_chat_memory_backend(self, chat, load_chain):
+        chat = chat["chat"]
+        chat_id = chat.task.leading_chats.first().id
 
         # Config
         config = {
@@ -257,13 +276,13 @@ class TestLoadChatMemoryBackend:
         backend = load_chain(config)
         assert backend.session_id == f"tests_chat_{chat_id}"
 
-    def test_load_defaults(self, task, load_chain):
+    def test_load_defaults(self, chat, load_chain):
         """
         ChatMemoryBackend should always load session_id. If `session` isn't present then
         load the `chat` scope by default.
         """
-
-        chat_id = task.leading_chats.first().id
+        chat = chat["chat"]
+        chat_id = chat.task.leading_chats.first().id
 
         # Config
         config = {
@@ -359,25 +378,26 @@ class TestGetMemorySession:
     )
     def test_get_memory_session(self, task, config, cls, expected):
         """Test various scope configurations."""
-        callback_manager = MagicMock(spec=IxCallbackManager)
-        callback_manager.task = task
-        callback_manager.chat_id = "1000"
-        callback_manager.agent_id = "1001"
-        callback_manager.task_id = "1002"
-        callback_manager.user_id = "1003"
+        context = MagicMock()
+        context.task = task
+        context.chat_id = "1000"
+        context.agent.id = "1001"
+        context.task.id = "1002"
+        context.user_id = "1003"
 
-        result = get_memory_session(config, callback_manager, cls)
+        result = get_memory_session(config, context, cls)
         assert result == expected
 
-    def test_parse_scope_unsupported_scope(self, mock_callback_manager):
+    def test_parse_scope_unsupported_scope(self, task):
         config = {
             "session_scope": "unsupported_scope",
             "session_id": "123",
             "session_id_key": "session_id",
         }
         cls = BaseChatMessageHistory
+        context = IxContext(agent=task.agent, chain=task.chain, task=task)
         with pytest.raises(ValueError) as excinfo:
-            get_memory_session(config, mock_callback_manager, cls)
+            get_memory_session(config, context, cls)
         assert "unknown scope" in str(excinfo.value)
 
 
@@ -390,7 +410,6 @@ class TestExtractToolKwargs:
     @pytest.fixture
     def kwargs(self):
         return {
-            "description": "value1",
             "return_direct": False,
             "verbose": False,
             "tool_key1": "tool_value1",
@@ -406,7 +425,6 @@ class TestExtractToolKwargs:
         tool_kwargs = extract_tool_kwargs(node_kwargs)
         expected_node_kwargs = {"tool_key1": "tool_value1", "tool_key2": "tool_value2"}
         expected_tool_kwargs = {
-            "description": "value1",
             "return_direct": False,
             "verbose": False,
         }
@@ -487,5 +505,108 @@ class TestLoadAgents:
             }
 
             instance = await aload_chain(config)
-            assert isinstance(instance, AgentReply)
-            assert isinstance(instance.agent_executor, AgentExecutor)
+            assert isinstance(instance, AgentExecutor)
+
+
+TEST_DATA = Path("/var/app/test_data")
+TEST_DOCUMENTS = TEST_DATA / "documents"
+
+LANGUAGE_PARSER = {
+    "class_path": LANGUAGE_PARSER_CLASS_PATH,
+    "config": {
+        "language": "python",
+    },
+}
+
+DOCUMENT_LOADER = {
+    "class_path": GENERIC_LOADER_CLASS_PATH,
+    "config": {
+        "parser": LANGUAGE_PARSER,
+        "path": str(TEST_DOCUMENTS),
+        "suffixes": [".py"],
+    },
+}
+
+TEXT_SPLITTER = {
+    "class_path": RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH,
+    "config": {"language": "python", "document_loader": DOCUMENT_LOADER},
+}
+
+EMBEDDINGS = {
+    "class_path": OPENAI_EMBEDDINGS_CLASS_PATH,
+    "config": {"model": "text-embedding-ada-002"},
+}
+
+REDIS_VECTORSTORE = {
+    "class_path": REDIS_VECTORSTORE_CLASS_PATH,
+    "config": {
+        "embedding": EMBEDDINGS,
+        "documents": TEXT_SPLITTER,
+        "redis_url": "redis://redis:6379/0",
+        "index_name": "tests",
+    },
+}
+
+CONVERSATIONAL_RETRIEVAL_CHAIN = {
+    "class_path": CONVERSATIONAL_RETRIEVAL_CHAIN_CLASS_PATH,
+    "config": {"llm": OPENAI_LLM, "retriever": REDIS_VECTORSTORE},
+}
+
+
+@pytest.mark.django_db
+class TestLoadRetrieval:
+    """Test loading retrieval components.
+
+    This is a test of loading mechanism for the various retrieval components.
+    It is not an exhaustive test that all retrieval components work as expected.
+    The tests verify that any special loading logic for the components is working.
+    """
+
+    async def test_load_language_parser(self, aload_chain):
+        component = await aload_chain(LANGUAGE_PARSER)
+        assert isinstance(component, LanguageParser)
+        assert component.language == "python"
+
+    async def test_load_document_loader(self, aload_chain):
+        component = await aload_chain(DOCUMENT_LOADER)
+        assert isinstance(component, GenericLoader)
+        assert isinstance(component.blob_parser, LanguageParser)
+
+        # non-exhaustive test of document loading
+        documents = component.load()
+        sources = {doc.metadata["source"] for doc in documents}
+        expected_sources = {
+            str(TEST_DOCUMENTS / "foo.py"),
+            str(TEST_DOCUMENTS / "bar.py"),
+        }
+        assert sources == expected_sources
+
+    async def test_load_text_splitter(self, aload_chain):
+        component = await aload_chain(TEXT_SPLITTER)
+        assert isinstance(component, TextSplitterShim)
+        assert isinstance(component.document_loader, GenericLoader)
+        assert isinstance(component.text_splitter, TextSplitter)
+
+        # sanity check that the splitter splits text
+        # does not test the actual splitting algorithm
+        with open(TEST_DOCUMENTS / "foo.py", "r") as foo_file:
+            foo_content = foo_file.read()
+        split_texts = component.text_splitter.split_text(foo_content)
+        assert len(split_texts) >= 1
+
+    async def test_load_embeddings(self, aload_chain):
+        component = await aload_chain(EMBEDDINGS)
+        assert isinstance(component, OpenAIEmbeddings)
+
+    async def test_load_vectorstore(
+        self, clean_redis, aload_chain, mock_openai_embeddings
+    ):
+        component = await aload_chain(REDIS_VECTORSTORE)
+        assert isinstance(component, Redis)
+
+    async def test_load_conversational_chain(
+        self, clean_redis, aload_chain, mock_openai_embeddings
+    ):
+        """Test loading a fully configured conversational chain."""
+        component = await aload_chain(CONVERSATIONAL_RETRIEVAL_CHAIN)
+        assert isinstance(component, ConversationalRetrievalChain)

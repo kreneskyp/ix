@@ -29,6 +29,18 @@ class TestWriteToFile:
         with open(file_path, "r") as f:
             assert f.read() == content2
 
+    def test_write_to_new_workdir(self, mocker, tmp_path):
+        """Test that workdir is created if it does not exist"""
+        mock_workdir = tmp_path / "workdir"
+        mocker.patch("ix.commands.filesystem.WORKDIR", mock_workdir)
+        content = "Hello, world!"
+        file_path = "test.txt"
+        expected_path = mock_workdir / file_path
+        write_to_file(str(file_path), content)
+        assert expected_path.exists()
+        with open(expected_path, "r") as f:
+            assert f.read() == content
+
 
 class TestAWriteToFile:
     @pytest.mark.asyncio
@@ -49,6 +61,18 @@ class TestAWriteToFile:
         await awrite_to_file(str(file_path), content2)
         async with aiofiles.open(file_path, "r") as f:
             assert await f.read() == content2
+
+    @pytest.mark.asyncio
+    async def test_write_to_new_workdir(self, mocker, tmp_path):
+        """Test that workdir is created if it does not exist"""
+        mock_workdir = tmp_path / "workdir"
+        mocker.patch("ix.commands.filesystem.WORKDIR", mock_workdir)
+        content = "Hello, world!"
+        file_path = "test.txt"
+        expected_path = mock_workdir / file_path
+        await awrite_to_file(str(expected_path), content)
+        async with aiofiles.open(expected_path, "r") as f:
+            assert await f.read() == content
 
 
 class TestAppendToFile:

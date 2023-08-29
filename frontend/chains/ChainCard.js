@@ -7,11 +7,8 @@ import {
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
-import { useChain } from "chains/graphql/ChainProvider";
 
-const ChainCard = () => {
-  const { chain } = useChain();
-
+const ChainCard = ({ chain }) => {
   if (chain == null) {
     return null;
   }

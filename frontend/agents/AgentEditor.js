@@ -12,47 +12,44 @@ import {
 } from "@chakra-ui/react";
 import { AgentGeneralEditor } from "agents/AgentGeneralEditor";
 import { AgentMetricsPanel } from "agents/AgentMetricsPanel";
-import { useMutation, usePreloadedQuery } from "react-relay/hooks";
-import { UpdateAgentMutation } from "agents/graphql/AgentMutations";
-import { ChainsQuery } from "chains/graphql/ChainsQuery";
+import { useNavigate, useParams } from "react-router-dom";
+import { useCreateUpdateAPI } from "utils/hooks/useCreateUpdateAPI";
+import { APIErrorList } from "components/APIErrorList";
 
-export const AgentEditor = ({ agent, chainsRef }) => {
-  const { chains } = usePreloadedQuery(ChainsQuery, chainsRef);
-  const [commit] = useMutation(UpdateAgentMutation);
+export const AgentEditor = ({ agent, chains }) => {
+  const { id } = useParams();
+  const [agentData, setAgentData] = useState(agent || {});
 
-  // repack agent without data that can't be updated
-  const { chain, createdAt, ...agentMinusChain } = agent || {};
-  const initialData = { ...agentMinusChain, chainId: chain?.id };
+  const { save, isLoading } = useCreateUpdateAPI(
+    "/api/agents/",
+    `/api/agents/${id}`
+  );
 
-  const [agentData, setAgentData] = useState(initialData);
   const toast = useToast();
+  const navigate = useNavigate();
 
-  const updateAgent = () => {
-    const input = {
-      ...agentData,
-      config: agentData.config,
-    };
-    commit({
-      variables: { input },
-      onCompleted: () => {
-        toast({
-          title: "Saved",
-          description: "Saved agent.",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-      },
-      onError: (e) => {
-        toast({
-          title: "Error",
-          description: `Failed to save the agent: ${e}`,
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-      },
-    });
+  const updateAgent = async () => {
+    try {
+      const updatedAgent = await save(agentData);
+      if (id === undefined) {
+        navigate(`/agents/${updatedAgent.id}`, {});
+      }
+      toast({
+        title: "Saved",
+        description: "Saved agent.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: <APIErrorList error={error} />,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   return (

@@ -2,6 +2,9 @@ import {
   faGear,
   faBrain,
   faChain,
+  faDatabase,
+  faFileImport,
+  faFileWaveform,
   faMemory,
   faMessage,
   faRobot,
@@ -31,8 +34,23 @@ export const NODE_STYLES = {
     icon: faRobot,
     component: ChainNode,
   },
-  tool: {
-    icon: faTools,
+  parser: {
+    icon: faFileWaveform,
+  },
+  document_loader: {
+    icon: faFileImport,
+  },
+  retriever: {
+    icon: faFileImport,
+  },
+  vectorstore: {
+    icon: faDatabase,
+  },
+  text_splitter: {
+    icon: faFileImport,
+  },
+  embeddings: {
+    icon: faBrain,
   },
 };
 

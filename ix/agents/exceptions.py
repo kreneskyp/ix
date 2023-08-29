@@ -16,14 +16,6 @@ class MissingCommandMarkers(ResponseParseError):
     """Exception thrown when command markers are missing from response"""
 
 
-class UnknownCommand(ResponseParseError):
-    """Exception thrown when command is not recognized"""
-
-
-class MissingCommand(ResponseParseError):
-    """Exception thrown when command is not present in parsed response"""
-
-
 class AgentQuestion(Exception):
     """Exception thrown when the agent needs to ask a question"""
 

@@ -7,13 +7,10 @@ from langchain.agents import initialize_agent as initialize_agent_base
 from langchain.agents.agent_toolkits.base import BaseToolkit
 from langchain.chains.base import Chain
 
-from ix.chains.agents import AgentReply
-
 
 logger = logging.getLogger(__name__)
 
-
-def initialize_agent(agent: AgentType, reply: int = True, **kwargs) -> Chain:
+def initialize_agent(agent: AgentType, **kwargs) -> Chain:
     """
     Extended version of the initialize_agent function from ix.chains.agents.
 
@@ -39,15 +36,8 @@ def initialize_agent(agent: AgentType, reply: int = True, **kwargs) -> Chain:
             else:
                 unpacked_tools.append(value)
         kwargs["tools"] = unpacked_tools
-    tools = kwargs.get("tools", {})
 
-    # TODO: wrap agents in AgentReply until streaming callbacks are implemented
-    agent_executor = initialize_agent_base(agent=agent, **kwargs)
-    return AgentReply(
-        agent_executor=agent_executor,
-        callback_manager=kwargs.get("callback_manager", None),
-        reply=reply,
-    )
+    return initialize_agent_base(agent=agent, **kwargs)
 
 
 def create_init_func(agent_type: AgentType) -> Callable:

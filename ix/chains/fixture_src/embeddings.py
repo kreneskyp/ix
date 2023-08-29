@@ -1,18 +1,41 @@
+OPENAI_EMBEDDINGS_CLASS_PATH = "langchain.embeddings.openai.OpenAIEmbeddings"
 OPENAI_EMBEDDINGS = {
     "name": "OpenAI Embeddings",
     "description": "Embeddings from OpenAI's API.",
-    "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
+    "class_path": OPENAI_EMBEDDINGS_CLASS_PATH,
     "type": "embeddings",
     "fields": [
         {
             "name": "model",
-            "description": "The model to use.",
             "type": "string",
             "default": "text-embedding-ada-002",
             "choices": [
-                ("text-embedding-ada-001", "text-embedding-ada-001"),
+                {"name": "text-embedding-ada-002", "label": "text-embedding-ada-002"},
             ],
-        }
+        },
+        {
+            "name": "allowed_special",
+            "type": "list",
+        },
+        {
+            "name": "disallowed_special",
+            "type": "list",
+            "default": "all",
+        },
+        {
+            "name": "chunk_size",
+            "type": "int",
+            "default": 1000,
+        },
+        {
+            "name": "max_retries",
+            "type": "int",
+            "default": "6",
+            "min": 0,
+            "max": 6,
+            "step": 1,
+            "input_type": "slider",
+        },
     ],
 }
 
@@ -126,7 +149,7 @@ VERTEXAI_EMBEDDINGS = {
             "name": "model_name",
             "label": "Model",
             "type": "string",
-            "input": "select",
+            "input_type": "select",
             "default": "textembedding-gecko",
             "description": "Model name to use",
             "choices": [
@@ -208,7 +231,7 @@ MOSAICML_INSTRUCTOR_EMBEDDINGS = {
         {
             "name": "mosaicml_api_token",
             "type": "string",
-            "input": "secret",
+            "input_type": "secret",
             "description": "MosaicML API token",
             "style": {"width": "100%"},
         },

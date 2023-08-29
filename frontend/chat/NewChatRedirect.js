@@ -1,6 +1,6 @@
 import React from "react";
 
-import useCreateChat from "chat/graphql/useCreateChat";
+import useCreateChat from "chat/hooks/useCreateChat";
 import { Spinner } from "@chakra-ui/react";
 import { useEffect } from "react";
 

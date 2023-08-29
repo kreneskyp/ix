@@ -4,6 +4,10 @@
   }
 }
 
+.react-flow__edges {
+  z-index: 10 !important;
+}
+
 .edgePath {
   stroke: #000;
   stroke-width: 2;
@@ -27,12 +31,27 @@
   border-radius: 10px;
 }
 
+.config-node:hover .react-flow__handle {
+  background-color: #000;
+  border-color: #fff;
+}
+
+.config-node .react-flow__handle {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.config-node .react-flow__handle:hover {
+  background-color: #e2e8f0;
+  border-color: #e2e8f0;
+}
+
 .react-flow__handle-connecting {
-  background-color: #ff6060;
-  border-color: #ff6060;
+  background-color: #ff6060 !important ;
+  border-color: #ff6060 !important ;
 }
 
 .react-flow__handle-valid {
-  background-color: #55dd99;
-  border-color: #55dd99;
+  background-color: #55dd99 !important ;
+  border-color: #55dd99 !important ;
 }

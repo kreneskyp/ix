@@ -1,3 +1,4 @@
+from ix.chains.fixture_src.targets import CHAIN_TARGET
 from langchain import (
     GoogleSearchAPIWrapper,
     GoogleSerperAPIWrapper,
@@ -12,13 +13,22 @@ from langchain.utilities import (
     PubMedAPIWrapper,
 )
 
-from ix.chains.config import NodeTypeField
+from ix.api.chains.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
+
+NAME = {
+    "name": "name",
+    "type": "str",
+    "default": "",
+    "style": {"width": "100%"},
+}
 
 DESCRIPTION = {
     "name": "description",
     "type": "str",
     "default": "",
+    "input_type": "textarea",
+    "style": {"width": "100%"},
 }
 
 RETURN_DIRECT = {
@@ -27,7 +37,7 @@ RETURN_DIRECT = {
     "default": False,
 }
 
-TOOL_BASE_FIELDS = [DESCRIPTION, RETURN_DIRECT, VERBOSE]
+TOOL_BASE_FIELDS = [RETURN_DIRECT, VERBOSE]
 
 ARXIV_SEARCH = {
     "class_path": "ix.tools.arxiv.get_arxiv",
@@ -58,13 +68,22 @@ BING_SEARCH = {
         include=["bing_subscription_key", "bing_search_url", "k"],
         field_options={
             "bing_subscription_key": {
-                "input": "secret",
+                "input_type": "secret",
             },
             "bing_search_url": {
                 "style": {"width": "100%"},
             },
         },
     ),
+}
+
+CHAIN_AS_TOOL = {
+    "class_path": "ix.chains.tools.chain_as_tool",
+    "type": "tool",
+    "name": "Chain Tool",
+    "description": "Tool that runs a chain. Any chain may be converted into a tool.",
+    "connectors": [CHAIN_TARGET],
+    "fields": [NAME, DESCRIPTION] + TOOL_BASE_FIELDS,
 }
 
 DUCK_DUCK_GO_SEARCH = {
@@ -90,10 +109,10 @@ GOOGLE_SEARCH = {
         include=["google_api_key", "google_cse_id", "k", "siterestrict"],
         field_options={
             "google_api_key": {
-                "input": "secret",
+                "input_type": "secret",
             },
             "google_cse_id": {
-                "input": "secret",
+                "input_type": "secret",
             },
         },
     ),
@@ -110,7 +129,7 @@ GOOGLE_SERPER = {
         include=["k", "gl", "hl", "type", "tbs", "serper_api_key"],
         field_options={
             "serper_api_key": {
-                "input": "secret",
+                "input_type": "secret",
             },
         },
     ),
@@ -148,10 +167,8 @@ PUB_MED = {
         include=[
             "max_retry",
             "top_k_results",
-            "load_max_docs",
             "ARXIV_MAX_QUERY_LENGTH",
             "doc_content_chars_max",
-            "load_all_available_meta",
             "email",
         ],
     ),
@@ -187,7 +204,7 @@ WOLFRAM = {
             "name": "wolfram_alpha_app_id",
             "label": "Wolfram Alpha App ID",
             "type": "str",
-            "input": "secret",
+            "input_type": "secret",
         },
     ],
 }
@@ -196,6 +213,7 @@ WOLFRAM = {
 TOOLS = [
     ARXIV_SEARCH,
     BING_SEARCH,
+    CHAIN_AS_TOOL,
     DUCK_DUCK_GO_SEARCH,
     GOOGLE_SEARCH,
     GOOGLE_SERPER,

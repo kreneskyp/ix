@@ -71,6 +71,9 @@ class NodeType(models.Model):
     # used for parsing config objects
     child_field = models.CharField(max_length=32, null=True)
 
+    # JSONSchema for the config object
+    config_schema = models.JSONField(default=dict)
+
     @cached_property
     def connectors_as_dict(self):
         return {c["key"]: c for c in self.connectors or []}
@@ -224,14 +227,14 @@ class ChainNode(models.Model):
     def __str__(self):
         return f"{str(self.id)[:8]} ({self.class_path})"
 
-    def load(self, callback_manager, root=True):
+    def load(self, context, root=True):
         """
         Load this node, traversing the graph and loading all child nodes,
         properties, and downstream nodes.
         """
         from ix.chains.loaders.core import load_node
 
-        return load_node(self, callback_manager, root=root)
+        return load_node(self, context, root=root)
 
 
 class ChainEdge(models.Model):
@@ -276,12 +279,12 @@ class Chain(models.Model):
     def __str__(self):
         return f"{self.name} ({self.id})"
 
-    def load_chain(self, callback_manager) -> LangChain:
-        return self.root.load(callback_manager)
+    def load_chain(self, context) -> LangChain:
+        return self.root.load(context)
 
-    async def aload_chain(self, callback_manager) -> LangChain:
+    async def aload_chain(self, context) -> LangChain:
         root = await ChainNode.objects.aget(chain_id=self.id, root=True)
-        return await sync_to_async(root.load)(callback_manager)
+        return await sync_to_async(root.load)(context)
 
     def clear_chain(self):
         """removes the chain nodes associated with this chain"""
