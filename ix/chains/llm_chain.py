@@ -6,6 +6,7 @@ from langchain.callbacks.manager import AsyncCallbackManagerForChainRun
 
 from ix.chains.callbacks import IxHandler
 from langchain import LLMChain as LangchainLLMChain
+from langchain.agents.agent_toolkits.base import BaseToolkit
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
@@ -35,7 +36,7 @@ class LLMChain(LangchainLLMChain):
     """
 
     # List of OpenAI functions to include in requests.
-    functions: List[FunctionSchema | Tool] = None
+    functions: List[FunctionSchema | Tool | BaseToolkit] = None
     function_call: str = None
 
     def __init__(self, *args, **kwargs):
@@ -57,12 +58,17 @@ class LLMChain(LangchainLLMChain):
         if self.function_call:
             self.llm_kwargs["function_call"] = {"name": self.function_call}
 
-        # convert Langchain tools to OpenAI functions. FunctionSchema are already
-        # OpenAI functions, we don't need to convert them.
+        # convert Langchain BaseTool and BaseToolkit to OpenAI functions. FunctionSchema
+        # are already OpenAI functions, we don't need to convert them.
         converted_functions = []
         for function in self.functions:
             if isinstance(function, Tool):
                 converted_functions.append(format_tool_to_openai_function(function))
+            elif isinstance(function, BaseToolkit):
+                converted_functions.extend(
+                    format_tool_to_openai_function(tool_func)
+                    for tool_func in function.get_tools()
+                )
             else:
                 converted = function.copy()
                 converted["parameters"] = json.loads(function["parameters"])

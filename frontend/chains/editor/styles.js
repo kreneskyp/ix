@@ -49,6 +49,12 @@ export const NODE_STYLES = {
   text_splitter: {
     icon: faFileImport,
   },
+  tool: {
+    icon: faTools,
+  },
+  toolkit: {
+    icon: faTools,
+  },
   embeddings: {
     icon: faBrain,
   },

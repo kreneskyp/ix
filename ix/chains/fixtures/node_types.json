@@ -69,7 +69,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -156,7 +159,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -269,7 +275,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1062,7 +1071,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1149,7 +1161,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1209,92 +1224,6 @@
           "default": null
         },
         "return_intermediate_steps": {
-          "type": "boolean",
-          "default": false
-        }
-      }
-    }
-  }
-},
-{
-  "model": "chains.nodetype",
-  "pk": "39414ada-446f-4949-b087-193d1c93cb27",
-  "fields": {
-    "name": "Wikipedia",
-    "description": "Wikipedia search engine",
-    "class_path": "ix.tools.wikipedia.get_wikipedia",
-    "type": "tool",
-    "display_type": "node",
-    "connectors": null,
-    "fields": [
-      {
-        "name": "return_direct",
-        "type": "boolean",
-        "default": false
-      },
-      {
-        "name": "verbose",
-        "type": "boolean",
-        "default": false
-      },
-      {
-        "name": "top_k_results",
-        "type": "int",
-        "label": "Top_k_results",
-        "default": 3,
-        "required": false
-      },
-      {
-        "name": "lang",
-        "type": "str",
-        "label": "Lang",
-        "default": "en",
-        "required": false
-      },
-      {
-        "name": "load_all_available_meta",
-        "type": "boolean",
-        "label": "Load_all_available_meta",
-        "default": false,
-        "required": false
-      },
-      {
-        "name": "doc_content_chars_max",
-        "type": "int",
-        "label": "Doc_content_chars_max",
-        "default": 4000,
-        "required": false
-      }
-    ],
-    "child_field": null,
-    "config_schema": {
-      "type": "object",
-      "required": [
-        "return_direct",
-        "verbose"
-      ],
-      "properties": {
-        "lang": {
-          "type": "string",
-          "default": "en"
-        },
-        "verbose": {
-          "type": "boolean",
-          "default": false
-        },
-        "return_direct": {
-          "type": "boolean",
-          "default": false
-        },
-        "top_k_results": {
-          "type": "number",
-          "default": 3
-        },
-        "doc_content_chars_max": {
-          "type": "number",
-          "default": 4000
-        },
-        "load_all_available_meta": {
           "type": "boolean",
           "default": false
         }
@@ -1844,7 +1773,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1931,7 +1863,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -2660,6 +2595,60 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "89ef5872-b042-4551-8a14-6c9be2cadcc6",
+  "fields": {
+    "name": "Metaphor find similar",
+    "description": "Metaphor find similar pages",
+    "class_path": "ix.tools.metaphor.get_metaphor_find_similar",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "metaphor_api_key",
+        "type": "str",
+        "label": "Metaphor API Key",
+        "required": true,
+        "input_type": "secret"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "metaphor_api_key"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "metaphor_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "8a49959a-b5bc-414e-a25f-51b8d3ad6249",
   "fields": {
     "name": "Conversation Buffer Window",
@@ -3268,6 +3257,114 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "9ee6e9bc-f809-4b1e-841c-f775dd1038cc",
+  "fields": {
+    "name": "Metaphor page contents",
+    "description": "Metaphor page contents",
+    "class_path": "ix.tools.metaphor.get_metaphor_contents",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "metaphor_api_key",
+        "type": "str",
+        "label": "Metaphor API Key",
+        "required": true,
+        "input_type": "secret"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "metaphor_api_key"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "metaphor_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a25f957a-8c72-45dd-a035-23e835008093",
+  "fields": {
+    "name": "Metaphor search",
+    "description": "Metaphor search queries",
+    "class_path": "ix.tools.metaphor.get_metaphor_search",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "metaphor_api_key",
+        "type": "str",
+        "label": "Metaphor API Key",
+        "required": true,
+        "input_type": "secret"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "metaphor_api_key"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "metaphor_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "a3dd72e8-1554-47dd-8f42-0dda58c06f7c",
   "fields": {
     "name": "Chat Conversational React Description Agent",
@@ -3286,7 +3383,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -3346,6 +3446,92 @@
           "default": null
         },
         "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a8ffd3b0-dfb4-4e1b-b5bf-90a2ec959ff8",
+  "fields": {
+    "name": "Wikipedia",
+    "description": "Wikipedia search engine",
+    "class_path": "ix.tools.wikipedia.get_wikipedia",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "top_k_results",
+        "type": "int",
+        "label": "Top_k_results",
+        "default": 3,
+        "required": false
+      },
+      {
+        "name": "lang",
+        "type": "str",
+        "label": "Lang",
+        "default": "en",
+        "required": false
+      },
+      {
+        "name": "load_all_available_meta",
+        "type": "boolean",
+        "label": "Load_all_available_meta",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "doc_content_chars_max",
+        "type": "int",
+        "label": "Doc_content_chars_max",
+        "default": 4000,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "lang": {
+          "type": "string",
+          "default": "en"
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "top_k_results": {
+          "type": "number",
+          "default": 3
+        },
+        "doc_content_chars_max": {
+          "type": "number",
+          "default": 4000
+        },
+        "load_all_available_meta": {
           "type": "boolean",
           "default": false
         }
@@ -3657,7 +3843,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -4617,7 +4806,10 @@
         "key": "functions",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "output_parser",
@@ -4986,6 +5178,38 @@
         "add_start_index": {
           "type": "boolean",
           "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "fba24100-d583-45e1-aec5-a2f9cf6edf9b",
+  "fields": {
+    "name": "File Management",
+    "description": "Toolkit for interacting with a Local Files.",
+    "class_path": "langchain.agents.agent_toolkits.file_management.toolkit.FileManagementToolkit",
+    "type": "toolkit",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "root_dir",
+        "type": "Optional[str]",
+        "label": "Root_dir",
+        "default": "/var/app/workdir",
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "root_dir": {
+          "type": "object",
+          "default": "/var/app/workdir"
         }
       }
     }

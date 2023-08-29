@@ -37,6 +37,10 @@ const CONNECTOR_CONFIG = {
     source_position: "left",
     target_position: "right",
   },
+  toolkit: {
+    source_position: "left",
+    target_position: "right",
+  },
 };
 
 const usePropertyTargets = (node, type) => {
@@ -64,22 +68,23 @@ export const useConnectorColor = (connector) => {
   } else {
     return connectorStyle.default;
   }
-}
+};
 
 export const PropertyTarget = ({ connector }) => {
   const color = useConnectorColor(connector);
-
+  const source_type = Array.isArray(connector.source_type) ? connector.source_type[0] : connector.source_type;
   return (
     <Box position="relative" width="100%">
       <Handle
         id={connector.key}
         type="target"
         position={
-          CONNECTOR_CONFIG[connector.source_type]?.target_position || "left"
+          CONNECTOR_CONFIG[source_type]?.target_position || "left"
         }
       />
       <Box px={2} m={0} color={color}>
-        {connector.key} {connector.required && <RequiredAsterisk color={color} />}
+        {connector.key}{" "}
+        {connector.required && <RequiredAsterisk color={color} />}
       </Box>
     </Box>
   );
@@ -92,8 +97,9 @@ export const NodeProperties = ({ node, type }) => {
   const left = [];
   const right = [];
   propertyTargets?.forEach((connector) => {
+    const source_type = Array.isArray(connector.source_type) ? connector.source_type[0] : connector.source_type;
     const position =
-      CONNECTOR_CONFIG[connector.source_type]?.target_position || "left";
+      CONNECTOR_CONFIG[source_type]?.target_position || "left";
     if (position === "right") {
       right.push(connector);
     } else {
