@@ -191,21 +191,38 @@ WIKIPEDIA = {
     ),
 }
 
-METAPHOR = {
-    "name": "Metaphor",
-    "description": "Metaphor search engine",
-    "class_path": "ix.tools.metaphor.get_metaphor",
+METAPHOR_SEARCH_CLASS_PATH = "ix.tools.metaphor.get_metaphor_search"
+METAPHOR_CONTENTS_CLASS_PATH = "ix.tools.metaphor.get_metaphor_contents"
+METAPHOR_FIND_SIMILAR_CLASS_PATH = "ix.tools.metaphor.get_metaphor_find_similar"
+METAPHOR_API_KEY = {
+    "name": "metaphor_api_key",
+    "label": "Metaphor API Key",
+    "type": "str",
+    "input_type": "secret",
+    "required": True,
+}
+METAPHOR_SEARCH = {
+    "name": "Metaphor search",
+    "description": "Metaphor search queries",
+    "class_path": METAPHOR_SEARCH_CLASS_PATH,
     "type": "tool",
-    "fields": TOOL_BASE_FIELDS
-    + [
-        {
-            "name": "metaphor_api_key",
-            "label": "Metaphor API Key",
-            "type": "str",
-            "input_type": "secret",
-            "required": True,
-        }
-    ],
+    "fields": TOOL_BASE_FIELDS + [METAPHOR_API_KEY],
+}
+
+METAPHOR_CONTENTS = {
+    "name": "Metaphor page contents",
+    "description": "Metaphor page contents",
+    "class_path": METAPHOR_CONTENTS_CLASS_PATH,
+    "type": "tool",
+    "fields": TOOL_BASE_FIELDS + [METAPHOR_API_KEY],
+}
+
+METAPHOR_SIMILAR = {
+    "name": "Metaphor find similar",
+    "description": "Metaphor find similar pages",
+    "class_path": METAPHOR_FIND_SIMILAR_CLASS_PATH,
+    "type": "tool",
+    "fields": TOOL_BASE_FIELDS + [METAPHOR_API_KEY],
 }
 
 
@@ -238,6 +255,8 @@ TOOLS = [
     LAMBDA_API,
     PUB_MED,
     WIKIPEDIA,
-    METAPHOR,
+    METAPHOR_SEARCH,
+    METAPHOR_CONTENTS,
+    METAPHOR_SIMILAR,
     WOLFRAM,
 ]
