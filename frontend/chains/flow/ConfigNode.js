@@ -64,7 +64,7 @@ export const useConnectorColor = (connector) => {
   } else {
     return connectorStyle.default;
   }
-}
+};
 
 export const PropertyTarget = ({ connector }) => {
   const color = useConnectorColor(connector);
@@ -79,7 +79,8 @@ export const PropertyTarget = ({ connector }) => {
         }
       />
       <Box px={2} m={0} color={color}>
-        {connector.key} {connector.required && <RequiredAsterisk color={color} />}
+        {connector.key}{" "}
+        {connector.required && <RequiredAsterisk color={color} />}
       </Box>
     </Box>
   );
