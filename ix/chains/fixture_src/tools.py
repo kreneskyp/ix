@@ -27,7 +27,7 @@ DESCRIPTION = {
     "name": "description",
     "type": "str",
     "default": "",
-    "input": "textarea",
+    "input_type": "textarea",
     "style": {"width": "100%"},
 }
 
@@ -68,7 +68,7 @@ BING_SEARCH = {
         include=["bing_subscription_key", "bing_search_url", "k"],
         field_options={
             "bing_subscription_key": {
-                "input": "secret",
+                "input_type": "secret",
             },
             "bing_search_url": {
                 "style": {"width": "100%"},
@@ -109,10 +109,10 @@ GOOGLE_SEARCH = {
         include=["google_api_key", "google_cse_id", "k", "siterestrict"],
         field_options={
             "google_api_key": {
-                "input": "secret",
+                "input_type": "secret",
             },
             "google_cse_id": {
-                "input": "secret",
+                "input_type": "secret",
             },
         },
     ),
@@ -129,7 +129,7 @@ GOOGLE_SERPER = {
         include=["k", "gl", "hl", "type", "tbs", "serper_api_key"],
         field_options={
             "serper_api_key": {
-                "input": "secret",
+                "input_type": "secret",
             },
         },
     ),
@@ -167,10 +167,8 @@ PUB_MED = {
         include=[
             "max_retry",
             "top_k_results",
-            "load_max_docs",
             "ARXIV_MAX_QUERY_LENGTH",
             "doc_content_chars_max",
-            "load_all_available_meta",
             "email",
         ],
     ),
@@ -206,7 +204,7 @@ WOLFRAM = {
             "name": "wolfram_alpha_app_id",
             "label": "Wolfram Alpha App ID",
             "type": "str",
-            "input": "secret",
+            "input_type": "secret",
         },
     ],
 }

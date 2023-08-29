@@ -55,5 +55,5 @@ services:
 
 
   redis:
-    image: redis
+    image: redis/redis-stack-server:latest
 

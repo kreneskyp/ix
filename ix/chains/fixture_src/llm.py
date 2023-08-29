@@ -1,5 +1,10 @@
+from langchain import LlamaCpp
+
+from ix.api.chains.types import NodeTypeField
+
+OPENAI_LLM_CLASS_PATH = "langchain.chat_models.openai.ChatOpenAI"
 OPENAI_LLM = {
-    "class_path": "langchain.chat_models.openai.ChatOpenAI",
+    "class_path": OPENAI_LLM_CLASS_PATH,
     "type": "llm",
     "name": "OpenAI LLM",
     "description": "OpenAI LLM",
@@ -8,7 +13,7 @@ OPENAI_LLM = {
             "name": "model_name",
             "label": "Model",
             "type": "string",
-            "input": "select",
+            "input_type": "select",
             "required": True,
             "description": "OpenAI model",
             "default": "gpt-4-0613",
@@ -29,7 +34,7 @@ OPENAI_LLM = {
         {
             "name": "max_retries",
             "type": "number",
-            "input": "slider",
+            "input_type": "slider",
             "description": "Max Retries",
             "default": 6,
             "min": 0,
@@ -39,7 +44,7 @@ OPENAI_LLM = {
         {
             "name": "temperature",
             "type": "number",
-            "input": "slider",
+            "input_type": "slider",
             "description": "Temperature",
             "default": 0,
             "min": 0,
@@ -59,7 +64,7 @@ OPENAI_LLM = {
         {
             "name": "streaming",
             "type": "boolean",
-            "default": False,
+            "default": True,
         },
     ],
 }
@@ -74,7 +79,7 @@ GOOGLE_PALM = {
             "name": "model_name",
             "label": "Model",
             "type": "string",
-            "input": "select",
+            "input_type": "select",
             "required": True,
             "description": "OpenAI model",
             "default": "gpt-4",
@@ -87,12 +92,12 @@ GOOGLE_PALM = {
             "label": "API Key",
             "type": "string",
             "description": "Google API key",
-            "input": "secret",
+            "input_type": "secret",
         },
         {
             "name": "temperature",
             "type": "number",
-            "input": "slider",
+            "input_type": "slider",
             "description": "Temperature",
             "default": 0,
             "min": 0,
@@ -102,7 +107,7 @@ GOOGLE_PALM = {
         {
             "name": "top_p",
             "type": "number",
-            "input": "slider",
+            "input_type": "slider",
             "description": "Top P",
             "default": 0,
             "min": 0,
@@ -112,7 +117,7 @@ GOOGLE_PALM = {
         {
             "name": "top_k",
             "type": "number",
-            "input": "slider",
+            "input_type": "slider",
             "description": "Top P",
             "default": 0,
             "min": 0,
@@ -123,7 +128,7 @@ GOOGLE_PALM = {
             "name": "n",
             "label": "Sample N responses",
             "type": "number",
-            "input": "slider",
+            "input_type": "slider",
             "description": "Number of responses to sample",
             "default": 1,
             "min": 1,
@@ -147,7 +152,7 @@ ANTHROPIC_LLM = {
         {
             "name": "temperature",
             "type": "number",
-            "input": "slider",
+            "input_type": "slider",
             "description": "Temperature",
             "default": 0,
             "min": 0,
@@ -157,7 +162,7 @@ ANTHROPIC_LLM = {
         {
             "name": "anthropic_api_key",
             "type": "string",
-            "input": "secret",
+            "input_type": "secret",
             "style": {"width": "100%"},
             "description": "ANTHROPIC_API_KEY",
         },
@@ -170,3 +175,46 @@ ANTHROPIC_LLM = {
         },
     ],
 }
+
+LLAMA_CPP_LLM_CLASS_PATH = "langchain.llms.llamacpp.LlamaCpp"
+LLAMA_CPP_LLM = {
+    "class_path": LLAMA_CPP_LLM_CLASS_PATH,
+    "type": "llm",
+    "name": "Llama Cpp",
+    "description": "Llama Cpp wrapper for llama models",
+    "fields": NodeTypeField.get_fields(
+        LlamaCpp,
+        include=[
+            "model_path",
+            "lora_base",
+            "n_ctx",
+            "n_parts",
+            "seed",
+            "f16_kv",
+            "logits_all",
+            "vocab_only",
+            "use_mlock",
+            "n_threads",
+            "n_batch",
+            "n_gpu_layers",
+            "suffix",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "logprobs",
+            "echo",
+            "stop",
+            "repeat_penalty",
+            "last_n_tokens_size",
+            "use_mmap",
+            "rope_freq_scale",
+            "rope_freq_base",
+            # "model_kwargs",
+            "streaming",
+            "verbose",
+        ],
+    ),
+}
+
+
+LLMS = [ANTHROPIC_LLM, GOOGLE_PALM, LLAMA_CPP_LLM, OPENAI_LLM]

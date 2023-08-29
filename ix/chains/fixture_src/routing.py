@@ -40,7 +40,6 @@ MAP_SUBCHAIN = {
         {
             "name": "input_variables",
             "type": "list",
-            "input": "string",
         },
         {
             "name": "map_input",
@@ -63,7 +62,6 @@ MAP_SUBCHAIN = {
 ROUTING_KEYS_FIELD = {
     "name": "routing_keys",
     "type": "list",
-    "input": "string",
     "description": "Keys to use for routing.",
 }
 

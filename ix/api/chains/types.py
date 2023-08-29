@@ -1,6 +1,20 @@
+import inspect
+from abc import ABC
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Dict, List, Any, Optional, Type, Literal, get_args, get_origin, Union
+from typing import (
+    Dict,
+    List,
+    Any,
+    Optional,
+    Type,
+    Literal,
+    get_args,
+    get_origin,
+    Union,
+    Callable,
+)
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field, root_validator
 
@@ -8,9 +22,10 @@ from ix.utils.graphene.pagination import QueryPage
 
 
 class InputType(str, Enum):
+    INPUT = "input"
     SLIDER = "slider"
     SECRET = "secret"
-    TEXT = "text"
+    TEXTAREA = "textarea"
     SELECT = "select"
 
 
@@ -54,12 +69,31 @@ class Position(BaseModel):
     y: float
 
 
+@dataclass
+class ParsedField:
+    """Field parsed from a pydantic model or a method signature."""
+
+    name: str
+    type_: Any
+    default: Any = None
+    required: bool = False
+    choices: List[Dict[str, str]] = None
+
+
+def parse_enum_choices(enum_cls: Enum) -> List[Dict[str, str]]:
+    return [
+        {"label": name, "value": value.value}
+        for name, value in enum_cls.__members__.items()
+    ]
+
+
 class NodeTypeField(BaseModel):
     """
     Represents a field in a component that can be configured. This includes both
     typing information and UX information.
 
-    This class includes `get_fields` helper for auto-importing fields from a Pydantic model.
+    This class includes `get_fields_from_model` and `get_fields_from_method` helpers
+     for auto-importing fields from Pydantic model and python methods respectively.
 
     Args:
         name (str): The name of the field. Used to set and retrieve the value on the object.
@@ -80,7 +114,7 @@ class NodeTypeField(BaseModel):
     type: str
     default: Optional[Any]
     required: bool = True
-    input_type: InputType = InputType.TEXT
+    input_type: InputType = None
     min: Optional[float] = None
     max: Optional[float] = None
     choices: Optional[List[Choice]] = None
@@ -106,28 +140,109 @@ class NodeTypeField(BaseModel):
 
         return values
 
-    @staticmethod
-    def get_fields(
-        model: Type[BaseModel],
+    @classmethod
+    def get_fields_from_model(
+        cls,
+        model: Type[BaseModel] | Type[ABC],
         include: Optional[List[str]] = None,
         exclude: Optional[List[str]] = None,
         field_options: Optional[Dict[str, Dict[str, Any]]] = None,
     ) -> List[Dict[str, Any]]:
-        """Import fields from a pydantic model."""
+        field_objs = []
+
+        annotations = {}
+        if hasattr(model, "__annotations__"):
+            annotations.update(model.__annotations__)
+        if issubclass(model, ABC):
+            for base in model.__bases__:
+                if hasattr(base, "__annotations__"):
+                    annotations.update(base.__annotations__)
+
+        for field_name, field_type in annotations.items():
+            if include and field_name not in include:
+                continue
+            if exclude and field_name in exclude:
+                continue
+
+            if isinstance(field_type, type) and issubclass(field_type, BaseModel):
+                continue
+
+            default = None
+            required = False
+            if hasattr(model, "__fields__"):
+                model_field = model.__fields__.get(field_name)
+                if model_field:
+                    default = model_field.default
+                    required = model_field.required
+            elif hasattr(model, "__dict__"):
+                default = model.__dict__.get(field_name, None)
+                required = default is None and not is_optional(field_type)
+
+            field_objs.append(
+                ParsedField(
+                    name=field_name,
+                    type_=field_type,
+                    default=default,
+                    required=required,
+                )
+            )
+
+        return cls._get_fields(field_objs, field_options)
+
+    @classmethod
+    def get_fields_from_method(
+        cls,
+        method: Callable,
+        include: Optional[List[str]] = None,
+        exclude: Optional[List[str]] = None,
+        field_options: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> List[Dict[str, Any]]:
         fields = []
-        exclude = exclude or []
-        include = include or []
+        signature = inspect.signature(method)
 
-        for field_name, field in model.__annotations__.items():
-            origin = get_origin(field)
+        # TODO: does not support @staticmethod, which drops first argument
+        #       when using inspect.signature.
+
+        for param_name, param in signature.parameters.items():
+            if include and param_name not in include:
+                continue
+            if exclude and param_name in exclude:
+                continue
+
+            if param.default is inspect._empty:
+                is_required = True
+                default = None
+            else:
+                is_required = False
+                default = param.default
+            fields.append(
+                ParsedField(
+                    name=param_name,
+                    type_=param.annotation,
+                    default=default,
+                    required=is_required,
+                )
+            )
+
+        return cls._get_fields(fields, field_options)
+
+    @staticmethod
+    def _get_fields(
+        fields: List[ParsedField],
+        field_options: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> List[Dict[str, Any]]:
+        results = []
+
+        for field in fields:
+            origin = get_origin(field.type_)
             is_literal = origin is Literal
-            _is_optional = is_optional(field)
+            _is_optional = is_optional(field.type_)
 
-            root_field = field
+            root_field = field.type_
             if is_literal:
                 root_field = str
             elif _is_optional:
-                root_field = get_args(field)[0]
+                root_field = get_args(field.type_)[0]
 
             if root_field is bool:
                 # Backwards compatibility for "boolean" type
@@ -136,33 +251,51 @@ class NodeTypeField(BaseModel):
             else:
                 field_type_name = getattr(root_field, "__name__", str(root_field))
 
-            if field_name in exclude:
-                continue
-            if include and field_name not in include:
-                continue
-            if isinstance(field, type) and issubclass(field, BaseModel):
-                continue
-
-            model_field = model.__fields__.get(field_name)
             field_info = {
-                "name": field_name,
-                "label": cap_first(field_name),
+                "name": field.name,
+                "label": cap_first(field.name),
                 "type": field_type_name,
-                "default": model_field.default,
-                "required": model_field.required,
+                "default": field.default,
+                "required": field.required,
             }
 
             if is_literal:
                 field_info["choices"] = [
-                    {"label": cap_first(arg), "value": arg} for arg in get_args(field)
+                    {"label": cap_first(arg), "value": arg}
+                    for arg in get_args(field.type_)
                 ]
+            elif isinstance(root_field, type) and issubclass(root_field, Enum):
+                field_info["type"] = "str"
+                field_info["choices"] = parse_enum_choices(root_field)
 
-            if field_options and field_name in field_options:
-                field_info.update(field_options[field_name])
+            if field_info.get("choices", None):
+                field_info["input_type"] = "select"
 
-            fields.append(field_info)
+            if field_options and field.name in field_options:
+                field_info.update(field_options[field.name])
 
-        return fields
+            results.append(field_info)
+
+        return results
+
+    @classmethod
+    def get_fields(
+        cls,
+        obj: Callable | Type[BaseModel] | Type[ABC],
+        include: Optional[List[str]] = None,
+        exclude: Optional[List[str]] = None,
+        field_options: Optional[Dict[str, Dict[str, Any]]] = None,
+    ):
+        if isinstance(obj, type) and issubclass(obj, BaseModel | ABC):
+            return cls.get_fields_from_model(
+                obj, include=include, exclude=exclude, field_options=field_options
+            )
+        elif isinstance(obj, Callable):
+            return cls.get_fields_from_method(
+                obj, include=include, exclude=exclude, field_options=field_options
+            )
+
+        raise ValueError(f"Invalid object type: {type(obj)}")
 
 
 NodeTypes = Literal[
@@ -176,6 +309,7 @@ NodeTypes = Literal[
     "memory",
     "memory_backend",
     "output_parser",
+    "parser",
     "prompt",
     "retriever",
     "tool",
@@ -192,10 +326,15 @@ class Connector(BaseModel):
 
     key: str
     type: Literal["source", "target"]
+    required: bool = False
 
     # Simplified categorization of LangChain components. Class inheritance
     # can't be checked in JS so these categories are used for a proxy instead.
     source_type: NodeTypes | List[NodeTypes]
+
+    # The object type this should be converted to. Used when the source will
+    # be converted to another type. e.g. VectorStore.as_retriever()
+    as_type: Optional[NodeTypes]
 
     # Allow more than one connection to this connector
     multiple: bool = False
@@ -279,13 +418,20 @@ class Edge(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     source_id: UUID
     target_id: UUID
-    key: str
+    key: Optional[str]
     chain_id: UUID
     relation: Literal["LINK", "PROP"]
     input_map: Optional[dict]
 
     class Config:
         orm_mode = True
+
+    @root_validator
+    def validate_edge(cls, values):
+        if values.get("relation") == "PROP" and not values.get("key"):
+            raise ValueError("'key' is required for 'PROP' relation type.")
+
+        return values
 
 
 class PositionUpdate(BaseModel):

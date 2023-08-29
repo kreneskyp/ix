@@ -87,7 +87,7 @@
     "fields": {
         "class_path": "ix.memory.artifacts.ArtifactMemory",
         "node_type": "98af8724-a765-490a-bfb6-2adf54102186",
-        "config": null,
+        "config": {},
         "name": null,
         "description": null,
         "root": false,

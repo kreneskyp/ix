@@ -4,3 +4,4 @@ auto
 node_modules
 .git
 .coverage
+llama

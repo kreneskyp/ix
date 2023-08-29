@@ -1,8 +1,24 @@
 from copy import deepcopy
+from pathlib import Path
 
 import pytest
 from unittest.mock import MagicMock
 
+from langchain.chains import ConversationalRetrievalChain
+from langchain.document_loaders.generic import GenericLoader
+from langchain.document_loaders.parsers import LanguageParser
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.text_splitter import TextSplitter
+from langchain.vectorstores import Redis
+
+from ix.chains.fixture_src.chains import CONVERSATIONAL_RETRIEVAL_CHAIN_CLASS_PATH
+from ix.chains.fixture_src.document_loaders import GENERIC_LOADER_CLASS_PATH
+from ix.chains.fixture_src.embeddings import OPENAI_EMBEDDINGS_CLASS_PATH
+from ix.chains.fixture_src.parsers import LANGUAGE_PARSER_CLASS_PATH
+from ix.chains.fixture_src.text_splitter import RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH
+from ix.chains.fixture_src.vectorstores import (
+    REDIS_VECTORSTORE_CLASS_PATH,
+)
 from ix.chains.loaders.context import IxContext
 from langchain.agents import AgentExecutor
 from langchain.base_language import BaseLanguageModel
@@ -16,6 +32,7 @@ from langchain.tools import BaseTool
 
 from ix.chains.fixture_src.tools import GOOGLE_SEARCH
 from ix.chains.loaders.memory import get_memory_session
+from ix.chains.loaders.text_splitter import TextSplitterShim
 from ix.chains.loaders.tools import extract_tool_kwargs
 from ix.chains.tests.mock_memory import MockMemory
 from ix.memory.artifacts import ArtifactMemory
@@ -538,3 +555,107 @@ class TestLoadAgents:
         with pytest.raises(ValueError) as excinfo:
             await aload_chain(config)
             assert "Agents require return_messages=True" in str(excinfo.value)
+
+
+TEST_DATA = Path("/var/app/test_data")
+TEST_DOCUMENTS = TEST_DATA / "documents"
+
+LANGUAGE_PARSER = {
+    "class_path": LANGUAGE_PARSER_CLASS_PATH,
+    "config": {
+        "language": "python",
+    },
+}
+
+DOCUMENT_LOADER = {
+    "class_path": GENERIC_LOADER_CLASS_PATH,
+    "config": {
+        "parser": LANGUAGE_PARSER,
+        "path": str(TEST_DOCUMENTS),
+        "suffixes": [".py"],
+    },
+}
+
+TEXT_SPLITTER = {
+    "class_path": RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH,
+    "config": {"language": "python", "document_loader": DOCUMENT_LOADER},
+}
+
+EMBEDDINGS = {
+    "class_path": OPENAI_EMBEDDINGS_CLASS_PATH,
+    "config": {"model": "text-embedding-ada-002"},
+}
+
+REDIS_VECTORSTORE = {
+    "class_path": REDIS_VECTORSTORE_CLASS_PATH,
+    "config": {
+        "embedding": EMBEDDINGS,
+        "documents": TEXT_SPLITTER,
+        "redis_url": "redis://redis:6379/0",
+        "index_name": "tests",
+    },
+}
+
+CONVERSATIONAL_RETRIEVAL_CHAIN = {
+    "class_path": CONVERSATIONAL_RETRIEVAL_CHAIN_CLASS_PATH,
+    "config": {"llm": OPENAI_LLM, "retriever": REDIS_VECTORSTORE},
+}
+
+
+@pytest.mark.django_db
+class TestLoadRetrieval:
+    """Test loading retrieval components.
+
+    This is a test of loading mechanism for the various retrieval components.
+    It is not an exhaustive test that all retrieval components work as expected.
+    The tests verify that any special loading logic for the components is working.
+    """
+
+    async def test_load_language_parser(self, aload_chain):
+        component = await aload_chain(LANGUAGE_PARSER)
+        assert isinstance(component, LanguageParser)
+        assert component.language == "python"
+
+    async def test_load_document_loader(self, aload_chain):
+        component = await aload_chain(DOCUMENT_LOADER)
+        assert isinstance(component, GenericLoader)
+        assert isinstance(component.blob_parser, LanguageParser)
+
+        # non-exhaustive test of document loading
+        documents = component.load()
+        sources = {doc.metadata["source"] for doc in documents}
+        expected_sources = {
+            str(TEST_DOCUMENTS / "foo.py"),
+            str(TEST_DOCUMENTS / "bar.py"),
+        }
+        assert sources == expected_sources
+
+    async def test_load_text_splitter(self, aload_chain):
+        component = await aload_chain(TEXT_SPLITTER)
+        assert isinstance(component, TextSplitterShim)
+        assert isinstance(component.document_loader, GenericLoader)
+        assert isinstance(component.text_splitter, TextSplitter)
+
+        # sanity check that the splitter splits text
+        # does not test the actual splitting algorithm
+        with open(TEST_DOCUMENTS / "foo.py", "r") as foo_file:
+            foo_content = foo_file.read()
+        split_texts = component.text_splitter.split_text(foo_content)
+        assert len(split_texts) >= 1
+
+    async def test_load_embeddings(self, aload_chain):
+        component = await aload_chain(EMBEDDINGS)
+        assert isinstance(component, OpenAIEmbeddings)
+
+    async def test_load_vectorstore(
+        self, clean_redis, aload_chain, mock_openai_embeddings
+    ):
+        component = await aload_chain(REDIS_VECTORSTORE)
+        assert isinstance(component, Redis)
+
+    async def test_load_conversational_chain(
+        self, clean_redis, aload_chain, mock_openai_embeddings
+    ):
+        """Test loading a fully configured conversational chain."""
+        component = await aload_chain(CONVERSATIONAL_RETRIEVAL_CHAIN)
+        assert isinstance(component, ConversationalRetrievalChain)
