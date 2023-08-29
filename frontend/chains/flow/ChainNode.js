@@ -1,11 +1,10 @@
-import React, {useMemo} from "react";
+import React, { useMemo } from "react";
 import { Handle, useEdges } from "reactflow";
 import { Box, VStack, Heading, Flex } from "@chakra-ui/react";
 import { TypeAutoFields } from "chains/flow/TypeAutoFields";
 import { CollapsibleSection } from "chains/flow/CollapsibleSection";
-import {NodeProperties, useConnectorColor} from "chains/flow/ConfigNode";
-import {RequiredAsterisk} from "components/RequiredAsterisk";
-
+import { NodeProperties, useConnectorColor } from "chains/flow/ConfigNode";
+import { RequiredAsterisk } from "components/RequiredAsterisk";
 
 const useFlowConnectors = (node) => {
   const edges = useEdges();
@@ -15,17 +14,16 @@ const useFlowConnectors = (node) => {
       input: {
         key: "in",
         required: true,
-        connected: edges?.find((edge) => edge.target === node.id)
+        connected: edges?.find((edge) => edge.target === node.id),
       },
       output: {
         key: "out",
         required: false,
-        connected: edges?.find((edge) => edge.source === node.id)
-      }
-    }
+        connected: edges?.find((edge) => edge.source === node.id),
+      },
+    };
   }, [edges, node.id]);
 };
-
 
 export const ChainNode = ({ type, node, config, onFieldChange }) => {
   const { input, output } = useFlowConnectors(node);
@@ -42,7 +40,7 @@ export const ChainNode = ({ type, node, config, onFieldChange }) => {
             position="left"
             style={{ top: "50%", transform: "translateY(-50%)" }}
           />
-          <Heading fontSize="xs" px={2} color={intputColor} >
+          <Heading fontSize="xs" px={2} color={intputColor}>
             Inputs <RequiredAsterisk color={intputColor} />
           </Heading>
         </Box>
