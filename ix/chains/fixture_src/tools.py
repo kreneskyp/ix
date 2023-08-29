@@ -11,7 +11,6 @@ from langchain.utilities import (
     GraphQLAPIWrapper,
     LambdaWrapper,
     PubMedAPIWrapper,
-    MetaphorSearchAPIWrapper,
 )
 
 from ix.api.chains.types import NodeTypeField
@@ -198,13 +197,15 @@ METAPHOR = {
     "class_path": "ix.tools.metaphor.get_metaphor",
     "type": "tool",
     "fields": TOOL_BASE_FIELDS
-    + NodeTypeField.get_fields(
-        MetaphorSearchAPIWrapper,
-        include=[
-            "k",
-            "metaphor_api_key",
-        ],
-    ),
+    + [
+        {
+            "name": "metaphor_api_key",
+            "label": "Metaphor API Key",
+            "type": "str",
+            "input_type": "secret",
+            "required": True,
+        }
+    ],
 }
 
 
