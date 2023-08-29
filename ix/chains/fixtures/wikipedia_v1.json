@@ -58,7 +58,7 @@
     "pk": "aabbe898-5d4e-442d-9ec8-942ecae78efa",
     "fields": {
         "class_path": "ix.tools.wikipedia.get_wikipedia",
-        "node_type": "39414ada-446f-4949-b087-193d1c93cb27",
+        "node_type": "a8ffd3b0-dfb4-4e1b-b5bf-90a2ec959ff8",
         "config": {
             "lang": "en",
             "verbose": false,
