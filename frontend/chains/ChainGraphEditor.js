@@ -35,6 +35,12 @@ const nodeTypes = {
   root: RootNode,
 };
 
+const getExpectedTypes = (connector) => {
+  return Array.isArray(connector?.source_type)
+    ? new Set(connector.source_type)
+    : new Set([connector.source_type]);
+};
+
 const ChainGraphEditor = ({ graph, chain, setChain }) => {
   const reactFlowWrapper = useRef(null);
   const edgeUpdate = useRef(true);
@@ -95,6 +101,43 @@ const ChainGraphEditor = ({ graph, chain, setChain }) => {
 
       const newNodeID = uuid4();
 
+      // auto edge connection. Prefer selected connector, then selected node
+      let edge = null;
+      let edgeConnector = null;
+      if (selectedNode || selectedConnector) {
+        const node = selectedConnector?.node || selectedNode?.data.node;
+        if (selectedConnector) {
+          edgeConnector = selectedConnector.connector;
+        } else {
+          // Only Node selected:
+          // select the first open connector accepting the node type
+          const targetType = selectedNode.data.type;
+          edgeConnector = targetType.connectors.find((connector) =>
+            getExpectedTypes(connector).has(nodeType.type)
+          );
+        }
+
+        if (edgeConnector) {
+          // output connector is a source, flip the edge
+          const isOutput = edgeConnector.key === "out";
+          const key = isOutput ? "in" : edgeConnector.key;
+          const source_id = isOutput ? node.id : newNodeID;
+          const target_id = isOutput ? newNodeID : node.id;
+          const edgeId = uuid4();
+
+          // TODO: implement edge validation
+          const IS_VALID = true;
+          if (IS_VALID) {
+            edge = {
+              id: edgeId,
+              source_id,
+              target_id,
+              key,
+            };
+          }
+        }
+      }
+
       // create data object instead of waiting for graphql
       const data = {
         id: newNodeID,
@@ -103,6 +146,9 @@ const ChainGraphEditor = ({ graph, chain, setChain }) => {
         position: position,
         config: getDefaults(nodeType),
       };
+      if (edge) {
+        data.edges = [edge];
+      }
 
       // create ReactFlow node
       const flowNode = toReactFlowNode(data, nodeType);
@@ -110,6 +156,22 @@ const ChainGraphEditor = ({ graph, chain, setChain }) => {
       // add to API and ReactFlow
       api.addNode(data, { onSuccess: onNodeSaved });
       setNodes((nds) => nds.concat(flowNode));
+
+      if (edge) {
+        const flowNodeType = nodeType.type;
+        const style = getEdgeStyle(colorMode, flowNodeType);
+        const flowEdge = {
+          id: edge.id,
+          type: "default",
+          source: edge.source_id,
+          target: edge.target_id,
+          sourceHandle: edge.key === "in" ? "out" : flowNodeType,
+          targetHandle: edge.key,
+          data: { id: edge?.id },
+          style,
+        };
+        setEdges((els) => addEdge(flowEdge, els));
+      }
     },
     [reactFlowInstance, chain?.id, selectedNode, colorMode, selectedConnector]
   );
