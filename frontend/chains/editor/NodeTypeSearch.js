@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useMemo } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { NodeSelector } from "chains/editor/NodeSelector";
 import { useDebounce } from "utils/hooks/useDebounce";
 import {
@@ -115,30 +121,82 @@ const NodeTypeGroup = ({ typeKey, group }) => {
   );
 };
 
+const NodeTypeSearchBadge = ({ type, onRemove }) => {
+  const { highlight } = useEditorColorMode();
+  const onRemoveClick = useCallback(() => {
+    onRemove(type);
+  }, [type]);
+  return (
+    <Badge key={type} px={2} mr={1} bg={highlight[type]}>
+      <Text
+        as={"span"}
+        color={"blackAlpha.500"}
+        style={{ cursor: "pointer" }}
+        onClick={onRemoveClick}
+      >
+        <FontAwesomeIcon icon={faXmark} size={"sm"} />
+      </Text>{" "}
+      {type}
+    </Badge>
+  );
+};
+
 /**
  * Provides a search widget including a search bar and a list of components.
  * Searching queries SearchNodeTypeQuery
  */
 export const NodeTypeSearch = () => {
   const { border } = useSideBarColorMode();
+  const { selectedConnector } = useContext(SelectedNodeContext);
+  const [query, setQuery] = useState({ search: "", types: [] });
 
-  // queries
+  // component query
   const { load, page } = usePaginatedAPI(`/api/node_types/`, { load: false });
-  const { callback: searchNodeTypes, clear } = useDebounce(
-    useCallback((search) => {
-      load({ search });
-    }, []),
-    500
-  );
+
+  // trigger query when query state changes
+  useEffect(() => {
+    if (query.search || query.types.length > 0) {
+      load(query);
+    } else {
+      // TODO: clear page (upstream feature needed in usePaginatedAPI)
+    }
+  }, [query]);
+
+  // auto-trigger state change when connector is [de]selected
+  useEffect(() => {
+    if (selectedConnector) {
+      const { connector } = selectedConnector;
+      const types = Array.isArray(connector.source_type)
+        ? connector.source_type
+        : [connector?.source_type];
+      setQuery({ search: "", types: types });
+    } else {
+      // clear query
+      setQuery({ search: "", types: [] });
+    }
+  }, [selectedConnector]);
+
+  // debounced setQuery
+  const { callback: debouncedSetSearch, clear } = useDebounce((search) => {
+    setQuery((prev) => ({ ...prev, search }));
+  });
 
   // callback for search bar changing
   const onSearchChange = useCallback((event) => {
     const search = event.target.value;
     if (search) {
-      searchNodeTypes(search);
+      debouncedSetSearch(search);
     } else {
       clear();
     }
+  }, []);
+
+  // callback for removing a type from the query
+  const onRemoveType = useCallback((type) => {
+    setQuery((prev) => ({
+      ...prev,
+      types: prev.types.filter((t) => t !== type),
+    }));
   }, []);
 
   const groupedTypes = useMemo(() => {
@@ -157,6 +215,12 @@ export const NodeTypeSearch = () => {
       <Heading as="h3" size="xs" mb={2}>
         Components
       </Heading>
+      <Box mb={2}>
+        {query.types?.map((type) => (
+          <NodeTypeSearchBadge key={type} type={type} onRemove={onRemoveType} />
+        ))}
+      </Box>
+
       <Input
         onChange={onSearchChange}
         placeholder="search components"
