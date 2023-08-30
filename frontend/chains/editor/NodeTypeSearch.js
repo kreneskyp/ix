@@ -1,11 +1,24 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import { NodeSelector } from "chains/editor/NodeSelector";
 import { useDebounce } from "utils/hooks/useDebounce";
-import { Box, Heading, HStack, Input, Text, VStack } from "@chakra-ui/react";
-import { useSideBarColorMode } from "chains/editor/useColorMode";
+import {
+  Badge,
+  Box,
+  Heading,
+  HStack,
+  Input,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
+import {
+  useEditorColorMode,
+  useSideBarColorMode,
+} from "chains/editor/useColorMode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
+import { SelectedNodeContext } from "chains/editor/SelectedNodeContext";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const NodeSelectorHeader = ({ label, icon }) => {
   const { color } = useSideBarColorMode();
