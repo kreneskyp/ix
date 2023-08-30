@@ -1402,6 +1402,11 @@
     "connectors": null,
     "fields": [
       {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
         "name": "model_path",
         "type": "str",
         "label": "Model_path",
@@ -1588,6 +1593,7 @@
     "config_schema": {
       "type": "object",
       "required": [
+        "verbose",
         "model_path"
       ],
       "properties": {
@@ -3448,6 +3454,205 @@
         "return_intermediate_steps": {
           "type": "boolean",
           "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a4b78af5-415f-45e5-ad6f-079384d826a0",
+  "fields": {
+    "name": "Ollama",
+    "description": "Ollama server for llama models",
+    "class_path": "langchain.llms.ollama.Ollama",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "model",
+        "type": "str",
+        "label": "Model",
+        "default": "llama2",
+        "required": false
+      },
+      {
+        "name": "mirostat",
+        "type": "int",
+        "label": "Mirostat",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "mirostat_eta",
+        "type": "float",
+        "label": "Mirostat_eta",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "mirostat_tau",
+        "type": "float",
+        "label": "Mirostat_tau",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "num_ctx",
+        "type": "int",
+        "label": "Num_ctx",
+        "default": null,
+        "required": false
+      },
+      {
+        "max": 10,
+        "min": 0,
+        "name": "num_gpu",
+        "step": 1,
+        "type": "int",
+        "label": "Num_gpu",
+        "default": 1,
+        "required": false,
+        "input_type": "slider"
+      },
+      {
+        "name": "num_thread",
+        "type": "int",
+        "label": "Num_thread",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "repeat_last_n",
+        "type": "int",
+        "label": "Repeat_last_n",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "repeat_penalty",
+        "type": "float",
+        "label": "Repeat_penalty",
+        "default": null,
+        "required": false
+      },
+      {
+        "max": 1,
+        "min": 0,
+        "name": "temperature",
+        "step": 0.05,
+        "type": "float",
+        "label": "Temperature",
+        "default": 0.8,
+        "required": false,
+        "input_type": "slider"
+      },
+      {
+        "name": "stop",
+        "type": "List",
+        "label": "Stop",
+        "style": {
+          "width": "100%"
+        },
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "tfs_z",
+        "type": "float",
+        "label": "Tfs_z",
+        "default": null,
+        "required": false
+      },
+      {
+        "max": 1,
+        "min": 0,
+        "name": "top_p",
+        "step": 0.05,
+        "type": "int",
+        "label": "Top_p",
+        "default": 0.9,
+        "required": false,
+        "input_type": "slider"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose"
+      ],
+      "properties": {
+        "stop": {
+          "type": "object",
+          "default": null
+        },
+        "model": {
+          "type": "string",
+          "default": "llama2"
+        },
+        "tfs_z": {
+          "type": "number",
+          "default": null
+        },
+        "top_p": {
+          "type": "number",
+          "default": 0.9,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "num_ctx": {
+          "type": "number",
+          "default": null
+        },
+        "num_gpu": {
+          "type": "number",
+          "default": 1,
+          "maximum": 10.0,
+          "minimum": 0.0,
+          "multipleOf": 1.0
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "mirostat": {
+          "type": "number",
+          "default": null
+        },
+        "num_thread": {
+          "type": "number",
+          "default": null
+        },
+        "temperature": {
+          "type": "number",
+          "default": 0.8,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "mirostat_eta": {
+          "type": "number",
+          "default": null
+        },
+        "mirostat_tau": {
+          "type": "number",
+          "default": null
+        },
+        "repeat_last_n": {
+          "type": "number",
+          "default": null
+        },
+        "repeat_penalty": {
+          "type": "number",
+          "default": null
         }
       }
     }
