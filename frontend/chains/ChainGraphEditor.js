@@ -104,9 +104,13 @@ const ChainGraphEditor = ({ graph, chain, setChain }) => {
 
       // auto edge connection. Prefer selected connector, then selected node
       let edge = null;
+      let flowEdge = null;
       let edgeConnector = null;
       if (selectedNode || selectedConnector) {
+        // selectedConnector has all properties but fallback to selectedNode if it doesn't
         const node = selectedConnector?.node || selectedNode?.data.node;
+        const selectedType = selectedConnector?.type || selectedNode?.data.type;
+
         if (selectedConnector) {
           edgeConnector = selectedConnector.connector;
         } else {
@@ -122,17 +126,32 @@ const ChainGraphEditor = ({ graph, chain, setChain }) => {
           // output connector is a source, flip the edge
           const isOutput = edgeConnector.key === "out";
           const key = isOutput ? "in" : edgeConnector.key;
-          const source_id = isOutput ? node.id : newNodeID;
-          const target_id = isOutput ? newNodeID : node.id;
-          const edgeId = uuid4();
 
-          // TODO: implement edge validation
-          const IS_VALID = true;
-          if (IS_VALID) {
+          // create flow edge to validate and add to ReactFlow
+          const edgeId = uuid4();
+          const flowNodeType = nodeType.type;
+          const style = getEdgeStyle(colorMode, flowNodeType);
+          flowEdge = {
+            id: edgeId,
+            type: "default",
+            source: isOutput ? node.id : newNodeID,
+            target: isOutput ? newNodeID : node.id,
+            sourceHandle: key === "in" ? "out" : flowNodeType,
+            targetHandle: key,
+            data: { id: edgeId },
+            style,
+          };
+
+          // validate flowEdge before creating datum for API
+          const sourceType =
+            flowEdge.source === newNodeID ? nodeType : selectedType;
+          const targetType =
+            flowEdge.target === newNodeID ? nodeType : selectedType;
+          if (isValidConnection({ ...flowEdge, sourceType, targetType })) {
             edge = {
               id: edgeId,
-              source_id,
-              target_id,
+              source_id: flowEdge.source,
+              target_id: flowEdge.target,
               key,
             };
           }
@@ -159,18 +178,6 @@ const ChainGraphEditor = ({ graph, chain, setChain }) => {
       setNodes((nds) => nds.concat(flowNode));
 
       if (edge) {
-        const flowNodeType = nodeType.type;
-        const style = getEdgeStyle(colorMode, flowNodeType);
-        const flowEdge = {
-          id: edge.id,
-          type: "default",
-          source: edge.source_id,
-          target: edge.target_id,
-          sourceHandle: edge.key === "in" ? "out" : flowNodeType,
-          targetHandle: edge.key,
-          data: { id: edge?.id },
-          style,
-        };
         setEdges((els) => addEdge(flowEdge, els));
       }
     },
