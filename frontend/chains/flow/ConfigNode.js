@@ -78,7 +78,7 @@ export const useConnectorColor = (node, connector) => {
   }
 };
 
-export const PropertyTarget = ({ node, connector }) => {
+export const PropertyTarget = ({ type, node, connector }) => {
   const color = useConnectorColor(node, connector);
   const source_type = Array.isArray(connector.source_type)
     ? connector.source_type[0]
@@ -91,6 +91,7 @@ export const PropertyTarget = ({ node, connector }) => {
       <Handle id={connector.key} type="target" position={position} />
       <Box px={2} m={0} color={color}>
         <ConnectorPopover
+          type={type}
           node={node}
           connector={connector}
           placement={position}
@@ -123,12 +124,22 @@ export const NodeProperties = ({ node, type }) => {
     <Flex justify={"space-between"}>
       <VStack spacing={0} cursor="default">
         {left?.map((connector, index) => (
-          <PropertyTarget key={index} node={node} connector={connector} />
+          <PropertyTarget
+            key={index}
+            type={type}
+            node={node}
+            connector={connector}
+          />
         ))}
       </VStack>
       <VStack spacing={0} cursor="default">
         {right?.map((connector, index) => (
-          <PropertyTarget key={index} node={node} connector={connector} />
+          <PropertyTarget
+            key={index}
+            type={type}
+            node={node}
+            connector={connector}
+          />
         ))}
       </VStack>
     </Flex>

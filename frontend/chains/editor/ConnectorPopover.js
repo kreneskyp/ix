@@ -16,14 +16,20 @@ import { useEditorColorMode } from "chains/editor/useColorMode";
 const DEFAULT_DESCRIPTION =
   "Attach components to this connector by dragging them from the search results in the left panel.";
 
-export const ConnectorPopover = ({ node, connector, label, placement }) => {
+export const ConnectorPopover = ({
+  type,
+  node,
+  connector,
+  label,
+  placement,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const { highlight } = useEditorColorMode();
   const { setSelectedConnector } = useContext(SelectedNodeContext);
 
   useEffect(() => {
     if (isOpen) {
-      setSelectedConnector({ node, connector });
+      setSelectedConnector({ type, node, connector });
     }
   }, [isOpen, setSelectedConnector, connector]);
 

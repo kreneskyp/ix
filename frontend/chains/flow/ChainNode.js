@@ -33,7 +33,7 @@ const useFlowConnectors = (node) => {
   }, [edges, node.id]);
 };
 
-export const InputConnector = ({ node }) => {
+export const InputConnector = ({ type, node }) => {
   const { input } = useFlowConnectors(node);
   const intputColor = useConnectorColor(node, input);
   return (
@@ -46,6 +46,7 @@ export const InputConnector = ({ node }) => {
       />
       <Heading fontSize="xs" px={2} color={intputColor}>
         <ConnectorPopover
+          type={type}
           node={node}
           connector={input}
           label={"Input"}
@@ -57,7 +58,7 @@ export const InputConnector = ({ node }) => {
   );
 };
 
-export const OutputConnector = ({ node }) => {
+export const OutputConnector = ({ type, node }) => {
   const { output } = useFlowConnectors(node);
   const outputColor = useConnectorColor(node, output);
   return (
@@ -70,6 +71,7 @@ export const OutputConnector = ({ node }) => {
       />
       <Heading fontSize="xs" px={2} color={outputColor}>
         <ConnectorPopover
+          type={type}
           node={node}
           connector={output}
           label={"Output"}
@@ -84,8 +86,8 @@ export const ChainNode = ({ type, node, config, onFieldChange }) => {
   return (
     <VStack spacing={0} alignItems="stretch" fontSize="xs">
       <Flex mt={1} mb={3} justify={"space-between"}>
-        <InputConnector node={node} />
-        <OutputConnector node={node} />
+        <InputConnector type={type} node={node} />
+        <OutputConnector type={type} node={node} />
       </Flex>
       <NodeProperties node={node} type={type} />
       <CollapsibleSection title="Config">
