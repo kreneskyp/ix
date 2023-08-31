@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, List
+from typing import Optional, List, Literal
 from uuid import UUID
 
 from asgiref.sync import sync_to_async
@@ -201,7 +201,7 @@ class NewNodeEdge(BaseModel):
     """A new edge to be created with a node"""
 
     id: Optional[UUID] = None
-    source_id: UUID
+    source_id: UUID | Literal["root"]
     target_id: UUID
     key: str
 
@@ -232,18 +232,25 @@ async def add_chain_node(node: AddNode):
 
     # add edges to property connectors
     if node.edges:
-        node_edges = [
-            ChainEdge(
-                id=edge.id,
-                key=edge.key,
-                source_id=edge.source_id or new_node.id,
-                target_id=edge.target_id or new_node.id,
+        node_edges = []
+        for datum in node.edges:
+            # special case for edges to root pseudo-component
+            if datum.source_id == "root":
+                new_node.root = True
+                await new_node.asave(update_fields=["root"])
+                continue
+
+            edge = ChainEdge(
+                id=datum.id,
+                key=datum.key,
+                source_id=datum.source_id or new_node.id,
+                target_id=datum.target_id or new_node.id,
                 chain_id=node.chain_id,
-                relation="LINK" if edge.key in {"in", "out"} else "PROP",
+                relation="LINK" if datum.key in {"in", "out"} else "PROP",
             )
-            for edge in node.edges
-        ]
-        await ChainEdge.objects.abulk_create(node_edges)
+            node_edges.append(edge)
+        if node_edges:
+            await ChainEdge.objects.abulk_create(node_edges)
 
     return NodePydantic.from_orm(new_node)
 
