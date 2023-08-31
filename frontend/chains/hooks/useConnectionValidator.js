@@ -34,9 +34,10 @@ export const useConnectionValidator = (edgeUpdate) => {
       // hax: sourceNode isn't available when creating a new node
       //      require sourceType when not available
       const sourceNode = reactFlowInstance.getNode(source);
-      const sourceNodeType = sourceType || sourceNode.data.type;
       const providedType =
-        sourceHandle === "out" ? "chain-link" : sourceNodeType.type;
+        sourceHandle === "out"
+          ? "chain-link"
+          : (sourceType || sourceNode.data.type).type;
 
       // Check connection types
       if (
