@@ -69,7 +69,7 @@ const AutoFieldSecret = ({ field, value, onChange }) => {
       </FormLabel>
       <Input
         size="sm"
-        value={value}
+        value={value || ""}
         onChange={handleChange}
         px={1}
         py={2}
