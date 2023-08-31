@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import {
   Badge,
   Box,
@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { SelectedNodeContext } from "chains/editor/SelectedNodeContext";
 import { useEditorColorMode } from "chains/editor/useColorMode";
@@ -22,8 +23,9 @@ export const ConnectorPopover = ({
   connector,
   label,
   placement,
+  children,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, onToggle, onClose } = useDisclosure();
   const { highlight } = useEditorColorMode();
   const { setSelectedConnector } = useContext(SelectedNodeContext);
 
@@ -33,9 +35,6 @@ export const ConnectorPopover = ({
     }
   }, [isOpen, setSelectedConnector, connector]);
 
-  const openPopover = () => setIsOpen(true);
-  const closePopover = () => setIsOpen(false);
-
   const source_types = Array.isArray(connector.source_type)
     ? connector.source_type
     : [connector?.source_type];
@@ -43,14 +42,10 @@ export const ConnectorPopover = ({
   const description = connector.description || DEFAULT_DESCRIPTION;
 
   return (
-    <Popover
-      isOpen={isOpen}
-      onClose={closePopover}
-      placement={placement || "left"}
-    >
+    <Popover isOpen={isOpen} onClose={onClose} placement={placement}>
       <PopoverTrigger>
-        <Box as="button" onClick={openPopover}>
-          {label || connector.key}
+        <Box as="button" onClick={onToggle}>
+          {children || label || connector.key}
         </Box>
       </PopoverTrigger>
       <PopoverContent zIndex={99999} color={"white"}>
@@ -64,9 +59,13 @@ export const ConnectorPopover = ({
             );
           })}
         </PopoverHeader>
-        <PopoverCloseButton onClick={closePopover} />
+        <PopoverCloseButton />
         <PopoverBody>{description}</PopoverBody>
       </PopoverContent>
     </Popover>
   );
+};
+
+ConnectorPopover.defaultProps = {
+  placement: "left",
 };
