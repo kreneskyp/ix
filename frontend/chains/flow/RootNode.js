@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Heading } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { Handle } from "reactflow";
 import { faKeyboard } from "@fortawesome/free-solid-svg-icons";
 
@@ -15,7 +15,7 @@ const ROOT_CONNECTOR = {
   key: "out",
   type: "source",
   source_type: ["agent", "chain"],
-  description: "Connect to an agent or chain input that starts the chain.",
+  description: "Connect to an agent or chain input to start the chain.",
 };
 
 const ROOT_TYPE = {
@@ -37,33 +37,30 @@ export const RootNode = () => {
       borderColor="blue.800"
       backgroundColor={bg}
       minWidth={150}
-      alignItems={"right"}
     >
       <Handle
-        id="out"
-        type="source"
-        position="right"
+        id={ROOT_CONNECTOR.key}
+        type={ROOT_CONNECTOR.type}
+        position={"right"}
         style={{ top: "15px", transform: "translateX(-2px)" }}
       />
-      <Heading
-        as="h4"
-        size="xs"
+      <Box
+        size="sm"
         color={node.root.color}
         borderRadius={7}
         bg={node.root.bg}
         px={1}
-        py={2}
-        className="drag-handle"
+        py={1}
       >
-        <FontAwesomeIcon icon={faKeyboard} />{" "}
         <ConnectorPopover
           type={ROOT_TYPE}
           node={ROOT_NODE}
           connector={ROOT_CONNECTOR}
-          label={"Chat Input"}
-          placement={"right"}
-        />
-      </Heading>
+          placement={"left"}
+        >
+          <FontAwesomeIcon icon={faKeyboard} /> Chat Input
+        </ConnectorPopover>
+      </Box>
     </Box>
   );
 };
