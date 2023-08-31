@@ -172,10 +172,10 @@ export const NodeTypeSearch = () => {
       const types = Array.isArray(connector.source_type)
         ? connector.source_type
         : [connector?.source_type];
-      setQuery({ search: "", types: types });
+      setQuery((prev) => ({ ...prev, types }));
     } else {
       // clear query
-      setQuery({ search: "", types: [] });
+      setQuery((prev) => ({ ...prev, types: [] }));
     }
   }, [selectedConnector]);
 
