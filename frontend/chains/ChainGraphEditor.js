@@ -196,6 +196,11 @@ const ChainGraphEditor = ({ graph, chain, setChain }) => {
   );
 
   const onNodeDragStop = useCallback((event, node) => {
+    // ignore position updates for root
+    if (node.id === "root") {
+      return;
+    }
+
     // update node with new position
     api.updateNodePosition(node.id, node.position);
   }, []);
