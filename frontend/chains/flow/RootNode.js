@@ -5,6 +5,25 @@ import { faKeyboard } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEditorColorMode } from "chains/editor/useColorMode";
+import { ConnectorPopover } from "chains/editor/ConnectorPopover";
+
+const ROOT_NODE = {
+  id: "root",
+};
+
+const ROOT_CONNECTOR = {
+  key: "out",
+  type: "source",
+  source_type: ["agent", "chain"],
+  description: "Connect to an agent or chain input that starts the chain.",
+};
+
+const ROOT_TYPE = {
+  id: "root",
+  class_path: "root",
+  fields: [],
+  connectors: [ROOT_CONNECTOR],
+};
 
 export const RootNode = () => {
   const { node, bg } = useEditorColorMode();
@@ -18,6 +37,7 @@ export const RootNode = () => {
       borderColor="blue.800"
       backgroundColor={bg}
       minWidth={150}
+      alignItems={"right"}
     >
       <Handle
         id="out"
@@ -35,7 +55,14 @@ export const RootNode = () => {
         py={2}
         className="drag-handle"
       >
-        <FontAwesomeIcon icon={faKeyboard} /> Chat Input
+        <FontAwesomeIcon icon={faKeyboard} />{" "}
+        <ConnectorPopover
+          type={ROOT_TYPE}
+          node={ROOT_NODE}
+          connector={ROOT_CONNECTOR}
+          label={"Chat Input"}
+          placement={"right"}
+        />
       </Heading>
     </Box>
   );
