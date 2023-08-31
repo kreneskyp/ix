@@ -151,7 +151,10 @@ export const NodeTypeSearch = () => {
   const [query, setQuery] = useState({ search: "", types: [] });
 
   // component query
-  const { load, page } = usePaginatedAPI(`/api/node_types/`, { load: false, limit: 50 });
+  const { load, page } = usePaginatedAPI(`/api/node_types/`, {
+    load: false,
+    limit: 50,
+  });
 
   // trigger query when query state changes
   useEffect(() => {
