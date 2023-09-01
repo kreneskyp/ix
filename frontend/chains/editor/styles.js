@@ -28,7 +28,6 @@ export const NODE_STYLES = {
   },
   prompt: {
     icon: faMessage,
-    width: 400,
   },
   agent: {
     icon: faRobot,

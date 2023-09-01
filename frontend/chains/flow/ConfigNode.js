@@ -4,12 +4,7 @@ import { Handle, useEdges, useReactFlow } from "reactflow";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEditorColorMode } from "chains/editor/useColorMode";
-import { PromptNode } from "chains/flow/PromptNode";
 import { ChainEditorAPIContext } from "chains/editor/ChainEditorAPIContext";
-import { TypeAutoFields } from "chains/flow/TypeAutoFields";
-import { CollapsibleSection } from "chains/flow/CollapsibleSection";
-import { useDebounce } from "utils/hooks/useDebounce";
-import { FunctionSchemaNode } from "chains/flow/FunctionSchemaNode";
 import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
 import { RequiredAsterisk } from "components/RequiredAsterisk";
 import { ConnectorPopover } from "chains/editor/ConnectorPopover";
@@ -139,9 +134,6 @@ export const DefaultNodeContent = ({ type, node }) => {
   return (
     <>
       <NodeProperties node={node} type={type} />
-      <CollapsibleSection title="Config">
-        <TypeAutoFields type={type} config={config} onChange={onFieldChange} />
-      </CollapsibleSection>
     </>
   );
 };
@@ -199,15 +191,6 @@ export const ConfigNode = ({ id, data, selected }) => {
   ) : (
     <DefaultNodeContent {...node_component_props} />
   );
-  const position = CONNECTOR_CONFIG[type.type]?.source_position || "right";
-
-  const nodeStyle = {
-    color,
-    border: "1px solid",
-    borderColor: border,
-    backgroundColor: bg,
-    boxShadow: selected ? selectionShadow : "md",
-  };
 
   return (
     <Box p={5} className="config-node">
@@ -215,7 +198,7 @@ export const ConfigNode = ({ id, data, selected }) => {
         borderWidth="0px"
         borderRadius={8}
         padding="0"
-        minWidth={styles?.width || 250}
+        minWidth={250}
         {...nodeStyle}
       >
         <Handle

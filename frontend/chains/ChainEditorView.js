@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import {
   HStack,
   Spinner,
+  useDisclosure,
   useToast,
   VStack,
 } from "@chakra-ui/react";
@@ -63,6 +64,8 @@ export const ChainEditorView = () => {
   const [chain, setChain] = useState(graph?.chain);
   const toast = useToast();
 
+  const rightSidebarDisclosure = useDisclosure({ defaultIsOpen: true });
+
   const onAPIError = useCallback((err) => {
     toast({
       title: "Error",
@@ -79,12 +82,22 @@ export const ChainEditorView = () => {
 
   let content;
   if (isNew) {
-    content = <ChainGraphEditor key={idRef} />;
+    content = (
+      <ChainGraphEditor
+        key={idRef}
+        rightSidebarDisclosure={rightSidebarDisclosure}
+      />
+    );
   } else if (isLoading || !graph) {
     content = <Spinner />;
   } else {
     content = (
-      <ChainGraphEditor graph={graph} chain={chain} setChain={setChain} />
+      <ChainGraphEditor
+        graph={graph}
+        chain={chain}
+        setChain={setChain}
+        rightSidebarDisclosure={rightSidebarDisclosure}
+      />
     );
   }
 
@@ -104,6 +117,7 @@ export const ChainEditorView = () => {
               <VStack alignItems="start" p={5} spacing={4}>
                 {content}
               </VStack>
+              <EditorRightSidebar {...rightSidebarDisclosure} />
             </HStack>
           </LayoutContent>
         </Layout>

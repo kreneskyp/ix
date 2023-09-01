@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useContext } from "react";
 import { v4 as uuid4 } from "uuid";
-import { Box, Input } from "@chakra-ui/react";
+import { Box, IconButton, Input } from "@chakra-ui/react";
 import ReactFlow, {
   addEdge,
   updateEdge,
@@ -27,6 +27,8 @@ import { useDebounce } from "utils/hooks/useDebounce";
 import { useAxios } from "utils/hooks/useAxios";
 import { NodeStateContext, SelectedNodeContext } from "chains/editor/contexts";
 import { useConnectionValidator } from "chains/hooks/useConnectionValidator";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
@@ -42,7 +44,12 @@ const getExpectedTypes = (connector) => {
     : new Set([connector.source_type]);
 };
 
-const ChainGraphEditor = ({ graph, chain, setChain }) => {
+const ChainGraphEditor = ({
+  graph,
+  chain,
+  setChain,
+  rightSidebarDisclosure,
+}) => {
   const reactFlowWrapper = useRef(null);
   const edgeUpdate = useRef(true);
   const [chainLoaded, setChainLoaded] = useState(graph?.chain !== undefined);
@@ -331,17 +338,26 @@ const ChainGraphEditor = ({ graph, chain, setChain }) => {
 
   return (
     <Box height="93vh">
-      <Box pb={1}>
-        <Input
-          size="sm"
-          value={chain?.name || "Unnamed"}
-          width={300}
-          borderColor="transparent"
-          _hover={{
-            border: "1px solid",
-            borderColor: "gray.500",
-          }}
-          onChange={onTitleChange}
+      <Box display="flex" alignItems="center">
+        <Box pb={1}>
+          <Input
+            size="sm"
+            value={chain?.name || "Unnamed"}
+            width={300}
+            borderColor="transparent"
+            _hover={{
+              border: "1px solid",
+              borderColor: "gray.500",
+            }}
+            onChange={onTitleChange}
+          />
+        </Box>
+
+        <IconButton
+          ml="auto"
+          icon={<FontAwesomeIcon icon={faBars} />}
+          onClick={rightSidebarDisclosure.onOpen}
+          aria-label="Open Sidebar"
         />
       </Box>
       <Box ref={reactFlowWrapper} width={"85vw"} height={"100%"}>

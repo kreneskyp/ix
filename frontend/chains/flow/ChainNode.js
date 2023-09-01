@@ -90,9 +90,6 @@ export const ChainNode = ({ type, node, config, onFieldChange }) => {
         <OutputConnector type={type} node={node} />
       </Flex>
       <NodeProperties node={node} type={type} />
-      <CollapsibleSection title="Config">
-        <TypeAutoFields type={type} config={config} onChange={onFieldChange} />
-      </CollapsibleSection>
     </VStack>
   );
 };
