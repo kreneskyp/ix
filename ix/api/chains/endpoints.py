@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, List
+from typing import Optional, List, Literal
 from uuid import UUID
 
 from asgiref.sync import sync_to_async
@@ -197,6 +197,15 @@ async def set_chain_root(chain_id: UUID, update_root: UpdateRoot):
     return UpdatedRoot(old_roots=old_root_ids, root=new_root_id)
 
 
+class NewNodeEdge(BaseModel):
+    """A new edge to be created with a node"""
+
+    id: Optional[UUID] = None
+    source_id: UUID | Literal["root"]
+    target_id: UUID
+    key: str
+
+
 class AddNode(BaseModel):
     id: Optional[UUID]
     chain_id: Optional[UUID]
@@ -205,6 +214,9 @@ class AddNode(BaseModel):
     description: Optional[str]
     config: Optional[dict]
     position: Optional[Position]
+
+    # optionally add edges to other nodes
+    edges: Optional[List[NewNodeEdge]] = None
 
 
 @router.post("/chains/nodes", response_model=NodePydantic, tags=["Chain Editor"])
@@ -215,8 +227,31 @@ async def add_chain_node(node: AddNode):
         node.chain_id = chain.id
 
     node_type = await NodeType.objects.aget(class_path=node.class_path)
-    new_node = ChainNode(node_type=node_type, **node.dict())
+    new_node = ChainNode(node_type=node_type, **node.dict(exclude={"edges"}))
     await new_node.asave()
+
+    # add edges to property connectors
+    if node.edges:
+        node_edges = []
+        for datum in node.edges:
+            # special case for edges to root pseudo-component
+            if datum.source_id == "root":
+                new_node.root = True
+                await new_node.asave(update_fields=["root"])
+                continue
+
+            edge = ChainEdge(
+                id=datum.id,
+                key=datum.key,
+                source_id=datum.source_id or new_node.id,
+                target_id=datum.target_id or new_node.id,
+                chain_id=node.chain_id,
+                relation="LINK" if datum.key in {"in", "out"} else "PROP",
+            )
+            node_edges.append(edge)
+        if node_edges:
+            await ChainEdge.objects.abulk_create(node_edges)
+
     return NodePydantic.from_orm(new_node)
 
 
