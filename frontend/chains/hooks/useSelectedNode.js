@@ -53,21 +53,21 @@ export const useSelectedNode = () => {
     [setData]
   );
 
-  const onSelectionChange = useOnSelectionChange({
+  useOnSelectionChange({
     onChange: ({ nodes }) => {
       setData((prev) => ({
         ...prev,
         selectedNode: nodes[0] || null,
-        selectedConfig: nodes[0]?.data?.node?.config || null,
       }));
     },
   });
 
-  return {
-    ...data,
-    setSelectedNode,
-    setSelectedConnector,
-    setConfig,
-    onSelectionChange,
-  };
+  return useMemo(
+    () => ({
+      ...data,
+      setSelectedNode,
+      setSelectedConnector,
+    }),
+    [data, setSelectedNode, setSelectedConnector]
+  );
 };
