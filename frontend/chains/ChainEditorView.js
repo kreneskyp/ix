@@ -1,6 +1,11 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { HStack, Spinner, useToast, VStack } from "@chakra-ui/react";
+import {
+  HStack,
+  Spinner,
+  useToast,
+  VStack,
+} from "@chakra-ui/react";
 import { ReactFlowProvider, useReactFlow } from "reactflow";
 
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
@@ -10,24 +15,43 @@ import { useDetailAPI } from "utils/hooks/useDetailAPI";
 import { useObjectEditorView } from "utils/hooks/useObjectEditorView";
 import { useChainEditorAPI } from "chains/hooks/useChainEditorAPI";
 import { ChainEditorAPIContext } from "chains/editor/ChainEditorAPIContext";
-import { useSelectedNode } from "chains/hooks/useSelectedNode";
-import { SelectedNodeContext } from "chains/editor/SelectedNodeContext";
+import {
+  useNodeEditorState,
+  useSelectedNode,
+} from "chains/hooks/useSelectedNode";
+import {
+  SelectedNodeContext,
+  NodeStateContext,
+  NodeEditorContext,
+} from "chains/editor/contexts";
+import { EditorRightSidebar } from "chains/editor/EditorRightSidebar";
+import { useNodeState } from "chains/hooks/useNodeState";
 
-const ChainEditorProvider = ({ chain, onError, children }) => {
+const ChainEditorProvider = ({ nodes, chain, onError, children }) => {
   const reactFlowInstance = useReactFlow();
   const api = useChainEditorAPI({
     chain,
     reactFlowInstance,
     onError,
   });
+  const nodeState = useNodeState(chain, nodes);
   const selectedNode = useSelectedNode();
+  const nodeEditor = useNodeEditorState(
+    selectedNode,
+    nodeState.nodes,
+    nodeState.setNode
+  );
 
   return (
-    <SelectedNodeContext.Provider value={selectedNode}>
-      <ChainEditorAPIContext.Provider value={api}>
-        {children}
-      </ChainEditorAPIContext.Provider>
-    </SelectedNodeContext.Provider>
+    <NodeStateContext.Provider value={nodeState}>
+      <NodeEditorContext.Provider value={nodeEditor}>
+        <SelectedNodeContext.Provider value={selectedNode}>
+          <ChainEditorAPIContext.Provider value={api}>
+            {children}
+          </ChainEditorAPIContext.Provider>
+        </SelectedNodeContext.Provider>
+      </NodeEditorContext.Provider>
+    </NodeStateContext.Provider>
   );
 };
 
@@ -66,7 +90,11 @@ export const ChainEditorView = () => {
 
   return (
     <ReactFlowProvider>
-      <ChainEditorProvider chain={chain} onError={onAPIError}>
+      <ChainEditorProvider
+        nodes={graph?.nodes}
+        chain={chain}
+        onError={onAPIError}
+      >
         <Layout>
           <LayoutLeftPane>
             <ChainGraphEditorSideBar />

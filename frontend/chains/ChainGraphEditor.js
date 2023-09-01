@@ -25,7 +25,7 @@ import { RootNode } from "chains/flow/RootNode";
 import { getDefaults } from "chains/flow/TypeAutoFields";
 import { useDebounce } from "utils/hooks/useDebounce";
 import { useAxios } from "utils/hooks/useAxios";
-import { SelectedNodeContext } from "chains/editor/SelectedNodeContext";
+import { NodeStateContext, SelectedNodeContext } from "chains/editor/contexts";
 import { useConnectionValidator } from "chains/hooks/useConnectionValidator";
 
 // Nodes are either a single node or a group of nodes
@@ -54,6 +54,7 @@ const ChainGraphEditor = ({ graph, chain, setChain }) => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const { colorMode } = useColorMode();
   const navigate = useNavigate();
+  const nodeState = useContext(NodeStateContext);
   const api = useContext(ChainEditorAPIContext);
   const { selectedNode, selectedConnector, setSelectedConnector } =
     useContext(SelectedNodeContext);
@@ -169,6 +170,7 @@ const ChainGraphEditor = ({ graph, chain, setChain }) => {
       if (edge) {
         data.edges = [edge];
       }
+      nodeState.setNode(data);
 
       // create ReactFlow node
       const flowNode = toReactFlowNode(data, nodeType);

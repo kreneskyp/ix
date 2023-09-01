@@ -11,7 +11,7 @@ import {
   PopoverTrigger,
   useDisclosure,
 } from "@chakra-ui/react";
-import { SelectedNodeContext } from "chains/editor/SelectedNodeContext";
+import { SelectedNodeContext } from "chains/editor/contexts";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 
 const DEFAULT_DESCRIPTION =
