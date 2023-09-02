@@ -298,11 +298,11 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
 
   const { callback: debouncedChainUpdate } = useDebounce((...args) => {
     api.updateChain(...args);
-  }, 1000);
+  }, 500);
 
   const { callback: debouncedChainCreate } = useDebounce((...args) => {
     api.createChain(...args);
-  }, 1000);
+  }, 800);
 
   const onTitleChange = useCallback(
     (event) => {
