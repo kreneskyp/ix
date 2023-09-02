@@ -1,11 +1,8 @@
 import React from "react";
 import PromptEditor from "chains/editor/PromptEditor";
-import { Box } from "@chakra-ui/react";
 
-export const PromptNode = ({ config, onChange }) => {
+export const PromptNode = ({ node, onChange }) => {
   return (
-    <Box p={2}>
-      <PromptEditor data={config} onChange={onChange} />
-    </Box>
+    <PromptEditor key={node.id} data={node.config} onChange={onChange.config} />
   );
 };

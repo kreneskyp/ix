@@ -23,7 +23,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
-import { SelectedNodeContext } from "chains/editor/SelectedNodeContext";
+import { SelectedNodeContext } from "chains/editor/contexts";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const NodeSelectorHeader = ({ label, icon }) => {

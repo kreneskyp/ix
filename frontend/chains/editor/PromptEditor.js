@@ -16,7 +16,6 @@ import {
   faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { SCROLLBAR_CSS } from "site/css";
-import { NodeResizeControl } from "reactflow";
 
 const ROLE_OPTIONS = ["user", "assistant"];
 
@@ -100,14 +99,6 @@ const PromptEditor = ({ data, onChange }) => {
 
   return (
     <VStack spacing={1} align="stretch">
-      <NodeResizeControl
-        variant={"line"}
-        minWidth={400}
-        position={"left"}
-        h={"100%"}
-        style={{ border: "5px solid transparent" }}
-      />
-
       {messages.map((message, index) => (
         <VStack key={index} p={2} spacing={2}>
           <Flex
@@ -120,6 +111,7 @@ const PromptEditor = ({ data, onChange }) => {
               <Text fontWeight="bold">System</Text>
             ) : (
               <Select
+                size={"sm"}
                 width={125}
                 value={message.role}
                 onChange={(e) =>
@@ -166,6 +158,7 @@ const PromptEditor = ({ data, onChange }) => {
             }
             isRequired
             css={SCROLLBAR_CSS}
+            size={"sm"}
           />
         </VStack>
       ))}
@@ -175,17 +168,12 @@ const PromptEditor = ({ data, onChange }) => {
           leftIcon={<FontAwesomeIcon icon={faPlus} />}
           colorScheme="orange"
           onClick={addMessage}
-          mr={4}
+          mr={2}
+          size={"sm"}
         >
           Add Message
         </Button>
       </Flex>
-      <NodeResizeControl
-        variant={"line"}
-        minWidth={400}
-        h={"100%"}
-        style={{ border: "5px solid transparent" }}
-      />
     </VStack>
   );
 };
