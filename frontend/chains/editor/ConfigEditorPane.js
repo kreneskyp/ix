@@ -1,75 +1,18 @@
-import {
-  Badge,
-  Box,
-  FormControl,
-  FormLabel,
-  Heading,
-  HStack,
-  Input,
-  Text,
-  Textarea,
-  VStack,
-} from "@chakra-ui/react";
-import React, { useCallback, useContext, useMemo } from "react";
+import { Badge, Box, Heading, HStack, Text } from "@chakra-ui/react";
+import React, { useContext } from "react";
 import { TypeAutoFields } from "chains/flow/TypeAutoFields";
-import { useDebounce } from "utils/hooks/useDebounce";
-import { ChainEditorAPIContext } from "chains/editor/ChainEditorAPIContext";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { NodeStateContext, SelectedNodeContext } from "chains/editor/contexts";
 import { PromptNode } from "chains/flow/PromptNode";
 import { FunctionSchemaNode } from "chains/flow/FunctionSchemaNode";
 import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { useNodeEditorAPI } from "chains/hooks/useNodeEditorAPI";
+import { NameField } from "chains/editor/fields/NameField";
+import { DescriptionField } from "chains/editor/fields/DescriptionField";
 
 const CONFIG_FORM_COMPONENTS = {
   "langchain.prompts.chat.ChatPromptTemplate": PromptNode,
   "ix.chains.functions.FunctionSchema": FunctionSchemaNode,
-};
-
-const NodeGeneralForm = ({ node, onChange }) => {
-  const handleNameChange = useCallback(
-    (e) => {
-      onChange.all({
-        ...node,
-        name: e.target.value,
-      });
-    },
-    [node, onChange]
-  );
-
-  const handleDescriptionChange = useCallback(
-    (e) => {
-      onChange.all({
-        ...node,
-        description: e.target.value,
-      });
-    },
-    [node, onChange]
-  );
-
-  return (
-    <Box>
-      <VStack spacing={4} align="stretch">
-        <FormControl id="name">
-          <FormLabel>Name</FormLabel>
-          <Input
-            type="text"
-            placeholder="Enter node name"
-            value={node?.name || ""}
-            onChange={handleNameChange}
-          />
-        </FormControl>
-        <FormControl id="description">
-          <FormLabel>Description</FormLabel>
-          <Textarea
-            placeholder="Enter node description"
-            value={node?.description || ""}
-            onChange={handleDescriptionChange}
-          />
-        </FormControl>
-      </VStack>
-    </Box>
-  );
 };
 
 const DefaultForm = ({ type, node, onChange }) => {
@@ -122,10 +65,17 @@ export const ConfigEditorPane = () => {
     content = (
       <>
         <CollapsibleSection title="General" mt={3}>
-          <NodeGeneralForm node={node} onChange={handleConfigChange} />
+          <NameField object={node} onChange={handleConfigChange.all} />
+          <DescriptionField object={node} onChange={handleConfigChange.all} />
         </CollapsibleSection>
         <CollapsibleSection title="Config" initialShow={true} mt={3}>
-          {<ConfigForm node={node} type={type} onChange={handleConfigChange} />}
+          {
+            <ConfigForm
+              node={node}
+              type={type}
+              onChange={handleConfigChange.all}
+            />
+          }
         </CollapsibleSection>
       </>
     );
