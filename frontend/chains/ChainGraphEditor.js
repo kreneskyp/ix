@@ -25,7 +25,11 @@ import { RootNode } from "chains/flow/RootNode";
 import { getDefaults } from "chains/flow/TypeAutoFields";
 import { useDebounce } from "utils/hooks/useDebounce";
 import { useAxios } from "utils/hooks/useAxios";
-import { NodeStateContext, SelectedNodeContext } from "chains/editor/contexts";
+import {
+  ChainState,
+  NodeStateContext,
+  SelectedNodeContext,
+} from "chains/editor/contexts";
 import { useConnectionValidator } from "chains/hooks/useConnectionValidator";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
@@ -44,16 +48,12 @@ const getExpectedTypes = (connector) => {
     : new Set([connector.source_type]);
 };
 
-const ChainGraphEditor = ({
-  graph,
-  chain,
-  setChain,
-  rightSidebarDisclosure,
-}) => {
+const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
   const reactFlowWrapper = useRef(null);
   const edgeUpdate = useRef(true);
   const [chainLoaded, setChainLoaded] = useState(graph?.chain !== undefined);
   const { call: loadChain } = useAxios();
+  const { chain, setChain } = useContext(ChainState);
 
   const reactFlowGraph = useGraphForReactFlow(graph);
   const [nodes, setNodes, onNodesChange] = useNodesState(reactFlowGraph.nodes);
