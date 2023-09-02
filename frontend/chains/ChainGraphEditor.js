@@ -342,7 +342,8 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
         <Box pb={1}>
           <Input
             size="sm"
-            value={chain?.name || "Unnamed"}
+            placeholder={"Unnamed Chain"}
+            value={chain?.name || ""}
             width={300}
             borderColor="transparent"
             _hover={{
