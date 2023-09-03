@@ -32,7 +32,7 @@ import {
 } from "chains/editor/contexts";
 import { useConnectionValidator } from "chains/hooks/useConnectionValidator";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faRightLeft } from "@fortawesome/free-solid-svg-icons";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
@@ -356,9 +356,10 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
 
         <IconButton
           ml="auto"
-          icon={<FontAwesomeIcon icon={faBars} />}
+          icon={<FontAwesomeIcon icon={faRightLeft} />}
           onClick={rightSidebarDisclosure.onOpen}
           aria-label="Open Sidebar"
+          title={"Open Sidebar"}
         />
       </Box>
       <Box ref={reactFlowWrapper} width={"85vw"} height={"100%"}>
