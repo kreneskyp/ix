@@ -3,7 +3,7 @@ from langchain.chains.conversational_retrieval.base import (
     BaseConversationalRetrievalChain,
 )
 from langchain.chains.llm_symbolic_math.base import LLMSymbolicMathChain
-from ix.api.chains.types import NodeTypeField
+from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
 from ix.chains.fixture_src.openai_functions import FUNCTION_CALL
 from ix.chains.fixture_src.targets import (

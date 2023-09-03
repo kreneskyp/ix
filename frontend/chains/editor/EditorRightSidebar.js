@@ -98,7 +98,7 @@ export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
           <Tabs
             isLazy
             isFitted
-            defaultIndex={2}
+            defaultIndex={0}
             m={0}
             p={0}
             pt={2}
