@@ -1,7 +1,7 @@
 from langchain.document_loaders import WebBaseLoader
 from langchain.document_loaders.generic import GenericLoader
 
-from ix.api.chains.types import NodeTypeField
+from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.targets import PARSER_TARGET
 
 

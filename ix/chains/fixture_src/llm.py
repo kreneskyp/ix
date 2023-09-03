@@ -1,7 +1,7 @@
 from langchain import LlamaCpp
 from langchain.llms import Ollama
 
-from ix.api.chains.types import NodeTypeField
+from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
 
 OPENAI_LLM_CLASS_PATH = "langchain.chat_models.openai.ChatOpenAI"
