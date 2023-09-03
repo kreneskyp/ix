@@ -1,7 +1,7 @@
 from langchain.document_loaders.parsers import LanguageParser
 from langchain.text_splitter import Language
 
-from ix.api.chains.types import NodeTypeField, parse_enum_choices
+from ix.api.components.types import NodeTypeField, parse_enum_choices
 
 
 LANGUAGE_CHOICES = parse_enum_choices(Language)

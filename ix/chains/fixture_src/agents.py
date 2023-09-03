@@ -1,3 +1,4 @@
+from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
 from ix.chains.fixture_src.targets import (
     PROMPT_TARGET,

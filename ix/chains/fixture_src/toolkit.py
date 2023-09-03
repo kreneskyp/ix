@@ -1,5 +1,5 @@
 from langchain.agents.agent_toolkits import FileManagementToolkit
-from ix.api.chains.types import NodeTypeField
+from ix.api.components.types import NodeTypeField
 
 
 FILE_MANAGEMENT_TOOLKIT_CLASS_PATH = (
