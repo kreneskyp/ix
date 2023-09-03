@@ -186,10 +186,3 @@ async def get_chain_graph(chain_id: UUID):
         types=types,
     )
 
-
-@router.get(
-    "/chains/{chain_id}/test/chat", response_model=GraphModel, tags=["Chain Editor"]
-)
-async def get_test_chat():
-    # create an agent if there is no agent
-    agent = await Agent.objects.aget(name="Test Agent")
