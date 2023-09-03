@@ -21,6 +21,7 @@ import {
   faRobot,
 } from "@fortawesome/free-solid-svg-icons";
 import { ConfigEditorPane } from "chains/editor/ConfigEditorPane";
+import { ChainEditorPane } from "chains/editor/ChainEditorPane";
 
 export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
   const btnRef = useRef();
@@ -49,13 +50,18 @@ export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
                       <FontAwesomeIcon icon={faNetworkWired} />
                     </Tab>
                   </Tooltip>
+                  <Tooltip label="Chain" aria-label="Chain">
+                    <Tab>
+                      <FontAwesomeIcon icon={faChain} />
+                    </Tab>
+                  </Tooltip>
                 </TabList>
                 <TabPanels>
                   <TabPanel>
                     <ConfigEditorPane />
                   </TabPanel>
                   <TabPanel>
-                    <p>Chain content here</p>
+                    <ChainEditorPane />
                   </TabPanel>
                   <TabPanel>
                     <p>Chat content here</p>

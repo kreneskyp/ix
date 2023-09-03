@@ -24,18 +24,21 @@ import {
   SelectedNodeContext,
   NodeStateContext,
   NodeEditorContext,
+  ChainState,
 } from "chains/editor/contexts";
 import { EditorRightSidebar } from "chains/editor/EditorRightSidebar";
 import { useNodeState } from "chains/hooks/useNodeState";
+import { useChainState } from "chains/hooks/useChainState";
 
-const ChainEditorProvider = ({ nodes, chain, onError, children }) => {
+const ChainEditorProvider = ({ graph, onError, children }) => {
   const reactFlowInstance = useReactFlow();
   const api = useChainEditorAPI({
-    chain,
+    chain: graph?.chain,
     reactFlowInstance,
     onError,
   });
-  const nodeState = useNodeState(chain, nodes);
+  const chainState = useChainState(graph);
+  const nodeState = useNodeState(graph?.chain, graph?.nodes);
   const selectedNode = useSelectedNode();
   const nodeEditor = useNodeEditorState(
     selectedNode,
@@ -44,15 +47,17 @@ const ChainEditorProvider = ({ nodes, chain, onError, children }) => {
   );
 
   return (
-    <NodeStateContext.Provider value={nodeState}>
-      <NodeEditorContext.Provider value={nodeEditor}>
-        <SelectedNodeContext.Provider value={selectedNode}>
-          <ChainEditorAPIContext.Provider value={api}>
-            {children}
-          </ChainEditorAPIContext.Provider>
-        </SelectedNodeContext.Provider>
-      </NodeEditorContext.Provider>
-    </NodeStateContext.Provider>
+    <ChainState.Provider value={chainState}>
+      <NodeStateContext.Provider value={nodeState}>
+        <NodeEditorContext.Provider value={nodeEditor}>
+          <SelectedNodeContext.Provider value={selectedNode}>
+            <ChainEditorAPIContext.Provider value={api}>
+              {children}
+            </ChainEditorAPIContext.Provider>
+          </SelectedNodeContext.Provider>
+        </NodeEditorContext.Provider>
+      </NodeStateContext.Provider>
+    </ChainState.Provider>
   );
 };
 
@@ -61,7 +66,6 @@ export const ChainEditorView = () => {
   const { response, call, isLoading } = useDetailAPI(`/api/chains/${id}/graph`);
   const { isNew, idRef } = useObjectEditorView(id, call);
   const graph = response?.data;
-  const [chain, setChain] = useState(graph?.chain);
   const toast = useToast();
 
   const rightSidebarDisclosure = useDisclosure({ defaultIsOpen: true });
@@ -75,10 +79,6 @@ export const ChainEditorView = () => {
       isClosable: true,
     });
   }, []);
-
-  useEffect(() => {
-    setChain(graph?.chain);
-  }, [graph?.chain]);
 
   let content;
   if (isNew) {
@@ -94,8 +94,6 @@ export const ChainEditorView = () => {
     content = (
       <ChainGraphEditor
         graph={graph}
-        chain={chain}
-        setChain={setChain}
         rightSidebarDisclosure={rightSidebarDisclosure}
       />
     );
@@ -103,11 +101,7 @@ export const ChainEditorView = () => {
 
   return (
     <ReactFlowProvider>
-      <ChainEditorProvider
-        nodes={graph?.nodes}
-        chain={chain}
-        onError={onAPIError}
-      >
+      <ChainEditorProvider graph={graph} onError={onAPIError}>
         <Layout>
           <LayoutLeftPane>
             <ChainGraphEditorSideBar />
