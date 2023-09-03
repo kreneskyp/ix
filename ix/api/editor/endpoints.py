@@ -4,7 +4,6 @@ from uuid import UUID
 from django.db.models import Q
 from fastapi import APIRouter, HTTPException
 
-from ix.agents.models import Agent
 from ix.api.chains.endpoints import DeletedItem
 from ix.api.editor.types import (
     UpdateEdge,
@@ -185,4 +184,3 @@ async def get_chain_graph(chain_id: UUID):
         edges=edges,
         types=types,
     )
-
