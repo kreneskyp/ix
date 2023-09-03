@@ -73,7 +73,7 @@ export const ConfigEditorPane = () => {
             <ConfigForm
               node={node}
               type={type}
-              onChange={handleConfigChange.all}
+              onChange={handleConfigChange}
             />
           }
         </CollapsibleSection>
