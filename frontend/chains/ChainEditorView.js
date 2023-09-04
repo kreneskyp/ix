@@ -29,6 +29,7 @@ import {
 import { EditorRightSidebar } from "chains/editor/EditorRightSidebar";
 import { useNodeState } from "chains/hooks/useNodeState";
 import { useChainState } from "chains/hooks/useChainState";
+import { NewAgentButton } from "agents/NewAgentButton";
 
 const ChainEditorProvider = ({ graph, onError, children }) => {
   const chainState = useChainState(graph);
@@ -127,6 +128,7 @@ export const ChainEditorView = () => {
       <ChainEditorProvider graph={graph} onError={onAPIError}>
         <Layout>
           <LayoutLeftPane>
+            <NewAgentButton />
             <ChainGraphEditorSideBar />
           </LayoutLeftPane>
           <LayoutContent>

@@ -5,7 +5,6 @@ export const useChainState = (graph) => {
 
   // update chain if graph changes
   useEffect(() => {
-    console.log("graph changed, chain=", graph?.chain);
     setChain(graph?.chain);
   }, [graph?.chain]);
 
