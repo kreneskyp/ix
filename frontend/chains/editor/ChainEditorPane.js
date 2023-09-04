@@ -100,7 +100,6 @@ const SaveModeChooser = () => {
 export const AliasField = ({ object, onChange }) => {
   const handleChange = useCallback(
     (e) => {
-      console.log("update alias", e.target.value)
       onChange({
         ...object,
         alias: e.target.value,
