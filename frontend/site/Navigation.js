@@ -4,9 +4,7 @@ import {
   faCog,
   faSignOutAlt,
   faRobot,
-  faListCheck,
   faServer,
-  faChain,
   faMessage,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -27,13 +25,6 @@ function Navigation() {
           <FontAwesomeIcon icon={faMessage} />
           <Link ml={3} to="/chats">
             Chats
-          </Link>
-        </HStack>
-
-        <HStack align="center">
-          <FontAwesomeIcon icon={faChain} />
-          <Link ml={3} to="/chains">
-            Chains
           </Link>
         </HStack>
         <HStack align="center">
