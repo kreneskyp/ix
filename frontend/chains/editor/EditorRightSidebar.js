@@ -27,6 +27,7 @@ import { ConfigEditorPane } from "chains/editor/ConfigEditorPane";
 import { ChainEditorPane } from "chains/editor/ChainEditorPane";
 import { ChatPane } from "chains/editor/ChatPane";
 import { useColorMode } from "@chakra-ui/color-mode";
+import { TestChatPane } from "chains/editor/TestChatPane";
 
 export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
   const btnRef = useRef();
@@ -144,7 +145,7 @@ export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
                 flexDirection="column"
                 justifyContent="flex-end"
               >
-                <ChatPane />
+                <TestChatPane />
               </TabPanel>
               <TabPanel>
                 <p>Validation content here</p>

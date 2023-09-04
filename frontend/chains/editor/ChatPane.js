@@ -100,15 +100,13 @@ const CHAT_PANE_STYLE = {
   light: CHAT_PANE_LIGHT_STYLE,
 };
 
-export const ChatPane = () => {
-  const { chain } = React.useContext(ChainState);
-  const { id } = useTestChat(chain.id);
-  const { response, call: loadGraph, isLoading } = useChatGraph(id);
+export const ChatPane = ({ chatId }) => {
+  const { response, call: loadGraph, isLoading } = useChatGraph(chatId);
   const graph = response?.data;
 
   useEffect(() => {
     loadGraph();
-  }, [id]);
+  }, [chatId]);
 
   return (
     <ChatStyle.Provider value={CHAT_PANE_STYLE}>
