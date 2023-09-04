@@ -15,6 +15,10 @@ class Chain(BaseModel):
     name: str
     description: str
     created_at: Optional[datetime]
+    is_agent: bool = True
+
+    # agent pass through properties
+    alias: Optional[str]
 
     class Config:
         orm_mode = True
@@ -23,6 +27,20 @@ class Chain(BaseModel):
 class CreateChain(BaseModel):
     name: str
     description: Optional[str]
+    is_agent: bool = True
+
+    # agent pass through properties
+    alias: Optional[str]
+
+    @root_validator
+    def validate_chain(cls, values):
+        if values.get("is_agent") and not values.get("alias"):
+            raise ValueError("alias is required when is_agent is True")
+        return values
+
+
+class UpdateChain(CreateChain):
+    pass
 
 
 class ChainQueryPage(QueryPage[Chain]):
