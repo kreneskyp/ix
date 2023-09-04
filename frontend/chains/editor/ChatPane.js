@@ -4,10 +4,10 @@ import { useChatGraph } from "chat/hooks/useChatGraph";
 import {
   ChatInterface,
   ChatStyle,
+  DEFAULT_CHAT_DARK_STYLE,
+  DEFAULT_CHAT_LIGHT_STYLE,
   DEFAULT_CHAT_STYLE,
 } from "chat/ChatInterface";
-import { ChainState } from "chains/editor/contexts";
-import { useTestChat } from "chains/hooks/useTestChat";
 
 const SCROLLBOX = {
   height: "calc(100vh - 50px - 120px)",
@@ -19,6 +19,7 @@ const INPUT = {
 };
 
 const CHAT_PANE_DARK_STYLE = {
+  ...DEFAULT_CHAT_DARK_STYLE,
   container: {},
   scrollbox: {
     ...DEFAULT_CHAT_STYLE.dark.scrollbox,
@@ -29,6 +30,9 @@ const CHAT_PANE_DARK_STYLE = {
     bg: "blackAlpha.400",
     border: "1px solid",
     borderColor: "transparent",
+  },
+  messages: {
+    width: "100%",
   },
   message: {
     ...DEFAULT_CHAT_STYLE.dark.message,
@@ -53,6 +57,7 @@ const CHAT_PANE_DARK_STYLE = {
 };
 
 const CHAT_PANE_LIGHT_STYLE = {
+  ...DEFAULT_CHAT_LIGHT_STYLE,
   container: {},
   scrollbox: {
     ...DEFAULT_CHAT_STYLE.dark.scrollbox,
@@ -63,6 +68,9 @@ const CHAT_PANE_LIGHT_STYLE = {
     color: "blackAlpha.800",
     bg: "gray.200",
     avatarColor: "gray.600",
+  },
+  messages: {
+    width: "100%",
   },
   message: {
     ...DEFAULT_CHAT_STYLE.light.message,
