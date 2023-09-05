@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Box, Spinner } from "@chakra-ui/react";
+import { Box, IconButton, Spinner } from "@chakra-ui/react";
 import { useChatGraph } from "chat/hooks/useChatGraph";
 import {
   ChatInterface,
@@ -8,9 +8,12 @@ import {
   DEFAULT_CHAT_LIGHT_STYLE,
   DEFAULT_CHAT_STYLE,
 } from "chat/ChatInterface";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useClearMessages } from "chat/hooks/useClearMessages";
 
 const SCROLLBOX = {
-  height: "calc(100vh - 50px - 120px)",
+  height: "calc(100vh - 50px - 140px)",
   width: "100%",
 };
 
@@ -101,8 +104,14 @@ const CHAT_PANE_STYLE = {
 };
 
 export const ChatPane = ({ chatId }) => {
-  const { response, call: loadGraph, isLoading } = useChatGraph(chatId);
+  const {
+    response,
+    call: loadGraph,
+    isLoading: isLoadingChat,
+  } = useChatGraph(chatId);
+  const { clearMessages, isLoading: isLoadingReset } = useClearMessages(chatId);
   const graph = response?.data;
+  const isLoading = isLoadingChat || isLoadingReset;
 
   useEffect(() => {
     loadGraph();
@@ -113,8 +122,16 @@ export const ChatPane = ({ chatId }) => {
       {isLoading || !graph ? (
         <Spinner />
       ) : (
-        <Box mt={3}>
+        <Box mt={0}>
           <ChatInterface graph={graph} />
+          <Box width={"100%"} bg={"gray.800"} p={1}>
+            <IconButton
+              icon={<FontAwesomeIcon icon={faTrash} bg={"gray.800"} />}
+              onClick={clearMessages}
+              size={"xs"}
+              title={"clear messages"}
+            />
+          </Box>
         </Box>
       )}
     </ChatStyle.Provider>

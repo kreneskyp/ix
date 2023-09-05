@@ -1,5 +1,4 @@
 import React from "react";
-import { useAxios } from "utils/hooks/useAxios";
 import { useDetailAPI } from "utils/hooks/useDetailAPI";
 
 export const useTestChat = (chain_id) => {
@@ -18,17 +17,9 @@ export const useTestChat = (chain_id) => {
     }
   }, [chain_id]);
 
-  // callback: reset messages
-  const { call: ajaxPost, isLoading: isLoadingResetMsg } = useAxios({
-    method: "post",
-  });
-  const { call: resetMessages } = React.useCallback(() => {
-    ajaxPost(`/api/chats/${chat?.id}/reset`);
-  }, [ajaxPost, chat?.id]);
-
   return {
     chat,
-    isLoading: isLoading || isLoadingResetMsg,
-    resetMessages,
+    loadChat,
+    isLoading,
   };
 };
