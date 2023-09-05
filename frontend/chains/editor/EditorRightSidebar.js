@@ -25,7 +25,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { ConfigEditorPane } from "chains/editor/ConfigEditorPane";
 import { ChainEditorPane } from "chains/editor/ChainEditorPane";
+import { ChatPane } from "chains/editor/ChatPane";
 import { useColorMode } from "@chakra-ui/color-mode";
+import { TestChatPane } from "chains/editor/TestChatPane";
 
 export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
   const btnRef = useRef();
@@ -116,6 +118,11 @@ export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
                   <FontAwesomeIcon icon={faRobot} />
                 </Tab>
               </Tooltip>
+              <Tooltip label="Chat" aria-label="Chat">
+                <Tab>
+                  <FontAwesomeIcon icon={faComments} />
+                </Tab>
+              </Tooltip>
             </TabList>
             <TabPanels
               p={0}
@@ -129,6 +136,22 @@ export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
               </TabPanel>
               <TabPanel>
                 <ChainEditorPane />
+              </TabPanel>
+              <TabPanel
+                p={0}
+                m={0}
+                display="flex"
+                flex="1"
+                flexDirection="column"
+                justifyContent="flex-end"
+              >
+                <TestChatPane />
+              </TabPanel>
+              <TabPanel>
+                <p>Validation content here</p>
+              </TabPanel>
+              <TabPanel>
+                <p>Assistant content here</p>
               </TabPanel>
             </TabPanels>
           </Tabs>

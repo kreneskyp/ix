@@ -1,5 +1,5 @@
 import React, { createContext, Suspense } from "react";
-import { Center, useColorModeValue } from "@chakra-ui/react";
+import { Box, Center, useColorModeValue } from "@chakra-ui/react";
 import { ScrollableBox } from "site/ScrollableBox";
 import { useMessageStream } from "chat/hooks/useMessageStream";
 import ChatMessages from "chat/ChatMessages";
@@ -18,9 +18,8 @@ const SCROLLBOX = {
 };
 
 const INPUT = {
-  width: 720,
-  transform: "translateX(25px)",
-  m: 0,
+  width: 750,
+  ml: 9,
 };
 
 export const DEFAULT_CHAT_DARK_STYLE = {
@@ -35,9 +34,13 @@ export const DEFAULT_CHAT_DARK_STYLE = {
   scrollbox: {
     ...SCROLLBOX,
   },
+  messages: {
+    width: "800",
+  },
   message: {
     container: {
       width: 800,
+      pt: 5,
     },
     body: {
       bg: "gray.700",
@@ -56,9 +59,9 @@ export const DEFAULT_CHAT_DARK_STYLE = {
   },
   input: {
     ...INPUT,
-    bg: "gray.800",
+    bg: "gray.900",
     color: "gray.100",
-    borderColor: "gray.600",
+    borderColor: "gray.700",
   },
   autocomplete: {
     bg: "gray.800",
@@ -79,11 +82,12 @@ export const DEFAULT_CHAT_LIGHT_STYLE = {
     ...SCROLLBOX,
   },
   messages: {
-    width: 800,
+    width: "100%",
   },
   message: {
     container: {
       width: 800,
+      pt: 5,
     },
     body: {
       bg: "white",
@@ -133,7 +137,7 @@ export const useChatStyle = () => {
  *
  * @param graph - chat graph from useChatGraph
  */
-export const ChatInterface = ({ graph, inputPl }) => {
+export const ChatInterface = ({ graph }) => {
   const { messages, streams, subscriptionActive } = useMessageStream(
     graph.chat
   );

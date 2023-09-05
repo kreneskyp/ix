@@ -1,4 +1,4 @@
-import { Badge, Box, Heading, HStack, Text } from "@chakra-ui/react";
+import { Badge, Box, Center, Heading, HStack, Text } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { TypeAutoFields } from "chains/flow/TypeAutoFields";
 import { useEditorColorMode } from "chains/editor/useColorMode";
@@ -75,9 +75,11 @@ export const ConfigEditorPane = () => {
     );
   } else {
     content = (
-      <Text color={"gray.500"} fontSize={"xs"}>
-        Select a component node to edit its configuration.
-      </Text>
+      <Center height={"100%"}>
+        <Text color={"gray.500"} fontSize={"xs"}>
+          Select a component node to edit its configuration.
+        </Text>
+      </Center>
     );
   }
 
