@@ -51,7 +51,6 @@ const getExpectedTypes = (connector) => {
 const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
   const reactFlowWrapper = useRef(null);
   const edgeUpdate = useRef(true);
-  const [chainLoaded, setChainLoaded] = useState(graph?.chain !== undefined);
   const { call: loadChain } = useAxios();
   const { chain, setChain } = useContext(ChainState);
 
@@ -76,17 +75,16 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
     (response) => {
       // first node creates the new chain
       // redirect to the correct URL
-      if (!chainLoaded) {
+      if (chain?.id === undefined) {
         navigate(`/chains/${response.data.chain_id}`, { replace: true });
         loadChain(`/api/chains/${response.data.chain_id}`, {
           onSuccess: (response) => {
             setChain(response.data);
-            setChainLoaded(true);
           },
         });
       }
     },
-    [chain?.id, chainLoaded]
+    [chain?.id]
   );
 
   const onDrop = useCallback(
