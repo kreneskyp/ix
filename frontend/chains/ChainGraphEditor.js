@@ -33,6 +33,7 @@ import {
 import { useConnectionValidator } from "chains/hooks/useConnectionValidator";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightLeft } from "@fortawesome/free-solid-svg-icons";
+import { useChainUpdate } from "chains/hooks/useChainUpdate";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
@@ -302,30 +303,12 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
     api.createChain(...args);
   }, 800);
 
+  const onChainUpdate = useChainUpdate(chain, setChain, api);
   const onTitleChange = useCallback(
     (event) => {
-      setChain({ ...chain, name: event.target.value });
-      if (!chainLoaded) {
-        debouncedChainCreate(
-          { name: event.target.value, description: "" },
-          {
-            onSuccess: (response) => {
-              navigate(`/chains/${response.data.id}`, {
-                replace: true,
-              });
-              setChain(response.data);
-              setChainLoaded(true);
-            },
-          }
-        );
-      } else {
-        debouncedChainUpdate({
-          ...chain,
-          name: event.target.value,
-        });
-      }
+      onChainUpdate({ name: event.target.value });
     },
-    [chain, api, chainLoaded]
+    [onChainUpdate]
   );
 
   const onSelectionChange = useCallback((selection) => {

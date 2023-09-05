@@ -22,6 +22,7 @@ import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { NameField } from "chains/editor/fields/NameField";
 import { DescriptionField } from "chains/editor/fields/DescriptionField";
 import { RequiredAsterisk } from "components/RequiredAsterisk";
+import { useChainUpdate } from "chains/hooks/useChainUpdate";
 
 const ChainExplanation = () => {
   return (
@@ -148,27 +149,15 @@ export const AliasField = ({ object, onChange }) => {
 
 export const ChainEditorPane = () => {
   const { chain, setChain } = useContext(ChainState);
-  const { updateChain } = useContext(ChainEditorAPIContext);
-
-  const { callback: debouncedChainUpdate } = useDebounce((...args) => {
-    updateChain(...args);
-  }, 500);
-
-  // save to API and state
-  const onChange = useCallback(
-    (data) => {
-      debouncedChainUpdate(data);
-      setChain(data);
-    },
-    [setChain, updateChain]
-  );
+  const api = useContext(ChainEditorAPIContext);
+  const onChainUpdate = useChainUpdate(chain, setChain, api);
 
   return (
     <CollapsibleSection title="General" mt={3} initialShow={true}>
       <VStack spacing={4}>
-        <AliasField object={chain} onChange={onChange} />
-        <NameField object={chain} onChange={onChange} />
-        <DescriptionField object={chain} onChange={onChange} />
+        <AliasField object={chain} onChange={onChainUpdate} />
+        <NameField object={chain} onChange={onChainUpdate} />
+        <DescriptionField object={chain} onChange={onChainUpdate} />
       </VStack>
     </CollapsibleSection>
   );
