@@ -33,6 +33,7 @@ import {
 import { useConnectionValidator } from "chains/hooks/useConnectionValidator";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightLeft } from "@fortawesome/free-solid-svg-icons";
+import { useChainUpdate } from "chains/hooks/useChainUpdate";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
@@ -51,7 +52,6 @@ const getExpectedTypes = (connector) => {
 const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
   const reactFlowWrapper = useRef(null);
   const edgeUpdate = useRef(true);
-  const [chainLoaded, setChainLoaded] = useState(graph?.chain !== undefined);
   const { call: loadChain } = useAxios();
   const { chain, setChain } = useContext(ChainState);
 
@@ -76,17 +76,16 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
     (response) => {
       // first node creates the new chain
       // redirect to the correct URL
-      if (!chainLoaded) {
+      if (chain?.id === undefined) {
         navigate(`/chains/${response.data.chain_id}`, { replace: true });
         loadChain(`/api/chains/${response.data.chain_id}`, {
           onSuccess: (response) => {
             setChain(response.data);
-            setChainLoaded(true);
           },
         });
       }
     },
-    [chain?.id, chainLoaded]
+    [chain?.id]
   );
 
   const onDrop = useCallback(
@@ -304,30 +303,12 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
     api.createChain(...args);
   }, 800);
 
+  const onChainUpdate = useChainUpdate(chain, setChain, api);
   const onTitleChange = useCallback(
     (event) => {
-      setChain({ ...chain, name: event.target.value });
-      if (!chainLoaded) {
-        debouncedChainCreate(
-          { name: event.target.value, description: "" },
-          {
-            onSuccess: (response) => {
-              navigate(`/chains/${response.data.id}`, {
-                replace: true,
-              });
-              setChain(response.data);
-              setChainLoaded(true);
-            },
-          }
-        );
-      } else {
-        debouncedChainUpdate({
-          ...chain,
-          name: event.target.value,
-        });
-      }
+      onChainUpdate({ name: event.target.value });
     },
-    [chain, api, chainLoaded]
+    [onChainUpdate]
   );
 
   const onSelectionChange = useCallback((selection) => {

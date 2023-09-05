@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { FormControl, FormLabel, Input } from "@chakra-ui/react";
+import { RequiredAsterisk } from "components/RequiredAsterisk";
 
 export const NameField = ({ object, onChange }) => {
   const handleNameChange = useCallback(
@@ -14,7 +15,9 @@ export const NameField = ({ object, onChange }) => {
 
   return (
     <FormControl id="name">
-      <FormLabel>Name</FormLabel>
+      <FormLabel>
+        Name <RequiredAsterisk />
+      </FormLabel>
       <Input
         type="text"
         placeholder="Enter name"

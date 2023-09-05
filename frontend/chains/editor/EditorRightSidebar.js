@@ -113,9 +113,9 @@ export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
                   <FontAwesomeIcon icon={faNetworkWired} />
                 </Tab>
               </Tooltip>
-              <Tooltip label="Chain" aria-label="Chain">
+              <Tooltip label="Agent" aria-label="Agent">
                 <Tab>
-                  <FontAwesomeIcon icon={faChain} />
+                  <FontAwesomeIcon icon={faRobot} />
                 </Tab>
               </Tooltip>
               <Tooltip label="Chat" aria-label="Chat">

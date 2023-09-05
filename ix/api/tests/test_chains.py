@@ -4,15 +4,23 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 
+from ix.agents.models import Agent
+from ix.api.chains.endpoints import (
+    create_chain_chat,
+    create_chain_agent,
+)
 from ix.chains.fixture_src.document_loaders import GENERIC_LOADER_CLASS_PATH
 from ix.chains.fixture_src.llm import LLAMA_CPP_LLM_CLASS_PATH, OPENAI_LLM_CLASS_PATH
+from ix.chat.models import Chat
 from ix.server.fast_api import app
 from ix.chains.models import ChainEdge, ChainNode, Chain, NodeType
 from ix.chains.tests.mock_chain import MOCK_CHAIN_CONFIG
+from ix.task_log.models import Task
 from ix.task_log.tests.fake import (
     afake_chain_node,
     afake_chain_edge,
     afake_chain,
+    afake_user,
 )
 
 
@@ -210,8 +218,9 @@ class TestChain:
     async def test_get_chain_detail(self, anode_types):
         # Create a chain
         chain = await afake_chain(
-            name="Test Chain", description="Test Chain Description"
+            name="Test Chain", description="Test Chain Description", is_agent=True
         )
+        await create_chain_agent(chain, "mock_test_agent")
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.get(f"/chains/{chain.id}")
@@ -223,6 +232,8 @@ class TestChain:
         assert result["id"] == str(chain.id)
         assert result["name"] == "Test Chain"
         assert result["description"] == "Test Chain Description"
+        assert result["is_agent"] is True
+        assert result["alias"] == "mock_test_agent"
 
     async def test_get_chain_detail_not_found(self):
         # Use a non-existent chain_id
@@ -236,9 +247,12 @@ class TestChain:
         assert result["detail"] == "Chain not found"
 
     async def test_create_chain(self, anode_types):
+        await afake_user()
         chain_data = {
             "name": "New Chain",
             "description": "A new chain",
+            "alias": "auto_agent_test",
+            "is_agent": True,
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -248,20 +262,113 @@ class TestChain:
         result = response.json()
         assert result["name"] == "New Chain"
 
+        # verify test chat was created
+        chain_id = result["id"]
+        test_agent = await Agent.objects.aget(chain_id=chain_id, is_test=True)
+        assert test_agent.name == result["name"]
+        assert test_agent.purpose == result["description"]
+        assert test_agent.alias == "test"
+        assert await Task.objects.filter(agent=test_agent, chain_id=chain_id).aexists()
+        assert await Chat.objects.filter(lead=test_agent, is_test=True).aexists()
+
+        # verify agent is created
+        agent = await Agent.objects.aget(chain_id=chain_id, is_test=False)
+        assert agent.name == result["name"]
+        assert agent.purpose == result["description"]
+        assert agent.alias == "auto_agent_test"
+
     async def test_update_chain(self, anode_types):
         # Create a chain to update
-        chain = await afake_chain()
+        chain = await afake_chain(is_agent=True)
+        await create_chain_agent(chain, alias="test")
+        await create_chain_chat(chain)
+
         data = {
             "name": "Updated Chain",
             "description": "Updated Chain",
+            "is_agent": True,
+            "alias": "auto_agent_test_update",
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.put(f"/chains/{chain.id}", json=data)
 
+        # assert the result
         assert response.status_code == 200, response.content
         result = response.json()
         assert result["name"] == "Updated Chain"
+        assert result["description"] == "Updated Chain"
+        assert result["is_agent"] is True
+        assert result["alias"] == "auto_agent_test_update"
+
+        # verify test chat agent updated
+        test_agent = await Agent.objects.aget(chain_id=chain.id, is_test=True)
+        assert test_agent.name == result["name"]
+        assert test_agent.purpose == result["description"]
+        assert test_agent.alias == "test"
+
+        # verify agent updated
+        agent = await Agent.objects.aget(chain_id=chain.id, is_test=False)
+        assert agent.name == result["name"]
+        assert agent.purpose == result["description"]
+        assert agent.alias == "auto_agent_test_update"
+
+    async def test_update_chain_create_agent(self):
+        """Test that auto-agent is created when updated and is_agent=True"""
+        chain = await afake_chain(is_agent=False)
+        data = {
+            "name": "Updated Chain",
+            "description": "Updated Chain",
+            "is_agent": True,
+            "alias": "auto_agent_test_update",
+        }
+
+        # sanity check that agent doesn't exist yet
+        assert not await Agent.objects.filter(
+            chain_id=chain.id, is_test=False
+        ).aexists()
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.put(f"/chains/{chain.id}", json=data)
+
+        # assert the result
+        assert response.status_code == 200, response.content
+        result = response.json()
+        assert result["is_agent"] is True
+        assert result["alias"] == "auto_agent_test_update"
+
+        # verify agent created
+        agent = await Agent.objects.aget(chain_id=chain.id, is_test=False)
+        assert agent.name == result["name"]
+        assert agent.purpose == result["description"]
+        assert agent.alias == "auto_agent_test_update"
+
+    async def test_update_chain_destroy_agent(self):
+        """Test that auto-agent is destroyed when updated and is_agent=True"""
+        chain = await afake_chain(is_agent=False)
+        agent = await create_chain_agent(chain, alias="auto_agent_test")
+        data = {
+            "name": "Updated Chain",
+            "description": "Updated Chain",
+            "is_agent": False,
+        }
+
+        # sanity check that agent exists
+        assert await Agent.objects.filter(chain_id=chain.id, is_test=False).aexists()
+
+        # assert the update
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.put(f"/chains/{chain.id}", json=data)
+        assert response.status_code == 200, response.content
+        result = response.json()
+        assert result["is_agent"] is False
+        assert result["alias"] is None
+
+        # verify agent is destroyed
+        assert not await Agent.objects.filter(
+            chain_id=chain.id, is_test=False
+        ).aexists()
+        assert not await Agent.objects.filter(id=agent.id).aexists()
 
     async def test_delete_chain(self, anode_types):
         # Create a chain to delete
@@ -282,6 +389,7 @@ class TestChain:
             "name": "Updated Chain",
             "description": "Updated Chain",
             "config": {},
+            "alias": "update_test",
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -578,7 +686,8 @@ class TestChainEdge:
 @pytest.mark.django_db
 class TestChainGraph:
     async def test_add_chain_edge(self, anode_types):
-        chain = await afake_chain()
+        chain = await afake_chain(is_agent=True)
+        await create_chain_agent(chain=chain, alias="tester")
         node1 = await afake_chain_node(chain=chain)
         node2 = await afake_chain_node(chain=chain)
         await afake_chain_edge(source=node1, target=node2)
@@ -589,6 +698,8 @@ class TestChainGraph:
         assert response.status_code == 200, response.content
         data = response.json()
         assert data["chain"]["id"] == str(chain.id)
+        assert data["chain"]["is_agent"] == chain.is_agent
+        assert data["chain"]["alias"] == "tester"
         node_ids = {node["id"] for node in data["nodes"]}
         assert node_ids == {str(node.id) async for node in chain.nodes.all()}
         edge_ids = {edge["id"] for edge in data["edges"]}

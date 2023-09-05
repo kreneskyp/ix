@@ -178,5 +178,19 @@
         "input_map": null,
         "relation": "PROP"
     }
+},
+{
+  "model": "agents.agent",
+  "pk": "5a81b06b-2ac9-4f22-8b8c-b48eb3fec8d9",
+  "fields": {
+    "name": "klarna",
+    "alias": "klarna",
+    "purpose": "klarna products search. Uses OpenAPI chain for automatic integration.",
+    "created_at": "2023-09-04T21:41:09.557Z",
+    "model": "",
+    "config": {},
+    "chain": "5a3fb153-35b0-492e-9571-03553b3c24e9",
+    "is_test": false
+  }
 }
 ]
