@@ -10,7 +10,7 @@ export const useTestChat = (chain_id) => {
     isLoading,
   } = useDetailAPI(`/api/chains/${chain_id}/chat`, { auto: false }, [chain_id]);
 
-  const chat = response?.data;
+  const chat = chain_id === undefined ? null : response?.data;
 
   React.useEffect(() => {
     if (chain_id && !chat) {
