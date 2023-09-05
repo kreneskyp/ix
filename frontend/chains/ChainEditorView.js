@@ -29,14 +29,9 @@ import {
 import { EditorRightSidebar } from "chains/editor/EditorRightSidebar";
 import { useNodeState } from "chains/hooks/useNodeState";
 import { useChainState } from "chains/hooks/useChainState";
+import { NewAgentButton } from "agents/NewAgentButton";
 
 const ChainEditorProvider = ({ graph, onError, children }) => {
-  const reactFlowInstance = useReactFlow();
-  const api = useChainEditorAPI({
-    chain: graph?.chain,
-    reactFlowInstance,
-    onError,
-  });
   const chainState = useChainState(graph);
   const nodeState = useNodeState(graph?.chain, graph?.nodes);
   const selectedNode = useSelectedNode();
@@ -45,6 +40,19 @@ const ChainEditorProvider = ({ graph, onError, children }) => {
     nodeState.nodes,
     nodeState.setNode
   );
+
+  const reactFlowInstance = useReactFlow();
+  const api = useChainEditorAPI({
+    chain: graph?.chain,
+    reactFlowInstance,
+    onError,
+  });
+
+  useEffect(() => {
+    if (graph?.chain?.id !== chainState?.chain?.id) {
+      chainState.setChain(graph?.chain);
+    }
+  }, [graph?.chain?.id, chainState.chain]);
 
   return (
     <ChainState.Provider value={chainState}>
@@ -64,9 +72,25 @@ const ChainEditorProvider = ({ graph, onError, children }) => {
 export const ChainEditorView = () => {
   const { id } = useParams();
   const { response, call, isLoading } = useDetailAPI(`/api/chains/${id}/graph`);
-  const { isNew, idRef } = useObjectEditorView(id, call);
-  const graph = response?.data;
+  const { isNew, idRef, wasCreated } = useObjectEditorView(id, call);
   const toast = useToast();
+
+  // Defer to isNew and wasCreated to determine if graph response is current for
+  // UX state. This is necessary because the graph response is not cleared when
+  // switching to a new chain. Also check that the id matches the response id.
+  // to avoid rendering stale state when first loading a newly created chain.
+  const graph =
+    (isNew && !wasCreated) || id !== response?.data?.chain?.id
+      ? null
+      : response?.data;
+
+  // load graph when chain is created to ensure graph exists
+  // whether this was a new chain or an existing chain
+  useEffect(() => {
+    if (wasCreated) {
+      call();
+    }
+  }, [wasCreated, call]);
 
   const rightSidebarDisclosure = useDisclosure({ defaultIsOpen: true });
 
@@ -104,6 +128,7 @@ export const ChainEditorView = () => {
       <ChainEditorProvider graph={graph} onError={onAPIError}>
         <Layout>
           <LayoutLeftPane>
+            <NewAgentButton />
             <ChainGraphEditorSideBar />
           </LayoutLeftPane>
           <LayoutContent>

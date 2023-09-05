@@ -1,5 +1,17 @@
 import React, { useCallback, useContext } from "react";
-import { Box, Button, HStack, useDisclosure, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  HStack,
+  useDisclosure,
+  Text,
+  FormControl,
+  FormLabel,
+  Textarea,
+  VStack,
+  Input,
+  FormHelperText,
+} from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChain, faRobot } from "@fortawesome/free-solid-svg-icons";
 import { useEditorColorMode } from "chains/editor/useColorMode";
@@ -9,6 +21,8 @@ import { useDebounce } from "utils/hooks/useDebounce";
 import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { NameField } from "chains/editor/fields/NameField";
 import { DescriptionField } from "chains/editor/fields/DescriptionField";
+import { RequiredAsterisk } from "components/RequiredAsterisk";
+import { useChainUpdate } from "chains/hooks/useChainUpdate";
 
 const ChainExplanation = () => {
   return (
@@ -84,27 +98,67 @@ const SaveModeChooser = () => {
   );
 };
 
+export const AliasField = ({ object, onChange }) => {
+  const handleChange = useCallback(
+    (e) => {
+      onChange({
+        ...object,
+        alias: e.target.value,
+      });
+    },
+    [object, onChange]
+  );
+
+  let helperText = null;
+  if (object?.alias) {
+    helperText = (
+      <FormHelperText>
+        This agent responds to the alias{" "}
+        <Text as={"span"} color={"blue.300"}>
+          @{object?.alias}
+        </Text>{" "}
+        in chat
+      </FormHelperText>
+    );
+  } else {
+    helperText = (
+      <FormHelperText>
+        Set{" "}
+        <Text as={"span"} color={"blue.400"}>
+          @alias
+        </Text>{" "}
+        to reference the agent in chat sessions
+      </FormHelperText>
+    );
+  }
+
+  return (
+    <FormControl id="alias">
+      <FormLabel>
+        Alias <RequiredAsterisk />
+      </FormLabel>
+      <Input
+        placeholder="Enter agent alias"
+        value={object?.alias || ""}
+        onChange={handleChange}
+      />
+      {helperText}
+    </FormControl>
+  );
+};
+
 export const ChainEditorPane = () => {
   const { chain, setChain } = useContext(ChainState);
-  const { updateChain } = useContext(ChainEditorAPIContext);
-
-  const { callback: debouncedChainUpdate } = useDebounce((...args) => {
-    updateChain(...args);
-  }, 500);
-
-  // save to API and state
-  const onChange = useCallback(
-    (data) => {
-      debouncedChainUpdate(data);
-      setChain(data);
-    },
-    [setChain, updateChain]
-  );
+  const api = useContext(ChainEditorAPIContext);
+  const onChainUpdate = useChainUpdate(chain, setChain, api);
 
   return (
     <CollapsibleSection title="General" mt={3} initialShow={true}>
-      <NameField object={chain} onChange={onChange} />
-      <DescriptionField object={chain} onChange={onChange} />
+      <VStack spacing={4}>
+        <AliasField object={chain} onChange={onChainUpdate} />
+        <NameField object={chain} onChange={onChainUpdate} />
+        <DescriptionField object={chain} onChange={onChainUpdate} />
+      </VStack>
     </CollapsibleSection>
   );
 };

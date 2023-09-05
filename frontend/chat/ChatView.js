@@ -8,16 +8,20 @@ import SideBarArtifactList from "chat/sidebar/SideBarArtifactList";
 import SideBarAgentList from "chat/sidebar/SideBarAgentList";
 import { ChatInterface } from "chat/ChatInterface";
 import { useChatGraph } from "chat/hooks/useChatGraph";
+import { NewAgentButton } from "agents/NewAgentButton";
 
 export const ChatLeftPaneShim = ({ graph, loadGraph }) => {
   return (
-    <Suspense>
-      <VStack spacing={4} align="stretch">
-        <SideBarAgentList graph={graph} loadGraph={loadGraph} />
-        <SideBarPlanList plans={graph.plans} />
-        <SideBarArtifactList chat={graph.chat} artifacts={graph.artifacts} />
-      </VStack>
-    </Suspense>
+    <>
+      <NewAgentButton />
+      <Suspense>
+        <VStack spacing={4} align="stretch">
+          <SideBarAgentList graph={graph} loadGraph={loadGraph} />
+          <SideBarPlanList plans={graph.plans} />
+          <SideBarArtifactList chat={graph.chat} artifacts={graph.artifacts} />
+        </VStack>
+      </Suspense>
+    </>
   );
 };
 

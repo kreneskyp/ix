@@ -4,7 +4,13 @@ from uuid import UUID
 from django.db.models import Q
 from fastapi import APIRouter, HTTPException
 
-from ix.api.chains.endpoints import DeletedItem
+from ix.agents.models import Agent
+from ix.api.chains.endpoints import (
+    DeletedItem,
+    create_chain_instance,
+    create_chain_chat,
+)
+from ix.api.chats.types import Chat as ChatPydantic
 from ix.api.editor.types import (
     UpdateEdge,
     GraphModel,
@@ -22,7 +28,7 @@ from ix.api.editor.types import PositionUpdate
 from ix.api.components.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic
 from ix.api.chains.types import Edge as EdgePydantic
-
+from ix.chat.models import Chat
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -54,8 +60,9 @@ async def set_chain_root(chain_id: UUID, update_root: UpdateRoot):
 @router.post("/chains/nodes", response_model=NodePydantic, tags=["Chain Editor"])
 async def add_chain_node(node: AddNode):
     if not node.chain_id:
-        chain = Chain(name="Unnamed", description="")
-        await chain.asave()
+        chain = await create_chain_instance(
+            name="Unnamed", description="", alias="Unnamed"
+        )
         node.chain_id = chain.id
 
     node_type = await NodeType.objects.aget(class_path=node.class_path)
@@ -178,9 +185,29 @@ async def get_chain_graph(chain_id: UUID):
     types_in_chain = NodeType.objects.filter(chainnode__chain_id=chain_id)
     types = [NodeTypePydantic.from_orm(node_type) async for node_type in types_in_chain]
 
+    # sync alias to chain object
+    chain_pydantic = ChainPydantic.from_orm(chain)
+    if chain.is_agent:
+        agent = await Agent.objects.aget(chain_id=chain_id, is_test=False)
+        chain_pydantic.alias = agent.alias
+
     return GraphModel(
-        chain=ChainPydantic.from_orm(chain),
+        chain=chain_pydantic,
         nodes=nodes,
         edges=edges,
         types=types,
     )
+
+
+@router.get(
+    "/chains/{chain_id}/chat", response_model=ChatPydantic, tags=["Chain Editor"]
+)
+async def get_chain_chat(chain_id: UUID):
+    """Return test chat instance for the chain"""
+    try:
+        chat = await Chat.objects.aget(lead__chain_id=chain_id, lead__is_test=True)
+    except Chat.DoesNotExist:
+        chain = await Chain.objects.aget(id=chain_id)
+        chat = await create_chain_chat(chain)
+
+    return ChatPydantic.from_orm(chat)
