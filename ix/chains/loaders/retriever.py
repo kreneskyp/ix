@@ -1,6 +1,7 @@
 from copy import deepcopy
 from typing import List
 
+from asgiref.sync import sync_to_async
 from langchain.schema import BaseRetriever
 from langchain.vectorstores import VectorStore
 
@@ -9,6 +10,17 @@ from ix.chains.loaders.context import IxContext
 from ix.chains.loaders.core import load_node
 from ix.chains.models import ChainNode
 from ix.utils.importlib import import_class
+
+
+async def async_aget_relevant_documents(self, *args, **kwargs):
+    """Async wrapper for BaseRetriever._get_relevant_documents"""
+    return await sync_to_async(self._get_relevant_documents)(*args, **kwargs)
+
+
+# HAX: monkeypatch asyncio support into BaseRetriever. This is a gigantic hack, but
+#      it's the easiest way to get support for all retrievers without having to
+#      modify langchain or implement lots of custom wrappers.
+setattr(BaseRetriever, "_aget_relevant_documents", async_aget_relevant_documents)
 
 
 def load_retriever_property(
@@ -25,7 +37,7 @@ def load_retriever_property(
     node = node_group[0]
     component_class = import_class(node.class_path)
 
-    if issubclass(component_class, VectorStore):
+    if isinstance(component_class, type) and issubclass(component_class, VectorStore):
         # unpack retriever fields from vectorstore config
         config = deepcopy(node.config)
         retriever_fields = get_vectorstore_retriever_fieldnames(node.class_path)
