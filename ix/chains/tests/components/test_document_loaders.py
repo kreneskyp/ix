@@ -7,7 +7,6 @@ from langchain.document_loaders import (
     CSVLoader,
     BSHTMLLoader,
 )
-from langchain.embeddings import CacheBackedEmbeddings
 
 from ix.chains.fixture_src.document_loaders import (
     BEAUTIFUL_SOUP_LOADER_CLASS_PATH,
@@ -17,8 +16,6 @@ from ix.chains.fixture_src.document_loaders import (
     UNSTRUCTURED_MARKDOWN_LOADER_CLASS_PATH,
     JSON_LOADER_CLASS_PATH,
 )
-from ix.chains.fixture_src.embeddings import EMBEDDINGS_CACHE_CLASS_PATH, EMBEDDINGS
-from ix.chains.fixture_src.storage import REDIS_STORE_CLASS_PATH
 
 
 TEST_HTML_FILE_PATH = "/var/app/test_data/documents/test.html"
