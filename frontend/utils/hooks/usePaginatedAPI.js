@@ -30,6 +30,10 @@ export function usePaginatedAPI(
     [endpoint]
   );
 
+  const clearPage = useCallback(() => {
+    setPage(null);
+  }, []);
+
   useEffect(() => {
     if (load) {
       _load();
@@ -38,6 +42,7 @@ export function usePaginatedAPI(
 
   return {
     page,
+    clearPage,
     isLoading,
     load: _load,
   };

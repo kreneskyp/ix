@@ -151,17 +151,27 @@ export const NodeTypeSearch = () => {
   const [query, setQuery] = useState({ search: "", types: [] });
 
   // component query
-  const { load, page } = usePaginatedAPI(`/api/node_types/`, {
+  const { load, page, clearPage } = usePaginatedAPI(`/api/node_types/`, {
     load: false,
     limit: 50,
   });
+  const { callback: debouncedLoad, clear: clearLoad } = useDebounce(load, 400);
 
   // trigger query when query state changes
   useEffect(() => {
     if (query.search || query.types.length > 0) {
-      load(query);
+      if (selectedConnector && query.search === "") {
+        // load immediately if there is a selected connector
+        // since it indicates the user is not typing
+        load(query);
+      } else {
+        // typing should always be debounced even
+        // if there is a selected connector
+        debouncedLoad(query);
+      }
     } else {
-      // TODO: clear page (upstream feature needed in usePaginatedAPI)
+      clearLoad();
+      clearPage();
     }
   }, [query]);
 
@@ -172,26 +182,16 @@ export const NodeTypeSearch = () => {
       const types = Array.isArray(connector.source_type)
         ? connector.source_type
         : [connector?.source_type];
-      setQuery((prev) => ({ ...prev, types }));
+      setQuery((prev) => ({ search: "", types }));
     } else {
       // clear query
-      setQuery((prev) => ({ ...prev, types: [] }));
+      setQuery((prev) => ({ search: "", types: [] }));
     }
   }, [selectedConnector]);
 
-  // debounced setQuery
-  const { callback: debouncedSetSearch, clear } = useDebounce((search) => {
-    setQuery((prev) => ({ ...prev, search }));
-  });
-
   // callback for search bar changing
   const onSearchChange = useCallback((event) => {
-    const search = event.target.value;
-    if (search) {
-      debouncedSetSearch(search);
-    } else {
-      clear();
-    }
+    setQuery((prev) => ({ ...prev, search: event.target.value }));
   }, []);
 
   // callback for removing a type from the query
@@ -229,6 +229,7 @@ export const NodeTypeSearch = () => {
         placeholder="search components"
         mb={2}
         borderColor={border}
+        value={query.search}
       />
       <VStack
         overflowY="scroll"
