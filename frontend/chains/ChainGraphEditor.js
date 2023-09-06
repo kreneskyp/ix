@@ -361,6 +361,8 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
           nodeTypes={nodeTypes}
           onConnect={onConnect}
           fitView
+          snapToGrid={true}
+          snapGrid={[10, 10]}
         >
           <Controls />
           <Background
