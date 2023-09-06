@@ -274,6 +274,14 @@ async def send_message(chat_id: str, chat_input: ChatInput):
     return ChatMessage.from_orm(message)
 
 
+@router.post("/chats/{chat_id}/messages/clear", tags=["Chats"])
+async def clear_messages(chat_id: str):
+    chat = await Chat.objects.aget(pk=chat_id)
+    await TaskLogMessage.objects.filter(task_id=chat.task_id).adelete()
+    await TaskLogMessage.objects.filter(task__parent_id=chat.task_id).adelete()
+    return DeletedItem(id=chat_id)
+
+
 async def start_agent(task_id: UUID, agent: Agent, inputs: Dict[str, Any]):
     """Shim for start_agent_loop
 
