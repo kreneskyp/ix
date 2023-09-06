@@ -151,17 +151,27 @@ export const NodeTypeSearch = () => {
   const [query, setQuery] = useState({ search: "", types: [] });
 
   // component query
-  const { load, page } = usePaginatedAPI(`/api/node_types/`, {
+  const { load, page, clearPage } = usePaginatedAPI(`/api/node_types/`, {
     load: false,
     limit: 50,
   });
+  const { callback: debouncedLoad, clear: clearLoad } = useDebounce(load, 400);
 
   // trigger query when query state changes
   useEffect(() => {
     if (query.search || query.types.length > 0) {
-      load(query);
+      if (selectedConnector && query.search === "") {
+        // load immediately if there is a selected connector
+        // since it indicates the user is not typing
+        load(query);
+      } else {
+        // typing should always be debounced even
+        // if there is a selected connector
+        debouncedLoad(query);
+      }
     } else {
-      // TODO: clear page (upstream feature needed in usePaginatedAPI)
+      clearLoad();
+      clearPage();
     }
   }, [query]);
 
