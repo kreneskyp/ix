@@ -34,7 +34,7 @@ VECTORSTORE_RETRIEVER = {
 
 
 MULTI_QUERY_RETRIEVER_CLASS_PATH = (
-    "libs.langchain.langchain.retrievers.multi_query.MultiQueryRetriever.from_llm"
+    "langchain.retrievers.multi_query.MultiQueryRetriever.from_llm"
 )
 MULTI_QUERY_RETRIEVER = {
     "class_path": MULTI_QUERY_RETRIEVER_CLASS_PATH,
