@@ -182,26 +182,16 @@ export const NodeTypeSearch = () => {
       const types = Array.isArray(connector.source_type)
         ? connector.source_type
         : [connector?.source_type];
-      setQuery((prev) => ({ ...prev, types }));
+      setQuery((prev) => ({ search: "", types }));
     } else {
       // clear query
-      setQuery((prev) => ({ ...prev, types: [] }));
+      setQuery((prev) => ({ search: "", types: [] }));
     }
   }, [selectedConnector]);
 
-  // debounced setQuery
-  const { callback: debouncedSetSearch, clear } = useDebounce((search) => {
-    setQuery((prev) => ({ ...prev, search }));
-  });
-
   // callback for search bar changing
   const onSearchChange = useCallback((event) => {
-    const search = event.target.value;
-    if (search) {
-      debouncedSetSearch(search);
-    } else {
-      clear();
-    }
+    setQuery((prev) => ({ ...prev, search: event.target.value }));
   }, []);
 
   // callback for removing a type from the query
@@ -239,6 +229,7 @@ export const NodeTypeSearch = () => {
         placeholder="search components"
         mb={2}
         borderColor={border}
+        value={query.search}
       />
       <VStack
         overflowY="scroll"
