@@ -30,5 +30,9 @@ class Chat(models.Model):
         Task, on_delete=models.CASCADE, related_name="leading_chats"
     )
 
+    # Test chat flag indicates this was created by the editor. It may be hidden from
+    # other places in the user interface.
+    is_test = models.BooleanField(default=False)
+
     def get_agent_process(self):
         return self.agent.get_agent_process(self.task)

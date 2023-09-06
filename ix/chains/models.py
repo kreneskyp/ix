@@ -269,6 +269,10 @@ class Chain(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # Indicate that this chain is an agent. This is used to record the config choice.
+    # The endpoints are responsible for ensuring that the agent does or does not exist.
+    is_agent = models.BooleanField(default=True)
+
     @property
     def root(self) -> ChainNode:
         try:

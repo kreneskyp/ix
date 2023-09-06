@@ -53,7 +53,7 @@ DOCKER_BUILD_ARGS = $(if ${LANGCHAIN_DEV},--build-arg LANGCHAIN_DEV=${LANGCHAIN_
 # inner build target for sandbox image
 ${IMAGE_SENTINEL}: .sentinel $(HASH_FILES)
 ifneq (${NO_IMAGE_BUILD}, 1)
-	echo building ${IMAGE_URL}
+	echo building SANDBOX ${IMAGE_URL}
 	docker build -t ${IMAGE_URL} -f ${DOCKERFILE} ${DOCKER_BUILD_ARGS} .
 	docker tag ${IMAGE_URL} ${DOCKER_REPOSITORY}:latest
 	touch $@
@@ -62,7 +62,7 @@ endif
 # inner build target for postgres image
 ${IMAGE_SENTINEL_PSQL}: .sentinel $(HASH_FILES_PSQL)
 ifneq (${NO_IMAGE_BUILD}, 1)
-	echo building ${IMAGE_URL_PSQL}
+	echo building POSTGRES ${IMAGE_URL_PSQL}
 	docker build -t ${IMAGE_URL_PSQL} -f $(DOCKERFILE_PSQL) .
 	docker tag ${IMAGE_URL_PSQL} ${DOCKER_REPOSITORY_PSQL}:latest
 	touch $@
@@ -92,6 +92,7 @@ frontend: compose npm_install graphene_to_graphql compile_relay webpack
 .PHONY: npm_install
 npm_install: compose package.json
 	docker-compose run --rm web npm install
+
 
 # compile javascript
 .PHONY: webpack

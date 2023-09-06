@@ -53,7 +53,7 @@ CHAIN_TARGET = {
 FUNCTION_TARGET = {
     "key": "functions",
     "type": "target",
-    "source_type": "tool",
+    "source_type": ["tool", "toolkit"],
     "multiple": True,
 }
 
@@ -67,7 +67,7 @@ VECTORSTORE_TARGET = {
 TOOLS_TARGET = {
     "key": "tools",
     "type": "target",
-    "source_type": "tool",
+    "source_type": ["tool", "toolkit"],
     "multiple": True,
 }
 
@@ -93,7 +93,7 @@ DOCUMENTS_TARGET = {
 RETRIEVER_TARGET = {
     "key": "retriever",
     "type": "target",
-    "source_type": "vectorstore",
+    "source_type": ["retriever", "vectorstore"],
     "as_type": "retriever",
     "required": True,
 }

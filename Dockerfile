@@ -45,6 +45,8 @@ ENV WEBPACK_OUTPUT=/var/compiled-static
 # Set the working directory
 WORKDIR $APP
 
+# Llama-cpp GPU support disabled until image has required libraries
+#ENV LLAMA_CUBLAS=1
 
 # Copy requirements.txt to the working directory
 COPY requirements.txt .
@@ -56,14 +58,13 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # If LANGCHAIN_DEV is set then install the local dev version of LangChain
-RUN if [ -n "${LANGCHAIN_DEV}" ]; then pip install -e /var/app/langchain; fi
+RUN if [ -n "${LANGCHAIN_DEV}" ]; then pip install -e /var/app/langchain/libs/langchain; fi
 
 # Set the environment variable for selecting between ASGI and Celery
 ENV APP_MODE=asgi
 
 # Expose port 8000 for ASGI, or leave it unexposed for Celery
 EXPOSE 8000
-
 
 WORKDIR /var/app
 

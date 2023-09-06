@@ -1,4 +1,4 @@
-from ix.api.chains.types import NodeTypeField
+from ix.api.components.types import NodeTypeField
 from ix.chains.agent_interaction import DelegateToAgentChain
 from ix.chains.fixture_src.common import CHAIN_BASE_FIELDS
 from ix.chains.fixture_src.targets import MEMORY_TARGET, PROMPT_TARGET

@@ -44,11 +44,11 @@ const AutoFieldInput = ({ field, value, onChange }) => {
       </FormLabel>
       <Input
         size="sm"
-        value={value}
+        value={value || ""}
         onChange={handleChange}
         px={1}
         py={2}
-        sx={field.style || { width: 100 }}
+        sx={field.style || { width: 130 }}
       />
     </Flex>
   );
@@ -69,7 +69,7 @@ const AutoFieldSecret = ({ field, value, onChange }) => {
       </FormLabel>
       <Input
         size="sm"
-        value={value}
+        value={value || ""}
         onChange={handleChange}
         px={1}
         py={2}

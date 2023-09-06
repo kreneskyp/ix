@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import qs from "qs";
 
 export function usePaginatedAPI(
   endpoint,
@@ -15,6 +16,9 @@ export function usePaginatedAPI(
       try {
         const response = await axios.get(endpoint, {
           params,
+          paramsSerializer: (params) => {
+            return qs.stringify(params, { arrayFormat: "repeat" });
+          },
         });
         setPage(response.data);
       } catch (error) {

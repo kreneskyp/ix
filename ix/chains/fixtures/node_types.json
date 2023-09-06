@@ -69,7 +69,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -156,7 +159,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -269,7 +275,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1062,7 +1071,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1149,7 +1161,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1209,92 +1224,6 @@
           "default": null
         },
         "return_intermediate_steps": {
-          "type": "boolean",
-          "default": false
-        }
-      }
-    }
-  }
-},
-{
-  "model": "chains.nodetype",
-  "pk": "39414ada-446f-4949-b087-193d1c93cb27",
-  "fields": {
-    "name": "Wikipedia",
-    "description": "Wikipedia search engine",
-    "class_path": "ix.tools.wikipedia.get_wikipedia",
-    "type": "tool",
-    "display_type": "node",
-    "connectors": null,
-    "fields": [
-      {
-        "name": "return_direct",
-        "type": "boolean",
-        "default": false
-      },
-      {
-        "name": "verbose",
-        "type": "boolean",
-        "default": false
-      },
-      {
-        "name": "top_k_results",
-        "type": "int",
-        "label": "Top_k_results",
-        "default": 3,
-        "required": false
-      },
-      {
-        "name": "lang",
-        "type": "str",
-        "label": "Lang",
-        "default": "en",
-        "required": false
-      },
-      {
-        "name": "load_all_available_meta",
-        "type": "boolean",
-        "label": "Load_all_available_meta",
-        "default": false,
-        "required": false
-      },
-      {
-        "name": "doc_content_chars_max",
-        "type": "int",
-        "label": "Doc_content_chars_max",
-        "default": 4000,
-        "required": false
-      }
-    ],
-    "child_field": null,
-    "config_schema": {
-      "type": "object",
-      "required": [
-        "return_direct",
-        "verbose"
-      ],
-      "properties": {
-        "lang": {
-          "type": "string",
-          "default": "en"
-        },
-        "verbose": {
-          "type": "boolean",
-          "default": false
-        },
-        "return_direct": {
-          "type": "boolean",
-          "default": false
-        },
-        "top_k_results": {
-          "type": "number",
-          "default": 3
-        },
-        "doc_content_chars_max": {
-          "type": "number",
-          "default": 4000
-        },
-        "load_all_available_meta": {
           "type": "boolean",
           "default": false
         }
@@ -1463,6 +1392,321 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "4bfd56af-222c-4428-bc5a-31c4e5a99871",
+  "fields": {
+    "name": "Llama Cpp",
+    "description": "Llama Cpp wrapper for llama models",
+    "class_path": "langchain.llms.llamacpp.LlamaCpp",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "model_path",
+        "type": "str",
+        "label": "Model_path",
+        "default": null,
+        "required": true
+      },
+      {
+        "name": "lora_base",
+        "type": "str",
+        "label": "Lora_base",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "n_ctx",
+        "type": "int",
+        "label": "N_ctx",
+        "default": 512,
+        "required": false
+      },
+      {
+        "name": "n_parts",
+        "type": "int",
+        "label": "N_parts",
+        "default": -1,
+        "required": false
+      },
+      {
+        "name": "seed",
+        "type": "int",
+        "label": "Seed",
+        "default": -1,
+        "required": false
+      },
+      {
+        "name": "f16_kv",
+        "type": "boolean",
+        "label": "F16_kv",
+        "default": true,
+        "required": false
+      },
+      {
+        "name": "logits_all",
+        "type": "boolean",
+        "label": "Logits_all",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "vocab_only",
+        "type": "boolean",
+        "label": "Vocab_only",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "use_mlock",
+        "type": "boolean",
+        "label": "Use_mlock",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "n_threads",
+        "type": "int",
+        "label": "N_threads",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "n_batch",
+        "type": "int",
+        "label": "N_batch",
+        "default": 8,
+        "required": false
+      },
+      {
+        "name": "n_gpu_layers",
+        "type": "int",
+        "label": "N_gpu_layers",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "suffix",
+        "type": "str",
+        "label": "Suffix",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "max_tokens",
+        "type": "int",
+        "label": "Max_tokens",
+        "default": 256,
+        "required": false
+      },
+      {
+        "name": "temperature",
+        "type": "float",
+        "label": "Temperature",
+        "default": 0.8,
+        "required": false
+      },
+      {
+        "name": "top_p",
+        "type": "float",
+        "label": "Top_p",
+        "default": 0.95,
+        "required": false
+      },
+      {
+        "name": "logprobs",
+        "type": "int",
+        "label": "Logprobs",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "echo",
+        "type": "boolean",
+        "label": "Echo",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "stop",
+        "type": "List",
+        "label": "Stop",
+        "default": [],
+        "required": false
+      },
+      {
+        "name": "repeat_penalty",
+        "type": "float",
+        "label": "Repeat_penalty",
+        "default": 1.1,
+        "required": false
+      },
+      {
+        "name": "last_n_tokens_size",
+        "type": "int",
+        "label": "Last_n_tokens_size",
+        "default": 64,
+        "required": false
+      },
+      {
+        "name": "use_mmap",
+        "type": "boolean",
+        "label": "Use_mmap",
+        "default": true,
+        "required": false
+      },
+      {
+        "name": "rope_freq_scale",
+        "type": "float",
+        "label": "Rope_freq_scale",
+        "default": 1.0,
+        "required": false
+      },
+      {
+        "name": "rope_freq_base",
+        "type": "float",
+        "label": "Rope_freq_base",
+        "default": 10000.0,
+        "required": false
+      },
+      {
+        "name": "streaming",
+        "type": "boolean",
+        "label": "Streaming",
+        "default": true,
+        "required": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "label": "Verbose",
+        "default": true,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose",
+        "model_path"
+      ],
+      "properties": {
+        "echo": {
+          "type": "boolean",
+          "default": false
+        },
+        "seed": {
+          "type": "number",
+          "default": -1
+        },
+        "stop": {
+          "type": "object",
+          "default": []
+        },
+        "n_ctx": {
+          "type": "number",
+          "default": 512
+        },
+        "top_p": {
+          "type": "number",
+          "default": 0.95
+        },
+        "f16_kv": {
+          "type": "boolean",
+          "default": true
+        },
+        "suffix": {
+          "type": "string",
+          "default": null
+        },
+        "n_batch": {
+          "type": "number",
+          "default": 8
+        },
+        "n_parts": {
+          "type": "number",
+          "default": -1
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": true
+        },
+        "logprobs": {
+          "type": "number",
+          "default": null
+        },
+        "use_mmap": {
+          "type": "boolean",
+          "default": true
+        },
+        "lora_base": {
+          "type": "string",
+          "default": null
+        },
+        "n_threads": {
+          "type": "number",
+          "default": null
+        },
+        "streaming": {
+          "type": "boolean",
+          "default": true
+        },
+        "use_mlock": {
+          "type": "boolean",
+          "default": false
+        },
+        "logits_all": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_tokens": {
+          "type": "number",
+          "default": 256
+        },
+        "model_path": {
+          "type": "string",
+          "default": null
+        },
+        "vocab_only": {
+          "type": "boolean",
+          "default": false
+        },
+        "temperature": {
+          "type": "number",
+          "default": 0.8
+        },
+        "n_gpu_layers": {
+          "type": "number",
+          "default": null
+        },
+        "repeat_penalty": {
+          "type": "number",
+          "default": 1.1
+        },
+        "rope_freq_base": {
+          "type": "number",
+          "default": 10000.0
+        },
+        "rope_freq_scale": {
+          "type": "number",
+          "default": 1.0
+        },
+        "last_n_tokens_size": {
+          "type": "number",
+          "default": 64
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "4eb6a170-d0e4-428e-be8d-09ca1ca8383d",
   "fields": {
     "name": "GraphQL Tool",
@@ -1535,7 +1779,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1622,7 +1869,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -2392,6 +2642,60 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "89ef5872-b042-4551-8a14-6c9be2cadcc6",
+  "fields": {
+    "name": "Metaphor find similar",
+    "description": "Metaphor find similar pages",
+    "class_path": "ix.tools.metaphor.get_metaphor_find_similar",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "metaphor_api_key",
+        "type": "str",
+        "label": "Metaphor API Key",
+        "required": true,
+        "input_type": "secret"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "metaphor_api_key"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "metaphor_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "8a49959a-b5bc-414e-a25f-51b8d3ad6249",
   "fields": {
     "name": "Conversation Buffer Window",
@@ -3000,6 +3304,114 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "9ee6e9bc-f809-4b1e-841c-f775dd1038cc",
+  "fields": {
+    "name": "Metaphor page contents",
+    "description": "Metaphor page contents",
+    "class_path": "ix.tools.metaphor.get_metaphor_contents",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "metaphor_api_key",
+        "type": "str",
+        "label": "Metaphor API Key",
+        "required": true,
+        "input_type": "secret"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "metaphor_api_key"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "metaphor_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a25f957a-8c72-45dd-a035-23e835008093",
+  "fields": {
+    "name": "Metaphor search",
+    "description": "Metaphor search queries",
+    "class_path": "ix.tools.metaphor.get_metaphor_search",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "metaphor_api_key",
+        "type": "str",
+        "label": "Metaphor API Key",
+        "required": true,
+        "input_type": "secret"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "metaphor_api_key"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "metaphor_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "a3dd72e8-1554-47dd-8f42-0dda58c06f7c",
   "fields": {
     "name": "Chat Conversational React Description Agent",
@@ -3018,7 +3430,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -3078,6 +3493,291 @@
           "default": null
         },
         "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a4b78af5-415f-45e5-ad6f-079384d826a0",
+  "fields": {
+    "name": "Ollama",
+    "description": "Ollama server for llama models",
+    "class_path": "langchain.llms.ollama.Ollama",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "model",
+        "type": "str",
+        "label": "Model",
+        "default": "llama2",
+        "required": false
+      },
+      {
+        "name": "mirostat",
+        "type": "int",
+        "label": "Mirostat",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "mirostat_eta",
+        "type": "float",
+        "label": "Mirostat_eta",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "mirostat_tau",
+        "type": "float",
+        "label": "Mirostat_tau",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "num_ctx",
+        "type": "int",
+        "label": "Num_ctx",
+        "default": null,
+        "required": false
+      },
+      {
+        "max": 10,
+        "min": 0,
+        "name": "num_gpu",
+        "step": 1,
+        "type": "int",
+        "label": "Num_gpu",
+        "default": 1,
+        "required": false,
+        "input_type": "slider"
+      },
+      {
+        "name": "num_thread",
+        "type": "int",
+        "label": "Num_thread",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "repeat_last_n",
+        "type": "int",
+        "label": "Repeat_last_n",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "repeat_penalty",
+        "type": "float",
+        "label": "Repeat_penalty",
+        "default": null,
+        "required": false
+      },
+      {
+        "max": 1,
+        "min": 0,
+        "name": "temperature",
+        "step": 0.05,
+        "type": "float",
+        "label": "Temperature",
+        "default": 0.8,
+        "required": false,
+        "input_type": "slider"
+      },
+      {
+        "name": "stop",
+        "type": "List",
+        "label": "Stop",
+        "style": {
+          "width": "100%"
+        },
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "tfs_z",
+        "type": "float",
+        "label": "Tfs_z",
+        "default": null,
+        "required": false
+      },
+      {
+        "max": 1,
+        "min": 0,
+        "name": "top_p",
+        "step": 0.05,
+        "type": "int",
+        "label": "Top_p",
+        "default": 0.9,
+        "required": false,
+        "input_type": "slider"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose"
+      ],
+      "properties": {
+        "stop": {
+          "type": "object",
+          "default": null
+        },
+        "model": {
+          "type": "string",
+          "default": "llama2"
+        },
+        "tfs_z": {
+          "type": "number",
+          "default": null
+        },
+        "top_p": {
+          "type": "number",
+          "default": 0.9,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "num_ctx": {
+          "type": "number",
+          "default": null
+        },
+        "num_gpu": {
+          "type": "number",
+          "default": 1,
+          "maximum": 10.0,
+          "minimum": 0.0,
+          "multipleOf": 1.0
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "mirostat": {
+          "type": "number",
+          "default": null
+        },
+        "num_thread": {
+          "type": "number",
+          "default": null
+        },
+        "temperature": {
+          "type": "number",
+          "default": 0.8,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "mirostat_eta": {
+          "type": "number",
+          "default": null
+        },
+        "mirostat_tau": {
+          "type": "number",
+          "default": null
+        },
+        "repeat_last_n": {
+          "type": "number",
+          "default": null
+        },
+        "repeat_penalty": {
+          "type": "number",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a8ffd3b0-dfb4-4e1b-b5bf-90a2ec959ff8",
+  "fields": {
+    "name": "Wikipedia",
+    "description": "Wikipedia search engine",
+    "class_path": "ix.tools.wikipedia.get_wikipedia",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "top_k_results",
+        "type": "int",
+        "label": "Top_k_results",
+        "default": 3,
+        "required": false
+      },
+      {
+        "name": "lang",
+        "type": "str",
+        "label": "Lang",
+        "default": "en",
+        "required": false
+      },
+      {
+        "name": "load_all_available_meta",
+        "type": "boolean",
+        "label": "Load_all_available_meta",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "doc_content_chars_max",
+        "type": "int",
+        "label": "Doc_content_chars_max",
+        "default": 4000,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "lang": {
+          "type": "string",
+          "default": "en"
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "top_k_results": {
+          "type": "number",
+          "default": 3
+        },
+        "doc_content_chars_max": {
+          "type": "number",
+          "default": 4000
+        },
+        "load_all_available_meta": {
           "type": "boolean",
           "default": false
         }
@@ -3389,7 +4089,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -4112,7 +4815,10 @@
         "type": "target",
         "as_type": "retriever",
         "required": true,
-        "source_type": "vectorstore"
+        "source_type": [
+          "retriever",
+          "vectorstore"
+        ]
       }
     ],
     "fields": [
@@ -4346,7 +5052,10 @@
         "key": "functions",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "output_parser",
@@ -4715,6 +5424,38 @@
         "add_start_index": {
           "type": "boolean",
           "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "fba24100-d583-45e1-aec5-a2f9cf6edf9b",
+  "fields": {
+    "name": "File Management",
+    "description": "Toolkit for interacting with a Local Files.",
+    "class_path": "langchain.agents.agent_toolkits.file_management.toolkit.FileManagementToolkit",
+    "type": "toolkit",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "root_dir",
+        "type": "Optional[str]",
+        "label": "Root_dir",
+        "default": "/var/app/workdir",
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "root_dir": {
+          "type": "object",
+          "default": "/var/app/workdir"
         }
       }
     }

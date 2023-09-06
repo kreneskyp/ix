@@ -1,8 +1,8 @@
 from langchain.vectorstores import Chroma
 from langchain.vectorstores.base import VectorStoreRetriever
-from langchain.vectorstores.redis import RedisVectorStoreRetriever
+from langchain.vectorstores.redis.base import RedisVectorStoreRetriever
 
-from ix.api.chains.types import NodeTypeField
+from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.targets import EMBEDDINGS_TARGET, DOCUMENTS_TARGET
 
 
