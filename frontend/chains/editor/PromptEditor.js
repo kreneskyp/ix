@@ -16,6 +16,8 @@ import {
   faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { SCROLLBAR_CSS } from "site/css";
+import AutoResizingTextarea from "components/AutoResizingTextArea";
+import { useEditorColorMode } from "chains/editor/useColorMode";
 
 const ROLE_OPTIONS = ["user", "assistant"];
 
@@ -49,6 +51,8 @@ function parseVariables(str) {
 
 const PromptEditor = ({ data, onChange }) => {
   const [messages, setMessages] = useState(data.messages || DEFAULT_MESSAGES);
+  const { code, scrollbar } = useEditorColorMode();
+
   const handleOnChange = useCallback(
     (updatedMessages) => {
       if (onChange !== undefined) {
@@ -149,7 +153,7 @@ const PromptEditor = ({ data, onChange }) => {
               )}
             </HStack>
           </Flex>
-          <Textarea
+          <AutoResizingTextarea
             width="100%"
             value={message.template}
             placeholder="Enter template"
@@ -157,8 +161,10 @@ const PromptEditor = ({ data, onChange }) => {
               handleMessageChange(index, "template", e.target.value)
             }
             isRequired
-            css={SCROLLBAR_CSS}
+            css={scrollbar}
             size={"sm"}
+            bg={code.bg}
+            color={code.color}
           />
         </VStack>
       ))}
