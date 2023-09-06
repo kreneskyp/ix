@@ -9,7 +9,7 @@ export const NewAgentButton = () => {
   const { colorMode } = useColorMode();
 
   return (
-    <Link to="/agents/new">
+    <Link to="/chains/new">
       <Button
         width="100%"
         border="1px solid"

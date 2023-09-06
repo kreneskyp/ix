@@ -4,10 +4,11 @@ export const useEditorColorMode = () => {
   const { colorMode } = useColorMode();
   const isLight = colorMode === "light";
 
-  const retrieval = isLight ? "gray.700" : "gray.900";
+  const retrieval = isLight ? "gray.700" : "gray.800";
 
   return {
     isLight,
+    selectionShadow: isLight ? "0 0 10px 2px black" : "0 0 7px 1px cyan",
     highlightColor: isLight ? "gray.100" : "gray.100",
     color: isLight ? "gray.800" : "gray.100",
     bg: isLight ? "white" : "gray.700",
@@ -43,6 +44,7 @@ export const useEditorColorMode = () => {
       connected: isLight ? "gray.800" : "gray.100",
       required: isLight ? "red.800" : "red.300",
       default: isLight ? "gray.400" : "gray.500",
+      selected: isLight ? "blue.400" : "blue.400",
     },
     highlight: {
       root: isLight ? "gray.300" : "gray.900",
@@ -57,6 +59,7 @@ export const useEditorColorMode = () => {
       retriever: retrieval,
       text_splitter: retrieval,
       tool: isLight ? "yellow.500" : "yellow.600",
+      toolkit: isLight ? "yellow.500" : "yellow.600",
       embeddings: retrieval,
       output_parser: isLight ? "gray.400" : "gray.700",
       vectorstore: retrieval,

@@ -1,9 +1,14 @@
+import logging
 import sys
 from typing import Callable
 
 from langchain.agents import AgentType, AgentExecutor
 from langchain.agents import initialize_agent as initialize_agent_base
+from langchain.agents.agent_toolkits.base import BaseToolkit
 from langchain.chains.base import Chain
+
+
+logger = logging.getLogger(__name__)
 
 
 def initialize_agent(agent: AgentType, **kwargs) -> Chain:
@@ -21,6 +26,17 @@ def initialize_agent(agent: AgentType, **kwargs) -> Chain:
             agent_kwargs[key[15:]] = value
             del kwargs[key]
     kwargs["agent_kwargs"] = agent_kwargs
+
+    # unpack Toolkits into Tools
+    if "tools" in kwargs:
+        tools = kwargs["tools"]
+        unpacked_tools = []
+        for i, value in enumerate(tools):
+            if isinstance(value, BaseToolkit):
+                unpacked_tools.extend(value.get_tools())
+            else:
+                unpacked_tools.append(value)
+        kwargs["tools"] = unpacked_tools
 
     return initialize_agent_base(agent=agent, **kwargs)
 

@@ -4,16 +4,14 @@ import {
   Card,
   CardBody,
   Divider,
+  Flex,
   Heading,
   Text,
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
-import { useChain } from "chains/hooks/useChain";
 
 const AgentCard = ({ agent }) => {
-  const { data: chain } = useChain(agent?.chain_id);
-
   const borderColor = useColorModeValue("gray.400", "whiteAlpha.50");
   const bg = useColorModeValue("gray.100", "gray.700");
 
@@ -33,16 +31,16 @@ const AgentCard = ({ agent }) => {
     >
       <CardBody>
         <VStack alignItems="start" spacing={2}>
-          <Heading as="h5" size="xs">
-            {agent.name}
-          </Heading>
-          <Text as="h5" size="xs">
-            {agent.model}
-          </Text>
+          <Flex justify={"space-between"} width={"100%"}>
+            <Heading as="span" size="sm">
+              {agent.name}
+            </Heading>
+            <Text fontSize="sm" color="blue.400">
+              @{agent.alias}
+            </Text>
+          </Flex>
+
           <Divider />
-          <Heading as="h5" size="xs">
-            {chain?.name || "No Chain"}
-          </Heading>
           <Box
             maxWidth="350px"
             minHeight={50}
@@ -55,7 +53,7 @@ const AgentCard = ({ agent }) => {
               WebkitLineClamp: 3,
             }}
           >
-            {chain?.description || "No Chain"}
+            {agent.purpose}
           </Box>
         </VStack>
       </CardBody>

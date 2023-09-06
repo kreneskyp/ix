@@ -69,7 +69,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -138,49 +141,27 @@
 },
 {
   "model": "chains.nodetype",
-  "pk": "05c2a0b5-4abd-4e37-a508-7aafcd149dfb",
+  "pk": "03e1926d-280d-4091-86a1-982df5133825",
   "fields": {
-    "name": "JSON Loader",
-    "description": "Load a `JSON` file using a `jq` schema.\n\n    Example:\n        [{\"text\": ...}, {\"text\": ...}, {\"text\": ...}] -> schema = .[].text\n        {\"key\": [{\"text\": ...}, {\"text\": ...}, {\"text\": ...}]} -> schema = .key[].text\n        [\"\", \"\", \"\"] -> schema = .[]\n    ",
-    "class_path": "langchain.document_loaders.JSONLoader",
+    "name": "PDF Loader",
+    "description": "Load `PDF using `pypdf` and chunks at character level.\n\n    Loader also stores page numbers in metadata.\n    ",
+    "class_path": "langchain.document_loaders.PyPDFLoader",
     "type": "document_loader",
     "display_type": "node",
     "connectors": null,
     "fields": [
       {
         "name": "file_path",
-        "type": "Union",
+        "type": "str",
         "label": "File_path",
         "default": null,
         "required": true
       },
       {
-        "name": "jq_schema",
+        "name": "password",
         "type": "str",
-        "label": "Jq_schema",
+        "label": "Password",
         "default": null,
-        "required": true,
-        "input_type": "textarea"
-      },
-      {
-        "name": "content_key",
-        "type": "str",
-        "label": "Content_key",
-        "default": null,
-        "required": false
-      },
-      {
-        "name": "text_content",
-        "type": "boolean",
-        "label": "Text_content",
-        "default": true,
-        "required": false
-      },
-      {
-        "name": "json_lines",
-        "type": "boolean",
-        "label": "Json_lines",
-        "default": false,
         "required": false
       }
     ],
@@ -188,29 +169,16 @@
     "config_schema": {
       "type": "object",
       "required": [
-        "file_path",
-        "jq_schema"
+        "file_path"
       ],
       "properties": {
+        "password": {
+          "type": "string",
+          "default": null
+        },
         "file_path": {
-          "type": "object",
-          "default": null
-        },
-        "jq_schema": {
           "type": "string",
           "default": null
-        },
-        "json_lines": {
-          "type": "boolean",
-          "default": false
-        },
-        "content_key": {
-          "type": "string",
-          "default": null
-        },
-        "text_content": {
-          "type": "boolean",
-          "default": true
         }
       }
     }
@@ -236,7 +204,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -298,6 +269,84 @@
         "return_intermediate_steps": {
           "type": "boolean",
           "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "102653f7-e6e7-4453-a17e-5341b9ec0057",
+  "fields": {
+    "name": "Unstructured Markdown Loader",
+    "description": "Load `Markdown` files using `Unstructured`.\n\n    You can run the loader in one of two modes: \"single\" and \"elements\".\n    If you use \"single\" mode, the document will be returned as a single\n    langchain Document object. If you use \"elements\" mode, the unstructured\n    library will split the document into elements such as Title and NarrativeText.\n    You can pass in additional unstructured kwargs after mode to apply\n    different unstructured settings.\n\n    Examples\n    --------\n    from langchain.document_loaders import UnstructuredMarkdownLoader\n\n    loader = UnstructuredMarkdownLoader(\n        \"example.md\", mode=\"elements\", strategy=\"fast\",\n    )\n    docs = loader.load()\n\n    References\n    ----------\n    https://unstructured-io.github.io/unstructured/bricks.html#partition-md\n    ",
+    "class_path": "langchain.document_loaders.UnstructuredMarkdownLoader",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "11973bec-410f-4678-b955-525bc4dea5a7",
+  "fields": {
+    "name": "VectorStoreRetriever",
+    "description": "Default vector",
+    "class_path": "langchain.vectorstores.base.VectorStoreRetriever",
+    "type": "retriever",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "vectorstore",
+        "type": "target",
+        "required": true,
+        "source_type": "vectorstore"
+      }
+    ],
+    "fields": [
+      {
+        "name": "allowed_search_types",
+        "type": "list",
+        "default": [
+          "similarity",
+          "similarity_score_threshold",
+          "mmr"
+        ],
+        "required": true
+      },
+      {
+        "name": "search_type",
+        "type": "str",
+        "label": "Search_type",
+        "default": "similarity",
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "allowed_search_types"
+      ],
+      "properties": {
+        "search_type": {
+          "type": "string",
+          "default": "similarity"
+        },
+        "allowed_search_types": {
+          "type": "object",
+          "default": [
+            "similarity",
+            "similarity_score_threshold",
+            "mmr"
+          ]
         }
       }
     }
@@ -331,25 +380,6 @@
 },
 {
   "model": "chains.nodetype",
-  "pk": "19e42ab4-a56a-407e-a463-b4b9dcb26c7f",
-  "fields": {
-    "name": "Unstructured HTML Loader",
-    "description": "Load `HTML` files using `Unstructured`.\n\n    You can run the loader in one of two modes: \"single\" and \"elements\".\n    If you use \"single\" mode, the document will be returned as a single\n    langchain Document object. If you use \"elements\" mode, the unstructured\n    library will split the document into elements such as Title and NarrativeText.\n    You can pass in additional unstructured kwargs after mode to apply\n    different unstructured settings.\n\n    Examples\n    --------\n    from langchain.document_loaders import UnstructuredHTMLLoader\n\n    loader = UnstructuredHTMLLoader(\n        \"example.html\", mode=\"elements\", strategy=\"fast\",\n    )\n    docs = loader.load()\n\n    References\n    ----------\n    https://unstructured-io.github.io/unstructured/bricks.html#partition-html\n    ",
-    "class_path": "langchain.document_loaders.UnstructuredHTMLLoader",
-    "type": "document_loader",
-    "display_type": "node",
-    "connectors": null,
-    "fields": [],
-    "child_field": null,
-    "config_schema": {
-      "type": "object",
-      "required": [],
-      "properties": {}
-    }
-  }
-},
-{
-  "model": "chains.nodetype",
   "pk": "1b76aa58-eca9-41fa-b255-1d572de46aa8",
   "fields": {
     "name": "Zero Shot React Description Agent",
@@ -368,7 +398,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1161,7 +1194,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1248,7 +1284,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1308,92 +1347,6 @@
           "default": null
         },
         "return_intermediate_steps": {
-          "type": "boolean",
-          "default": false
-        }
-      }
-    }
-  }
-},
-{
-  "model": "chains.nodetype",
-  "pk": "39414ada-446f-4949-b087-193d1c93cb27",
-  "fields": {
-    "name": "Wikipedia",
-    "description": "Wikipedia search engine",
-    "class_path": "ix.tools.wikipedia.get_wikipedia",
-    "type": "tool",
-    "display_type": "node",
-    "connectors": null,
-    "fields": [
-      {
-        "name": "return_direct",
-        "type": "boolean",
-        "default": false
-      },
-      {
-        "name": "verbose",
-        "type": "boolean",
-        "default": false
-      },
-      {
-        "name": "top_k_results",
-        "type": "int",
-        "label": "Top_k_results",
-        "default": 3,
-        "required": false
-      },
-      {
-        "name": "lang",
-        "type": "str",
-        "label": "Lang",
-        "default": "en",
-        "required": false
-      },
-      {
-        "name": "load_all_available_meta",
-        "type": "boolean",
-        "label": "Load_all_available_meta",
-        "default": false,
-        "required": false
-      },
-      {
-        "name": "doc_content_chars_max",
-        "type": "int",
-        "label": "Doc_content_chars_max",
-        "default": 4000,
-        "required": false
-      }
-    ],
-    "child_field": null,
-    "config_schema": {
-      "type": "object",
-      "required": [
-        "return_direct",
-        "verbose"
-      ],
-      "properties": {
-        "lang": {
-          "type": "string",
-          "default": "en"
-        },
-        "verbose": {
-          "type": "boolean",
-          "default": false
-        },
-        "return_direct": {
-          "type": "boolean",
-          "default": false
-        },
-        "top_k_results": {
-          "type": "number",
-          "default": 3
-        },
-        "doc_content_chars_max": {
-          "type": "number",
-          "default": 4000
-        },
-        "load_all_available_meta": {
           "type": "boolean",
           "default": false
         }
@@ -1562,6 +1515,340 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "4bfd56af-222c-4428-bc5a-31c4e5a99871",
+  "fields": {
+    "name": "Llama Cpp",
+    "description": "Llama Cpp wrapper for llama models",
+    "class_path": "langchain.llms.llamacpp.LlamaCpp",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "model_path",
+        "type": "str",
+        "label": "Model_path",
+        "default": null,
+        "required": true
+      },
+      {
+        "name": "lora_base",
+        "type": "str",
+        "label": "Lora_base",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "n_ctx",
+        "type": "int",
+        "label": "N_ctx",
+        "default": 512,
+        "required": false
+      },
+      {
+        "name": "n_parts",
+        "type": "int",
+        "label": "N_parts",
+        "default": -1,
+        "required": false
+      },
+      {
+        "name": "seed",
+        "type": "int",
+        "label": "Seed",
+        "default": -1,
+        "required": false
+      },
+      {
+        "name": "f16_kv",
+        "type": "boolean",
+        "label": "F16_kv",
+        "default": true,
+        "required": false
+      },
+      {
+        "name": "logits_all",
+        "type": "boolean",
+        "label": "Logits_all",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "vocab_only",
+        "type": "boolean",
+        "label": "Vocab_only",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "use_mlock",
+        "type": "boolean",
+        "label": "Use_mlock",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "n_threads",
+        "type": "int",
+        "label": "N_threads",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "n_batch",
+        "type": "int",
+        "label": "N_batch",
+        "default": 8,
+        "required": false
+      },
+      {
+        "name": "n_gpu_layers",
+        "type": "int",
+        "label": "N_gpu_layers",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "suffix",
+        "type": "str",
+        "label": "Suffix",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "max_tokens",
+        "type": "int",
+        "label": "Max_tokens",
+        "default": 256,
+        "required": false
+      },
+      {
+        "name": "temperature",
+        "type": "float",
+        "label": "Temperature",
+        "default": 0.8,
+        "required": false
+      },
+      {
+        "name": "top_p",
+        "type": "float",
+        "label": "Top_p",
+        "default": 0.95,
+        "required": false
+      },
+      {
+        "name": "logprobs",
+        "type": "int",
+        "label": "Logprobs",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "echo",
+        "type": "boolean",
+        "label": "Echo",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "stop",
+        "type": "List",
+        "label": "Stop",
+        "default": [],
+        "required": false
+      },
+      {
+        "name": "repeat_penalty",
+        "type": "float",
+        "label": "Repeat_penalty",
+        "default": 1.1,
+        "required": false
+      },
+      {
+        "name": "last_n_tokens_size",
+        "type": "int",
+        "label": "Last_n_tokens_size",
+        "default": 64,
+        "required": false
+      },
+      {
+        "name": "use_mmap",
+        "type": "boolean",
+        "label": "Use_mmap",
+        "default": true,
+        "required": false
+      },
+      {
+        "name": "rope_freq_scale",
+        "type": "float",
+        "label": "Rope_freq_scale",
+        "default": 1.0,
+        "required": false
+      },
+      {
+        "name": "rope_freq_base",
+        "type": "float",
+        "label": "Rope_freq_base",
+        "default": 10000.0,
+        "required": false
+      },
+      {
+        "name": "streaming",
+        "type": "boolean",
+        "label": "Streaming",
+        "default": true,
+        "required": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "label": "Verbose",
+        "default": true,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose",
+        "model_path"
+      ],
+      "properties": {
+        "echo": {
+          "type": "boolean",
+          "default": false
+        },
+        "seed": {
+          "type": "number",
+          "default": -1
+        },
+        "stop": {
+          "type": "object",
+          "default": []
+        },
+        "n_ctx": {
+          "type": "number",
+          "default": 512
+        },
+        "top_p": {
+          "type": "number",
+          "default": 0.95
+        },
+        "f16_kv": {
+          "type": "boolean",
+          "default": true
+        },
+        "suffix": {
+          "type": "string",
+          "default": null
+        },
+        "n_batch": {
+          "type": "number",
+          "default": 8
+        },
+        "n_parts": {
+          "type": "number",
+          "default": -1
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": true
+        },
+        "logprobs": {
+          "type": "number",
+          "default": null
+        },
+        "use_mmap": {
+          "type": "boolean",
+          "default": true
+        },
+        "lora_base": {
+          "type": "string",
+          "default": null
+        },
+        "n_threads": {
+          "type": "number",
+          "default": null
+        },
+        "streaming": {
+          "type": "boolean",
+          "default": true
+        },
+        "use_mlock": {
+          "type": "boolean",
+          "default": false
+        },
+        "logits_all": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_tokens": {
+          "type": "number",
+          "default": 256
+        },
+        "model_path": {
+          "type": "string",
+          "default": null
+        },
+        "vocab_only": {
+          "type": "boolean",
+          "default": false
+        },
+        "temperature": {
+          "type": "number",
+          "default": 0.8
+        },
+        "n_gpu_layers": {
+          "type": "number",
+          "default": null
+        },
+        "repeat_penalty": {
+          "type": "number",
+          "default": 1.1
+        },
+        "rope_freq_base": {
+          "type": "number",
+          "default": 10000.0
+        },
+        "rope_freq_scale": {
+          "type": "number",
+          "default": 1.0
+        },
+        "last_n_tokens_size": {
+          "type": "number",
+          "default": 64
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "4d1e84fd-4f26-4495-ab5a-6c78d23b60a5",
+  "fields": {
+    "name": "Unstructured HTML Loader",
+    "description": "Load `HTML` files using `Unstructured`.\n\n    You can run the loader in one of two modes: \"single\" and \"elements\".\n    If you use \"single\" mode, the document will be returned as a single\n    langchain Document object. If you use \"elements\" mode, the unstructured\n    library will split the document into elements such as Title and NarrativeText.\n    You can pass in additional unstructured kwargs after mode to apply\n    different unstructured settings.\n\n    Examples\n    --------\n    from langchain.document_loaders import UnstructuredHTMLLoader\n\n    loader = UnstructuredHTMLLoader(\n        \"example.html\", mode=\"elements\", strategy=\"fast\",\n    )\n    docs = loader.load()\n\n    References\n    ----------\n    https://unstructured-io.github.io/unstructured/bricks.html#partition-html\n    ",
+    "class_path": "langchain.document_loaders.UnstructuredHTMLLoader",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "4eb6a170-d0e4-428e-be8d-09ca1ca8383d",
   "fields": {
     "name": "GraphQL Tool",
@@ -1616,62 +1903,6 @@
 },
 {
   "model": "chains.nodetype",
-  "pk": "504aa6f6-45e7-4bbd-8f4f-80b39cebace9",
-  "fields": {
-    "name": "Beautiful Soup HTML Loader",
-    "description": "Load `HTML` files and parse them with `beautiful soup`.",
-    "class_path": "langchain.document_loaders.BSHTMLLoader",
-    "type": "document_loader",
-    "display_type": "node",
-    "connectors": null,
-    "fields": [
-      {
-        "name": "file_path",
-        "type": "str",
-        "label": "File_path",
-        "default": null,
-        "required": true
-      },
-      {
-        "name": "open_encoding",
-        "type": "str",
-        "label": "Open_encoding",
-        "default": null,
-        "required": false
-      },
-      {
-        "name": "get_text_separator",
-        "type": "str",
-        "label": "Get_text_separator",
-        "default": "",
-        "required": false
-      }
-    ],
-    "child_field": null,
-    "config_schema": {
-      "type": "object",
-      "required": [
-        "file_path"
-      ],
-      "properties": {
-        "file_path": {
-          "type": "string",
-          "default": null
-        },
-        "open_encoding": {
-          "type": "string",
-          "default": null
-        },
-        "get_text_separator": {
-          "type": "string",
-          "default": ""
-        }
-      }
-    }
-  }
-},
-{
-  "model": "chains.nodetype",
   "pk": "54d5cfcb-bf9c-4fe2-9692-075d6849ce23",
   "fields": {
     "name": "Chat Zero Shot React Description Agent",
@@ -1690,7 +1921,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1777,7 +2011,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -1945,6 +2182,13 @@
         "required": false
       },
       {
+        "name": "ARXIV_MAX_QUERY_LENGTH",
+        "type": "int",
+        "label": "ARXIV_MAX_QUERY_LENGTH",
+        "default": 300,
+        "required": false
+      },
+      {
         "name": "load_max_docs",
         "type": "int",
         "label": "Load_max_docs",
@@ -1993,6 +2237,10 @@
         "doc_content_chars_max": {
           "type": "number",
           "default": 4000
+        },
+        "ARXIV_MAX_QUERY_LENGTH": {
+          "type": "number",
+          "default": 300
         },
         "load_all_available_meta": {
           "type": "boolean",
@@ -2383,51 +2631,6 @@
 },
 {
   "model": "chains.nodetype",
-  "pk": "8268f595-438f-4921-80d7-3d31b3020755",
-  "fields": {
-    "name": "PDF Loader",
-    "description": "Load `PDF using `pypdf` and chunks at character level.\n\n    Loader also stores page numbers in metadata.\n    ",
-    "class_path": "langchain.document_loaders.PyPDFLoader",
-    "type": "document_loader",
-    "display_type": "node",
-    "connectors": null,
-    "fields": [
-      {
-        "name": "file_path",
-        "type": "str",
-        "label": "File_path",
-        "default": null,
-        "required": true
-      },
-      {
-        "name": "password",
-        "type": "str",
-        "label": "Password",
-        "default": null,
-        "required": false
-      }
-    ],
-    "child_field": null,
-    "config_schema": {
-      "type": "object",
-      "required": [
-        "file_path"
-      ],
-      "properties": {
-        "password": {
-          "type": "string",
-          "default": null
-        },
-        "file_path": {
-          "type": "string",
-          "default": null
-        }
-      }
-    }
-  }
-},
-{
-  "model": "chains.nodetype",
   "pk": "8344d221-f239-4b83-acfa-f167f0dc6e22",
   "fields": {
     "name": "MapSubchain",
@@ -2542,6 +2745,60 @@
           "default": "models/embedding-gecko-001"
         },
         "google_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "89ef5872-b042-4551-8a14-6c9be2cadcc6",
+  "fields": {
+    "name": "Metaphor find similar",
+    "description": "Metaphor find similar pages",
+    "class_path": "ix.tools.metaphor.get_metaphor_find_similar",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "metaphor_api_key",
+        "type": "str",
+        "label": "Metaphor API Key",
+        "required": true,
+        "input_type": "secret"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "metaphor_api_key"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "metaphor_api_key": {
           "type": "string",
           "default": null
         }
@@ -3159,6 +3416,114 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "9ee6e9bc-f809-4b1e-841c-f775dd1038cc",
+  "fields": {
+    "name": "Metaphor page contents",
+    "description": "Metaphor page contents",
+    "class_path": "ix.tools.metaphor.get_metaphor_contents",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "metaphor_api_key",
+        "type": "str",
+        "label": "Metaphor API Key",
+        "required": true,
+        "input_type": "secret"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "metaphor_api_key"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "metaphor_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a25f957a-8c72-45dd-a035-23e835008093",
+  "fields": {
+    "name": "Metaphor search",
+    "description": "Metaphor search queries",
+    "class_path": "ix.tools.metaphor.get_metaphor_search",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "metaphor_api_key",
+        "type": "str",
+        "label": "Metaphor API Key",
+        "required": true,
+        "input_type": "secret"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "metaphor_api_key"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "metaphor_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "a3dd72e8-1554-47dd-8f42-0dda58c06f7c",
   "fields": {
     "name": "Chat Conversational React Description Agent",
@@ -3177,7 +3542,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -3246,6 +3614,302 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "a4b78af5-415f-45e5-ad6f-079384d826a0",
+  "fields": {
+    "name": "Ollama",
+    "description": "Ollama server for llama models",
+    "class_path": "langchain.llms.ollama.Ollama",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "base_url",
+        "type": "str",
+        "label": "Base_url",
+        "default": "http://localhost:11434",
+        "required": false
+      },
+      {
+        "name": "model",
+        "type": "str",
+        "label": "Model",
+        "default": "llama2",
+        "required": false
+      },
+      {
+        "name": "mirostat",
+        "type": "int",
+        "label": "Mirostat",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "mirostat_eta",
+        "type": "float",
+        "label": "Mirostat_eta",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "mirostat_tau",
+        "type": "float",
+        "label": "Mirostat_tau",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "num_ctx",
+        "type": "int",
+        "label": "Num_ctx",
+        "default": null,
+        "required": false
+      },
+      {
+        "max": 10,
+        "min": 0,
+        "name": "num_gpu",
+        "step": 1,
+        "type": "int",
+        "label": "Num_gpu",
+        "default": 1,
+        "required": false,
+        "input_type": "slider"
+      },
+      {
+        "name": "num_thread",
+        "type": "int",
+        "label": "Num_thread",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "repeat_last_n",
+        "type": "int",
+        "label": "Repeat_last_n",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "repeat_penalty",
+        "type": "float",
+        "label": "Repeat_penalty",
+        "default": null,
+        "required": false
+      },
+      {
+        "max": 1,
+        "min": 0,
+        "name": "temperature",
+        "step": 0.05,
+        "type": "float",
+        "label": "Temperature",
+        "default": 0.8,
+        "required": false,
+        "input_type": "slider"
+      },
+      {
+        "name": "stop",
+        "type": "List",
+        "label": "Stop",
+        "style": {
+          "width": "100%"
+        },
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "tfs_z",
+        "type": "float",
+        "label": "Tfs_z",
+        "default": null,
+        "required": false
+      },
+      {
+        "max": 1,
+        "min": 0,
+        "name": "top_p",
+        "step": 0.05,
+        "type": "int",
+        "label": "Top_p",
+        "default": 0.9,
+        "required": false,
+        "input_type": "slider"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose"
+      ],
+      "properties": {
+        "stop": {
+          "type": "object",
+          "default": null
+        },
+        "model": {
+          "type": "string",
+          "default": "llama2"
+        },
+        "tfs_z": {
+          "type": "number",
+          "default": null
+        },
+        "top_p": {
+          "type": "number",
+          "default": 0.9,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "num_ctx": {
+          "type": "number",
+          "default": null
+        },
+        "num_gpu": {
+          "type": "number",
+          "default": 1,
+          "maximum": 10.0,
+          "minimum": 0.0,
+          "multipleOf": 1.0
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "base_url": {
+          "type": "string",
+          "default": "http://localhost:11434"
+        },
+        "mirostat": {
+          "type": "number",
+          "default": null
+        },
+        "num_thread": {
+          "type": "number",
+          "default": null
+        },
+        "temperature": {
+          "type": "number",
+          "default": 0.8,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "mirostat_eta": {
+          "type": "number",
+          "default": null
+        },
+        "mirostat_tau": {
+          "type": "number",
+          "default": null
+        },
+        "repeat_last_n": {
+          "type": "number",
+          "default": null
+        },
+        "repeat_penalty": {
+          "type": "number",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a8ffd3b0-dfb4-4e1b-b5bf-90a2ec959ff8",
+  "fields": {
+    "name": "Wikipedia",
+    "description": "Wikipedia search engine",
+    "class_path": "ix.tools.wikipedia.get_wikipedia",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "top_k_results",
+        "type": "int",
+        "label": "Top_k_results",
+        "default": 3,
+        "required": false
+      },
+      {
+        "name": "lang",
+        "type": "str",
+        "label": "Lang",
+        "default": "en",
+        "required": false
+      },
+      {
+        "name": "load_all_available_meta",
+        "type": "boolean",
+        "label": "Load_all_available_meta",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "doc_content_chars_max",
+        "type": "int",
+        "label": "Doc_content_chars_max",
+        "default": 4000,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "lang": {
+          "type": "string",
+          "default": "en"
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "top_k_results": {
+          "type": "number",
+          "default": 3
+        },
+        "doc_content_chars_max": {
+          "type": "number",
+          "default": 4000
+        },
+        "load_all_available_meta": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "a9fb2b5d-78d6-428d-a968-11ff4f43ff1b",
   "fields": {
     "name": "Pubmed",
@@ -3264,6 +3928,13 @@
         "name": "verbose",
         "type": "boolean",
         "default": false
+      },
+      {
+        "name": "max_retry",
+        "type": "int",
+        "label": "Max_retry",
+        "default": 5,
+        "required": false
       },
       {
         "name": "top_k_results",
@@ -3302,6 +3973,10 @@
         "verbose": {
           "type": "boolean",
           "default": false
+        },
+        "max_retry": {
+          "type": "number",
+          "default": 5
         },
         "return_direct": {
           "type": "boolean",
@@ -3548,7 +4223,10 @@
         "key": "tools",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "prompt",
@@ -3779,6 +4457,62 @@
         "request_timeout": {
           "type": "number",
           "default": 60
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "be007a36-5a13-4126-99ab-abbeb13219b5",
+  "fields": {
+    "name": "CSV Loader",
+    "description": "Load a `CSV` file into a list of Documents.\n\n    Each document represents one row of the CSV file. Every row is converted into a\n    key/value pair and outputted to a new line in the document's page_content.\n\n    The source for each document loaded from csv is set to the value of the\n    `file_path` argument for all documents by default.\n    You can override this by setting the `source_column` argument to the\n    name of a column in the CSV file.\n    The source of each document will then be set to the value of the column\n    with the name specified in `source_column`.\n\n    Output Example:\n        .. code-block:: txt\n\n            column1: value1\n            column2: value2\n            column3: value3\n    ",
+    "class_path": "langchain.document_loaders.csv_loader.CSVLoader",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "file_path",
+        "type": "str",
+        "label": "File_path",
+        "default": null,
+        "required": true
+      },
+      {
+        "name": "source_column",
+        "type": "str",
+        "label": "Source_column",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "encoding",
+        "type": "str",
+        "label": "Encoding",
+        "default": null,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "file_path"
+      ],
+      "properties": {
+        "encoding": {
+          "type": "string",
+          "default": null
+        },
+        "file_path": {
+          "type": "string",
+          "default": null
+        },
+        "source_column": {
+          "type": "string",
+          "default": null
         }
       }
     }
@@ -4271,7 +5005,10 @@
         "type": "target",
         "as_type": "retriever",
         "required": true,
-        "source_type": "vectorstore"
+        "source_type": [
+          "retriever",
+          "vectorstore"
+        ]
       }
     ],
     "fields": [
@@ -4381,6 +5118,86 @@
         "file_path": {
           "type": "string",
           "default": "/var/app/workdir/chat_memory.txt"
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "deaaa183-3301-408a-a3d1-0629b1511440",
+  "fields": {
+    "name": "JSON Loader",
+    "description": "Load a `JSON` file using a `jq` schema.\n\n    Example:\n        [{\"text\": ...}, {\"text\": ...}, {\"text\": ...}] -> schema = .[].text\n        {\"key\": [{\"text\": ...}, {\"text\": ...}, {\"text\": ...}]} -> schema = .key[].text\n        [\"\", \"\", \"\"] -> schema = .[]\n    ",
+    "class_path": "langchain.document_loaders.JSONLoader",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "file_path",
+        "type": "Union",
+        "label": "File_path",
+        "default": null,
+        "required": true
+      },
+      {
+        "name": "jq_schema",
+        "type": "str",
+        "label": "Jq_schema",
+        "default": null,
+        "required": true,
+        "input_type": "textarea"
+      },
+      {
+        "name": "content_key",
+        "type": "str",
+        "label": "Content_key",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "text_content",
+        "type": "boolean",
+        "label": "Text_content",
+        "default": true,
+        "required": false
+      },
+      {
+        "name": "json_lines",
+        "type": "boolean",
+        "label": "Json_lines",
+        "default": false,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "file_path",
+        "jq_schema"
+      ],
+      "properties": {
+        "file_path": {
+          "type": "object",
+          "default": null
+        },
+        "jq_schema": {
+          "type": "string",
+          "default": null
+        },
+        "json_lines": {
+          "type": "boolean",
+          "default": false
+        },
+        "content_key": {
+          "type": "string",
+          "default": null
+        },
+        "text_content": {
+          "type": "boolean",
+          "default": true
         }
       }
     }
@@ -4505,7 +5322,10 @@
         "key": "functions",
         "type": "target",
         "multiple": true,
-        "source_type": "tool"
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
       },
       {
         "key": "output_parser",
@@ -4549,6 +5369,62 @@
         "function_call": {
           "type": "string",
           "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "e9555cb2-b837-4949-9cdf-a090f5297b63",
+  "fields": {
+    "name": "Beautiful Soup HTML Loader",
+    "description": "Load `HTML` files and parse them with `beautiful soup`.",
+    "class_path": "langchain.document_loaders.BSHTMLLoader",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "file_path",
+        "type": "str",
+        "label": "File_path",
+        "default": null,
+        "required": true
+      },
+      {
+        "name": "open_encoding",
+        "type": "str",
+        "label": "Open_encoding",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "get_text_separator",
+        "type": "str",
+        "label": "Get_text_separator",
+        "default": "",
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "file_path"
+      ],
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "default": null
+        },
+        "open_encoding": {
+          "type": "string",
+          "default": null
+        },
+        "get_text_separator": {
+          "type": "string",
+          "default": ""
         }
       }
     }
@@ -4881,55 +5757,31 @@
 },
 {
   "model": "chains.nodetype",
-  "pk": "fd7f6d9b-f050-4276-bdf1-409833080f5e",
+  "pk": "fba24100-d583-45e1-aec5-a2f9cf6edf9b",
   "fields": {
-    "name": "CSV Loader",
-    "description": "Load a `CSV` file into a list of Documents.\n\n    Each document represents one row of the CSV file. Every row is converted into a\n    key/value pair and outputted to a new line in the document's page_content.\n\n    The source for each document loaded from csv is set to the value of the\n    `file_path` argument for all documents by default.\n    You can override this by setting the `source_column` argument to the\n    name of a column in the CSV file.\n    The source of each document will then be set to the value of the column\n    with the name specified in `source_column`.\n\n    Output Example:\n        .. code-block:: txt\n\n            column1: value1\n            column2: value2\n            column3: value3\n    ",
-    "class_path": "langchain.document_loaders.csv_loader.CSVLoader",
-    "type": "document_loader",
+    "name": "File Management",
+    "description": "Toolkit for interacting with a Local Files.",
+    "class_path": "langchain.agents.agent_toolkits.file_management.toolkit.FileManagementToolkit",
+    "type": "toolkit",
     "display_type": "node",
     "connectors": null,
     "fields": [
       {
-        "name": "file_path",
-        "type": "str",
-        "label": "File_path",
-        "default": null,
-        "required": true
-      },
-      {
-        "name": "source_column",
-        "type": "str",
-        "label": "Source_column",
-        "default": null,
-        "required": false
-      },
-      {
-        "name": "encoding",
-        "type": "str",
-        "label": "Encoding",
-        "default": null,
+        "name": "root_dir",
+        "type": "Optional[str]",
+        "label": "Root_dir",
+        "default": "/var/app/workdir",
         "required": false
       }
     ],
     "child_field": null,
     "config_schema": {
       "type": "object",
-      "required": [
-        "file_path"
-      ],
+      "required": [],
       "properties": {
-        "encoding": {
-          "type": "string",
-          "default": null
-        },
-        "file_path": {
-          "type": "string",
-          "default": null
-        },
-        "source_column": {
-          "type": "string",
-          "default": null
+        "root_dir": {
+          "type": "object",
+          "default": "/var/app/workdir"
         }
       }
     }

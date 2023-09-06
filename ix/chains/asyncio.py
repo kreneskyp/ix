@@ -1,7 +1,6 @@
 from typing import Optional, Any, Dict
 from asgiref.sync import sync_to_async
 from langchain.callbacks.manager import (
-    AsyncCallbackManagerForToolRun,
     CallbackManagerForChainRun,
 )
 
@@ -17,11 +16,11 @@ class SyncToAsyncRun:
 
     async def _arun(
         self,
-        query: str,
-        run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
+        *args: Any,
+        **kwargs: Any,
     ) -> str:
         """Use the tool asynchronously."""
-        result = await sync_to_async(self._run)(query, run_manager=run_manager)
+        result = await sync_to_async(self._run)(*args, **kwargs)
         return result
 
 

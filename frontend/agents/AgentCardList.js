@@ -9,7 +9,7 @@ export const AgentCardList = ({ page = {} }) => {
     <Flex align="center" justify="left" flexWrap="wrap">
       {agents?.map((agent) => (
         <Box key={agent.id} p={5} width="400px">
-          <Link to={`/agents/${agent.id}`}>
+          <Link to={`/chains/${agent.chain_id}`}>
             <AgentCard agent={agent} />
           </Link>
         </Box>

@@ -17,7 +17,6 @@ export const toReactFlowNode = (node, nodeType) => {
   return {
     id: node.id,
     type: nodeType.display_type,
-    dragHandle: ".drag-handle",
     position: node.position,
     data: {
       type: nodeType,
