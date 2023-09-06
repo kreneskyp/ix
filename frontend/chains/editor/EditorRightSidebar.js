@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import {
   Drawer,
   DrawerContent,
@@ -28,14 +28,32 @@ import { ChainEditorPane } from "chains/editor/ChainEditorPane";
 import { ChatPane } from "chains/editor/ChatPane";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { TestChatPane } from "chains/editor/TestChatPane";
+import { useSelectedNode } from "chains/hooks/useSelectedNode";
+import { SelectedNodeContext } from "chains/editor/contexts";
 
 export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
   const btnRef = useRef();
+
+  // drawer size state
   const [size, setSize] = React.useState("sm");
   const toggleSize = React.useCallback(() =>
     setSize((prev) => (prev === "sm" ? "xl" : "sm"))
   );
 
+  // Tabs state
+  const [tabIndex, setTabIndex] = React.useState(1);
+  const handleTabsChange = React.useCallback((index) => setTabIndex(index));
+
+  // Select node config pane on node select
+  const { selectedNode } = useContext(SelectedNodeContext);
+  React.useEffect(() => {
+    if (selectedNode) {
+      // default to chain config pane
+      setTabIndex(0);
+    }
+  }, [selectedNode]);
+
+  // style
   const dark = {
     header: {
       color: "gray.500",
@@ -99,7 +117,8 @@ export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
           <Tabs
             isLazy
             isFitted
-            defaultIndex={2}
+            index={tabIndex}
+            onChange={handleTabsChange}
             m={0}
             p={0}
             pt={2}
