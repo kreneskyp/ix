@@ -59,10 +59,26 @@ export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
     header: {
       color: "gray.500",
     },
+    headerContainer: {
+      borderBottom: "1px solid",
+      borderColor: "blackAlpha.100",
+      bg: "blackAlpha.400",
+    },
+    icon: {
+      color: "gray.500",
+    },
   };
   const light = {
     header: {
-      color: "gray.800",
+      color: "gray.500",
+    },
+    headerContainer: {
+      borderBottom: "1px solid",
+      borderColor: "blackAlpha.200",
+      bg: "blackAlpha.50",
+    },
+    icon: {
+      color: "gray.400",
     },
   };
   const style = useColorMode().colorMode === "dark" ? dark : light;
@@ -86,14 +102,7 @@ export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
           display="flex"
           flexDirection="column"
         >
-          <DrawerHeader
-            h={10}
-            px={2}
-            py={1}
-            bg={"blackAlpha.400"}
-            borderBottom={"1px solid"}
-            borderColor={"blackAlpha.100"}
-          >
+          <DrawerHeader h={10} px={2} py={1} {...style.headerContainer}>
             <HStack display={"flex"} justifyContent={"flex-start"}>
               <IconButton
                 aria-label="Expand"
@@ -127,7 +136,7 @@ export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
             flexDirection="column"
             display="flex"
           >
-            <TabList>
+            <TabList {...style.icon}>
               <Tooltip label="Node" aria-label="Node">
                 <Tab>
                   <FontAwesomeIcon icon={faNetworkWired} />

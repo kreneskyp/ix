@@ -13,7 +13,7 @@ import {
 
 const AgentCard = ({ agent }) => {
   const borderColor = useColorModeValue("gray.400", "whiteAlpha.50");
-  const bg = useColorModeValue("gray.100", "gray.700");
+  const bg = useColorModeValue("white", "gray.700");
 
   if (agent == null) {
     return null;

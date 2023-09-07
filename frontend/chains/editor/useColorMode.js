@@ -12,7 +12,16 @@ export const useEditorColorMode = () => {
     highlightColor: isLight ? "gray.100" : "gray.100",
     color: isLight ? "gray.800" : "gray.100",
     bg: isLight ? "white" : "gray.700",
-    border: isLight ? "gray.600" : "black",
+    border: isLight ? "gray.800" : "black",
+    header: isLight
+      ? {
+          color: "gray.600",
+          borderColor: "gray.400",
+        }
+      : {
+          color: "gray.400",
+          borderColor: "gray.400",
+        },
     node: {
       section: isLight
         ? {
@@ -26,7 +35,7 @@ export const useEditorColorMode = () => {
       root: isLight
         ? {
             color: "gray.700",
-            bg: "gray.300",
+            bg: "white",
           }
         : {
             color: "gray.400",
@@ -95,6 +104,17 @@ export const useEditorColorMode = () => {
           "&::-webkit-scrollbar-thumb:hover": {
             background: "#555",
           },
+        },
+    input: isLight
+      ? {
+          bg: "gray.50",
+          color: "gray.800",
+          borderColor: "gray.300",
+        }
+      : {
+          bg: "gray.800",
+          color: "gray.100",
+          borderColor: "whiteAlpha.400",
         },
   };
 };
