@@ -95,16 +95,23 @@ export const ConfigEditorPane = () => {
     <Box>
       <Box p={3}>
         <HStack>
-          <Badge bg={highlight[type?.type] || highlight.default} size={"xs"}>
+          <Badge
+            bg={highlight[type?.type] || highlight.default}
+            size={"xs"}
+            mx={1}
+            my={2}
+          >
             {type?.type}
           </Badge>
-          <Heading as="h3" size="md">
-            {name}
-          </Heading>
+          <Box>
+            <Heading as="h3" size="md">
+              {name}
+            </Heading>
+            <Text color={"gray.500"} fontSize={"xs"}>
+              {type?.name}
+            </Text>
+          </Box>
         </HStack>
-        <Text color={"gray.500"} fontSize={"xs"}>
-          {type?.name}
-        </Text>
       </Box>
       {content}
     </Box>
