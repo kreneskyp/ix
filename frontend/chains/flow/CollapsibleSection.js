@@ -15,7 +15,8 @@ export const CollapsibleSection = ({
 }) => {
   const [show, setShow] = useState(initialShow || false);
   const toggle = useCallback(() => setShow(!show), [show]);
-  const { node } = useEditorColorMode();
+  const { header } = useEditorColorMode();
+  const style = {};
 
   return (
     <Box {...props}>
@@ -28,9 +29,7 @@ export const CollapsibleSection = ({
         width="100%"
         justifyContent="space-between"
         align="center"
-        sx={node.header}
-        color={"gray.400"}
-        borderColor={"gray.400"}
+        sx={header}
         borderBottomWidth={1}
       >
         {title} <FontAwesomeIcon icon={show ? faChevronDown : faChevronRight} />

@@ -99,6 +99,7 @@ const SaveModeChooser = () => {
 };
 
 export const AliasField = ({ object, onChange }) => {
+  const colorMode = useEditorColorMode();
   const handleChange = useCallback(
     (e) => {
       onChange({
@@ -112,7 +113,7 @@ export const AliasField = ({ object, onChange }) => {
   let helperText = null;
   if (object?.alias) {
     helperText = (
-      <FormHelperText>
+      <FormHelperText fontSize={"xs"}>
         This agent responds to the alias{" "}
         <Text as={"span"} color={"blue.300"}>
           @{object?.alias}
@@ -122,7 +123,7 @@ export const AliasField = ({ object, onChange }) => {
     );
   } else {
     helperText = (
-      <FormHelperText>
+      <FormHelperText fontSize={"xs"}>
         Set{" "}
         <Text as={"span"} color={"blue.400"}>
           @alias
@@ -141,6 +142,7 @@ export const AliasField = ({ object, onChange }) => {
         placeholder="Enter agent alias"
         value={object?.alias || ""}
         onChange={handleChange}
+        {...colorMode.input}
       />
       {helperText}
     </FormControl>

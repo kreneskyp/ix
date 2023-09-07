@@ -68,9 +68,10 @@ const CHAT_PANE_LIGHT_STYLE = {
   },
   avatar: {
     ...DEFAULT_CHAT_STYLE.light.avatar,
-    color: "blackAlpha.800",
+    color: "blackAlpha.600",
     bg: "gray.200",
-    avatarColor: "gray.600",
+    borderColor: "gray.300",
+    avatarColor: "gray.500",
   },
   messages: {
     width: "100%",

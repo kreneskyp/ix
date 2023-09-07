@@ -1,8 +1,10 @@
 import React, { useCallback } from "react";
 import { FormControl, FormLabel, Input } from "@chakra-ui/react";
 import { RequiredAsterisk } from "components/RequiredAsterisk";
+import { useEditorColorMode } from "chains/editor/useColorMode";
 
 export const NameField = ({ object, onChange }) => {
+  const colorMode = useEditorColorMode();
   const handleNameChange = useCallback(
     (e) => {
       onChange({
@@ -23,6 +25,7 @@ export const NameField = ({ object, onChange }) => {
         placeholder="Enter name"
         value={object?.name || ""}
         onChange={handleNameChange}
+        {...colorMode.input}
       />
     </FormControl>
   );

@@ -51,6 +51,7 @@ export const RootNode = () => {
         bg={node.root.bg}
         px={1}
         py={1}
+        fontWeight={500}
       >
         <ConnectorPopover
           type={ROOT_TYPE}
