@@ -153,13 +153,19 @@ export const ChainEditorPane = () => {
   const { chain, setChain } = useContext(ChainState);
   const api = useContext(ChainEditorAPIContext);
   const onChainUpdate = useChainUpdate(chain, setChain, api);
+  const { scrollbar } = useEditorColorMode();
 
   return (
     <CollapsibleSection title="General" mt={3} initialShow={true}>
       <VStack spacing={4}>
         <AliasField object={chain} onChange={onChainUpdate} />
         <NameField object={chain} onChange={onChainUpdate} />
-        <DescriptionField object={chain} onChange={onChainUpdate} />
+        <DescriptionField
+          object={chain}
+          onChange={onChainUpdate}
+          minH={550}
+          css={scrollbar}
+        />
       </VStack>
     </CollapsibleSection>
   );
