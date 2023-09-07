@@ -1,5 +1,6 @@
 import React, { useContext, useRef } from "react";
 import {
+  Box,
   Drawer,
   DrawerContent,
   DrawerHeader,
@@ -150,10 +151,10 @@ export const EditorRightSidebar = ({ isOpen, onOpen, onClose }) => {
               flex="1"
               flexDirection="column"
             >
-              <TabPanel>
+              <TabPanel p={0}>
                 <ConfigEditorPane />
               </TabPanel>
-              <TabPanel>
+              <TabPanel p={3}>
                 <ChainEditorPane />
               </TabPanel>
               <TabPanel

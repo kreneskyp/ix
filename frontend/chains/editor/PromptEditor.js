@@ -104,7 +104,7 @@ const PromptEditor = ({ data, onChange }) => {
   return (
     <VStack spacing={1} align="stretch">
       {messages.map((message, index) => (
-        <VStack key={index} p={2} spacing={2}>
+        <VStack key={index} py={2} spacing={2}>
           <Flex
             alignItems="center"
             justifyContent="space-between"
