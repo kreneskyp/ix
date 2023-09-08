@@ -306,9 +306,9 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
   const onChainUpdate = useChainUpdate(chain, setChain, api);
   const onTitleChange = useCallback(
     (event) => {
-      onChainUpdate({ name: event.target.value });
+      onChainUpdate({ ...chain, name: event.target.value });
     },
-    [onChainUpdate]
+    [chain, onChainUpdate]
   );
 
   const onSelectionChange = useCallback((selection) => {
