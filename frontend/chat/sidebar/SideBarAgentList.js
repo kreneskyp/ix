@@ -1,11 +1,20 @@
 import React, { useCallback, useEffect } from "react";
-import { HStack, VStack, Text, Box, useColorModeValue } from "@chakra-ui/react";
+import {
+  HStack,
+  VStack,
+  Text,
+  Box,
+  useColorModeValue,
+  IconButton,
+} from "@chakra-ui/react";
 import AssistantAvatar from "chat/AssistantAvatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faAddressBook,
   faSquareMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import RemoveAgentModalTrigger from "chat/agents/RemoveAgentModalTrigger";
+import AddAgentModalTrigger from "chat/agents/AddAgentModalTrigger";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
@@ -69,6 +78,24 @@ const SideBarAgentList = ({ graph }) => {
       bg={colorMode === "light" ? "transparent" : "transparent"}
       color={colorMode === "light" ? "gray.800" : "gray.300"}
     >
+      <HStack
+        width="100%"
+        mb={2}
+        color={colorMode === "light" ? "gray.800" : "whiteAlpha.500"}
+      >
+        <Box width="100%" align="right">
+          <AddAgentModalTrigger
+            graph={graph}
+            chatAgents={agents}
+            onSuccess={onUpdateAgents}
+          >
+            <IconButton
+              icon={<FontAwesomeIcon icon={faAddressBook} />}
+              title={"add/remove assistants"}
+            />
+          </AddAgentModalTrigger>
+        </Box>
+      </HStack>
       <VStack spacing={3}>
         <AgentListItem agent={lead} chat={graph.chat} />
         {agents?.map((agent, i) => (
