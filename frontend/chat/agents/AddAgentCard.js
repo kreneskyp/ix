@@ -32,14 +32,14 @@ export const AddAgentCard = ({ inChat, isLead, agent, ...props }) => {
     <Card
       overflow="hidden"
       boxShadow="sm"
-      width={550}
+      width={360}
       cursor="pointer"
       bg={colorMode === "light" ? "gray.200" : "blackAlpha.500"}
       sx={sx}
       {...props}
     >
       <CardBody p={5}>
-        <HStack spacing={5}>
+        <HStack spacing={3}>
           <Box width={130}>
             <VStack justify="center" align="center">
               <AssistantAvatar agent={agent} />
