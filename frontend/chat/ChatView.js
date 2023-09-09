@@ -9,6 +9,7 @@ import {
   Tooltip,
   TabPanel,
   TabPanels,
+  IconButton,
 } from "@chakra-ui/react";
 
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
@@ -18,7 +19,11 @@ import SideBarArtifactList from "chat/sidebar/SideBarArtifactList";
 import { ChatInterface } from "chat/ChatInterface";
 import { useChatGraph } from "chat/hooks/useChatGraph";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBox, faClipboardCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBox,
+  faClipboardCheck,
+  faRightLeft,
+} from "@fortawesome/free-solid-svg-icons";
 import { SidebarTabList, SidebarTabs } from "site/SidebarTabs";
 import { ChatMembersButton } from "chat/ChatMembersButton";
 import { ChatAssistantsButton } from "chat/ChatAssistantsButton";
@@ -32,11 +37,9 @@ export const ChatLeftPaneShim = ({ graph, loadGraph }) => {
   );
 };
 
-export const ChatRightSidebar = ({ graph }) => {
-  const rightSidebarDisclosure = useDisclosure({ defaultIsOpen: true });
-
+export const ChatRightSidebar = ({ graph, disclosure }) => {
   return (
-    <RightSidebar {...rightSidebarDisclosure}>
+    <RightSidebar {...disclosure}>
       <SidebarTabs>
         <SidebarTabList>
           <Tooltip label="Tasks" aria-label="Tasks">
@@ -70,6 +73,7 @@ export const ChatView = () => {
   const { id } = useParams();
   const { response, call: loadGraph, isLoading } = useChatGraph(id);
   const graph = response?.data;
+  const rightSidebarDisclosure = useDisclosure({ defaultIsOpen: true });
 
   useEffect(() => {
     loadGraph();
@@ -97,7 +101,19 @@ export const ChatView = () => {
             >
               <ChatInterface graph={graph} />
             </Box>
-            <ChatRightSidebar graph={graph} />
+            <Box position="absolute" top={0} right={0} mt={4} mr={4}>
+              <IconButton
+                ml="auto"
+                icon={<FontAwesomeIcon icon={faRightLeft} />}
+                onClick={rightSidebarDisclosure.onOpen}
+                aria-label="Open Sidebar"
+                title={"Open Sidebar"}
+              />
+            </Box>
+            <ChatRightSidebar
+              graph={graph}
+              disclosure={rightSidebarDisclosure}
+            />
           </HStack>
         )}
       </LayoutContent>
