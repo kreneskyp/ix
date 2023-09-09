@@ -3,8 +3,10 @@ import {
   Box,
   Card,
   CardBody,
+  Flex,
   Heading,
   HStack,
+  Switch,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -44,7 +46,7 @@ export const AddAgentCard = ({ inChat, isLead, agent, ...props }) => {
             <VStack justify="center" align="center">
               <AssistantAvatar agent={agent} />
               <Text
-                color={colorMode === "light" ? "blue.500" : "blue.300"}
+                color={colorMode === "light" ? "blue.500" : "blue.400"}
                 fontSize="sm"
                 fontWeight="bold"
               >
@@ -54,9 +56,17 @@ export const AddAgentCard = ({ inChat, isLead, agent, ...props }) => {
           </Box>
           <Box width={400} sx={{ userSelect: "none" }}>
             <VStack alignItems="start" spacing={2}>
-              <Heading as="h5" size="xs">
-                {agent.name}
-              </Heading>
+              <Flex width={"100%"} justifyContent={"space-between"}>
+                <Heading as="h5" size="xs">
+                  {agent.name}
+                </Heading>
+                <Switch
+                  size={"sm"}
+                  isChecked={inChat || isLead}
+                  isDisabled={isLead}
+                  colorScheme={"blue"}
+                />
+              </Flex>
               <Text
                 maxWidth="350px"
                 minHeight={50}
