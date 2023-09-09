@@ -82,7 +82,7 @@ export const DEFAULT_CHAT_LIGHT_STYLE = {
     ...SCROLLBOX,
   },
   messages: {
-    width: "100%",
+    width: 800,
   },
   message: {
     container: {

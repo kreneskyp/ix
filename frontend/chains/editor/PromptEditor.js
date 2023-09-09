@@ -51,7 +51,7 @@ function parseVariables(str) {
 
 const PromptEditor = ({ data, onChange }) => {
   const [messages, setMessages] = useState(data.messages || DEFAULT_MESSAGES);
-  const { code, scrollbar } = useEditorColorMode();
+  const { input, scrollbar } = useEditorColorMode();
 
   const handleOnChange = useCallback(
     (updatedMessages) => {
@@ -115,7 +115,9 @@ const PromptEditor = ({ data, onChange }) => {
               <Text fontWeight="bold">System</Text>
             ) : (
               <Select
+                {...input}
                 size={"sm"}
+                borderRadius={5}
                 width={125}
                 value={message.role}
                 onChange={(e) =>
@@ -154,6 +156,8 @@ const PromptEditor = ({ data, onChange }) => {
             </HStack>
           </Flex>
           <AutoResizingTextarea
+            {...input}
+            borderRadius={5}
             width="100%"
             value={message.template}
             placeholder="Enter template"
@@ -163,8 +167,6 @@ const PromptEditor = ({ data, onChange }) => {
             isRequired
             css={scrollbar}
             size={"sm"}
-            bg={code.bg}
-            color={code.color}
           />
         </VStack>
       ))}

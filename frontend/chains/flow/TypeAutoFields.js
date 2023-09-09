@@ -149,7 +149,7 @@ const AutoFieldSelect = ({ field, value, onChange }) => {
       </FormLabel>
       <Select
         onChange={handleChange}
-        width={field.width || 125}
+        width={field.width || 200}
         value={value}
         {...colorMode.input}
       >
