@@ -9,13 +9,21 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { SelectedNodeContext } from "chains/editor/contexts";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 
-const DEFAULT_DESCRIPTION =
-  "Attach components to this connector by dragging them from the search results in the left panel.";
+const DEFAULT_DESCRIPTION = (
+  <>
+    <Text mb={2}>Click the connector to search for matching components.</Text>
+    <Text>
+      Attach components to this connector by dragging them from the search
+      results in the left panel.
+    </Text>
+  </>
+);
 
 export const ConnectorPopover = ({
   type,
@@ -26,7 +34,7 @@ export const ConnectorPopover = ({
   children,
 }) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
-  const { highlight } = useEditorColorMode();
+  const { highlight, isLight } = useEditorColorMode();
   const { setSelectedConnector } = useContext(SelectedNodeContext);
 
   const source_types = Array.isArray(connector.source_type)
@@ -49,6 +57,8 @@ export const ConnectorPopover = ({
     [onToggle]
   );
 
+  const hover = isLight ? { color: "blue.400" } : { color: "blue.400" };
+
   return (
     <Popover
       isOpen={isOpen}
@@ -57,7 +67,12 @@ export const ConnectorPopover = ({
       closeOnBlur={true}
     >
       <PopoverTrigger>
-        <Box as="button" onClick={onClick} title={"shift-click for help"}>
+        <Box
+          as="button"
+          onClick={onClick}
+          title={"shift-click for help"}
+          _hover={hover}
+        >
           {children || label || connector.key}
         </Box>
       </PopoverTrigger>
