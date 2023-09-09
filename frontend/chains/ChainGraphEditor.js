@@ -317,6 +317,28 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
     }
   }, []);
 
+  // New chains need a specific viewport because fitview
+  // centers the root node.
+  const displayProps = React.useMemo(() => {
+    if (graph?.chain?.id) {
+      return {
+        fitView: true,
+        fitViewOptions: {
+          minZoom: 0,
+          maxZoom: 1,
+        },
+      };
+    } else {
+      return {
+        defaultViewport: {
+          x: 0,
+          y: 0,
+          zoom: 1,
+        },
+      };
+    }
+  }, [graph?.chain?.id]);
+
   return (
     <Box height="93vh">
       <Box display="flex" alignItems="center">
@@ -360,11 +382,7 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
           onSelectionChange={onSelectionChange}
           nodeTypes={nodeTypes}
           onConnect={onConnect}
-          defaultViewport={{
-            x: 0,
-            y: 0,
-            zoom: 1,
-          }}
+          {...displayProps}
           snapToGrid={true}
           snapGrid={[10, 10]}
         >
