@@ -209,7 +209,7 @@ export const NodeTypeSearch = () => {
 
   return (
     <Box
-      mt={0}
+      mt={2}
       pt={0}
       width="100%"
       minWidth={170}

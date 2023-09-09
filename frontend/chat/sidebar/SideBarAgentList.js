@@ -3,16 +3,14 @@ import { HStack, VStack, Text, Box, useColorModeValue } from "@chakra-ui/react";
 import AssistantAvatar from "chat/AssistantAvatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faAddressBook,
   faSquareMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import RemoveAgentModalTrigger from "chat/agents/RemoveAgentModalTrigger";
-import AddAgentModalTrigger from "chat/agents/AddAgentModalTrigger";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
 const AgentListItem = ({ chat, agent, onUpdateAgents }) => {
-  const avatarColor = useColorModeValue("gray.500", "gray.400");
+  const avatarColor = useColorModeValue("blue.400", "blue.300");
 
   return (
     <Box bg="transparent" width="100%">

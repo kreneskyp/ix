@@ -10,9 +10,8 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSquarePlus, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { useColorMode } from "@chakra-ui/color-mode";
-import { NodeTypeSearch } from "chains/editor/NodeTypeSearch";
 import SideBarAgentList from "chat/sidebar/SideBarAgentList";
 
 export const ChatMembersButton = ({ graph, loadGraph }) => {
@@ -29,6 +28,8 @@ export const ChatMembersButton = ({ graph, loadGraph }) => {
           border: "1px solid",
           borderColor: "whiteAlpha.50",
         };
+  const highlightColor = colorMode === "light" ? "blue.500" : "blue.400";
+  const color = colorMode === "light" ? "gray.800" : "white";
 
   return (
     <Popover
@@ -45,8 +46,18 @@ export const ChatMembersButton = ({ graph, loadGraph }) => {
           title={"Chat members"}
         />
       </PopoverTrigger>
-      <PopoverContent zIndex={99998} pb={2}>
-        <PopoverHeader>Assistants</PopoverHeader>
+      <PopoverContent
+        zIndex={99998}
+        pb={2}
+        boxShadow="0px 0px 10px 0px rgba(0,0,0,0.15)"
+      >
+        <PopoverHeader
+          borderBottom="2px solid"
+          borderColor={highlightColor}
+          color={color}
+        >
+          Assistants
+        </PopoverHeader>
         <PopoverArrow />
         <PopoverCloseButton />
         <SideBarAgentList graph={graph} loadGraph={loadGraph} />

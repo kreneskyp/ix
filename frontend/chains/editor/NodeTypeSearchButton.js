@@ -42,6 +42,8 @@ export const NodeTypeSearchButton = () => {
           border: "1px solid",
           borderColor: "whiteAlpha.50",
         };
+  const highlightColor = colorMode === "light" ? "blue.500" : "blue.400";
+  const color = colorMode === "light" ? "gray.800" : "white";
 
   return (
     <Popover
@@ -58,8 +60,18 @@ export const NodeTypeSearchButton = () => {
           title={"Add components"}
         />
       </PopoverTrigger>
-      <PopoverContent zIndex={99998} pb={2}>
-        <PopoverHeader>Components</PopoverHeader>
+      <PopoverContent
+        zIndex={99998}
+        pb={2}
+        boxShadow="0px 0px 10px 0px rgba(0,0,0,0.15)"
+      >
+        <PopoverHeader
+          borderBottom="2px solid"
+          borderColor={highlightColor}
+          color={color}
+        >
+          Components
+        </PopoverHeader>
         <PopoverArrow />
         <PopoverCloseButton />
         <NodeTypeSearch />
