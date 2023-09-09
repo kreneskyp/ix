@@ -360,7 +360,11 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
           onSelectionChange={onSelectionChange}
           nodeTypes={nodeTypes}
           onConnect={onConnect}
-          fitView
+          defaultViewport={{
+            x: 0,
+            y: 0,
+            zoom: 1,
+          }}
           snapToGrid={true}
           snapGrid={[10, 10]}
         >
