@@ -21,10 +21,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBox, faClipboardCheck } from "@fortawesome/free-solid-svg-icons";
 import { SidebarTabList, SidebarTabs } from "site/SidebarTabs";
 import { ChatMembersButton } from "chat/ChatMembersButton";
+import { ChatAssistantsButton } from "chat/ChatAssistantsButton";
 
 export const ChatLeftPaneShim = ({ graph, loadGraph }) => {
   return (
     <>
+      <ChatAssistantsButton graph={graph} />
       <ChatMembersButton graph={graph} loadGraph={loadGraph} />
     </>
   );
