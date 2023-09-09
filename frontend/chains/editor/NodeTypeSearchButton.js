@@ -45,12 +45,15 @@ export const NodeTypeSearchButton = () => {
   const highlightColor = colorMode === "light" ? "blue.500" : "blue.400";
   const color = colorMode === "light" ? "gray.800" : "white";
 
+  // HAX: Popover must be closedOnBlue=False to allow for connectors to
+  //      switch without closing the popover. It proved very difficult to
+  //      prevent onClose from detecting that a new connector was selected.
   return (
     <Popover
       isOpen={isOpen}
       onClose={onClose}
       placement={"right-start"}
-      closeOnBlur={true}
+      closeOnBlur={false}
     >
       <PopoverTrigger>
         <IconButton
