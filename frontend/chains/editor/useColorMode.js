@@ -129,6 +129,15 @@ export const useSideBarColorMode = () => {
     color: isLight ? "gray.800" : "gray.100",
     bg: isLight ? "gray.300" : "gray.700",
     border: isLight ? "gray.400" : "gray.700",
+    button: isLight
+      ? {
+          border: "1px solid",
+          borderColor: "gray.300",
+        }
+      : {
+          border: "1px solid",
+          borderColor: "whiteAlpha.50",
+        },
   };
 };
 

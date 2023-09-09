@@ -78,24 +78,6 @@ const SideBarAgentList = ({ graph }) => {
       bg={colorMode === "light" ? "transparent" : "transparent"}
       color={colorMode === "light" ? "gray.800" : "gray.300"}
     >
-      <HStack
-        width="100%"
-        mb={2}
-        color={colorMode === "light" ? "gray.800" : "whiteAlpha.500"}
-      >
-        <Box width="100%" align="right">
-          <AddAgentModalTrigger
-            graph={graph}
-            chatAgents={agents}
-            onSuccess={onUpdateAgents}
-          >
-            <IconButton
-              icon={<FontAwesomeIcon icon={faAddressBook} />}
-              title={"add/remove assistants"}
-            />
-          </AddAgentModalTrigger>
-        </Box>
-      </HStack>
       <VStack spacing={3}>
         <AgentListItem agent={lead} chat={graph.chat} />
         {agents?.map((agent, i) => (
