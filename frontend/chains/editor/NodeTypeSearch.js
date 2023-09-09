@@ -147,6 +147,7 @@ const NodeTypeSearchBadge = ({ type, onRemove }) => {
  */
 export const NodeTypeSearch = () => {
   const { border } = useSideBarColorMode();
+  const { input: inputStyle, scrollbar } = useEditorColorMode();
   const { selectedConnector } = useContext(SelectedNodeContext);
   const [query, setQuery] = useState({ search: "", types: [] });
 
@@ -208,33 +209,32 @@ export const NodeTypeSearch = () => {
 
   return (
     <Box
-      mt={5}
-      pt={5}
+      mt={2}
+      pt={0}
       width="100%"
-      maxHeight={"60vh"}
       minWidth={170}
       overflowY={"hidden"}
+      maxHeight={"calc(100vh - 170px)"}
     >
-      <Heading as="h3" size="xs" mb={2}>
-        Components
-      </Heading>
-      <Box mb={2}>
+      <Box px={3} pb={1}>
         {query.types?.map((type) => (
           <NodeTypeSearchBadge key={type} type={type} onRemove={onRemoveType} />
         ))}
       </Box>
-
-      <Input
-        onChange={onSearchChange}
-        placeholder="search components"
-        mb={2}
-        borderColor={border}
-        value={query.search}
-      />
+      <Box px={2}>
+        <Input
+          onChange={onSearchChange}
+          placeholder="search components"
+          mb={2}
+          borderColor={border}
+          value={query.search}
+          {...inputStyle}
+        />
+      </Box>
       <VStack
-        overflowY="scroll"
-        css={SCROLLBAR_CSS}
-        maxHeight={"60vh"}
+        overflowY="auto"
+        css={scrollbar}
+        maxHeight={"calc(100vh - 170px)"}
         spacing={2}
         width="100%"
       >

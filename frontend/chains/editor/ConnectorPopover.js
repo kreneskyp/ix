@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useContext, useCallback } from "react";
 import {
   Badge,
   Box,
@@ -29,22 +29,35 @@ export const ConnectorPopover = ({
   const { highlight } = useEditorColorMode();
   const { setSelectedConnector } = useContext(SelectedNodeContext);
 
-  useEffect(() => {
-    if (isOpen) {
-      setSelectedConnector({ type, node, connector });
-    }
-  }, [isOpen, setSelectedConnector, connector]);
-
   const source_types = Array.isArray(connector.source_type)
     ? connector.source_type
     : [connector?.source_type];
 
   const description = connector.description || DEFAULT_DESCRIPTION;
 
+  const onClick = useCallback(
+    (event) => {
+      // click: search for components
+      // shift-click: toggle help
+      const shiftKey = event.shiftKey;
+      if (shiftKey) {
+        onToggle();
+      } else {
+        setSelectedConnector({ type, node, connector });
+      }
+    },
+    [onToggle]
+  );
+
   return (
-    <Popover isOpen={isOpen} onClose={onClose} placement={placement}>
+    <Popover
+      isOpen={isOpen}
+      onClose={onClose}
+      placement={placement}
+      closeOnBlur={true}
+    >
       <PopoverTrigger>
-        <Box as="button" onClick={onToggle}>
+        <Box as="button" onClick={onClick} title={"shift-click for help"}>
           {children || label || connector.key}
         </Box>
       </PopoverTrigger>

@@ -1,9 +1,10 @@
-import { Button, Icon } from "@chakra-ui/react";
+import { Button, Icon, IconButton } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import useCreateChat from "chat/hooks/useCreateChat";
 import { useColorMode } from "@chakra-ui/color-mode";
+import PlusMessageIcon from "components/PlusMessageIcon";
 
 export const NewChatButton = () => {
   const { createChat } = useCreateChat();
@@ -24,14 +25,12 @@ export const NewChatButton = () => {
   };
 
   return (
-    <Button
+    <IconButton
       border="1px solid"
       borderColor={colorMode === "light" ? "gray.300" : "whiteAlpha.50"}
-      width="100%"
-      leftIcon={<Icon as={FontAwesomeIcon} icon={faPlus} />}
+      icon={<PlusMessageIcon />}
+      title={"New Chat"}
       onClick={handleCreate}
-    >
-      New Chat
-    </Button>
+    />
   );
 };
