@@ -343,7 +343,7 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
           title={"Open Sidebar"}
         />
       </Box>
-      <Box ref={reactFlowWrapper} width={"85vw"} height={"100%"}>
+      <Box ref={reactFlowWrapper} width={"calc(100vw - 100px)"} height={"100%"}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
