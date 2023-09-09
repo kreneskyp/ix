@@ -9,13 +9,21 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { SelectedNodeContext } from "chains/editor/contexts";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 
-const DEFAULT_DESCRIPTION =
-  "Attach components to this connector by dragging them from the search results in the left panel.";
+const DEFAULT_DESCRIPTION = (
+  <>
+    <Text mb={2}>Click the connector to search for matching components.</Text>
+    <Text>
+      Attach components to this connector by dragging them from the search
+      results in the left panel.
+    </Text>
+  </>
+);
 
 export const ConnectorPopover = ({
   type,
