@@ -8,11 +8,14 @@ on:
     types:
       - created
 
+env:
+  IMAGE_NAME: ghcr.io/kreneskyp/ix/sandbox
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -23,6 +26,7 @@ jobs:
         id: load_image_url
         run: |
           IMAGE_URL=`make image-url`
+          echo "image-url=$IMAGE_URL" >> $"GITHUB_ENV"
           echo "image-url=$IMAGE_URL" >> "$GITHUB_OUTPUT"
 
       - name: Restore Cache
@@ -58,8 +62,6 @@ jobs:
 
       - name: Push to Github Docker Registry
         run: |
-          IMAGE_URL=`make image-url`
-          IMAGE_NAME=`make image-name`
           if [[ "${{ github.event_name }}" == "push" || "${{ github.event_name }}" == "pull_request" ]]; then
             TAG_NAME=dev
           elif [[ "${{ github.event_name }}" == "release" ]]; then
