@@ -68,7 +68,7 @@ jobs:
             TAG_NAME=${{ github.event.release.tag_name }}
           fi
           
-          docker tag ${{ IMAGE_URL }} $IMAGE_NAME:$TAG_NAME
+          docker tag $IMAGE_URL $IMAGE_NAME:$TAG_NAME
           docker push $IMAGE_NAME:$TAG_NAME
           
           if [[ "${{ github.event_name }}" == "release" ]]; then
