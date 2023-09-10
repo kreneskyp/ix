@@ -35,7 +35,8 @@ export const ConnectorPopover = ({
 }) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
   const { highlight, isLight } = useEditorColorMode();
-  const { setSelectedConnector } = useContext(SelectedNodeContext);
+  const { selectedConnector, setSelectedConnector } =
+    useContext(SelectedNodeContext);
 
   const source_types = Array.isArray(connector.source_type)
     ? connector.source_type
@@ -50,11 +51,13 @@ export const ConnectorPopover = ({
       const shiftKey = event.shiftKey;
       if (shiftKey) {
         onToggle();
-      } else {
+      } else if (selectedConnector?.connector !== connector) {
         setSelectedConnector({ type, node, connector });
+      } else {
+        setSelectedConnector(null);
       }
     },
-    [onToggle]
+    [onToggle, selectedConnector]
   );
 
   const hover = isLight ? { color: "blue.400" } : { color: "blue.400" };
