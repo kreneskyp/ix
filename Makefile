@@ -29,6 +29,9 @@ DOCKER_COMPOSE_RUN_WITH_PORT=docker-compose run -p 8000:8000 --rm web
 # set to skip build, primarily used by github workflows to skip builds when image is cached
 NO_IMAGE_BUILD?=0
 
+.PHONY: image-name
+image-name:
+	@echo ${DOCKER_REPOSITORY}
 
 .PHONY: image-tag
 image-tag:
