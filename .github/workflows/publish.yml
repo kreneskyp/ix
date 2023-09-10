@@ -69,10 +69,12 @@ jobs:
             TAG_NAME=${{ github.event.release.tag_name }}
           fi
           
+          echo "Pushing $IMAGE_URL to $IMAGE_NAME:$TAG_NAME"
           docker tag $IMAGE_URL $IMAGE_NAME:$TAG_NAME
           docker push $IMAGE_NAME:$TAG_NAME
           
           if [[ "${{ github.event_name }}" == "release" ]]; then
+            echo "Pushing $IMAGE_URL to $IMAGE_NAME:latest"
             docker tag $IMAGE_URL $IMAGE_NAME:latest
             docker push $IMAGE_NAME:latest
           fi
