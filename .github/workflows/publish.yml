@@ -63,6 +63,7 @@ jobs:
 
       - name: Push to Github Docker Registry
         run: |
+          IMAGE_URL=`make image-url`
           if [[ "${{ github.event_name }}" == "push" || "${{ github.event_name }}" == "pull_request" ]]; then
             TAG_NAME=dev
           elif [[ "${{ github.event_name }}" == "release" ]]; then
