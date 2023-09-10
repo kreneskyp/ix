@@ -135,23 +135,41 @@ OPENAI_API_KEY=YOUR_KEY_HERE
 ```
 
 ### Build and run the dev image.
-Set NO_IMAGE_BUILD=1 to rebuild the image
+Set NO_IMAGE_BUILD=1 to skip rebuilding the image
 ```
 make dev_setup
 ```
 
-### Run the dev server & worker
-Set NO_IMAGE_BUILD=1 to rebuild the image
+### Run the docker cluster
+Set NO_IMAGE_BUILD=1 to skip rebuilding the image
 
+```bash
+make cluster
+```
+
+### View logs
+
+Web server logs
 ```bash
 make server
 ```
 
-Start a worker
+Agent worker logs
 ```bash
 make worker
 ```
 
+### Halt the docker cluster
+
+```bash
+make down
+```
+
+### recycle workers
+Recycle workers to deploy new code changes.
+```bash
+make worker-reset
+```
 
 ## Usage
 

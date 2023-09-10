@@ -122,11 +122,26 @@ compile_relay: compose
 # Run
 # =========================================================
 
+
+.PHONY: cluster
+cluster: compose
+	docker-compose up -d web nginx worker
+
+
+.PHONY: up
+up: cluster
+
+
+.PHONY: down
+down: compose
+	docker-compose down
+
+
 # run backend and frontend. This starts uvicorn for asgi+websockers
 # and nginx to serve static files
 .PHONY: server
-server: compose
-	docker-compose up web nginx
+server: cluster
+	@docker-compose logs -f --tail=10 web nginx
 
 
 # run django debug server, backup in case nginx ever breaks
@@ -137,7 +152,16 @@ runserver: compose
 # run worker
 .PHONY: worker
 worker: compose
-	${DOCKER_COMPOSE_RUN} celery.sh
+	@docker-compose logs -f --tail=10 worker
+
+# reset worker (for code refresh)
+.PHONY: worker-reset
+worker-reset: compose
+	@echo stopping workers...
+	@docker-compose up -d --scale worker=0
+	@echo restarting worker...
+	@docker-compose up -d --scale worker=1
+
 
 # =========================================================
 # Shells

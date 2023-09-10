@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: ix
       POSTGRES_DB: ix
       POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   web:
     image: ghcr.io/kreneskyp/ix/sandbox:latest
@@ -57,3 +59,6 @@ services:
   redis:
     image: redis/redis-stack-server:latest
 
+
+volumes:
+  postgres_data:
