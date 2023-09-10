@@ -1,7 +1,5 @@
-name: Publish
+name: Publish Dev
 on:
-  pull_request:
-    types: [ opened, synchronize ]
   push:
     branches: [main]
 
