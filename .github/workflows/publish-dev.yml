@@ -1,11 +1,10 @@
 name: Publish
 on:
-  release:
-    types:
-      - created
+  pull_request:
+    types: [ opened, synchronize ]
+  push:
+    branches: [main]
 
-env:
-  IMAGE_NAME: ghcr.io/kreneskyp/ix/sandbox
 
 jobs:
   docker:
@@ -27,6 +26,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          platforms: linux/amd64,linux/arm64,linux/arm/v8
+          platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/kreneskyp/ix/sandbox:latest ghcr.io/kreneskyp/ix/sandbox:${{ github.event.release.tag_name }}
+          tags: ghcr.io/kreneskyp/ix/sandbox:dev
