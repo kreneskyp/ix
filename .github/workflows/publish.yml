@@ -64,18 +64,20 @@ jobs:
       - name: Push to Github Docker Registry
         run: |
           IMAGE_URL=`make image-url`
+          docker load --input image.tar
+          docker tag ${{ steps.load_image_url.outputs.image-url }} $IMAGE_NAME:latest
+          
           if [[ "${{ github.event_name }}" == "push" || "${{ github.event_name }}" == "pull_request" ]]; then
             TAG_NAME=dev
           elif [[ "${{ github.event_name }}" == "release" ]]; then
             TAG_NAME=${{ github.event.release.tag_name }}
           fi
           
-          echo "Pushing $IMAGE_URL to $IMAGE_NAME:$TAG_NAME"
-          docker tag $IMAGE_URL $IMAGE_NAME:$TAG_NAME
+          echo "Pushing $IMAGE_NAME:latest to $IMAGE_NAME:$TAG_NAME"
+          docker tag $IMAGE_NAME:latest $IMAGE_NAME:$TAG_NAME
           docker push $IMAGE_NAME:$TAG_NAME
           
           if [[ "${{ github.event_name }}" == "release" ]]; then
-            echo "Pushing $IMAGE_URL to $IMAGE_NAME:latest"
-            docker tag $IMAGE_URL $IMAGE_NAME:latest
+            echo "Pushing $IMAGE_NAME:latest"
             docker push $IMAGE_NAME:latest
           fi
