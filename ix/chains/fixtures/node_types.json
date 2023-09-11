@@ -2331,55 +2331,6 @@
 },
 {
   "model": "chains.nodetype",
-  "pk": "74fd7b8b-4be7-49dc-a925-5e522c03bbf4",
-  "fields": {
-    "name": "OpenAI Function Agent",
-    "description": "Agent that uses OpenAI's API to generate text.",
-    "class_path": "ix.chains.loaders.agents.initialize_openai_functions_agent",
-    "type": "chain",
-    "display_type": "node",
-    "connectors": [
-      {
-        "key": "llm",
-        "type": "target",
-        "source_type": "llm"
-      },
-      {
-        "key": "tools",
-        "type": "target",
-        "multiple": true,
-        "source_type": "tool"
-      },
-      {
-        "key": "prompt",
-        "type": "target",
-        "source_type": "prompt"
-      }
-    ],
-    "fields": [
-      {
-        "name": "return_intermediate_steps",
-        "type": "boolean",
-        "default": false
-      },
-      {
-        "name": "max_iterations",
-        "type": "integer",
-        "default": 15,
-        "nullable": true
-      },
-      {
-        "name": "max_execution_time",
-        "type": "float",
-        "nullable": true
-      }
-    ],
-    "child_field": null,
-    "config_schema": {}
-  }
-},
-{
-  "model": "chains.nodetype",
   "pk": "7b954f7c-4449-46b4-9013-382ce3c94c2a",
   "fields": {
     "name": "MultiQueryRetriever",
