@@ -40,7 +40,14 @@ ENV PATH $PATH:$NODE_MODULES_BIN
 RUN echo "[$NPM_DIR]"
 COPY package.json $NPM_DIR
 
+# Static build
 ENV WEBPACK_OUTPUT=/var/compiled-static
+ENV COMPILED_STATIC=/var/static
+RUN mkdir -p ${COMPILED_STATIC}
+
+# nginx setup
+RUN mkdir -p /etc/nginx
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Set the working directory
 WORKDIR $APP
@@ -63,13 +70,11 @@ RUN if [ -n "${LANGCHAIN_DEV}" ]; then pip install -e /var/app/langchain/libs/la
 # Set the environment variable for selecting between ASGI and Celery
 ENV APP_MODE=asgi
 
-# Expose port 8000 for ASGI, or leave it unexposed for Celery
-EXPOSE 8000
-
 WORKDIR /var/app
+
+# Add compiled static if available.
+COPY .compiled-static/* ${COMPILED_STATIC}/
 
 # Start the application using either ASGI or Celery depending on APP_MODE
 # XXX: disabling until this is tested more
 #CMD if [ "$APP_MODE" = "asgi" ] export ; then python manage.py runserver 0.0.0.0:8000 ; else celery -A myapp worker -l info ; fi
-
-
