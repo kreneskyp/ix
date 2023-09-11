@@ -73,7 +73,7 @@ ENV APP_MODE=asgi
 WORKDIR /var/app
 
 # Add compiled static if available.
-COPY .compiled-static/* ${COMPILED_STATIC}/
+COPY .compiled-static/ ${COMPILED_STATIC}/
 
 # Start the application using either ASGI or Celery depending on APP_MODE
 # XXX: disabling until this is tested more
