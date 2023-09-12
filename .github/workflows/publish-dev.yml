@@ -1,7 +1,10 @@
 name: Publish Dev
+
+# run on merge
+# Testing note: if testing this against PRs note that this will always fail in a PR
+#               the first time because the image doesn't exist yet. Re-running the
+#               workflow after `build` job has run will succeed.
 on:
-  pull_request:
-    types: [ opened, synchronize ]
   push:
     branches: [main]
 
