@@ -83,9 +83,16 @@ compose: image
 .PHONY: dev_setup
 dev_setup: image frontend migrate dev_fixtures
 
+.compiled-static:
+	# create empty dir so it is always present for docker build. Local & test
+	# builds do not use it, but it the dir needs to exist for the build to work
+	# Local and test builds use a docker volume to mount the file in. Only
+	# release builds add the compiled files to the image
+	mkdir -p .compiled-static
+
 # build image
 .PHONY: image
-image: ${IMAGE_SENTINEL} ${IMAGE_SENTINEL_PSQL}
+image: .compiled-static ${IMAGE_SENTINEL} ${IMAGE_SENTINEL_PSQL}
 
 # full frontend build
 .PHONY: frontend
