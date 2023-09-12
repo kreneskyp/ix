@@ -6,13 +6,12 @@ name: Publish Dev
 #               workflow after `build` job has run will succeed.
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 
 jobs:
   docker:
     runs-on: ubuntu-latest
-    # TODO depends?
     steps:
       # setup
       - name: Checkout
