@@ -14,7 +14,7 @@ import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { useColorMode } from "@chakra-ui/color-mode";
 import SideBarAgentList from "chat/sidebar/SideBarAgentList";
 
-export const ChatMembersButton = ({ graph, loadGraph }) => {
+export const ChatMembersButton = ({ graph, onUpdateAgents, agentPage }) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
 
   const { colorMode } = useColorMode();
@@ -60,7 +60,11 @@ export const ChatMembersButton = ({ graph, loadGraph }) => {
         </PopoverHeader>
         <PopoverArrow />
         <PopoverCloseButton />
-        <SideBarAgentList graph={graph} loadGraph={loadGraph} />
+        <SideBarAgentList
+          graph={graph}
+          onUpdateAgents={onUpdateAgents}
+          agentPage={agentPage}
+        />
       </PopoverContent>
     </Popover>
   );
