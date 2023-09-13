@@ -1,22 +1,10 @@
-import React, { useCallback, useEffect } from "react";
-import {
-  HStack,
-  VStack,
-  Text,
-  Box,
-  useColorModeValue,
-  IconButton,
-} from "@chakra-ui/react";
+import React from "react";
+import { HStack, VStack, Text, Box, useColorModeValue } from "@chakra-ui/react";
 import AssistantAvatar from "chat/AssistantAvatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAddressBook,
-  faSquareMinus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSquareMinus } from "@fortawesome/free-solid-svg-icons";
 import RemoveAgentModalTrigger from "chat/agents/RemoveAgentModalTrigger";
-import AddAgentModalTrigger from "chat/agents/AddAgentModalTrigger";
 import { useColorMode } from "@chakra-ui/color-mode";
-import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
 const AgentListItem = ({ chat, agent, onUpdateAgents }) => {
   const avatarColor = useColorModeValue("blue.400", "blue.300");
@@ -49,22 +37,10 @@ const AgentListItem = ({ chat, agent, onUpdateAgents }) => {
   );
 };
 
-const SideBarAgentList = ({ graph }) => {
+const SideBarAgentList = ({ graph, onUpdateAgents, agentPage }) => {
   const { colorMode } = useColorMode();
   const lead = graph.lead;
-  const { load: loadAgents, page: agentPage } = usePaginatedAPI(
-    `/api/agents/`,
-    { limit: 10000, load: false }
-  );
   const agents = agentPage?.objects;
-  const queryArgs = { chat_id: graph.chat.id };
-  const onUpdateAgents = useCallback(() => {
-    loadAgents(queryArgs);
-  }, [loadAgents]);
-
-  useEffect(() => {
-    loadAgents(queryArgs);
-  }, [loadAgents, graph.chat.id]);
 
   return (
     <Box

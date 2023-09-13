@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   Spinner,
@@ -27,12 +27,35 @@ import {
 import { SidebarTabList, SidebarTabs } from "site/SidebarTabs";
 import { ChatMembersButton } from "chat/ChatMembersButton";
 import { ChatAssistantsButton } from "chat/ChatAssistantsButton";
+import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
-export const ChatLeftPaneShim = ({ graph, loadGraph }) => {
+export const ChatLeftPaneShim = ({ graph }) => {
+  const { load: loadAgents, page: agentPage } = usePaginatedAPI(
+    `/api/agents/`,
+    { limit: 10000, load: false }
+  );
+  const queryArgs = { chat_id: graph.chat.id };
+  const onUpdateAgents = useCallback(() => {
+    loadAgents(queryArgs);
+  }, [loadAgents]);
+
+  // force refresh on chat.id change
+  useEffect(() => {
+    loadAgents(queryArgs);
+  }, [loadAgents, graph.chat.id]);
+
   return (
     <>
-      <ChatAssistantsButton graph={graph} />
-      <ChatMembersButton graph={graph} loadGraph={loadGraph} />
+      <ChatAssistantsButton
+        graph={graph}
+        onUpdateAgents={onUpdateAgents}
+        agentPage={agentPage}
+      />
+      <ChatMembersButton
+        graph={graph}
+        onUpdateAgents={onUpdateAgents}
+        agentPage={agentPage}
+      />
     </>
   );
 };
@@ -82,11 +105,7 @@ export const ChatView = () => {
   return (
     <Layout>
       <LayoutLeftPane>
-        {isLoading || !graph ? (
-          <Spinner />
-        ) : (
-          <ChatLeftPaneShim graph={graph} loadGraph={loadGraph} />
-        )}
+        {isLoading || !graph ? <Spinner /> : <ChatLeftPaneShim graph={graph} />}
       </LayoutLeftPane>
       <LayoutContent>
         {isLoading || !graph ? (
