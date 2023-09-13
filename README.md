@@ -38,8 +38,6 @@ The backend supports multiple agents running in parallel and communicating with 
 <br>
 </div>
 
-<img src="docs/FizzBuzzExample.gif" width="600" height="407">
-
 ### Models
   - OpenAI
   - Google PaLM (Experimental)
@@ -52,24 +50,28 @@ The backend supports multiple agents running in parallel and communicating with 
 No-code editor for creating and testing agents. The editor provides an interface to drop and connect nodes into a graph
 representing the cognitive logic of an agent. Chat is embedded in the editor to allow for rapid testing and debugging.
 
-TODO: Add VIDEO
+https://github.com/kreneskyp/ix/assets/68635/f43923b9-7bce-4b64-b30e-3204eb1673e4
 
 ### Multi-Agent Chat interface
 The chat room supports multiple agents. The IX moderator delegates by default, and you can @mention an agent to request
 a specific agent to complete the task.
 
-TODO: Add VIDEO
+
+https://github.com/kreneskyp/ix/assets/68635/d1418c23-afb5-4aed-91c7-bf99b1c165d5
+
 
 ### Smart Input 
-Artifacts created by tasks may be referenced for use in subsequent requests. 
+Agents in the room and Artifacts created by tasks may be referenced for use in subsequent requests. The smart input bar searches and auto-completes references.
 
-TODO: Add VIDEO
+https://github.com/kreneskyp/ix/assets/68635/27cf7085-7349-4641-9327-d31a3041a94c
+
 
 ### Message Queue Drive Agent Workers
 The agent runner backend is dockerized and is triggered with a celery message queue. This allows the backend to scale
 horizontally to support a fleet of agents running in parallel.
 
-TODO: Add VIDEO
+![WorkerScalingTest_V3](https://github.com/kreneskyp/ix/assets/68635/bac934be-01c6-4882-bcfc-73a5ee85aa1e)
+
 
 ### Component Config Layer
 
