@@ -61,9 +61,12 @@ services:
   nodejs:
     image: ghcr.io/kreneskyp/ix/nodejs:latest
     volumes:
-      - .:/var/app
+      - ./frontend:/var/app/frontend
+      - ./package.json:/var/app/package.json
+      - ./babel.config.js:/var/app/babel.config.js
+      - ./relay.config.js:/var/app/relay.config.js
+      - ./webpack.config.js:/var/app/webpack.config.js
       - ./bin:/usr/bin/ix
-      - .bash_profile:/root/.bash_profile
     env_file:
       - .env
 

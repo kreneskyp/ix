@@ -58,9 +58,14 @@ ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 ENV NODE_MODULES_BIN=$NPM_DIR/node_modules/.bin
 ENV PATH $PATH:$NODE_MODULES_BIN
 
+# build config
+COPY package.json $NPM_DIR
+COPY babel.config.js $NPM_DIR
+COPY relay.config.js $NPM_DIR
+COPY webpack.config.js $NPM_DIR
+
 # NPM package installs
 RUN echo "[$NPM_DIR]"
-COPY package.json $NPM_DIR
 RUN npm install
 
 

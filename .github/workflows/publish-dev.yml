@@ -46,7 +46,7 @@ jobs:
         with:
           path: image-nodejs.tar
           key: ${{ steps.load_image_url.outputs.image-url-nodejs }}
-      - name: load node js mage
+      - name: load nodejs image
         if: steps.restore_cache_nodejs.outputs.cache-hit == 'true'
         shell: bash
         run: |
