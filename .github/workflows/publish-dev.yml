@@ -35,6 +35,7 @@ jobs:
           path: image.tar
           key: ${{ steps.load_image_url.outputs.image-url }}
       - name: load image
+        if: steps.restore_cache.outputs.cache-hit == 'true'
         shell: bash
         run: |
           docker load --input image.tar
@@ -46,6 +47,7 @@ jobs:
           path: image-nodejs.tar
           key: ${{ steps.load_image_url.outputs.image-url-nodejs }}
       - name: load node js mage
+        if: steps.restore_cache_nodejs.outputs.cache-hit == 'true'
         shell: bash
         run: |
           docker load --input image-nodejs.tar

@@ -102,12 +102,14 @@ jobs:
         shell: bash
         run: |
           echo "Loading cached image: ${{ steps.load_image_url.outputs.image-url-nodejs }}"
-      - name: Cache docker image
+      - name: Restore Cache
         uses: actions/cache@v2
+        id: restore_cache_nodejs
         with:
           path: image-nodejs.tar
           key: ${{ steps.load_image_url.outputs.image-url-nodejs }}
       - name: load image
+        if: steps.restore_cache.outputs.cache-hit != 'true'
         shell: bash
         run: |
           docker load --input image-nodejs.tar
