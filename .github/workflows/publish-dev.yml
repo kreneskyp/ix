@@ -52,7 +52,6 @@ jobs:
           IMAGE_URL=`make image-url`
           echo "Building Sandbox Docker image: $IMAGE_URL"
           make image
-          docker save $IMAGE_URL > image.tar
       - name: Build NodeJS image
         id: build
         if: steps.restore_cache_nodejs.outputs.cache-hit != 'true'
@@ -60,8 +59,7 @@ jobs:
           mkdir -p .sentinel
           IMAGE_URL_NODEJS=`make image-url-nodejs`
           echo "Building NodeJS Docker image: $IMAGE_URL_NODEJS"
-          make image
-          docker save $IMAGE_URL_NODEJS > image.tar
+          make nodejs
 
       # build javascript frontend - output will be added to image
       - name: run

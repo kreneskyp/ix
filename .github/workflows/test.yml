@@ -54,23 +54,23 @@ jobs:
         id: load_image_url
         run: |
           IMAGE_URL=`make image-url-nodejs`
-          echo "image-url=$IMAGE_URL" >> "$GITHUB_OUTPUT"
+          echo "image-url-nodejs=$IMAGE_URL" >> "$GITHUB_OUTPUT"
 
       - name: Restore Cache
         uses: actions/cache@v2
-        id: restore_cache
+        id: restore_cache_nodejs
         with:
           path: image.tar
-          key: ${{ steps.load_image_url.outputs.image-url }}
+          key: ${{ steps.load_image_url.outputs.image-url-nodejs }}
 
       - name: Build Docker image
         id: build
-        if: steps.restore_cache.outputs.cache-hit != 'true'
+        if: steps.restore_cache_nodejs.outputs.cache-hit != 'true'
         run: |
           mkdir -p .sentinel
           IMAGE_URL=`make image-url-nodejs`
           echo "Building NodeJS Docker image: $IMAGE_URL"
-          make image
+          make nodejs
           docker save $IMAGE_URL > image.tar
 
       - name: Cache docker image
@@ -78,8 +78,8 @@ jobs:
         env:
           cache-name: cache-node-modules
         with:
-          path: docker-image.tar
-          key: ${{ steps.load_image_url.outputs.image-url }}
+          path: image.tar
+          key: ${{ steps.load_image_url.outputs.image-url-nodejs }}
 
   dev_setup:
     needs: nodejs_build
