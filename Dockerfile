@@ -37,9 +37,6 @@ RUN pip wheel -r $APP/requirements.txt -w /var/wheels
 #                   nodejs tools.
 FROM base as nodejs
 
-# Static build
-ENV WEBPACK_OUTPUT=/var/compiled-static
-
 # NVM / NPM Setup
 ENV NVM_DIR=/usr/local/nvm
 ENV NPM_DIR=$APP
