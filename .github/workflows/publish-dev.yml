@@ -5,6 +5,8 @@ name: Publish Dev
 #               the first time because the image doesn't exist yet. Re-running the
 #               workflow after `build` job has run will succeed.
 on:
+  pull_request:
+    types: [ opened, synchronize ]
   push:
     branches: [master]
 
@@ -30,7 +32,7 @@ jobs:
           path: image.tar
           key: ${{ steps.load_image_url.outputs.image-url }}
 
-      # build local image - Image must be built locally a first time because it's needed to build the frontend.
+      # build nodejs image - NodeJS image must be built locally a because it's needed to build the frontend.
       #                     The cache wasn't working reliably across workflows, so it must be built here. This
       #                     build is not multi-platform since it is needed locally.
       - name: Build Docker image
@@ -38,12 +40,21 @@ jobs:
         if: steps.restore_cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p .sentinel
-          IMAGE_URL=`make image-url`
-          echo "Building Docker image: $IMAGE_URL"
+          IMAGE_URL=`make image-url-nodejs`
+          echo "Building NodeJS Docker image: $IMAGE_URL"
           make image
           docker save $IMAGE_URL > image.tar
 
-      # docker build + publish
+      # transpile javascript frontend - output will be added to image
+      - name: run
+        shell: bash
+        env:
+          NO_IMAGE_BUILD: 1
+        run: |
+          touch .env
+          make frontend
+
+      # docker multi-platform build + publish
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
