@@ -54,6 +54,9 @@ image-tag:
 image-url:
 	@echo ${IMAGE_URL}
 
+.PHONY: image-url-nodejs
+image-url-nodejs:
+	@echo ${IMAGE_URL_NODEJS}
 
 # build existence check
 .sentinel:
