@@ -81,6 +81,7 @@ jobs:
         run: |
           touch .env
           make frontend
+          ls -la .compiled-static
 
       # docker multi-platform build + publish
       - name: Set up QEMU
