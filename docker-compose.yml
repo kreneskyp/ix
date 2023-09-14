@@ -67,6 +67,7 @@ services:
       - ./relay.config.js:/var/app/relay.config.js
       - ./webpack.config.js:/var/app/webpack.config.js
       - ./bin:/usr/bin/ix
+      - .compiled-static:/var/compiled-static
     env_file:
       - .env
 
