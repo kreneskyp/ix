@@ -97,19 +97,18 @@ jobs:
         shell: bash
         run: |
           IMAGE_URL_NODEJS=`make image-url-nodejs`
-          echo "image-url-nodejs=IMAGE_URL_NODEJS" >> "$GITHUB_OUTPUT"
+          echo "image-url-nodejs=$IMAGE_URL_NODEJS" >> "$GITHUB_OUTPUT"
       - name: setup
         shell: bash
         run: |
           echo "Loading cached image: ${{ steps.load_image_url.outputs.image-url-nodejs }}"
-      - name: Restore Cache
+      - name: Restore Nodejs Image Cache
         uses: actions/cache@v2
         id: restore_cache_nodejs
         with:
           path: image-nodejs.tar
           key: ${{ steps.load_image_url.outputs.image-url-nodejs }}
-      - name: load image
-        if: steps.restore_cache.outputs.cache-hit != 'true'
+      - name: load nodejs image
         shell: bash
         run: |
           docker load --input image-nodejs.tar

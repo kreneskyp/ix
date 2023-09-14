@@ -25,7 +25,7 @@ jobs:
           IMAGE_URL=`make image-url`
           IMAGE_URL_NODEJS=`make image-url-nodejs`
           echo "image-url=$IMAGE_URL" >> "$GITHUB_OUTPUT"
-          echo "image-url-nodejs=IMAGE_URL_NODEJS" >> "$GITHUB_OUTPUT"
+          echo "image-url-nodejs=$IMAGE_URL_NODEJS" >> "$GITHUB_OUTPUT"
 
       # attempt to load both images from cache
       - name: Restore Sandbox Image Cache
@@ -65,7 +65,7 @@ jobs:
           echo "Building Sandbox Docker image: $IMAGE_URL"
           make image
       - name: Build NodeJS image
-        id: build
+        id: build-nodejs
         if: steps.restore_cache_nodejs.outputs.cache-hit != 'true'
         run: |
           mkdir -p .sentinel
