@@ -41,7 +41,7 @@ jobs:
         env:
           cache-name: cache-node-modules
         with:
-          path: docker-image.tar
+          path: image.tar
           key: ${{ steps.load_image_url.outputs.image-url }}
 
   nodejs_build:
