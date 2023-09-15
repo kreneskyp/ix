@@ -95,4 +95,6 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v8
           push: true
-          tags: ghcr.io/kreneskyp/ix/sandbox:latest ghcr.io/kreneskyp/ix/sandbox:${{ github.event.release.tag_name }}
+          tags: |
+            ghcr.io/kreneskyp/ix/sandbox:latest
+            ghcr.io/kreneskyp/ix/sandbox:${{ github.event.release.tag_name }}
