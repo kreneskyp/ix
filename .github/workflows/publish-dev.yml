@@ -5,8 +5,6 @@ name: Publish Dev
 #               the first time because the image doesn't exist yet. Re-running the
 #               workflow after `build` job has run will succeed.
 on:
-  pull_request:
-    types: [ opened, synchronize ]
   push:
     branches: [master]
 
@@ -81,7 +79,6 @@ jobs:
         run: |
           touch .env
           make frontend
-          ls -la .compiled-static
 
       # docker multi-platform build + publish
       - name: Set up QEMU
