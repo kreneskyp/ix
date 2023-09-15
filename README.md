@@ -227,4 +227,16 @@ Here are some helpful commands for developers to set up and manage the developme
 - `make bash`: Open a bash shell in the Docker container.
 - `make shell`: Open a Django shell_plus session.
 
+### Agent Fixtures
 
+Dump fixtures with the `dump_agent` django command. This command will gather and dump the agent and chain, including
+the component graph.
+
+
+    ```
+    make bash
+    ```
+
+    ```bash
+    ./manage.py dump_agent -a alias
+    ```
