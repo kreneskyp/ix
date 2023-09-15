@@ -9,11 +9,21 @@ endif
 
 # APP IMAGE
 DOCKERFILE=Dockerfile
+DOCKERFILE_TARGET=app
 DOCKER_REPOSITORY=${DOCKER_REGISTRY}/kreneskyp/ix/sandbox
 HASH_FILES=requirements*.txt package.json Dockerfile
 IMAGE_TAG=$(shell cat $(HASH_FILES) | ${HASHER} | cut -d ' ' -f 1)
 IMAGE_URL=$(DOCKER_REPOSITORY):$(IMAGE_TAG)
 IMAGE_SENTINEL=.sentinel/image
+
+# NODEJS / FRONTEND BUILDER IMAGE
+DOCKERFILE_NODEJS=Dockerfile
+DOCKERFILE_TARGET_NODEJS=nodejs
+DOCKER_REPOSITORY_NODEJS=${DOCKER_REGISTRY}/kreneskyp/ix/nodejs
+HASH_FILES_NODEJS=Dockerfile package.json babel.config.js webpack.config.js relay.config.js
+IMAGE_TAG_NODEJS=$(shell cat $(HASH_FILES_NODEJS) | ${HASHER} | cut -d ' ' -f 1)
+IMAGE_URL_NODEJS=$(DOCKER_REPOSITORY_NODEJS):$(IMAGE_TAG_NODEJS)
+IMAGE_SENTINEL_NODEJS=.sentinel/image.nodejs
 
 # PSQL IMAGE
 DOCKERFILE_PSQL=psql.Dockerfile
@@ -25,6 +35,8 @@ IMAGE_SENTINEL_PSQL=.sentinel/image.psql
 
 DOCKER_COMPOSE_RUN=docker-compose run --rm web
 DOCKER_COMPOSE_RUN_WITH_PORT=docker-compose run -p 8000:8000 --rm web
+DOCKER_COMPOSE_RUN_NODEJS=docker-compose run --rm nodejs
+
 
 # set to skip build, primarily used by github workflows to skip builds when image is cached
 NO_IMAGE_BUILD?=0
@@ -42,6 +54,9 @@ image-tag:
 image-url:
 	@echo ${IMAGE_URL}
 
+.PHONY: image-url-nodejs
+image-url-nodejs:
+	@echo ${IMAGE_URL_NODEJS}
 
 # build existence check
 .sentinel:
@@ -57,8 +72,17 @@ DOCKER_BUILD_ARGS = $(if ${LANGCHAIN_DEV},--build-arg LANGCHAIN_DEV=${LANGCHAIN_
 ${IMAGE_SENTINEL}: .sentinel $(HASH_FILES)
 ifneq (${NO_IMAGE_BUILD}, 1)
 	echo building SANDBOX ${IMAGE_URL}
-	docker build -t ${IMAGE_URL} -f ${DOCKERFILE} ${DOCKER_BUILD_ARGS} .
+	docker build -t ${IMAGE_URL} -f ${DOCKERFILE} --target ${DOCKERFILE_TARGET} ${DOCKER_BUILD_ARGS} .
 	docker tag ${IMAGE_URL} ${DOCKER_REPOSITORY}:latest
+	touch $@
+endif
+
+# inner build target for nodejs frontend builder image
+${IMAGE_SENTINEL_NODEJS}: .sentinel $(HASH_FILES_NODEJS)
+ifneq (${NO_IMAGE_BUILD}, 1)
+	echo building NODEJS ${IMAGE_URL_NODEJS}
+	docker build -t ${IMAGE_URL_NODEJS} -f $(DOCKERFILE_NODEJS) --target ${DOCKERFILE_TARGET_NODEJS} .
+	docker tag ${IMAGE_URL_NODEJS} ${DOCKER_REPOSITORY_NODEJS}:latest
 	touch $@
 endif
 
@@ -66,7 +90,7 @@ endif
 ${IMAGE_SENTINEL_PSQL}: .sentinel $(HASH_FILES_PSQL)
 ifneq (${NO_IMAGE_BUILD}, 1)
 	echo building POSTGRES ${IMAGE_URL_PSQL}
-	docker build -t ${IMAGE_URL_PSQL} -f $(DOCKERFILE_PSQL) .
+	docker build -t ${IMAGE_URL_PSQL} -f $(DOCKERFILE_PSQL)  .
 	docker tag ${IMAGE_URL_PSQL} ${DOCKER_REPOSITORY_PSQL}:latest
 	touch $@
 endif
@@ -94,25 +118,29 @@ dev_setup: image frontend migrate dev_fixtures
 .PHONY: image
 image: .compiled-static ${IMAGE_SENTINEL} ${IMAGE_SENTINEL_PSQL}
 
+# nodejs / frontend builder image
+.PHONY: nodejs
+nodejs: ${IMAGE_SENTINEL_NODEJS}
+
+
 # full frontend build
 .PHONY: frontend
-frontend: compose npm_install graphene_to_graphql compile_relay webpack
+frontend: nodejs graphene_to_graphql compile_relay webpack
 
 # install npm packages
 .PHONY: npm_install
-npm_install: compose package.json
-	docker-compose run --rm web npm install
-
+npm_install: nodejs package.json
+	${DOCKER_COMPOSE_RUN_NODEJS} npm install
 
 # compile javascript
 .PHONY: webpack
-webpack: compose
-	${DOCKER_COMPOSE_RUN} webpack --progress
+webpack: nodejs
+	${DOCKER_COMPOSE_RUN_NODEJS} webpack --progress
 
 # compile javascript in watcher mode
 .PHONY: webpack-watch
-webpack-watch: compose
-	${DOCKER_COMPOSE_RUN} webpack --progress --watch
+webpack-watch: nodejs
+	${DOCKER_COMPOSE_RUN_NODEJS} webpack --progress --watch
 
 # compile graphene graphql classes into schema.graphql for javascript
 .PHONY: graphene_to_graphql
@@ -121,8 +149,8 @@ graphene_to_graphql: compose
 
 # compile javascript
 .PHONY: compile_relay
-compile_relay: compose
-	${DOCKER_COMPOSE_RUN} npm run relay
+compile_relay: nodejs
+	${DOCKER_COMPOSE_RUN_NODEJS} npm run relay
 
 
 # =========================================================
@@ -227,7 +255,7 @@ node_types_fixture: compose
 test: compose pytest
 
 .PHONY: lint
-test: compose flake8 black-check
+lint: compose flake8 black-check
 
 .PHONY: format
 format: black isort
@@ -250,7 +278,7 @@ isort: compose
 
 .PHONY: pytest
 pytest: compose
-	${DOCKER_COMPOSE_RUN} pytest
+	${DOCKER_COMPOSE_RUN} pytest ix
 
 .PHONY: pyright
 pyright: compose
