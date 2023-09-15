@@ -91,7 +91,7 @@ RUN mkdir -p /etc/nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy the rest of the application code to the working directory
-COPY ix .
+COPY ix ${APP}/ix
 
 # If LANGCHAIN_DEV is set then install the local dev version of LangChain
 RUN if [ -n "${LANGCHAIN_DEV}" ]; then pip install -e /var/app/langchain/libs/langchain; fi
@@ -99,7 +99,7 @@ RUN if [ -n "${LANGCHAIN_DEV}" ]; then pip install -e /var/app/langchain/libs/la
 # Set the environment variable for selecting between ASGI and Celery
 ENV APP_MODE=asgi
 
-WORKDIR /var/app
+WORKDIR ${APP}
 
 # Add compiled static if available.
 COPY .compiled-static/ ${COMPILED_STATIC}/
