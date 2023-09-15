@@ -15,7 +15,7 @@ jobs:
     steps:
       # setup
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Load image urls
         id: load_image_url
@@ -27,7 +27,7 @@ jobs:
 
       # attempt to load both images from cache
       - name: Restore Sandbox Image Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: restore_cache
         with:
           path: image.tar
@@ -39,7 +39,7 @@ jobs:
           docker load --input image.tar
           docker tag ${{ steps.load_image_url.outputs.image-url }} ghcr.io/kreneskyp/ix/sandbox:latest
       - name: Restore NodeJS Image Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: restore_cache_nodejs
         with:
           path: image-nodejs.tar
