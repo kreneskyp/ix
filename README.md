@@ -5,7 +5,7 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/kreneskyp?style=social)](https://twitter.com/kreneskyp)
 
 <div>
-<img align="left" src="ix_350.png" alt="The ninth planet around the sun">
+<img align="left" src="ix_350.png" alt="midjourney prompt: The ninth planet around the sun">
 <p>
 <br>
 <br>
@@ -29,14 +29,19 @@ knowledge, casting a shadow of intrigue over the galaxy.
 
 ## 🌌 About
 <div>
-IX is a platform for designing and deploying autonomous and [semi]autonomous LLM based agents. It provides a flexible
-and scalable solution for delegating tasks to AI powered agents. The platform architecture allows developers to create 
-and deploy custom agents to perform a wide variety of tasks.
-<br>
-
-The backend supports multiple agents running in parallel and communicating with each other. 
+IX is a platform for designing and deploying autonomous and [semi]-autonomous LLM powered agents and workflows. IX
+provides a flexible and scalable solution for delegating tasks to AI powered agents. Agents created with the platform
+can automate a wide variety of tasks, while running in parallel and communicating with each other.
 <br>
 </div>
+
+##### Build AI powered workflows:
+- QA chat bots
+- Code generation
+- Data extraction
+- Data analysis
+- Data augmentation
+- Research assistants
 
 ## Key Features
 
@@ -53,15 +58,16 @@ representing the cognitive logic of an agent. Chat is embedded in the editor to 
 https://github.com/kreneskyp/ix/assets/68635/f43923b9-7bce-4b64-b30e-3204eb1673e4
 
 ### 💬 Multi-Agent Chat interface
-The chat room supports multiple agents. The IX moderator delegates by default, and you can @mention an agent to request
-a specific agent to complete the task.
+Create your own teams of agents and interact with them through a single interface. Chat room support multiple agents.
+By default it includes the IX moderator agent, which delegates tasks to other agents. You can `@mention` specific 
+agents to complete the tasks.
 
 
 https://github.com/kreneskyp/ix/assets/68635/d1418c23-afb5-4aed-91c7-bf99b1c165d5
 
 
 ### 💡 Smart Input 
- The smart input bar auto-completes agent `@mentions` and file & data `{artifacts}` created by tasks.
+The smart input bar auto-completes agent `@mentions` and file & data `{artifacts}` created by tasks.
 
 https://github.com/kreneskyp/ix/assets/68635/27cf7085-7349-4641-9327-d31a3041a94c
 
