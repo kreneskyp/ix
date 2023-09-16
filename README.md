@@ -263,7 +263,12 @@ The platform will automatically spawn agent processes to complete tasks as neede
 
 
 ### Scaling workers
-Run as many worker processes as you want with `make worker`.
+Adjust the number of active agent workers with the `scale` target. The default is 1 agent worker to handle tasks. There
+is no hard limit on agents, but the number of workers is limited by available memory and CPU capacity.
+
+```bash
+make scale N=5
+```
 
 
 ## Developer Tools
