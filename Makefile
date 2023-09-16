@@ -198,6 +198,11 @@ worker-reset: compose
 	@docker-compose up -d --scale worker=1
 
 
+.PHONY: scale
+scale: compose
+	@${N:-1} echo scaling workers to $$N
+	@${N:-1} docker-compose up -d --scale worker=$$N
+
 # =========================================================
 # Shells
 # =========================================================
