@@ -284,7 +284,9 @@ pytest: compose
 pyright: compose
 	${DOCKER_COMPOSE_RUN} pyright
 
-
+.PHONY: prettier
+prettier: nodejs
+	${DOCKER_COMPOSE_RUN_NODEJS} prettier -w frontend
 
 # =========================================================
 # Cleanup
