@@ -116,8 +116,7 @@ render nodes and forms dynamically in the no-code editor.
 ### Agent-IX CLI
 
 The quickest way to start IX is with the agent-ix CLI. The CLI starts a preconfigured docker cluster with 
-docker-compose. It will down the required images and start the server. The client also includes management 
-commands for managing the cluster.
+docker-compose. It downloads the required images automatically and starts the app cluster.
 
 ```bash
 pip install agent-ix
@@ -131,7 +130,7 @@ of workers is based on available memory and CPU capacity.
 ix scale 5
 ```
 
-The client may start a specific version, including the unstable `dev` image built on `master`.
+The client may start a specific version, including the unstable `dev` image built on `master` branch.
 ```bash
 pip up --version dev
 ```
