@@ -160,6 +160,7 @@ compile_relay: nodejs
 
 .PHONY: cluster
 cluster: compose
+	@echo starting IX dev cluster
 	docker-compose up -d web nginx worker
 
 
