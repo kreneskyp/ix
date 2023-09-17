@@ -28,6 +28,7 @@ import { SidebarTabList, SidebarTabs } from "site/SidebarTabs";
 import { ChatMembersButton } from "chat/ChatMembersButton";
 import { ChatAssistantsButton } from "chat/ChatAssistantsButton";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
+import { useLinkedScroll } from "hooks/useLinkedScroll";
 
 export const ChatLeftPaneShim = ({ graph }) => {
   const { load: loadAgents, page: agentPage } = usePaginatedAPI(
@@ -60,9 +61,14 @@ export const ChatLeftPaneShim = ({ graph }) => {
   );
 };
 
-export const ChatRightSidebar = ({ graph, disclosure }) => {
+export const ChatRightSidebar = ({ graph, disclosure, onWheel, drawerRef }) => {
   return (
-    <RightSidebar {...disclosure}>
+    <RightSidebar
+      {...disclosure}
+      onWheel={onWheel}
+      drawerRef={drawerRef}
+      pointerEvents={"auto"}
+    >
       <SidebarTabs>
         <SidebarTabList>
           <Tooltip label="Tasks" aria-label="Tasks">
@@ -97,6 +103,11 @@ export const ChatView = () => {
   const { response, call: loadGraph, isLoading } = useChatGraph(id);
   const graph = response?.data;
   const rightSidebarDisclosure = useDisclosure({ defaultIsOpen: true });
+  const {
+    updateScroll,
+    targetRef: scrollBoxRef,
+    sourceRef: drawerRef,
+  } = useLinkedScroll();
 
   useEffect(() => {
     loadGraph();
@@ -118,7 +129,10 @@ export const ChatView = () => {
               display="flex"
               flexDirection="column"
             >
-              <ChatInterface graph={graph} />
+              <ChatInterface
+                graph={graph}
+                scrollboxProps={{ ref: scrollBoxRef }}
+              />
             </Box>
             <Box position="absolute" top={0} right={0} mt={4} mr={4}>
               <IconButton
@@ -132,6 +146,8 @@ export const ChatView = () => {
             <ChatRightSidebar
               graph={graph}
               disclosure={rightSidebarDisclosure}
+              onWheel={updateScroll}
+              drawerRef={drawerRef}
             />
           </HStack>
         )}
