@@ -61,14 +61,9 @@ export const ChatLeftPaneShim = ({ graph }) => {
   );
 };
 
-export const ChatRightSidebar = ({ graph, disclosure, onWheel, drawerRef }) => {
+export const ChatRightSidebar = ({ graph, disclosure, drawerRef }) => {
   return (
-    <RightSidebar
-      {...disclosure}
-      onWheel={onWheel}
-      drawerRef={drawerRef}
-      pointerEvents={"auto"}
-    >
+    <RightSidebar {...disclosure} drawerRef={drawerRef}>
       <SidebarTabs>
         <SidebarTabList>
           <Tooltip label="Tasks" aria-label="Tasks">
@@ -146,7 +141,6 @@ export const ChatView = () => {
             <ChatRightSidebar
               graph={graph}
               disclosure={rightSidebarDisclosure}
-              onWheel={updateScroll}
               drawerRef={drawerRef}
             />
           </HStack>

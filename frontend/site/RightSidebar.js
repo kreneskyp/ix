@@ -19,9 +19,7 @@ export const RightSidebar = ({
   onClose,
   children,
   sizes,
-  onWheel,
   drawerRef,
-  pointerEvents,
 }) => {
   const btnRef = useRef();
 
@@ -71,8 +69,7 @@ export const RightSidebar = ({
       size={size}
     >
       <DrawerOverlay
-        style={{ backgroundColor: "transparent", pointerEvents }}
-        onWheel={onWheel}
+        style={{ backgroundColor: "transparent", pointerEvents: "none" }}
       >
         <DrawerContent
           style={{ pointerEvents: "all" }}
@@ -112,5 +109,4 @@ export const RightSidebar = ({
 
 RightSidebar.defaultProps = {
   sizes: DRAW_SIZES,
-  pointerEvents: "none",
 };
