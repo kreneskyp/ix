@@ -55,7 +55,7 @@ class Command(BaseCommand):
             collected_data.extend(sorted_data)
 
         # Write to file
-        chain_fixtures_dir = Path(chains.__file__).parent / "fixtures"
+        chain_fixtures_dir = Path(chains.__file__).parent / "fixtures/agent"
         filename = f"{chain_fixtures_dir}/{agent.alias}.json"
         with open(filename, "w") as f:
             json.dump(collected_data, f, indent=2)
