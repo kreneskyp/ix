@@ -1,0 +1,248 @@
+[
+  {
+    "model": "agents.agent",
+    "pk": "b7d8f662-12f6-4525-b07b-c9ea7c10004a",
+    "fields": {
+      "name": "Pirate",
+      "alias": "pirate",
+      "purpose": "A pirate companion. This is a very basic example of a character bot. It has basic memory to recall parts of the conversation.\n\nThe pirate is configured with ArtifactMemory, enabling it to respond to {artifact} references in chat input.\n\nThe pirate chain demonstrates combined memory. Chains and agents may have one or more memory components attached. The memories combine automatically as long as there a no overlapping memory keys.",
+      "created_at": "2023-06-25T19:35:33.885Z",
+      "model": "",
+      "config": {},
+      "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+      "is_test": false
+    }
+  },
+  {
+    "model": "chains.chain",
+    "pk": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+    "fields": {
+      "name": "Pirate",
+      "description": "A pirate companion. This is a very basic example of a character bot. It has basic memory to recall parts of the conversation.\n\nThe pirate is configured with ArtifactMemory, enabling it to respond to {artifact} references in chat input.\n\nThe pirate chain demonstrates combined memory. Chains and agents may have one or more memory components attached. The memories combine automatically as long as there a no overlapping memory keys.",
+      "created_at": "2023-06-25T19:35:33.848Z",
+      "is_agent": true
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "2bd1464d-1020-4091-89a6-3429bff4b8a0",
+    "fields": {
+      "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+      "node_type": "b62000d7-9390-491b-af13-9711c4ec8b44",
+      "config": {
+        "messages": [
+          {
+            "role": "system",
+            "template": "\nYou are a pirate. Talk like a pirate in all responses.\n\n{related_artifacts}\n\nCHAT_SUMMARY:\n{chat_summary}\n",
+            "input_variables": [
+              "related_artifacts",
+              "chat_summary"
+            ]
+          },
+          {
+            "role": "user",
+            "template": "{user_input}",
+            "input_variables": [
+              "user_input"
+            ]
+          }
+        ]
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": 170.0,
+        "y": 670.0
+      },
+      "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "4f257c0e-4164-49d4-a3a6-b83450b99071",
+    "fields": {
+      "class_path": "ix.chains.llm_chain.LLMChain",
+      "node_type": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
+      "config": {},
+      "name": null,
+      "description": null,
+      "root": true,
+      "position": {
+        "x": 550.0,
+        "y": 250.0
+      },
+      "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "77ed925b-5617-4b6e-9ff2-6e3a787ef994",
+    "fields": {
+      "class_path": "langchain.memory.RedisChatMessageHistory",
+      "node_type": "da5e809a-b158-4f34-8867-8ac375967906",
+      "config": {
+        "url": "redis://redis:6379/0",
+        "session_scope": "chat"
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": -140.0,
+        "y": 440.0
+      },
+      "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "acf5396c-c4e0-4d29-b59f-f5e0bee755ea",
+    "fields": {
+      "class_path": "ix.memory.artifacts.ArtifactMemory",
+      "node_type": "98af8724-a765-490a-bfb6-2adf54102186",
+      "config": {},
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": 170.0,
+        "y": 580.0
+      },
+      "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "c467c63f-becd-421d-8799-36fc22c58ba0",
+    "fields": {
+      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+      "config": {
+        "verbose": false,
+        "streaming": false
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": -140.0,
+        "y": 520.0
+      },
+      "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "db12306b-786b-47ef-8373-b211c2f82dfd",
+    "fields": {
+      "class_path": "langchain.memory.summary_buffer.ConversationSummaryBufferMemory",
+      "node_type": "d90b15ac-8202-41ee-84ca-c727376fb9e3",
+      "config": {
+        "input_key": "user_input",
+        "memory_key": "chat_summary",
+        "max_token_limit": 1500
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": 150.0,
+        "y": 440.0
+      },
+      "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "df82910c-5a6a-4782-9e24-c79bb956f351",
+    "fields": {
+      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+      "config": {
+        "verbose": true,
+        "streaming": true
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": 180.0,
+        "y": 360.0
+      },
+      "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "42c6c0f5-0eaa-4bea-8ac0-62140d575beb",
+    "fields": {
+      "source": "df82910c-5a6a-4782-9e24-c79bb956f351",
+      "target": "4f257c0e-4164-49d4-a3a6-b83450b99071",
+      "key": "llm",
+      "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "64823aff-dc9c-431b-b37c-10d7d71cebc2",
+    "fields": {
+      "source": "acf5396c-c4e0-4d29-b59f-f5e0bee755ea",
+      "target": "4f257c0e-4164-49d4-a3a6-b83450b99071",
+      "key": "memory",
+      "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "7440f4f6-d7b9-4a9b-ba6d-400de71d25f0",
+    "fields": {
+      "source": "77ed925b-5617-4b6e-9ff2-6e3a787ef994",
+      "target": "db12306b-786b-47ef-8373-b211c2f82dfd",
+      "key": "chat_memory",
+      "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "9e39f999-bd75-4a48-ae0b-1868dd685c59",
+    "fields": {
+      "source": "2bd1464d-1020-4091-89a6-3429bff4b8a0",
+      "target": "4f257c0e-4164-49d4-a3a6-b83450b99071",
+      "key": "prompt",
+      "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "b7968dd4-9d85-4bf0-b0ae-92725fe3757f",
+    "fields": {
+      "source": "db12306b-786b-47ef-8373-b211c2f82dfd",
+      "target": "4f257c0e-4164-49d4-a3a6-b83450b99071",
+      "key": "memory",
+      "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "e21610c9-a92a-434b-a78f-65ac0e69f5bf",
+    "fields": {
+      "source": "c467c63f-becd-421d-8799-36fc22c58ba0",
+      "target": "db12306b-786b-47ef-8373-b211c2f82dfd",
+      "key": "llm",
+      "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  }
+]

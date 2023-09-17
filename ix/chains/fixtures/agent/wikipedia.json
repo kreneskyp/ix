@@ -1,0 +1,121 @@
+[
+  {
+    "model": "agents.agent",
+    "pk": "655ef715-84d7-4a73-a1a1-647b2d92a854",
+    "fields": {
+      "name": "Wikipedia",
+      "alias": "wikipedia",
+      "purpose": "To search wikipedia for information that users request.",
+      "created_at": "2023-07-09T01:23:16.509Z",
+      "model": "gpt-3.5-turbo",
+      "config": {
+        "temperature": 0.1
+      },
+      "chain": "99e28f55-002c-405c-979d-26fb61f900bb",
+      "is_test": false
+    }
+  },
+  {
+    "model": "chains.chain",
+    "pk": "99e28f55-002c-405c-979d-26fb61f900bb",
+    "fields": {
+      "name": "Wikipedia",
+      "description": "Searches wikipedia with OpenAI Functions",
+      "created_at": "2023-07-05T14:50:31.162Z",
+      "is_agent": true
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "275daea3-429e-4f7e-8ad2-e9a881f31886",
+    "fields": {
+      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+      "config": {
+        "verbose": false,
+        "streaming": true,
+        "max_tokens": 256,
+        "model_name": "gpt-4-0613",
+        "max_retries": 6,
+        "temperature": 0,
+        "request_timeout": 60
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": 160.0,
+        "y": 370.0
+      },
+      "chain": "99e28f55-002c-405c-979d-26fb61f900bb"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "4216081f-1e3c-4b5a-bb3c-824a7a3b1403",
+    "fields": {
+      "class_path": "ix.chains.loaders.agents.initialize_openai_functions",
+      "node_type": "b7bdef2c-5127-4084-a5c7-476e3805742b",
+      "config": {
+        "max_iterations": 15,
+        "return_intermediate_steps": false
+      },
+      "name": null,
+      "description": null,
+      "root": true,
+      "position": {
+        "x": 460.0,
+        "y": 280.0
+      },
+      "chain": "99e28f55-002c-405c-979d-26fb61f900bb"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "aabbe898-5d4e-442d-9ec8-942ecae78efa",
+    "fields": {
+      "class_path": "ix.tools.wikipedia.get_wikipedia",
+      "node_type": "a8ffd3b0-dfb4-4e1b-b5bf-90a2ec959ff8",
+      "config": {
+        "lang": "en",
+        "verbose": false,
+        "return_direct": false,
+        "top_k_results": 3,
+        "doc_content_chars_max": 4000,
+        "load_all_available_meta": false
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": 740.0,
+        "y": 360.0
+      },
+      "chain": "99e28f55-002c-405c-979d-26fb61f900bb"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "03b97337-fa50-4c27-aaca-35d306850cb2",
+    "fields": {
+      "source": "aabbe898-5d4e-442d-9ec8-942ecae78efa",
+      "target": "4216081f-1e3c-4b5a-bb3c-824a7a3b1403",
+      "key": "tools",
+      "chain": "99e28f55-002c-405c-979d-26fb61f900bb",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "d4fbeaee-7102-4849-8e8e-3353fa7b09f2",
+    "fields": {
+      "source": "275daea3-429e-4f7e-8ad2-e9a881f31886",
+      "target": "4216081f-1e3c-4b5a-bb3c-824a7a3b1403",
+      "key": "llm",
+      "chain": "99e28f55-002c-405c-979d-26fb61f900bb",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  }
+]

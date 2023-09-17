@@ -238,7 +238,7 @@ dev_fixtures: compose
 	${DOCKER_COMPOSE_RUN} ./manage.py loaddata node_types
 
  	# initial agents + chains
-	${DOCKER_COMPOSE_RUN} ./manage.py loaddata ix_v2 code_v2 pirate_v1 wikipedia_v1 klarna_v1 bot_smith_v1
+	${DOCKER_COMPOSE_RUN} ./manage.py loaddata agent/ix agent/code agent/pirate agent/wikipedia agent/klarna agent/smithy
 
 
 # Generate fixture for NodeTypes defined in python fixtures.
