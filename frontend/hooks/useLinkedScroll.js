@@ -42,5 +42,15 @@ export const useLinkedScroll = () => {
     [targetRef, sourceRef]
   );
 
-  return { updateScroll, targetRef, sourceRef };
+  // add global listener for wheel events, this decouples the wheel event capture
+  // from the overlay. The overlay might need ignore all mouse events to allow buttons
+  // and other elements work. (those things do work with the pass through unlike scrolling)
+  React.useEffect(() => {
+    window.addEventListener("wheel", updateScroll);
+    return () => {
+      window.removeEventListener("wheel", updateScroll);
+    };
+  }, []);
+
+  return { targetRef, sourceRef };
 };
