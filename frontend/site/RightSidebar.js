@@ -13,7 +13,16 @@ import { useColorMode } from "@chakra-ui/color-mode";
 
 const DRAW_SIZES = ["xs", "sm", "xl"];
 
-export const RightSidebar = ({ isOpen, onOpen, onClose, children, sizes }) => {
+export const RightSidebar = ({
+  isOpen,
+  onOpen,
+  onClose,
+  children,
+  sizes,
+  onWheel,
+  drawerRef,
+  pointerEvents,
+}) => {
   const btnRef = useRef();
 
   // drawer size state - toggle rotates through allowed sizes
@@ -62,13 +71,15 @@ export const RightSidebar = ({ isOpen, onOpen, onClose, children, sizes }) => {
       size={size}
     >
       <DrawerOverlay
-        style={{ backgroundColor: "transparent", pointerEvents: "none" }}
+        style={{ backgroundColor: "transparent", pointerEvents }}
+        onWheel={onWheel}
       >
         <DrawerContent
           style={{ pointerEvents: "all" }}
           height="100vh"
           display="flex"
           flexDirection="column"
+          ref={drawerRef}
         >
           <DrawerHeader h={10} px={2} py={1} {...style.headerContainer}>
             <HStack display={"flex"} justifyContent={"flex-start"}>
@@ -101,4 +112,5 @@ export const RightSidebar = ({ isOpen, onOpen, onClose, children, sizes }) => {
 
 RightSidebar.defaultProps = {
   sizes: DRAW_SIZES,
+  pointerEvents: "none",
 };

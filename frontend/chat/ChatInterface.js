@@ -137,7 +137,7 @@ export const useChatStyle = () => {
  *
  * @param graph - chat graph from useChatGraph
  */
-export const ChatInterface = ({ graph }) => {
+export const ChatInterface = ({ graph, scrollboxProps }) => {
   const { messages, streams, subscriptionActive } = useMessageStream(
     graph.chat
   );
@@ -147,7 +147,7 @@ export const ChatInterface = ({ graph }) => {
     <MessagesTokenContext.Provider value={streams}>
       <MessagesContext.Provider value={messages}>
         <SubscriptionActiveContext.Provider value={subscriptionActive}>
-          <ScrollableBox {...scrollbox}>
+          <ScrollableBox {...scrollbox} {...scrollboxProps}>
             <Suspense>
               <ChatMessages chat={graph.chat} />
             </Suspense>
