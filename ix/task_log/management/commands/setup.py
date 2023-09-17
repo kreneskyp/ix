@@ -11,12 +11,12 @@ class Command(BaseCommand):
         for fixture in [
             "fake_user",
             "node_types",
-            "ix_v2",
-            "code_v2",
-            "pirate_v1",
-            "wikipedia_v1",
-            "klarna_v1",
-            "bot_smith_v1",
+            "agent/ix",
+            "agent/code",
+            "agent/pirate",
+            "agent/wikipedia",
+            "agent/klarna",
+            "agent/smithy",
         ]:
             print(f"Loading fixture: {fixture}")
             call_command("loaddata", fixture)

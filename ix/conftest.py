@@ -357,14 +357,14 @@ def node_types() -> None:
     NodeType.objects.all().delete()
     Chain.objects.all().delete()
     load_fixture("node_types")
-    load_fixture("ix_v2")
+    load_fixture("agent/ix")
 
 
 @pytest_asyncio.fixture
 async def aix_agent(anode_types):
     """async version of ix_agent fixture"""
-    await sync_to_async(call_command)("loaddata", "ix_v2")
-    await sync_to_async(call_command)("loaddata", "code_v2")
+    await sync_to_async(call_command)("loaddata", "agent/ix")
+    await sync_to_async(call_command)("loaddata", "agent/code")
 
 
 @pytest_asyncio.fixture
