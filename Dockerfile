@@ -20,8 +20,10 @@ RUN apt update -y && \
 # Set the working directory
 WORKDIR $APP
 
-# Copy requirements.txt to the working directory
+# Copy base files to working dir
+COPY manage.py .
 COPY requirements.txt .
+COPY LICENSE .
 
 
 # =============================================================================
