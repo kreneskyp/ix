@@ -230,7 +230,7 @@ migrate: compose
 migrations: compose
 	${DOCKER_COMPOSE_RUN} ./manage.py makemigrations
 
-LOAD_FIXTURE = docker-compose exec web ./manage.py loaddata
+LOAD_FIXTURE = docker-compose exec -T web ./manage.py loaddata
 
 # load initial data needed for dev environment
 .PHONY: dev_fixtures
