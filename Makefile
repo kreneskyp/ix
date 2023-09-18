@@ -212,6 +212,11 @@ scale: compose
 bash: compose
 	${DOCKER_COMPOSE_RUN} /bin/bash
 
+.PHONY: nodejs-bash
+nodejs-bash: compose
+	${DOCKER_COMPOSE_RUN_NODEJS} /bin/bash
+
+
 .PHONY: shell
 shell: compose
 	${DOCKER_COMPOSE_RUN} ./manage.py shell_plus
