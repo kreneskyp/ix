@@ -207,3 +207,9 @@ LOGGING = {
 }
 
 MOCK_CHAT_RESPONSE = os.environ.get("MOCK_CHAT_RESPONSE", False)
+
+# Default agents to include in chats
+DEFAULT_AGENTS = [
+    "b7d8f662-12f6-4525-b07b-c9ea7c10010a",  # @code
+    "cc054ff5-67cd-4489-b0f1-b8b62af2d825",  # @readme
+]
