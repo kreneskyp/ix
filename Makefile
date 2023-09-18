@@ -160,6 +160,7 @@ compile_relay: nodejs
 
 .PHONY: cluster
 cluster: compose
+	@echo starting IX dev cluster
 	docker-compose up -d web nginx worker
 
 
@@ -211,6 +212,11 @@ scale: compose
 bash: compose
 	${DOCKER_COMPOSE_RUN} /bin/bash
 
+.PHONY: nodejs-bash
+nodejs-bash: compose
+	${DOCKER_COMPOSE_RUN_NODEJS} /bin/bash
+
+
 .PHONY: shell
 shell: compose
 	${DOCKER_COMPOSE_RUN} ./manage.py shell_plus
@@ -229,16 +235,30 @@ migrate: compose
 migrations: compose
 	${DOCKER_COMPOSE_RUN} ./manage.py makemigrations
 
+LOAD_FIXTURE = docker-compose exec -T web ./manage.py loaddata
+
 # load initial data needed for dev environment
 .PHONY: dev_fixtures
-dev_fixtures: compose
-	${DOCKER_COMPOSE_RUN} ./manage.py loaddata fake_user
+dev_fixtures: cluster components agents
+	$(LOAD_FIXTURE) fake_user
 
-	# load component NodeTypes
-	${DOCKER_COMPOSE_RUN} ./manage.py loaddata node_types
+.PHONY: components
+components: cluster
+	@echo "\nrestoring components from fixtures"
+	$(LOAD_FIXTURE) node_types
 
+.PHONY: agents
+agents: cluster components
  	# initial agents + chains
-	${DOCKER_COMPOSE_RUN} ./manage.py loaddata agent/ix agent/code agent/pirate agent/wikipedia agent/klarna agent/smithy
+	@echo ""
+	@echo restoring agents from fixtures
+	$(LOAD_FIXTURE) agent/ix
+	$(LOAD_FIXTURE) agent/readme
+	$(LOAD_FIXTURE) agent/code
+	$(LOAD_FIXTURE) agent/pirate
+	$(LOAD_FIXTURE) agent/wikipedia
+	$(LOAD_FIXTURE) agent/klarna
+	$(LOAD_FIXTURE) agent/smithy
 
 
 # Generate fixture for NodeTypes defined in python fixtures.

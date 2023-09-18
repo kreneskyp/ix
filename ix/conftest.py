@@ -365,6 +365,7 @@ async def aix_agent(anode_types):
     """async version of ix_agent fixture"""
     await sync_to_async(call_command)("loaddata", "agent/ix")
     await sync_to_async(call_command)("loaddata", "agent/code")
+    await sync_to_async(call_command)("loaddata", "agent/readme")
 
 
 @pytest_asyncio.fixture

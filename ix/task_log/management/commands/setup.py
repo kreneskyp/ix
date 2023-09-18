@@ -12,6 +12,7 @@ class Command(BaseCommand):
             "fake_user",
             "node_types",
             "agent/ix",
+            "agent/readme",
             "agent/code",
             "agent/pirate",
             "agent/wikipedia",
