@@ -7,9 +7,9 @@ from typing import Optional, Dict, Any
 from uuid import UUID
 
 from django.db.models import Q
+from django.conf import settings
 
 from ix.api.chains.endpoints import DeletedItem
-from ix.chains.management.commands.create_coder_v2 import CODER_V2_AGENT
 from ix.chains.management.commands.create_ix_v2 import IX_AGENT_V2
 from ix.chat.models import Chat, Task
 from ix.agents.models import Agent
@@ -70,8 +70,14 @@ async def create_chat(chat: ChatNew):
         name=chat.name,
     )
 
-    code = await Agent.objects.aget(id=CODER_V2_AGENT)
-    await chat_obj.agents.aadd(code)
+    # Add default agents to chat
+    for agent_id in settings.DEFAULT_AGENTS:
+        try:
+            agent = await Agent.objects.aget(pk=agent_id)
+        except Agent.DoesNotExist:
+            logger.exception(f"Default agent {agent_id} not found")
+            raise
+        await chat_obj.agents.aadd(agent)
 
     return ChatPydantic.from_orm(chat_obj)
 
