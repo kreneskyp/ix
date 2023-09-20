@@ -482,30 +482,56 @@
         "default": false
       },
       {
+        "max": null,
+        "min": null,
         "name": "k",
+        "step": null,
         "type": "int",
         "label": "K",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 10,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "gl",
+        "step": null,
         "type": "str",
         "label": "Gl",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "us",
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "hl",
+        "step": null,
         "type": "str",
         "label": "Hl",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "en",
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "type",
+        "step": null,
         "type": "str",
         "label": "Type",
+        "style": null,
+        "parent": null,
         "choices": [
           {
             "label": "News",
@@ -529,16 +555,29 @@
         "input_type": "select"
       },
       {
+        "max": null,
+        "min": null,
         "name": "tbs",
+        "step": null,
         "type": "str",
         "label": "Tbs",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "serper_api_key",
+        "step": null,
         "type": "str",
         "label": "Serper_api_key",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
         "required": false,
         "input_type": "secret"
@@ -659,25 +698,18 @@
         "required": true
       },
       {
+        "max": null,
+        "min": null,
         "name": "search_type",
+        "step": null,
         "type": "str",
         "label": "Search_type",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "similarity",
-        "required": false
-      },
-      {
-        "name": "k",
-        "type": "int",
-        "label": "K",
-        "default": 4,
-        "required": false
-      },
-      {
-        "name": "score_threshold",
-        "type": "float",
-        "label": "Score_threshold",
-        "default": 0.4,
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -692,10 +724,6 @@
         "allowed_search_types"
       ],
       "properties": {
-        "k": {
-          "type": "number",
-          "default": 4
-        },
         "redis_url": {
           "type": "string",
           "default": "redis://redis:6379/0"
@@ -719,10 +747,6 @@
         "metadata_key": {
           "type": "string",
           "default": "metadata"
-        },
-        "score_threshold": {
-          "type": "number",
-          "default": 0.4
         },
         "allowed_search_types": {
           "type": "object",
@@ -748,9 +772,14 @@
     "connectors": null,
     "fields": [
       {
+        "max": null,
+        "min": null,
         "name": "language",
+        "step": null,
         "type": "str",
         "label": "Language",
+        "style": null,
+        "parent": null,
         "choices": [
           {
             "label": "CPP",
@@ -822,11 +851,18 @@
         "input_type": "select"
       },
       {
+        "max": null,
+        "min": null,
         "name": "parser_threshold",
+        "step": null,
         "type": "int",
         "label": "Parser_threshold",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 0,
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -1407,186 +1443,368 @@
         "default": false
       },
       {
+        "max": null,
+        "min": null,
         "name": "model_path",
+        "step": null,
         "type": "str",
         "label": "Model_path",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": true
+        "required": true,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "lora_base",
-        "type": "str",
+        "step": null,
+        "type": "Optional[str]",
         "label": "Lora_base",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "n_ctx",
+        "step": null,
         "type": "int",
         "label": "N_ctx",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 512,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "n_parts",
+        "step": null,
         "type": "int",
         "label": "N_parts",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": -1,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "seed",
+        "step": null,
         "type": "int",
         "label": "Seed",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": -1,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "f16_kv",
-        "type": "boolean",
+        "step": null,
+        "type": "bool",
         "label": "F16_kv",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": true,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "logits_all",
-        "type": "boolean",
+        "step": null,
+        "type": "bool",
         "label": "Logits_all",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": false,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "vocab_only",
-        "type": "boolean",
+        "step": null,
+        "type": "bool",
         "label": "Vocab_only",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": false,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "use_mlock",
-        "type": "boolean",
+        "step": null,
+        "type": "bool",
         "label": "Use_mlock",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": false,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "n_threads",
-        "type": "int",
+        "step": null,
+        "type": "Optional[int]",
         "label": "N_threads",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "n_batch",
-        "type": "int",
+        "step": null,
+        "type": "Optional[int]",
         "label": "N_batch",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 8,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "n_gpu_layers",
-        "type": "int",
+        "step": null,
+        "type": "Optional[int]",
         "label": "N_gpu_layers",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "suffix",
-        "type": "str",
+        "step": null,
+        "type": "Optional[str]",
         "label": "Suffix",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "max_tokens",
-        "type": "int",
+        "step": null,
+        "type": "Optional[int]",
         "label": "Max_tokens",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 256,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "temperature",
-        "type": "float",
+        "step": null,
+        "type": "Optional[float]",
         "label": "Temperature",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 0.8,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "top_p",
-        "type": "float",
+        "step": null,
+        "type": "Optional[float]",
         "label": "Top_p",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 0.95,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "logprobs",
-        "type": "int",
+        "step": null,
+        "type": "Optional[int]",
         "label": "Logprobs",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "echo",
-        "type": "boolean",
+        "step": null,
+        "type": "Optional[bool]",
         "label": "Echo",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": false,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "stop",
-        "type": "List",
+        "step": null,
+        "type": "Optional[List[str]]",
         "label": "Stop",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": [],
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "repeat_penalty",
-        "type": "float",
+        "step": null,
+        "type": "Optional[float]",
         "label": "Repeat_penalty",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 1.1,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "last_n_tokens_size",
-        "type": "int",
+        "step": null,
+        "type": "Optional[int]",
         "label": "Last_n_tokens_size",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 64,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "use_mmap",
-        "type": "boolean",
+        "step": null,
+        "type": "Optional[bool]",
         "label": "Use_mmap",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": true,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "rope_freq_scale",
+        "step": null,
         "type": "float",
         "label": "Rope_freq_scale",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 1.0,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "rope_freq_base",
+        "step": null,
         "type": "float",
         "label": "Rope_freq_base",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 10000.0,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "streaming",
-        "type": "boolean",
+        "step": null,
+        "type": "bool",
         "label": "Streaming",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": true,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "verbose",
-        "type": "boolean",
+        "step": null,
+        "type": "bool",
         "label": "Verbose",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": true,
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -1598,7 +1816,7 @@
       ],
       "properties": {
         "echo": {
-          "type": "boolean",
+          "type": "object",
           "default": false
         },
         "seed": {
@@ -1614,7 +1832,7 @@
           "default": 512
         },
         "top_p": {
-          "type": "number",
+          "type": "object",
           "default": 0.95
         },
         "f16_kv": {
@@ -1622,11 +1840,11 @@
           "default": true
         },
         "suffix": {
-          "type": "string",
+          "type": "object",
           "default": null
         },
         "n_batch": {
-          "type": "number",
+          "type": "object",
           "default": 8
         },
         "n_parts": {
@@ -1638,19 +1856,19 @@
           "default": true
         },
         "logprobs": {
-          "type": "number",
+          "type": "object",
           "default": null
         },
         "use_mmap": {
-          "type": "boolean",
+          "type": "object",
           "default": true
         },
         "lora_base": {
-          "type": "string",
+          "type": "object",
           "default": null
         },
         "n_threads": {
-          "type": "number",
+          "type": "object",
           "default": null
         },
         "streaming": {
@@ -1666,7 +1884,7 @@
           "default": false
         },
         "max_tokens": {
-          "type": "number",
+          "type": "object",
           "default": 256
         },
         "model_path": {
@@ -1678,15 +1896,15 @@
           "default": false
         },
         "temperature": {
-          "type": "number",
+          "type": "object",
           "default": 0.8
         },
         "n_gpu_layers": {
-          "type": "number",
+          "type": "object",
           "default": null
         },
         "repeat_penalty": {
-          "type": "number",
+          "type": "object",
           "default": 1.1
         },
         "rope_freq_base": {
@@ -1698,7 +1916,7 @@
           "default": 1.0
         },
         "last_n_tokens_size": {
-          "type": "number",
+          "type": "object",
           "default": 64
         }
       }
@@ -1727,11 +1945,18 @@
         "default": false
       },
       {
+        "max": null,
+        "min": null,
         "name": "graphql_endpoint",
+        "step": null,
         "type": "str",
         "label": "Graphql_endpoint",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": true
+        "required": true,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -1974,18 +2199,32 @@
         "default": false
       },
       {
+        "max": null,
+        "min": null,
         "name": "input_key",
+        "step": null,
         "type": "str",
         "label": "Input_key",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "user_input",
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "output_key",
+        "step": null,
         "type": "str",
         "label": "Output_key",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "answer",
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -2033,32 +2272,74 @@
         "default": false
       },
       {
+        "max": null,
+        "min": null,
         "name": "top_k_results",
+        "step": null,
         "type": "int",
         "label": "Top_k_results",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 3,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
+        "name": "ARXIV_MAX_QUERY_LENGTH",
+        "step": null,
+        "type": "int",
+        "label": "ARXIV_MAX_QUERY_LENGTH",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 300,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
         "name": "load_max_docs",
+        "step": null,
         "type": "int",
         "label": "Load_max_docs",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 100,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "load_all_available_meta",
+        "step": null,
         "type": "boolean",
         "label": "Load_all_available_meta",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": false,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "doc_content_chars_max",
+        "step": null,
         "type": "int",
         "label": "Doc_content_chars_max",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 4000,
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -2088,6 +2369,10 @@
         "doc_content_chars_max": {
           "type": "number",
           "default": 4000
+        },
+        "ARXIV_MAX_QUERY_LENGTH": {
+          "type": "number",
+          "default": 300
         },
         "load_all_available_meta": {
           "type": "boolean",
@@ -2119,32 +2404,60 @@
         "default": false
       },
       {
+        "max": null,
+        "min": null,
         "name": "region",
+        "step": null,
         "type": "str",
         "label": "Region",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "wt-wt",
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "safesearch",
+        "step": null,
         "type": "str",
         "label": "Safesearch",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "moderate",
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "time",
+        "step": null,
         "type": "str",
         "label": "Time",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "y",
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "max_results",
+        "step": null,
         "type": "int",
         "label": "Max_results",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 5,
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -2292,18 +2605,32 @@
         "description": "URL(s) of the web page"
       },
       {
+        "max": null,
+        "min": null,
         "name": "verify_ssl",
+        "step": null,
         "type": "boolean",
         "label": "Verify_ssl",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": true,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "continue_on_failure",
+        "step": null,
         "type": "boolean",
         "label": "Continue_on_failure",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": false,
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -2593,6 +2920,72 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "87d66231-9c29-4346-bb1d-c9cfb4def773",
+  "fields": {
+    "name": "VectorStoreRetriever",
+    "description": "Default vector",
+    "class_path": "langchain.vectorstores.base.VectorStoreRetriever",
+    "type": "retriever",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "vectorstore",
+        "type": "target",
+        "required": true,
+        "source_type": "vectorstore"
+      }
+    ],
+    "fields": [
+      {
+        "name": "allowed_search_types",
+        "type": "list",
+        "default": [
+          "similarity",
+          "similarity_score_threshold",
+          "mmr"
+        ],
+        "required": true
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "search_type",
+        "step": null,
+        "type": "str",
+        "label": "Search_type",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "similarity",
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "allowed_search_types"
+      ],
+      "properties": {
+        "search_type": {
+          "type": "string",
+          "default": "similarity"
+        },
+        "allowed_search_types": {
+          "type": "object",
+          "default": [
+            "similarity",
+            "similarity_score_threshold",
+            "mmr"
+          ]
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "89ef5872-b042-4551-8a14-6c9be2cadcc6",
   "fields": {
     "name": "Metaphor find similar",
@@ -2772,25 +3165,46 @@
         "default": []
       },
       {
+        "max": null,
+        "min": null,
         "name": "output_key",
+        "step": null,
         "type": "str",
         "label": "Output_key",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "delegate_to",
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "target_alias",
+        "step": null,
         "type": "str",
         "label": "Target_alias",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": true
+        "required": true,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "delegate_inputs",
+        "step": null,
         "type": "list",
         "label": "Delegate_inputs",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -3213,6 +3627,90 @@
     ],
     "fields": [
       {
+        "max": null,
+        "min": null,
+        "name": "chroma_server_host",
+        "step": null,
+        "type": "str",
+        "label": "Server Host",
+        "style": null,
+        "parent": "client_settings",
+        "choices": null,
+        "default": "172.17.42.1",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "chroma_server_http_port",
+        "step": null,
+        "type": "str",
+        "label": "HTTP Port",
+        "style": null,
+        "parent": "client_settings",
+        "choices": null,
+        "default": "8020",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "chroma_server_ssl_enabled",
+        "step": null,
+        "type": "boolean",
+        "label": "Chroma_server_ssl_enabled",
+        "style": null,
+        "parent": "client_settings",
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "chroma_server_grpc_port",
+        "step": null,
+        "type": "str",
+        "label": "GRPC Port",
+        "style": null,
+        "parent": "client_settings",
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "anonymized_telemetry",
+        "step": null,
+        "type": "boolean",
+        "label": "Anonymized_telemetry",
+        "style": null,
+        "parent": "client_settings",
+        "choices": null,
+        "default": true,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "allow_reset",
+        "step": null,
+        "type": "boolean",
+        "label": "Allow_reset",
+        "style": null,
+        "parent": "client_settings",
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      },
+      {
         "name": "allowed_search_types",
         "type": "list",
         "default": [
@@ -3223,11 +3721,18 @@
         "required": true
       },
       {
+        "max": null,
+        "min": null,
         "name": "search_type",
+        "step": null,
         "type": "str",
         "label": "Search_type",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "similarity",
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -3237,9 +3742,17 @@
         "allowed_search_types"
       ],
       "properties": {
+        "allow_reset": {
+          "type": "boolean",
+          "default": false
+        },
         "search_type": {
           "type": "string",
           "default": "similarity"
+        },
+        "chroma_server_host": {
+          "type": "string",
+          "default": "172.17.42.1"
         },
         "allowed_search_types": {
           "type": "object",
@@ -3248,6 +3761,22 @@
             "similarity_score_threshold",
             "mmr"
           ]
+        },
+        "anonymized_telemetry": {
+          "type": "boolean",
+          "default": true
+        },
+        "chroma_server_grpc_port": {
+          "type": "string",
+          "default": null
+        },
+        "chroma_server_http_port": {
+          "type": "string",
+          "default": "8020"
+        },
+        "chroma_server_ssl_enabled": {
+          "type": "boolean",
+          "default": false
         }
       }
     }
@@ -3468,107 +3997,199 @@
         "default": false
       },
       {
+        "max": null,
+        "min": null,
+        "name": "base_url",
+        "step": null,
+        "type": "str",
+        "label": "Base_url",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "http://localhost:11434",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
         "name": "model",
+        "step": null,
         "type": "str",
         "label": "Model",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "llama2",
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "mirostat",
+        "step": null,
         "type": "int",
         "label": "Mirostat",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "mirostat_eta",
+        "step": null,
         "type": "float",
         "label": "Mirostat_eta",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "mirostat_tau",
+        "step": null,
         "type": "float",
         "label": "Mirostat_tau",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "num_ctx",
+        "step": null,
         "type": "int",
         "label": "Num_ctx",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
-        "max": 10,
-        "min": 0,
+        "max": 10.0,
+        "min": 0.0,
         "name": "num_gpu",
-        "step": 1,
+        "step": 1.0,
         "type": "int",
         "label": "Num_gpu",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 1,
         "required": false,
         "input_type": "slider"
       },
       {
+        "max": null,
+        "min": null,
         "name": "num_thread",
+        "step": null,
         "type": "int",
         "label": "Num_thread",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "repeat_last_n",
+        "step": null,
         "type": "int",
         "label": "Repeat_last_n",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "repeat_penalty",
+        "step": null,
         "type": "float",
         "label": "Repeat_penalty",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
-        "max": 1,
-        "min": 0,
+        "max": 1.0,
+        "min": 0.0,
         "name": "temperature",
         "step": 0.05,
         "type": "float",
         "label": "Temperature",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 0.8,
         "required": false,
         "input_type": "slider"
       },
       {
+        "max": null,
+        "min": null,
         "name": "stop",
+        "step": null,
         "type": "List",
         "label": "Stop",
         "style": {
           "width": "100%"
         },
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "tfs_z",
+        "step": null,
         "type": "float",
         "label": "Tfs_z",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
-        "max": 1,
-        "min": 0,
+        "max": 1.0,
+        "min": 0.0,
         "name": "top_p",
         "step": 0.05,
         "type": "int",
         "label": "Top_p",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 0.9,
         "required": false,
         "input_type": "slider"
@@ -3614,6 +4235,10 @@
         "verbose": {
           "type": "boolean",
           "default": false
+        },
+        "base_url": {
+          "type": "string",
+          "default": "http://localhost:11434"
         },
         "mirostat": {
           "type": "number",
@@ -3672,32 +4297,60 @@
         "default": false
       },
       {
+        "max": null,
+        "min": null,
         "name": "top_k_results",
+        "step": null,
         "type": "int",
         "label": "Top_k_results",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 3,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "lang",
+        "step": null,
         "type": "str",
         "label": "Lang",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "en",
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "load_all_available_meta",
+        "step": null,
         "type": "boolean",
         "label": "Load_all_available_meta",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": false,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "doc_content_chars_max",
+        "step": null,
         "type": "int",
         "label": "Doc_content_chars_max",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 4000,
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -3758,25 +4411,60 @@
         "default": false
       },
       {
+        "max": null,
+        "min": null,
+        "name": "max_retry",
+        "step": null,
+        "type": "int",
+        "label": "Max_retry",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 5,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
         "name": "top_k_results",
+        "step": null,
         "type": "int",
         "label": "Top_k_results",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 3,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "doc_content_chars_max",
+        "step": null,
         "type": "int",
         "label": "Doc_content_chars_max",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 2000,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "email",
+        "step": null,
         "type": "str",
         "label": "Email",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "your_email@example.com",
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -3794,6 +4482,10 @@
         "verbose": {
           "type": "boolean",
           "default": false
+        },
+        "max_retry": {
+          "type": "number",
+          "default": 5
         },
         "return_direct": {
           "type": "boolean",
@@ -3845,11 +4537,18 @@
         "required": false
       },
       {
+        "max": null,
+        "min": null,
         "name": "glob",
+        "step": null,
         "type": "str",
         "label": "Glob",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "**/[!.]*",
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -4779,39 +5478,74 @@
         "default": false
       },
       {
+        "max": null,
+        "min": null,
         "name": "output_key",
+        "step": null,
         "type": "str",
         "label": "Output_key",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "answer",
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "rephrase_question",
+        "step": null,
         "type": "bool",
         "label": "Rephrase_question",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": true,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "return_source_documents",
+        "step": null,
         "type": "bool",
         "label": "Return_source_documents",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": false,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "return_generated_question",
+        "step": null,
         "type": "bool",
         "label": "Return_generated_question",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": false,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "max_tokens_limit",
+        "step": null,
         "type": "Optional[int]",
         "label": "Max_tokens_limit",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -4906,34 +5640,60 @@
         "default": false
       },
       {
+        "max": null,
+        "min": null,
         "name": "google_api_key",
+        "step": null,
         "type": "str",
         "label": "Google_api_key",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
         "required": false,
         "input_type": "secret"
       },
       {
+        "max": null,
+        "min": null,
         "name": "google_cse_id",
+        "step": null,
         "type": "str",
         "label": "Google_cse_id",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
         "required": false,
         "input_type": "secret"
       },
       {
+        "max": null,
+        "min": null,
         "name": "k",
+        "step": null,
         "type": "int",
         "label": "K",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 10,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "siterestrict",
+        "step": null,
         "type": "boolean",
         "label": "Siterestrict",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": false,
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -5077,29 +5837,48 @@
         "default": false
       },
       {
+        "max": null,
+        "min": null,
         "name": "bing_subscription_key",
+        "step": null,
         "type": "str",
         "label": "Bing_subscription_key",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
         "required": true,
         "input_type": "secret"
       },
       {
+        "max": null,
+        "min": null,
         "name": "bing_search_url",
+        "step": null,
         "type": "str",
         "label": "Bing_search_url",
         "style": {
           "width": "100%"
         },
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": true
+        "required": true,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "k",
+        "step": null,
         "type": "int",
         "label": "K",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 10,
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -5158,25 +5937,46 @@
         "default": false
       },
       {
+        "max": null,
+        "min": null,
         "name": "function_name",
+        "step": null,
         "type": "str",
         "label": "Function_name",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "awslambda_tool_name",
+        "step": null,
         "type": "str",
         "label": "Awslambda_tool_name",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "awslambda_tool_description",
+        "step": null,
         "type": "str",
         "label": "Awslambda_tool_description",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": null,
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -5303,32 +6103,60 @@
         "input_type": "select"
       },
       {
+        "max": null,
+        "min": null,
         "name": "chunk_size",
+        "step": null,
         "type": "int",
         "label": "Chunk_size",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 4000,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "chunk_overlap",
+        "step": null,
         "type": "int",
         "label": "Chunk_overlap",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": 200,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "keep_separator",
+        "step": null,
         "type": "bool",
         "label": "Keep_separator",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": false,
-        "required": false
+        "required": false,
+        "input_type": null
       },
       {
+        "max": null,
+        "min": null,
         "name": "add_start_index",
+        "step": null,
         "type": "bool",
         "label": "Add_start_index",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": false,
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
@@ -5392,11 +6220,18 @@
     "connectors": null,
     "fields": [
       {
+        "max": null,
+        "min": null,
         "name": "root_dir",
+        "step": null,
         "type": "Optional[str]",
         "label": "Root_dir",
+        "style": null,
+        "parent": null,
+        "choices": null,
         "default": "/var/app/workdir",
-        "required": false
+        "required": false,
+        "input_type": null
       }
     ],
     "child_field": null,
