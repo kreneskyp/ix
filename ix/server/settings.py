@@ -26,6 +26,8 @@ SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+DOCKER_HOST_IP = "172.17.42.1"
+
 ALLOWED_HOSTS = [
     "localhost",
     "0.0.0.0",
