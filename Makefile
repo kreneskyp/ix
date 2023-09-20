@@ -172,6 +172,9 @@ up: cluster
 down: compose
 	docker-compose down
 
+.PHONY: restart
+restart: compose down up
+
 
 # run backend and frontend. This starts uvicorn for asgi+websockers
 # and nginx to serve static files
