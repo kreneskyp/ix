@@ -97,20 +97,16 @@ class GetFieldsBase:
 
     def test_get_fields_overrides_include(self, field_overrides):
         expected_fields_include = [
-            {
-                "name": "field1",
-                "label": "Custom Field 1",
-                "type": "str",
-                "default": "custom_default",
-                "required": True,
-            },
-            {
-                "name": "field2",
-                "label": "Field2",
-                "type": "int",
-                "default": None,
-                "required": True,
-            },
+            NodeTypeField(
+                name="field1",
+                label="Custom Field 1",
+                type="str",
+                default="custom_default",
+                required=True,
+            ),
+            NodeTypeField(
+                name="field2", label="Field2", type="int", default=None, required=True
+            ),
         ]
 
         assert (
@@ -124,18 +120,18 @@ class GetFieldsBase:
 
     def test_get_fields_literal(self, field_overrides):
         expected = [
-            {
-                "name": "literal",
-                "label": "Literal",
-                "type": "str",
-                "input_type": "select",
-                "default": "bar",
-                "required": False,
-                "choices": [
+            NodeTypeField(
+                name="literal",
+                label="Literal",
+                type="str",
+                input_type="select",
+                default="bar",
+                required=False,
+                choices=[
                     {"value": "foo", "label": "Foo"},
                     {"value": "bar", "label": "Bar"},
                 ],
-            },
+            ),
         ]
 
         assert (
@@ -148,13 +144,13 @@ class GetFieldsBase:
 
     def test_get_fields_optional(self, field_overrides):
         expected = [
-            {
-                "name": "optional",
-                "label": "Optional",
-                "default": None,
-                "type": "str",
-                "required": False,
-            },
+            NodeTypeField(
+                name="optional",
+                label="Optional",
+                default=None,
+                type="str",
+                required=False,
+            ),
         ]
 
         assert (
@@ -167,20 +163,16 @@ class GetFieldsBase:
 
     def test_get_fields_overrides_exclude(self, field_overrides):
         expected_fields_exclude = [
-            {
-                "name": "field2",
-                "label": "Field2",
-                "type": "int",
-                "default": None,
-                "required": True,
-            },
-            {
-                "name": "field3",
-                "label": "Field3",
-                "type": "boolean",
-                "default": False,
-                "required": False,
-            },
+            NodeTypeField(
+                name="field2", label="Field2", type="int", default=None, required=True
+            ),
+            NodeTypeField(
+                name="field3",
+                label="Field3",
+                type="boolean",
+                default=False,
+                required=False,
+            ),
         ]
 
         assert (
@@ -195,18 +187,18 @@ class GetFieldsBase:
 
     def test_get_enum_choices(self, field_overrides):
         expected = [
-            {
-                "name": "choices_enum",
-                "label": "Choices_enum",
-                "default": None,
-                "type": "str",
-                "input_type": "select",
-                "required": True,
-                "choices": [
+            NodeTypeField(
+                name="choices_enum",
+                label="Choices_enum",
+                default=None,
+                type="str",
+                input_type="select",
+                required=True,
+                choices=[
                     {"label": "CPP", "value": "cpp"},
                     {"label": "GO", "value": "go"},
                 ],
-            },
+            ),
         ]
 
         fields = NodeTypeField.get_fields(
@@ -228,20 +220,12 @@ class TestGetFieldsFromModel(GetFieldsBase):
             field4: TestModel  # non-allowed type
 
         expected_fields = [
-            {
-                "name": "field1",
-                "label": "Field1",
-                "type": "str",
-                "default": None,
-                "required": True,
-            },
-            {
-                "name": "field2",
-                "label": "Field2",
-                "type": "int",
-                "default": None,
-                "required": True,
-            },
+            NodeTypeField(
+                name="field1", label="Field1", type="str", default=None, required=True
+            ),
+            NodeTypeField(
+                name="field2", label="Field2", type="int", default=None, required=True
+            ),
         ]
 
         assert (
