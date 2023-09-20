@@ -28,7 +28,9 @@
     "pk": "2b96ae9e-bdd2-4410-8513-e849473c777d",
     "fields": {
       "class_path": "langchain.chat_models.openai.ChatOpenAI",
-      "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
       "config": {
         "verbose": false,
         "streaming": true,
@@ -53,7 +55,9 @@
     "pk": "3c83d7d4-7708-4d7e-9b38-1e493068f770",
     "fields": {
       "class_path": "ix.tools.metaphor.get_metaphor_find_similar",
-      "node_type": "89ef5872-b042-4551-8a14-6c9be2cadcc6",
+      "node_type": [
+        "ix.tools.metaphor.get_metaphor_find_similar"
+      ],
       "config": {
         "verbose": false,
         "return_direct": false
@@ -73,7 +77,9 @@
     "pk": "74d77d59-24f4-4e43-b067-f011b4b2d53e",
     "fields": {
       "class_path": "ix.tools.metaphor.get_metaphor_contents",
-      "node_type": "9ee6e9bc-f809-4b1e-841c-f775dd1038cc",
+      "node_type": [
+        "ix.tools.metaphor.get_metaphor_contents"
+      ],
       "config": {
         "verbose": false,
         "return_direct": false
@@ -93,7 +99,9 @@
     "pk": "ed91c79b-1d38-4d96-b60f-587322c3e058",
     "fields": {
       "class_path": "ix.tools.metaphor.get_metaphor_search",
-      "node_type": "a25f957a-8c72-45dd-a035-23e835008093",
+      "node_type": [
+        "ix.tools.metaphor.get_metaphor_search"
+      ],
       "config": {
         "verbose": false,
         "return_direct": false
@@ -113,7 +121,9 @@
     "pk": "fdd474c9-78a7-495d-86d4-05523fdfbdd3",
     "fields": {
       "class_path": "ix.chains.loaders.agents.initialize_openai_multi_functions",
-      "node_type": "072d63be-45ef-4df2-8095-57a6560598ad",
+      "node_type": [
+        "ix.chains.loaders.agents.initialize_openai_multi_functions"
+      ],
       "config": {
         "verbose": false,
         "max_iterations": 15,

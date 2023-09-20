@@ -356,7 +356,7 @@ def node_types() -> None:
     """calls manage.py loaddata node_types"""
     NodeType.objects.all().delete()
     Chain.objects.all().delete()
-    load_fixture("node_types")
+    call_command("import_langchain")
     load_fixture("agent/ix")
 
 
@@ -371,7 +371,7 @@ async def aix_agent(anode_types):
 @pytest_asyncio.fixture
 async def anode_types() -> None:
     """calls manage.py loaddata node_types"""
-    await sync_to_async(call_command)("loaddata", "node_types")
+    await sync_to_async(call_command)("import_langchain")
 
 
 @pytest.fixture()

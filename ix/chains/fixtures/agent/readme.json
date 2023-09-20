@@ -28,7 +28,9 @@
     "pk": "0ac2d539-4cbd-4c7c-8196-83d51d610c1c",
     "fields": {
       "class_path": "langchain.chat_models.openai.ChatOpenAI",
-      "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
       "config": {
         "verbose": false,
         "streaming": true,
@@ -53,7 +55,9 @@
     "pk": "15f2a320-5a4b-4314-9000-8b777dedcd27",
     "fields": {
       "class_path": "langchain.memory.buffer_window.ConversationBufferWindowMemory",
-      "node_type": "8a49959a-b5bc-414e-a25f-51b8d3ad6249",
+      "node_type": [
+        "langchain.memory.buffer_window.ConversationBufferWindowMemory"
+      ],
       "config": {
         "k": "0",
         "ai_prefix": "AI",
@@ -77,7 +81,9 @@
     "pk": "24caad61-ade3-40a2-b3cb-4d8b23c17a0e",
     "fields": {
       "class_path": "langchain.text_splitter.RecursiveCharacterTextSplitter.from_language",
-      "node_type": "f4789b2b-7eae-4ea9-a92f-c3bff954cac8",
+      "node_type": [
+        "langchain.text_splitter.RecursiveCharacterTextSplitter.from_language"
+      ],
       "config": {
         "language": "markdown",
         "chunk_size": 4000,
@@ -98,7 +104,9 @@
     "pk": "24cba13b-6938-499d-bdbd-4ae4dd36727a",
     "fields": {
       "class_path": "ix.chains.components.vectorstores.AsyncChromaVectorstore",
-      "node_type": "9e8d970a-55ba-4afd-add9-bd33a52fc30c",
+      "node_type": [
+        "ix.chains.components.vectorstores.AsyncChromaVectorstore"
+      ],
       "config": {
         "search_type": "similarity",
         "allowed_search_types": [
@@ -122,7 +130,9 @@
     "pk": "4565d9d9-6531-48d6-8ac2-28e16aa3b36e",
     "fields": {
       "class_path": "langchain.document_loaders.web_base.WebBaseLoader",
-      "node_type": "7477a8ad-ca83-4714-aeaf-4df8cbb900ea",
+      "node_type": [
+        "langchain.document_loaders.web_base.WebBaseLoader"
+      ],
       "config": {
         "web_path": "https://raw.githubusercontent.com/kreneskyp/ix/master/README.md",
         "verify_ssl": true,
@@ -143,7 +153,9 @@
     "pk": "64bb9280-9dee-4e0a-b207-a6634ae708f2",
     "fields": {
       "class_path": "langchain.retrievers.multi_query.MultiQueryRetriever.from_llm",
-      "node_type": "7b954f7c-4449-46b4-9013-382ce3c94c2a",
+      "node_type": [
+        "langchain.retrievers.multi_query.MultiQueryRetriever.from_llm"
+      ],
       "config": {},
       "name": null,
       "description": null,
@@ -160,7 +172,9 @@
     "pk": "7514f588-13fb-4fe4-99f9-8ddbdd5a8100",
     "fields": {
       "class_path": "langchain.chains.conversational_retrieval.base.ConversationalRetrievalChain.from_llm",
-      "node_type": "dbcd3e60-e809-4074-b69a-042d08aeaf26",
+      "node_type": [
+        "langchain.chains.conversational_retrieval.base.ConversationalRetrievalChain.from_llm"
+      ],
       "config": {
         "verbose": false,
         "output_key": "answer",
@@ -182,7 +196,9 @@
     "pk": "902318cb-0944-4aea-b466-a4982e2a25ed",
     "fields": {
       "class_path": "langchain.chat_models.openai.ChatOpenAI",
-      "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
       "config": {
         "verbose": false,
         "streaming": true,
@@ -207,7 +223,9 @@
     "pk": "b25c086c-2558-46e4-87ac-a34ffdf91a01",
     "fields": {
       "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
-      "node_type": "3ffc030c-f6cb-4fc2-9cd7-ff1cfd3a5c99",
+      "node_type": [
+        "langchain.embeddings.openai.OpenAIEmbeddings"
+      ],
       "config": {
         "model": "text-embedding-ada-002",
         "chunk_size": 1000,
@@ -230,7 +248,9 @@
     "pk": "b75c22ab-a411-4fcc-b290-c4d95ff35bdc",
     "fields": {
       "class_path": "langchain.memory.RedisChatMessageHistory",
-      "node_type": "da5e809a-b158-4f34-8867-8ac375967906",
+      "node_type": [
+        "langchain.memory.RedisChatMessageHistory"
+      ],
       "config": {
         "ttl": 3600,
         "url": "redis://redis:6379/0",

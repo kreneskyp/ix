@@ -10,7 +10,6 @@ class Command(BaseCommand):
         call_command("migrate")
         for fixture in [
             "fake_user",
-            "node_types",
             "agent/ix",
             "agent/readme",
             "agent/code",

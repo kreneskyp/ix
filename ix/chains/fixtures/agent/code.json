@@ -28,7 +28,9 @@
     "pk": "193d2e41-5e47-4e71-981f-6a885dafae88",
     "fields": {
       "class_path": "ix.chains.artifacts.SaveArtifact",
-      "node_type": "c51f59a4-f41d-46b6-ba07-5d4636b0a121",
+      "node_type": [
+        "ix.chains.artifacts.SaveArtifact"
+      ],
       "config": {
         "output_key": "file_artifact",
         "content_key": "file",
@@ -53,7 +55,9 @@
     "pk": "24f454b0-9733-4498-8466-8bb004010c13",
     "fields": {
       "class_path": "ix.memory.artifacts.ArtifactMemory",
-      "node_type": "98af8724-a765-490a-bfb6-2adf54102186",
+      "node_type": [
+        "ix.memory.artifacts.ArtifactMemory"
+      ],
       "config": {
         "input_key": "files",
         "memory_key": "file_contents"
@@ -73,7 +77,9 @@
     "pk": "38640ea8-08d2-406a-a3fb-dd1243a0a5cc",
     "fields": {
       "class_path": "ix.chains.routing.MapSubchain",
-      "node_type": "8344d221-f239-4b83-acfa-f167f0dc6e22",
+      "node_type": [
+        "ix.chains.routing.MapSubchain"
+      ],
       "config": {
         "chains": [
           {
@@ -177,7 +183,9 @@
     "pk": "53fb5a69-1b14-445d-85ad-841968e3a729",
     "fields": {
       "class_path": "langchain.prompts.chat.ChatPromptTemplate",
-      "node_type": "b62000d7-9390-491b-af13-9711c4ec8b44",
+      "node_type": [
+        "langchain.prompts.chat.ChatPromptTemplate"
+      ],
       "config": {
         "messages": [
           {
@@ -214,7 +222,9 @@
     "pk": "57dc072f-4d9a-4ca0-87b7-c27c81454336",
     "fields": {
       "class_path": "langchain.chains.SequentialChain",
-      "node_type": "d13aca50-e998-4569-ba3c-b18985a1ca87",
+      "node_type": [
+        "langchain.chains.SequentialChain"
+      ],
       "config": {
         "chains": [
           {
@@ -402,7 +412,9 @@
     "pk": "7678f816-f566-43b8-9e57-2d3b32f1ddd0",
     "fields": {
       "class_path": "ix.chains.functions.FunctionSchema",
-      "node_type": "1d6315c1-c5fa-416e-9172-66d63c414003",
+      "node_type": [
+        "ix.chains.functions.FunctionSchema"
+      ],
       "config": {
         "name": "create_file",
         "parameters": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"filename\": {\n            \"type\": \"string\"\n        },\n        \"description\": {\n            \"type\": \"string\"\n        },\n        \"content\": {\n            \"type\": \"string\"\n        }\n    },\n    \"required\": [\n        \"filename\",\n        \"description\",\n        \"content\"\n    ]\n}",
@@ -423,7 +435,9 @@
     "pk": "7d6b84f6-a6b3-4397-aa09-bfe2fd656645",
     "fields": {
       "class_path": "ix.chains.llm_chain.LLMChain",
-      "node_type": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
+      "node_type": [
+        "ix.chains.llm_chain.LLMChain"
+      ],
       "config": {
         "llm": {
           "config": {
@@ -490,7 +504,9 @@
     "pk": "8a814597-c726-417c-8e94-fb256b60092d",
     "fields": {
       "class_path": "ix.chains.functions.OpenAIFunctionParser",
-      "node_type": "c3b2e7f3-f883-46f2-982d-cd01465fb3d1",
+      "node_type": [
+        "ix.chains.functions.OpenAIFunctionParser"
+      ],
       "config": {
         "parse_json": true
       },
@@ -509,7 +525,9 @@
     "pk": "8e81abc3-0e5f-470f-835f-c953f8d86748",
     "fields": {
       "class_path": "ix.chains.functions.FunctionSchema",
-      "node_type": "1d6315c1-c5fa-416e-9172-66d63c414003",
+      "node_type": [
+        "ix.chains.functions.FunctionSchema"
+      ],
       "config": {
         "name": "create_file_list",
         "parameters": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"files\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"filename\": {\n                        \"type\": \"string\"\n                    },\n                    \"description\": {\n                        \"type\": \"string\"\n                    }\n                },\n                \"required\": [\n                    \"filename\",\n                    \"description\"\n                ]\n            }\n        }\n    }\n}",
@@ -530,7 +548,9 @@
     "pk": "8ff340ad-556e-4a60-8080-2b3f9674ada4",
     "fields": {
       "class_path": "langchain.chat_models.openai.ChatOpenAI",
-      "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
       "config": {
         "model": "gpt-4-0613",
         "verbose": true,
@@ -553,7 +573,9 @@
     "pk": "b4b7d373-1ec9-49d4-8a0f-d3295577f440",
     "fields": {
       "class_path": "langchain.prompts.chat.ChatPromptTemplate",
-      "node_type": "b62000d7-9390-491b-af13-9711c4ec8b44",
+      "node_type": [
+        "langchain.prompts.chat.ChatPromptTemplate"
+      ],
       "config": {
         "messages": [
           {
@@ -587,7 +609,9 @@
     "pk": "b5889267-252e-43bd-98d0-bdca0d997c21",
     "fields": {
       "class_path": "langchain.chat_models.openai.ChatOpenAI",
-      "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
       "config": {
         "model": "gpt-4-0613",
         "verbose": true,
@@ -610,7 +634,9 @@
     "pk": "b8e27600-1837-4837-8a09-60a10c6adb45",
     "fields": {
       "class_path": "ix.chains.llm_chain.LLMChain",
-      "node_type": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
+      "node_type": [
+        "ix.chains.llm_chain.LLMChain"
+      ],
       "config": {
         "llm": {
           "config": {
@@ -687,7 +713,9 @@
     "pk": "c1e81d02-6a6c-4cee-8571-ff2fa1e034b0",
     "fields": {
       "class_path": "ix.chains.functions.OpenAIFunctionParser",
-      "node_type": "c3b2e7f3-f883-46f2-982d-cd01465fb3d1",
+      "node_type": [
+        "ix.chains.functions.OpenAIFunctionParser"
+      ],
       "config": {
         "parse_json": true
       },
@@ -706,7 +734,9 @@
     "pk": "e61c905a-cd49-4c76-bf5b-fa68888d426c",
     "fields": {
       "class_path": "ix.chains.artifacts.SaveArtifact",
-      "node_type": "c51f59a4-f41d-46b6-ba07-5d4636b0a121",
+      "node_type": [
+        "ix.chains.artifacts.SaveArtifact"
+      ],
       "config": {
         "output_key": "file_list_artifact",
         "content_key": "file_list.arguments.files",
@@ -731,7 +761,9 @@
     "pk": "eff5e303-902b-4636-8ef8-71951e7a44f0",
     "fields": {
       "class_path": "ix.memory.artifacts.ArtifactMemory",
-      "node_type": "98af8724-a765-490a-bfb6-2adf54102186",
+      "node_type": [
+        "ix.memory.artifacts.ArtifactMemory"
+      ],
       "config": {
         "memory_key": "artifacts"
       },
