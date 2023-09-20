@@ -49,6 +49,7 @@ services:
     links:
       - db
       - redis
+      - chroma
     volumes:
       - .:/var/app
       - .node_modules:/var/npm/node_modules
@@ -74,6 +75,10 @@ services:
   redis:
     image: redis/redis-stack-server:latest
 
+  chroma:
+    image: ghcr.io/chroma-core/chroma:0.4.11
+    ports:
+      - "8020:8000"
 
 volumes:
   postgres_data:
