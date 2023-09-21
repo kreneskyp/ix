@@ -1,0 +1,69 @@
+{
+    "child_field": "chains",
+    "class_path": "ix.chains.routing.MapSubchain",
+    "config_schema": {
+        "properties": {
+            "input_variables": {
+                "default": null,
+                "type": "object"
+            },
+            "map_input": {
+                "default": null,
+                "type": "string"
+            },
+            "map_input_to": {
+                "default": null,
+                "type": "string"
+            },
+            "output_key": {
+                "default": null,
+                "type": "string"
+            }
+        },
+        "required": [
+            "input_variables",
+            "map_input",
+            "map_input_to",
+            "output_key"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "memory",
+            "multiple": true,
+            "source_type": "memory",
+            "type": "target"
+        },
+        {
+            "auto_sequence": false,
+            "key": "chains",
+            "source_type": "chain",
+            "type": "target"
+        }
+    ],
+    "description": "Runs a subchain for each item in a list.",
+    "display_type": "list",
+    "fields": [
+        {
+            "name": "input_variables",
+            "type": "list"
+        },
+        {
+            "label": "Map Input",
+            "name": "map_input",
+            "type": "string"
+        },
+        {
+            "label": "Map Input To",
+            "name": "map_input_to",
+            "type": "string"
+        },
+        {
+            "name": "output_key",
+            "type": "string"
+        }
+    ],
+    "name": "MapSubchain",
+    "type": "chain"
+}

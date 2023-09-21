@@ -1,0 +1,174 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.components.vectorstores.AsyncChromaVectorstore",
+    "config_schema": {
+        "properties": {
+            "allow_reset": {
+                "default": false,
+                "type": "boolean"
+            },
+            "allowed_search_types": {
+                "default": [
+                    "similarity",
+                    "similarity_score_threshold",
+                    "mmr"
+                ],
+                "type": "object"
+            },
+            "anonymized_telemetry": {
+                "default": true,
+                "type": "boolean"
+            },
+            "chroma_server_grpc_port": {
+                "default": null,
+                "type": "string"
+            },
+            "chroma_server_host": {
+                "default": "172.17.42.1",
+                "type": "string"
+            },
+            "chroma_server_http_port": {
+                "default": "8020",
+                "type": "string"
+            },
+            "chroma_server_ssl_enabled": {
+                "default": false,
+                "type": "boolean"
+            },
+            "search_type": {
+                "default": "similarity",
+                "type": "string"
+            }
+        },
+        "required": [
+            "allowed_search_types"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "embedding",
+            "source_type": "embeddings",
+            "type": "target"
+        },
+        {
+            "key": "documents",
+            "source_type": "text_splitter",
+            "type": "target"
+        }
+    ],
+    "description": "Chroma vector database",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": "172.17.42.1",
+            "input_type": null,
+            "label": "Server Host",
+            "max": null,
+            "min": null,
+            "name": "chroma_server_host",
+            "parent": "client_settings",
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": "8020",
+            "input_type": null,
+            "label": "HTTP Port",
+            "max": null,
+            "min": null,
+            "name": "chroma_server_http_port",
+            "parent": "client_settings",
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "input_type": null,
+            "label": "Chroma_server_ssl_enabled",
+            "max": null,
+            "min": null,
+            "name": "chroma_server_ssl_enabled",
+            "parent": "client_settings",
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "GRPC Port",
+            "max": null,
+            "min": null,
+            "name": "chroma_server_grpc_port",
+            "parent": "client_settings",
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": true,
+            "input_type": null,
+            "label": "Anonymized_telemetry",
+            "max": null,
+            "min": null,
+            "name": "anonymized_telemetry",
+            "parent": "client_settings",
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "input_type": null,
+            "label": "Allow_reset",
+            "max": null,
+            "min": null,
+            "name": "allow_reset",
+            "parent": "client_settings",
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        },
+        {
+            "default": [
+                "similarity",
+                "similarity_score_threshold",
+                "mmr"
+            ],
+            "name": "allowed_search_types",
+            "required": true,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": "similarity",
+            "input_type": null,
+            "label": "Search_type",
+            "max": null,
+            "min": null,
+            "name": "search_type",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "Chroma",
+    "type": "vectorstore"
+}

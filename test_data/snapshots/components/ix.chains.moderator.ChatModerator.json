@@ -1,0 +1,27 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.moderator.ChatModerator",
+    "config_schema": {
+        "properties": {},
+        "required": [],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "selection_chain",
+            "source_type": "chain",
+            "type": "target"
+        },
+        {
+            "key": "memory",
+            "multiple": true,
+            "source_type": "memory",
+            "type": "target"
+        }
+    ],
+    "description": "Chat moderator analyzes user input and delegates it to the appropriate agent.",
+    "display_type": "node",
+    "fields": null,
+    "name": "IX Chat Moderator",
+    "type": "chain"
+}

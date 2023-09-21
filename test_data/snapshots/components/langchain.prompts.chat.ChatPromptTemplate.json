@@ -1,0 +1,46 @@
+{
+    "child_field": null,
+    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "config_schema": {
+        "properties": {
+            "messages": {
+                "default": [
+                    {
+                        "input_variables": [],
+                        "role": "system",
+                        "template": ""
+                    }
+                ],
+                "type": "object"
+            }
+        },
+        "required": [
+            "messages"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "output_parser",
+            "source_type": "output_parser",
+            "type": "target"
+        }
+    ],
+    "description": "Template for constructing chat prompts from messages.",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": [
+                {
+                    "input_variables": [],
+                    "role": "system",
+                    "template": ""
+                }
+            ],
+            "name": "messages",
+            "type": "list"
+        }
+    ],
+    "name": "Chat Prompt Template",
+    "type": "prompt"
+}

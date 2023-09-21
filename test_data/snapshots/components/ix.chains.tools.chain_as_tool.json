@@ -1,0 +1,71 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.tools.chain_as_tool",
+    "config_schema": {
+        "properties": {
+            "description": {
+                "default": "",
+                "type": "string"
+            },
+            "name": {
+                "default": "",
+                "type": "string"
+            },
+            "return_direct": {
+                "default": false,
+                "type": "boolean"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "name",
+            "description",
+            "return_direct",
+            "verbose"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "chain",
+            "source_type": "chain",
+            "type": "target"
+        }
+    ],
+    "description": "Tool that runs a chain. Any chain may be converted into a tool.",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": "",
+            "name": "name",
+            "style": {
+                "width": "100%"
+            },
+            "type": "str"
+        },
+        {
+            "default": "",
+            "input_type": "textarea",
+            "name": "description",
+            "style": {
+                "width": "100%"
+            },
+            "type": "str"
+        },
+        {
+            "default": false,
+            "name": "return_direct",
+            "type": "boolean"
+        },
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        }
+    ],
+    "name": "Chain Tool",
+    "type": "tool"
+}

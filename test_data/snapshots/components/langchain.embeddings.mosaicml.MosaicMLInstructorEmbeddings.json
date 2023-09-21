@@ -1,0 +1,79 @@
+{
+    "child_field": null,
+    "class_path": "langchain.embeddings.mosaicml.MosaicMLInstructorEmbeddings",
+    "config_schema": {
+        "properties": {
+            "embed_instruction": {
+                "default": "Represent the document for retrieval: ",
+                "type": "string"
+            },
+            "endpoint_url": {
+                "default": "https://models.hosted-on.mosaicml.hosting/instructor-xl/v1/predict",
+                "type": "string"
+            },
+            "mosaicml_api_token": {
+                "default": null,
+                "type": "string"
+            },
+            "query_instruction": {
+                "default": "Represent the question for retrieving supporting documents: ",
+                "type": "string"
+            },
+            "retry_sleep": {
+                "default": 1.0,
+                "type": "number"
+            }
+        },
+        "required": [
+            "endpoint_url",
+            "embed_instruction",
+            "query_instruction",
+            "retry_sleep",
+            "mosaicml_api_token"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "MosaicML Instructor Embeddings",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": "https://models.hosted-on.mosaicml.hosting/instructor-xl/v1/predict",
+            "description": "Endpoint URL to use",
+            "name": "endpoint_url",
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "default": "Represent the document for retrieval: ",
+            "description": "Instruction used to embed documents",
+            "name": "embed_instruction",
+            "type": "string"
+        },
+        {
+            "default": "Represent the question for retrieving supporting documents: ",
+            "description": "Instruction used to embed the query",
+            "name": "query_instruction",
+            "type": "string"
+        },
+        {
+            "default": 1.0,
+            "description": "How long to try sleeping for if a rate limit is encountered",
+            "name": "retry_sleep",
+            "type": "number"
+        },
+        {
+            "description": "MosaicML API token",
+            "input_type": "secret",
+            "name": "mosaicml_api_token",
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        }
+    ],
+    "name": "MosaicML Instructor Embeddings",
+    "type": "embeddings"
+}

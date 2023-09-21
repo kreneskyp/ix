@@ -1,0 +1,49 @@
+{
+    "child_field": null,
+    "class_path": "ix.tools.wolfram_alpha.get_wolfram_alpha",
+    "config_schema": {
+        "properties": {
+            "return_direct": {
+                "default": false,
+                "type": "boolean"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            },
+            "wolfram_alpha_app_id": {
+                "default": null,
+                "type": "string"
+            }
+        },
+        "required": [
+            "return_direct",
+            "verbose",
+            "wolfram_alpha_app_id"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Wolfram Alpha search engine for math and science",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "name": "return_direct",
+            "type": "boolean"
+        },
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        },
+        {
+            "input_type": "secret",
+            "label": "Wolfram Alpha App ID",
+            "name": "wolfram_alpha_app_id",
+            "type": "str"
+        }
+    ],
+    "name": "Wolfram Alpha",
+    "type": "tool"
+}

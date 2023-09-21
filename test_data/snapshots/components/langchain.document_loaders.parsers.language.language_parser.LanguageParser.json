@@ -1,0 +1,136 @@
+{
+    "child_field": null,
+    "class_path": "langchain.document_loaders.parsers.language.language_parser.LanguageParser",
+    "config_schema": {
+        "properties": {
+            "language": {
+                "default": null,
+                "enum": [
+                    "cpp",
+                    "go",
+                    "java",
+                    "js",
+                    "php",
+                    "proto",
+                    "python",
+                    "rst",
+                    "ruby",
+                    "rust",
+                    "scala",
+                    "swift",
+                    "markdown",
+                    "latex",
+                    "html",
+                    "sol"
+                ],
+                "type": "string"
+            },
+            "parser_threshold": {
+                "default": 0,
+                "type": "number"
+            }
+        },
+        "required": [],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Parse code for various programming languages.",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": [
+                {
+                    "label": "CPP",
+                    "value": "cpp"
+                },
+                {
+                    "label": "GO",
+                    "value": "go"
+                },
+                {
+                    "label": "JAVA",
+                    "value": "java"
+                },
+                {
+                    "label": "JS",
+                    "value": "js"
+                },
+                {
+                    "label": "PHP",
+                    "value": "php"
+                },
+                {
+                    "label": "PROTO",
+                    "value": "proto"
+                },
+                {
+                    "label": "PYTHON",
+                    "value": "python"
+                },
+                {
+                    "label": "RST",
+                    "value": "rst"
+                },
+                {
+                    "label": "RUBY",
+                    "value": "ruby"
+                },
+                {
+                    "label": "RUST",
+                    "value": "rust"
+                },
+                {
+                    "label": "SCALA",
+                    "value": "scala"
+                },
+                {
+                    "label": "SWIFT",
+                    "value": "swift"
+                },
+                {
+                    "label": "MARKDOWN",
+                    "value": "markdown"
+                },
+                {
+                    "label": "LATEX",
+                    "value": "latex"
+                },
+                {
+                    "label": "HTML",
+                    "value": "html"
+                },
+                {
+                    "label": "SOL",
+                    "value": "sol"
+                }
+            ],
+            "default": null,
+            "input_type": "select",
+            "label": "Language",
+            "max": null,
+            "min": null,
+            "name": "language",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": 0,
+            "input_type": null,
+            "label": "Parser_threshold",
+            "max": null,
+            "min": null,
+            "name": "parser_threshold",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "int"
+        }
+    ],
+    "name": "Language Parser",
+    "type": "parser"
+}
