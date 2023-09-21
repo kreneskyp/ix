@@ -28,7 +28,9 @@
     "pk": "0fd7a411-b486-45ba-8c98-8027e42d013c",
     "fields": {
       "class_path": "langchain.memory.ConversationBufferMemory",
-      "node_type": "7fff77c2-7ccc-4493-9f2b-54244c3d15e0",
+      "node_type": [
+        "langchain.memory.ConversationBufferMemory"
+      ],
       "config": {
         "input_key": "user_input",
         "memory_key": "chat_history",
@@ -56,7 +58,9 @@
     "pk": "1d35e7c6-473a-4f03-a7ef-ea422f7d214e",
     "fields": {
       "class_path": "ix.chains.llm_chain.LLMChain",
-      "node_type": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
+      "node_type": [
+        "ix.chains.llm_chain.LLMChain"
+      ],
       "config": {
         "llm": {
           "config": {
@@ -125,7 +129,9 @@
     "pk": "2cab752c-ccca-4f7e-ae3e-fbd1d94ab1a1",
     "fields": {
       "class_path": "ix.chains.functions.OpenAIFunctionParser",
-      "node_type": "c3b2e7f3-f883-46f2-982d-cd01465fb3d1",
+      "node_type": [
+        "ix.chains.functions.OpenAIFunctionParser"
+      ],
       "config": {
         "parse_json": true
       },
@@ -144,7 +150,9 @@
     "pk": "bb8062cb-1a21-4d40-8603-103d8520dd68",
     "fields": {
       "class_path": "ix.chains.moderator.ChatModerator",
-      "node_type": "b7d8f662-12f6-4525-b07b-c9ea7c10001d",
+      "node_type": [
+        "ix.chains.moderator.ChatModerator"
+      ],
       "config": {
         "memory": [
           {
@@ -235,7 +243,9 @@
     "pk": "be4b9f1b-b984-4001-a916-35206f5983e1",
     "fields": {
       "class_path": "langchain.memory.RedisChatMessageHistory",
-      "node_type": "da5e809a-b158-4f34-8867-8ac375967906",
+      "node_type": [
+        "langchain.memory.RedisChatMessageHistory"
+      ],
       "config": {
         "url": "redis://redis:6379/0",
         "session_scope": "chat"
@@ -255,7 +265,9 @@
     "pk": "c053289d-cf5b-46a5-b72c-5c34d91e54c7",
     "fields": {
       "class_path": "langchain.chat_models.openai.ChatOpenAI",
-      "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
       "config": {
         "model": "gpt-4-0613",
         "verbose": true,
@@ -278,7 +290,9 @@
     "pk": "ed5d31b8-28c2-4122-b456-069ac1e600dd",
     "fields": {
       "class_path": "langchain.prompts.chat.ChatPromptTemplate",
-      "node_type": "b62000d7-9390-491b-af13-9711c4ec8b44",
+      "node_type": [
+        "langchain.prompts.chat.ChatPromptTemplate"
+      ],
       "config": {
         "messages": [
           {
@@ -313,7 +327,9 @@
     "pk": "f1fffe7f-8e43-49db-beb1-b5b175d7be13",
     "fields": {
       "class_path": "ix.chains.functions.FunctionSchema",
-      "node_type": "1d6315c1-c5fa-416e-9172-66d63c414003",
+      "node_type": [
+        "ix.chains.functions.FunctionSchema"
+      ],
       "config": {
         "name": "delegate_to_agent",
         "parameters": "{\n    \"title\": \"ChooseAgent\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"agent_id\": {\n            \"title\": \"Agent Id\",\n            \"type\": \"integer\"\n        }\n    },\n    \"required\": [\n        \"agent_id\"\n    ]\n}",

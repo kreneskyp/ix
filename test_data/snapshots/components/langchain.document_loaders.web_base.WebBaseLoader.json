@@ -1,0 +1,73 @@
+{
+    "child_field": null,
+    "class_path": "langchain.document_loaders.web_base.WebBaseLoader",
+    "config_schema": {
+        "properties": {
+            "continue_on_failure": {
+                "default": false,
+                "type": "boolean"
+            },
+            "verify_ssl": {
+                "default": true,
+                "type": "boolean"
+            },
+            "web_path": {
+                "default": null,
+                "type": "object"
+            }
+        },
+        "required": [
+            "web_path"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "parser",
+            "source_type": "parser",
+            "type": "target"
+        }
+    ],
+    "description": "Load documents from the web and parse them with BeautifulSoup.",
+    "display_type": "node",
+    "fields": [
+        {
+            "description": "URL(s) of the web page",
+            "name": "web_path",
+            "style": {
+                "width": "100%"
+            },
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": true,
+            "input_type": null,
+            "label": "Verify_ssl",
+            "max": null,
+            "min": null,
+            "name": "verify_ssl",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "input_type": null,
+            "label": "Continue_on_failure",
+            "max": null,
+            "min": null,
+            "name": "continue_on_failure",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        }
+    ],
+    "name": "Web Loader",
+    "type": "document_loader"
+}

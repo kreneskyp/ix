@@ -1,0 +1,40 @@
+{
+    "child_field": null,
+    "class_path": "langchain.embeddings.vertexai.VertexAIEmbeddings",
+    "config_schema": {
+        "properties": {
+            "model_name": {
+                "default": "textembedding-gecko",
+                "enum": [
+                    "textembedding-gecko"
+                ],
+                "type": "string"
+            }
+        },
+        "required": [
+            "model_name"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "VertexAI Embeddings",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": [
+                {
+                    "label": "textembedding-gecko",
+                    "value": "textembedding-gecko"
+                }
+            ],
+            "default": "textembedding-gecko",
+            "description": "Model name to use",
+            "input_type": "select",
+            "label": "Model",
+            "name": "model_name",
+            "type": "string"
+        }
+    ],
+    "name": "VertexAI Embeddings",
+    "type": "embeddings"
+}

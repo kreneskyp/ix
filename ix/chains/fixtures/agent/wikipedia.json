@@ -30,7 +30,9 @@
     "pk": "275daea3-429e-4f7e-8ad2-e9a881f31886",
     "fields": {
       "class_path": "langchain.chat_models.openai.ChatOpenAI",
-      "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
       "config": {
         "verbose": false,
         "streaming": true,
@@ -55,7 +57,9 @@
     "pk": "4216081f-1e3c-4b5a-bb3c-824a7a3b1403",
     "fields": {
       "class_path": "ix.chains.loaders.agents.initialize_openai_functions",
-      "node_type": "b7bdef2c-5127-4084-a5c7-476e3805742b",
+      "node_type": [
+        "ix.chains.loaders.agents.initialize_openai_functions"
+      ],
       "config": {
         "max_iterations": 15,
         "return_intermediate_steps": false
@@ -75,7 +79,9 @@
     "pk": "aabbe898-5d4e-442d-9ec8-942ecae78efa",
     "fields": {
       "class_path": "ix.tools.wikipedia.get_wikipedia",
-      "node_type": "a8ffd3b0-dfb4-4e1b-b5bf-90a2ec959ff8",
+      "node_type": [
+        "ix.tools.wikipedia.get_wikipedia"
+      ],
       "config": {
         "lang": "en",
         "verbose": false,

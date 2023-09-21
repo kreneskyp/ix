@@ -1,0 +1,50 @@
+{
+    "child_field": null,
+    "class_path": "ix.tools.metaphor.get_metaphor_find_similar",
+    "config_schema": {
+        "properties": {
+            "metaphor_api_key": {
+                "default": null,
+                "type": "string"
+            },
+            "return_direct": {
+                "default": false,
+                "type": "boolean"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "return_direct",
+            "verbose",
+            "metaphor_api_key"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Metaphor find similar pages",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "name": "return_direct",
+            "type": "boolean"
+        },
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        },
+        {
+            "input_type": "secret",
+            "label": "Metaphor API Key",
+            "name": "metaphor_api_key",
+            "required": true,
+            "type": "str"
+        }
+    ],
+    "name": "Metaphor find similar",
+    "type": "tool"
+}

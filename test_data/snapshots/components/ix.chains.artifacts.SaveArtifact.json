@@ -1,0 +1,109 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.artifacts.SaveArtifact",
+    "config_schema": {
+        "properties": {
+            "artifact_description": {
+                "default": null,
+                "type": "string"
+            },
+            "artifact_key": {
+                "default": null,
+                "type": "string"
+            },
+            "artifact_name": {
+                "default": null,
+                "type": "string"
+            },
+            "artifact_storage": {
+                "default": "write_to_file",
+                "type": "string"
+            },
+            "artifact_storage_id_key": {
+                "default": null,
+                "type": "string"
+            },
+            "artifact_type": {
+                "default": null,
+                "type": "string"
+            },
+            "content_key": {
+                "default": null,
+                "type": "string"
+            },
+            "output_key": {
+                "default": null,
+                "type": "string"
+            }
+        },
+        "required": [
+            "artifact_key",
+            "artifact_name",
+            "artifact_description",
+            "artifact_type",
+            "artifact_storage",
+            "artifact_storage_id_key",
+            "content_key",
+            "output_key"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Saves an input as an artifact",
+    "display_type": "node",
+    "fields": [
+        {
+            "description": "Key of the artifact to save",
+            "label": "Artifact Key",
+            "name": "artifact_key",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "description": "Name of the artifact to save",
+            "name": "artifact_name",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "description": "Description of the artifact to save",
+            "name": "artifact_description",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "description": "Type of the artifact to save",
+            "name": "artifact_type",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "default": "write_to_file",
+            "description": "Storage of the artifact to save",
+            "name": "artifact_storage",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "description": "key within the input containing the storage ID",
+            "label": "Storage ID Key",
+            "name": "artifact_storage_id_key",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "description": "Key of the input containing the content to save",
+            "name": "content_key",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "description": "Key that the artifact will be output to",
+            "name": "output_key",
+            "required": true,
+            "type": "string"
+        }
+    ],
+    "name": "Save Artifact",
+    "type": "chain"
+}

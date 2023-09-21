@@ -28,7 +28,9 @@
     "pk": "2bd1464d-1020-4091-89a6-3429bff4b8a0",
     "fields": {
       "class_path": "langchain.prompts.chat.ChatPromptTemplate",
-      "node_type": "b62000d7-9390-491b-af13-9711c4ec8b44",
+      "node_type": [
+        "langchain.prompts.chat.ChatPromptTemplate"
+      ],
       "config": {
         "messages": [
           {
@@ -63,7 +65,9 @@
     "pk": "4f257c0e-4164-49d4-a3a6-b83450b99071",
     "fields": {
       "class_path": "ix.chains.llm_chain.LLMChain",
-      "node_type": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
+      "node_type": [
+        "ix.chains.llm_chain.LLMChain"
+      ],
       "config": {},
       "name": null,
       "description": null,
@@ -80,7 +84,9 @@
     "pk": "77ed925b-5617-4b6e-9ff2-6e3a787ef994",
     "fields": {
       "class_path": "langchain.memory.RedisChatMessageHistory",
-      "node_type": "da5e809a-b158-4f34-8867-8ac375967906",
+      "node_type": [
+        "langchain.memory.RedisChatMessageHistory"
+      ],
       "config": {
         "url": "redis://redis:6379/0",
         "session_scope": "chat"
@@ -100,7 +106,9 @@
     "pk": "acf5396c-c4e0-4d29-b59f-f5e0bee755ea",
     "fields": {
       "class_path": "ix.memory.artifacts.ArtifactMemory",
-      "node_type": "98af8724-a765-490a-bfb6-2adf54102186",
+      "node_type": [
+        "ix.memory.artifacts.ArtifactMemory"
+      ],
       "config": {},
       "name": null,
       "description": null,
@@ -117,7 +125,9 @@
     "pk": "c467c63f-becd-421d-8799-36fc22c58ba0",
     "fields": {
       "class_path": "langchain.chat_models.openai.ChatOpenAI",
-      "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
       "config": {
         "verbose": false,
         "streaming": false
@@ -137,7 +147,9 @@
     "pk": "db12306b-786b-47ef-8373-b211c2f82dfd",
     "fields": {
       "class_path": "langchain.memory.summary_buffer.ConversationSummaryBufferMemory",
-      "node_type": "d90b15ac-8202-41ee-84ca-c727376fb9e3",
+      "node_type": [
+        "langchain.memory.summary_buffer.ConversationSummaryBufferMemory"
+      ],
       "config": {
         "input_key": "user_input",
         "memory_key": "chat_summary",
@@ -158,7 +170,9 @@
     "pk": "df82910c-5a6a-4782-9e24-c79bb956f351",
     "fields": {
       "class_path": "langchain.chat_models.openai.ChatOpenAI",
-      "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
       "config": {
         "verbose": true,
         "streaming": true

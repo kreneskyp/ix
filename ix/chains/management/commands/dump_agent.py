@@ -45,7 +45,12 @@ class Command(BaseCommand):
         ]:
             output = StringIO()
             call_command(
-                "dumpdata", model, "--indent=2", "--pks={}".format(pks), stdout=output
+                "dumpdata",
+                model,
+                "--indent=2",
+                "--pks={}".format(pks),
+                "--natural-foreign",
+                stdout=output,
             )
             output.seek(0)
             data = json.loads(output.read())

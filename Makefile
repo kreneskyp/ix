@@ -248,7 +248,7 @@ dev_fixtures: cluster components agents
 .PHONY: components
 components: cluster
 	@echo "\nrestoring components from fixtures"
-	$(LOAD_FIXTURE) node_types
+	${DOCKER_COMPOSE_RUN} ./manage.py import_langchain
 
 .PHONY: agents
 agents: cluster components

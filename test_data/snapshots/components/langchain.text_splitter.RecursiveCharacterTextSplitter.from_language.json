@@ -1,0 +1,193 @@
+{
+    "child_field": null,
+    "class_path": "langchain.text_splitter.RecursiveCharacterTextSplitter.from_language",
+    "config_schema": {
+        "properties": {
+            "add_start_index": {
+                "default": false,
+                "type": "boolean"
+            },
+            "chunk_overlap": {
+                "default": 200,
+                "type": "number"
+            },
+            "chunk_size": {
+                "default": 4000,
+                "type": "number"
+            },
+            "keep_separator": {
+                "default": false,
+                "type": "boolean"
+            },
+            "language": {
+                "default": "python",
+                "enum": [
+                    "cpp",
+                    "go",
+                    "java",
+                    "js",
+                    "php",
+                    "proto",
+                    "python",
+                    "rst",
+                    "ruby",
+                    "rust",
+                    "scala",
+                    "swift",
+                    "markdown",
+                    "latex",
+                    "html",
+                    "sol"
+                ],
+                "type": "string"
+            }
+        },
+        "required": [
+            "language"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "document_loader",
+            "required": true,
+            "source_type": "document_loader",
+            "type": "target"
+        }
+    ],
+    "description": "Splitting text by recursively look at characters.\n\n    Recursively tries to split by different characters to find one\n    that works.\n    ",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": [
+                {
+                    "label": "CPP",
+                    "value": "cpp"
+                },
+                {
+                    "label": "GO",
+                    "value": "go"
+                },
+                {
+                    "label": "JAVA",
+                    "value": "java"
+                },
+                {
+                    "label": "JS",
+                    "value": "js"
+                },
+                {
+                    "label": "PHP",
+                    "value": "php"
+                },
+                {
+                    "label": "PROTO",
+                    "value": "proto"
+                },
+                {
+                    "label": "PYTHON",
+                    "value": "python"
+                },
+                {
+                    "label": "RST",
+                    "value": "rst"
+                },
+                {
+                    "label": "RUBY",
+                    "value": "ruby"
+                },
+                {
+                    "label": "RUST",
+                    "value": "rust"
+                },
+                {
+                    "label": "SCALA",
+                    "value": "scala"
+                },
+                {
+                    "label": "SWIFT",
+                    "value": "swift"
+                },
+                {
+                    "label": "MARKDOWN",
+                    "value": "markdown"
+                },
+                {
+                    "label": "LATEX",
+                    "value": "latex"
+                },
+                {
+                    "label": "HTML",
+                    "value": "html"
+                },
+                {
+                    "label": "SOL",
+                    "value": "sol"
+                }
+            ],
+            "default": "python",
+            "input_type": "select",
+            "name": "language",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "choices": null,
+            "default": 4000,
+            "input_type": null,
+            "label": "Chunk_size",
+            "max": null,
+            "min": null,
+            "name": "chunk_size",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": 200,
+            "input_type": null,
+            "label": "Chunk_overlap",
+            "max": null,
+            "min": null,
+            "name": "chunk_overlap",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "input_type": null,
+            "label": "Keep_separator",
+            "max": null,
+            "min": null,
+            "name": "keep_separator",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "input_type": null,
+            "label": "Add_start_index",
+            "max": null,
+            "min": null,
+            "name": "add_start_index",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        }
+    ],
+    "name": "RecursiveCharacterTextSplitter",
+    "type": "text_splitter"
+}

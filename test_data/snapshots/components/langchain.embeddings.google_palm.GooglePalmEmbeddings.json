@@ -1,0 +1,46 @@
+{
+    "child_field": null,
+    "class_path": "langchain.embeddings.google_palm.GooglePalmEmbeddings",
+    "config_schema": {
+        "properties": {
+            "google_api_key": {
+                "default": null,
+                "type": "string"
+            },
+            "model_name": {
+                "default": "models/embedding-gecko-001",
+                "type": "string"
+            }
+        },
+        "required": [
+            "google_api_key",
+            "model_name"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Google PaLM Embeddings",
+    "display_type": "node",
+    "fields": [
+        {
+            "description": "Google API key",
+            "name": "google_api_key",
+            "type": "string"
+        },
+        {
+            "choices": [
+                {
+                    "label": "models/embedding-gecko-001",
+                    "value": "models/embedding-gecko-001"
+                }
+            ],
+            "default": "models/embedding-gecko-001",
+            "description": "Model name to use",
+            "label": "Model",
+            "name": "model_name",
+            "type": "string"
+        }
+    ],
+    "name": "Google PaLM Embeddings",
+    "type": "embeddings"
+}

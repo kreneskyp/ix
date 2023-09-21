@@ -1,0 +1,62 @@
+{
+    "child_field": null,
+    "class_path": "langchain.vectorstores.base.VectorStoreRetriever",
+    "config_schema": {
+        "properties": {
+            "allowed_search_types": {
+                "default": [
+                    "similarity",
+                    "similarity_score_threshold",
+                    "mmr"
+                ],
+                "type": "object"
+            },
+            "search_type": {
+                "default": "similarity",
+                "type": "string"
+            }
+        },
+        "required": [
+            "allowed_search_types"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "vectorstore",
+            "required": true,
+            "source_type": "vectorstore",
+            "type": "target"
+        }
+    ],
+    "description": "Default vector",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": [
+                "similarity",
+                "similarity_score_threshold",
+                "mmr"
+            ],
+            "name": "allowed_search_types",
+            "required": true,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": "similarity",
+            "input_type": null,
+            "label": "Search_type",
+            "max": null,
+            "min": null,
+            "name": "search_type",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "VectorStoreRetriever",
+    "type": "retriever"
+}

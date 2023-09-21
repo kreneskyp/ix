@@ -28,7 +28,9 @@
     "pk": "1777422a-0c5d-4551-ba0b-a456cac229b7",
     "fields": {
       "class_path": "langchain.chat_models.openai.ChatOpenAI",
-      "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
       "config": {
         "verbose": false,
         "streaming": true,
@@ -53,7 +55,9 @@
     "pk": "335f59e4-34fd-4bd4-aa3e-3f2920106fd2",
     "fields": {
       "class_path": "ix.chains.llm_chain.LLMChain",
-      "node_type": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
+      "node_type": [
+        "ix.chains.llm_chain.LLMChain"
+      ],
       "config": {
         "verbose": false
       },
@@ -72,7 +76,9 @@
     "pk": "6ac9ea62-614c-47b1-bbec-cd19a534a9c8",
     "fields": {
       "class_path": "langchain.chat_models.openai.ChatOpenAI",
-      "node_type": "bbb7544c-6891-4204-985a-d13d65e02523",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
       "config": {
         "verbose": false,
         "streaming": true,
@@ -97,7 +103,9 @@
     "pk": "b80ef475-d3bf-46e7-bdb9-37c57b4b875d",
     "fields": {
       "class_path": "ix.chains.openapi.get_openapi_chain_async",
-      "node_type": "2201a903-75cb-4073-a50f-67fc53e628e8",
+      "node_type": [
+        "ix.chains.openapi.get_openapi_chain_async"
+      ],
       "config": {
         "spec": "https://www.klarna.com/us/shopping/public/openai/v0/api-docs/",
         "verbose": false
@@ -117,7 +125,9 @@
     "pk": "ecb33667-47b8-4ad6-ab4f-a7b40970fd77",
     "fields": {
       "class_path": "langchain.prompts.chat.ChatPromptTemplate",
-      "node_type": "b62000d7-9390-491b-af13-9711c4ec8b44",
+      "node_type": [
+        "langchain.prompts.chat.ChatPromptTemplate"
+      ],
       "config": {
         "messages": [
           {
