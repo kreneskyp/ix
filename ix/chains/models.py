@@ -60,7 +60,7 @@ class NodeType(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True)
-    class_path = models.CharField(max_length=255)
+    class_path = models.CharField(max_length=255, unique=True)
     type = models.CharField(max_length=255)
     display_type = models.CharField(
         max_length=10,
