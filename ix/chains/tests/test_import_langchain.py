@@ -22,7 +22,7 @@ def test_imported_components(snapshot):
     call_command("import_langchain")
 
     # Ensure you generate a unique name for each snapshot to avoid overwriting
-    snapshot.snapshot_dir = f"/var/app/test_data/snapshots/components/"
+    snapshot.snapshot_dir = "/var/app/test_data/snapshots/components/"
 
     nodes = list(NodeType.objects.all().order_by("class_path"))
     for node in nodes:
