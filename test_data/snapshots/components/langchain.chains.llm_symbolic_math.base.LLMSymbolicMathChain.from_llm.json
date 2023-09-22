@@ -40,7 +40,7 @@
             "type": "target"
         }
     ],
-    "description": "Chain that interprets a prompt and executes python code to do symbolic math.\n\n    Example:\n        .. code-block:: python\n\n            from langchain import LLMSymbolicMathChain, OpenAI\n            llm_symbolic_math = LLMSymbolicMathChain.from_llm(OpenAI())\n    ",
+    "description": "Chain that interprets a prompt and executes python code to do symbolic math.\n\n    Example:\n        .. code-block:: python\n\n            from langchain.chains import LLMSymbolicMathChain\n            from langchain.llms import OpenAI\n            llm_symbolic_math = LLMSymbolicMathChain.from_llm(OpenAI())\n    ",
     "display_type": "node",
     "fields": [
         {

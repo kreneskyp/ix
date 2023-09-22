@@ -23,7 +23,7 @@ ipython==8.13.2
 isort==5.12.0
 jsonpath-ng==1.5.3
 jsonschema==4.0.1
-langchain==0.0.281
+langchain==0.0.299
 llama-cpp-python==0.1.79
 metaphor-python==0.1.16
 openai==0.27.8
