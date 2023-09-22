@@ -21,7 +21,8 @@
                     "markdown",
                     "latex",
                     "html",
-                    "sol"
+                    "sol",
+                    "csharp"
                 ],
                 "type": "string"
             },
@@ -102,6 +103,10 @@
                 {
                     "label": "SOL",
                     "value": "sol"
+                },
+                {
+                    "label": "CSHARP",
+                    "value": "csharp"
                 }
             ],
             "default": null,
