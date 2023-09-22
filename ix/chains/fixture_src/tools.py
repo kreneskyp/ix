@@ -11,6 +11,7 @@ from langchain.utilities import (
     GraphQLAPIWrapper,
     LambdaWrapper,
     PubMedAPIWrapper,
+    ZapierNLAWrapper,
 )
 
 from ix.api.components.types import NodeTypeField
@@ -243,6 +244,34 @@ WOLFRAM = {
     ],
 }
 
+ZAPIER = {
+    "name": "Zapier",
+    "description": "Tools for interacting with Zapier tasks",
+    "class_path": "ix.tools.zapier.zapier_toolkit",
+    "type": "tool",
+    "fields": NodeTypeField.get_fields(
+        ZapierNLAWrapper,
+        include=[
+            "zapier_nla_api_key",
+            "zapier_nla_oauth_access_token",
+            "zapier_nla_api_base",
+        ],
+        field_options={
+            "zapier_nla_api_key": {
+                "label": "API Key",
+                "input_type": "secret",
+            },
+            "zapier_nla_oauth_access_token": {
+                "label": "OAuth Token",
+                "input_type": "secret",
+            },
+            "zapier_nla_api_base": {
+                "label": "API Base",
+                "style": {"width": "100%"},
+            },
+        },
+    ),
+}
 
 TOOLS = [
     ARXIV_SEARCH,
@@ -259,4 +288,5 @@ TOOLS = [
     METAPHOR_CONTENTS,
     METAPHOR_SIMILAR,
     WOLFRAM,
+    ZAPIER,
 ]
