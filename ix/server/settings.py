@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "ix.chains",
     "ix.agents",
     "ix.chat",
+    "ix.datasources",
 ]
 
 MIDDLEWARE = [
