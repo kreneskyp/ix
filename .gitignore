@@ -32,3 +32,8 @@ langchain
 
 # local models
 llama
+
+# vault setup
+.vault.env
+.certs
+.vault_file

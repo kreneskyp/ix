@@ -97,7 +97,7 @@ endif
 
 # setup target for docker-compose, add deps here to apply to all compose sessions
 .PHONY: compose
-compose: image
+compose: image .vault.env
 
 # =========================================================
 # Build
@@ -324,3 +324,44 @@ prettier: nodejs
 .PHONY: clean
 clean:
 	rm -rf .sentinel
+	rm -rf .certs
+
+.vault.env:
+	@python ./bin/get_uuid.py > .vault.env
+	@echo ".vault.env file has been generated with a UUID key."
+
+
+# =========================================================
+# Misc
+# =========================================================
+
+# commands to generate all the certs needed for local development
+
+.certs/sentinel:
+	@mkdir -p .certs
+
+	@if [ ! -f .certs/ca.crt ]; then \
+		echo "Generating CA and server certificates..."; \
+		openssl genpkey -algorithm RSA -out .certs/ca.key; \
+		openssl req -x509 -new -nodes -key .certs/ca.key -subj "/CN=Vault CA" -days 3650 -out .certs/ca.crt; \
+	fi
+	@if [ ! -f .certs/server.crt ]; then \
+		echo "Generating Vault server certificate..."; \
+		openssl genpkey -algorithm RSA -out .certs/server.key; \
+		openssl req -new -key .certs/server.key -subj "/CN=localhost" -out .certs/server.csr; \
+		openssl x509 -req -in .certs/server.csr -CA .certs/ca.crt -CAkey .certs/ca.key -CAcreateserial -out .certs/server.crt -days 3650; \
+	fi
+	@if [ ! -f .certs/client.crt ]; then \
+		echo "Generating Vault client certificate..."; \
+		openssl genpkey -algorithm RSA -out .certs/client.key; \
+		openssl req -new -key .certs/client.key -subj "/CN=Vault Client" -out .certs/client.csr; \
+		openssl x509 -req -in .certs/client.csr -CA .certs/ca.crt -CAkey .certs/ca.key -CAcreateserial -out .certs/client.crt -days 3650; \
+	fi
+
+	@rm -f .certs/*.csr
+	@rm -f .certs/ca.srl
+	@touch .certs/sentinel
+
+
+.PHONY: certs
+certs: .certs/sentinel

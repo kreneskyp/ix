@@ -215,3 +215,19 @@ DEFAULT_AGENTS = [
     "b7d8f662-12f6-4525-b07b-c9ea7c10010a",  # @code
     "cc054ff5-67cd-4489-b0f1-b8b62af2d825",  # @readme
 ]
+
+
+# Dev environment can load from .vault.env
+# TODO: move this to dev_settings if possible.
+if os.path.exists("/var/app/.vault.env"):
+    with open("/var/app/.vault.env", "r") as f:
+        key_file = f.read()
+        key, value = key_file.strip().split("=")
+        os.environ["VAULT_ROOT_KEY"] = value
+
+VAULT_ROOT_KEY = "myroot"
+VAULT_SERVER = os.environ.get("VAULT_SERVER", "https://vault:8200")
+VAULT_TOKEN__USER_TOKENS = VAULT_ROOT_KEY
+VAULT_CLIENT_CRT = "/var/vault/certs/client.crt"
+VAULT_CLIENT_KEY = "/var/vault/certs/client.key"
+VAULT_TLS_VERIFY = False
