@@ -2,7 +2,6 @@ import logging
 import re
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from fastapi import APIRouter, HTTPException
 from typing import Optional, Dict, Any
 from uuid import UUID

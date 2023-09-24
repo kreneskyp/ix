@@ -4,7 +4,6 @@ from uuid import UUID
 
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from django.db.models import Q
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
