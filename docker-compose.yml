@@ -21,11 +21,13 @@ services:
     links:
       - db
       - redis
+      - vault
     volumes:
       - .:/var/app
       - ./bin:/usr/bin/ix
       - .bash_profile:/root/.bash_profile
       - .ipython:/root/.ipython
+      - ./.certs/:/var/vault/certs:ro,Z
     env_file:
       - .env
     environment:
@@ -49,12 +51,14 @@ services:
     links:
       - db
       - redis
+      - vault
       - chroma
     volumes:
       - .:/var/app
       - .node_modules:/var/npm/node_modules
       - ./bin:/usr/bin/ix
       - .bash_profile:/root/.bash_profile
+      - ./.certs/:/var/vault/certs:ro,Z
     env_file:
       - .env
 
@@ -79,6 +83,20 @@ services:
     image: ghcr.io/chroma-core/chroma:0.4.11
     ports:
       - "8020:8000"
+
+  vault:
+    image: hashicorp/vault:1.14
+    volumes:
+    - ./vault/config.hcl:/vault/config/config.hcl:ro
+    - ./.certs/:/vault/certs:ro,Z
+    - .vault_file:/vault/file
+    env_file:
+      - .vault.env
+    command: "server -dev -dev-tls -config=/vault/config/config.hcl"
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
 
 volumes:
   postgres_data:
