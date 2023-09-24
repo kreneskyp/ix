@@ -12,10 +12,10 @@ from ix.task_log.tests.fake import (
     afake_agent,
     afake_chat,
     afake_artifact,
-    afake_user,
     afake_system,
     afake_task,
 )
+from ix.ix_users.tests.fake import afake_user
 
 CHAT_ID_1 = uuid4()
 CHAT_ID_2 = uuid4()

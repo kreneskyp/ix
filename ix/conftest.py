@@ -30,6 +30,7 @@ from ix.task_log.tests.fake import (
     afake_think,
     afake_task,
 )
+from ix.ix_users.tests.fake import get_default_user
 from ix.utils.importlib import import_class, _import_class
 
 logger = logging.getLogger(__name__)
@@ -273,6 +274,16 @@ async def aload_chain(anode_types, achat):
         )
 
     yield _mock_chain
+
+
+@pytest.fixture
+def user():
+    return get_default_user()
+
+
+@pytest_asyncio.fixture
+async def auser():
+    return await sync_to_async(get_default_user)()
 
 
 @pytest.fixture

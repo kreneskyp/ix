@@ -47,10 +47,12 @@ INSTALLED_APPS = [
     "graphene_django",
     "channels",
     "django_extensions",
+    "ix.ix_users",
     "ix.task_log",
     "ix.chains",
     "ix.agents",
     "ix.chat",
+    "ix.datasources",
 ]
 
 MIDDLEWARE = [
@@ -98,6 +100,8 @@ DATABASES = {
     }
 }
 
+
+AUTH_USER_MODEL = "ix_users.User"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

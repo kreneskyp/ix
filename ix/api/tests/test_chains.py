@@ -20,8 +20,8 @@ from ix.task_log.tests.fake import (
     afake_chain_node,
     afake_chain_edge,
     afake_chain,
-    afake_user,
 )
+from ix.ix_users.tests.fake import afake_user
 
 
 @pytest_asyncio.fixture

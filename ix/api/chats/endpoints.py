@@ -1,7 +1,7 @@
 import logging
 import re
 from asgiref.sync import sync_to_async
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from fastapi import APIRouter, HTTPException
 from typing import Optional, Dict, Any
 from uuid import UUID
@@ -41,7 +41,8 @@ router = APIRouter()
 
 @router.post("/chats/", response_model=ChatPydantic, tags=["Chats"])
 async def create_chat(chat: ChatNew):
-    user = await User.objects.alatest("id")
+    user_model = get_user_model()
+    user = await user_model.objects.alatest("id")
 
     # TODO: turn this on once auth is setup for UI
     # user = info.context.user
