@@ -10,6 +10,7 @@ from langchain.chains.base import Chain as LangchainChain
 
 from ix.chains.loaders.prompts import load_prompt
 from ix.chains.models import NodeType, ChainNode, ChainEdge
+from ix.utils.config import format_config
 from ix.utils.importlib import import_class
 
 import_node_class = import_class
@@ -76,7 +77,7 @@ def get_sequence_inputs(sequence: List[LangchainChain]) -> List[str]:
     return list(input_variables)
 
 
-def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
+def load_node(node: ChainNode, context: IxContext, root=True, variables=None) -> Any:
     """
     Generic loader for loading the Langchain component a ChainNode represents.
 
@@ -90,10 +91,15 @@ def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
     node_type: NodeType = node.node_type
     config = node.config.copy() if node.config else {}
 
-    # resolve secrets and settings
     # TODO: implement resolve secrets from vault and settings from vocabulary
     #       neither of these subsystems are implemented yet. For now load all
     #       values as text from config dict
+    # resolve secrets and settings
+    # format the config in this order:
+    # 1. format with context variables
+    # 2. format with secrets
+    if variables:
+        config = format_config(config, variables)
 
     # load type specific config options. This is generally for loading
     # ix specific features into the config dict
