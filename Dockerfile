@@ -14,6 +14,7 @@ COPY bin/* /usr/bin/ix/
 # create useful directories
 RUN mkdir -p $APP
 RUN mkdir -p /var/wheels
+RUN mkdir -p /var/vault/certs
 
 # create directies needed for dev mode - these aren't used in production
 # but raise warnings if they aren't there. (harmless but yellow and scary)

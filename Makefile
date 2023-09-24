@@ -97,7 +97,7 @@ endif
 
 # setup target for docker-compose, add deps here to apply to all compose sessions
 .PHONY: compose
-compose: image .vault.env
+compose: image .vault.env certs
 
 # =========================================================
 # Build
