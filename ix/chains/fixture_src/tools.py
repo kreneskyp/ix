@@ -1,3 +1,4 @@
+from ix.chains.components.tools import IngestionTool
 from ix.chains.fixture_src.targets import CHAIN_TARGET
 from langchain import (
     GoogleSearchAPIWrapper,
@@ -144,6 +145,17 @@ GRAPHQL_TOOL = {
     + NodeTypeField.get_fields(GraphQLAPIWrapper, include=["graphql_endpoint"]),
 }
 
+INGESTION_TOOL = {
+    "class_path": "ix.chains.components.tools.IngestionTool",
+    "type": "tool",
+    "name": "Ingestion Tool",
+    "description": "Tool used to import files into a vectorstore.",
+    "fields": TOOL_BASE_FIELDS
+    + NodeTypeField.get_fields(
+        IngestionTool, include=["retriever_template", "vectorstore"]
+    ),
+}
+
 LAMBDA_API = {
     "class_path": "ix.tools.lambda_api.get_lambda_api",
     "type": "tool",
@@ -252,6 +264,7 @@ TOOLS = [
     GOOGLE_SEARCH,
     GOOGLE_SERPER,
     GRAPHQL_TOOL,
+    INGESTION_TOOL,
     LAMBDA_API,
     PUB_MED,
     WIKIPEDIA,
