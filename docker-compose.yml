@@ -89,7 +89,7 @@ services:
     volumes:
     - ./vault/config.hcl:/vault/config/config.hcl:ro
     - ./.certs/:/vault/certs:ro,Z
-    - .vault_file:/vault/file
+    #- .vault_file:/vault/file
     env_file:
       - .vault.env
     command: "server -dev -dev-tls -config=/vault/config/config.hcl"
