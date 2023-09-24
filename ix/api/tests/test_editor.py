@@ -6,8 +6,8 @@ from ix.chat.models import Chat
 from ix.server.fast_api import app
 from ix.task_log.tests.fake import (
     afake_chain,
-    afake_user,
 )
+from ix.ix_users.tests.fake import afake_user
 
 
 @pytest.mark.django_db

@@ -3,6 +3,7 @@ from typing import Optional
 from uuid import UUID
 
 from asgiref.sync import sync_to_async
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.db.models import Q
 from fastapi import APIRouter, HTTPException
@@ -58,7 +59,8 @@ async def create_chain_chat(chain: Chain) -> Chat:
     """Create a test chat for a chain."""
 
     # HAX: a shared fake user is used for all chains
-    user = await User.objects.alatest("id")
+    user_model = get_user_model()
+    user = await user_model.objects.alatest("id")
 
     # Create objects for test chat. It's likely that most chains
     # will be tested in the chat. Better to create test chat
