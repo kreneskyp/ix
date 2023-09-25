@@ -1,0 +1,74 @@
+{
+    "child_field": null,
+    "class_path": "langchain.storage.redis.RedisStore",
+    "config_schema": {
+        "properties": {
+            "namespace": {
+                "default": null,
+                "type": "string"
+            },
+            "redis_url": {
+                "default": "redis://redis:6379/0",
+                "type": "string"
+            },
+            "ttl": {
+                "default": 3600,
+                "maximum": 12000.0,
+                "minimum": 0.0,
+                "multipleOf": 10.0,
+                "type": "number"
+            }
+        },
+        "required": [],
+        "type": "object"
+    },
+    "connectors": [],
+    "description": "BaseStore implementation using Redis as the underlying store.\n\n    Examples:\n        Create a RedisStore instance and perform operations on it:\n\n        .. code-block:: python\n\n            # Instantiate the RedisStore with a Redis connection\n            from langchain.storage import RedisStore\n            from langchain.utilities.redis import get_client\n\n            client = get_client('redis://localhost:6379')\n            redis_store = RedisStore(client)\n\n            # Set values for keys\n            redis_store.mset([(\"key1\", b\"value1\"), (\"key2\", b\"value2\")])\n\n            # Get values for keys\n            values = redis_store.mget([\"key1\", \"key2\"])\n            # [b\"value1\", b\"value2\"]\n\n            # Delete keys\n            redis_store.mdelete([\"key1\"])\n\n            # Iterate over keys\n            for key in redis_store.yield_keys():\n                print(key)\n    ",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": "redis://redis:6379/0",
+            "input_type": null,
+            "label": "Redis_url",
+            "max": null,
+            "min": null,
+            "name": "redis_url",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": 3600,
+            "input_type": "slider",
+            "label": "Ttl",
+            "max": 12000.0,
+            "min": 0.0,
+            "name": "ttl",
+            "parent": null,
+            "required": false,
+            "step": 10.0,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Namespace",
+            "max": null,
+            "min": null,
+            "name": "namespace",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "Redis Store",
+    "type": "store"
+}

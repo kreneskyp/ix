@@ -1,0 +1,32 @@
+{
+    "child_field": null,
+    "class_path": "langchain.embeddings.CacheBackedEmbeddings",
+    "config_schema": {
+        "properties": {},
+        "required": [],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "underlying_embeddings",
+            "required": true,
+            "source_type": [
+                "embeddings"
+            ],
+            "type": "target"
+        },
+        {
+            "key": "document_embedding_store",
+            "required": true,
+            "source_type": [
+                "store"
+            ],
+            "type": "target"
+        }
+    ],
+    "description": "Interface for caching results from embedding models.\n\n    The interface allows works with any store that implements\n    the abstract store interface accepting keys of type str and values of list of\n    floats.\n\n    If need be, the interface can be extended to accept other implementations\n    of the value serializer and deserializer, as well as the key encoder.\n\n    Examples:\n\n        .. code-block: python\n\n            from langchain.embeddings import CacheBackedEmbeddings, OpenAIEmbeddings\n            from langchain.storage import LocalFileStore\n\n            store = LocalFileStore('./my_cache')\n\n            underlying_embedder = OpenAIEmbeddings()\n            embedder = CacheBackedEmbeddings.from_bytes_store(\n                underlying_embedder, store, namespace=underlying_embedder.model\n            )\n\n            # Embedding is computed and cached\n            embeddings = embedder.embed_documents([\"hello\", \"goodbye\"])\n\n            # Embeddings are retrieved from the cache, no computation is done\n            embeddings = embedder.embed_documents([\"hello\", \"goodbye\"])\n    ",
+    "display_type": "node",
+    "fields": [],
+    "name": "Cache Backed Embeddings",
+    "type": "embeddings"
+}
