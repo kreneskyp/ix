@@ -1,6 +1,8 @@
 from langchain import LlamaCpp
+from langchain.llms import Ollama
 
-from ix.api.chains.types import NodeTypeField
+from ix.api.components.types import NodeTypeField
+from ix.chains.fixture_src.common import VERBOSE
 
 OPENAI_LLM_CLASS_PATH = "langchain.chat_models.openai.ChatOpenAI"
 OPENAI_LLM = {
@@ -182,7 +184,8 @@ LLAMA_CPP_LLM = {
     "type": "llm",
     "name": "Llama Cpp",
     "description": "Llama Cpp wrapper for llama models",
-    "fields": NodeTypeField.get_fields(
+    "fields": [VERBOSE]
+    + NodeTypeField.get_fields(
         LlamaCpp,
         include=[
             "model_path",
@@ -216,5 +219,67 @@ LLAMA_CPP_LLM = {
     ),
 }
 
+OLLAMA_LLM_CLASS_PATH = "langchain.llms.ollama.Ollama"
+OLLAMA_LLM = {
+    "class_path": OLLAMA_LLM_CLASS_PATH,
+    "type": "llm",
+    "name": "Ollama",
+    "description": "Ollama server for llama models",
+    "fields": [VERBOSE]
+    + NodeTypeField.get_fields(
+        Ollama,
+        include=[
+            "base_url",
+            "model",
+            "mirostat",
+            "mirostat_eta",
+            "mirostat_tau",
+            "num_ctx",
+            "num_gpu",
+            "num_thread",
+            "repeat_last_n",
+            "repeat_penalty",
+            "temperature",
+            "stop",
+            "tfs_z",
+            "top_p",
+        ],
+        field_options={
+            "temperature": {
+                "default": 0.8,
+                "input_type": "slider",
+                "min": 0,
+                "max": 1,
+                "step": 0.05,
+            },
+            "num_gpu": {
+                "default": 1,
+                "input_type": "slider",
+                "min": 0,
+                "max": 10,
+                "step": 1,
+            },
+            "top_k": {
+                "default": 40,
+                "description": "Top K",
+                "input_type": "slider",
+                "min": 1,
+                "max": 100,
+                "step": 1,
+            },
+            "top_p": {
+                "default": 0.9,
+                "input_type": "slider",
+                "min": 0,
+                "max": 1,
+                "step": 0.05,
+            },
+            "stop": {
+                "style": {"width": "100%"},
+            },
+        },
+    ),
+}
 
-LLMS = [ANTHROPIC_LLM, GOOGLE_PALM, LLAMA_CPP_LLM, OPENAI_LLM]
+
+LLMS = [ANTHROPIC_LLM, GOOGLE_PALM, LLAMA_CPP_LLM, OLLAMA_LLM, OPENAI_LLM]

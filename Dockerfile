@@ -1,4 +1,6 @@
-FROM python:3.11
+# =============================================================================
+#  Base stage - shared setup
+FROM python:3.11 as base
 
 ARG LANGCHAIN_DEV
 
@@ -8,15 +10,41 @@ ENV APP=/var/app
 ENV PATH=$PATH:/usr/bin/ix
 RUN mkdir -p /usr/bin/ix
 COPY bin/* /usr/bin/ix/
+
+# create useful directories
 RUN mkdir -p $APP
-RUN apt update -y && apt install -y curl postgresql-client
+RUN mkdir -p /var/wheels
 
-# XXX: hacky way of generating a unique key on build, needs to be removed prior to deploy readiness
-# Generate a Django secret key
-# Set the Django secret key
-ENV DJANGO_SECRET_KEY $(date +%s | sha256sum | base64 | head -c 32)
-RUN echo "export DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}" >> /etc/profile
+# create directies needed for dev mode - these aren't used in production
+# but raise warnings if they aren't there. (harmless but yellow and scary)
+RUN mkdir -p $APP/.compiled-static
+RUN mkdir -p $APP/frontend/static
 
+RUN apt update -y && \
+    apt install -y curl postgresql-client && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set the working directory
+WORKDIR $APP
+
+# Copy base files to working dir
+COPY manage.py .
+COPY requirements.txt .
+COPY LICENSE .
+
+
+# =============================================================================
+#  PYTHON_LIB stage - Downloads and builds wheels for python libraries.
+#                     This is done separately so that download cache isn't
+#                     included in the final image.
+FROM base as wheelhouse
+RUN pip wheel -r $APP/requirements.txt -w /var/wheels
+
+
+# =============================================================================
+#  FRONTEND stage - Container for building the frontend with webpack and other
+#                   nodejs tools.
+FROM base as nodejs
 
 # NVM / NPM Setup
 ENV NVM_DIR=/usr/local/nvm
@@ -36,26 +64,43 @@ ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 ENV NODE_MODULES_BIN=$NPM_DIR/node_modules/.bin
 ENV PATH $PATH:$NODE_MODULES_BIN
 
+# build config
+COPY package.json $NPM_DIR
+COPY babel.config.js $NPM_DIR
+COPY relay.config.js $NPM_DIR
+COPY webpack.config.js $NPM_DIR
+
 # NPM package installs
 RUN echo "[$NPM_DIR]"
-COPY package.json $NPM_DIR
+RUN npm install
 
-ENV WEBPACK_OUTPUT=/var/compiled-static
 
-# Set the working directory
-WORKDIR $APP
+# =============================================================================
+#  APP stage produces the image:
+#   - python packages
+#   - compiled static
+#   - nginx
+FROM base as app
 
-# Llama-cpp GPU support disabled until image has required libraries
-#ENV LLAMA_CUBLAS=1
+COPY --from=wheelhouse /var/wheels /var/wheels
+RUN pip install --no-index --find-links=/var/wheels -r $APP/requirements.txt
 
-# Copy requirements.txt to the working directory
-COPY requirements.txt .
+# XXX: hacky way of generating a unique key on build, needs to be removed prior to deploy readiness
+# Generate a Django secret key
+# Set the Django secret key
+ENV DJANGO_SECRET_KEY $(date +%s | sha256sum | base64 | head -c 32)
+RUN echo "export DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}" >> /etc/profile
 
-# Install Python requirements
-RUN pip install -r requirements.txt
+# FRONTEND
+ENV COMPILED_STATIC=/var/static
+RUN mkdir -p ${COMPILED_STATIC}
+
+# nginx setup
+RUN mkdir -p /etc/nginx
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy the rest of the application code to the working directory
-COPY . .
+COPY ix ${APP}/ix
 
 # If LANGCHAIN_DEV is set then install the local dev version of LangChain
 RUN if [ -n "${LANGCHAIN_DEV}" ]; then pip install -e /var/app/langchain/libs/langchain; fi
@@ -63,14 +108,11 @@ RUN if [ -n "${LANGCHAIN_DEV}" ]; then pip install -e /var/app/langchain/libs/la
 # Set the environment variable for selecting between ASGI and Celery
 ENV APP_MODE=asgi
 
-# Expose port 8000 for ASGI, or leave it unexposed for Celery
-EXPOSE 8000
+WORKDIR ${APP}
 
-
-WORKDIR /var/app
+# Add compiled static if available.
+COPY .compiled-static/ ${COMPILED_STATIC}/
 
 # Start the application using either ASGI or Celery depending on APP_MODE
 # XXX: disabling until this is tested more
 #CMD if [ "$APP_MODE" = "asgi" ] export ; then python manage.py runserver 0.0.0.0:8000 ; else celery -A myapp worker -l info ; fi
-
-

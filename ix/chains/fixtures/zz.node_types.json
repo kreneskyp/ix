@@ -1,0 +1,6290 @@
+[
+{
+  "model": "chains.nodetype",
+  "pk": "01e26ecf-d02b-46ce-a57c-322e3815035b",
+  "fields": {
+    "name": "LLM Reply",
+    "description": "Chain that prompts an LLM for a text completion.",
+    "class_path": "ix.chains.llm_chain.LLMReply",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "01fc1524-9c01-4970-a01f-56ff70218500",
+  "fields": {
+    "name": "React Docstore Agent",
+    "description": "Agent that interacts with the document store to obtain reaction-based information.",
+    "class_path": "ix.chains.loaders.agents.initialize_react_docstore",
+    "type": "agent",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "072d63be-45ef-4df2-8095-57a6560598ad",
+  "fields": {
+    "name": "OpenAI Multifunction Agent",
+    "description": "Agent that uses OpenAI's API to generate text.",
+    "class_path": "ix.chains.loaders.agents.initialize_openai_multi_functions",
+    "type": "agent",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "151cbfff-6e65-4ed1-9c70-100deee0e873",
+  "fields": {
+    "name": "Parse JSON",
+    "description": "Parses output into json.",
+    "class_path": "ix.chains.json.ParseJSON",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "input_key",
+        "type": "text",
+        "label": "Input Key"
+      },
+      {
+        "name": "output_key",
+        "type": "text",
+        "label": "Output Key"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {}
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "1b76aa58-eca9-41fa-b255-1d572de46aa8",
+  "fields": {
+    "name": "Zero Shot React Description Agent",
+    "description": "Agent that generates descriptions by taking zero-shot approach using reaction information.",
+    "class_path": "ix.chains.loaders.agents.initialize_zero_shot_react_description",
+    "type": "agent",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "1d6315c1-c5fa-416e-9172-66d63c414003",
+  "fields": {
+    "name": "Function Schema",
+    "description": "Describes a function using json. Compatible with OpenAI",
+    "class_path": "ix.chains.functions.FunctionSchema",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "name",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "name": "parameters",
+        "type": "json",
+        "default": ""
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "name",
+        "description",
+        "parameters"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "parameters": {
+          "type": "object",
+          "default": ""
+        },
+        "description": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "2201a903-75cb-4073-a50f-67fc53e628e8",
+  "fields": {
+    "name": "OpenAPI with OpenAI Functions",
+    "description": "Chain that uses OpenAI Functions to call OpenAPI endpoints.",
+    "class_path": "ix.chains.openapi.get_openapi_chain_async",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "spec",
+        "type": "string",
+        "label": "OpenAPI URL",
+        "style": {
+          "width": "500px"
+        }
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose",
+        "spec"
+      ],
+      "properties": {
+        "spec": {
+          "type": "string",
+          "default": null
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "2281566f-0611-4eef-b870-547e39bacc45",
+  "fields": {
+    "name": "Google Serper",
+    "description": "Tool that searches Google for a given query.",
+    "class_path": "ix.tools.google.get_google_serper",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "k",
+        "step": null,
+        "type": "int",
+        "label": "K",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 10,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "gl",
+        "step": null,
+        "type": "str",
+        "label": "Gl",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "us",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "hl",
+        "step": null,
+        "type": "str",
+        "label": "Hl",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "en",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "type",
+        "step": null,
+        "type": "str",
+        "label": "Type",
+        "style": null,
+        "parent": null,
+        "choices": [
+          {
+            "label": "News",
+            "value": "news"
+          },
+          {
+            "label": "Search",
+            "value": "search"
+          },
+          {
+            "label": "Places",
+            "value": "places"
+          },
+          {
+            "label": "Images",
+            "value": "images"
+          }
+        ],
+        "default": "search",
+        "required": false,
+        "input_type": "select"
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "tbs",
+        "step": null,
+        "type": "str",
+        "label": "Tbs",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "serper_api_key",
+        "step": null,
+        "type": "str",
+        "label": "Serper_api_key",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": "secret"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "k": {
+          "type": "number",
+          "default": 10
+        },
+        "gl": {
+          "type": "string",
+          "default": "us"
+        },
+        "hl": {
+          "type": "string",
+          "default": "en"
+        },
+        "tbs": {
+          "type": "string",
+          "default": null
+        },
+        "type": {
+          "enum": [
+            "news",
+            "search",
+            "places",
+            "images"
+          ],
+          "type": "string",
+          "default": "search"
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "serper_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "24959705-d346-405b-9d8f-1de3e5490b7e",
+  "fields": {
+    "name": "Redis Vector Store",
+    "description": "Redis Vector Store",
+    "class_path": "ix.chains.components.vectorstores.AsyncRedisVectorstore",
+    "type": "vectorstore",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "embedding",
+        "type": "target",
+        "source_type": "embeddings"
+      },
+      {
+        "key": "documents",
+        "type": "target",
+        "source_type": "text_splitter"
+      }
+    ],
+    "fields": [
+      {
+        "name": "redis_url",
+        "type": "string",
+        "style": {
+          "width": "100%"
+        },
+        "default": "redis://redis:6379/0",
+        "description": "URL of the Redis server"
+      },
+      {
+        "name": "index_name",
+        "type": "string",
+        "description": "Name of the index in the Redis"
+      },
+      {
+        "name": "content_key",
+        "type": "string",
+        "default": "content",
+        "description": "Key for storing content"
+      },
+      {
+        "name": "metadata_key",
+        "type": "string",
+        "default": "metadata",
+        "description": "Key for storing metadata"
+      },
+      {
+        "name": "vector_key",
+        "type": "string",
+        "default": "content_vector",
+        "description": "Key for storing vectors"
+      },
+      {
+        "name": "allowed_search_types",
+        "type": "list",
+        "default": [
+          "similarity",
+          "similarity_score_threshold",
+          "mmr"
+        ],
+        "required": true
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "search_type",
+        "step": null,
+        "type": "str",
+        "label": "Search_type",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "similarity",
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "redis_url",
+        "index_name",
+        "content_key",
+        "metadata_key",
+        "vector_key",
+        "allowed_search_types"
+      ],
+      "properties": {
+        "redis_url": {
+          "type": "string",
+          "default": "redis://redis:6379/0"
+        },
+        "index_name": {
+          "type": "string",
+          "default": null
+        },
+        "vector_key": {
+          "type": "string",
+          "default": "content_vector"
+        },
+        "content_key": {
+          "type": "string",
+          "default": "content"
+        },
+        "search_type": {
+          "type": "string",
+          "default": "similarity"
+        },
+        "metadata_key": {
+          "type": "string",
+          "default": "metadata"
+        },
+        "allowed_search_types": {
+          "type": "object",
+          "default": [
+            "similarity",
+            "similarity_score_threshold",
+            "mmr"
+          ]
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "2612aa8b-9eba-4a81-99e1-6f8e89167ce9",
+  "fields": {
+    "name": "Language Parser",
+    "description": "Parse code for various programming languages.",
+    "class_path": "langchain.document_loaders.parsers.language.language_parser.LanguageParser",
+    "type": "parser",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "max": null,
+        "min": null,
+        "name": "language",
+        "step": null,
+        "type": "str",
+        "label": "Language",
+        "style": null,
+        "parent": null,
+        "choices": [
+          {
+            "label": "CPP",
+            "value": "cpp"
+          },
+          {
+            "label": "GO",
+            "value": "go"
+          },
+          {
+            "label": "JAVA",
+            "value": "java"
+          },
+          {
+            "label": "JS",
+            "value": "js"
+          },
+          {
+            "label": "PHP",
+            "value": "php"
+          },
+          {
+            "label": "PROTO",
+            "value": "proto"
+          },
+          {
+            "label": "PYTHON",
+            "value": "python"
+          },
+          {
+            "label": "RST",
+            "value": "rst"
+          },
+          {
+            "label": "RUBY",
+            "value": "ruby"
+          },
+          {
+            "label": "RUST",
+            "value": "rust"
+          },
+          {
+            "label": "SCALA",
+            "value": "scala"
+          },
+          {
+            "label": "SWIFT",
+            "value": "swift"
+          },
+          {
+            "label": "MARKDOWN",
+            "value": "markdown"
+          },
+          {
+            "label": "LATEX",
+            "value": "latex"
+          },
+          {
+            "label": "HTML",
+            "value": "html"
+          },
+          {
+            "label": "SOL",
+            "value": "sol"
+          }
+        ],
+        "default": null,
+        "required": false,
+        "input_type": "select"
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "parser_threshold",
+        "step": null,
+        "type": "int",
+        "label": "Parser_threshold",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 0,
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "language": {
+          "enum": [
+            "cpp",
+            "go",
+            "java",
+            "js",
+            "php",
+            "proto",
+            "python",
+            "rst",
+            "ruby",
+            "rust",
+            "scala",
+            "swift",
+            "markdown",
+            "latex",
+            "html",
+            "sol"
+          ],
+          "type": "string",
+          "default": null
+        },
+        "parser_threshold": {
+          "type": "number",
+          "default": 0
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "267a48b0-967d-4df9-b6ec-dec1dd3992b9",
+  "fields": {
+    "name": "LlamaCpp Embeddings",
+    "description": "LlamaCpp Embeddings",
+    "class_path": "langchain.embeddings.llama_cpp.LlamaCppEmbeddings",
+    "type": "embeddings",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "model_path",
+        "type": "string",
+        "style": {
+          "width": "100%"
+        },
+        "description": "Path to the Llama model"
+      },
+      {
+        "name": "n_ctx",
+        "type": "number",
+        "default": 512,
+        "description": "Token context window"
+      },
+      {
+        "name": "n_parts",
+        "type": "number",
+        "default": -1,
+        "description": "Number of parts to split the model into"
+      },
+      {
+        "name": "seed",
+        "type": "number",
+        "default": -1,
+        "description": "Seed. If -1, a random seed is used"
+      },
+      {
+        "name": "f16_kv",
+        "type": "boolean",
+        "default": false,
+        "description": "Use half-precision for key/value cache"
+      },
+      {
+        "name": "logits_all",
+        "type": "boolean",
+        "default": false,
+        "description": "Return logits for all tokens, not just the last token"
+      },
+      {
+        "name": "vocab_only",
+        "type": "boolean",
+        "default": false,
+        "description": "Only load the vocabulary, no weights"
+      },
+      {
+        "name": "use_mlock",
+        "type": "boolean",
+        "default": false,
+        "description": "Force system to keep model in RAM"
+      },
+      {
+        "name": "n_threads",
+        "type": "number",
+        "description": "Number of threads to use"
+      },
+      {
+        "name": "n_batch",
+        "type": "number",
+        "default": 8,
+        "description": "Number of tokens to process in parallel"
+      },
+      {
+        "name": "n_gpu_layers",
+        "type": "number",
+        "description": "Number of layers to be loaded into gpu memory"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "model_path",
+        "n_ctx",
+        "n_parts",
+        "seed",
+        "f16_kv",
+        "logits_all",
+        "vocab_only",
+        "use_mlock",
+        "n_threads",
+        "n_batch",
+        "n_gpu_layers"
+      ],
+      "properties": {
+        "seed": {
+          "type": "number",
+          "default": -1
+        },
+        "n_ctx": {
+          "type": "number",
+          "default": 512
+        },
+        "f16_kv": {
+          "type": "boolean",
+          "default": false
+        },
+        "n_batch": {
+          "type": "number",
+          "default": 8
+        },
+        "n_parts": {
+          "type": "number",
+          "default": -1
+        },
+        "n_threads": {
+          "type": "number",
+          "default": null
+        },
+        "use_mlock": {
+          "type": "boolean",
+          "default": false
+        },
+        "logits_all": {
+          "type": "boolean",
+          "default": false
+        },
+        "model_path": {
+          "type": "string",
+          "default": null
+        },
+        "vocab_only": {
+          "type": "boolean",
+          "default": false
+        },
+        "n_gpu_layers": {
+          "type": "number",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "29915c83-3ba0-4bbb-be7b-0899ade4e97e",
+  "fields": {
+    "name": "VertexAI Embeddings",
+    "description": "VertexAI Embeddings",
+    "class_path": "langchain.embeddings.vertexai.VertexAIEmbeddings",
+    "type": "embeddings",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "model_name",
+        "type": "string",
+        "label": "Model",
+        "choices": [
+          {
+            "label": "textembedding-gecko",
+            "value": "textembedding-gecko"
+          }
+        ],
+        "default": "textembedding-gecko",
+        "input_type": "select",
+        "description": "Model name to use"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "model_name"
+      ],
+      "properties": {
+        "model_name": {
+          "enum": [
+            "textembedding-gecko"
+          ],
+          "type": "string",
+          "default": "textembedding-gecko"
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "35152553-b5b4-4130-97e2-bda033ca23b2",
+  "fields": {
+    "name": "Structured Chat Zero Shot React Description Agent",
+    "description": "Agent that generates descriptions in a structured chat context using a zero-shot approach and reaction information.",
+    "class_path": "ix.chains.loaders.agents.initialize_structured_chat_zero_shot_react_description",
+    "type": "agent",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "36edc450-6ea3-4fd4-abf6-a5fff02da718",
+  "fields": {
+    "name": "Self Ask with Search Agent",
+    "description": "Agent that asks itself queries and searches for answers in a given context.",
+    "class_path": "ix.chains.loaders.agents.initialize_self_ask_with_search",
+    "type": "agent",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "3ffc030c-f6cb-4fc2-9cd7-ff1cfd3a5c99",
+  "fields": {
+    "name": "OpenAI Embeddings",
+    "description": "Embeddings from OpenAI's API.",
+    "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
+    "type": "embeddings",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "model",
+        "type": "string",
+        "choices": [
+          {
+            "name": "text-embedding-ada-002",
+            "label": "text-embedding-ada-002"
+          }
+        ],
+        "default": "text-embedding-ada-002"
+      },
+      {
+        "name": "allowed_special",
+        "type": "list"
+      },
+      {
+        "name": "disallowed_special",
+        "type": "list",
+        "default": "all"
+      },
+      {
+        "name": "chunk_size",
+        "type": "int",
+        "default": 1000
+      },
+      {
+        "max": 6,
+        "min": 0,
+        "name": "max_retries",
+        "step": 1,
+        "type": "int",
+        "default": "6",
+        "input_type": "slider"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "model",
+        "allowed_special",
+        "disallowed_special",
+        "chunk_size",
+        "max_retries"
+      ],
+      "properties": {
+        "model": {
+          "type": "string",
+          "default": "text-embedding-ada-002"
+        },
+        "chunk_size": {
+          "type": "number",
+          "default": 1000
+        },
+        "max_retries": {
+          "type": "number",
+          "default": "6",
+          "maximum": 6.0,
+          "minimum": 0.0,
+          "multipleOf": 1.0
+        },
+        "allowed_special": {
+          "type": "object",
+          "default": null
+        },
+        "disallowed_special": {
+          "type": "object",
+          "default": "all"
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "4bb2e0e3-d030-494d-a8f3-44ea5147bee8",
+  "fields": {
+    "name": "Chain Tool",
+    "description": "Tool that runs a chain. Any chain may be converted into a tool.",
+    "class_path": "ix.chains.tools.chain_as_tool",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "chain",
+        "type": "target",
+        "source_type": "chain"
+      }
+    ],
+    "fields": [
+      {
+        "name": "name",
+        "type": "str",
+        "style": {
+          "width": "100%"
+        },
+        "default": ""
+      },
+      {
+        "name": "description",
+        "type": "str",
+        "style": {
+          "width": "100%"
+        },
+        "default": "",
+        "input_type": "textarea"
+      },
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "name",
+        "description",
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "description": {
+          "type": "string",
+          "default": ""
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "4bfd56af-222c-4428-bc5a-31c4e5a99871",
+  "fields": {
+    "name": "Llama Cpp",
+    "description": "Llama Cpp wrapper for llama models",
+    "class_path": "langchain.llms.llamacpp.LlamaCpp",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "model_path",
+        "step": null,
+        "type": "str",
+        "label": "Model_path",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": true,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "lora_base",
+        "step": null,
+        "type": "Optional[str]",
+        "label": "Lora_base",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "n_ctx",
+        "step": null,
+        "type": "int",
+        "label": "N_ctx",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 512,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "n_parts",
+        "step": null,
+        "type": "int",
+        "label": "N_parts",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": -1,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "seed",
+        "step": null,
+        "type": "int",
+        "label": "Seed",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": -1,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "f16_kv",
+        "step": null,
+        "type": "bool",
+        "label": "F16_kv",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": true,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "logits_all",
+        "step": null,
+        "type": "bool",
+        "label": "Logits_all",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "vocab_only",
+        "step": null,
+        "type": "bool",
+        "label": "Vocab_only",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "use_mlock",
+        "step": null,
+        "type": "bool",
+        "label": "Use_mlock",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "n_threads",
+        "step": null,
+        "type": "Optional[int]",
+        "label": "N_threads",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "n_batch",
+        "step": null,
+        "type": "Optional[int]",
+        "label": "N_batch",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 8,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "n_gpu_layers",
+        "step": null,
+        "type": "Optional[int]",
+        "label": "N_gpu_layers",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "suffix",
+        "step": null,
+        "type": "Optional[str]",
+        "label": "Suffix",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "max_tokens",
+        "step": null,
+        "type": "Optional[int]",
+        "label": "Max_tokens",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 256,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "temperature",
+        "step": null,
+        "type": "Optional[float]",
+        "label": "Temperature",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 0.8,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "top_p",
+        "step": null,
+        "type": "Optional[float]",
+        "label": "Top_p",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 0.95,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "logprobs",
+        "step": null,
+        "type": "Optional[int]",
+        "label": "Logprobs",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "echo",
+        "step": null,
+        "type": "Optional[bool]",
+        "label": "Echo",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "stop",
+        "step": null,
+        "type": "Optional[List[str]]",
+        "label": "Stop",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": [],
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "repeat_penalty",
+        "step": null,
+        "type": "Optional[float]",
+        "label": "Repeat_penalty",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 1.1,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "last_n_tokens_size",
+        "step": null,
+        "type": "Optional[int]",
+        "label": "Last_n_tokens_size",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 64,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "use_mmap",
+        "step": null,
+        "type": "Optional[bool]",
+        "label": "Use_mmap",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": true,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "rope_freq_scale",
+        "step": null,
+        "type": "float",
+        "label": "Rope_freq_scale",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 1.0,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "rope_freq_base",
+        "step": null,
+        "type": "float",
+        "label": "Rope_freq_base",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 10000.0,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "streaming",
+        "step": null,
+        "type": "bool",
+        "label": "Streaming",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": true,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "verbose",
+        "step": null,
+        "type": "bool",
+        "label": "Verbose",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": true,
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose",
+        "model_path"
+      ],
+      "properties": {
+        "echo": {
+          "type": "object",
+          "default": false
+        },
+        "seed": {
+          "type": "number",
+          "default": -1
+        },
+        "stop": {
+          "type": "object",
+          "default": []
+        },
+        "n_ctx": {
+          "type": "number",
+          "default": 512
+        },
+        "top_p": {
+          "type": "object",
+          "default": 0.95
+        },
+        "f16_kv": {
+          "type": "boolean",
+          "default": true
+        },
+        "suffix": {
+          "type": "object",
+          "default": null
+        },
+        "n_batch": {
+          "type": "object",
+          "default": 8
+        },
+        "n_parts": {
+          "type": "number",
+          "default": -1
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": true
+        },
+        "logprobs": {
+          "type": "object",
+          "default": null
+        },
+        "use_mmap": {
+          "type": "object",
+          "default": true
+        },
+        "lora_base": {
+          "type": "object",
+          "default": null
+        },
+        "n_threads": {
+          "type": "object",
+          "default": null
+        },
+        "streaming": {
+          "type": "boolean",
+          "default": true
+        },
+        "use_mlock": {
+          "type": "boolean",
+          "default": false
+        },
+        "logits_all": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_tokens": {
+          "type": "object",
+          "default": 256
+        },
+        "model_path": {
+          "type": "string",
+          "default": null
+        },
+        "vocab_only": {
+          "type": "boolean",
+          "default": false
+        },
+        "temperature": {
+          "type": "object",
+          "default": 0.8
+        },
+        "n_gpu_layers": {
+          "type": "object",
+          "default": null
+        },
+        "repeat_penalty": {
+          "type": "object",
+          "default": 1.1
+        },
+        "rope_freq_base": {
+          "type": "number",
+          "default": 10000.0
+        },
+        "rope_freq_scale": {
+          "type": "number",
+          "default": 1.0
+        },
+        "last_n_tokens_size": {
+          "type": "object",
+          "default": 64
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "4eb6a170-d0e4-428e-be8d-09ca1ca8383d",
+  "fields": {
+    "name": "GraphQL Tool",
+    "description": "Tool that searches GraphQL for a given query.",
+    "class_path": "ix.tools.graphql.get_graphql_tool",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "graphql_endpoint",
+        "step": null,
+        "type": "str",
+        "label": "Graphql_endpoint",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": true,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "graphql_endpoint"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "graphql_endpoint": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "54d5cfcb-bf9c-4fe2-9692-075d6849ce23",
+  "fields": {
+    "name": "Chat Zero Shot React Description Agent",
+    "description": "Agent that generates descriptions in a chat-based context using a zero-shot approach and reaction information.",
+    "class_path": "ix.chains.loaders.agents.initialize_chat_zero_shot_react_description",
+    "type": "agent",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "59a9e9c2-df2e-42be-be5d-d642deff11ae",
+  "fields": {
+    "name": "Conversational React Description Agent",
+    "description": "Agent that provides descriptions in a conversational manner using reaction information.",
+    "class_path": "ix.chains.loaders.agents.initialize_conversational_react_description",
+    "type": "agent",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "61654ca2-b73b-4dac-b761-adba7d560ef3",
+  "fields": {
+    "name": "Symbolic Math Chain",
+    "description": "Chain that interprets a prompt and executes python code to do symbolic math.\n\n    Example:\n        .. code-block:: python\n\n            from langchain import LLMSymbolicMathChain, OpenAI\n            llm_symbolic_math = LLMSymbolicMathChain.from_llm(OpenAI())\n    ",
+    "class_path": "langchain.chains.llm_symbolic_math.base.LLMSymbolicMathChain.from_llm",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "input_key",
+        "step": null,
+        "type": "str",
+        "label": "Input_key",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "user_input",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "output_key",
+        "step": null,
+        "type": "str",
+        "label": "Output_key",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "answer",
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "input_key": {
+          "type": "string",
+          "default": "user_input"
+        },
+        "output_key": {
+          "type": "string",
+          "default": "answer"
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "62513b96-183d-43cb-a839-b44d024c2101",
+  "fields": {
+    "name": " search",
+    "description": "Tool that searches Arxiv for a given query.",
+    "class_path": "ix.tools.arxiv.get_arxiv",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "top_k_results",
+        "step": null,
+        "type": "int",
+        "label": "Top_k_results",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 3,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "ARXIV_MAX_QUERY_LENGTH",
+        "step": null,
+        "type": "int",
+        "label": "ARXIV_MAX_QUERY_LENGTH",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 300,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "load_max_docs",
+        "step": null,
+        "type": "int",
+        "label": "Load_max_docs",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 100,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "load_all_available_meta",
+        "step": null,
+        "type": "boolean",
+        "label": "Load_all_available_meta",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "doc_content_chars_max",
+        "step": null,
+        "type": "int",
+        "label": "Doc_content_chars_max",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 4000,
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "load_max_docs": {
+          "type": "number",
+          "default": 100
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "top_k_results": {
+          "type": "number",
+          "default": 3
+        },
+        "doc_content_chars_max": {
+          "type": "number",
+          "default": 4000
+        },
+        "ARXIV_MAX_QUERY_LENGTH": {
+          "type": "number",
+          "default": 300
+        },
+        "load_all_available_meta": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "68c6cb60-8ae6-4242-8e68-220d6b0ea472",
+  "fields": {
+    "name": "DuckDuckGo Search",
+    "description": "Tool that searches DuckDuckGo for a given query.",
+    "class_path": "ix.tools.duckduckgo.get_ddg_search",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "region",
+        "step": null,
+        "type": "str",
+        "label": "Region",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "wt-wt",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "safesearch",
+        "step": null,
+        "type": "str",
+        "label": "Safesearch",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "moderate",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "time",
+        "step": null,
+        "type": "str",
+        "label": "Time",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "y",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "max_results",
+        "step": null,
+        "type": "int",
+        "label": "Max_results",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 5,
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "time": {
+          "type": "string",
+          "default": "y"
+        },
+        "region": {
+          "type": "string",
+          "default": "wt-wt"
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "safesearch": {
+          "type": "string",
+          "default": "moderate"
+        },
+        "max_results": {
+          "type": "number",
+          "default": 5
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "6f810877-714e-43e6-ac2d-65e86e93a069",
+  "fields": {
+    "name": "MosaicML Instructor Embeddings",
+    "description": "MosaicML Instructor Embeddings",
+    "class_path": "langchain.embeddings.mosaicml.MosaicMLInstructorEmbeddings",
+    "type": "embeddings",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "endpoint_url",
+        "type": "string",
+        "style": {
+          "width": "100%"
+        },
+        "default": "https://models.hosted-on.mosaicml.hosting/instructor-xl/v1/predict",
+        "description": "Endpoint URL to use"
+      },
+      {
+        "name": "embed_instruction",
+        "type": "string",
+        "default": "Represent the document for retrieval: ",
+        "description": "Instruction used to embed documents"
+      },
+      {
+        "name": "query_instruction",
+        "type": "string",
+        "default": "Represent the question for retrieving supporting documents: ",
+        "description": "Instruction used to embed the query"
+      },
+      {
+        "name": "retry_sleep",
+        "type": "number",
+        "default": 1.0,
+        "description": "How long to try sleeping for if a rate limit is encountered"
+      },
+      {
+        "name": "mosaicml_api_token",
+        "type": "string",
+        "style": {
+          "width": "100%"
+        },
+        "input_type": "secret",
+        "description": "MosaicML API token"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "endpoint_url",
+        "embed_instruction",
+        "query_instruction",
+        "retry_sleep",
+        "mosaicml_api_token"
+      ],
+      "properties": {
+        "retry_sleep": {
+          "type": "number",
+          "default": 1.0
+        },
+        "endpoint_url": {
+          "type": "string",
+          "default": "https://models.hosted-on.mosaicml.hosting/instructor-xl/v1/predict"
+        },
+        "embed_instruction": {
+          "type": "string",
+          "default": "Represent the document for retrieval: "
+        },
+        "query_instruction": {
+          "type": "string",
+          "default": "Represent the question for retrieving supporting documents: "
+        },
+        "mosaicml_api_token": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "7477a8ad-ca83-4714-aeaf-4df8cbb900ea",
+  "fields": {
+    "name": "Web Loader",
+    "description": "Load documents from the web and parse them with BeautifulSoup.",
+    "class_path": "langchain.document_loaders.web_base.WebBaseLoader",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "parser",
+        "type": "target",
+        "source_type": "parser"
+      }
+    ],
+    "fields": [
+      {
+        "name": "web_path",
+        "type": "list",
+        "style": {
+          "width": "100%"
+        },
+        "description": "URL(s) of the web page"
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "verify_ssl",
+        "step": null,
+        "type": "boolean",
+        "label": "Verify_ssl",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": true,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "continue_on_failure",
+        "step": null,
+        "type": "boolean",
+        "label": "Continue_on_failure",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "web_path"
+      ],
+      "properties": {
+        "web_path": {
+          "type": "object",
+          "default": null
+        },
+        "verify_ssl": {
+          "type": "boolean",
+          "default": true
+        },
+        "continue_on_failure": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "7b954f7c-4449-46b4-9013-382ce3c94c2a",
+  "fields": {
+    "name": "MultiQueryRetriever",
+    "description": "MultiQueryRetriever",
+    "class_path": "langchain.retrievers.multi_query.MultiQueryRetriever.from_llm",
+    "type": "retriever",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "retriever",
+        "type": "target",
+        "as_type": "retriever",
+        "required": true,
+        "source_type": [
+          "retriever",
+          "vectorstore"
+        ]
+      },
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "7d49f24a-18e2-4db9-8be3-bbbe6aa25440",
+  "fields": {
+    "name": "Mock Memory",
+    "description": "Mock Memory",
+    "class_path": "ix.chains.tests.mock_memory.MockMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": null,
+    "fields": null,
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "7fff77c2-7ccc-4493-9f2b-54244c3d15e0",
+  "fields": {
+    "name": "Conversation Buffer",
+    "description": "Memory that stores conversation history as a buffer.",
+    "class_path": "langchain.memory.ConversationBufferMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "chat_memory",
+        "type": "target",
+        "required": true,
+        "source_type": "memory_backend"
+      }
+    ],
+    "fields": [
+      {
+        "name": "memory_key",
+        "type": "string",
+        "default": "history"
+      },
+      {
+        "name": "human_prefix",
+        "type": "string",
+        "default": "Human"
+      },
+      {
+        "name": "ai_prefix",
+        "type": "string",
+        "default": "AI"
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "default": "output"
+      },
+      {
+        "name": "input_key",
+        "type": "string",
+        "default": "input"
+      },
+      {
+        "name": "return_messages",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "memory_key",
+        "human_prefix",
+        "ai_prefix",
+        "output_key",
+        "input_key",
+        "return_messages"
+      ],
+      "properties": {
+        "ai_prefix": {
+          "type": "string",
+          "default": "AI"
+        },
+        "input_key": {
+          "type": "string",
+          "default": "input"
+        },
+        "memory_key": {
+          "type": "string",
+          "default": "history"
+        },
+        "output_key": {
+          "type": "string",
+          "default": "output"
+        },
+        "human_prefix": {
+          "type": "string",
+          "default": "Human"
+        },
+        "return_messages": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "8344d221-f239-4b83-acfa-f167f0dc6e22",
+  "fields": {
+    "name": "MapSubchain",
+    "description": "Runs a subchain for each item in a list.",
+    "class_path": "ix.chains.routing.MapSubchain",
+    "type": "chain",
+    "display_type": "list",
+    "connectors": [
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "chains",
+        "type": "target",
+        "source_type": "chain",
+        "auto_sequence": false
+      }
+    ],
+    "fields": [
+      {
+        "name": "input_variables",
+        "type": "list"
+      },
+      {
+        "name": "map_input",
+        "type": "string",
+        "label": "Map Input"
+      },
+      {
+        "name": "map_input_to",
+        "type": "string",
+        "label": "Map Input To"
+      },
+      {
+        "name": "output_key",
+        "type": "string"
+      }
+    ],
+    "child_field": "chains",
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "input_variables",
+        "map_input",
+        "map_input_to",
+        "output_key"
+      ],
+      "properties": {
+        "map_input": {
+          "type": "string",
+          "default": null
+        },
+        "output_key": {
+          "type": "string",
+          "default": null
+        },
+        "map_input_to": {
+          "type": "string",
+          "default": null
+        },
+        "input_variables": {
+          "type": "object",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "83637276-7fdc-45e2-abc3-076f5ca694b8",
+  "fields": {
+    "name": "Google PaLM Embeddings",
+    "description": "Google PaLM Embeddings",
+    "class_path": "langchain.embeddings.google_palm.GooglePalmEmbeddings",
+    "type": "embeddings",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "google_api_key",
+        "type": "string",
+        "description": "Google API key"
+      },
+      {
+        "name": "model_name",
+        "type": "string",
+        "label": "Model",
+        "choices": [
+          {
+            "label": "models/embedding-gecko-001",
+            "value": "models/embedding-gecko-001"
+          }
+        ],
+        "default": "models/embedding-gecko-001",
+        "description": "Model name to use"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "google_api_key",
+        "model_name"
+      ],
+      "properties": {
+        "model_name": {
+          "type": "string",
+          "default": "models/embedding-gecko-001"
+        },
+        "google_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "87d66231-9c29-4346-bb1d-c9cfb4def773",
+  "fields": {
+    "name": "VectorStoreRetriever",
+    "description": "Default vector",
+    "class_path": "langchain.vectorstores.base.VectorStoreRetriever",
+    "type": "retriever",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "vectorstore",
+        "type": "target",
+        "required": true,
+        "source_type": "vectorstore"
+      }
+    ],
+    "fields": [
+      {
+        "name": "allowed_search_types",
+        "type": "list",
+        "default": [
+          "similarity",
+          "similarity_score_threshold",
+          "mmr"
+        ],
+        "required": true
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "search_type",
+        "step": null,
+        "type": "str",
+        "label": "Search_type",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "similarity",
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "allowed_search_types"
+      ],
+      "properties": {
+        "search_type": {
+          "type": "string",
+          "default": "similarity"
+        },
+        "allowed_search_types": {
+          "type": "object",
+          "default": [
+            "similarity",
+            "similarity_score_threshold",
+            "mmr"
+          ]
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "89ef5872-b042-4551-8a14-6c9be2cadcc6",
+  "fields": {
+    "name": "Metaphor find similar",
+    "description": "Metaphor find similar pages",
+    "class_path": "ix.tools.metaphor.get_metaphor_find_similar",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "metaphor_api_key",
+        "type": "str",
+        "label": "Metaphor API Key",
+        "required": true,
+        "input_type": "secret"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "metaphor_api_key"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "metaphor_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "8a49959a-b5bc-414e-a25f-51b8d3ad6249",
+  "fields": {
+    "name": "Conversation Buffer Window",
+    "description": "Memory that stores conversation history as a buffer and summarizes to compress context.",
+    "class_path": "langchain.memory.buffer_window.ConversationBufferWindowMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "chat_memory",
+        "type": "target",
+        "required": true,
+        "source_type": "memory_backend"
+      }
+    ],
+    "fields": [
+      {
+        "name": "k",
+        "type": "number",
+        "label": "Window Size",
+        "default": 5
+      },
+      {
+        "name": "memory_key",
+        "type": "string",
+        "default": "history"
+      },
+      {
+        "name": "human_prefix",
+        "type": "string",
+        "default": "Human"
+      },
+      {
+        "name": "ai_prefix",
+        "type": "string",
+        "default": "AI"
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "default": "output"
+      },
+      {
+        "name": "input_key",
+        "type": "string",
+        "default": "input"
+      },
+      {
+        "name": "return_messages",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "k",
+        "memory_key",
+        "human_prefix",
+        "ai_prefix",
+        "output_key",
+        "input_key",
+        "return_messages"
+      ],
+      "properties": {
+        "k": {
+          "type": "number",
+          "default": 5
+        },
+        "ai_prefix": {
+          "type": "string",
+          "default": "AI"
+        },
+        "input_key": {
+          "type": "string",
+          "default": "input"
+        },
+        "memory_key": {
+          "type": "string",
+          "default": "history"
+        },
+        "output_key": {
+          "type": "string",
+          "default": "output"
+        },
+        "human_prefix": {
+          "type": "string",
+          "default": "Human"
+        },
+        "return_messages": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "8e6158bc-0061-4959-b056-58d8f38e3347",
+  "fields": {
+    "name": "DelegateToAgent",
+    "description": "Delegate a request to another agent. Does not wait for a response.",
+    "class_path": "ix.chains.agent_interaction.DelegateToAgentChain",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "tags",
+        "type": "list",
+        "style": {
+          "width": "100%"
+        },
+        "default": []
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "output_key",
+        "step": null,
+        "type": "str",
+        "label": "Output_key",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "delegate_to",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "target_alias",
+        "step": null,
+        "type": "str",
+        "label": "Target_alias",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": true,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "delegate_inputs",
+        "step": null,
+        "type": "list",
+        "label": "Delegate_inputs",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose",
+        "tags",
+        "target_alias"
+      ],
+      "properties": {
+        "tags": {
+          "type": "object",
+          "default": []
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "output_key": {
+          "type": "string",
+          "default": "delegate_to"
+        },
+        "target_alias": {
+          "type": "string",
+          "default": null
+        },
+        "delegate_inputs": {
+          "type": "object",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "8eda99de-d65f-4543-96c3-afd75a6e4bdc",
+  "fields": {
+    "name": "Mock Chain",
+    "description": "Mock Chain",
+    "class_path": "ix.chains.tests.mock_chain.MockChain",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": null,
+    "fields": null,
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "912b2b30-0fe8-4c46-af3b-1e7fac4c9b65",
+  "fields": {
+    "name": "Google PaLM",
+    "description": "Google PaLM",
+    "class_path": "langchain.chat_models.google_palm.ChatGooglePalm",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "model_name",
+        "type": "string",
+        "label": "Model",
+        "choices": [
+          {
+            "label": "Bison-001",
+            "value": "models/chat-bison-001"
+          }
+        ],
+        "default": "gpt-4",
+        "required": true,
+        "input_type": "select",
+        "description": "OpenAI model"
+      },
+      {
+        "name": "google_api_key",
+        "type": "string",
+        "label": "API Key",
+        "input_type": "secret",
+        "description": "Google API key"
+      },
+      {
+        "max": 2,
+        "min": 0,
+        "name": "temperature",
+        "step": 0.05,
+        "type": "number",
+        "default": 0,
+        "input_type": "slider",
+        "description": "Temperature"
+      },
+      {
+        "max": 2,
+        "min": 0,
+        "name": "top_p",
+        "step": 0.05,
+        "type": "number",
+        "default": 0,
+        "input_type": "slider",
+        "description": "Top P"
+      },
+      {
+        "max": 2,
+        "min": 0,
+        "name": "top_k",
+        "step": 0.05,
+        "type": "number",
+        "default": 0,
+        "input_type": "slider",
+        "description": "Top P"
+      },
+      {
+        "max": 5,
+        "min": 1,
+        "name": "n",
+        "step": 1,
+        "type": "number",
+        "label": "Sample N responses",
+        "default": 1,
+        "input_type": "slider",
+        "description": "Number of responses to sample"
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "model_name",
+        "google_api_key",
+        "temperature",
+        "top_p",
+        "top_k",
+        "n",
+        "verbose"
+      ],
+      "properties": {
+        "n": {
+          "type": "number",
+          "default": 1,
+          "maximum": 5.0,
+          "minimum": 1.0,
+          "multipleOf": 1.0
+        },
+        "top_k": {
+          "type": "number",
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "top_p": {
+          "type": "number",
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "model_name": {
+          "enum": [
+            "models/chat-bison-001"
+          ],
+          "type": "string",
+          "default": "gpt-4"
+        },
+        "temperature": {
+          "type": "number",
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "google_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "9598e4c1-7e21-4d9d-a5c9-d88e58f507d2",
+  "fields": {
+    "name": "Anthropic",
+    "description": "Anthropic",
+    "class_path": "langchain.chat_models.anthropic.ChatAnthropic",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "max": 2,
+        "min": 0,
+        "name": "temperature",
+        "step": 0.05,
+        "type": "number",
+        "default": 0,
+        "input_type": "slider",
+        "description": "Temperature"
+      },
+      {
+        "name": "anthropic_api_key",
+        "type": "string",
+        "style": {
+          "width": "100%"
+        },
+        "input_type": "secret",
+        "description": "ANTHROPIC_API_KEY"
+      },
+      {
+        "name": "anthropic_api_url",
+        "type": "string",
+        "style": {
+          "width": "100%"
+        },
+        "default": "https://api.anthropic.com",
+        "description": "API URL"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "temperature",
+        "anthropic_api_key",
+        "anthropic_api_url"
+      ],
+      "properties": {
+        "temperature": {
+          "type": "number",
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "anthropic_api_key": {
+          "type": "string",
+          "default": null
+        },
+        "anthropic_api_url": {
+          "type": "string",
+          "default": "https://api.anthropic.com"
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "98af8724-a765-490a-bfb6-2adf54102186",
+  "fields": {
+    "name": "Artifact Memory",
+    "description": "Memory that retrieves artifacts from the database.",
+    "class_path": "ix.memory.artifacts.ArtifactMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "save_artifact",
+        "type": "boolean",
+        "label": "Save Artifact",
+        "default": false
+      },
+      {
+        "name": "load_artifact",
+        "type": "boolean",
+        "label": "Load Artifact",
+        "default": true
+      },
+      {
+        "name": "input_key",
+        "type": "string",
+        "default": "artifact_keys"
+      },
+      {
+        "name": "memory_key",
+        "type": "string",
+        "default": "related_artifacts"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "save_artifact",
+        "load_artifact",
+        "input_key",
+        "memory_key"
+      ],
+      "properties": {
+        "input_key": {
+          "type": "string",
+          "default": "artifact_keys"
+        },
+        "memory_key": {
+          "type": "string",
+          "default": "related_artifacts"
+        },
+        "load_artifact": {
+          "type": "boolean",
+          "default": true
+        },
+        "save_artifact": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "9ae5f781-6de9-45b3-bd0f-24cc1efbd9fc",
+  "fields": {
+    "name": "HuggingFace Embeddings",
+    "description": "HuggingFace Embeddings",
+    "class_path": "langchain.embeddings.huggingface.HuggingFaceEmbeddings",
+    "type": "embeddings",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "model_name",
+        "type": "string",
+        "label": "Model",
+        "style": {
+          "width": "100%"
+        },
+        "choices": [
+          {
+            "label": "all-mpnet-base-v2",
+            "value": "sentence-transformers/all-mpnet-base-v2"
+          }
+        ],
+        "default": "sentence-transformers/all-mpnet-base-v2",
+        "description": "Model name to use"
+      },
+      {
+        "name": "cache_folder",
+        "type": "string",
+        "description": "Path to store models"
+      },
+      {
+        "name": "model_kwargs",
+        "type": "dictionary",
+        "description": "Key word arguments to pass to the model"
+      },
+      {
+        "name": "encode_kwargs",
+        "type": "dictionary",
+        "description": "Key word arguments to pass when calling the `encode` method of the model"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "model_name",
+        "cache_folder",
+        "model_kwargs",
+        "encode_kwargs"
+      ],
+      "properties": {
+        "model_name": {
+          "type": "string",
+          "default": "sentence-transformers/all-mpnet-base-v2"
+        },
+        "cache_folder": {
+          "type": "string",
+          "default": null
+        },
+        "model_kwargs": {
+          "type": "object",
+          "default": null
+        },
+        "encode_kwargs": {
+          "type": "object",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "9e8d970a-55ba-4afd-add9-bd33a52fc30c",
+  "fields": {
+    "name": "Chroma",
+    "description": "Chroma vector database",
+    "class_path": "ix.chains.components.vectorstores.AsyncChromaVectorstore",
+    "type": "vectorstore",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "embedding",
+        "type": "target",
+        "source_type": "embeddings"
+      },
+      {
+        "key": "documents",
+        "type": "target",
+        "source_type": "text_splitter"
+      }
+    ],
+    "fields": [
+      {
+        "max": null,
+        "min": null,
+        "name": "chroma_server_host",
+        "step": null,
+        "type": "str",
+        "label": "Server Host",
+        "style": null,
+        "parent": "client_settings",
+        "choices": null,
+        "default": "172.17.42.1",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "chroma_server_http_port",
+        "step": null,
+        "type": "str",
+        "label": "HTTP Port",
+        "style": null,
+        "parent": "client_settings",
+        "choices": null,
+        "default": "8020",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "chroma_server_ssl_enabled",
+        "step": null,
+        "type": "boolean",
+        "label": "Chroma_server_ssl_enabled",
+        "style": null,
+        "parent": "client_settings",
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "chroma_server_grpc_port",
+        "step": null,
+        "type": "str",
+        "label": "GRPC Port",
+        "style": null,
+        "parent": "client_settings",
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "anonymized_telemetry",
+        "step": null,
+        "type": "boolean",
+        "label": "Anonymized_telemetry",
+        "style": null,
+        "parent": "client_settings",
+        "choices": null,
+        "default": true,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "allow_reset",
+        "step": null,
+        "type": "boolean",
+        "label": "Allow_reset",
+        "style": null,
+        "parent": "client_settings",
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "name": "allowed_search_types",
+        "type": "list",
+        "default": [
+          "similarity",
+          "similarity_score_threshold",
+          "mmr"
+        ],
+        "required": true
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "search_type",
+        "step": null,
+        "type": "str",
+        "label": "Search_type",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "similarity",
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "allowed_search_types"
+      ],
+      "properties": {
+        "allow_reset": {
+          "type": "boolean",
+          "default": false
+        },
+        "search_type": {
+          "type": "string",
+          "default": "similarity"
+        },
+        "chroma_server_host": {
+          "type": "string",
+          "default": "172.17.42.1"
+        },
+        "allowed_search_types": {
+          "type": "object",
+          "default": [
+            "similarity",
+            "similarity_score_threshold",
+            "mmr"
+          ]
+        },
+        "anonymized_telemetry": {
+          "type": "boolean",
+          "default": true
+        },
+        "chroma_server_grpc_port": {
+          "type": "string",
+          "default": null
+        },
+        "chroma_server_http_port": {
+          "type": "string",
+          "default": "8020"
+        },
+        "chroma_server_ssl_enabled": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "9ee6e9bc-f809-4b1e-841c-f775dd1038cc",
+  "fields": {
+    "name": "Metaphor page contents",
+    "description": "Metaphor page contents",
+    "class_path": "ix.tools.metaphor.get_metaphor_contents",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "metaphor_api_key",
+        "type": "str",
+        "label": "Metaphor API Key",
+        "required": true,
+        "input_type": "secret"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "metaphor_api_key"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "metaphor_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a25f957a-8c72-45dd-a035-23e835008093",
+  "fields": {
+    "name": "Metaphor search",
+    "description": "Metaphor search queries",
+    "class_path": "ix.tools.metaphor.get_metaphor_search",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "metaphor_api_key",
+        "type": "str",
+        "label": "Metaphor API Key",
+        "required": true,
+        "input_type": "secret"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "metaphor_api_key"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "metaphor_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a3dd72e8-1554-47dd-8f42-0dda58c06f7c",
+  "fields": {
+    "name": "Chat Conversational React Description Agent",
+    "description": "Agent that provides descriptions in a chat-based context in a conversational manner using reaction information.",
+    "class_path": "ix.chains.loaders.agents.initialize_chat_conversational_react_description",
+    "type": "agent",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a4b78af5-415f-45e5-ad6f-079384d826a0",
+  "fields": {
+    "name": "Ollama",
+    "description": "Ollama server for llama models",
+    "class_path": "langchain.llms.ollama.Ollama",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "base_url",
+        "step": null,
+        "type": "str",
+        "label": "Base_url",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "http://localhost:11434",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "model",
+        "step": null,
+        "type": "str",
+        "label": "Model",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "llama2",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "mirostat",
+        "step": null,
+        "type": "int",
+        "label": "Mirostat",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "mirostat_eta",
+        "step": null,
+        "type": "float",
+        "label": "Mirostat_eta",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "mirostat_tau",
+        "step": null,
+        "type": "float",
+        "label": "Mirostat_tau",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "num_ctx",
+        "step": null,
+        "type": "int",
+        "label": "Num_ctx",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": 10.0,
+        "min": 0.0,
+        "name": "num_gpu",
+        "step": 1.0,
+        "type": "int",
+        "label": "Num_gpu",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 1,
+        "required": false,
+        "input_type": "slider"
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "num_thread",
+        "step": null,
+        "type": "int",
+        "label": "Num_thread",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "repeat_last_n",
+        "step": null,
+        "type": "int",
+        "label": "Repeat_last_n",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "repeat_penalty",
+        "step": null,
+        "type": "float",
+        "label": "Repeat_penalty",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": 1.0,
+        "min": 0.0,
+        "name": "temperature",
+        "step": 0.05,
+        "type": "float",
+        "label": "Temperature",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 0.8,
+        "required": false,
+        "input_type": "slider"
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "stop",
+        "step": null,
+        "type": "List",
+        "label": "Stop",
+        "style": {
+          "width": "100%"
+        },
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "tfs_z",
+        "step": null,
+        "type": "float",
+        "label": "Tfs_z",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": 1.0,
+        "min": 0.0,
+        "name": "top_p",
+        "step": 0.05,
+        "type": "int",
+        "label": "Top_p",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 0.9,
+        "required": false,
+        "input_type": "slider"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose"
+      ],
+      "properties": {
+        "stop": {
+          "type": "object",
+          "default": null
+        },
+        "model": {
+          "type": "string",
+          "default": "llama2"
+        },
+        "tfs_z": {
+          "type": "number",
+          "default": null
+        },
+        "top_p": {
+          "type": "number",
+          "default": 0.9,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "num_ctx": {
+          "type": "number",
+          "default": null
+        },
+        "num_gpu": {
+          "type": "number",
+          "default": 1,
+          "maximum": 10.0,
+          "minimum": 0.0,
+          "multipleOf": 1.0
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "base_url": {
+          "type": "string",
+          "default": "http://localhost:11434"
+        },
+        "mirostat": {
+          "type": "number",
+          "default": null
+        },
+        "num_thread": {
+          "type": "number",
+          "default": null
+        },
+        "temperature": {
+          "type": "number",
+          "default": 0.8,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "mirostat_eta": {
+          "type": "number",
+          "default": null
+        },
+        "mirostat_tau": {
+          "type": "number",
+          "default": null
+        },
+        "repeat_last_n": {
+          "type": "number",
+          "default": null
+        },
+        "repeat_penalty": {
+          "type": "number",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a8ffd3b0-dfb4-4e1b-b5bf-90a2ec959ff8",
+  "fields": {
+    "name": "Wikipedia",
+    "description": "Wikipedia search engine",
+    "class_path": "ix.tools.wikipedia.get_wikipedia",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "top_k_results",
+        "step": null,
+        "type": "int",
+        "label": "Top_k_results",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 3,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "lang",
+        "step": null,
+        "type": "str",
+        "label": "Lang",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "en",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "load_all_available_meta",
+        "step": null,
+        "type": "boolean",
+        "label": "Load_all_available_meta",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "doc_content_chars_max",
+        "step": null,
+        "type": "int",
+        "label": "Doc_content_chars_max",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 4000,
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "lang": {
+          "type": "string",
+          "default": "en"
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "top_k_results": {
+          "type": "number",
+          "default": 3
+        },
+        "doc_content_chars_max": {
+          "type": "number",
+          "default": 4000
+        },
+        "load_all_available_meta": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a9fb2b5d-78d6-428d-a968-11ff4f43ff1b",
+  "fields": {
+    "name": "Pubmed",
+    "description": "Pubmed search engine",
+    "class_path": "ix.tools.pubmed.get_pubmed",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "max_retry",
+        "step": null,
+        "type": "int",
+        "label": "Max_retry",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 5,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "top_k_results",
+        "step": null,
+        "type": "int",
+        "label": "Top_k_results",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 3,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "doc_content_chars_max",
+        "step": null,
+        "type": "int",
+        "label": "Doc_content_chars_max",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 2000,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "email",
+        "step": null,
+        "type": "str",
+        "label": "Email",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "your_email@example.com",
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "email": {
+          "type": "string",
+          "default": "your_email@example.com"
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_retry": {
+          "type": "number",
+          "default": 5
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "top_k_results": {
+          "type": "number",
+          "default": 3
+        },
+        "doc_content_chars_max": {
+          "type": "number",
+          "default": 2000
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "ad389ad4-2e35-4a8f-8363-d7ed96a1429a",
+  "fields": {
+    "name": "Filesystem Loader",
+    "description": "Load documents from the filesystem.",
+    "class_path": "langchain.document_loaders.generic.GenericLoader.from_filesystem",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "parser",
+        "type": "target",
+        "source_type": "parser"
+      }
+    ],
+    "fields": [
+      {
+        "name": "path",
+        "type": "str",
+        "label": "Path",
+        "style": {
+          "width": "100%"
+        },
+        "required": true
+      },
+      {
+        "name": "suffixes",
+        "type": "list",
+        "label": "Suffixes",
+        "default": null,
+        "required": false
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "glob",
+        "step": null,
+        "type": "str",
+        "label": "Glob",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "**/[!.]*",
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "path"
+      ],
+      "properties": {
+        "glob": {
+          "type": "string",
+          "default": "**/[!.]*"
+        },
+        "path": {
+          "type": "string",
+          "default": null
+        },
+        "suffixes": {
+          "type": "object",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "b029cc5a-e98a-4eb3-9a07-7bfc45dfcd40",
+  "fields": {
+    "name": "Conversation Token Buffer",
+    "description": "Memory that stores conversation history as a buffer with a max token size.",
+    "class_path": "langchain.memory.token_buffer.ConversationTokenBufferMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "chat_memory",
+        "type": "target",
+        "required": true,
+        "source_type": "memory_backend"
+      },
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      }
+    ],
+    "fields": [
+      {
+        "name": "max_token_limit",
+        "type": "number",
+        "default": 2000
+      },
+      {
+        "name": "memory_key",
+        "type": "string",
+        "default": "history"
+      },
+      {
+        "name": "human_prefix",
+        "type": "string",
+        "default": "Human"
+      },
+      {
+        "name": "ai_prefix",
+        "type": "string",
+        "default": "AI"
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "default": "output"
+      },
+      {
+        "name": "input_key",
+        "type": "string",
+        "default": "input"
+      },
+      {
+        "name": "return_messages",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "max_token_limit",
+        "memory_key",
+        "human_prefix",
+        "ai_prefix",
+        "output_key",
+        "input_key",
+        "return_messages"
+      ],
+      "properties": {
+        "ai_prefix": {
+          "type": "string",
+          "default": "AI"
+        },
+        "input_key": {
+          "type": "string",
+          "default": "input"
+        },
+        "memory_key": {
+          "type": "string",
+          "default": "history"
+        },
+        "output_key": {
+          "type": "string",
+          "default": "output"
+        },
+        "human_prefix": {
+          "type": "string",
+          "default": "Human"
+        },
+        "max_token_limit": {
+          "type": "number",
+          "default": 2000
+        },
+        "return_messages": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "b62000d7-9390-491b-af13-9711c4ec8b44",
+  "fields": {
+    "name": "Chat Prompt Template",
+    "description": "Template for constructing chat prompts from messages.",
+    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "type": "prompt",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "output_parser",
+        "type": "target",
+        "source_type": "output_parser"
+      }
+    ],
+    "fields": [
+      {
+        "name": "messages",
+        "type": "list",
+        "default": [
+          {
+            "role": "system",
+            "template": "",
+            "input_variables": []
+          }
+        ]
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "messages"
+      ],
+      "properties": {
+        "messages": {
+          "type": "object",
+          "default": [
+            {
+              "role": "system",
+              "template": "",
+              "input_variables": []
+            }
+          ]
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "b7bdef2c-5127-4084-a5c7-476e3805742b",
+  "fields": {
+    "name": "OpenAI Function Agent",
+    "description": "Agent that uses OpenAI's API to generate text.",
+    "class_path": "ix.chains.loaders.agents.initialize_openai_functions",
+    "type": "agent",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      }
+    ],
+    "fields": [
+      {
+        "name": "return_intermediate_steps",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_intermediate_steps",
+        "max_iterations",
+        "max_execution_time",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        },
+        "return_intermediate_steps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "b7d8f662-12f6-4525-b07b-c9ea7c10001d",
+  "fields": {
+    "name": "IX Chat Moderator",
+    "description": "Chat moderator analyzes user input and delegates it to the appropriate agent.",
+    "class_path": "ix.chains.moderator.ChatModerator",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "selection_chain",
+        "type": "target",
+        "source_type": "chain"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      }
+    ],
+    "fields": null,
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "bbb7544c-6891-4204-985a-d13d65e02523",
+  "fields": {
+    "name": "OpenAI LLM",
+    "description": "OpenAI LLM",
+    "class_path": "langchain.chat_models.openai.ChatOpenAI",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "model_name",
+        "type": "string",
+        "label": "Model",
+        "choices": [
+          {
+            "label": "GPT-4",
+            "value": "gpt-4"
+          },
+          {
+            "label": "GPT-4 (0613)",
+            "value": "gpt-4-0613"
+          },
+          {
+            "label": "GPT-3.5 ",
+            "value": "gpt-3.5-turbo"
+          },
+          {
+            "label": "GPT-3.5 16k",
+            "value": "gpt-3.5-turbo-16k-0613"
+          }
+        ],
+        "default": "gpt-4-0613",
+        "required": true,
+        "input_type": "select",
+        "description": "OpenAI model"
+      },
+      {
+        "name": "request_timeout",
+        "type": "number",
+        "label": "Timeout (sec)",
+        "default": 60,
+        "description": "Request Timeout"
+      },
+      {
+        "max": 6,
+        "min": 0,
+        "name": "max_retries",
+        "step": 1,
+        "type": "number",
+        "default": 6,
+        "input_type": "slider",
+        "description": "Max Retries"
+      },
+      {
+        "max": 2,
+        "min": 0,
+        "name": "temperature",
+        "step": 0.05,
+        "type": "number",
+        "default": 0,
+        "input_type": "slider",
+        "description": "Temperature"
+      },
+      {
+        "name": "max_tokens",
+        "type": "number",
+        "default": 256
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "streaming",
+        "type": "boolean",
+        "default": true
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "model_name",
+        "request_timeout",
+        "max_retries",
+        "temperature",
+        "max_tokens",
+        "verbose",
+        "streaming"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "streaming": {
+          "type": "boolean",
+          "default": true
+        },
+        "max_tokens": {
+          "type": "number",
+          "default": 256
+        },
+        "model_name": {
+          "enum": [
+            "gpt-4",
+            "gpt-4-0613",
+            "gpt-3.5-turbo",
+            "gpt-3.5-turbo-16k-0613"
+          ],
+          "type": "string",
+          "default": "gpt-4-0613"
+        },
+        "max_retries": {
+          "type": "number",
+          "default": 6,
+          "maximum": 6.0,
+          "minimum": 0.0,
+          "multipleOf": 1.0
+        },
+        "temperature": {
+          "type": "number",
+          "default": 0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "request_timeout": {
+          "type": "number",
+          "default": 60
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "c3b2e7f3-f883-46f2-982d-cd01465fb3d1",
+  "fields": {
+    "name": "Function Output Parser",
+    "description": "Parses the output of a function",
+    "class_path": "ix.chains.functions.OpenAIFunctionParser",
+    "type": "output_parser",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "parse_json",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "parse_json"
+      ],
+      "properties": {
+        "parse_json": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "c51f59a4-f41d-46b6-ba07-5d4636b0a121",
+  "fields": {
+    "name": "Save Artifact",
+    "description": "Saves an input as an artifact",
+    "class_path": "ix.chains.artifacts.SaveArtifact",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "artifact_key",
+        "type": "string",
+        "label": "Artifact Key",
+        "required": true,
+        "description": "Key of the artifact to save"
+      },
+      {
+        "name": "artifact_name",
+        "type": "string",
+        "required": true,
+        "description": "Name of the artifact to save"
+      },
+      {
+        "name": "artifact_description",
+        "type": "string",
+        "required": true,
+        "description": "Description of the artifact to save"
+      },
+      {
+        "name": "artifact_type",
+        "type": "string",
+        "required": true,
+        "description": "Type of the artifact to save"
+      },
+      {
+        "name": "artifact_storage",
+        "type": "string",
+        "default": "write_to_file",
+        "required": true,
+        "description": "Storage of the artifact to save"
+      },
+      {
+        "name": "artifact_storage_id_key",
+        "type": "string",
+        "label": "Storage ID Key",
+        "required": true,
+        "description": "key within the input containing the storage ID"
+      },
+      {
+        "name": "content_key",
+        "type": "string",
+        "required": true,
+        "description": "Key of the input containing the content to save"
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "required": true,
+        "description": "Key that the artifact will be output to"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "artifact_key",
+        "artifact_name",
+        "artifact_description",
+        "artifact_type",
+        "artifact_storage",
+        "artifact_storage_id_key",
+        "content_key",
+        "output_key"
+      ],
+      "properties": {
+        "output_key": {
+          "type": "string",
+          "default": null
+        },
+        "content_key": {
+          "type": "string",
+          "default": null
+        },
+        "artifact_key": {
+          "type": "string",
+          "default": null
+        },
+        "artifact_name": {
+          "type": "string",
+          "default": null
+        },
+        "artifact_type": {
+          "type": "string",
+          "default": null
+        },
+        "artifact_storage": {
+          "type": "string",
+          "default": "write_to_file"
+        },
+        "artifact_description": {
+          "type": "string",
+          "default": null
+        },
+        "artifact_storage_id_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "c5ebfff5-5368-45f5-b7eb-c02b9b9c5f63",
+  "fields": {
+    "name": "Wolfram Alpha",
+    "description": "Wolfram Alpha search engine for math and science",
+    "class_path": "ix.tools.wolfram_alpha.get_wolfram_alpha",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "wolfram_alpha_app_id",
+        "type": "str",
+        "label": "Wolfram Alpha App ID",
+        "input_type": "secret"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "wolfram_alpha_app_id"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "wolfram_alpha_app_id": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "d13aca50-e998-4569-ba3c-b18985a1ca87",
+  "fields": {
+    "name": "Sequence",
+    "description": "Runs a sequence of chains passing outputs from one to the next.",
+    "class_path": "langchain.chains.SequentialChain",
+    "type": "chain",
+    "display_type": "list",
+    "connectors": [
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "chains",
+        "type": "target",
+        "source_type": "chain",
+        "auto_sequence": false
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "input_variables",
+        "type": "list",
+        "style": {
+          "width": "100%"
+        },
+        "default": []
+      }
+    ],
+    "child_field": "chains",
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose",
+        "input_variables"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "input_variables": {
+          "type": "object",
+          "default": []
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "d90b15ac-8202-41ee-84ca-c727376fb9e3",
+  "fields": {
+    "name": "Conversation Summary Buffer",
+    "description": "Memory that stores conversation history as a buffer and summarizes to compress context.",
+    "class_path": "langchain.memory.summary_buffer.ConversationSummaryBufferMemory",
+    "type": "memory",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "chat_memory",
+        "type": "target",
+        "required": true,
+        "source_type": "memory_backend"
+      },
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [
+      {
+        "name": "max_token_limit",
+        "type": "number",
+        "default": 2000
+      },
+      {
+        "name": "memory_key",
+        "type": "string",
+        "default": "history"
+      },
+      {
+        "name": "human_prefix",
+        "type": "string",
+        "default": "Human"
+      },
+      {
+        "name": "ai_prefix",
+        "type": "string",
+        "default": "AI"
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "default": "output"
+      },
+      {
+        "name": "input_key",
+        "type": "string",
+        "default": "input"
+      },
+      {
+        "name": "return_messages",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "max_token_limit",
+        "memory_key",
+        "human_prefix",
+        "ai_prefix",
+        "output_key",
+        "input_key",
+        "return_messages"
+      ],
+      "properties": {
+        "ai_prefix": {
+          "type": "string",
+          "default": "AI"
+        },
+        "input_key": {
+          "type": "string",
+          "default": "input"
+        },
+        "memory_key": {
+          "type": "string",
+          "default": "history"
+        },
+        "output_key": {
+          "type": "string",
+          "default": "output"
+        },
+        "human_prefix": {
+          "type": "string",
+          "default": "Human"
+        },
+        "max_token_limit": {
+          "type": "number",
+          "default": 2000
+        },
+        "return_messages": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "da5e809a-b158-4f34-8867-8ac375967906",
+  "fields": {
+    "name": "Redis Memory Backend",
+    "description": "Redis Memory Backend",
+    "class_path": "langchain.memory.RedisChatMessageHistory",
+    "type": "memory_backend",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "url",
+        "type": "string",
+        "style": {
+          "width": "100%"
+        },
+        "default": "redis://redis:6379/0"
+      },
+      {
+        "name": "ttl",
+        "type": "number",
+        "default": 3600
+      },
+      {
+        "name": "session_scope",
+        "type": "string",
+        "choices": [
+          {
+            "label": "chat",
+            "value": "chat"
+          },
+          {
+            "label": "agent",
+            "value": "agent"
+          },
+          {
+            "label": "task",
+            "value": "task"
+          },
+          {
+            "label": "user",
+            "value": "user"
+          }
+        ],
+        "input_type": "select"
+      },
+      {
+        "name": "session_prefix",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "name": "session_key",
+        "type": "string",
+        "default": "session_id"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "url",
+        "ttl",
+        "session_scope",
+        "session_prefix",
+        "session_key"
+      ],
+      "properties": {
+        "ttl": {
+          "type": "number",
+          "default": 3600
+        },
+        "url": {
+          "type": "string",
+          "default": "redis://redis:6379/0"
+        },
+        "session_key": {
+          "type": "string",
+          "default": "session_id"
+        },
+        "session_scope": {
+          "enum": [
+            "chat",
+            "agent",
+            "task",
+            "user"
+          ],
+          "type": "string",
+          "default": null
+        },
+        "session_prefix": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "dbcd3e60-e809-4074-b69a-042d08aeaf26",
+  "fields": {
+    "name": "ConversationalRetrievalChain",
+    "description": "Chain for having a conversation based on retrieved documents.",
+    "class_path": "langchain.chains.conversational_retrieval.base.ConversationalRetrievalChain.from_llm",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "retriever",
+        "type": "target",
+        "as_type": "retriever",
+        "required": true,
+        "source_type": [
+          "retriever",
+          "vectorstore"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "output_key",
+        "step": null,
+        "type": "str",
+        "label": "Output_key",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "answer",
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "rephrase_question",
+        "step": null,
+        "type": "bool",
+        "label": "Rephrase_question",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": true,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "return_source_documents",
+        "step": null,
+        "type": "bool",
+        "label": "Return_source_documents",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "return_generated_question",
+        "step": null,
+        "type": "bool",
+        "label": "Return_generated_question",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "max_tokens_limit",
+        "step": null,
+        "type": "Optional[int]",
+        "label": "Max_tokens_limit",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "output_key": {
+          "type": "string",
+          "default": "answer"
+        },
+        "max_tokens_limit": {
+          "type": "object",
+          "default": null
+        },
+        "rephrase_question": {
+          "type": "boolean",
+          "default": true
+        },
+        "return_source_documents": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_generated_question": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "dcc54f24-fa74-474f-986d-3ed2bb65b860",
+  "fields": {
+    "name": "Filesystem Memory Backend",
+    "description": "Stores memories in a local file",
+    "class_path": "langchain.memory.chat_message_histories.file.FileChatMessageHistory",
+    "type": "memory_backend",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "file_path",
+        "type": "string",
+        "style": {
+          "width": "100%"
+        },
+        "default": "/var/app/workdir/chat_memory.txt"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "file_path"
+      ],
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "default": "/var/app/workdir/chat_memory.txt"
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "e257ed11-5bc7-4483-91a4-deb1f4058ef9",
+  "fields": {
+    "name": "Google Search",
+    "description": "Tool that searches Google for a given query.",
+    "class_path": "ix.tools.google.get_google_search",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "google_api_key",
+        "step": null,
+        "type": "str",
+        "label": "Google_api_key",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": "secret"
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "google_cse_id",
+        "step": null,
+        "type": "str",
+        "label": "Google_cse_id",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": "secret"
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "k",
+        "step": null,
+        "type": "int",
+        "label": "K",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 10,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "siterestrict",
+        "step": null,
+        "type": "boolean",
+        "label": "Siterestrict",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "k": {
+          "type": "number",
+          "default": 10
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "siterestrict": {
+          "type": "boolean",
+          "default": false
+        },
+        "google_cse_id": {
+          "type": "string",
+          "default": null
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "google_api_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "e945ab37-6a42-421d-a2fa-04bf4a6b5190",
+  "fields": {
+    "name": "LLM Chain",
+    "description": "Chain that prompts an LLM for a completion.",
+    "class_path": "ix.chains.llm_chain.LLMChain",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "functions",
+        "type": "target",
+        "multiple": true,
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
+      },
+      {
+        "key": "output_parser",
+        "type": "target",
+        "source_type": "output_parser"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "function_call",
+        "type": "string"
+      },
+      {
+        "name": "output_key",
+        "type": "string",
+        "default": "text"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose",
+        "function_call",
+        "output_key"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "output_key": {
+          "type": "string",
+          "default": "text"
+        },
+        "function_call": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "ef8a1cc4-a26c-4b95-b9f7-2d6ce0f176d0",
+  "fields": {
+    "name": "Bing Search",
+    "description": "Tool that searches Bing for a given query.",
+    "class_path": "ix.tools.bing.get_bing_search",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "bing_subscription_key",
+        "step": null,
+        "type": "str",
+        "label": "Bing_subscription_key",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": true,
+        "input_type": "secret"
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "bing_search_url",
+        "step": null,
+        "type": "str",
+        "label": "Bing_search_url",
+        "style": {
+          "width": "100%"
+        },
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": true,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "k",
+        "step": null,
+        "type": "int",
+        "label": "K",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 10,
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose",
+        "bing_subscription_key",
+        "bing_search_url"
+      ],
+      "properties": {
+        "k": {
+          "type": "number",
+          "default": 10
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "bing_search_url": {
+          "type": "string",
+          "default": null
+        },
+        "bing_subscription_key": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "f1c98a9d-395b-45ed-91c5-448daf7c5b8d",
+  "fields": {
+    "name": "Lambda API",
+    "description": "Tool that searches Lambda for a given query.",
+    "class_path": "ix.tools.lambda_api.get_lambda_api",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "return_direct",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "function_name",
+        "step": null,
+        "type": "str",
+        "label": "Function_name",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "awslambda_tool_name",
+        "step": null,
+        "type": "str",
+        "label": "Awslambda_tool_name",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "awslambda_tool_description",
+        "step": null,
+        "type": "str",
+        "label": "Awslambda_tool_description",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": null,
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "return_direct",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "function_name": {
+          "type": "string",
+          "default": null
+        },
+        "return_direct": {
+          "type": "boolean",
+          "default": false
+        },
+        "awslambda_tool_name": {
+          "type": "string",
+          "default": null
+        },
+        "awslambda_tool_description": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "f4789b2b-7eae-4ea9-a92f-c3bff954cac8",
+  "fields": {
+    "name": "RecursiveCharacterTextSplitter",
+    "description": "Splitting text by recursively look at characters.\n\n    Recursively tries to split by different characters to find one\n    that works.\n    ",
+    "class_path": "langchain.text_splitter.RecursiveCharacterTextSplitter.from_language",
+    "type": "text_splitter",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "document_loader",
+        "type": "target",
+        "required": true,
+        "source_type": "document_loader"
+      }
+    ],
+    "fields": [
+      {
+        "name": "language",
+        "type": "string",
+        "choices": [
+          {
+            "label": "CPP",
+            "value": "cpp"
+          },
+          {
+            "label": "GO",
+            "value": "go"
+          },
+          {
+            "label": "JAVA",
+            "value": "java"
+          },
+          {
+            "label": "JS",
+            "value": "js"
+          },
+          {
+            "label": "PHP",
+            "value": "php"
+          },
+          {
+            "label": "PROTO",
+            "value": "proto"
+          },
+          {
+            "label": "PYTHON",
+            "value": "python"
+          },
+          {
+            "label": "RST",
+            "value": "rst"
+          },
+          {
+            "label": "RUBY",
+            "value": "ruby"
+          },
+          {
+            "label": "RUST",
+            "value": "rust"
+          },
+          {
+            "label": "SCALA",
+            "value": "scala"
+          },
+          {
+            "label": "SWIFT",
+            "value": "swift"
+          },
+          {
+            "label": "MARKDOWN",
+            "value": "markdown"
+          },
+          {
+            "label": "LATEX",
+            "value": "latex"
+          },
+          {
+            "label": "HTML",
+            "value": "html"
+          },
+          {
+            "label": "SOL",
+            "value": "sol"
+          }
+        ],
+        "default": "python",
+        "required": true,
+        "input_type": "select"
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "chunk_size",
+        "step": null,
+        "type": "int",
+        "label": "Chunk_size",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 4000,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "chunk_overlap",
+        "step": null,
+        "type": "int",
+        "label": "Chunk_overlap",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": 200,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "keep_separator",
+        "step": null,
+        "type": "bool",
+        "label": "Keep_separator",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      },
+      {
+        "max": null,
+        "min": null,
+        "name": "add_start_index",
+        "step": null,
+        "type": "bool",
+        "label": "Add_start_index",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": false,
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "language"
+      ],
+      "properties": {
+        "language": {
+          "enum": [
+            "cpp",
+            "go",
+            "java",
+            "js",
+            "php",
+            "proto",
+            "python",
+            "rst",
+            "ruby",
+            "rust",
+            "scala",
+            "swift",
+            "markdown",
+            "latex",
+            "html",
+            "sol"
+          ],
+          "type": "string",
+          "default": "python"
+        },
+        "chunk_size": {
+          "type": "number",
+          "default": 4000
+        },
+        "chunk_overlap": {
+          "type": "number",
+          "default": 200
+        },
+        "keep_separator": {
+          "type": "boolean",
+          "default": false
+        },
+        "add_start_index": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "fba24100-d583-45e1-aec5-a2f9cf6edf9b",
+  "fields": {
+    "name": "File Management",
+    "description": "Toolkit for interacting with a Local Files.",
+    "class_path": "langchain.agents.agent_toolkits.file_management.toolkit.FileManagementToolkit",
+    "type": "toolkit",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "max": null,
+        "min": null,
+        "name": "root_dir",
+        "step": null,
+        "type": "Optional[str]",
+        "label": "Root_dir",
+        "style": null,
+        "parent": null,
+        "choices": null,
+        "default": "/var/app/workdir",
+        "required": false,
+        "input_type": null
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "root_dir": {
+          "type": "object",
+          "default": "/var/app/workdir"
+        }
+      }
+    }
+  }
+}
+]

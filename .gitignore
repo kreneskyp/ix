@@ -28,6 +28,12 @@ docs/build
 
 #local copy of langchain if it exists
 langchain
+/.bash_history
 
 # local models
 llama
+
+# vault setup
+.vault.env
+.certs
+.vault_file

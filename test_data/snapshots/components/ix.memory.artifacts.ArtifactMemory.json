@@ -1,0 +1,60 @@
+{
+    "child_field": null,
+    "class_path": "ix.memory.artifacts.ArtifactMemory",
+    "config_schema": {
+        "properties": {
+            "input_key": {
+                "default": "artifact_keys",
+                "type": "string"
+            },
+            "load_artifact": {
+                "default": true,
+                "type": "boolean"
+            },
+            "memory_key": {
+                "default": "related_artifacts",
+                "type": "string"
+            },
+            "save_artifact": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "save_artifact",
+            "load_artifact",
+            "input_key",
+            "memory_key"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Memory that retrieves artifacts from the database.",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "label": "Save Artifact",
+            "name": "save_artifact",
+            "type": "boolean"
+        },
+        {
+            "default": true,
+            "label": "Load Artifact",
+            "name": "load_artifact",
+            "type": "boolean"
+        },
+        {
+            "default": "artifact_keys",
+            "name": "input_key",
+            "type": "string"
+        },
+        {
+            "default": "related_artifacts",
+            "name": "memory_key",
+            "type": "string"
+        }
+    ],
+    "name": "Artifact Memory",
+    "type": "memory"
+}

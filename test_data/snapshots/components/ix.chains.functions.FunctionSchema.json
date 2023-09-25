@@ -1,0 +1,48 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.functions.FunctionSchema",
+    "config_schema": {
+        "properties": {
+            "description": {
+                "default": "",
+                "type": "string"
+            },
+            "name": {
+                "default": "",
+                "type": "string"
+            },
+            "parameters": {
+                "default": "",
+                "type": "object"
+            }
+        },
+        "required": [
+            "name",
+            "description",
+            "parameters"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Describes a function using json. Compatible with OpenAI",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": "",
+            "name": "name",
+            "type": "string"
+        },
+        {
+            "default": "",
+            "name": "description",
+            "type": "string"
+        },
+        {
+            "default": "",
+            "name": "parameters",
+            "type": "json"
+        }
+    ],
+    "name": "Function Schema",
+    "type": "tool"
+}

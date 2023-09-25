@@ -46,7 +46,7 @@ async def get_agents(
     limit: int = 10,
     offset: int = 0,
 ):
-    query = Agent.objects.all()
+    query = Agent.objects.filter(is_test=False)
     if chat_id:
         query = query.filter(chats__id=chat_id)
     if search:

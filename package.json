@@ -12,6 +12,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "axios": "^1.4.0",
+    "copy-to-clipboard": "^3.3.3",
     "dagre": "^0.8.5",
     "package.json": "^2.0.1",
     "qs": "^6.11.2",

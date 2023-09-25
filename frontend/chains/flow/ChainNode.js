@@ -5,6 +5,7 @@ import { TypeAutoFields } from "chains/flow/TypeAutoFields";
 import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { NodeProperties, useConnectorColor } from "chains/flow/ConfigNode";
 import { RequiredAsterisk } from "components/RequiredAsterisk";
+import { ConnectorPopover } from "chains/editor/ConnectorPopover";
 
 const useFlowConnectors = (node) => {
   const edges = useEdges();
@@ -13,11 +14,18 @@ const useFlowConnectors = (node) => {
     return {
       input: {
         key: "in",
+        type: "target",
         required: true,
         connected: edges?.find((edge) => edge.target === node.id),
+        source_type: ["root", "agent", "chain"],
       },
       output: {
         key: "out",
+        type: "source",
+        // TODO: need to handle agent/chain output types
+        //       reusing source_types property for now since
+        //       the rest of the code is treated the same.
+        source_type: ["agent", "chain"],
         required: false,
         connected: edges?.find((edge) => edge.source === node.id),
       },
@@ -25,42 +33,63 @@ const useFlowConnectors = (node) => {
   }, [edges, node.id]);
 };
 
-export const ChainNode = ({ type, node, config, onFieldChange }) => {
-  const { input, output } = useFlowConnectors(node);
-  const intputColor = useConnectorColor(input);
-  const outputColor = useConnectorColor(output);
+export const InputConnector = ({ type, node }) => {
+  const { input } = useFlowConnectors(node);
+  const intputColor = useConnectorColor(node, input);
+  return (
+    <Box position="relative">
+      <Handle
+        id="in"
+        type="target"
+        position="left"
+        style={{ top: "50%", transform: "translateY(-50%)" }}
+      />
+      <Heading fontSize="xs" px={2} color={intputColor}>
+        <ConnectorPopover
+          type={type}
+          node={node}
+          connector={input}
+          label={"Input"}
+          placement={"left"}
+        />{" "}
+        <RequiredAsterisk color={intputColor} />
+      </Heading>
+    </Box>
+  );
+};
 
+export const OutputConnector = ({ type, node }) => {
+  const { output } = useFlowConnectors(node);
+  const outputColor = useConnectorColor(node, output);
+  return (
+    <Box position="relative">
+      <Handle
+        id="out"
+        type="source"
+        position="right"
+        style={{ top: "50%", transform: "translateY(-50%)" }}
+      />
+      <Heading fontSize="xs" px={2} color={outputColor}>
+        <ConnectorPopover
+          type={type}
+          node={node}
+          connector={output}
+          label={"Output"}
+          placement={"right"}
+        />
+      </Heading>
+    </Box>
+  );
+};
+
+export const ChainNode = ({ type, node, config, onFieldChange }) => {
   return (
     <VStack spacing={0} alignItems="stretch" fontSize="xs">
       <Flex mt={1} mb={3} justify={"space-between"}>
-        <Box position="relative">
-          <Handle
-            id="in"
-            type="target"
-            position="left"
-            style={{ top: "50%", transform: "translateY(-50%)" }}
-          />
-          <Heading fontSize="xs" px={2} color={intputColor}>
-            Inputs <RequiredAsterisk color={intputColor} />
-          </Heading>
-        </Box>
-
-        <Box position="relative">
-          <Handle
-            id="out"
-            type="source"
-            position="right"
-            style={{ top: "50%", transform: "translateY(-50%)" }}
-          />
-          <Heading fontSize="xs" px={2} color={outputColor}>
-            Output
-          </Heading>
-        </Box>
+        <InputConnector type={type} node={node} />
+        <OutputConnector type={type} node={node} />
       </Flex>
       <NodeProperties node={node} type={type} />
-      <CollapsibleSection title="Config">
-        <TypeAutoFields type={type} config={config} onChange={onFieldChange} />
-      </CollapsibleSection>
     </VStack>
   );
 };

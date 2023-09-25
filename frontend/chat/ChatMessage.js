@@ -22,6 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import HighlightText from "components/HighlightText";
 import { ArtifactContent } from "chat/messages/ArtifactContent";
+import { useChatStyle } from "chat/ChatInterface";
 
 const useMessageGroup = (messageGroup) => {
   // build message structure out of a group of messages
@@ -137,24 +138,21 @@ const LangSmithLink = ({ thought }) => {
 };
 
 const ChatMessageFooter = ({ groupedMessages }) => {
-  const { colorMode } = useColorMode();
   const { thought, authorizations } = groupedMessages;
+  const chatStyle = useChatStyle();
 
   return (
     <Flex
       width="100%"
-      bg={colorMode === "light" ? "blackAlpha.50" : "blackAlpha.300"}
       px={3}
       pb={1}
       pt={2}
+      {...chatStyle.message.footer}
       justifyContent="space-between"
     >
       <ChatMessageAuthorizations authorizations={authorizations} />
       {thought !== null && (
-        <Text
-          fontSize="xs"
-          color={colorMode === "light" ? "gray.800" : "gray.500"}
-        >
+        <Text fontSize="xs" color={chatStyle.message.footer.color}>
           <b>Runtime:</b> {thought?.content.runtime?.toFixed(2)} seconds.{" "}
           <LangSmithLink thought={thought} />
         </Text>
@@ -164,9 +162,9 @@ const ChatMessageFooter = ({ groupedMessages }) => {
 };
 
 const ChatMessage = ({ messageGroup }) => {
-  const { colorMode } = useColorMode();
   const groupedMessages = useMessageGroup(messageGroup);
   const { think, thought, messages, errors } = groupedMessages;
+  const chatStyle = useChatStyle();
 
   // Main message is either a THINK or a plain message that doesn't have a parent.
   // Most messages should have parent THINK but this provides a fallback so all
@@ -194,29 +192,30 @@ const ChatMessage = ({ messageGroup }) => {
   const alias = message?.content.agent || message?.role || "Unknown";
 
   return (
-    <Flex alignItems="flex-start" mb={6} align="center">
-      <VStack mt={3} mr={3} width={100}>
+    <Flex
+      alignItems="flex-start"
+      mb={0}
+      mx={0}
+      align="center"
+      borderTop={"0px solid"}
+      borderColor={"whiteAlpha.200"}
+      pt={3}
+      {...chatStyle.message.container}
+    >
+      <VStack mt={0} mr={2}>
         <ChatMessageAvatar message={message} isThinking={isThinking} />
-        <Text
-          color={colorMode === "light" ? "blackAlpha.800" : "whiteAlpha.400"}
-          fontSize="xs"
-          fontWeight="bold"
-        >
+        <Text color={chatStyle.avatar.color} fontSize="xs" fontWeight="bold">
           {alias.toLowerCase()}
         </Text>
       </VStack>
       <Flex
-        bg={colorMode === "light" ? "white" : "gray.700"}
-        width="800px"
-        borderRadius={8}
-        border="1px solid"
-        borderColor={colorMode === "light" ? "gray.300" : "gray.700"}
+        width="100%"
         minHeight={90}
-        p={0}
         direction="column"
         justify="space-between"
+        {...chatStyle.message.body}
       >
-        <Box p={3} color={colorMode === "light" ? "black" : "gray.100"}>
+        <Box p={3} height="100%" width="100%" {...chatStyle.message.content}>
           {content}
         </Box>
         <ChatMessageFooter groupedMessages={groupedMessages} />
