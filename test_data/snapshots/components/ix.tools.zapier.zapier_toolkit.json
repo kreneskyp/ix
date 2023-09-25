@@ -1,0 +1,76 @@
+{
+    "child_field": null,
+    "class_path": "ix.tools.zapier.zapier_toolkit",
+    "config_schema": {
+        "properties": {
+            "zapier_nla_api_base": {
+                "default": "https://nla.zapier.com/api/v1/",
+                "type": "string"
+            },
+            "zapier_nla_api_key": {
+                "default": null,
+                "type": "string"
+            },
+            "zapier_nla_oauth_access_token": {
+                "default": null,
+                "type": "string"
+            }
+        },
+        "required": [
+            "zapier_nla_api_key",
+            "zapier_nla_oauth_access_token"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Tools for interacting with Zapier tasks",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "input_type": "secret",
+            "label": "API Key",
+            "max": null,
+            "min": null,
+            "name": "zapier_nla_api_key",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": "secret",
+            "label": "OAuth Token",
+            "max": null,
+            "min": null,
+            "name": "zapier_nla_oauth_access_token",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": "https://nla.zapier.com/api/v1/",
+            "input_type": null,
+            "label": "API Base",
+            "max": null,
+            "min": null,
+            "name": "zapier_nla_api_base",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "str"
+        }
+    ],
+    "name": "Zapier",
+    "type": "tool"
+}
