@@ -1,0 +1,73 @@
+{
+    "child_field": null,
+    "class_path": "langchain.document_loaders.csv_loader.CSVLoader",
+    "config_schema": {
+        "properties": {
+            "encoding": {
+                "default": null,
+                "type": "string"
+            },
+            "file_path": {
+                "default": null,
+                "type": "string"
+            },
+            "source_column": {
+                "default": null,
+                "type": "string"
+            }
+        },
+        "required": [
+            "file_path"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Load a `CSV` file into a list of Documents.\n\n    Each document represents one row of the CSV file. Every row is converted into a\n    key/value pair and outputted to a new line in the document's page_content.\n\n    The source for each document loaded from csv is set to the value of the\n    `file_path` argument for all documents by default.\n    You can override this by setting the `source_column` argument to the\n    name of a column in the CSV file.\n    The source of each document will then be set to the value of the column\n    with the name specified in `source_column`.\n\n    Output Example:\n        .. code-block:: txt\n\n            column1: value1\n            column2: value2\n            column3: value3\n    ",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "File_path",
+            "max": null,
+            "min": null,
+            "name": "file_path",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Source_column",
+            "max": null,
+            "min": null,
+            "name": "source_column",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Encoding",
+            "max": null,
+            "min": null,
+            "name": "encoding",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "CSV Loader",
+    "type": "document_loader"
+}
