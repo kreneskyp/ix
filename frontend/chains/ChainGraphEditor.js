@@ -124,7 +124,7 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
           // Only Node selected:
           // select the first open connector accepting the node type
           const targetType = selectedNode.data.type;
-          edgeConnector = targetType.connectors.find((connector) =>
+          edgeConnector = targetType.connectors?.find((connector) =>
             getExpectedTypes(connector).has(nodeType.type)
           );
         }
