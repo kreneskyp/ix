@@ -11,6 +11,7 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import TextSplitter
 from langchain.vectorstores import Redis
 
+from ix.chains.fixture_src.agents import OPENAI_FUNCTIONS_AGENT_CLASS_PATH
 from ix.chains.fixture_src.chains import CONVERSATIONAL_RETRIEVAL_CHAIN_CLASS_PATH
 from ix.chains.fixture_src.document_loaders import GENERIC_LOADER_CLASS_PATH
 from ix.chains.fixture_src.embeddings import OPENAI_EMBEDDINGS_CLASS_PATH
@@ -519,7 +520,7 @@ class TestLoadAgents:
 
     async def test_agent_memory(self, mock_openai, aload_chain, mock_google_api_key):
         config = {
-            "class_path": "ix.chains.loaders.agents.initialize_zero_shot_react_description",
+            "class_path": OPENAI_FUNCTIONS_AGENT_CLASS_PATH,
             "name": "tester",
             "description": "test",
             "config": {
@@ -530,11 +531,18 @@ class TestLoadAgents:
         }
         executor = await aload_chain(config)
         assert isinstance(executor, AgentExecutor)  # sanity check
-        # TODO: need additional tests to verify memory is working:
+
         # 1. test that prompt includes placeholders
         # 2. test that memory keys are correct
         # 3. test that memory is loaded for agent
-        raise NotImplementedError()
+        result = await executor.acall(inputs={"input": "foo", "user_input": "bar"})
+
+        # verify response contains memory
+        assert result["chat_history"][0].content == "bar"
+        assert result["chat_history"][1].content == "mock llm response"
+
+        # call second time to smoke test
+        await executor.acall(inputs={"input": "foo", "user_input": "bar"})
 
     async def test_agent_memory_misconfigured(
         self, mock_openai, aload_chain, mock_google_api_key
