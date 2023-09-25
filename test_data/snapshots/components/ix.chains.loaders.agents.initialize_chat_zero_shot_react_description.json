@@ -43,17 +43,6 @@
                 "toolkit"
             ],
             "type": "target"
-        },
-        {
-            "key": "prompt",
-            "source_type": "prompt",
-            "type": "target"
-        },
-        {
-            "key": "memory",
-            "multiple": true,
-            "source_type": "memory",
-            "type": "target"
         }
     ],
     "description": "Agent that generates descriptions in a chat-based context using a zero-shot approach and reaction information.",
