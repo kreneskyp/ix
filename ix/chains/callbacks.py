@@ -1,4 +1,5 @@
 import functools
+import json
 import logging
 import time
 import traceback
@@ -198,11 +199,24 @@ class IxHandler(AsyncCallbackHandler):
         """Run when chain starts running."""
 
         if not self.parent_think_msg:
+            # Inputs will be encoded as JSON, but if they can't be, we'll just
+            # serialize them as a string.
+            try:
+                json.dumps(inputs)
+            except TypeError:
+                serialized_inputs = str(inputs)
+            else:
+                serialized_inputs = inputs
+
             self.start = time.time()
             think_msg = await TaskLogMessage.objects.acreate(
                 task_id=self.task.id,
                 role="SYSTEM",
-                content={"type": "THINK", "input": inputs, "agent": self.agent.alias},
+                content={
+                    "type": "THINK",
+                    "input": serialized_inputs,
+                    "agent": self.agent.alias,
+                },
             )
             self.parent_think_msg = think_msg
 
