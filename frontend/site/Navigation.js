@@ -1,9 +1,8 @@
 import React from "react";
-import { Box, HStack, Stack } from "@chakra-ui/react";
+import { Box, Divider, HStack, IconButton, Stack } from "@chakra-ui/react";
 import {
   faCog,
   faSignOutAlt,
-  faRobot,
   faServer,
   faMessage,
 } from "@fortawesome/free-solid-svg-icons";
@@ -13,46 +12,56 @@ import { useColorMode } from "@chakra-ui/color-mode";
 
 function Navigation() {
   const { colorMode } = useColorMode();
+  const style =
+    colorMode === "light"
+      ? {
+          border: "1px solid",
+          borderColor: "gray.300",
+        }
+      : {
+          border: "1px solid",
+          borderColor: "whiteAlpha.50",
+        };
 
   return (
-    <Box
-      as="nav"
-      fontSize="sm"
-      color={colorMode === "light" ? "gray.900" : "gray.200"}
-    >
+    <Box as="nav" color={colorMode === "light" ? "gray.900" : "gray.200"}>
       <Stack spacing={3}>
-        <HStack align="center">
-          <FontAwesomeIcon icon={faMessage} />
-          <Link ml={3} to="/chats">
-            Chats
-          </Link>
-        </HStack>
-        <HStack align="center">
-          <FontAwesomeIcon icon={faRobot} />
-          <Link ml={3} to="/agents">
-            Agents
-          </Link>
-        </HStack>
+        <Link ml={3} to="/chats">
+          <IconButton
+            icon={<FontAwesomeIcon icon={faMessage} />}
+            title={"Chat history"}
+            {...style}
+          />
+        </Link>
+
         {false && (
           <HStack align="center">
-            <FontAwesomeIcon icon={faServer} />
             <Link ml={3} to="#">
-              Resources
+              <IconButton
+                icon={<FontAwesomeIcon icon={faServer} />}
+                title={"Resources"}
+                {...style}
+              />
             </Link>
           </HStack>
         )}
-        <HStack align="center">
-          <FontAwesomeIcon icon={faCog} />
-          <Link ml={3} to="#">
-            Settings
-          </Link>
-        </HStack>
-        <HStack align="center" spacing={3}>
-          <FontAwesomeIcon icon={faSignOutAlt} />
-          <Link ml={3} to="#">
-            Logout
-          </Link>
-        </HStack>
+        <Divider
+          borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
+        />
+        <Link ml={3} to="#">
+          <IconButton
+            icon={<FontAwesomeIcon icon={faCog} />}
+            title={"Settings"}
+            {...style}
+          />
+        </Link>
+        <Link ml={3} to="#">
+          <IconButton
+            icon={<FontAwesomeIcon icon={faSignOutAlt} />}
+            title={"Sign out"}
+            {...style}
+          />
+        </Link>
       </Stack>
     </Box>
   );

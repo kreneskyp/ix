@@ -1,0 +1,291 @@
+{
+    "child_field": null,
+    "class_path": "langchain.llms.ollama.Ollama",
+    "config_schema": {
+        "properties": {
+            "base_url": {
+                "default": "http://localhost:11434",
+                "type": "string"
+            },
+            "mirostat": {
+                "default": null,
+                "type": "number"
+            },
+            "mirostat_eta": {
+                "default": null,
+                "type": "number"
+            },
+            "mirostat_tau": {
+                "default": null,
+                "type": "number"
+            },
+            "model": {
+                "default": "llama2",
+                "type": "string"
+            },
+            "num_ctx": {
+                "default": null,
+                "type": "number"
+            },
+            "num_gpu": {
+                "default": 1,
+                "maximum": 10.0,
+                "minimum": 0.0,
+                "multipleOf": 1.0,
+                "type": "number"
+            },
+            "num_thread": {
+                "default": null,
+                "type": "number"
+            },
+            "repeat_last_n": {
+                "default": null,
+                "type": "number"
+            },
+            "repeat_penalty": {
+                "default": null,
+                "type": "number"
+            },
+            "stop": {
+                "default": null,
+                "type": "object"
+            },
+            "temperature": {
+                "default": 0.8,
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "multipleOf": 0.05,
+                "type": "number"
+            },
+            "tfs_z": {
+                "default": null,
+                "type": "number"
+            },
+            "top_p": {
+                "default": 0.9,
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "multipleOf": 0.05,
+                "type": "number"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "verbose"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Ollama server for llama models",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": "http://localhost:11434",
+            "input_type": null,
+            "label": "Base_url",
+            "max": null,
+            "min": null,
+            "name": "base_url",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": "llama2",
+            "input_type": null,
+            "label": "Model",
+            "max": null,
+            "min": null,
+            "name": "model",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Mirostat",
+            "max": null,
+            "min": null,
+            "name": "mirostat",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Mirostat_eta",
+            "max": null,
+            "min": null,
+            "name": "mirostat_eta",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "float"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Mirostat_tau",
+            "max": null,
+            "min": null,
+            "name": "mirostat_tau",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "float"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Num_ctx",
+            "max": null,
+            "min": null,
+            "name": "num_ctx",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": 1,
+            "input_type": "slider",
+            "label": "Num_gpu",
+            "max": 10.0,
+            "min": 0.0,
+            "name": "num_gpu",
+            "parent": null,
+            "required": false,
+            "step": 1.0,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Num_thread",
+            "max": null,
+            "min": null,
+            "name": "num_thread",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Repeat_last_n",
+            "max": null,
+            "min": null,
+            "name": "repeat_last_n",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Repeat_penalty",
+            "max": null,
+            "min": null,
+            "name": "repeat_penalty",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "float"
+        },
+        {
+            "choices": null,
+            "default": 0.8,
+            "input_type": "slider",
+            "label": "Temperature",
+            "max": 1.0,
+            "min": 0.0,
+            "name": "temperature",
+            "parent": null,
+            "required": false,
+            "step": 0.05,
+            "style": null,
+            "type": "float"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Stop",
+            "max": null,
+            "min": null,
+            "name": "stop",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "List"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Tfs_z",
+            "max": null,
+            "min": null,
+            "name": "tfs_z",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "float"
+        },
+        {
+            "choices": null,
+            "default": 0.9,
+            "input_type": "slider",
+            "label": "Top_p",
+            "max": 1.0,
+            "min": 0.0,
+            "name": "top_p",
+            "parent": null,
+            "required": false,
+            "step": 0.05,
+            "style": null,
+            "type": "int"
+        }
+    ],
+    "name": "Ollama",
+    "type": "llm"
+}

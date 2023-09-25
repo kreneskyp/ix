@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   HStack,
@@ -11,7 +11,6 @@ import { ReactFlowProvider, useReactFlow } from "reactflow";
 
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 import ChainGraphEditor from "chains/ChainGraphEditor";
-import { ChainGraphEditorSideBar } from "chains/editor/ChainGraphEditorSideBar";
 import { useDetailAPI } from "utils/hooks/useDetailAPI";
 import { useObjectEditorView } from "utils/hooks/useObjectEditorView";
 import { useChainEditorAPI } from "chains/hooks/useChainEditorAPI";
@@ -29,7 +28,8 @@ import {
 import { EditorRightSidebar } from "chains/editor/EditorRightSidebar";
 import { useNodeState } from "chains/hooks/useNodeState";
 import { useChainState } from "chains/hooks/useChainState";
-import { NewAgentButton } from "agents/NewAgentButton";
+import { NodeTypeSearchButton } from "chains/editor/NodeTypeSearchButton";
+import { AgentsLinkButton } from "site/buttons/AgentsLinkButton";
 
 const ChainEditorProvider = ({ graph, onError, children }) => {
   const chainState = useChainState(graph);
@@ -128,12 +128,19 @@ export const ChainEditorView = () => {
       <ChainEditorProvider graph={graph} onError={onAPIError}>
         <Layout>
           <LayoutLeftPane>
-            <NewAgentButton />
-            <ChainGraphEditorSideBar />
+            <AgentsLinkButton />
+            <NodeTypeSearchButton />
           </LayoutLeftPane>
           <LayoutContent>
             <HStack>
-              <VStack alignItems="start" p={5} spacing={4}>
+              <VStack
+                alignItems="start"
+                pl={0}
+                pr={2}
+                pt={5}
+                pb={2}
+                spacing={4}
+              >
                 {content}
               </VStack>
               <EditorRightSidebar {...rightSidebarDisclosure} />

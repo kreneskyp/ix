@@ -1,0 +1,15 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.tests.mock_memory.MockMemory",
+    "config_schema": {
+        "properties": {},
+        "required": [],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Mock Memory",
+    "display_type": "node",
+    "fields": null,
+    "name": "Mock Memory",
+    "type": "memory"
+}

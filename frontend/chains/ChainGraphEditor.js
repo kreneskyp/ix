@@ -124,7 +124,7 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
           // Only Node selected:
           // select the first open connector accepting the node type
           const targetType = selectedNode.data.type;
-          edgeConnector = targetType.connectors.find((connector) =>
+          edgeConnector = targetType.connectors?.find((connector) =>
             getExpectedTypes(connector).has(nodeType.type)
           );
         }
@@ -306,9 +306,9 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
   const onChainUpdate = useChainUpdate(chain, setChain, api);
   const onTitleChange = useCallback(
     (event) => {
-      onChainUpdate({ name: event.target.value });
+      onChainUpdate({ ...chain, name: event.target.value });
     },
-    [onChainUpdate]
+    [chain, onChainUpdate]
   );
 
   const onSelectionChange = useCallback((selection) => {
@@ -316,6 +316,28 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
       setSelectedConnector(null);
     }
   }, []);
+
+  // New chains need a specific viewport because fitview
+  // centers the root node.
+  const displayProps = React.useMemo(() => {
+    if (graph?.chain?.id) {
+      return {
+        fitView: true,
+        fitViewOptions: {
+          minZoom: 0,
+          maxZoom: 1,
+        },
+      };
+    } else {
+      return {
+        defaultViewport: {
+          x: 0,
+          y: 0,
+          zoom: 1,
+        },
+      };
+    }
+  }, [graph?.chain?.id]);
 
   return (
     <Box height="93vh">
@@ -343,7 +365,7 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
           title={"Open Sidebar"}
         />
       </Box>
-      <Box ref={reactFlowWrapper} width={"85vw"} height={"100%"}>
+      <Box ref={reactFlowWrapper} width={"calc(100vw - 100px)"} height={"100%"}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -360,7 +382,9 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
           onSelectionChange={onSelectionChange}
           nodeTypes={nodeTypes}
           onConnect={onConnect}
-          fitView
+          {...displayProps}
+          snapToGrid={true}
+          snapGrid={[10, 10]}
         >
           <Controls />
           <Background

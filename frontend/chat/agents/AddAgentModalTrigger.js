@@ -8,11 +8,13 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  VStack,
+  SimpleGrid,
+  Box,
 } from "@chakra-ui/react";
 import { AddAgentCard } from "chat/agents/AddAgentCard";
 import { AgentToggleButton } from "chat/agents/AgentToggleButton";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
+import { useEditorColorMode } from "chains/editor/useColorMode";
 
 const AddAgentModal = ({
   graph,
@@ -24,6 +26,7 @@ const AddAgentModal = ({
 }) => {
   const [search, setSearch] = useState("");
   const { chat } = graph;
+  const { scrollbar } = useEditorColorMode();
 
   const handleSearch = (event) => {
     setSearch(event.target.value);
@@ -33,29 +36,41 @@ const AddAgentModal = ({
   const agentSet = new Set(chatAgents?.map((agent) => agent.id));
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+    <Modal isOpen={isOpen} onClose={onClose} size="6xl">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Manage Agents</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          <VStack maxH="md" overflowY="auto" spacing={5}>
-            {agents?.map((agent) => (
-              <AgentToggleButton
-                chat={chat}
-                chatAgents={chatAgents}
-                agent={agent}
-                key={agent.id}
-                onSuccess={onSuccess}
-              >
-                <AddAgentCard
+        <ModalBody p={0}>
+          <Box
+            maxH="calc(100vh - 250px)"
+            overflowY="auto"
+            spacing={5}
+            css={scrollbar}
+            px={3}
+          >
+            <SimpleGrid
+              columns={[1, 2, 3]} // Responsive column setup
+              spacing="20px"
+              minChildWidth="360px" // Minimum width for each grid item
+            >
+              {agents?.map((agent) => (
+                <AgentToggleButton
+                  chat={chat}
+                  chatAgents={chatAgents}
                   agent={agent}
-                  inChat={agentSet.has(agent.id)}
-                  isLead={agent.id === chat.lead_id}
-                />
-              </AgentToggleButton>
-            ))}
-          </VStack>
+                  key={agent.id}
+                  onSuccess={onSuccess}
+                >
+                  <AddAgentCard
+                    agent={agent}
+                    inChat={agentSet.has(agent.id)}
+                    isLead={agent.id === chat.lead_id}
+                  />
+                </AgentToggleButton>
+              ))}
+            </SimpleGrid>
+          </Box>
         </ModalBody>
 
         <ModalFooter>

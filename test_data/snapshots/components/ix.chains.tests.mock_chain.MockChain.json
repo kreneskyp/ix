@@ -1,0 +1,15 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.tests.mock_chain.MockChain",
+    "config_schema": {
+        "properties": {},
+        "required": [],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Mock Chain",
+    "display_type": "node",
+    "fields": null,
+    "name": "Mock Chain",
+    "type": "chain"
+}

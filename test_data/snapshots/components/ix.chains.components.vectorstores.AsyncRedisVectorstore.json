@@ -1,0 +1,123 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.components.vectorstores.AsyncRedisVectorstore",
+    "config_schema": {
+        "properties": {
+            "allowed_search_types": {
+                "default": [
+                    "similarity",
+                    "similarity_score_threshold",
+                    "mmr"
+                ],
+                "type": "object"
+            },
+            "content_key": {
+                "default": "content",
+                "type": "string"
+            },
+            "index_name": {
+                "default": null,
+                "type": "string"
+            },
+            "metadata_key": {
+                "default": "metadata",
+                "type": "string"
+            },
+            "redis_url": {
+                "default": "redis://redis:6379/0",
+                "type": "string"
+            },
+            "search_type": {
+                "default": "similarity",
+                "type": "string"
+            },
+            "vector_key": {
+                "default": "content_vector",
+                "type": "string"
+            }
+        },
+        "required": [
+            "redis_url",
+            "index_name",
+            "content_key",
+            "metadata_key",
+            "vector_key",
+            "allowed_search_types"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "embedding",
+            "source_type": "embeddings",
+            "type": "target"
+        },
+        {
+            "key": "documents",
+            "source_type": "text_splitter",
+            "type": "target"
+        }
+    ],
+    "description": "Redis Vector Store",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": "redis://redis:6379/0",
+            "description": "URL of the Redis server",
+            "name": "redis_url",
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "description": "Name of the index in the Redis",
+            "name": "index_name",
+            "type": "string"
+        },
+        {
+            "default": "content",
+            "description": "Key for storing content",
+            "name": "content_key",
+            "type": "string"
+        },
+        {
+            "default": "metadata",
+            "description": "Key for storing metadata",
+            "name": "metadata_key",
+            "type": "string"
+        },
+        {
+            "default": "content_vector",
+            "description": "Key for storing vectors",
+            "name": "vector_key",
+            "type": "string"
+        },
+        {
+            "default": [
+                "similarity",
+                "similarity_score_threshold",
+                "mmr"
+            ],
+            "name": "allowed_search_types",
+            "required": true,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": "similarity",
+            "input_type": null,
+            "label": "Search_type",
+            "max": null,
+            "min": null,
+            "name": "search_type",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "Redis Vector Store",
+    "type": "vectorstore"
+}

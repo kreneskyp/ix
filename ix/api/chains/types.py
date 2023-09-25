@@ -40,11 +40,7 @@ class CreateChain(BaseModel):
 
 
 class UpdateChain(CreateChain):
-    @root_validator
-    def validate_chain(cls, values):
-        if values.get("is_agent") and not values.get("alias"):
-            raise ValueError("alias is required when is_agent is True")
-        return values
+    pass
 
 
 class ChainQueryPage(QueryPage[Chain]):

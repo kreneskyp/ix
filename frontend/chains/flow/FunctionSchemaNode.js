@@ -6,11 +6,12 @@ import { createEditor } from "slate";
 import { INITIAL_EDITOR_CONTENT } from "utils/slate";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { SCROLLBAR_CSS } from "site/css";
+import AutoResizingTextarea from "components/AutoResizingTextArea";
 
 export const FunctionSchemaNode = ({ node, onChange }) => {
   const editor = useMemo(() => withReact(withHistory(createEditor())), []);
 
-  const { code } = useEditorColorMode();
+  const { code, scrollbar } = useEditorColorMode();
 
   const handleChange = useCallback(
     (e) => {
@@ -22,7 +23,7 @@ export const FunctionSchemaNode = ({ node, onChange }) => {
   return (
     <>
       <FormLabel justify="start">Parameters</FormLabel>
-      <Textarea
+      <AutoResizingTextarea
         name="parameters"
         value={node.config.parameters}
         onChange={handleChange}
@@ -31,7 +32,7 @@ export const FunctionSchemaNode = ({ node, onChange }) => {
         fontFamily="monospace"
         font="monospace"
         fontSize="sm"
-        css={SCROLLBAR_CSS}
+        css={scrollbar}
         placeholder={"Enter JSON Schema for function parameters."}
       />
     </>

@@ -12,7 +12,16 @@ export const useEditorColorMode = () => {
     highlightColor: isLight ? "gray.100" : "gray.100",
     color: isLight ? "gray.800" : "gray.100",
     bg: isLight ? "white" : "gray.700",
-    border: isLight ? "gray.600" : "black",
+    border: isLight ? "gray.800" : "black",
+    header: isLight
+      ? {
+          color: "gray.600",
+          borderColor: "gray.400",
+        }
+      : {
+          color: "gray.400",
+          borderColor: "gray.400",
+        },
     node: {
       section: isLight
         ? {
@@ -26,7 +35,7 @@ export const useEditorColorMode = () => {
       root: isLight
         ? {
             color: "gray.700",
-            bg: "gray.300",
+            bg: "white",
           }
         : {
             color: "gray.400",
@@ -65,6 +74,48 @@ export const useEditorColorMode = () => {
       vectorstore: retrieval,
       default: isLight ? "gray.400" : "gray.700",
     },
+    scrollbar: isLight
+      ? {
+          "&::-webkit-scrollbar": {
+            width: "8px",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "transparent",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "#bbb",
+            borderRadius: "4px",
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            background: "#777",
+          },
+        }
+      : {
+          "&::-webkit-scrollbar": {
+            width: "8px",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "transparent",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "#333",
+            borderRadius: "4px",
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            background: "#555",
+          },
+        },
+    input: isLight
+      ? {
+          bg: "gray.50",
+          color: "gray.800",
+          borderColor: "gray.300",
+        }
+      : {
+          bg: "gray.800",
+          color: "gray.100",
+          borderColor: "whiteAlpha.400",
+        },
   };
 };
 
@@ -78,6 +129,15 @@ export const useSideBarColorMode = () => {
     color: isLight ? "gray.800" : "gray.100",
     bg: isLight ? "gray.300" : "gray.700",
     border: isLight ? "gray.400" : "gray.700",
+    button: isLight
+      ? {
+          border: "1px solid",
+          borderColor: "gray.300",
+        }
+      : {
+          border: "1px solid",
+          borderColor: "whiteAlpha.50",
+        },
   };
 };
 

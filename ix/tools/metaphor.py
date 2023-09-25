@@ -14,7 +14,7 @@ METAPHOR_METHODS = Literal["search", "get_contents", "find_similar"]
 def get_metaphor_tool(
     method: METAPHOR_METHODS,
     description: str,
-    metaphor_api_key: Optional[str],
+    metaphor_api_key: Optional[str] = None,
     **kwargs: Any,
 ) -> Tool:
     """Common logic for initializing a Metaphor client and returning a Tool object that can be used to run queries."""

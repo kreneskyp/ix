@@ -67,10 +67,15 @@ class NodeTypeField(BaseModel):
     typing information and UX information.
 
     This class includes `get_fields_from_model` and `get_fields_from_method` helpers
-     for auto-importing fields from Pydantic model and python methods respectively.
+    for auto-importing fields from Pydantic model and python methods respectively.
+
+    Set `parent` to indicate a field is a member of a nested object at property
+    with the name `parent`. Use `parent` to convert flat configs back into nested
+    objects.
 
     Args:
         name (str): The name of the field. Used to set and retrieve the value on the object.
+        parent (str): This field is a member of the property with this name.
         label (str): The label for the field. Displayed in the user interface (UX).
         type (str): The type of the field. Used for validation and formatting.
         default (Any): The default value for the field when creating a new object.
@@ -84,14 +89,17 @@ class NodeTypeField(BaseModel):
     """
 
     name: str
+    parent: Optional[str] = None
     label: Optional[str]
     type: str
     default: Optional[Any]
     required: bool = True
+    choices: Optional[List[Choice]] = None
+
+    # form & display properties
     input_type: InputType = None
     min: Optional[float] = None
     max: Optional[float] = None
-    choices: Optional[List[Choice]] = None
     step: Optional[float] = None
     style: Optional[Dict[str, Any]] = None
 
@@ -121,7 +129,8 @@ class NodeTypeField(BaseModel):
         include: Optional[List[str]] = None,
         exclude: Optional[List[str]] = None,
         field_options: Optional[Dict[str, Dict[str, Any]]] = None,
-    ) -> List[Dict[str, Any]]:
+        parent: Optional[str] = None,
+    ) -> List["NodeTypeField"]:
         field_objs = []
 
         annotations = {}
@@ -161,7 +170,7 @@ class NodeTypeField(BaseModel):
                 )
             )
 
-        return cls._get_fields(field_objs, field_options)
+        return cls._get_fields(field_objs, field_options, parent=parent)
 
     @classmethod
     def get_fields_from_method(
@@ -170,7 +179,8 @@ class NodeTypeField(BaseModel):
         include: Optional[List[str]] = None,
         exclude: Optional[List[str]] = None,
         field_options: Optional[Dict[str, Dict[str, Any]]] = None,
-    ) -> List[Dict[str, Any]]:
+        parent: Optional[str] = None,
+    ) -> List["NodeTypeField"]:
         fields = []
         signature = inspect.signature(method)
 
@@ -198,14 +208,15 @@ class NodeTypeField(BaseModel):
                 )
             )
 
-        return cls._get_fields(fields, field_options)
+        return cls._get_fields(fields, field_options, parent=parent)
 
     @staticmethod
     def _get_fields(
         fields: List[ParsedField],
         field_options: Optional[Dict[str, Dict[str, Any]]] = None,
-    ) -> List[Dict[str, Any]]:
-        results = []
+        parent: Optional[str] = None,
+    ) -> List["NodeTypeField"]:
+        results: List[NodeTypeField] = []
 
         for field in fields:
             origin = get_origin(field.type_)
@@ -227,6 +238,7 @@ class NodeTypeField(BaseModel):
 
             field_info = {
                 "name": field.name,
+                "parent": parent,
                 "label": cap_first(field.name),
                 "type": field_type_name,
                 "default": field.default,
@@ -248,7 +260,8 @@ class NodeTypeField(BaseModel):
             if field_options and field.name in field_options:
                 field_info.update(field_options[field.name])
 
-            results.append(field_info)
+            field = NodeTypeField(**field_info)
+            results.append(field)
 
         return results
 
@@ -259,17 +272,28 @@ class NodeTypeField(BaseModel):
         include: Optional[List[str]] = None,
         exclude: Optional[List[str]] = None,
         field_options: Optional[Dict[str, Dict[str, Any]]] = None,
-    ):
+        parent: Optional[str] = None,
+    ) -> List[Dict[str, Any]]:
         if isinstance(obj, type) and issubclass(obj, BaseModel | ABC):
-            return cls.get_fields_from_model(
-                obj, include=include, exclude=exclude, field_options=field_options
+            fields = cls.get_fields_from_model(
+                obj,
+                include=include,
+                exclude=exclude,
+                field_options=field_options,
+                parent=parent,
             )
         elif isinstance(obj, Callable):
-            return cls.get_fields_from_method(
-                obj, include=include, exclude=exclude, field_options=field_options
+            fields = cls.get_fields_from_method(
+                obj,
+                include=include,
+                exclude=exclude,
+                field_options=field_options,
+                parent=parent,
             )
+        else:
+            raise ValueError(f"Invalid object type: {type(obj)}")
 
-        raise ValueError(f"Invalid object type: {type(obj)}")
+        return [field.dict() for field in fields]
 
 
 NodeTypes = Literal[

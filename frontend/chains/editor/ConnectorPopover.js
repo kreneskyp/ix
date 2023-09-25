@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useContext, useCallback } from "react";
 import {
   Badge,
   Box,
@@ -9,13 +9,21 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { SelectedNodeContext } from "chains/editor/contexts";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 
-const DEFAULT_DESCRIPTION =
-  "Attach components to this connector by dragging them from the search results in the left panel.";
+const DEFAULT_DESCRIPTION = (
+  <>
+    <Text mb={2}>Click the connector to search for matching components.</Text>
+    <Text>
+      Attach components to this connector by dragging them from the search
+      results in the left panel.
+    </Text>
+  </>
+);
 
 export const ConnectorPopover = ({
   type,
@@ -26,14 +34,9 @@ export const ConnectorPopover = ({
   children,
 }) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
-  const { highlight } = useEditorColorMode();
-  const { setSelectedConnector } = useContext(SelectedNodeContext);
-
-  useEffect(() => {
-    if (isOpen) {
-      setSelectedConnector({ type, node, connector });
-    }
-  }, [isOpen, setSelectedConnector, connector]);
+  const { highlight, isLight } = useEditorColorMode();
+  const { selectedConnector, setSelectedConnector } =
+    useContext(SelectedNodeContext);
 
   const source_types = Array.isArray(connector.source_type)
     ? connector.source_type
@@ -41,10 +44,38 @@ export const ConnectorPopover = ({
 
   const description = connector.description || DEFAULT_DESCRIPTION;
 
+  const onClick = useCallback(
+    (event) => {
+      // click: search for components
+      // shift-click: toggle help
+      const shiftKey = event.shiftKey;
+      if (shiftKey) {
+        onToggle();
+      } else if (selectedConnector?.connector !== connector) {
+        setSelectedConnector({ type, node, connector });
+      } else {
+        setSelectedConnector(null);
+      }
+    },
+    [onToggle, selectedConnector]
+  );
+
+  const hover = isLight ? { color: "blue.400" } : { color: "blue.400" };
+
   return (
-    <Popover isOpen={isOpen} onClose={onClose} placement={placement}>
+    <Popover
+      isOpen={isOpen}
+      onClose={onClose}
+      placement={placement}
+      closeOnBlur={true}
+    >
       <PopoverTrigger>
-        <Box as="button" onClick={onToggle}>
+        <Box
+          as="button"
+          onClick={onClick}
+          title={"shift-click for help"}
+          _hover={hover}
+        >
           {children || label || connector.key}
         </Box>
       </PopoverTrigger>

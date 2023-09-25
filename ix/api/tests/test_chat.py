@@ -12,10 +12,10 @@ from ix.task_log.tests.fake import (
     afake_agent,
     afake_chat,
     afake_artifact,
-    afake_user,
     afake_system,
     afake_task,
 )
+from ix.ix_users.tests.fake import afake_user
 
 CHAT_ID_1 = uuid4()
 CHAT_ID_2 = uuid4()
@@ -456,3 +456,20 @@ class TestChatMessage:
         assert msgs[2]["id"] == str(msg2.id)
         assert msgs[2]["content"]["type"] == "SYSTEM"
         assert msgs[2]["content"]["message"] == "test2"
+
+    async def test_clear_messages(self, anode_types):
+        chat = await afake_chat()
+        task = await Task.objects.aget(id=chat.task_id)
+        subtask = await afake_task(parent=task)
+        await afake_system("test1", task=task)
+        await afake_system("test2", task=subtask)
+        assert await TaskLogMessage.objects.filter(task=task).aexists()
+        assert await TaskLogMessage.objects.filter(task__parent=task).aexists()
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.post(f"/chats/{chat.id}/messages/clear")
+        assert response.status_code == 200, response.content
+
+        assert response.json() == {"id": str(chat.id)}, response.json()
+        assert not await TaskLogMessage.objects.filter(task=task).aexists()
+        assert not await TaskLogMessage.objects.filter(task__parent=task).aexists()

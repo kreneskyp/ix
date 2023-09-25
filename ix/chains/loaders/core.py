@@ -1,6 +1,7 @@
 import itertools
 import logging
 import time
+from collections import defaultdict
 from typing import Callable, Any, List
 
 from ix.chains.loaders.context import IxContext
@@ -143,6 +144,20 @@ def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
                 if len(node_group) > 1:
                     raise ValueError(f"Multiple values for {key} not allowed")
                 config[key] = load_node(node_group[0], context, root=False)
+
+    # converted flattened property groups back into nested properties. Fields with
+    # the same parent are grouped together into a single object.
+    property_groups = defaultdict(list)
+    for field in node_type.fields or []:
+        if field.get("parent"):
+            property_groups[field["parent"]].append(field)
+    for key, property_group_fields in property_groups.items():
+        logger.error(f"key={key} property_group_fields={property_group_fields}")
+        config[key] = {
+            field["name"]: config.pop(field["name"])
+            for field in property_group_fields
+            if field["name"] in config
+        }
 
     # load component class and initialize. A type specific initializer may be used here
     # for initialization common to all components of that type.

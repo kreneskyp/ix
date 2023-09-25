@@ -21,6 +21,9 @@ class NodeTypeQuery(PGVectorMixin, models.QuerySet):
 
 
 class NodeTypeManager(models.Manager.from_queryset(NodeTypeQuery)):
+    def get_by_natural_key(self, class_path):
+        return self.get(class_path=class_path)
+
     def create_with_embedding(self, name, description, class_path):
         """
         Creates a new NodeType object with a vector embedding generated
@@ -57,7 +60,7 @@ class NodeType(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True)
-    class_path = models.CharField(max_length=255)
+    class_path = models.CharField(max_length=255, unique=True)
     type = models.CharField(max_length=255)
     display_type = models.CharField(
         max_length=10,
@@ -74,12 +77,17 @@ class NodeType(models.Model):
     # JSONSchema for the config object
     config_schema = models.JSONField(default=dict)
 
+    objects = NodeTypeManager()
+
     @cached_property
     def connectors_as_dict(self):
         return {c["key"]: c for c in self.connectors or []}
 
     def __str__(self):
         return f"{self.class_path}"
+
+    def natural_key(self):
+        return (self.class_path,)
 
 
 def default_position():

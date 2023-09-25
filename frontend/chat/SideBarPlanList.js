@@ -1,5 +1,12 @@
 import React from "react";
-import { HStack, VStack, Text, Heading, Box, Spinner } from "@chakra-ui/react";
+import {
+  HStack,
+  VStack,
+  Text,
+  Box,
+  Spinner,
+  FormLabel,
+} from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
@@ -21,10 +28,10 @@ const StatusIcon = ({ isComplete, isRunning }) => {
 const SideBarPlanList = ({ plans }) => {
   const { colorMode } = useColorMode();
   return (
-    <VStack spacing={1}>
-      <Heading as="h3" size="md" width="100%" align="left" mt={5}>
+    <VStack spacing={1} px={2}>
+      <FormLabel as="h3" size="md" width="100%" align="left">
         Tasks
-      </Heading>
+      </FormLabel>
       {!plans || plans?.length === 0 ? (
         <Text
           p={2}

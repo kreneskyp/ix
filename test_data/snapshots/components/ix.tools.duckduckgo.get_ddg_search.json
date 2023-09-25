@@ -1,0 +1,110 @@
+{
+    "child_field": null,
+    "class_path": "ix.tools.duckduckgo.get_ddg_search",
+    "config_schema": {
+        "properties": {
+            "max_results": {
+                "default": 5,
+                "type": "number"
+            },
+            "region": {
+                "default": "wt-wt",
+                "type": "string"
+            },
+            "return_direct": {
+                "default": false,
+                "type": "boolean"
+            },
+            "safesearch": {
+                "default": "moderate",
+                "type": "string"
+            },
+            "time": {
+                "default": "y",
+                "type": "string"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "return_direct",
+            "verbose"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Tool that searches DuckDuckGo for a given query.",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "name": "return_direct",
+            "type": "boolean"
+        },
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": "wt-wt",
+            "input_type": null,
+            "label": "Region",
+            "max": null,
+            "min": null,
+            "name": "region",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": "moderate",
+            "input_type": null,
+            "label": "Safesearch",
+            "max": null,
+            "min": null,
+            "name": "safesearch",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": "y",
+            "input_type": null,
+            "label": "Time",
+            "max": null,
+            "min": null,
+            "name": "time",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": 5,
+            "input_type": null,
+            "label": "Max_results",
+            "max": null,
+            "min": null,
+            "name": "max_results",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "int"
+        }
+    ],
+    "name": "DuckDuckGo Search",
+    "type": "tool"
+}

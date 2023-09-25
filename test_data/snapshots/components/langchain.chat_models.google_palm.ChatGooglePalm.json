@@ -1,0 +1,136 @@
+{
+    "child_field": null,
+    "class_path": "langchain.chat_models.google_palm.ChatGooglePalm",
+    "config_schema": {
+        "properties": {
+            "google_api_key": {
+                "default": null,
+                "type": "string"
+            },
+            "model_name": {
+                "default": "gpt-4",
+                "enum": [
+                    "models/chat-bison-001"
+                ],
+                "type": "string"
+            },
+            "n": {
+                "default": 1,
+                "maximum": 5.0,
+                "minimum": 1.0,
+                "multipleOf": 1.0,
+                "type": "number"
+            },
+            "temperature": {
+                "default": 0,
+                "maximum": 2.0,
+                "minimum": 0.0,
+                "multipleOf": 0.05,
+                "type": "number"
+            },
+            "top_k": {
+                "default": 0,
+                "maximum": 2.0,
+                "minimum": 0.0,
+                "multipleOf": 0.05,
+                "type": "number"
+            },
+            "top_p": {
+                "default": 0,
+                "maximum": 2.0,
+                "minimum": 0.0,
+                "multipleOf": 0.05,
+                "type": "number"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "model_name",
+            "google_api_key",
+            "temperature",
+            "top_p",
+            "top_k",
+            "n",
+            "verbose"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Google PaLM",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": [
+                {
+                    "label": "Bison-001",
+                    "value": "models/chat-bison-001"
+                }
+            ],
+            "default": "gpt-4",
+            "description": "OpenAI model",
+            "input_type": "select",
+            "label": "Model",
+            "name": "model_name",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "description": "Google API key",
+            "input_type": "secret",
+            "label": "API Key",
+            "name": "google_api_key",
+            "type": "string"
+        },
+        {
+            "default": 0,
+            "description": "Temperature",
+            "input_type": "slider",
+            "max": 2,
+            "min": 0,
+            "name": "temperature",
+            "step": 0.05,
+            "type": "number"
+        },
+        {
+            "default": 0,
+            "description": "Top P",
+            "input_type": "slider",
+            "max": 2,
+            "min": 0,
+            "name": "top_p",
+            "step": 0.05,
+            "type": "number"
+        },
+        {
+            "default": 0,
+            "description": "Top P",
+            "input_type": "slider",
+            "max": 2,
+            "min": 0,
+            "name": "top_k",
+            "step": 0.05,
+            "type": "number"
+        },
+        {
+            "default": 1,
+            "description": "Number of responses to sample",
+            "input_type": "slider",
+            "label": "Sample N responses",
+            "max": 5,
+            "min": 1,
+            "name": "n",
+            "step": 1,
+            "type": "number"
+        },
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        }
+    ],
+    "name": "Google PaLM",
+    "type": "llm"
+}

@@ -2,7 +2,7 @@ import json
 import uuid
 from typing import TypedDict, Optional
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db import models
 from ix.agents.models import Agent
 from ix.chains.models import Chain
@@ -17,7 +17,7 @@ class Task(models.Model):
         "self", related_name="children", null=True, blank=True, on_delete=models.CASCADE
     )
     name = models.CharField(max_length=64)
-    user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
+    user = models.ForeignKey("ix_users.User", on_delete=models.CASCADE)
     agent = models.ForeignKey(Agent, null=True, on_delete=models.CASCADE)
     chain = models.ForeignKey(Chain, on_delete=models.CASCADE)
     is_complete = models.BooleanField(default=False)
@@ -47,8 +47,9 @@ class Task(models.Model):
         """
         Create a subtask in which a delegated task will run.
         """
+        user_model = get_user_model()
         chain = await Chain.objects.aget(id=agent.chain_id)
-        user = await User.objects.aget(id=self.user_id)
+        user = await user_model.objects.aget(id=self.user_id)
         return await Task.objects.acreate(
             parent=self,
             name=f"delegating to agent {agent.alias}",

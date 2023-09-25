@@ -1,7 +1,9 @@
 import React from "react";
 import { Box, Text, Link, Code } from "@chakra-ui/react";
 import PropTypes from "prop-types";
+
 import { useChatColorMode } from "chains/editor/useColorMode";
+import { HighlightedCode } from "components/HighlightedCode";
 
 /**
  * HighlightText is a component that takes a string and returns a Chakra Text component with
@@ -41,6 +43,14 @@ const HighlightText = ({ content }) => {
             {execResult[1]}
           </Link>
         ),
+      },
+      {
+        regex: /```([\w\s]*?)\n([\s\S]*?)(```|$)/g,
+        component: (match, idx, execResult) => {
+          // execResult[2] contains the actual code content
+          const codeText = execResult[2].replace(/\s+$/, "");
+          return <HighlightedCode text={codeText} />;
+        },
       },
       {
         regex: /`([^`]+)`/g,

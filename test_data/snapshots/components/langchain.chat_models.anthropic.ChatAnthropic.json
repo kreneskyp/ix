@@ -1,0 +1,64 @@
+{
+    "child_field": null,
+    "class_path": "langchain.chat_models.anthropic.ChatAnthropic",
+    "config_schema": {
+        "properties": {
+            "anthropic_api_key": {
+                "default": null,
+                "type": "string"
+            },
+            "anthropic_api_url": {
+                "default": "https://api.anthropic.com",
+                "type": "string"
+            },
+            "temperature": {
+                "default": 0,
+                "maximum": 2.0,
+                "minimum": 0.0,
+                "multipleOf": 0.05,
+                "type": "number"
+            }
+        },
+        "required": [
+            "temperature",
+            "anthropic_api_key",
+            "anthropic_api_url"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Anthropic",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": 0,
+            "description": "Temperature",
+            "input_type": "slider",
+            "max": 2,
+            "min": 0,
+            "name": "temperature",
+            "step": 0.05,
+            "type": "number"
+        },
+        {
+            "description": "ANTHROPIC_API_KEY",
+            "input_type": "secret",
+            "name": "anthropic_api_key",
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "default": "https://api.anthropic.com",
+            "description": "API URL",
+            "name": "anthropic_api_url",
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        }
+    ],
+    "name": "Anthropic",
+    "type": "llm"
+}

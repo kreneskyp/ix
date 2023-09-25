@@ -147,21 +147,32 @@ const NodeTypeSearchBadge = ({ type, onRemove }) => {
  */
 export const NodeTypeSearch = () => {
   const { border } = useSideBarColorMode();
+  const { input: inputStyle, scrollbar } = useEditorColorMode();
   const { selectedConnector } = useContext(SelectedNodeContext);
   const [query, setQuery] = useState({ search: "", types: [] });
 
   // component query
-  const { load, page } = usePaginatedAPI(`/api/node_types/`, {
+  const { load, page, clearPage } = usePaginatedAPI(`/api/node_types/`, {
     load: false,
     limit: 50,
   });
+  const { callback: debouncedLoad, clear: clearLoad } = useDebounce(load, 400);
 
   // trigger query when query state changes
   useEffect(() => {
     if (query.search || query.types.length > 0) {
-      load(query);
+      if (selectedConnector && query.search === "") {
+        // load immediately if there is a selected connector
+        // since it indicates the user is not typing
+        load(query);
+      } else {
+        // typing should always be debounced even
+        // if there is a selected connector
+        debouncedLoad(query);
+      }
     } else {
-      // TODO: clear page (upstream feature needed in usePaginatedAPI)
+      clearLoad();
+      clearPage();
     }
   }, [query]);
 
@@ -172,26 +183,16 @@ export const NodeTypeSearch = () => {
       const types = Array.isArray(connector.source_type)
         ? connector.source_type
         : [connector?.source_type];
-      setQuery((prev) => ({ ...prev, types }));
+      setQuery((prev) => ({ search: "", types }));
     } else {
       // clear query
-      setQuery((prev) => ({ ...prev, types: [] }));
+      setQuery((prev) => ({ search: "", types: [] }));
     }
   }, [selectedConnector]);
 
-  // debounced setQuery
-  const { callback: debouncedSetSearch, clear } = useDebounce((search) => {
-    setQuery((prev) => ({ ...prev, search }));
-  });
-
   // callback for search bar changing
   const onSearchChange = useCallback((event) => {
-    const search = event.target.value;
-    if (search) {
-      debouncedSetSearch(search);
-    } else {
-      clear();
-    }
+    setQuery((prev) => ({ ...prev, search: event.target.value }));
   }, []);
 
   // callback for removing a type from the query
@@ -208,32 +209,32 @@ export const NodeTypeSearch = () => {
 
   return (
     <Box
-      mt={5}
-      pt={5}
+      mt={2}
+      pt={0}
       width="100%"
-      maxHeight={"60vh"}
       minWidth={170}
       overflowY={"hidden"}
+      maxHeight={"calc(100vh - 170px)"}
     >
-      <Heading as="h3" size="xs" mb={2}>
-        Components
-      </Heading>
-      <Box mb={2}>
+      <Box px={3} pb={1}>
         {query.types?.map((type) => (
           <NodeTypeSearchBadge key={type} type={type} onRemove={onRemoveType} />
         ))}
       </Box>
-
-      <Input
-        onChange={onSearchChange}
-        placeholder="search components"
-        mb={2}
-        borderColor={border}
-      />
+      <Box px={2}>
+        <Input
+          onChange={onSearchChange}
+          placeholder="search components"
+          mb={2}
+          borderColor={border}
+          value={query.search}
+          {...inputStyle}
+        />
+      </Box>
       <VStack
-        overflowY="scroll"
-        css={SCROLLBAR_CSS}
-        maxHeight={"60vh"}
+        overflowY="auto"
+        css={scrollbar}
+        maxHeight={"calc(100vh - 170px)"}
         spacing={2}
         width="100%"
       >

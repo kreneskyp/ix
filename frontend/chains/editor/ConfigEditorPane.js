@@ -54,7 +54,7 @@ export const ConfigEditorPane = () => {
   const { selectedNode } = useContext(SelectedNodeContext);
   const { setNode } = useContext(NodeStateContext);
   const { type, node } = useNodeEditorState();
-  const { highlight } = useEditorColorMode();
+  const { highlight, scrollbar } = useEditorColorMode();
   const { handleConfigChange } = useNodeEditorAPI(node, setNode);
 
   const ConfigForm = CONFIG_FORM_COMPONENTS[type?.class_path] || DefaultForm;
@@ -63,15 +63,23 @@ export const ConfigEditorPane = () => {
   let content;
   if (selectedNode && node?.config) {
     content = (
-      <>
-        <CollapsibleSection title="General" mt={3}>
-          <NameField object={node} onChange={handleConfigChange.all} />
-          <DescriptionField object={node} onChange={handleConfigChange.all} />
-        </CollapsibleSection>
-        <CollapsibleSection title="Config" initialShow={true} mt={3}>
-          {<ConfigForm node={node} type={type} onChange={handleConfigChange} />}
-        </CollapsibleSection>
-      </>
+      <Box height={"calc(100vh - 150px)"} display={"flex"}>
+        <Box width="100%" overflow={"auto"} css={scrollbar} px={3}>
+          <CollapsibleSection title="General">
+            <NameField object={node} onChange={handleConfigChange.all} />
+            <DescriptionField object={node} onChange={handleConfigChange.all} />
+          </CollapsibleSection>
+          <CollapsibleSection title="Config" initialShow={true} mt={3}>
+            {
+              <ConfigForm
+                node={node}
+                type={type}
+                onChange={handleConfigChange}
+              />
+            }
+          </CollapsibleSection>
+        </Box>
+      </Box>
     );
   } else {
     content = (
@@ -85,17 +93,26 @@ export const ConfigEditorPane = () => {
 
   return (
     <Box>
-      <HStack>
-        <Badge bg={highlight[type?.type] || highlight.default} size={"xs"}>
-          {type?.type}
-        </Badge>
-        <Heading as="h3" size="md">
-          {name}
-        </Heading>
-      </HStack>
-      <Text color={"gray.500"} fontSize={"xs"}>
-        {type?.name}
-      </Text>
+      <Box p={3}>
+        <HStack>
+          <Badge
+            bg={highlight[type?.type] || highlight.default}
+            size={"xs"}
+            mx={1}
+            my={2}
+          >
+            {type?.type}
+          </Badge>
+          <Box>
+            <Heading as="h3" size="md">
+              {name}
+            </Heading>
+            <Text color={"gray.500"} fontSize={"xs"}>
+              {type?.name}
+            </Text>
+          </Box>
+        </HStack>
+      </Box>
       {content}
     </Box>
   );

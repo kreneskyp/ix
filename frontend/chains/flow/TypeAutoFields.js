@@ -10,10 +10,12 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import SliderInput from "components/SliderInput";
+import { useEditorColorMode } from "chains/editor/useColorMode";
 
 const getLabel = (field) => field.label || labelify(field.name || "");
 
 const AutoFieldCheckbox = ({ field, value, onChange }) => {
+  const colorMode = useEditorColorMode();
   const handleChange = useCallback(
     (event) => {
       onChange(field.name, event.target.checked);
@@ -24,12 +26,17 @@ const AutoFieldCheckbox = ({ field, value, onChange }) => {
   return (
     <HStack width="100%">
       <FormLabel justify="start">{getLabel(field)}</FormLabel>
-      <Checkbox isChecked={value} onChange={handleChange} />
+      <Checkbox
+        isChecked={value}
+        onChange={handleChange}
+        {...colorMode.input}
+      />
     </HStack>
   );
 };
 
 const AutoFieldInput = ({ field, value, onChange }) => {
+  const colorMode = useEditorColorMode();
   const handleChange = useCallback(
     (event) => {
       onChange(field.name, event.target.value);
@@ -43,18 +50,19 @@ const AutoFieldInput = ({ field, value, onChange }) => {
         {getLabel(field)}
       </FormLabel>
       <Input
-        size="sm"
         value={value || ""}
         onChange={handleChange}
-        px={1}
+        px={2}
         py={2}
-        sx={field.style || { width: 130 }}
+        sx={field.style || { width: 200 }}
+        {...colorMode.input}
       />
     </Flex>
   );
 };
 
 const AutoFieldSecret = ({ field, value, onChange }) => {
+  const colorMode = useEditorColorMode();
   const handleChange = useCallback(
     (event) => {
       onChange(field.name, event.target.value);
@@ -68,19 +76,20 @@ const AutoFieldSecret = ({ field, value, onChange }) => {
         {getLabel(field)}
       </FormLabel>
       <Input
-        size="sm"
         value={value || ""}
         onChange={handleChange}
         px={1}
         py={2}
         type={"password"}
-        sx={field.style || { width: 100 }}
+        sx={field.style || { width: 200 }}
+        {...colorMode.input}
       />
     </Flex>
   );
 };
 
 const AutoFieldTextArea = ({ field, value, onChange }) => {
+  const colorMode = useEditorColorMode();
   const handleChange = useCallback(
     (event) => {
       onChange(field.name, event.target.value);
@@ -100,6 +109,7 @@ const AutoFieldTextArea = ({ field, value, onChange }) => {
         px={1}
         py={2}
         sx={field.style || { width: 200 }}
+        {...colorMode.input}
       />
     </Flex>
   );
@@ -127,6 +137,7 @@ const AutoFieldSlider = ({ field, value, onChange }) => {
 };
 
 const AutoFieldSelect = ({ field, value, onChange }) => {
+  const colorMode = useEditorColorMode();
   const handleChange = useCallback((event) => {
     onChange(field.name, event.target.value);
   });
@@ -137,10 +148,10 @@ const AutoFieldSelect = ({ field, value, onChange }) => {
         {getLabel(field)}
       </FormLabel>
       <Select
-        size="sm"
         onChange={handleChange}
-        width={field.width || 125}
+        width={field.width || 200}
         value={value}
+        {...colorMode.input}
       >
         {field.choices?.map((option) => (
           <option key={option.value} value={option.value}>

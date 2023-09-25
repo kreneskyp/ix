@@ -1,0 +1,59 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.openapi.get_openapi_chain_async",
+    "config_schema": {
+        "properties": {
+            "spec": {
+                "default": null,
+                "type": "string"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "verbose",
+            "spec"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "llm",
+            "required": true,
+            "source_type": "llm",
+            "type": "target"
+        },
+        {
+            "key": "memory",
+            "multiple": true,
+            "source_type": "memory",
+            "type": "target"
+        },
+        {
+            "key": "prompt",
+            "source_type": "prompt",
+            "type": "target"
+        }
+    ],
+    "description": "Chain that uses OpenAI Functions to call OpenAPI endpoints.",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        },
+        {
+            "label": "OpenAPI URL",
+            "name": "spec",
+            "style": {
+                "width": "500px"
+            },
+            "type": "string"
+        }
+    ],
+    "name": "OpenAPI with OpenAI Functions",
+    "type": "chain"
+}

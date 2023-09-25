@@ -1,0 +1,79 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.llm_chain.LLMChain",
+    "config_schema": {
+        "properties": {
+            "function_call": {
+                "default": null,
+                "type": "string"
+            },
+            "output_key": {
+                "default": "text",
+                "type": "string"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "verbose",
+            "function_call",
+            "output_key"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "llm",
+            "required": true,
+            "source_type": "llm",
+            "type": "target"
+        },
+        {
+            "key": "memory",
+            "multiple": true,
+            "source_type": "memory",
+            "type": "target"
+        },
+        {
+            "key": "prompt",
+            "source_type": "prompt",
+            "type": "target"
+        },
+        {
+            "key": "functions",
+            "multiple": true,
+            "source_type": [
+                "tool",
+                "toolkit"
+            ],
+            "type": "target"
+        },
+        {
+            "key": "output_parser",
+            "source_type": "output_parser",
+            "type": "target"
+        }
+    ],
+    "description": "Chain that prompts an LLM for a completion.",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        },
+        {
+            "name": "function_call",
+            "type": "string"
+        },
+        {
+            "default": "text",
+            "name": "output_key",
+            "type": "string"
+        }
+    ],
+    "name": "LLM Chain",
+    "type": "chain"
+}

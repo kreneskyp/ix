@@ -1,0 +1,86 @@
+{
+    "child_field": null,
+    "class_path": "langchain.memory.buffer_window.ConversationBufferWindowMemory",
+    "config_schema": {
+        "properties": {
+            "ai_prefix": {
+                "default": "AI",
+                "type": "string"
+            },
+            "human_prefix": {
+                "default": "Human",
+                "type": "string"
+            },
+            "input_key": {
+                "default": "input",
+                "type": "string"
+            },
+            "k": {
+                "default": 5,
+                "type": "number"
+            },
+            "memory_key": {
+                "default": "history",
+                "type": "string"
+            },
+            "output_key": {
+                "default": "output",
+                "type": "string"
+            }
+        },
+        "required": [
+            "k",
+            "memory_key",
+            "human_prefix",
+            "ai_prefix",
+            "output_key",
+            "input_key"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "chat_memory",
+            "required": true,
+            "source_type": "memory_backend",
+            "type": "target"
+        }
+    ],
+    "description": "Memory that stores conversation history as a buffer and summarizes to compress context.",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": 5,
+            "label": "Window Size",
+            "name": "k",
+            "type": "number"
+        },
+        {
+            "default": "history",
+            "name": "memory_key",
+            "type": "string"
+        },
+        {
+            "default": "Human",
+            "name": "human_prefix",
+            "type": "string"
+        },
+        {
+            "default": "AI",
+            "name": "ai_prefix",
+            "type": "string"
+        },
+        {
+            "default": "output",
+            "name": "output_key",
+            "type": "string"
+        },
+        {
+            "default": "input",
+            "name": "input_key",
+            "type": "string"
+        }
+    ],
+    "name": "Conversation Buffer Window",
+    "type": "memory"
+}
