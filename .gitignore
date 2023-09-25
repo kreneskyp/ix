@@ -11,7 +11,8 @@ node_modules
 __generated__
 frontend/schema.graphql
 .ipython
-
+.vs
+.report.json
 __pycache__
 
 # tmp
@@ -23,6 +24,16 @@ workspace
 .bak
 *.bak
 workdir
+docs/build
 
 #local copy of langchain if it exists
 langchain
+/.bash_history
+
+# local models
+llama
+
+# vault setup
+.vault.env
+.certs
+.vault_file

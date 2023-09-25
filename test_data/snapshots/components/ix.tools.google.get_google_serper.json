@@ -1,0 +1,169 @@
+{
+    "child_field": null,
+    "class_path": "ix.tools.google.get_google_serper",
+    "config_schema": {
+        "properties": {
+            "gl": {
+                "default": "us",
+                "type": "string"
+            },
+            "hl": {
+                "default": "en",
+                "type": "string"
+            },
+            "k": {
+                "default": 10,
+                "type": "number"
+            },
+            "return_direct": {
+                "default": false,
+                "type": "boolean"
+            },
+            "serper_api_key": {
+                "default": null,
+                "type": "string"
+            },
+            "tbs": {
+                "default": null,
+                "type": "string"
+            },
+            "type": {
+                "default": "search",
+                "enum": [
+                    "news",
+                    "search",
+                    "places",
+                    "images"
+                ],
+                "type": "string"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "return_direct",
+            "verbose"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Tool that searches Google for a given query.",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "name": "return_direct",
+            "type": "boolean"
+        },
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": 10,
+            "input_type": null,
+            "label": "K",
+            "max": null,
+            "min": null,
+            "name": "k",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": "us",
+            "input_type": null,
+            "label": "Gl",
+            "max": null,
+            "min": null,
+            "name": "gl",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": "en",
+            "input_type": null,
+            "label": "Hl",
+            "max": null,
+            "min": null,
+            "name": "hl",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": [
+                {
+                    "label": "News",
+                    "value": "news"
+                },
+                {
+                    "label": "Search",
+                    "value": "search"
+                },
+                {
+                    "label": "Places",
+                    "value": "places"
+                },
+                {
+                    "label": "Images",
+                    "value": "images"
+                }
+            ],
+            "default": "search",
+            "input_type": "select",
+            "label": "Type",
+            "max": null,
+            "min": null,
+            "name": "type",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Tbs",
+            "max": null,
+            "min": null,
+            "name": "tbs",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": "secret",
+            "label": "Serper_api_key",
+            "max": null,
+            "min": null,
+            "name": "serper_api_key",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "Google Serper",
+    "type": "tool"
+}

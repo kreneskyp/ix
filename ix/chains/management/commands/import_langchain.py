@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
-from ix.api.chains.types import NodeTypeField
-from ix.api.chains.types import NodeType as NodeTypePydantic
+from ix.api.components.types import NodeTypeField
+from ix.api.components.types import NodeType as NodeTypePydantic
 from ix.chains.fixture_src.agent_interaction import AGENT_INTERACTION_CHAINS
 
 from ix.chains.fixture_src.agents import AGENTS
@@ -14,7 +14,7 @@ from ix.chains.fixture_src.chat_memory_backend import (
 from ix.chains.fixture_src.document_loaders import DOCUMENT_LOADERS
 from ix.chains.fixture_src.embeddings import EMBEDDINGS
 from ix.chains.fixture_src.ix import CHAT_MODERATOR_TYPE
-from ix.chains.fixture_src.llm import OPENAI_LLM, GOOGLE_PALM, ANTHROPIC_LLM
+from ix.chains.fixture_src.llm import LLMS
 from ix.chains.fixture_src.memory import (
     CONVERSATION_BUFFER_MEMORY,
     CONVERSATION_SUMMARY_BUFFER_MEMORY,
@@ -33,6 +33,7 @@ from ix.chains.fixture_src.routing import ROUTING_CHAINS
 from ix.chains.fixture_src.storage import STORAGE
 from ix.chains.fixture_src.testing import MOCK_MEMORY, MOCK_CHAIN
 from ix.chains.fixture_src.text_splitter import TEXT_SPLITTERS
+from ix.chains.fixture_src.toolkit import TOOLKITS
 from ix.chains.fixture_src.tools import TOOLS
 from ix.chains.fixture_src.vectorstores import VECTORSTORES
 from ix.chains.models import NodeType
@@ -42,16 +43,11 @@ COMPONENTS = []
 # Agents
 COMPONENTS.extend(AGENTS)
 COMPONENTS.extend(TOOLS)
+COMPONENTS.extend(TOOLKITS)
 
 # LLMS
 COMPONENTS.extend(EMBEDDINGS)
-COMPONENTS.extend(
-    [
-        OPENAI_LLM,
-        GOOGLE_PALM,
-        ANTHROPIC_LLM,
-    ]
-)
+COMPONENTS.extend(LLMS)
 
 # Chains
 COMPONENTS.extend(CHAINS)

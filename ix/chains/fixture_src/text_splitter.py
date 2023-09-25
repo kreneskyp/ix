@@ -1,6 +1,6 @@
 from langchain.text_splitter import TextSplitter, RecursiveCharacterTextSplitter
 
-from ix.api.chains.types import NodeTypeField
+from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.parsers import LANGUAGE
 from ix.chains.fixture_src.targets import DOCUMENT_LOADER_TARGET
 

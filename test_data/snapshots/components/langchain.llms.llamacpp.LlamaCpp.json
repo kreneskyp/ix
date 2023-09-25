@@ -1,0 +1,493 @@
+{
+    "child_field": null,
+    "class_path": "langchain.llms.llamacpp.LlamaCpp",
+    "config_schema": {
+        "properties": {
+            "echo": {
+                "default": false,
+                "type": "object"
+            },
+            "f16_kv": {
+                "default": true,
+                "type": "boolean"
+            },
+            "last_n_tokens_size": {
+                "default": 64,
+                "type": "object"
+            },
+            "logits_all": {
+                "default": false,
+                "type": "boolean"
+            },
+            "logprobs": {
+                "default": null,
+                "type": "object"
+            },
+            "lora_base": {
+                "default": null,
+                "type": "object"
+            },
+            "max_tokens": {
+                "default": 256,
+                "type": "object"
+            },
+            "model_path": {
+                "default": null,
+                "type": "string"
+            },
+            "n_batch": {
+                "default": 8,
+                "type": "object"
+            },
+            "n_ctx": {
+                "default": 512,
+                "type": "number"
+            },
+            "n_gpu_layers": {
+                "default": null,
+                "type": "object"
+            },
+            "n_parts": {
+                "default": -1,
+                "type": "number"
+            },
+            "n_threads": {
+                "default": null,
+                "type": "object"
+            },
+            "repeat_penalty": {
+                "default": 1.1,
+                "type": "object"
+            },
+            "rope_freq_base": {
+                "default": 10000.0,
+                "type": "number"
+            },
+            "rope_freq_scale": {
+                "default": 1.0,
+                "type": "number"
+            },
+            "seed": {
+                "default": -1,
+                "type": "number"
+            },
+            "stop": {
+                "default": [],
+                "type": "object"
+            },
+            "streaming": {
+                "default": true,
+                "type": "boolean"
+            },
+            "suffix": {
+                "default": null,
+                "type": "object"
+            },
+            "temperature": {
+                "default": 0.8,
+                "type": "object"
+            },
+            "top_p": {
+                "default": 0.95,
+                "type": "object"
+            },
+            "use_mlock": {
+                "default": false,
+                "type": "boolean"
+            },
+            "use_mmap": {
+                "default": true,
+                "type": "object"
+            },
+            "verbose": {
+                "default": true,
+                "type": "boolean"
+            },
+            "vocab_only": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "verbose",
+            "model_path"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Llama Cpp wrapper for llama models",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Model_path",
+            "max": null,
+            "min": null,
+            "name": "model_path",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Lora_base",
+            "max": null,
+            "min": null,
+            "name": "lora_base",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[str]"
+        },
+        {
+            "choices": null,
+            "default": 512,
+            "input_type": null,
+            "label": "N_ctx",
+            "max": null,
+            "min": null,
+            "name": "n_ctx",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": -1,
+            "input_type": null,
+            "label": "N_parts",
+            "max": null,
+            "min": null,
+            "name": "n_parts",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": -1,
+            "input_type": null,
+            "label": "Seed",
+            "max": null,
+            "min": null,
+            "name": "seed",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": true,
+            "input_type": null,
+            "label": "F16_kv",
+            "max": null,
+            "min": null,
+            "name": "f16_kv",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "input_type": null,
+            "label": "Logits_all",
+            "max": null,
+            "min": null,
+            "name": "logits_all",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "input_type": null,
+            "label": "Vocab_only",
+            "max": null,
+            "min": null,
+            "name": "vocab_only",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "input_type": null,
+            "label": "Use_mlock",
+            "max": null,
+            "min": null,
+            "name": "use_mlock",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "N_threads",
+            "max": null,
+            "min": null,
+            "name": "n_threads",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[int]"
+        },
+        {
+            "choices": null,
+            "default": 8,
+            "input_type": null,
+            "label": "N_batch",
+            "max": null,
+            "min": null,
+            "name": "n_batch",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[int]"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "N_gpu_layers",
+            "max": null,
+            "min": null,
+            "name": "n_gpu_layers",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[int]"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Suffix",
+            "max": null,
+            "min": null,
+            "name": "suffix",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[str]"
+        },
+        {
+            "choices": null,
+            "default": 256,
+            "input_type": null,
+            "label": "Max_tokens",
+            "max": null,
+            "min": null,
+            "name": "max_tokens",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[int]"
+        },
+        {
+            "choices": null,
+            "default": 0.8,
+            "input_type": null,
+            "label": "Temperature",
+            "max": null,
+            "min": null,
+            "name": "temperature",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[float]"
+        },
+        {
+            "choices": null,
+            "default": 0.95,
+            "input_type": null,
+            "label": "Top_p",
+            "max": null,
+            "min": null,
+            "name": "top_p",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[float]"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Logprobs",
+            "max": null,
+            "min": null,
+            "name": "logprobs",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[int]"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "input_type": null,
+            "label": "Echo",
+            "max": null,
+            "min": null,
+            "name": "echo",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[bool]"
+        },
+        {
+            "choices": null,
+            "default": [],
+            "input_type": null,
+            "label": "Stop",
+            "max": null,
+            "min": null,
+            "name": "stop",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[List[str]]"
+        },
+        {
+            "choices": null,
+            "default": 1.1,
+            "input_type": null,
+            "label": "Repeat_penalty",
+            "max": null,
+            "min": null,
+            "name": "repeat_penalty",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[float]"
+        },
+        {
+            "choices": null,
+            "default": 64,
+            "input_type": null,
+            "label": "Last_n_tokens_size",
+            "max": null,
+            "min": null,
+            "name": "last_n_tokens_size",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[int]"
+        },
+        {
+            "choices": null,
+            "default": true,
+            "input_type": null,
+            "label": "Use_mmap",
+            "max": null,
+            "min": null,
+            "name": "use_mmap",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[bool]"
+        },
+        {
+            "choices": null,
+            "default": 1.0,
+            "input_type": null,
+            "label": "Rope_freq_scale",
+            "max": null,
+            "min": null,
+            "name": "rope_freq_scale",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "float"
+        },
+        {
+            "choices": null,
+            "default": 10000.0,
+            "input_type": null,
+            "label": "Rope_freq_base",
+            "max": null,
+            "min": null,
+            "name": "rope_freq_base",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "float"
+        },
+        {
+            "choices": null,
+            "default": true,
+            "input_type": null,
+            "label": "Streaming",
+            "max": null,
+            "min": null,
+            "name": "streaming",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": true,
+            "input_type": null,
+            "label": "Verbose",
+            "max": null,
+            "min": null,
+            "name": "verbose",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        }
+    ],
+    "name": "Llama Cpp",
+    "type": "llm"
+}

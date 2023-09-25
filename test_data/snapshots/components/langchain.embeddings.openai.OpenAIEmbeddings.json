@@ -1,0 +1,80 @@
+{
+    "child_field": null,
+    "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
+    "config_schema": {
+        "properties": {
+            "allowed_special": {
+                "default": null,
+                "type": "object"
+            },
+            "chunk_size": {
+                "default": 1000,
+                "type": "number"
+            },
+            "disallowed_special": {
+                "default": "all",
+                "type": "object"
+            },
+            "max_retries": {
+                "default": "6",
+                "maximum": 6.0,
+                "minimum": 0.0,
+                "multipleOf": 1.0,
+                "type": "number"
+            },
+            "model": {
+                "default": "text-embedding-ada-002",
+                "type": "string"
+            }
+        },
+        "required": [
+            "model",
+            "allowed_special",
+            "disallowed_special",
+            "chunk_size",
+            "max_retries"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Embeddings from OpenAI's API.",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": [
+                {
+                    "label": "text-embedding-ada-002",
+                    "name": "text-embedding-ada-002"
+                }
+            ],
+            "default": "text-embedding-ada-002",
+            "name": "model",
+            "type": "string"
+        },
+        {
+            "name": "allowed_special",
+            "type": "list"
+        },
+        {
+            "default": "all",
+            "name": "disallowed_special",
+            "type": "list"
+        },
+        {
+            "default": 1000,
+            "name": "chunk_size",
+            "type": "int"
+        },
+        {
+            "default": "6",
+            "input_type": "slider",
+            "max": 6,
+            "min": 0,
+            "name": "max_retries",
+            "step": 1,
+            "type": "int"
+        }
+    ],
+    "name": "OpenAI Embeddings",
+    "type": "embeddings"
+}

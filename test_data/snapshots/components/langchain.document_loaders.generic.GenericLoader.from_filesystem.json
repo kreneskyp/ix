@@ -1,0 +1,67 @@
+{
+    "child_field": null,
+    "class_path": "langchain.document_loaders.generic.GenericLoader.from_filesystem",
+    "config_schema": {
+        "properties": {
+            "glob": {
+                "default": "**/[!.]*",
+                "type": "string"
+            },
+            "path": {
+                "default": null,
+                "type": "string"
+            },
+            "suffixes": {
+                "default": null,
+                "type": "object"
+            }
+        },
+        "required": [
+            "path"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "parser",
+            "source_type": "parser",
+            "type": "target"
+        }
+    ],
+    "description": "Load documents from the filesystem.",
+    "display_type": "node",
+    "fields": [
+        {
+            "label": "Path",
+            "name": "path",
+            "required": true,
+            "style": {
+                "width": "100%"
+            },
+            "type": "str"
+        },
+        {
+            "default": null,
+            "label": "Suffixes",
+            "name": "suffixes",
+            "required": false,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": "**/[!.]*",
+            "input_type": null,
+            "label": "Glob",
+            "max": null,
+            "min": null,
+            "name": "glob",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "Filesystem Loader",
+    "type": "document_loader"
+}

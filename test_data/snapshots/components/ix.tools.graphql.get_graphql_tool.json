@@ -1,0 +1,57 @@
+{
+    "child_field": null,
+    "class_path": "ix.tools.graphql.get_graphql_tool",
+    "config_schema": {
+        "properties": {
+            "graphql_endpoint": {
+                "default": null,
+                "type": "string"
+            },
+            "return_direct": {
+                "default": false,
+                "type": "boolean"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "return_direct",
+            "verbose",
+            "graphql_endpoint"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Tool that searches GraphQL for a given query.",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "name": "return_direct",
+            "type": "boolean"
+        },
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Graphql_endpoint",
+            "max": null,
+            "min": null,
+            "name": "graphql_endpoint",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "GraphQL Tool",
+    "type": "tool"
+}

@@ -1,10 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Box, Text, useColorModeValue } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { Global } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faRobot, faCog } from "@fortawesome/free-solid-svg-icons";
 import { spin } from "site/key_frames";
+import { useChatStyle } from "chat/ChatInterface";
 
 const ChatMessageAvatar = ({ message, isThinking }) => {
   if (!message) {
@@ -13,10 +14,9 @@ const ChatMessageAvatar = ({ message, isThinking }) => {
 
   const avatarSize = "40px";
   const iconSize = "lg";
-  const bgColor = useColorModeValue("gray.200", "gray.700");
-  const color = useColorModeValue("black", "gray.500");
-  const border = useColorModeValue("gray.300", "transparent");
-  const avatarColor = useColorModeValue("gray.600", "gray.500");
+
+  const { avatar } = useChatStyle();
+  const { bg, color, border, borderColor, avatarColor } = avatar;
 
   const getAvatarByRole = (role) => {
     switch (role) {
@@ -35,10 +35,10 @@ const ChatMessageAvatar = ({ message, isThinking }) => {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      border="2px solid"
+      border={border}
       borderRadius="full"
-      borderColor={border}
-      bg={bgColor}
+      borderColor={borderColor}
+      bg={bg}
       color={color}
       width={avatarSize}
       height={avatarSize}
@@ -48,12 +48,12 @@ const ChatMessageAvatar = ({ message, isThinking }) => {
         position: "absolute",
         width: "calc(100% + 4px)",
         height: "calc(100% + 4px)",
-        border: "2px solid",
+        border: border,
         borderRadius: "50%",
         boxSizing: "border-box",
         borderColor: isThinking
           ? "#63B3ED transparent #63B3ED transparent"
-          : border,
+          : borderColor,
         animation: isThinking ? "spin 1.2s linear infinite" : "none",
         zIndex: "1",
       }}

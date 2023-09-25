@@ -1,0 +1,54 @@
+{
+    "child_field": "chains",
+    "class_path": "langchain.chains.SequentialChain",
+    "config_schema": {
+        "properties": {
+            "input_variables": {
+                "default": [],
+                "type": "object"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "verbose",
+            "input_variables"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "memory",
+            "multiple": true,
+            "source_type": "memory",
+            "type": "target"
+        },
+        {
+            "auto_sequence": false,
+            "key": "chains",
+            "source_type": "chain",
+            "type": "target"
+        }
+    ],
+    "description": "Runs a sequence of chains passing outputs from one to the next.",
+    "display_type": "list",
+    "fields": [
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        },
+        {
+            "default": [],
+            "name": "input_variables",
+            "style": {
+                "width": "100%"
+            },
+            "type": "list"
+        }
+    ],
+    "name": "Sequence",
+    "type": "chain"
+}

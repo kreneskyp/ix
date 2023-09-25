@@ -4,7 +4,7 @@ from asgiref.sync import sync_to_async
 from langchain.callbacks.manager import AsyncCallbackManagerForRetrieverRun
 from langchain.schema import Document
 from langchain.vectorstores import Redis, Chroma, VectorStore
-from langchain.vectorstores.redis import RedisVectorStoreRetriever
+from langchain.vectorstores.redis.base import RedisVectorStoreRetriever
 
 
 class AsyncAddTextsMixin:

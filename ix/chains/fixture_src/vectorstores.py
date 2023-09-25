@@ -1,10 +1,11 @@
+import chromadb
 from langchain.vectorstores import Chroma
 from langchain.vectorstores.base import VectorStoreRetriever
-from langchain.vectorstores.redis import RedisVectorStoreRetriever
+from langchain.vectorstores.redis.base import RedisVectorStoreRetriever
 
-from ix.api.chains.types import NodeTypeField
+from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.targets import EMBEDDINGS_TARGET, DOCUMENTS_TARGET
-
+from django.conf import settings
 
 VECTORSTORE_CONNECTORS = [EMBEDDINGS_TARGET, DOCUMENTS_TARGET]
 
@@ -90,8 +91,32 @@ CHROMA = {
         include=[
             "collection_name",
             "persist_directory",
-            "persist_directory",
         ],
+    )
+    + NodeTypeField.get_fields(
+        chromadb.config.Settings,
+        parent="client_settings",
+        include=[
+            "chroma_server_host",
+            "chroma_server_http_port",
+            "chroma_server_grpc_port",
+            "chroma_server_ssl_enabled",
+            "anonymized_telemetry",
+            "allow_reset",
+        ],
+        field_options={
+            "chroma_server_host": {
+                "label": "Server Host",
+                "default": settings.DOCKER_HOST_IP,
+            },
+            "chroma_server_http_port": {"label": "HTTP Port", "default": "8020"},
+            "chroma_server_grpc_port": {
+                "label": "GRPC Port",
+            },
+            "Chroma_server_ssl_enabled": {
+                "label": "SSL Enabled",
+            },
+        },
     )
     + VECTORSTORE_RETRIEVER_FIELDS,
 }

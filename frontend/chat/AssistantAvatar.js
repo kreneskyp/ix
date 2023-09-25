@@ -2,13 +2,20 @@ import React from "react";
 import PropTypes from "prop-types";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import Avatar from "./Avatar";
-import { faMap, faRobot } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBrain,
+  faMap,
+  faRobot,
+  faUserNinja,
+  faUserSecret,
+  faUserTie,
+} from "@fortawesome/free-solid-svg-icons";
 
-library.add(faRobot, faMap);
+library.add(faRobot, faMap, faUserTie, faUserNinja, faUserSecret, faBrain);
 
 const AssistantAvatar = ({ agent, size, color }) => {
   // Check if agent.icon is a valid icon and render it, else render the default 'robot' icon
-  const iconName = agent?.icon || "robot";
+  const iconName = agent?.icon || "brain";
 
   const state = {
     icon: iconName,

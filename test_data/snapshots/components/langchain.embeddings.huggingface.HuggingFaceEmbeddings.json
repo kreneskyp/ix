@@ -1,0 +1,69 @@
+{
+    "child_field": null,
+    "class_path": "langchain.embeddings.huggingface.HuggingFaceEmbeddings",
+    "config_schema": {
+        "properties": {
+            "cache_folder": {
+                "default": null,
+                "type": "string"
+            },
+            "encode_kwargs": {
+                "default": null,
+                "type": "object"
+            },
+            "model_kwargs": {
+                "default": null,
+                "type": "object"
+            },
+            "model_name": {
+                "default": "sentence-transformers/all-mpnet-base-v2",
+                "type": "string"
+            }
+        },
+        "required": [
+            "model_name",
+            "cache_folder",
+            "model_kwargs",
+            "encode_kwargs"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "HuggingFace Embeddings",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": [
+                {
+                    "label": "all-mpnet-base-v2",
+                    "value": "sentence-transformers/all-mpnet-base-v2"
+                }
+            ],
+            "default": "sentence-transformers/all-mpnet-base-v2",
+            "description": "Model name to use",
+            "label": "Model",
+            "name": "model_name",
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "description": "Path to store models",
+            "name": "cache_folder",
+            "type": "string"
+        },
+        {
+            "description": "Key word arguments to pass to the model",
+            "name": "model_kwargs",
+            "type": "dictionary"
+        },
+        {
+            "description": "Key word arguments to pass when calling the `encode` method of the model",
+            "name": "encode_kwargs",
+            "type": "dictionary"
+        }
+    ],
+    "name": "HuggingFace Embeddings",
+    "type": "embeddings"
+}

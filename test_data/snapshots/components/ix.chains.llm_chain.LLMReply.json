@@ -1,0 +1,46 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.llm_chain.LLMReply",
+    "config_schema": {
+        "properties": {
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "verbose"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "llm",
+            "required": true,
+            "source_type": "llm",
+            "type": "target"
+        },
+        {
+            "key": "memory",
+            "multiple": true,
+            "source_type": "memory",
+            "type": "target"
+        },
+        {
+            "key": "prompt",
+            "source_type": "prompt",
+            "type": "target"
+        }
+    ],
+    "description": "Chain that prompts an LLM for a text completion.",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        }
+    ],
+    "name": "LLM Reply",
+    "type": "chain"
+}

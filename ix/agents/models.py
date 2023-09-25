@@ -22,6 +22,7 @@ class Agent(models.Model):
 
     # agent config
     chain = models.ForeignKey(Chain, on_delete=models.CASCADE, null=True)
+    is_test = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

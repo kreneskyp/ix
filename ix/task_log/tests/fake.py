@@ -1,13 +1,14 @@
 import uuid
 from asgiref.sync import sync_to_async
 from datetime import datetime
-from django.contrib.auth.models import User
 
 from ix.chains.models import Chain, ChainNode, ChainEdge
 from ix.chains.tests.test_config_loader import LLM_CHAIN
 from ix.chat.models import Chat
 from ix.task_log.models import Agent, Task, TaskLogMessage, Artifact
 from faker import Faker
+
+from ix.ix_users.tests.fake import fake_user
 
 fake = Faker()
 
@@ -115,19 +116,6 @@ def fake_agent(**kwargs):
 
 async def afake_agent(**kwargs):
     return await sync_to_async(fake_agent)(**kwargs)
-
-
-def fake_user(**kwargs):
-    username = kwargs.get("username", fake.unique.user_name())
-    email = kwargs.get("email", fake.unique.email())
-    password = kwargs.get("password", fake.password())
-
-    user = User.objects.create_user(username=username, email=email, password=password)
-    return user
-
-
-async def afake_user(**kwargs):
-    return await sync_to_async(fake_user)(**kwargs)
 
 
 def fake_task(**kwargs):

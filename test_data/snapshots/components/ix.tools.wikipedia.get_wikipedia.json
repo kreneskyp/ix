@@ -1,0 +1,110 @@
+{
+    "child_field": null,
+    "class_path": "ix.tools.wikipedia.get_wikipedia",
+    "config_schema": {
+        "properties": {
+            "doc_content_chars_max": {
+                "default": 4000,
+                "type": "number"
+            },
+            "lang": {
+                "default": "en",
+                "type": "string"
+            },
+            "load_all_available_meta": {
+                "default": false,
+                "type": "boolean"
+            },
+            "return_direct": {
+                "default": false,
+                "type": "boolean"
+            },
+            "top_k_results": {
+                "default": 3,
+                "type": "number"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "return_direct",
+            "verbose"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Wikipedia search engine",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "name": "return_direct",
+            "type": "boolean"
+        },
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": 3,
+            "input_type": null,
+            "label": "Top_k_results",
+            "max": null,
+            "min": null,
+            "name": "top_k_results",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": "en",
+            "input_type": null,
+            "label": "Lang",
+            "max": null,
+            "min": null,
+            "name": "lang",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "input_type": null,
+            "label": "Load_all_available_meta",
+            "max": null,
+            "min": null,
+            "name": "load_all_available_meta",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": 4000,
+            "input_type": null,
+            "label": "Doc_content_chars_max",
+            "max": null,
+            "min": null,
+            "name": "doc_content_chars_max",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "int"
+        }
+    ],
+    "name": "Wikipedia",
+    "type": "tool"
+}
