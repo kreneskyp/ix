@@ -1,3 +1,5 @@
+import json
+
 import pytest
 from langchain.document_loaders import (
     UnstructuredMarkdownLoader,
@@ -65,7 +67,7 @@ JSON_LOADER = {
     "class_path": JSON_LOADER_CLASS_PATH,
     "config": {
         "file_path": TEST_JSON_FILE_PATH,
-        "jq_schema": JQ_SCHEMA,
+        "jq_schema": json.dumps(JQ_SCHEMA),
     },
 }
 
