@@ -1,6 +1,6 @@
 from langchain.storage import RedisStore
 
-from ix.api.chains.types import NodeTypeField
+from ix.api.components.types import NodeTypeField
 
 REDIS_STORE_CLASS_PATH = "langchain.storage.redis.RedisStore"
 REDIS_STORE = {
@@ -28,7 +28,7 @@ REDIS_STORE = {
                 "max": 60 * 200,
                 "step": 10,
             },
-        }
+        },
     ),
 }
 
