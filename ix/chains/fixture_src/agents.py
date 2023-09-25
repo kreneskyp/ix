@@ -1,6 +1,5 @@
 from ix.chains.fixture_src.common import VERBOSE
 from ix.chains.fixture_src.targets import (
-    PROMPT_TARGET,
     TOOLS_TARGET,
     LLM_TARGET,
     MEMORY_TARGET,
