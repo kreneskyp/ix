@@ -96,7 +96,7 @@ class TestAgentProcessStart:
 
         inputs = {
             "user_input": "hello agent 1",
-            "input": "existing input",
+            "input": "hello agent 1",
             "question": "hello agent 1",
         }
         return_value = await agent_process.start(inputs)
