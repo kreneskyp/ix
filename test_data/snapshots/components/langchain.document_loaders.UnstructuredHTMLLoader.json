@@ -1,0 +1,15 @@
+{
+    "child_field": null,
+    "class_path": "langchain.document_loaders.UnstructuredHTMLLoader",
+    "config_schema": {
+        "properties": {},
+        "required": [],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Load `HTML` files using `Unstructured`.\n\n    You can run the loader in one of two modes: \"single\" and \"elements\".\n    If you use \"single\" mode, the document will be returned as a single\n    langchain Document object. If you use \"elements\" mode, the unstructured\n    library will split the document into elements such as Title and NarrativeText.\n    You can pass in additional unstructured kwargs after mode to apply\n    different unstructured settings.\n\n    Examples\n    --------\n    from langchain.document_loaders import UnstructuredHTMLLoader\n\n    loader = UnstructuredHTMLLoader(\n        \"example.html\", mode=\"elements\", strategy=\"fast\",\n    )\n    docs = loader.load()\n\n    References\n    ----------\n    https://unstructured-io.github.io/unstructured/bricks.html#partition-html\n    ",
+    "display_type": "node",
+    "fields": [],
+    "name": "Unstructured HTML Loader",
+    "type": "document_loader"
+}
