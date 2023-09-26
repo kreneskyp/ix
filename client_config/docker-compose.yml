@@ -1,0 +1,76 @@
+version: "3"
+
+services:
+  db:
+    image: ghcr.io/kreneskyp/ix/postgres-pg-vector:15.3
+    environment:
+      POSTGRES_PASSWORD: ix
+      POSTGRES_USER: ix
+      POSTGRES_DB: ix
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    image: ghcr.io/kreneskyp/ix/sandbox:${IX_IMAGE_TAG}
+    #image: ghcr.io/ix:latest
+    command: uvicorn ix.server.asgi:application --host 0.0.0.0 --port 8001 --reload
+    ports:
+      - "8001:8001"
+    links:
+      - db
+      - redis
+    env_file:
+      - ${IX_ENV}
+    volumes:
+      - static:/var/static/
+      - ./certs/:/vault/certs:ro,Z
+    environment:
+      DJANGO_SETTINGS_MODULE: "ix.server.settings"
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8000:8000"
+    volumes:
+        - ./nginx.conf:/etc/nginx/nginx.conf
+        - static:/var/static/
+    depends_on:
+      - web
+
+  worker:
+    image: ghcr.io/kreneskyp/ix/sandbox:${IX_IMAGE_TAG}
+    command: celery.sh
+    links:
+      - db
+      - redis
+    environment:
+      - ./certsrm -/:/vault/certs:ro,Z
+    env_file:
+      - ${IX_ENV}
+
+  redis:
+    image: redis/redis-stack-server:latest
+
+  chroma:
+    image: ghcr.io/chroma-core/chroma:0.4.11
+    ports:
+      - "8020:8000"
+
+  vault:
+    image: hashicorp/vault:1.14
+    volumes:
+      - ./vault-config.hcl:/vault/config/config.hcl:ro
+      - ./certs/:/vault/certs:ro,Z
+    env_file:
+      - vault.env
+    command: "server -dev -dev-tls -config=/vault/config/config.hcl"
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+
+volumes:
+  static:
+    name: agent_ix_static
+  postgres_data:

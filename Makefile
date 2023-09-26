@@ -11,7 +11,7 @@ endif
 DOCKERFILE=Dockerfile
 DOCKERFILE_TARGET=app
 DOCKER_REPOSITORY=${DOCKER_REGISTRY}/kreneskyp/ix/sandbox
-HASH_FILES=requirements*.txt package.json Dockerfile
+HASH_FILES=requirements*.txt package.json Dockerfile client_config
 IMAGE_TAG=$(shell cat $(HASH_FILES) | ${HASHER} | cut -d ' ' -f 1)
 IMAGE_URL=$(DOCKER_REPOSITORY):$(IMAGE_TAG)
 IMAGE_SENTINEL=.sentinel/image
