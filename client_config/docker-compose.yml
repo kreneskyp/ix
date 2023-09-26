@@ -44,8 +44,8 @@ services:
     links:
       - db
       - redis
-    environment:
-      - ./certs -/:/vault/certs:ro,Z
+    volumes:
+      - ./certs/-/:/vault/certs:ro,Z
     env_file:
       - ${IX_ENV}
 
