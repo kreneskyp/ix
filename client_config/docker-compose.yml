@@ -45,7 +45,7 @@ services:
       - db
       - redis
     environment:
-      - ./certsrm -/:/vault/certs:ro,Z
+      - ./certs -/:/vault/certs:ro,Z
     env_file:
       - ${IX_ENV}
 
