@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Box } from "@chakra-ui/react";
-import ChatMessage from "chat/ChatMessage";
+import ChatMessage from "chat/messages/ChatMessage";
 import { useMessagesContext } from "chat/hooks/useChatMessageSubscription";
 import { useMessagesTokenContext } from "chat/hooks/useChatMessageTokenSubscription";
 import { useChatStyle } from "chat/ChatInterface";

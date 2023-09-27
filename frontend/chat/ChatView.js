@@ -14,7 +14,7 @@ import {
 
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 import { RightSidebar } from "site/RightSidebar";
-import SideBarPlanList from "chat/SideBarPlanList";
+import SideBarPlanList from "chat/sidebar/SideBarPlanList";
 import SideBarArtifactList from "chat/sidebar/SideBarArtifactList";
 import { ChatInterface } from "chat/ChatInterface";
 import { useChatGraph } from "chat/hooks/useChatGraph";
@@ -25,8 +25,8 @@ import {
   faRightLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import { SidebarTabList, SidebarTabs } from "site/SidebarTabs";
-import { ChatMembersButton } from "chat/ChatMembersButton";
-import { ChatAssistantsButton } from "chat/ChatAssistantsButton";
+import { ChatMembersButton } from "chat/buttons/ChatMembersButton";
+import { ChatAssistantsButton } from "chat/buttons/ChatAssistantsButton";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 import { useLinkedScroll } from "hooks/useLinkedScroll";
 

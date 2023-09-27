@@ -1,6 +1,6 @@
 import React from "react";
 import { HStack, VStack, Text, Box, useColorModeValue } from "@chakra-ui/react";
-import AssistantAvatar from "chat/AssistantAvatar";
+import AssistantAvatar from "chat/avatars/AssistantAvatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquareMinus } from "@fortawesome/free-solid-svg-icons";
 import RemoveAgentModalTrigger from "chat/agents/RemoveAgentModalTrigger";
