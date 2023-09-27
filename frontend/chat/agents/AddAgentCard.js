@@ -10,7 +10,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import AssistantAvatar from "chat/AssistantAvatar";
+import AssistantAvatar from "chat/avatars/AssistantAvatar";
 import { useColorMode } from "@chakra-ui/color-mode";
 
 export const AddAgentCard = ({ inChat, isLead, agent, ...props }) => {

@@ -1,27 +1,26 @@
 import React from "react";
 import { Box, Flex, VStack, Text, HStack } from "@chakra-ui/react";
-
-import AssistantContent from "chat/AssistantContent";
-import FeedbackContent from "chat/FeedbackContent";
-import FeedbackRequestContent from "chat/FeedbackRequestContent";
-import SystemContent from "chat/SystemContent";
-import ChatMessageAvatar from "chat/ChatMessageAvatar";
-import AutonomousModeContent from "chat/AutonomousModeContent";
-import AuthorizeContent from "chat/AuthorizeContent";
-import AuthRequestContent from "chat/AuthRequestContent";
-import ExecuteContent from "chat/ExecuteContent";
 import { useColorMode } from "@chakra-ui/color-mode";
-import ExecuteErrorContent from "chat/ExecuteErrorContent";
-import CommandContent from "chat/CommandContent";
-
 import { useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowUpRightFromSquare,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import HighlightText from "components/HighlightText";
+
+import ChatMessageAvatar from "chat/messages/ChatMessageAvatar";
+import AssistantContent from "chat/messages/AssistantContent";
+import FeedbackContent from "chat/messages/FeedbackContent";
+import FeedbackRequestContent from "chat/messages/FeedbackRequestContent";
+import SystemContent from "chat/messages/SystemContent";
+import AutonomousModeContent from "chat/messages/AutonomousModeContent";
+import AuthorizeContent from "chat/messages/AuthorizeContent";
+import AuthRequestContent from "chat/messages/AuthRequestContent";
+import ExecuteContent from "chat/messages/ExecuteContent";
+import ExecuteErrorContent from "chat/messages/ExecuteErrorContent";
+import CommandContent from "chat/messages/CommandContent";
 import { ArtifactContent } from "chat/messages/ArtifactContent";
+import HighlightText from "components/HighlightText";
 import { useChatStyle } from "chat/ChatInterface";
 
 const useMessageGroup = (messageGroup) => {
