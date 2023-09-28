@@ -26,38 +26,38 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { SidebarTabList, SidebarTabs } from "site/SidebarTabs";
 import { ChatMembersButton } from "chat/buttons/ChatMembersButton";
-import { ChatAssistantsButton } from "chat/buttons/ChatAssistantsButton";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 import { useLinkedScroll } from "hooks/useLinkedScroll";
+import { ChatGraph, ChatAgents } from "chat/contexts";
+import { AgentCardListButton } from "chat/agents/AgentCardListButton";
+import { ChatAgentCard } from "chat/agents/ChatAgentCard";
 
 export const ChatLeftPaneShim = ({ graph }) => {
-  const { load: loadAgents, page: agentPage } = usePaginatedAPI(
-    `/api/agents/`,
-    { limit: 10000, load: false }
-  );
+  const chatAgentsAPI = usePaginatedAPI(`/api/agents/`, {
+    limit: 10000,
+    load: false,
+  });
   const queryArgs = { chat_id: graph.chat.id };
   const onUpdateAgents = useCallback(() => {
-    loadAgents(queryArgs);
-  }, [loadAgents]);
+    chatAgentsAPI.load(queryArgs);
+  }, [chatAgentsAPI.load]);
 
   // force refresh on chat.id change
   useEffect(() => {
-    loadAgents(queryArgs);
-  }, [loadAgents, graph.chat.id]);
+    chatAgentsAPI.load(queryArgs);
+  }, [chatAgentsAPI.load, graph.chat.id]);
 
   return (
-    <>
-      <ChatAssistantsButton
-        graph={graph}
-        onUpdateAgents={onUpdateAgents}
-        agentPage={agentPage}
-      />
-      <ChatMembersButton
-        graph={graph}
-        onUpdateAgents={onUpdateAgents}
-        agentPage={agentPage}
-      />
-    </>
+    <ChatGraph.Provider value={graph}>
+      <ChatAgents.Provider value={chatAgentsAPI}>
+        <AgentCardListButton Card={ChatAgentCard} />
+        <ChatMembersButton
+          graph={graph}
+          onUpdateAgents={onUpdateAgents}
+          agentPage={chatAgentsAPI.page}
+        />
+      </ChatAgents.Provider>
+    </ChatGraph.Provider>
   );
 };
 

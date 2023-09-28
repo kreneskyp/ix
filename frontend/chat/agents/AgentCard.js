@@ -1,19 +1,21 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Box,
+  Button,
   Card,
   CardBody,
-  Flex,
-  Heading,
   HStack,
-  Switch,
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
+
 import AssistantAvatar from "chat/avatars/AssistantAvatar";
 import { useColorMode } from "@chakra-ui/color-mode";
 
-export const AddAgentCard = ({ inChat, isLead, agent, ...props }) => {
+export const AgentCard = ({ agent, children, ...props }) => {
   const { colorMode } = useColorMode();
   if (agent == null) {
     return null;
@@ -23,24 +25,17 @@ export const AddAgentCard = ({ inChat, isLead, agent, ...props }) => {
     border: "1px solid transparent",
     borderColor: colorMode === "light" ? "gray.300" : "transparent",
   };
-  if (inChat || isLead) {
-    sx = {
-      border: "1px solid",
-      borderColor: "blue.500",
-    };
-  }
 
   return (
     <Card
       overflow="hidden"
       boxShadow="sm"
       width={360}
-      cursor="pointer"
       bg={colorMode === "light" ? "gray.200" : "blackAlpha.500"}
       sx={sx}
       {...props}
     >
-      <CardBody p={5}>
+      <CardBody px={5} pt={5} pb={2}>
         <HStack spacing={3}>
           <Box width={130}>
             <VStack justify="center" align="center">
@@ -55,35 +50,31 @@ export const AddAgentCard = ({ inChat, isLead, agent, ...props }) => {
             </VStack>
           </Box>
           <Box width={400} sx={{ userSelect: "none" }}>
-            <VStack alignItems="start" spacing={2}>
-              <Flex width={"100%"} justifyContent={"space-between"}>
-                <Heading as="h5" size="xs">
-                  {agent.name}
-                </Heading>
-                <Switch
-                  size={"sm"}
-                  isChecked={inChat || isLead}
-                  isDisabled={isLead}
-                  colorScheme={"blue"}
-                />
-              </Flex>
-              <Text
-                maxWidth="350px"
-                minHeight={50}
-                maxHeight={75}
-                fontSize="sm"
-                overflow="hidden"
-                textOverflow="ellipsis"
-                css={{
-                  display: "-webkit-box",
-                  WebkitBoxOrient: "vertical",
-                  WebkitLineClamp: 3,
-                }}
-              >
-                {agent.purpose}
-              </Text>
-            </VStack>
+            <Text
+              maxWidth="350px"
+              minHeight={50}
+              maxHeight={75}
+              fontSize="sm"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              css={{
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: 3,
+              }}
+            >
+              {agent.purpose}
+            </Text>
           </Box>
+        </HStack>
+        <HStack spacing={2} pt={4} display="flex" justifyContent="flex-end">
+          <Link to={`/chains/${agent.chain_id}`}>
+            <Button size={"sm"}>
+              <FontAwesomeIcon icon={faPencil} style={{ marginRight: "5px" }} />{" "}
+              Edit
+            </Button>
+          </Link>
+          {children}
         </HStack>
       </CardBody>
     </Card>
