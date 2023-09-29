@@ -15,6 +15,12 @@ const HighlightText = ({ content }) => {
   const regexComponentPairs = React.useMemo(
     () => [
       {
+        regex: /`([^`]+)`/g,
+        component: (match, idx, execResult) => (
+          <Code key={idx}>{execResult[1]}</Code>
+        ),
+      },
+      {
         regex: /@\w+/g,
         component: (match, idx) => (
           <Text as="span" sx={mention} key={idx}>
@@ -52,12 +58,7 @@ const HighlightText = ({ content }) => {
           return <HighlightedCode text={codeText} />;
         },
       },
-      {
-        regex: /`([^`]+)`/g,
-        component: (match, idx, execResult) => (
-          <Code key={idx}>{execResult[1]}</Code>
-        ),
-      },
+
     ],
     [mention, artifact]
   );
