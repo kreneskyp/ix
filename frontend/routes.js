@@ -1,13 +1,13 @@
 import React from "react";
 
 import { TasksListView } from "tasks/TasksListView";
-import { AgentEditorView } from "agents/AgentEditorView";
-import { AgentsListView } from "agents/AgentsListView";
 import { ChatView } from "chat/ChatView";
 import { ChainListView } from "chains/ChainListView";
 import { ChainEditorView } from "chains/ChainEditorView";
 import { NewChatRedirect } from "chat/NewChatRedirect";
 import { ChatHistoryView } from "chat/history/ChatHistoryView";
+import { AgentEditorRedirect } from "agents/AgentEditorRedirect";
+import { AgentNewRedirect } from "agents/AgentNewRedirect";
 //import { UserSettingsView } from 'users/UserSettingsView';
 //import { AdminSettingsView } from 'admin/AdminSettingsView';
 
@@ -22,9 +22,8 @@ export const routes = [
   { path: "/chains", element: <ChainListView /> },
   { path: "/chains/new", element: <ChainEditorView /> },
   { path: "/chains/:id", element: <ChainEditorView /> },
-  { path: "/agents", element: <AgentsListView /> },
-  { path: "/agents/new", element: <AgentEditorView /> },
-  { path: "/agents/:id", element: <AgentEditorView /> },
+  { path: "/agents/new", element: <AgentNewRedirect /> },
+  { path: "/agents/:id", element: <AgentEditorRedirect /> },
   { path: "*", element: <NewChatRedirect /> },
 ];
 

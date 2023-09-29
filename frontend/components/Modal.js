@@ -11,6 +11,8 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 
+export const ModalClose = React.createContext(null);
+
 export const GenericModal = ({ title, isOpen, onClose, children }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl">
@@ -53,14 +55,16 @@ export const ModalTrigger = ({ onOpen, children, title }) => {
   };
 
   return (
-    <div onClick={handleClick} style={{ cursor: "pointer" }}>
-      {button}
+    <ModalClose.Provider value={handleClose}>
+      <div onClick={handleClick} style={{ cursor: "pointer" }}>
+        {button}
+      </div>
       {isOpen && (
         <GenericModal title={title} isOpen={isOpen} onClose={handleClose}>
           {content}
         </GenericModal>
       )}
-    </div>
+    </ModalClose.Provider>
   );
 };
 

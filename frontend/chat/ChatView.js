@@ -29,7 +29,7 @@ import { ChatMembersButton } from "chat/buttons/ChatMembersButton";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 import { useLinkedScroll } from "hooks/useLinkedScroll";
 import { ChatGraph, ChatAgents } from "chat/contexts";
-import { AgentCardListButton } from "chat/agents/AgentCardListButton";
+import { AgentCardListButton } from "agents/AgentCardListButton";
 import { ChatAgentCard } from "chat/agents/ChatAgentCard";
 
 export const ChatLeftPaneShim = ({ graph }) => {
