@@ -15,39 +15,66 @@ export const useObjectEditorView = (id, load) => {
   const [idRef, setIdRef] = useState(null);
   const [isNew, setIsNew] = useState(null);
   const [wasCreated, setWasCreated] = useState(null);
+  const [urlChanged, setUrlChanged] = useState(false);
+  const [prevId, setPrevId] = useState(null);
+
   useEffect(() => {
     const firstRender = isNew === null;
     if (firstRender) {
-      // first render caches whether this started as a new chain
       setIsNew(id === undefined);
     } else {
-      // switch from existing to new
-      if (id === undefined && !isNew) {
+      // 1. Check for switching between existing objects
+      if (id !== undefined && !isNew && !wasCreated && id !== prevId) {
+        setIdRef(id);
+        load();
+      }
+
+      // 2. Switching from a newly created object to an existing one
+      else if (id !== undefined && isNew && wasCreated && urlChanged) {
+        setIsNew(false);
+        setWasCreated(false);
+        setIdRef(id);
+        load();
+      }
+
+      // 3. A new object was created
+      else if (id !== undefined && isNew && wasCreated) {
+        setWasCreated(true);
+        setUrlChanged(true);
+      }
+
+      // 4. switching from new to existing
+      else if (id !== undefined && !isNew && !wasCreated) {
+        setIsNew(false);
+        setWasCreated(false);
+        setIdRef(id);
+        load();
+      }
+
+      // 4. Switching from existing to new
+      else if (id === undefined && !isNew) {
         setIsNew(true);
         setWasCreated(false);
       }
-      // a new chain was created
-      if (id !== undefined && isNew) {
-        setWasCreated(true);
-      }
-      // switch from created to new
-      if (id === undefined && wasCreated) {
+
+      // 5. Switching from a created object back to new
+      else if (id === undefined && wasCreated) {
         setIsNew(true);
         setWasCreated(false);
         setIdRef(uuid4());
       }
     }
+
+    // Update previous ID at the end of each cycle
+    setPrevId(id);
   }, [id]);
 
   useEffect(() => {
-    // load chain if id is provided on view load
-    // otherwise state will be handled internally by the editor
     if (isNew === false) {
       load();
       setIdRef(id);
     } else {
-      // create a uuid here to force a new editor. This helps detect
-      // creating a new object after a new object was just created.
+      setWasCreated(false);
       setIdRef(uuid4());
     }
   }, [isNew]);
@@ -56,5 +83,6 @@ export const useObjectEditorView = (id, load) => {
     isNew,
     idRef,
     wasCreated,
+    setWasCreated,
   };
 };
