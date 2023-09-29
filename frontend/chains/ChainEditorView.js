@@ -73,7 +73,10 @@ const ChainEditorProvider = ({ graph, onError, children }) => {
 export const ChainEditorView = () => {
   const { id } = useParams();
   const { response, call, isLoading } = useDetailAPI(`/api/chains/${id}/graph`);
-  const { isNew, idRef, wasCreated } = useObjectEditorView(id, call);
+  const { isNew, idRef, wasCreated, setWasCreated } = useObjectEditorView(
+    id,
+    call
+  );
   const toast = useToast();
 
   // Defer to isNew and wasCreated to determine if graph response is current for
@@ -111,6 +114,7 @@ export const ChainEditorView = () => {
       <ChainGraphEditor
         key={idRef}
         rightSidebarDisclosure={rightSidebarDisclosure}
+        onCreate={setWasCreated}
       />
     );
   } else if (isLoading || !graph) {

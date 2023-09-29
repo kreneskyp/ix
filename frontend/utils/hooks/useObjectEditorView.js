@@ -38,9 +38,17 @@ export const useObjectEditorView = (id, load) => {
       }
 
       // 3. A new object was created
-      else if (id !== undefined && isNew && !wasCreated) {
+      else if (id !== undefined && isNew && wasCreated) {
         setWasCreated(true);
         setUrlChanged(true);
+      }
+
+      // 4. switching from new to existing
+      else if (id !== undefined && !isNew && !wasCreated) {
+        setIsNew(false);
+        setWasCreated(false);
+        setIdRef(id);
+        load();
       }
 
       // 4. Switching from existing to new
@@ -66,6 +74,7 @@ export const useObjectEditorView = (id, load) => {
       load();
       setIdRef(id);
     } else {
+      setWasCreated(false);
       setIdRef(uuid4());
     }
   }, [isNew]);
@@ -74,5 +83,6 @@ export const useObjectEditorView = (id, load) => {
     isNew,
     idRef,
     wasCreated,
+    setWasCreated,
   };
 };
