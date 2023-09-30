@@ -114,7 +114,7 @@ export const useEditorColorMode = () => {
       : {
           bg: "gray.800",
           color: "gray.100",
-          borderColor: "whiteAlpha.400",
+          borderColor: "gray.600",
         },
   };
 };

@@ -58,7 +58,6 @@ const HighlightText = ({ content }) => {
           return <HighlightedCode text={codeText} />;
         },
       },
-
     ],
     [mention, artifact]
   );
@@ -74,7 +73,7 @@ const HighlightText = ({ content }) => {
     regexComponentPairs.forEach(({ regex, component }) => {
       let newSegments = [];
       segments.forEach((segment) => {
-        if (typeof segment === "string") {;
+        if (typeof segment === "string") {
           let lastIndex = 0;
           let match;
           regex.lastIndex = 0; // Reset lastIndex due to the 'g' flag
