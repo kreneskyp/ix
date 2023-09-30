@@ -58,6 +58,11 @@ CHAT_MEMORY_FIELDS = [
         "type": "string",
         "default": "input",
     },
+    {
+        "name": "return_messages",
+        "type": "boolean",
+        "default": False,
+    },
 ]
 
 CONVERSATION_BUFFER_MEMORY = {

@@ -1,0 +1,55 @@
+{
+    "child_field": null,
+    "class_path": "langchain.document_loaders.PyPDFLoader",
+    "config_schema": {
+        "properties": {
+            "file_path": {
+                "default": null,
+                "type": "string"
+            },
+            "password": {
+                "default": null,
+                "type": "string"
+            }
+        },
+        "required": [
+            "file_path"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Load `PDF using `pypdf` and chunks at character level.\n\n    Loader also stores page numbers in metadata.\n    ",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "File_path",
+            "max": null,
+            "min": null,
+            "name": "file_path",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Password",
+            "max": null,
+            "min": null,
+            "name": "password",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "PDF Loader",
+    "type": "document_loader"
+}

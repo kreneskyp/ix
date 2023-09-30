@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useTextToSpeech from "chat/useTextToSpeech";
+import useTextToSpeech from "chat/hooks/useTextToSpeech";
 import { useColorMode } from "@chakra-ui/color-mode";
 
 const AssistantContent = ({ content }) => {

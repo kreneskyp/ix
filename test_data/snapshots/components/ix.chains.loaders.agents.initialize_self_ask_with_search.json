@@ -43,17 +43,6 @@
                 "toolkit"
             ],
             "type": "target"
-        },
-        {
-            "key": "prompt",
-            "source_type": "prompt",
-            "type": "target"
-        },
-        {
-            "key": "memory",
-            "multiple": true,
-            "source_type": "memory",
-            "type": "target"
         }
     ],
     "description": "Agent that asks itself queries and searches for answers in a given context.",

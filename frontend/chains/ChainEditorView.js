@@ -29,7 +29,8 @@ import { EditorRightSidebar } from "chains/editor/EditorRightSidebar";
 import { useNodeState } from "chains/hooks/useNodeState";
 import { useChainState } from "chains/hooks/useChainState";
 import { NodeTypeSearchButton } from "chains/editor/NodeTypeSearchButton";
-import { AgentsLinkButton } from "site/buttons/AgentsLinkButton";
+import { AgentCardListButton } from "agents/AgentCardListButton";
+import { EditorAgentCard } from "chains/editor/sidebar/EditorAgentCard";
 
 const ChainEditorProvider = ({ graph, onError, children }) => {
   const chainState = useChainState(graph);
@@ -72,7 +73,10 @@ const ChainEditorProvider = ({ graph, onError, children }) => {
 export const ChainEditorView = () => {
   const { id } = useParams();
   const { response, call, isLoading } = useDetailAPI(`/api/chains/${id}/graph`);
-  const { isNew, idRef, wasCreated } = useObjectEditorView(id, call);
+  const { isNew, idRef, wasCreated, setWasCreated } = useObjectEditorView(
+    id,
+    call
+  );
   const toast = useToast();
 
   // Defer to isNew and wasCreated to determine if graph response is current for
@@ -110,6 +114,7 @@ export const ChainEditorView = () => {
       <ChainGraphEditor
         key={idRef}
         rightSidebarDisclosure={rightSidebarDisclosure}
+        onCreate={setWasCreated}
       />
     );
   } else if (isLoading || !graph) {
@@ -128,7 +133,7 @@ export const ChainEditorView = () => {
       <ChainEditorProvider graph={graph} onError={onAPIError}>
         <Layout>
           <LayoutLeftPane>
-            <AgentsLinkButton />
+            <AgentCardListButton Card={EditorAgentCard} />
             <NodeTypeSearchButton />
           </LayoutLeftPane>
           <LayoutContent>

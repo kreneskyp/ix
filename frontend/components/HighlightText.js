@@ -15,6 +15,12 @@ const HighlightText = ({ content }) => {
   const regexComponentPairs = React.useMemo(
     () => [
       {
+        regex: /`([^`]+)`/g,
+        component: (match, idx, execResult) => (
+          <Code key={idx}>{execResult[1]}</Code>
+        ),
+      },
+      {
         regex: /@\w+/g,
         component: (match, idx) => (
           <Text as="span" sx={mention} key={idx}>
@@ -52,12 +58,6 @@ const HighlightText = ({ content }) => {
           return <HighlightedCode text={codeText} />;
         },
       },
-      {
-        regex: /`([^`]+)`/g,
-        component: (match, idx, execResult) => (
-          <Code key={idx}>{execResult[1]}</Code>
-        ),
-      },
     ],
     [mention, artifact]
   );
@@ -68,10 +68,11 @@ const HighlightText = ({ content }) => {
     }
 
     let segments = [content];
+    let key = 0;
 
     regexComponentPairs.forEach(({ regex, component }) => {
       let newSegments = [];
-      segments.forEach((segment, idx) => {
+      segments.forEach((segment) => {
         if (typeof segment === "string") {
           let lastIndex = 0;
           let match;
@@ -83,7 +84,7 @@ const HighlightText = ({ content }) => {
             lastIndex = regex.lastIndex;
 
             if (prefix) newSegments.push(prefix);
-            newSegments.push(component(matchedText, idx, match));
+            newSegments.push(component(matchedText, key++, match));
           }
 
           const postfix = segment.substring(lastIndex);

@@ -1,8 +1,7 @@
-import AssistantContent from "chat/AssistantContent";
 import React from "react";
-import { ArtifactListContent } from "chat/messages/ArtifactListContent";
-import { PlanContent } from "planner/PlanContent";
 import { Text } from "@chakra-ui/react";
+import { PlanContent } from "planner/PlanContent";
+import { ArtifactListContent } from "chat/messages/ArtifactListContent";
 import { ArtifactFileContent } from "chat/messages/ArtifactFileContent";
 
 export const ArtifactContent = ({ message }) => {

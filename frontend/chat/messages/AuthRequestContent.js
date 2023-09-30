@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import AuthorizeCommandButton from "chat/AuthorizeCommandButton";
+import AuthorizeCommandButton from "chat/buttons/AuthorizeCommandButton";
 
 const AuthRequestContent = ({ content }) => {
   return (
