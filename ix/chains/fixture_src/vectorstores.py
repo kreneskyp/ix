@@ -87,11 +87,16 @@ CHROMA = {
     "description": "Chroma vector database",
     "connectors": VECTORSTORE_CONNECTORS,
     "fields": NodeTypeField.get_fields(
-        Chroma,
+        Chroma.__init__,
         include=[
             "collection_name",
             "persist_directory",
         ],
+        field_options={
+            "persist_directory": {
+                "default": "./chroma",
+            }
+        },
     )
     + NodeTypeField.get_fields(
         chromadb.config.Settings,
