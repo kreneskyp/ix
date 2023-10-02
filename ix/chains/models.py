@@ -105,6 +105,8 @@ class ChainNodeManager(models.Manager):
         definition is used to recursively identify and parse nested property nodes
         and child nodes.
         """
+        # create copy of config since it will be mutated
+        config = config.copy()
 
         # get the node type
         class_path = config["class_path"]
@@ -117,7 +119,7 @@ class ChainNodeManager(models.Manager):
             raise
 
         # pop off nested and child nodes before creating node
-        node_config = config.get("config", {}).copy()
+        node_config = config.pop("config", {}).copy()
         property_configs = {}
         child_configs = []
         for connector in node_type.connectors or []:
@@ -136,6 +138,7 @@ class ChainNodeManager(models.Manager):
                 node_type=node_type,
                 root=root,
                 position={"x": 0, "y": 0},
+                config=node_config,
                 **config,
             )
 
