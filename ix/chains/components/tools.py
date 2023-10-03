@@ -1,10 +1,13 @@
-from typing import Any, Union, Optional, Dict
+from typing import Any
+
+from langchain.document_loaders.base import BaseLoader
 from langchain.schema import BaseRetriever
-from langchain.schema.runnable import RunnableConfig
-from langchain.tools import BaseTool, Tool
+from langchain.text_splitter import TextSplitter
+from langchain.tools import BaseTool
 from langchain.vectorstores import VectorStore
 
 from ix.chains.loaders.templates import NodeTemplate
+from ix.chains.loaders.text_splitter import TextSplitterShim
 
 
 class IngestionTool(BaseTool):
@@ -12,41 +15,52 @@ class IngestionTool(BaseTool):
     Tool that loads data into a vectorstore using a templates retriever.
     """
 
-    # TODO: needs to lazy load func and coroutine
-    # TODO: needs to generate function spec from the classes reference to func
-    # TODO: Need to inform loader to lazy load the retriever: Templated type.
-    # TODO: maybe a good reason to automate pulling in connectors.
-
-    retriever_template: NodeTemplate[BaseRetriever]
+    loader_template: NodeTemplate[BaseRetriever | TextSplitter]
     vectorstore: VectorStore
 
-    def invoke(self):
-        # create retriever from template
-        retriever = self.retriever.from_template(
-            input=input,
-        )
+    def __init__(self, *args, **kwargs):
+        name = kwargs.pop("name", "ingest")
+        description = kwargs.pop("description", "Ingest data into a vectorstore")
 
-        # create tool from inputs
-        return Tool(
-            name=self.name,
-            description=self.description,
-            func=retriever.get_relevant_documents,
-        )
+        super().__init__(name=name, description=description, *args, **kwargs)
 
-    async def ainvoke(
+        # set args_schema from template variables
+        self.args_schema = self.loader_template.get_args_schema()
+
+    def _run(
         self,
-        input: Union[str, Dict],
-        config: Optional[RunnableConfig] = None,
+        *args: Any,
         **kwargs: Any,
     ) -> Any:
         # create retriever from template
-        retriever = self.retriever.format(
-            input=input,
+        loader = self.loader_template.format(
+            input=kwargs.get("tool_input", {}),
         )
 
-        # create tool from inputs
-        return Tool(
-            name=self.name,
-            description=self.description,
-            coroutine=retriever.aget_relevant_documents,
+        if isinstance(loader, TextSplitterShim):
+            document_loader = loader.document_loader
+            documents = loader.text_splitter.split_documents(document_loader.load())
+        elif isinstance(loader, BaseLoader):
+            documents = loader.load()
+
+        document_ids = self.vectorstore.add_documents(documents)
+        return {"document_ids": document_ids}
+
+    async def _arun(
+        self,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Any:
+        # create retriever from template
+        loader = await self.loader_template.aformat(
+            input=kwargs,
         )
+
+        if isinstance(loader, TextSplitterShim):
+            document_loader = loader.document_loader
+            documents = loader.text_splitter.split_documents(document_loader.load())
+        elif isinstance(loader, BaseLoader):
+            documents = loader.load()
+
+        document_ids = await self.vectorstore.aadd_documents(documents)
+        return {"document_ids": document_ids}
