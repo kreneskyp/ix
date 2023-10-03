@@ -69,6 +69,7 @@ class NodeType(models.Model):
     )
     connectors = models.JSONField(null=True)
     fields = models.JSONField(null=True)
+    field_groups = models.JSONField(null=True)
 
     # child_field is the name of the field that contains child nodes
     # used for parsing config objects
