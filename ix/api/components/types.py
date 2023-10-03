@@ -170,7 +170,11 @@ class NodeTypeField(BaseModel):
                 )
             )
 
-        return cls._get_fields(field_objs, field_options, parent=parent)
+        return cls._get_fields(
+            field_objs,
+            field_options,
+            parent=parent,
+        )
 
     @classmethod
     def get_fields_from_method(
@@ -208,7 +212,11 @@ class NodeTypeField(BaseModel):
                 )
             )
 
-        return cls._get_fields(fields, field_options, parent=parent)
+        return cls._get_fields(
+            fields,
+            field_options,
+            parent=parent,
+        )
 
     @staticmethod
     def _get_fields(
@@ -343,6 +351,11 @@ class Connector(BaseModel):
     auto_sequence: bool = False
 
 
+class FieldGroup(BaseModel):
+    label: Optional[str] = None
+    class_path: Optional[str] = None
+
+
 class NodeType(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     name: str = Field(..., max_length=255)
@@ -352,6 +365,7 @@ class NodeType(BaseModel):
     display_type: str = Field(default="node", max_length=10)
     connectors: Optional[List[Connector]] = None
     fields: Optional[List[NodeTypeField]] = None
+    field_groups: Optional[Dict[str, FieldGroup]] = None
     child_field: Optional[str] = Field(None, max_length=32)
 
     class Config:

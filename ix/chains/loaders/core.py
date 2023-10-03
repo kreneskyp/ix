@@ -146,7 +146,8 @@ def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
                 config[key] = load_node(node_group[0], context, root=False)
 
     # converted flattened property groups back into nested properties. Fields with
-    # the same parent are grouped together into a single object.
+    # the same parent are grouped together into a single object. By default, groups
+    # are dicts but this can be overridden by setting the field_group's class_path
     property_groups = defaultdict(list)
     for field in node_type.fields or []:
         if field.get("parent"):
@@ -158,6 +159,10 @@ def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
             for field in property_group_fields
             if field["name"] in config
         }
+    if node_type.field_groups:
+        for key, field_group in node_type.field_groups.items():
+            if field_group_class_path := field_group.get("class_path"):
+                config[key] = import_node_class(field_group_class_path)(**config[key])
 
     # load component class and initialize. A type specific initializer may be used here
     # for initialization common to all components of that type.
