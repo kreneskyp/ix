@@ -124,6 +124,11 @@ CHROMA = {
         },
     )
     + VECTORSTORE_RETRIEVER_FIELDS,
+    "field_groups": {
+        "client_settings": {
+            "class_path": "chromadb.config.Settings",
+        }
+    },
 }
 
 
