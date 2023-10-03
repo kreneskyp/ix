@@ -343,6 +343,14 @@ class Connector(BaseModel):
     # be converted to another type. e.g. VectorStore.as_retriever()
     as_type: Optional[NodeTypes]
 
+    # Indicate this connector expects a template that will be lazy loaded.
+    # Loading the root component will initiate this property as a NodeTemplate
+    # instance with a reference to the connected node. The component may then
+    # initialize node and any nodes that branch from it at runtime by calling
+    # the NodeTemplate.format(input=variables) method. Given variables will
+    # replace {variables} in any of the node's config values.
+    template: Optional[bool] = False
+
     # Allow more than one connection to this connector
     multiple: bool = False
 
