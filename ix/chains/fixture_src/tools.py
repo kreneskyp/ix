@@ -1,6 +1,5 @@
 from ix.chains.fixture_src.targets import (
     CHAIN_TARGET,
-    VECTORSTORE_TARGET,
 )
 from langchain import (
     GoogleSearchAPIWrapper,
@@ -161,7 +160,13 @@ INGESTION_TOOL = {
             "required": True,
             "template": True,
         },
-        VECTORSTORE_TARGET,
+        {
+            "key": "vectorstore",
+            "type": "target",
+            "source_type": "vectorstore",
+            "required": True,
+            "template": True,
+        },
     ],
     "fields": TOOL_BASE_FIELDS,
 }

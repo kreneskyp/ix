@@ -30,6 +30,7 @@
             "key": "vectorstore",
             "required": true,
             "source_type": "vectorstore",
+            "template": true,
             "type": "target"
         }
     ],

@@ -1,19 +1,28 @@
+import json
+
 import pytest
-from asgiref.sync import sync_to_async
-from langchain.vectorstores import VectorStore
 from pydantic import BaseModel
 
 from ix.chains.components.tools import IngestionTool
+from ix.chains.fixture_src.text_splitter import RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH
 from ix.chains.fixture_src.tools import INGESTION_TOOL_CLASS_PATH
+from ix.chains.fixture_src.vectorstores import CHROMA_CLASS_PATH
 from ix.chains.loaders.templates import NodeTemplate
-from ix.chains.tests.components.test_vectorstores import CHROMA_VECTORSTORE
-from ix.chains.tests.test_config_loader import TEST_DOCUMENTS
+from ix.chains.tests.test_config_loader import TEST_DOCUMENTS, EMBEDDINGS
 from ix.chains.tests.test_templates import LOADER_TEMPLATE
+
+CHROMA_TEMPLATE = {
+    "class_path": CHROMA_CLASS_PATH,
+    "config": {
+        "embedding": EMBEDDINGS,
+        "collection_name": "{COLLECTION_NAME}",
+    },
+}
 
 INGESTION_TOOL = {
     "class_path": INGESTION_TOOL_CLASS_PATH,
     "config": {
-        "vectorstore": CHROMA_VECTORSTORE,
+        "vectorstore": CHROMA_TEMPLATE,
         "loader_template": LOADER_TEMPLATE,
     },
 }
@@ -23,7 +32,7 @@ NAMED_INGESTION_TOOL = {
     "config": {
         "name": "custom_ingest",
         "description": "custom description",
-        "vectorstore": CHROMA_VECTORSTORE,
+        "vectorstore": CHROMA_TEMPLATE,
         "loader_template": LOADER_TEMPLATE,
     },
 }
@@ -43,19 +52,33 @@ class TestIngestionTool:
         assert component.args_schema is not None
 
         # assert connectors loaded
-        assert isinstance(component.vectorstore, VectorStore)
+        assert isinstance(component.vectorstore, NodeTemplate)
+        assert component.vectorstore.node.class_path == CHROMA_CLASS_PATH
         assert isinstance(component.loader_template, NodeTemplate)
+        assert (
+            component.loader_template.node.class_path
+            == RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH
+        )
 
         # validate args_schema works as expected
-        args_schema = await sync_to_async(component.loader_template.get_args_schema)()
-        assert args_schema.schema() == {
-            "title": "DynamicArgsSchema",
+        expected = {
+            "properties": {
+                "COLLECTION_NAME": {"title": "Collection Name", "type": "string"},
+                "PATH": {"title": "Path", "type": "string"},
+            },
+            "required": ["COLLECTION_NAME", "PATH"],
+            "title": "NodeTemplateSchema",
             "type": "object",
-            "properties": {"PATH": {"title": "Path", "type": "string"}},
-            "required": ["PATH"],
         }
-        assert args_schema.parse_obj(dict(PATH=str(TEST_DOCUMENTS))).dict() == {
-            "PATH": str(TEST_DOCUMENTS)
+        expected_json = json.dumps(expected, sort_keys=True)
+        schema = component.args_schema.schema()
+        schema["required"].sort()
+        assert json.dumps(schema, sort_keys=True) == expected_json
+
+        args = dict(PATH=str(TEST_DOCUMENTS), COLLECTION_NAME="test_collection")
+        assert component.args_schema.parse_obj(args).dict() == {
+            "PATH": str(TEST_DOCUMENTS),
+            "COLLECTION_NAME": "test_collection",
         }
 
     async def test_load_override_name_and_description(self, aload_chain):
@@ -66,7 +89,10 @@ class TestIngestionTool:
 
     async def test_ainvoke(self, aload_chain, mock_openai_embeddings):
         component = await aload_chain(INGESTION_TOOL)
-        result = await component.ainvoke(input=dict(PATH=str(TEST_DOCUMENTS)))
-
-        component.vectorstore.delete(result["document_ids"])
-        component.vectorstore.delete_collection()
+        args = dict(PATH=str(TEST_DOCUMENTS), COLLECTION_NAME="test_collection")
+        try:
+            result = await component.ainvoke(input=args)
+        finally:
+            vectorstore = await component.vectorstore.aformat(args)
+            vectorstore.delete(result["document_ids"])
+            vectorstore.delete_collection()

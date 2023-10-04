@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 
 from langchain.document_loaders.base import BaseLoader
@@ -6,8 +7,11 @@ from langchain.text_splitter import TextSplitter
 from langchain.tools import BaseTool
 from langchain.vectorstores import VectorStore
 
-from ix.chains.loaders.templates import NodeTemplate
+from ix.chains.loaders.templates import NodeTemplate, get_args_schema
 from ix.chains.loaders.text_splitter import TextSplitterShim
+
+
+logger = logging.getLogger(__name__)
 
 
 class IngestionTool(BaseTool):
@@ -16,7 +20,7 @@ class IngestionTool(BaseTool):
     """
 
     loader_template: NodeTemplate[BaseRetriever | TextSplitter]
-    vectorstore: VectorStore
+    vectorstore: NodeTemplate[VectorStore]
 
     def __init__(self, *args, **kwargs):
         name = kwargs.pop("name", "ingest")
@@ -24,8 +28,10 @@ class IngestionTool(BaseTool):
 
         super().__init__(name=name, description=description, *args, **kwargs)
 
-        # set args_schema from template variables
-        self.args_schema = self.loader_template.get_args_schema()
+        # set args_schema containing template_variables from all templates
+        template_variables = self.loader_template.get_variables()
+        template_variables.update(self.vectorstore.get_variables())
+        self.args_schema = get_args_schema(template_variables)
 
     def _run(
         self,
@@ -51,8 +57,14 @@ class IngestionTool(BaseTool):
         *args: Any,
         **kwargs: Any,
     ) -> Any:
+        logger.debug(f"IngestionTool.arun: {kwargs}")
+
         # create retriever from template
         loader = await self.loader_template.aformat(
+            input=kwargs,
+        )
+
+        vectorstore = await self.vectorstore.aformat(
             input=kwargs,
         )
 
@@ -62,5 +74,5 @@ class IngestionTool(BaseTool):
         elif isinstance(loader, BaseLoader):
             documents = loader.load()
 
-        document_ids = await self.vectorstore.aadd_documents(documents)
+        document_ids = await vectorstore.aadd_documents(documents)
         return {"document_ids": document_ids}
