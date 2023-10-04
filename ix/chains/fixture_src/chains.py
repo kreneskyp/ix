@@ -90,7 +90,7 @@ CONVERSATIONAL_RETRIEVAL_CHAIN = {
     "description": "Chain for having a conversation based on retrieved documents.",
     "connectors": [
         LLM_TARGET,
-        MEMORY_TARGET,
+        dict(**MEMORY_TARGET, required=True),
         PROMPT_TARGET,
         RETRIEVER_TARGET,
     ],
