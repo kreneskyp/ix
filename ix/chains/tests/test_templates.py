@@ -104,8 +104,8 @@ class TestNodeTemplate:
         }
         assert sources == expected_sources
 
-    async def test_get_variables(self, aloader_template):
-        variables = await aloader_template.get_variables()
+    def test_get_variables(self, loader_template):
+        variables = loader_template.get_variables()
         assert isinstance(variables, set)
 
     def test_args_schema(self, loader_template):
@@ -113,7 +113,7 @@ class TestNodeTemplate:
         assert issubclass(model, BaseModel)
         assert "PATH" in model.__fields__
         assert model.schema() == {
-            "title": "DynamicArgsSchema",
+            "title": "NodeTemplateSchema",
             "type": "object",
             "properties": {"PATH": {"title": "Path", "type": "string"}},
             "required": ["PATH"],
