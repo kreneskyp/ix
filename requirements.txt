@@ -8,7 +8,7 @@ channels_redis==4.1.0
 chromadb==0.4.12
 colorlog==6.7.0
 daphne==4.0.0
-django==4.2.5
+django==4.2.6
 django-channels-graphql-ws==1.0.0rc6
 django_extensions==3.2.3
 django-redis==5.3.0
