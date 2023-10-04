@@ -263,6 +263,8 @@ agents: cluster components
 	$(LOAD_FIXTURE) agent/klarna
 	$(LOAD_FIXTURE) agent/smithy
 	$(LOAD_FIXTURE) agent/metaphor
+	$(LOAD_FIXTURE) agent/ingest
+	$(LOAD_FIXTURE) agent/knowledge
 
 
 # Generate fixture for NodeTypes defined in python fixtures.
