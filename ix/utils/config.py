@@ -17,7 +17,7 @@ def format_config(config: Any, variables: Dict[str, Any]) -> Any:
     """
     Recursively update the `config` object by replacing $variables.
 
-    Escaped variables $$variable will be replaced with $variable.
+    Escaped variables {{variable} and {{variable}} will be replaced with {variable}.
 
     Parameters:
     config (Any): The configuration object. It can be a nested structure containing dictionaries and lists.

@@ -1,6 +1,6 @@
 from typing import TypeVar, Generic, Dict, Any, Set, Type
 
-from asgiref.sync import sync_to_async, async_to_sync
+from asgiref.sync import sync_to_async
 from pydantic import BaseModel, create_model
 
 from ix.chains.loaders.context import IxContext
@@ -8,6 +8,19 @@ from ix.chains.models import ChainNode
 from ix.utils.config import get_config_variables
 
 T = TypeVar("T")
+
+
+def get_args_schema(variables) -> Type[BaseModel]:
+    """
+    Dynamically create a Pydantic model class with fields for each variable
+    """
+    # Use dictionary comprehension to define fields with type annotations
+    field_definitions = {field: (str, ...) for field in variables}
+
+    # Create and return the new Pydantic model class using the 'type' function
+    NodeTemplateSchema = create_model("NodeTemplateSchema", **field_definitions)
+
+    return NodeTemplateSchema
 
 
 class NodeTemplate(Generic[T]):
@@ -39,7 +52,22 @@ class NodeTemplate(Generic[T]):
 
         return await sync_to_async(load_node)(self.node, self.context, variables=input)
 
-    async def get_variables(self, node: ChainNode = None) -> Set[str]:
+    def get_variables(self, node: ChainNode = None) -> Set[str]:
+        """
+        Helper recursive function to extract config variables.
+        """
+        node = node if node else self.node
+        variables = get_config_variables(node.config if node.config else {})
+
+        # Recursively traverse for all connected nodes
+        connected_edges = node.incoming_edges.filter(relation="PROP").order_by("key")
+        for edge in connected_edges.iterator():
+            connected_node = ChainNode.objects.get(pk=edge.source_id)
+            variables.update(self.get_variables(connected_node))
+
+        return variables
+
+    async def aget_variables(self, node: ChainNode = None) -> Set[str]:
         """
         Helper recursive function to extract config variables.
         """
@@ -58,12 +86,5 @@ class NodeTemplate(Generic[T]):
         """
         Dynamically create a Pydantic model class with fields for each variable in the template.
         """
-        # Use dictionary comprehension to define fields with type annotations
-        field_definitions = {
-            field: (str, ...) for field in async_to_sync(self.get_variables)()
-        }
-
-        # Create and return the new Pydantic model class using the 'type' function
-        DynamicArgsSchema = create_model("DynamicArgsSchema", **field_definitions)
-
-        return DynamicArgsSchema
+        variables = self.get_variables()
+        return get_args_schema(variables)
