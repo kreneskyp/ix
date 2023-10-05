@@ -40,8 +40,8 @@
       "description": null,
       "root": false,
       "position": {
-        "x": 140.0,
-        "y": 460.0
+        "x": 320.0,
+        "y": 610.0
       },
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
     }
@@ -67,7 +67,7 @@
       "description": null,
       "root": false,
       "position": {
-        "x": 140.0,
+        "x": 160.0,
         "y": 360.0
       },
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
@@ -100,8 +100,59 @@
       "description": null,
       "root": false,
       "position": {
-        "x": 470.0,
-        "y": 570.0
+        "x": 620.0,
+        "y": 690.0
+      },
+      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "320e3eb8-dca6-4098-93b8-69810853aedb",
+    "fields": {
+      "class_path": "ix.tools.wikipedia.get_wikipedia",
+      "node_type": [
+        "ix.tools.wikipedia.get_wikipedia"
+      ],
+      "config": {
+        "lang": "en",
+        "verbose": false,
+        "return_direct": false,
+        "top_k_results": 3,
+        "doc_content_chars_max": 4000,
+        "load_all_available_meta": false
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": 940.0,
+        "y": 450.0
+      },
+      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "4336be58-6e54-442e-932b-e368a734f5dd",
+    "fields": {
+      "class_path": "langchain.memory.RedisChatMessageHistory",
+      "node_type": [
+        "langchain.memory.RedisChatMessageHistory"
+      ],
+      "config": {
+        "ttl": 3600,
+        "url": "redis://redis:6379/0",
+        "session_key": "session_id",
+        "session_scope": "",
+        "session_prefix": ""
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": -120.0,
+        "y": 440.0
       },
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
     }
@@ -122,8 +173,8 @@
       "description": null,
       "root": false,
       "position": {
-        "x": 900.0,
-        "y": 430.0
+        "x": 940.0,
+        "y": 540.0
       },
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
     }
@@ -147,8 +198,8 @@
       "description": null,
       "root": false,
       "position": {
-        "x": 140.0,
-        "y": 570.0
+        "x": 320.0,
+        "y": 700.0
       },
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
     }
@@ -170,8 +221,34 @@
       "description": null,
       "root": true,
       "position": {
-        "x": 460.0,
+        "x": 470.0,
         "y": 280.0
+      },
+      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "9a29b917-afd0-4344-a970-a56f01aa6572",
+    "fields": {
+      "class_path": "langchain.memory.ConversationBufferMemory",
+      "node_type": [
+        "langchain.memory.ConversationBufferMemory"
+      ],
+      "config": {
+        "ai_prefix": "AI",
+        "input_key": "input",
+        "memory_key": "history",
+        "output_key": "output",
+        "human_prefix": "Human",
+        "return_messages": true
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": 160.0,
+        "y": 440.0
       },
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
     }
@@ -193,34 +270,8 @@
       "description": null,
       "root": false,
       "position": {
-        "x": 450.0,
-        "y": 460.0
-      },
-      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
-    }
-  },
-  {
-    "model": "chains.chainnode",
-    "pk": "d57936fc-40e4-4563-80d2-b19ee601ee03",
-    "fields": {
-      "class_path": "ix.tools.wikipedia.get_wikipedia",
-      "node_type": [
-        "ix.tools.wikipedia.get_wikipedia"
-      ],
-      "config": {
-        "lang": "en",
-        "verbose": false,
-        "return_direct": false,
-        "top_k_results": 3,
-        "doc_content_chars_max": 4000,
-        "load_all_available_meta": false
-      },
-      "name": null,
-      "description": null,
-      "root": false,
-      "position": {
-        "x": 900.0,
-        "y": 290.0
+        "x": 600.0,
+        "y": 600.0
       },
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
     }
@@ -251,6 +302,30 @@
   },
   {
     "model": "chains.chainedge",
+    "pk": "27bd2e9a-f5d7-4678-9c11-8573ca1fb463",
+    "fields": {
+      "source": "320e3eb8-dca6-4098-93b8-69810853aedb",
+      "target": "7c5bd2c0-ff9b-400f-b134-b996f447caa6",
+      "key": "tools",
+      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "284b1556-230f-4f8e-9030-4c71f5729674",
+    "fields": {
+      "source": "9a29b917-afd0-4344-a970-a56f01aa6572",
+      "target": "7c5bd2c0-ff9b-400f-b134-b996f447caa6",
+      "key": "memory",
+      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
     "pk": "32a1b5ac-d870-4b61-9175-c0af0a1df7f7",
     "fields": {
       "source": "278cdfeb-4faf-4e70-a7b7-7f49124f2004",
@@ -263,7 +338,7 @@
   },
   {
     "model": "chains.chainedge",
-    "pk": "46fbf010-d2ec-4ff6-94f2-638351e6b99d",
+    "pk": "4528ea8e-194b-49bc-b340-2396ebfd4306",
     "fields": {
       "source": "2258798f-e165-4ec7-8d12-336cdc80e74b",
       "target": "7c5bd2c0-ff9b-400f-b134-b996f447caa6",
@@ -299,11 +374,11 @@
   },
   {
     "model": "chains.chainedge",
-    "pk": "985a32f5-e141-474a-ba4c-81ccb3cb0c60",
+    "pk": "6a697eec-2294-436a-870f-6df32c5813f1",
     "fields": {
-      "source": "d57936fc-40e4-4563-80d2-b19ee601ee03",
-      "target": "7c5bd2c0-ff9b-400f-b134-b996f447caa6",
-      "key": "tools",
+      "source": "4336be58-6e54-442e-932b-e368a734f5dd",
+      "target": "9a29b917-afd0-4344-a970-a56f01aa6572",
+      "key": "chat_memory",
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1",
       "input_map": null,
       "relation": "PROP"
