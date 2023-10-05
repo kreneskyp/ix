@@ -44,6 +44,7 @@ services:
     links:
       - db
       - redis
+      - chroma
     volumes:
       - ./certs/-/:/vault/certs:ro,Z
     env_file:
