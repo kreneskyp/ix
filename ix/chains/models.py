@@ -40,7 +40,7 @@ class NodeTypeManager(models.Manager.from_queryset(NodeTypeQuery)):
         )
 
 
-class NodeType(models.Model):
+class NodeType(OwnedModel):
     TYPES = [
         ("agent", "agent"),
         ("chain", "chain"),
@@ -58,19 +58,25 @@ class NodeType(models.Model):
         ("text_splitter", "text_splitter"),
     ]
 
+    # info
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True)
     class_path = models.CharField(max_length=255, unique=True)
     type = models.CharField(max_length=255)
+
+    # deprecated
     display_type = models.CharField(
         max_length=10,
         default="node",
         choices=(("node", "node"), ("list", "list"), ("map", "map")),
     )
+
+    # structure
     connectors = models.JSONField(null=True)
     fields = models.JSONField(null=True)
     field_groups = models.JSONField(null=True)
+
 
     # child_field is the name of the field that contains child nodes
     # used for parsing config objects
@@ -270,7 +276,7 @@ class ChainEdge(models.Model):
     )
 
 
-class Chain(models.Model):
+class Chain(OwnedModel):
     """
     A named chain that can be run by an Agent.
 
