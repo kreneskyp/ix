@@ -7,6 +7,7 @@ from typing import Any, Dict
 from django.db import models
 from langchain.chains.base import Chain as LangChain
 
+from ix.ix_users.models import OwnedModel
 from ix.pg_vector.tests.models import PGVectorMixin
 from ix.pg_vector.utils import get_embedding
 
