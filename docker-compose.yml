@@ -80,7 +80,7 @@ services:
     image: redis/redis-stack-server:latest
 
   chroma:
-    image: ghcr.io/chroma-core/chroma:0.4.12
+    image: ghcr.io/chroma-core/chroma:0.4.13
     ports:
       - "8020:8000"
 
