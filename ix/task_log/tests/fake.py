@@ -2,7 +2,7 @@ import uuid
 from asgiref.sync import sync_to_async
 from datetime import datetime
 
-from ix.chains.models import Chain, ChainNode, ChainEdge
+from ix.chains.models import NodeType, Chain, ChainNode, ChainEdge
 from ix.chains.tests.test_config_loader import LLM_CHAIN
 from ix.chat.models import Chat
 from ix.task_log.models import Agent, Task, TaskLogMessage, Artifact
@@ -13,6 +13,28 @@ from ix.ix_users.tests.fake import fake_user
 fake = Faker()
 
 
+def fake_node_type(**kwargs):
+    """
+    Create a fake node type.
+    """
+    return NodeType.objects.create(
+        name=fake.unique.name(),
+        description=fake.text(),
+        type=fake.random_element(NodeType.TYPES)[0],
+        class_path=fake.text(),
+        config_schema={},
+        user=kwargs.get("user", None),
+        group=kwargs.get("group", None),
+    )
+
+
+async def afake_node_type(**kwargs):
+    """
+    Create a fake node type.
+    """
+    return await sync_to_async(fake_node_type)(**kwargs)
+
+
 def fake_chain(**kwargs):
     """
     Create a fake chain with a root ChainNode.
@@ -21,6 +43,8 @@ def fake_chain(**kwargs):
         id=uuid.uuid4(),
         name=fake.unique.name(),
         description=fake.text(),
+        user=kwargs.get("user", None),
+        group=kwargs.get("group", None),
     )
     chain_kwargs.update(kwargs)
     chain = Chain.objects.create(**chain_kwargs)
@@ -110,6 +134,8 @@ def fake_agent(**kwargs):
         model=model,
         config=config,
         chain=chain,
+        user=kwargs.get("user", None),
+        group=kwargs.get("group", None),
     )
     return agent
 

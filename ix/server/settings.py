@@ -103,6 +103,9 @@ DATABASES = {
 
 AUTH_USER_MODEL = "ix_users.User"
 
+# filter objects by ownership, disable for local deployments
+OWNER_FILTERING = os.environ.get("OWNER_FILTERING", "0") == "1"
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
