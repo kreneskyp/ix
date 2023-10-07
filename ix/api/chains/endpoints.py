@@ -4,13 +4,15 @@ from uuid import UUID
 
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 from django.db.models import Q
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
+
 
 from ix.agents.models import Agent
 from ix.chains.models import Chain
-
+from ix.api.auth import get_request_user
 from ix.api.chains.types import (
     Chain as ChainPydantic,
     ChainQueryPage,
@@ -29,12 +31,17 @@ class DeletedItem(BaseModel):
 
 
 @router.get("/chains/", response_model=ChainQueryPage, tags=["Chains"])
-async def get_chains(search: Optional[str] = None, limit: int = 10, offset: int = 0):
-    query = (
-        Chain.objects.filter(Q(name__icontains=search))
-        if search
-        else Chain.objects.all()
-    )
+async def get_chains(
+    search: Optional[str] = None,
+    limit: int = 10,
+    offset: int = 0,
+    user: AbstractUser = Depends(get_request_user),
+):
+    query = Chain.filtered_owners(user)
+
+    if search:
+        query = query.filter(Q(name__icontains=search))
+
     query = query.order_by("-created_at")
 
     # punting on async implementation of pagination until later
@@ -102,15 +109,20 @@ async def create_chain_instance(**kwargs) -> Chain:
 
 
 @router.post("/chains/", response_model=ChainPydantic, tags=["Chains"])
-async def create_chain(chain: CreateChain):
-    new_chain = await create_chain_instance(**chain.dict())
+async def create_chain(
+    chain: CreateChain, user: AbstractUser = Depends(get_request_user)
+):
+    new_chain = await create_chain_instance(**chain.dict(), user=user)
     return ChainPydantic.from_orm(new_chain)
 
 
 @router.get("/chains/{chain_id}", response_model=ChainPydantic, tags=["Chains"])
-async def get_chain_detail(chain_id: UUID):
+async def get_chain_detail(
+    chain_id: UUID, user: AbstractUser = Depends(get_request_user)
+):
+    query = Chain.filtered_owners(user)
     try:
-        chain = await Chain.objects.aget(id=chain_id)
+        chain = await query.aget(id=chain_id)
     except Chain.DoesNotExist:
         raise HTTPException(status_code=404, detail="Chain not found")
 
@@ -147,9 +159,12 @@ async def sync_chain_agent(chain: Chain, alias: str) -> None:
 
 
 @router.put("/chains/{chain_id}", response_model=ChainPydantic, tags=["Chains"])
-async def update_chain(chain_id: UUID, chain: UpdateChain):
+async def update_chain(
+    chain_id: UUID, chain: UpdateChain, user: AbstractUser = Depends(get_request_user)
+):
+    query = Chain.filtered_owners(user)
     try:
-        existing_chain = await Chain.objects.aget(id=chain_id)
+        existing_chain = await query.aget(id=chain_id)
     except Chain.DoesNotExist:
         raise HTTPException(status_code=404, detail="Chain not found")
     as_dict = chain.dict(exclude={"alias"})
@@ -172,9 +187,10 @@ async def update_chain(chain_id: UUID, chain: UpdateChain):
 
 
 @router.delete("/chains/{chain_id}", response_model=DeletedItem, tags=["Chains"])
-async def delete_chain(chain_id: UUID):
+async def delete_chain(chain_id: UUID, user: AbstractUser = Depends(get_request_user)):
+    query = Chain.filtered_owners(user)
     try:
-        existing_chain = await Chain.objects.aget(id=chain_id)
+        existing_chain = await query.aget(id=chain_id)
     except Chain.DoesNotExist:
         raise HTTPException(status_code=404, detail="Chain not found")
     await existing_chain.adelete()
