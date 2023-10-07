@@ -31,6 +31,7 @@ class OwnedModel(models.Model):
         OwnedModel.filtered_owners(user)
         ```
         """
+        return cls.filter_owners(user, cls.objects.all())
 
     @staticmethod
     def filter_owners(user: User, queryset: QuerySet) -> QuerySet:
