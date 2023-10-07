@@ -26,7 +26,9 @@ class AgentCreateUpdate(BaseModel):
 
 
 @router.post("/agents/", response_model=AgentPydantic, tags=["Agents"])
-async def create_agent(agent: AgentCreateUpdate, user: AbstractUser = Depends(get_request_user)):
+async def create_agent(
+    agent: AgentCreateUpdate, user: AbstractUser = Depends(get_request_user)
+):
     agent_obj = Agent(user=user, **agent.dict())
     await agent_obj.asave()
     return AgentPydantic.from_orm(agent_obj)
@@ -35,7 +37,8 @@ async def create_agent(agent: AgentCreateUpdate, user: AbstractUser = Depends(ge
 @router.get("/agents/{agent_id}", response_model=AgentPydantic, tags=["Agents"])
 async def get_agent(agent_id: str, user: AbstractUser = Depends(get_request_user)):
     try:
-        agent = await Agent.filter_owners(user, Agent.objects.filter(pk=agent_id)).aget()
+        query = Agent.objects.filter(pk=agent_id)
+        agent = await Agent.filter_owners(user, query).aget()
     except Agent.DoesNotExist:
         raise HTTPException(status_code=404, detail="Agent not found")
     return AgentPydantic.from_orm(agent)
@@ -47,9 +50,10 @@ async def get_agents(
     chat_id: Optional[UUID] = None,
     limit: int = 10,
     offset: int = 0,
-    user: AbstractUser = Depends(get_request_user)
+    user: AbstractUser = Depends(get_request_user),
 ):
-    query = Agent.filter_owners(user, Agent.objects.filter(is_test=False))
+    query = Agent.objects.filter(is_test=False).order_by("alias")
+    query = Agent.filter_owners(user, query)
     if chat_id:
         query = query.filter(chats__id=chat_id)
     if search:
@@ -62,9 +66,14 @@ async def get_agents(
 
 
 @router.put("/agents/{agent_id}", response_model=AgentPydantic, tags=["Agents"])
-async def update_agent(agent_id: str, agent: AgentCreateUpdate, user: AbstractUser = Depends(get_request_user)):
+async def update_agent(
+    agent_id: str,
+    agent: AgentCreateUpdate,
+    user: AbstractUser = Depends(get_request_user),
+):
     try:
-        agent_obj = await Agent.filter_owners(user, Agent.objects.filter(pk=agent_id)).aget()
+        query = Agent.objects.filter(pk=agent_id)
+        agent_obj = await Agent.filter_owners(user, query).aget()
     except Agent.DoesNotExist:
         raise HTTPException(status_code=404, detail="Agent not found")
     for attr, value in agent.dict().items():
@@ -76,7 +85,8 @@ async def update_agent(agent_id: str, agent: AgentCreateUpdate, user: AbstractUs
 @router.delete("/agents/{agent_id}", response_model=DeletedItem, tags=["Agents"])
 async def delete_agent(agent_id: str, user: AbstractUser = Depends(get_request_user)):
     try:
-        agent = await Agent.filter_owners(user, Agent.objects.filter(pk=agent_id)).aget()
+        query = Agent.objects.filter(pk=agent_id)
+        agent = await Agent.filter_owners(user, query).aget()
     except Agent.DoesNotExist:
         raise HTTPException(status_code=404, detail="Agent not found")
     await agent.adelete()
