@@ -20,8 +20,20 @@ class OwnedModel(models.Model):
     class Meta:
         abstract = True
 
+    @classmethod
+    def filtered_owners(cls, user: User) -> QuerySet:
+        """Filter a queryset to only include objects available to the given user.
+        Shortcut for `filter_owners(user, cls.objects.all())`
+
+        Example:
+
+        ```
+        OwnedModel.filtered_owners(user)
+        ```
+        """
+
     @staticmethod
-    def filter_owners( user: User, queryset: QuerySet) -> QuerySet:
+    def filter_owners(user: User, queryset: QuerySet) -> QuerySet:
         """Filter a queryset to only include objects available to the given user:
 
         - Global objects with no owner
@@ -35,4 +47,9 @@ class OwnedModel(models.Model):
         if not settings.OWNER_FILTERING:
             return queryset
 
-        return queryset.filter(Q(user_id=None, group_id=None) | Q(user_id=user.id) | Q(group_id__users__id=user.id))
+        if not user:
+            return queryset.none()
+
+        return queryset.filter(
+            Q(user_id=None, group_id=None) | Q(user_id=user.id) | Q(group__user=user)
+        )
