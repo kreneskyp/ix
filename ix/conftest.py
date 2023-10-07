@@ -30,13 +30,21 @@ from ix.task_log.tests.fake import (
     afake_think,
     afake_task,
 )
-from ix.ix_users.tests.fake import get_default_user
+from ix.ix_users.tests.fake import get_default_user, afake_user
 from ix.utils.importlib import import_class, _import_class
 
 logger = logging.getLogger(__name__)
 
 
 USER_INPUT = {"user_input": "hello agent 1"}
+
+
+@pytest_asyncio.fixture
+async def arequest_user(mocker):
+    user = await afake_user()
+    mock_get_request_user = mocker.patch("ix.api.auth._get_request_user")
+    mock_get_request_user.return_value = user
+    yield mock_get_request_user
 
 
 @pytest.fixture
