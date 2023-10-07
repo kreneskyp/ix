@@ -43,6 +43,8 @@ def fake_chain(**kwargs):
         id=uuid.uuid4(),
         name=fake.unique.name(),
         description=fake.text(),
+        user=kwargs.get("user", None),
+        group=kwargs.get("group", None),
     )
     chain_kwargs.update(kwargs)
     chain = Chain.objects.create(**chain_kwargs)
@@ -132,6 +134,8 @@ def fake_agent(**kwargs):
         model=model,
         config=config,
         chain=chain,
+        user=kwargs.get("user", None),
+        group=kwargs.get("group", None),
     )
     return agent
 
