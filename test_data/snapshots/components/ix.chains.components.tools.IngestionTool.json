@@ -1,0 +1,53 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.components.tools.IngestionTool",
+    "config_schema": {
+        "properties": {
+            "return_direct": {
+                "default": false,
+                "type": "boolean"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "return_direct",
+            "verbose"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "loader_template",
+            "required": true,
+            "source_type": "text_splitter",
+            "template": true,
+            "type": "target"
+        },
+        {
+            "key": "vectorstore",
+            "required": true,
+            "source_type": "vectorstore",
+            "template": true,
+            "type": "target"
+        }
+    ],
+    "description": "Tool used to import files into a vectorstore.",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "name": "return_direct",
+            "type": "boolean"
+        },
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        }
+    ],
+    "name": "Ingestion Tool",
+    "type": "tool"
+}

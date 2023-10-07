@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { HStack, VStack, Heading, Box, Text } from "@chakra-ui/react";
+import { HStack, VStack, Box, Text, FormLabel } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -45,24 +45,11 @@ const SideBarArtifactList = ({ chat, artifacts: initialArtifacts }) => {
   );
 
   return (
-    <Box
-      mt={5}
-      pt={5}
-      width="100%"
-      maxHeight={"60vh"}
-      minWidth={170}
-      overflowY={"hidden"}
-    >
-      <Heading as="h3" size="md" width="100%" align="left" mt={5}>
+    <Box width="100%" minWidth={170} overflowY={"hidden"}>
+      <FormLabel as="h3" size="md" align="left">
         Artifacts
-      </Heading>
-      <VStack
-        overflowY="scroll"
-        css={SCROLLBAR_CSS}
-        maxHeight={"30vh"}
-        spacing={2}
-        width="100%"
-      >
+      </FormLabel>
+      <VStack overflowY="scroll" css={SCROLLBAR_CSS} spacing={2} width="100%">
         {!artifacts || artifacts?.length === 0 ? (
           <Text
             p={2}

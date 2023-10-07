@@ -1,0 +1,92 @@
+{
+    "child_field": null,
+    "class_path": "ix.tools.lambda_api.get_lambda_api",
+    "config_schema": {
+        "properties": {
+            "awslambda_tool_description": {
+                "default": null,
+                "type": "string"
+            },
+            "awslambda_tool_name": {
+                "default": null,
+                "type": "string"
+            },
+            "function_name": {
+                "default": null,
+                "type": "string"
+            },
+            "return_direct": {
+                "default": false,
+                "type": "boolean"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "return_direct",
+            "verbose"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Tool that searches Lambda for a given query.",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "name": "return_direct",
+            "type": "boolean"
+        },
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Function_name",
+            "max": null,
+            "min": null,
+            "name": "function_name",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Awslambda_tool_name",
+            "max": null,
+            "min": null,
+            "name": "awslambda_tool_name",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Awslambda_tool_description",
+            "max": null,
+            "min": null,
+            "name": "awslambda_tool_description",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "Lambda API",
+    "type": "tool"
+}

@@ -1,9 +1,16 @@
+import logging
 import sys
 from typing import Callable
 
+from langchain.prompts import MessagesPlaceholder
+
 from langchain.agents import AgentType, AgentExecutor
 from langchain.agents import initialize_agent as initialize_agent_base
+from langchain.agents.agent_toolkits.base import BaseToolkit
 from langchain.chains.base import Chain
+
+
+logger = logging.getLogger(__name__)
 
 
 def initialize_agent(agent: AgentType, **kwargs) -> Chain:
@@ -14,13 +21,42 @@ def initialize_agent(agent: AgentType, **kwargs) -> Chain:
     - unpacks agent_kwargs: allows agent_kwargs to be flattened into the ChainNode config
       A flattened config simplifies the UX integration such that it works with TypeAutoFields
     """
+    # Inject placeholders into prompt for memory if provided
+    placeholders = []
+    if memories := kwargs.get("memory", None):
+        if not isinstance(memories, list):
+            memories = [memories]
+        placeholders = []
+        for component in memories:
+            if not getattr(component, "return_messages", False):
+                raise ValueError(
+                    f"Memory component {component} has return_messages=False. Agents require "
+                    f"return_messages=True."
+                )
+            for memory_key in component.memory_variables:
+                placeholders.append(MessagesPlaceholder(variable_name=memory_key))
+
     # Re-pack agent_kwargs__* arguments into agent_kwargs
-    agent_kwargs = {}
+    agent_kwargs = {
+        "extra_prompt_messages": placeholders,
+    }
+
     for key, value in kwargs.items():
         if key.startswith("agent_kwargs__"):
             agent_kwargs[key[15:]] = value
             del kwargs[key]
     kwargs["agent_kwargs"] = agent_kwargs
+
+    # unpack Toolkits into Tools
+    if "tools" in kwargs:
+        tools = kwargs["tools"]
+        unpacked_tools = []
+        for i, value in enumerate(tools):
+            if isinstance(value, BaseToolkit):
+                unpacked_tools.extend(value.get_tools())
+            else:
+                unpacked_tools.append(value)
+        kwargs["tools"] = unpacked_tools
 
     return initialize_agent_base(agent=agent, **kwargs)
 

@@ -3,17 +3,23 @@ from fastapi.openapi.utils import get_openapi
 
 from ix.api.agents.endpoints import router as agents_router
 from ix.api.artifacts.endpoints import router as artifacts_router
+from ix.api.components.endpoints import router as components_router
 from ix.api.chains.endpoints import router as chains_router
+from ix.api.editor.endpoints import router as editor_router
 from ix.api.chats.endpoints import router as chats_router
+from ix.api.datasources.endpoints import router as datasources_router
 
 app = FastAPI(
     title="IX agent editor API",
     description="API for editing Agents, Chains, and node_type components",
 )
+app.include_router(components_router)
 app.include_router(chains_router)
 app.include_router(agents_router)
 app.include_router(chats_router)
 app.include_router(artifacts_router)
+app.include_router(editor_router)
+app.include_router(datasources_router)
 
 
 def custom_openapi():

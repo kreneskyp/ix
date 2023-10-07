@@ -2,7 +2,6 @@ import React, { useCallback, useState } from "react";
 import {
   Button,
   Flex,
-  Textarea,
   Select,
   VStack,
   HStack,
@@ -15,8 +14,8 @@ import {
   faArrowUp,
   faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
-import { SCROLLBAR_CSS } from "site/css";
-import { NodeResizeControl } from "reactflow";
+import { useEditorColorMode } from "chains/editor/useColorMode";
+import { PromptMessageInput } from "chains/editor/PromptMessageInput";
 
 const ROLE_OPTIONS = ["user", "assistant"];
 
@@ -50,6 +49,8 @@ function parseVariables(str) {
 
 const PromptEditor = ({ data, onChange }) => {
   const [messages, setMessages] = useState(data.messages || DEFAULT_MESSAGES);
+  const { input, scrollbar } = useEditorColorMode();
+
   const handleOnChange = useCallback(
     (updatedMessages) => {
       if (onChange !== undefined) {
@@ -100,16 +101,8 @@ const PromptEditor = ({ data, onChange }) => {
 
   return (
     <VStack spacing={1} align="stretch">
-      <NodeResizeControl
-        variant={"line"}
-        minWidth={400}
-        position={"left"}
-        h={"100%"}
-        style={{ border: "5px solid transparent" }}
-      />
-
       {messages.map((message, index) => (
-        <VStack key={index} p={2} spacing={2}>
+        <VStack key={index} py={2} spacing={2}>
           <Flex
             alignItems="center"
             justifyContent="space-between"
@@ -120,6 +113,9 @@ const PromptEditor = ({ data, onChange }) => {
               <Text fontWeight="bold">System</Text>
             ) : (
               <Select
+                {...input}
+                size={"sm"}
+                borderRadius={5}
                 width={125}
                 value={message.role}
                 onChange={(e) =>
@@ -157,15 +153,16 @@ const PromptEditor = ({ data, onChange }) => {
               )}
             </HStack>
           </Flex>
-          <Textarea
+
+          <PromptMessageInput
+            borderRadius={5}
+            border="1px solid"
+            p={2}
             width="100%"
-            value={message.template}
+            initialValue={message.template}
             placeholder="Enter template"
-            onChange={(e) =>
-              handleMessageChange(index, "template", e.target.value)
-            }
-            isRequired
-            css={SCROLLBAR_CSS}
+            onChange={(text) => handleMessageChange(index, "template", text)}
+            {...input}
           />
         </VStack>
       ))}
@@ -175,17 +172,12 @@ const PromptEditor = ({ data, onChange }) => {
           leftIcon={<FontAwesomeIcon icon={faPlus} />}
           colorScheme="orange"
           onClick={addMessage}
-          mr={4}
+          mr={2}
+          size={"sm"}
         >
           Add Message
         </Button>
       </Flex>
-      <NodeResizeControl
-        variant={"line"}
-        minWidth={400}
-        h={"100%"}
-        style={{ border: "5px solid transparent" }}
-      />
     </VStack>
   );
 };

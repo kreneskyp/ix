@@ -1,0 +1,101 @@
+{
+    "child_field": null,
+    "class_path": "langchain.memory.token_buffer.ConversationTokenBufferMemory",
+    "config_schema": {
+        "properties": {
+            "ai_prefix": {
+                "default": "AI",
+                "type": "string"
+            },
+            "human_prefix": {
+                "default": "Human",
+                "type": "string"
+            },
+            "input_key": {
+                "default": "input",
+                "type": "string"
+            },
+            "max_token_limit": {
+                "default": 2000,
+                "type": "number"
+            },
+            "memory_key": {
+                "default": "history",
+                "type": "string"
+            },
+            "output_key": {
+                "default": "output",
+                "type": "string"
+            },
+            "return_messages": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "max_token_limit",
+            "memory_key",
+            "human_prefix",
+            "ai_prefix",
+            "output_key",
+            "input_key",
+            "return_messages"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "chat_memory",
+            "required": true,
+            "source_type": "memory_backend",
+            "type": "target"
+        },
+        {
+            "key": "llm",
+            "required": true,
+            "source_type": "llm",
+            "type": "target"
+        }
+    ],
+    "description": "Memory that stores conversation history as a buffer with a max token size.",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": 2000,
+            "name": "max_token_limit",
+            "type": "number"
+        },
+        {
+            "default": "history",
+            "name": "memory_key",
+            "type": "string"
+        },
+        {
+            "default": "Human",
+            "name": "human_prefix",
+            "type": "string"
+        },
+        {
+            "default": "AI",
+            "name": "ai_prefix",
+            "type": "string"
+        },
+        {
+            "default": "output",
+            "name": "output_key",
+            "type": "string"
+        },
+        {
+            "default": "input",
+            "name": "input_key",
+            "type": "string"
+        },
+        {
+            "default": false,
+            "name": "return_messages",
+            "type": "boolean"
+        }
+    ],
+    "name": "Conversation Token Buffer",
+    "type": "memory"
+}

@@ -1,0 +1,95 @@
+{
+    "child_field": null,
+    "class_path": "langchain.memory.RedisChatMessageHistory",
+    "config_schema": {
+        "properties": {
+            "session_key": {
+                "default": "session_id",
+                "type": "string"
+            },
+            "session_prefix": {
+                "default": "",
+                "type": "string"
+            },
+            "session_scope": {
+                "default": null,
+                "enum": [
+                    "chat",
+                    "agent",
+                    "task",
+                    "user"
+                ],
+                "type": "string"
+            },
+            "ttl": {
+                "default": 3600,
+                "type": "number"
+            },
+            "url": {
+                "default": "redis://redis:6379/0",
+                "type": "string"
+            }
+        },
+        "required": [
+            "url",
+            "ttl",
+            "session_scope",
+            "session_prefix",
+            "session_key"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Redis Memory Backend",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": "redis://redis:6379/0",
+            "name": "url",
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "default": 3600,
+            "name": "ttl",
+            "type": "number"
+        },
+        {
+            "choices": [
+                {
+                    "label": "chat",
+                    "value": "chat"
+                },
+                {
+                    "label": "agent",
+                    "value": "agent"
+                },
+                {
+                    "label": "task",
+                    "value": "task"
+                },
+                {
+                    "label": "user",
+                    "value": "user"
+                }
+            ],
+            "input_type": "select",
+            "name": "session_scope",
+            "type": "string"
+        },
+        {
+            "default": "",
+            "name": "session_prefix",
+            "type": "string"
+        },
+        {
+            "default": "session_id",
+            "name": "session_key",
+            "type": "string"
+        }
+    ],
+    "name": "Redis Memory Backend",
+    "type": "memory_backend"
+}

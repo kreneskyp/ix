@@ -1,0 +1,134 @@
+{
+    "child_field": null,
+    "class_path": "langchain.chat_models.openai.ChatOpenAI",
+    "config_schema": {
+        "properties": {
+            "max_retries": {
+                "default": 6,
+                "maximum": 6.0,
+                "minimum": 0.0,
+                "multipleOf": 1.0,
+                "type": "number"
+            },
+            "max_tokens": {
+                "default": 256,
+                "type": "number"
+            },
+            "model_name": {
+                "default": "gpt-4-0613",
+                "enum": [
+                    "gpt-4",
+                    "gpt-4-0613",
+                    "gpt-3.5-turbo",
+                    "gpt-3.5-turbo-16k-0613"
+                ],
+                "type": "string"
+            },
+            "request_timeout": {
+                "default": 60,
+                "type": "number"
+            },
+            "streaming": {
+                "default": true,
+                "type": "boolean"
+            },
+            "temperature": {
+                "default": 0,
+                "maximum": 2.0,
+                "minimum": 0.0,
+                "multipleOf": 0.05,
+                "type": "number"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "model_name",
+            "request_timeout",
+            "max_retries",
+            "temperature",
+            "max_tokens",
+            "verbose",
+            "streaming"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "OpenAI LLM",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": [
+                {
+                    "label": "GPT-4",
+                    "value": "gpt-4"
+                },
+                {
+                    "label": "GPT-4 (0613)",
+                    "value": "gpt-4-0613"
+                },
+                {
+                    "label": "GPT-3.5 ",
+                    "value": "gpt-3.5-turbo"
+                },
+                {
+                    "label": "GPT-3.5 16k",
+                    "value": "gpt-3.5-turbo-16k-0613"
+                }
+            ],
+            "default": "gpt-4-0613",
+            "description": "OpenAI model",
+            "input_type": "select",
+            "label": "Model",
+            "name": "model_name",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "default": 60,
+            "description": "Request Timeout",
+            "label": "Timeout (sec)",
+            "name": "request_timeout",
+            "type": "number"
+        },
+        {
+            "default": 6,
+            "description": "Max Retries",
+            "input_type": "slider",
+            "max": 6,
+            "min": 0,
+            "name": "max_retries",
+            "step": 1,
+            "type": "number"
+        },
+        {
+            "default": 0,
+            "description": "Temperature",
+            "input_type": "slider",
+            "max": 2,
+            "min": 0,
+            "name": "temperature",
+            "step": 0.05,
+            "type": "number"
+        },
+        {
+            "default": 256,
+            "name": "max_tokens",
+            "type": "number"
+        },
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        },
+        {
+            "default": true,
+            "name": "streaming",
+            "type": "boolean"
+        }
+    ],
+    "name": "OpenAI LLM",
+    "type": "llm"
+}

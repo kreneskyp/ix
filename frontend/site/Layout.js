@@ -1,10 +1,11 @@
 import React, { Suspense } from "react";
 import { Divider, Flex, Spacer, VStack } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/color-mode";
-import Navigation from "site/Navigation";
 import { ColorModeButton } from "components/ColorModeButton";
 import { CenteredSpinner } from "site/CenteredSpinner";
-import { NewChatButton } from "chat/NewChatButton";
+import { NewChatButton } from "chat/buttons/NewChatButton";
+import { NewAgentButton } from "agents/NewAgentButton";
+import Navigation from "site/Navigation";
 
 export const LayoutLeftPane = ({ children }) => {
   return children;
@@ -27,25 +28,25 @@ export const Layout = ({ children }) => {
   return (
     <Flex h="100vh" overflowX="hidden">
       <VStack
-        bg={colorMode === "light" ? "gray.200" : "gray.900"}
-        width={300}
-        p={2}
+        bg={colorMode === "light" ? "gray.200" : "blackAlpha.200"}
+        p={1}
         minH="100vh"
         align="left"
-        borderRightColor={colorMode === "light" ? "gray.400" : "transparent"}
+        borderRightColor={colorMode === "light" ? "gray.300" : "transparent"}
         borderRightWidth={1}
       >
         {/* left sidebar */}
         <NewChatButton />
+        <NewAgentButton />
+        <Divider
+          borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
+        />
         {leftPane}
         <Spacer />
         <Divider
           borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
         />
         <Navigation />
-        <Divider
-          borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
-        />
         <ColorModeButton />
       </VStack>
       <Flex

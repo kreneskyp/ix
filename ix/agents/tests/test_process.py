@@ -3,7 +3,7 @@ import json
 from asgiref.sync import sync_to_async
 
 from ix.agents.process import AgentProcess
-from ix.conftest import USER_INPUT, load_fixture
+from ix.conftest import USER_INPUT
 from ix.task_log.models import TaskLogMessage
 from ix.task_log.tests.fake import (
     fake_command_reply,
@@ -47,9 +47,8 @@ class MessageTeardown:
 
 @pytest.mark.django_db
 class TestAgentProcessStart:
-    async def test_start_task(self, mock_openai):
+    async def test_start_task(self, mock_openai, anode_types):
         """Run task for the first time with no auth to run commands"""
-        await sync_to_async(load_fixture)("node_types")
         task = await sync_to_async(fake_task)()
         mock_reply = await sync_to_async(fake_command_reply)(task=task)
         await mock_reply.adelete()
@@ -68,8 +67,8 @@ class TestAgentProcessStart:
         thought_msg = messages[1]
         assert think_msg.content["type"] == "THINK"
         assert think_msg.content["input"] == {
-            "user_input": "hello agent 1",
             "input": "hello agent 1",
+            "user_input": "hello agent 1",
             "question": "hello agent 1",
         }
         assert thought_msg.content["type"] == "THOUGHT"
@@ -82,12 +81,11 @@ class TestAgentProcessStart:
         #      "total_tokens": 12,
         #  }
 
-    async def test_start_task_with_input(self, mock_openai):
+    async def test_start_task_with_input(self, mock_openai, anode_types):
         """
         Test that if `input` is included in inputs then it will be
         used instead of the default `user_input -> input` mapping.
         """
-        await sync_to_async(load_fixture)("node_types")
         task = await sync_to_async(fake_task)()
         mock_reply = await sync_to_async(fake_command_reply)(task=task)
         await mock_reply.adelete()
@@ -98,7 +96,7 @@ class TestAgentProcessStart:
 
         inputs = {
             "user_input": "hello agent 1",
-            "input": "existing input",
+            "input": "hello agent 1",
             "question": "hello agent 1",
         }
         return_value = await agent_process.start(inputs)
@@ -110,7 +108,11 @@ class TestAgentProcessStart:
         think_msg = messages[0]
         thought_msg = messages[1]
         assert think_msg.content["type"] == "THINK"
-        assert think_msg.content["input"] == inputs
+        assert think_msg.content["input"] == {
+            "input": "hello agent 1",
+            "user_input": "hello agent 1",
+            "question": "hello agent 1",
+        }
         assert thought_msg.content["type"] == "THOUGHT"
         assert isinstance(thought_msg.content["runtime"], float)
 

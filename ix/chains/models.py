@@ -7,6 +7,7 @@ from typing import Any, Dict
 from django.db import models
 from langchain.chains.base import Chain as LangChain
 
+from ix.ix_users.models import OwnedModel
 from ix.pg_vector.tests.models import PGVectorMixin
 from ix.pg_vector.utils import get_embedding
 
@@ -21,6 +22,9 @@ class NodeTypeQuery(PGVectorMixin, models.QuerySet):
 
 
 class NodeTypeManager(models.Manager.from_queryset(NodeTypeQuery)):
+    def get_by_natural_key(self, class_path):
+        return self.get(class_path=class_path)
+
     def create_with_embedding(self, name, description, class_path):
         """
         Creates a new NodeType object with a vector embedding generated
@@ -36,7 +40,7 @@ class NodeTypeManager(models.Manager.from_queryset(NodeTypeQuery)):
         )
 
 
-class NodeType(models.Model):
+class NodeType(OwnedModel):
     TYPES = [
         ("agent", "agent"),
         ("chain", "chain"),
@@ -54,18 +58,24 @@ class NodeType(models.Model):
         ("text_splitter", "text_splitter"),
     ]
 
+    # info
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True)
-    class_path = models.CharField(max_length=255)
+    class_path = models.CharField(max_length=255, unique=True)
     type = models.CharField(max_length=255)
+
+    # deprecated
     display_type = models.CharField(
         max_length=10,
         default="node",
         choices=(("node", "node"), ("list", "list"), ("map", "map")),
     )
+
+    # structure
     connectors = models.JSONField(null=True)
     fields = models.JSONField(null=True)
+    field_groups = models.JSONField(null=True)
 
     # child_field is the name of the field that contains child nodes
     # used for parsing config objects
@@ -74,12 +84,17 @@ class NodeType(models.Model):
     # JSONSchema for the config object
     config_schema = models.JSONField(default=dict)
 
+    objects = NodeTypeManager()
+
     @cached_property
     def connectors_as_dict(self):
         return {c["key"]: c for c in self.connectors or []}
 
     def __str__(self):
         return f"{self.class_path}"
+
+    def natural_key(self):
+        return (self.class_path,)
 
 
 def default_position():
@@ -97,6 +112,8 @@ class ChainNodeManager(models.Manager):
         definition is used to recursively identify and parse nested property nodes
         and child nodes.
         """
+        # create copy of config since it will be mutated
+        config = config.copy()
 
         # get the node type
         class_path = config["class_path"]
@@ -109,7 +126,7 @@ class ChainNodeManager(models.Manager):
             raise
 
         # pop off nested and child nodes before creating node
-        node_config = config.get("config", {}).copy()
+        node_config = config.pop("config", {}).copy()
         property_configs = {}
         child_configs = []
         for connector in node_type.connectors or []:
@@ -128,6 +145,7 @@ class ChainNodeManager(models.Manager):
                 node_type=node_type,
                 root=root,
                 position={"x": 0, "y": 0},
+                config=node_config,
                 **config,
             )
 
@@ -257,7 +275,7 @@ class ChainEdge(models.Model):
     )
 
 
-class Chain(models.Model):
+class Chain(OwnedModel):
     """
     A named chain that can be run by an Agent.
 
@@ -268,6 +286,10 @@ class Chain(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    # Indicate that this chain is an agent. This is used to record the config choice.
+    # The endpoints are responsible for ensuring that the agent does or does not exist.
+    is_agent = models.BooleanField(default=True)
 
     @property
     def root(self) -> ChainNode:

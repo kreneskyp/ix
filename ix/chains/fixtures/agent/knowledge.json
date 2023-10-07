@@ -1,0 +1,245 @@
+[
+  {
+    "model": "agents.agent",
+    "pk": "b532a31c-1038-4049-b228-3f4cb2da4693",
+    "fields": {
+      "name": "knowledge",
+      "alias": "knowledge",
+      "purpose": "Agent that responds with information from the \"knowledge\" collection in the Chroma vector database.\n\nThe collection is initially empty.\n\nAdd to the collection by asking @ingest to add document URLs to the knowledge collection.",
+      "created_at": "2023-10-04T02:03:12.667Z",
+      "model": "",
+      "config": {},
+      "chain": "5d44787c-8f19-42e0-9705-b572ab281449",
+      "is_test": false
+    }
+  },
+  {
+    "model": "chains.chain",
+    "pk": "5d44787c-8f19-42e0-9705-b572ab281449",
+    "fields": {
+      "name": "knowledge",
+      "description": "Agent that responds with information from the \"knowledge\" collection in the Chroma vector database.\n\nThe collection is initially empty.\n\nAdd to the collection by asking @ingest to add document URLs to the knowledge collection.",
+      "created_at": "2023-10-04T02:03:12.653Z",
+      "is_agent": true
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "0dd311c8-1172-45b8-a885-7eddd5e922bf",
+    "fields": {
+      "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
+      "node_type": [
+        "langchain.embeddings.openai.OpenAIEmbeddings"
+      ],
+      "config": {
+        "model": "text-embedding-ada-002",
+        "chunk_size": 1000,
+        "max_retries": "6",
+        "allowed_special": [],
+        "disallowed_special": "all"
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": -90.0,
+        "y": 590.0
+      },
+      "chain": "5d44787c-8f19-42e0-9705-b572ab281449"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "1c841e4f-1ece-4647-8e10-16469c197e64",
+    "fields": {
+      "class_path": "langchain.memory.ConversationBufferMemory",
+      "node_type": [
+        "langchain.memory.ConversationBufferMemory"
+      ],
+      "config": {
+        "ai_prefix": "AI",
+        "input_key": "input",
+        "memory_key": "chat_history",
+        "output_key": "answer",
+        "human_prefix": "Human",
+        "return_messages": true
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": 220.0,
+        "y": 480.0
+      },
+      "chain": "5d44787c-8f19-42e0-9705-b572ab281449"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "25bc3dc9-266f-4b25-abc5-dc4577749e7b",
+    "fields": {
+      "class_path": "ix.chains.components.vectorstores.AsyncChromaVectorstore",
+      "node_type": [
+        "ix.chains.components.vectorstores.AsyncChromaVectorstore"
+      ],
+      "config": {
+        "allow_reset": false,
+        "search_type": "similarity",
+        "collection_name": "knowledge",
+        "persist_directory": "./chroma",
+        "chroma_server_host": "172.17.42.1",
+        "allowed_search_types": [
+          "similarity",
+          "similarity_score_threshold",
+          "mmr"
+        ],
+        "anonymized_telemetry": true,
+        "chroma_server_http_port": "8020",
+        "chroma_server_ssl_enabled": false
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": 220.0,
+        "y": 580.0
+      },
+      "chain": "5d44787c-8f19-42e0-9705-b572ab281449"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "4a969db0-1227-4e4e-a0a5-283c5b53e37e",
+    "fields": {
+      "class_path": "langchain.memory.RedisChatMessageHistory",
+      "node_type": [
+        "langchain.memory.RedisChatMessageHistory"
+      ],
+      "config": {
+        "ttl": 3600,
+        "url": "redis://redis:6379/0",
+        "session_key": "session_id",
+        "session_scope": "",
+        "session_prefix": ""
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": -90.0,
+        "y": 480.0
+      },
+      "chain": "5d44787c-8f19-42e0-9705-b572ab281449"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "b04e3211-0c4c-47c5-aa56-4fdf1583d616",
+    "fields": {
+      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
+      "config": {
+        "verbose": false,
+        "streaming": true,
+        "max_tokens": 256,
+        "model_name": "gpt-4-0613",
+        "max_retries": 6,
+        "temperature": 0,
+        "request_timeout": 60
+      },
+      "name": null,
+      "description": null,
+      "root": false,
+      "position": {
+        "x": 220.0,
+        "y": 390.0
+      },
+      "chain": "5d44787c-8f19-42e0-9705-b572ab281449"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "d6fc0452-8f21-4402-a777-4f81a17cfc82",
+    "fields": {
+      "class_path": "langchain.chains.conversational_retrieval.base.ConversationalRetrievalChain.from_llm",
+      "node_type": [
+        "langchain.chains.conversational_retrieval.base.ConversationalRetrievalChain.from_llm"
+      ],
+      "config": {
+        "verbose": false,
+        "output_key": "answer",
+        "rephrase_question": true
+      },
+      "name": null,
+      "description": null,
+      "root": true,
+      "position": {
+        "x": 550.0,
+        "y": 270.0
+      },
+      "chain": "5d44787c-8f19-42e0-9705-b572ab281449"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "3cc9c179-f18c-4983-902e-6d6b8bbe8390",
+    "fields": {
+      "source": "4a969db0-1227-4e4e-a0a5-283c5b53e37e",
+      "target": "1c841e4f-1ece-4647-8e10-16469c197e64",
+      "key": "chat_memory",
+      "chain": "5d44787c-8f19-42e0-9705-b572ab281449",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "58e9e640-7ae1-41ef-8cb6-56b25eeea786",
+    "fields": {
+      "source": "1c841e4f-1ece-4647-8e10-16469c197e64",
+      "target": "d6fc0452-8f21-4402-a777-4f81a17cfc82",
+      "key": "memory",
+      "chain": "5d44787c-8f19-42e0-9705-b572ab281449",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "a0e03223-e637-44f3-9c8c-3dea475696ad",
+    "fields": {
+      "source": "b04e3211-0c4c-47c5-aa56-4fdf1583d616",
+      "target": "d6fc0452-8f21-4402-a777-4f81a17cfc82",
+      "key": "llm",
+      "chain": "5d44787c-8f19-42e0-9705-b572ab281449",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "f054e452-3e70-40ee-b2e2-4e4639edf36f",
+    "fields": {
+      "source": "0dd311c8-1172-45b8-a885-7eddd5e922bf",
+      "target": "25bc3dc9-266f-4b25-abc5-dc4577749e7b",
+      "key": "embedding",
+      "chain": "5d44787c-8f19-42e0-9705-b572ab281449",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "f3000f25-6bfa-45eb-97cd-8aaa65c3b465",
+    "fields": {
+      "source": "25bc3dc9-266f-4b25-abc5-dc4577749e7b",
+      "target": "d6fc0452-8f21-4402-a777-4f81a17cfc82",
+      "key": "retriever",
+      "chain": "5d44787c-8f19-42e0-9705-b572ab281449",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  }
+]

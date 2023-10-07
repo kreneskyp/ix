@@ -1,6 +1,7 @@
 version: "3"
 
 services:
+  # postgresql database + pg_vector extension
   db:
     image: ghcr.io/kreneskyp/ix/postgres-pg-vector:15.3
     environment:
@@ -8,27 +9,31 @@ services:
       POSTGRES_USER: ix
       POSTGRES_DB: ix
       POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
+  # app server: HTTP/asgi, websockets, django
   web:
     image: ghcr.io/kreneskyp/ix/sandbox:latest
-    #image: ghcr.io/ix:latest
     command: uvicorn ix.server.asgi:application --host 0.0.0.0 --port 8001 --reload
     ports:
       - "8001:8001"
     links:
       - db
       - redis
+      - vault
     volumes:
       - .:/var/app
-      #- .node_modules:/var/npm/node_modules
       - ./bin:/usr/bin/ix
       - .bash_profile:/root/.bash_profile
       - .ipython:/root/.ipython
+      - ./.certs/:/var/vault/certs:ro,Z
     env_file:
       - .env
     environment:
       DJANGO_SETTINGS_MODULE: "ix.server.settings"
 
+  # Main entry to app: static content, HTTP 1.1, websockets, proxy to app server
   nginx:
     image: nginx:latest
     ports:
@@ -39,21 +44,59 @@ services:
     depends_on:
       - web
 
+  # Agent worker: celery, django
   worker:
     image: ghcr.io/kreneskyp/ix/sandbox:latest
     command: celery.sh
     links:
       - db
       - redis
+      - vault
+      - chroma
     volumes:
       - .:/var/app
       - .node_modules:/var/npm/node_modules
       - ./bin:/usr/bin/ix
       - .bash_profile:/root/.bash_profile
+      - ./.certs/:/var/vault/certs:ro,Z
     env_file:
       - .env
 
+  # nodejs / frontend builder
+  nodejs:
+    image: ghcr.io/kreneskyp/ix/nodejs:latest
+    volumes:
+      - ./frontend:/var/app/frontend
+      - ./package.json:/var/app/package.json
+      - ./babel.config.js:/var/app/babel.config.js
+      - ./relay.config.js:/var/app/relay.config.js
+      - ./webpack.config.js:/var/app/webpack.config.js
+      - ./bin:/usr/bin/ix
+      - .compiled-static:/var/app/.compiled-static
+    env_file:
+      - .env
 
   redis:
     image: redis/redis-stack-server:latest
 
+  chroma:
+    image: ghcr.io/chroma-core/chroma:0.4.13
+    ports:
+      - "8020:8000"
+
+  vault:
+    image: hashicorp/vault:1.14
+    volumes:
+    - ./vault/config.hcl:/vault/config/config.hcl:ro
+    - ./.certs/:/vault/certs:ro,Z
+    - .vault_file:/vault/file
+    env_file:
+      - .vault.env
+    command: "server -dev -dev-tls -config=/vault/config/config.hcl"
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+
+volumes:
+  postgres_data:

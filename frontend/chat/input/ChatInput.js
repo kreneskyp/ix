@@ -29,6 +29,7 @@ import { useSendInput } from "chat/hooks/useSendInput";
 import { clear_editor, INITIAL_EDITOR_CONTENT } from "utils/slate";
 import { useChatColorMode } from "chains/editor/useColorMode";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
+import { useChatStyle } from "chat/ChatInterface";
 
 export const ChatInput = ({ chat }) => {
   const focusRef = useRef();
@@ -43,6 +44,7 @@ export const ChatInput = ({ chat }) => {
     () => withHighlights(withReact(withHistory(createEditor()))),
     []
   );
+  const chatStyle = useChatStyle();
 
   const { load: loadAgents, page: agentPage } = usePaginatedAPI(`/api/agents/`);
 
@@ -205,32 +207,21 @@ export const ChatInput = ({ chat }) => {
     }
   }
 
-  const sx = useColorModeValue(
-    { bg: "gray.50", color: "gray.900", borderColor: "gray.300" },
-    { bg: "gray.900", color: "gray.100", borderColor: "gray.700" }
-  );
-
-  const popoverSx = useColorModeValue(
-    { bg: "gray.100", color: "gray.900", borderColor: "gray.300" },
-    { bg: "gray.800", color: "gray.100", borderColor: "gray.700" }
-  );
-
   return (
     <Box
-      width={800}
-      sx={sx}
       p={2}
       border="1px solid"
       borderRadius={5}
       maxH="400px"
       overflowY="auto"
+      {...chatStyle.input}
     >
       <Popover isOpen={isOpen} placement="top-start" initialFocusRef={focusRef}>
         <PopoverAnchor>
           <Box ref={focusRef} width={1}></Box>
         </PopoverAnchor>
         <PopoverContent mb={2} boxShadow="xl">
-          <PopoverBody border="1px solid" sx={popoverSx}>
+          <PopoverBody border="1px solid" {...chatStyle.autocomplete}>
             {searchComponent}
           </PopoverBody>
         </PopoverContent>
@@ -240,18 +231,22 @@ export const ChatInput = ({ chat }) => {
         editor={editor}
         value={INITIAL_EDITOR_CONTENT}
         onChange={onChange}
-        width={800}
+        width={chatStyle.input.width}
       >
         <Editable
           renderElement={renderElement}
           renderLeaf={renderLeaf}
           onKeyDown={onKeyDown}
           placeholder="Enter some text..."
-          width={800}
+          width={chatStyle.input.width}
         />
       </Slate>
     </Box>
   );
+};
+
+ChatInput.defaultProps = {
+  width: 800,
 };
 
 const serialize = (paragraphs) => {

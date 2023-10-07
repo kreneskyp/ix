@@ -2,9 +2,10 @@ import uuid
 from django.db import models
 
 from ix.chains.models import Chain
+from ix.ix_users.models import OwnedModel
 
 
-class Agent(models.Model):
+class Agent(OwnedModel):
     MODEL_CHOICES = (
         ("gpt4", "GPT4"),
         ("gpt-3.5-turbo", "GPT3.5"),
@@ -22,6 +23,7 @@ class Agent(models.Model):
 
     # agent config
     chain = models.ForeignKey(Chain, on_delete=models.CASCADE, null=True)
+    is_test = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

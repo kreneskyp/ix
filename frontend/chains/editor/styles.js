@@ -28,7 +28,6 @@ export const NODE_STYLES = {
   },
   prompt: {
     icon: faMessage,
-    width: 400,
   },
   agent: {
     icon: faRobot,
@@ -48,6 +47,12 @@ export const NODE_STYLES = {
   },
   text_splitter: {
     icon: faFileImport,
+  },
+  tool: {
+    icon: faTools,
+  },
+  toolkit: {
+    icon: faTools,
   },
   embeddings: {
     icon: faBrain,

@@ -10,7 +10,6 @@ from ix.chains.routing import MapSubchain
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures("node_types")
 class TestCreateCoder:
     def test_create_coder(self, mock_openai_key, ix_context):
         call_command("create_coder_v2")

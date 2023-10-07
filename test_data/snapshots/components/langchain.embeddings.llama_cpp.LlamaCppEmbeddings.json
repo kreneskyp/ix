@@ -1,0 +1,139 @@
+{
+    "child_field": null,
+    "class_path": "langchain.embeddings.llama_cpp.LlamaCppEmbeddings",
+    "config_schema": {
+        "properties": {
+            "f16_kv": {
+                "default": false,
+                "type": "boolean"
+            },
+            "logits_all": {
+                "default": false,
+                "type": "boolean"
+            },
+            "model_path": {
+                "default": null,
+                "type": "string"
+            },
+            "n_batch": {
+                "default": 8,
+                "type": "number"
+            },
+            "n_ctx": {
+                "default": 512,
+                "type": "number"
+            },
+            "n_gpu_layers": {
+                "default": null,
+                "type": "number"
+            },
+            "n_parts": {
+                "default": -1,
+                "type": "number"
+            },
+            "n_threads": {
+                "default": null,
+                "type": "number"
+            },
+            "seed": {
+                "default": -1,
+                "type": "number"
+            },
+            "use_mlock": {
+                "default": false,
+                "type": "boolean"
+            },
+            "vocab_only": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "model_path",
+            "n_ctx",
+            "n_parts",
+            "seed",
+            "f16_kv",
+            "logits_all",
+            "vocab_only",
+            "use_mlock",
+            "n_threads",
+            "n_batch",
+            "n_gpu_layers"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "LlamaCpp Embeddings",
+    "display_type": "node",
+    "fields": [
+        {
+            "description": "Path to the Llama model",
+            "name": "model_path",
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "default": 512,
+            "description": "Token context window",
+            "name": "n_ctx",
+            "type": "number"
+        },
+        {
+            "default": -1,
+            "description": "Number of parts to split the model into",
+            "name": "n_parts",
+            "type": "number"
+        },
+        {
+            "default": -1,
+            "description": "Seed. If -1, a random seed is used",
+            "name": "seed",
+            "type": "number"
+        },
+        {
+            "default": false,
+            "description": "Use half-precision for key/value cache",
+            "name": "f16_kv",
+            "type": "boolean"
+        },
+        {
+            "default": false,
+            "description": "Return logits for all tokens, not just the last token",
+            "name": "logits_all",
+            "type": "boolean"
+        },
+        {
+            "default": false,
+            "description": "Only load the vocabulary, no weights",
+            "name": "vocab_only",
+            "type": "boolean"
+        },
+        {
+            "default": false,
+            "description": "Force system to keep model in RAM",
+            "name": "use_mlock",
+            "type": "boolean"
+        },
+        {
+            "description": "Number of threads to use",
+            "name": "n_threads",
+            "type": "number"
+        },
+        {
+            "default": 8,
+            "description": "Number of tokens to process in parallel",
+            "name": "n_batch",
+            "type": "number"
+        },
+        {
+            "description": "Number of layers to be loaded into gpu memory",
+            "name": "n_gpu_layers",
+            "type": "number"
+        }
+    ],
+    "name": "LlamaCpp Embeddings",
+    "type": "embeddings"
+}

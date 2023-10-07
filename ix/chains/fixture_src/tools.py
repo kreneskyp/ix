@@ -1,4 +1,6 @@
-from ix.chains.fixture_src.targets import CHAIN_TARGET
+from ix.chains.fixture_src.targets import (
+    CHAIN_TARGET,
+)
 from langchain import (
     GoogleSearchAPIWrapper,
     GoogleSerperAPIWrapper,
@@ -13,7 +15,7 @@ from langchain.utilities import (
     PubMedAPIWrapper,
 )
 
-from ix.api.chains.types import NodeTypeField
+from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
 
 NAME = {
@@ -144,6 +146,31 @@ GRAPHQL_TOOL = {
     + NodeTypeField.get_fields(GraphQLAPIWrapper, include=["graphql_endpoint"]),
 }
 
+INGESTION_TOOL_CLASS_PATH = "ix.chains.components.tools.IngestionTool"
+INGESTION_TOOL = {
+    "class_path": INGESTION_TOOL_CLASS_PATH,
+    "type": "tool",
+    "name": "Ingestion Tool",
+    "description": "Tool used to import files into a vectorstore.",
+    "connectors": [
+        {
+            "key": "loader_template",
+            "type": "target",
+            "source_type": "text_splitter",
+            "required": True,
+            "template": True,
+        },
+        {
+            "key": "vectorstore",
+            "type": "target",
+            "source_type": "vectorstore",
+            "required": True,
+            "template": True,
+        },
+    ],
+    "fields": TOOL_BASE_FIELDS,
+}
+
 LAMBDA_API = {
     "class_path": "ix.tools.lambda_api.get_lambda_api",
     "type": "tool",
@@ -191,6 +218,40 @@ WIKIPEDIA = {
     ),
 }
 
+METAPHOR_SEARCH_CLASS_PATH = "ix.tools.metaphor.get_metaphor_search"
+METAPHOR_CONTENTS_CLASS_PATH = "ix.tools.metaphor.get_metaphor_contents"
+METAPHOR_FIND_SIMILAR_CLASS_PATH = "ix.tools.metaphor.get_metaphor_find_similar"
+METAPHOR_API_KEY = {
+    "name": "metaphor_api_key",
+    "label": "Metaphor API Key",
+    "type": "str",
+    "input_type": "secret",
+    "required": True,
+}
+METAPHOR_SEARCH = {
+    "name": "Metaphor search",
+    "description": "Metaphor search queries",
+    "class_path": METAPHOR_SEARCH_CLASS_PATH,
+    "type": "tool",
+    "fields": TOOL_BASE_FIELDS + [METAPHOR_API_KEY],
+}
+
+METAPHOR_CONTENTS = {
+    "name": "Metaphor page contents",
+    "description": "Metaphor page contents",
+    "class_path": METAPHOR_CONTENTS_CLASS_PATH,
+    "type": "tool",
+    "fields": TOOL_BASE_FIELDS + [METAPHOR_API_KEY],
+}
+
+METAPHOR_SIMILAR = {
+    "name": "Metaphor find similar",
+    "description": "Metaphor find similar pages",
+    "class_path": METAPHOR_FIND_SIMILAR_CLASS_PATH,
+    "type": "tool",
+    "fields": TOOL_BASE_FIELDS + [METAPHOR_API_KEY],
+}
+
 
 WOLFRAM = {
     "name": "Wolfram Alpha",
@@ -218,8 +279,12 @@ TOOLS = [
     GOOGLE_SEARCH,
     GOOGLE_SERPER,
     GRAPHQL_TOOL,
+    INGESTION_TOOL,
     LAMBDA_API,
     PUB_MED,
     WIKIPEDIA,
+    METAPHOR_SEARCH,
+    METAPHOR_CONTENTS,
+    METAPHOR_SIMILAR,
     WOLFRAM,
 ]

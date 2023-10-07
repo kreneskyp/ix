@@ -1,0 +1,75 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.loaders.agents.initialize_self_ask_with_search",
+    "config_schema": {
+        "properties": {
+            "max_execution_time": {
+                "default": null,
+                "type": "number"
+            },
+            "max_iterations": {
+                "default": 15,
+                "type": "number"
+            },
+            "return_intermediate_steps": {
+                "default": false,
+                "type": "boolean"
+            },
+            "verbose": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "return_intermediate_steps",
+            "max_iterations",
+            "max_execution_time",
+            "verbose"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "key": "llm",
+            "required": true,
+            "source_type": "llm",
+            "type": "target"
+        },
+        {
+            "key": "tools",
+            "multiple": true,
+            "source_type": [
+                "tool",
+                "toolkit"
+            ],
+            "type": "target"
+        }
+    ],
+    "description": "Agent that asks itself queries and searches for answers in a given context.",
+    "display_type": "node",
+    "fields": [
+        {
+            "default": false,
+            "name": "return_intermediate_steps",
+            "type": "boolean"
+        },
+        {
+            "default": 15,
+            "name": "max_iterations",
+            "nullable": true,
+            "type": "integer"
+        },
+        {
+            "name": "max_execution_time",
+            "nullable": true,
+            "type": "float"
+        },
+        {
+            "default": false,
+            "name": "verbose",
+            "type": "boolean"
+        }
+    ],
+    "name": "Self Ask with Search Agent",
+    "type": "agent"
+}

@@ -1,74 +1,108 @@
-import React, { Suspense, useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Center, Spinner, VStack } from "@chakra-ui/react";
+import {
+  Spinner,
+  Box,
+  HStack,
+  useDisclosure,
+  Tab,
+  Tooltip,
+  TabPanel,
+  TabPanels,
+  IconButton,
+} from "@chakra-ui/react";
 
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
-import { ScrollableBox } from "site/ScrollableBox";
-import { useMessageStream } from "chat/hooks/useMessageStream";
-import SideBarPlanList from "chat/SideBarPlanList";
+import { RightSidebar } from "site/RightSidebar";
+import SideBarPlanList from "chat/sidebar/SideBarPlanList";
 import SideBarArtifactList from "chat/sidebar/SideBarArtifactList";
-import SideBarAgentList from "chat/sidebar/SideBarAgentList";
-import ChatMessages from "chat/ChatMessages";
-
+import { ChatInterface } from "chat/ChatInterface";
+import { useChatGraph } from "chat/hooks/useChatGraph";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  MessagesContext,
-  SubscriptionActiveContext,
-} from "chat/hooks/useChatMessageSubscription";
-import ChatInput from "chat/input/ChatInput";
-import { MessagesTokenContext } from "chat/hooks/useChatMessageTokenSubscription";
-import { useDetailAPI } from "utils/hooks/useDetailAPI";
+  faBox,
+  faClipboardCheck,
+  faRightLeft,
+} from "@fortawesome/free-solid-svg-icons";
+import { SidebarTabList, SidebarTabs } from "site/SidebarTabs";
+import { ChatMembersButton } from "chat/buttons/ChatMembersButton";
+import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
+import { useLinkedScroll } from "hooks/useLinkedScroll";
+import { ChatGraph, ChatAgents } from "chat/contexts";
+import { AgentCardListButton } from "agents/AgentCardListButton";
+import { ChatAgentCard } from "chat/agents/ChatAgentCard";
 
-export const ChatContentShim = ({ graph }) => {
-  const { messages, streams, subscriptionActive } = useMessageStream(
-    graph.chat
-  );
+export const ChatLeftPaneShim = ({ graph }) => {
+  const chatAgentsAPI = usePaginatedAPI(`/api/agents/`, {
+    limit: 10000,
+    load: false,
+  });
+  const queryArgs = { chat_id: graph.chat.id };
+  const onUpdateAgents = useCallback(() => {
+    chatAgentsAPI.load(queryArgs);
+  }, [chatAgentsAPI.load]);
+
+  // force refresh on chat.id change
+  useEffect(() => {
+    chatAgentsAPI.load(queryArgs);
+  }, [chatAgentsAPI.load, graph.chat.id]);
 
   return (
-    <MessagesTokenContext.Provider value={streams}>
-      <MessagesContext.Provider value={messages}>
-        <SubscriptionActiveContext.Provider value={subscriptionActive}>
-          <ScrollableBox>
-            <Suspense>
-              <ChatMessages chat={graph.chat} />
-            </Suspense>
-          </ScrollableBox>
-          <Center
-            w="100%"
-            p={4}
-            mb={4}
-            boxShadow="0px -1px 4px rgba(0, 0, 0, 0.1)"
-          >
-            {/* Bottom aligned section */}
-            <Box ml={95}>
-              <ChatInput chat={graph.chat} />
-            </Box>
-          </Center>
-        </SubscriptionActiveContext.Provider>
-      </MessagesContext.Provider>
-    </MessagesTokenContext.Provider>
+    <ChatGraph.Provider value={graph}>
+      <ChatAgents.Provider value={chatAgentsAPI}>
+        <AgentCardListButton Card={ChatAgentCard} />
+        <ChatMembersButton
+          graph={graph}
+          onUpdateAgents={onUpdateAgents}
+          agentPage={chatAgentsAPI.page}
+        />
+      </ChatAgents.Provider>
+    </ChatGraph.Provider>
   );
 };
 
-export const ChatLeftPaneShim = ({ graph, loadGraph }) => {
+export const ChatRightSidebar = ({ graph, disclosure, drawerRef }) => {
   return (
-    <Suspense>
-      <VStack spacing={4} align="stretch">
-        <SideBarAgentList graph={graph} loadGraph={loadGraph} />
-        <SideBarPlanList plans={graph.plans} />
-        <SideBarArtifactList chat={graph.chat} artifacts={graph.artifacts} />
-      </VStack>
-    </Suspense>
+    <RightSidebar {...disclosure} drawerRef={drawerRef}>
+      <SidebarTabs>
+        <SidebarTabList>
+          <Tooltip label="Tasks" aria-label="Tasks">
+            <Tab>
+              <FontAwesomeIcon icon={faClipboardCheck} />
+            </Tab>
+          </Tooltip>
+          <Tooltip label="Artifacts" aria-label="Artifacts">
+            <Tab>
+              <FontAwesomeIcon icon={faBox} />
+            </Tab>
+          </Tooltip>
+        </SidebarTabList>
+        <TabPanels p={0} m={0} display="flex" flex="1" flexDirection="column">
+          <TabPanel>
+            <SideBarPlanList plans={graph.plans} />
+          </TabPanel>
+          <TabPanel>
+            <SideBarArtifactList
+              chat={graph.chat}
+              artifacts={graph.artifacts}
+            />
+          </TabPanel>
+        </TabPanels>
+      </SidebarTabs>
+    </RightSidebar>
   );
-};
-
-export const useChatGraph = (id) => {
-  return useDetailAPI(`/api/chats/${id}/graph`);
 };
 
 export const ChatView = () => {
   const { id } = useParams();
   const { response, call: loadGraph, isLoading } = useChatGraph(id);
   const graph = response?.data;
+  const rightSidebarDisclosure = useDisclosure({ defaultIsOpen: true });
+  const {
+    updateScroll,
+    targetRef: scrollBoxRef,
+    sourceRef: drawerRef,
+  } = useLinkedScroll();
 
   useEffect(() => {
     loadGraph();
@@ -77,14 +111,40 @@ export const ChatView = () => {
   return (
     <Layout>
       <LayoutLeftPane>
+        {isLoading || !graph ? <Spinner /> : <ChatLeftPaneShim graph={graph} />}
+      </LayoutLeftPane>
+      <LayoutContent>
         {isLoading || !graph ? (
           <Spinner />
         ) : (
-          <ChatLeftPaneShim graph={graph} loadGraph={loadGraph} />
+          <HStack justifyContent={"start"}>
+            <Box
+              width="100%"
+              height="100vh"
+              display="flex"
+              flexDirection="column"
+            >
+              <ChatInterface
+                graph={graph}
+                scrollboxProps={{ ref: scrollBoxRef }}
+              />
+            </Box>
+            <Box position="absolute" top={0} right={0} mt={4} mr={4}>
+              <IconButton
+                ml="auto"
+                icon={<FontAwesomeIcon icon={faRightLeft} />}
+                onClick={rightSidebarDisclosure.onOpen}
+                aria-label="Open Sidebar"
+                title={"Open Sidebar"}
+              />
+            </Box>
+            <ChatRightSidebar
+              graph={graph}
+              disclosure={rightSidebarDisclosure}
+              drawerRef={drawerRef}
+            />
+          </HStack>
         )}
-      </LayoutLeftPane>
-      <LayoutContent>
-        {isLoading || !graph ? <Spinner /> : <ChatContentShim graph={graph} />}
       </LayoutContent>
     </Layout>
   );
