@@ -167,7 +167,9 @@ class TestAsyncSaveArtifact:
         )
 
         artifact = await Artifact.objects.aget()
-        msg = await TaskLogMessage.objects.alatest("created_at")
+        msg = await TaskLogMessage.objects.filter(content__type="ARTIFACT").alatest(
+            "created_at"
+        )
         assert result == str(artifact.id)
         assert artifact.artifact_type == "custom_mock_type"
         assert msg.content["artifact_type"] == "custom_mock_type"
@@ -188,7 +190,9 @@ class TestAsyncSaveArtifact:
             callbacks=[aix_handler],
         )
         artifact = await Artifact.objects.aget()
-        msg = await TaskLogMessage.objects.alatest("created_at")
+        msg = await TaskLogMessage.objects.filter(content__type="ARTIFACT").alatest(
+            "created_at"
+        )
         assert result == str(artifact.id)
         assert msg.content["artifact_id"] == str(artifact.id)
 
@@ -212,6 +216,9 @@ class TestAsyncSaveArtifact:
             callbacks=[aix_handler],
         )
         artifact = await Artifact.objects.aget()
-        msg = await TaskLogMessage.objects.alatest("created_at")
+        msg = await TaskLogMessage.objects.filter(content__type="ARTIFACT").alatest(
+            "created_at"
+        )
+        assert aix_handler.task.id == msg.task_id
         assert result == str(artifact.id)
         assert msg.content["artifact_id"] == str(artifact.id)
