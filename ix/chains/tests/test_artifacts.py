@@ -204,7 +204,7 @@ class TestAsyncSaveArtifact:
         This handles the case where artifact is running in a subtask of the main task.
         """
 
-        afake_task(parent=aix_handler.task)
+        await afake_task(parent=aix_handler.task)
         chain = await aload_chain(ARTIFACT_FROM_ARTIFACT)
 
         # fake_task(parent=task)
