@@ -14,75 +14,39 @@ import { v4 as uuid4 } from "uuid";
 export const useObjectEditorView = (id, load) => {
   const [idRef, setIdRef] = useState(null);
   const [isNew, setIsNew] = useState(null);
-  const [wasCreated, setWasCreated] = useState(null);
-  const [urlChanged, setUrlChanged] = useState(false);
-  const [prevId, setPrevId] = useState(null);
 
+  // idRef changes:
+  // 1. switch between existing -> load
+  // 2. switch from new to saved -> don't load (it was created in place)
+  // 3. switch from new to existing -> existing -> load
+  // 4. switch from existing to new -> new -> don't load
   useEffect(() => {
-    const firstRender = isNew === null;
-    if (firstRender) {
-      setIsNew(id === undefined);
-    } else {
-      // 1. Check for switching between existing objects
-      if (id !== undefined && !isNew && !wasCreated && id !== prevId) {
-        setIdRef(id);
-        load();
-      }
-
-      // 2. Switching from a newly created object to an existing one
-      else if (id !== undefined && isNew && wasCreated && urlChanged) {
-        setIsNew(false);
-        setWasCreated(false);
-        setIdRef(id);
-        load();
-      }
-
-      // 3. A new object was created
-      else if (id !== undefined && isNew && wasCreated) {
-        setWasCreated(true);
-        setUrlChanged(true);
-      }
-
-      // 4. switching from new to existing
-      else if (id !== undefined && !isNew && !wasCreated) {
-        setIsNew(false);
-        setWasCreated(false);
-        setIdRef(id);
-        load();
-      }
-
-      // 4. Switching from existing to new
-      else if (id === undefined && !isNew) {
-        setIsNew(true);
-        setWasCreated(false);
-      }
-
-      // 5. Switching from a created object back to new
-      else if (id === undefined && wasCreated) {
-        setIsNew(true);
-        setWasCreated(false);
-        setIdRef(uuid4());
-      }
+    if (idRef === null) {
+      return;
     }
 
-    // Update previous ID at the end of each cycle
-    setPrevId(id);
-  }, [id]);
-
-  useEffect(() => {
     if (isNew === false) {
       load();
-      setIdRef(id);
-    } else {
-      setWasCreated(false);
-      setIdRef(uuid4());
     }
-  }, [isNew]);
+  }, [idRef, isNew]);
+
+  // ID change indicates:
+  // 1. Switching between existing objects
+  // 2. A new object was created (url changed)
+  // 3. switching from existing to new blank form
+  useEffect(() => {
+    if (id === undefined || id === null) {
+      const newId = uuid4();
+      setIdRef(newId);
+      setIsNew(true);
+    } else {
+      setIdRef(id);
+      setIsNew(false);
+    }
+  }, [id]);
 
   return {
     isNew,
     idRef,
-    wasCreated,
-    setWasCreated,
   };
 };
