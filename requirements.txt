@@ -38,6 +38,7 @@ pytest-cov==4.1.0
 pytest-django==4.5.2
 pytest-mock==3.11.1
 pytest-snapshot==0.9.0
+pytest-xdist==2.4.0
 redis==5.0.0
 requests==2.31.0
 tiktoken==0.5.1
