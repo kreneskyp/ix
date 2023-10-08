@@ -16,7 +16,6 @@ export const useTestChat = (chain_id) => {
 
   React.useEffect(() => {
     if (chain_id && loadedChainId != chain_id) {
-      console.log("useTestChat: loading chat: ", chain_id)
       setLoadedChainId(chain_id);
       loadChat();
     }
