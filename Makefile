@@ -158,6 +158,26 @@ compile_relay: nodejs
 # =========================================================
 
 
+.PHONY: db
+db: compose
+	@echo starting IX dev db
+	@if [ -z "$$(docker ps -q -f name=ix_db_vscode)" ]; then docker-compose run --name ix_db_vscode -d -p 5432:5432 db; else echo "Container ix_db_vscode already running."; fi
+
+.PHONY: redis
+redis: compose
+	@echo starting IX dev redis
+	@if [ -z "$$(docker ps -q -f name=ix_redis_vscode)" ]; then docker-compose run --name ix_redis_vscode -d -p 6379:6379 redis; else echo "Container ix_redis_vscode already running."; fi
+
+.PHONY: vscode
+vscode: db redis
+
+.PHONY: vscode-down
+vscode-down: compose
+	@echo stopping and removing IX dev vscode, db and redis
+	@if [ ! -z "$$(docker ps -q -f name=ix_db_vscode)" ]; then docker stop ix_db_vscode; docker rm -f ix_db_vscode; else echo "Container ix_db_vscode is not running."; fi
+	@if [ ! -z "$$(docker ps -q -f name=ix_redis_vscode)" ]; then docker stop ix_redis_vscode; docker rm -f ix_redis_vscode; else echo "Container ix_redis_vscode is not running."; fi
+
+
 .PHONY: cluster
 cluster: compose
 	@echo starting IX dev cluster
