@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"terminal.integrated.env.osx": {
+			"DJANGO_SETTING_MODULE": "ix.server.vscode_settings",
+			"DJANGO_SECRET_KEY": "NOT_A_SECRET_KEY"
+		},
+		"terminal.integrated.env.linux": {
+			"DJANGO_SETTING_MODULE": "ix.server.vscode_settings",
+			"DJANGO_SECRET_KEY": "NOT_A_SECRET_KEY"
+		},
+		"terminal.integrated.env.windows": {
+			"DJANGO_SETTING_MODULE": "ix.server.vscode_settings",
+			"DJANGO_SECRET_KEY": "NOT_A_SECRET_KEY"
+		}
+	}
+}
