@@ -12,7 +12,7 @@ class ChoicesEnum(str, Enum):
     GO = "go"
 
 
-class TestModel(BaseModel):
+class MockModel(BaseModel):
     field1: str
     field2: int
     field3: bool = False
@@ -209,7 +209,7 @@ class GetFieldsBase:
 
 
 class TestGetFieldsFromModel(GetFieldsBase):
-    field_source = TestModel
+    field_source = MockModel
 
     def test_exclude_non_allowed_type(self, field_overrides):
         # Extend TestModel with a field of non-allowed type
@@ -217,7 +217,7 @@ class TestGetFieldsFromModel(GetFieldsBase):
             field1: str
             field2: int
             field3: bool = False
-            field4: TestModel  # non-allowed type
+            field4: MockModel  # non-allowed type
 
         expected_fields = [
             NodeTypeField(
@@ -235,7 +235,7 @@ class TestGetFieldsFromModel(GetFieldsBase):
 
 
 class TestGetFieldsFromMethod(GetFieldsBase):
-    field_source = TestModel.loader
+    field_source = MockModel.loader
 
 
 class TestGetFieldsFromABC(GetFieldsBase):
