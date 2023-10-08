@@ -7,15 +7,21 @@
 	"settings": {
 		"terminal.integrated.env.osx": {
 			"DJANGO_SETTING_MODULE": "ix.server.vscode_settings",
-			"DJANGO_SECRET_KEY": "NOT_A_SECRET_KEY"
+			"DJANGO_SECRET_KEY": "NOT_A_SECRET_KEY",
+			"DATABASE_HOST": "localhost",
+			"REDIS_HOST": "localhost",
 		},
 		"terminal.integrated.env.linux": {
 			"DJANGO_SETTING_MODULE": "ix.server.vscode_settings",
-			"DJANGO_SECRET_KEY": "NOT_A_SECRET_KEY"
+			"DJANGO_SECRET_KEY": "NOT_A_SECRET_KEY",
+			"DATABASE_HOST": "localhost",
+			"REDIS_HOST": "localhost",
 		},
 		"terminal.integrated.env.windows": {
 			"DJANGO_SETTING_MODULE": "ix.server.vscode_settings",
-			"DJANGO_SECRET_KEY": "NOT_A_SECRET_KEY"
+			"DJANGO_SECRET_KEY": "NOT_A_SECRET_KEY",
+			"DATABASE_HOST": "localhost",
+			"REDIS_HOST": "localhost",
 		}
 	}
 }

@@ -1,6 +1,7 @@
 import logging
 from typing import Dict, Any, List
 from unittest.mock import MagicMock
+from django.conf import settings
 
 import pytest
 import pytest_asyncio
@@ -50,7 +51,7 @@ async def arequest_user(mocker):
 @pytest.fixture
 def clean_redis():
     """Ensure redis is clean before and after tests"""
-    redis_client = redis.Redis(host="redis", port=6379, db=0)
+    redis_client = redis.Redis(**settings.REDIS)
     redis_client.flushall()
     yield
     redis_client.flushall()
