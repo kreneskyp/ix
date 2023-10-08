@@ -287,16 +287,15 @@ agents: cluster components
 	$(LOAD_FIXTURE) agent/knowledge
 
 
-# Generate fixture for NodeTypes defined in python fixtures.
-# This converts all NodeTypes present in the database into a
-# Django fixture required for unit tests.
-#
-# This will import_langchain and then export both
-# new and existing types from the table.
-.PHONY: node_types_fixture
-node_types_fixture: compose
+# Load components into database
+.PHONY: components
+components: compose
 	${DOCKER_COMPOSE_RUN} ./manage.py import_langchain
-	${DOCKER_COMPOSE_RUN} ./manage.py dumpdata chains.NodeType --indent 2 > ix/chains/fixtures/node_types.json
+
+# Create test snapshots for components
+.PHONY: snapshots
+snapshots: compose
+	${DOCKER_COMPOSE_RUN} pytest ix/chains/tests/test_import_langchain.py --snapshot-update
 
 # =========================================================
 # Testing
