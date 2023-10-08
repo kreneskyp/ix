@@ -29,7 +29,7 @@
             }
         },
         "required": [
-            "verbose"
+            "max_tokens_limit"
         ],
         "type": "object"
     },
@@ -136,7 +136,7 @@
             "min": null,
             "name": "max_tokens_limit",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "Optional[int]"

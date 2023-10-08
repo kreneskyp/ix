@@ -19,11 +19,7 @@
                 "type": "number"
             }
         },
-        "required": [
-            "temperature",
-            "anthropic_api_key",
-            "anthropic_api_url"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

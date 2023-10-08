@@ -17,8 +17,6 @@
             }
         },
         "required": [
-            "return_direct",
-            "verbose",
             "metaphor_api_key"
         ],
         "type": "object"

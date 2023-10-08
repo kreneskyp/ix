@@ -14,9 +14,7 @@
                 "type": "object"
             }
         },
-        "required": [
-            "messages"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": [

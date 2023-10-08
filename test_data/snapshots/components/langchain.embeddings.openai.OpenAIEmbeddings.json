@@ -24,16 +24,13 @@
             },
             "model": {
                 "default": "text-embedding-ada-002",
+                "enum": [
+                    "text-embedding-ada-002"
+                ],
                 "type": "string"
             }
         },
-        "required": [
-            "model",
-            "allowed_special",
-            "disallowed_special",
-            "chunk_size",
-            "max_retries"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,
@@ -44,10 +41,11 @@
             "choices": [
                 {
                     "label": "text-embedding-ada-002",
-                    "name": "text-embedding-ada-002"
+                    "value": "text-embedding-ada-002"
                 }
             ],
             "default": "text-embedding-ada-002",
+            "input_type": "select",
             "name": "model",
             "type": "string"
         },

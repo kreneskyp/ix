@@ -15,8 +15,10 @@ from typing import (
     Union,
 )
 from uuid import UUID, uuid4
-from pydantic import BaseModel, Field, root_validator
+from pydantic import BaseModel, Field, model_validator
+from pydantic_core import PydanticUndefined
 
+from ix.utils.pydantic import get_model_fields
 from ix.utils.graphene.pagination import QueryPage
 
 
@@ -90,20 +92,20 @@ class NodeTypeField(BaseModel):
 
     name: str
     parent: Optional[str] = None
-    label: Optional[str]
+    label: Optional[str] = ""
     type: str
-    default: Optional[Any]
-    required: bool = True
+    default: Optional[Any] = None
+    required: bool = False
     choices: Optional[List[Choice]] = None
 
     # form & display properties
-    input_type: InputType = None
+    input_type: Optional[InputType] = None
     min: Optional[float] = None
     max: Optional[float] = None
     step: Optional[float] = None
     style: Optional[Dict[str, Any]] = None
 
-    @root_validator
+    @model_validator(mode="before")
     def validate_min_max(cls, values):
         input_type = values.get("input_type")
         min_value = values.get("min")
@@ -147,19 +149,34 @@ class NodeTypeField(BaseModel):
             if exclude and field_name in exclude:
                 continue
 
-            if isinstance(field_type, type) and issubclass(field_type, BaseModel):
+            # skip fields that aren't primitive types. objects are handled separately
+            # as connectors.
+            if isinstance(field_type, type) and issubclass(
+                field_type, (BaseModel, ABC)
+            ):
                 continue
 
             default = None
-            required = False
-            if hasattr(model, "__fields__"):
+
+            if issubclass(model, BaseModel):
+                # Pydantic v2 compat: __fields__ renamed to model_fields
+                model_fields = get_model_fields(model)
+                model_field = model_fields.get(field_name)
+                if model_field:
+                    default = model_field.default
+                    if default is PydanticUndefined:
+                        default = None
+            elif hasattr(model, "__fields__"):
+                # Pydantic v1 compat
                 model_field = model.__fields__.get(field_name)
                 if model_field:
                     default = model_field.default
-                    required = model_field.required
-            elif hasattr(model, "__dict__"):
+                    if default is PydanticUndefined:
+                        default = None
+
+            elif issubclass(model, ABC):
                 default = model.__dict__.get(field_name, None)
-                required = default is None and not is_optional(field_type)
+            required = default is None and not is_optional(field_type)
 
             field_objs.append(
                 ParsedField(
@@ -301,7 +318,7 @@ class NodeTypeField(BaseModel):
         else:
             raise ValueError(f"Invalid object type: {type(obj)}")
 
-        return [field.dict() for field in fields]
+        return [field.model_dump() for field in fields]
 
 
 NodeTypes = Literal[
@@ -341,7 +358,7 @@ class Connector(BaseModel):
 
     # The object type this should be converted to. Used when the source will
     # be converted to another type. e.g. VectorStore.as_retriever()
-    as_type: Optional[NodeTypes]
+    as_type: Optional[NodeTypes] = None
 
     # Indicate this connector expects a template that will be lazy loaded.
     # Loading the root component will initiate this property as a NodeTemplate
@@ -366,7 +383,7 @@ class FieldGroup(BaseModel):
 
 class NodeType(BaseModel):
     id: UUID = Field(default_factory=uuid4)
-    name: str = Field(..., max_length=255)
+    name: Optional[str] = Field(default=None, max_length=255)
     description: Optional[str] = None
     class_path: str = Field(..., max_length=255)
     type: str = Field(..., max_length=255)
@@ -377,7 +394,7 @@ class NodeType(BaseModel):
     child_field: Optional[str] = Field(None, max_length=32)
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
     @staticmethod
     def generate_config_schema(fields: List[NodeTypeField]) -> dict:

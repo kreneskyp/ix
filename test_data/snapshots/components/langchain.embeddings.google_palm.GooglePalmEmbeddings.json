@@ -12,10 +12,7 @@
                 "type": "string"
             }
         },
-        "required": [
-            "google_api_key",
-            "model_name"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

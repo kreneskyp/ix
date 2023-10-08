@@ -12,10 +12,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "verbose",
-            "spec"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": [

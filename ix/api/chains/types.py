@@ -6,10 +6,8 @@ from typing import (
 )
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field, model_validator
-from pydantic_core import PydanticUndefined
 
 from ix.utils.graphene.pagination import QueryPage
-from ix.utils.pydantic import get_model_fields
 
 
 class Chain(BaseModel):
@@ -20,7 +18,7 @@ class Chain(BaseModel):
     is_agent: bool = True
 
     # agent pass through properties
-    alias: Optional[str]
+    alias: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -32,9 +30,9 @@ class CreateChain(BaseModel):
     is_agent: bool = True
 
     # agent pass through properties
-    alias: Optional[str]
+    alias: Optional[str] = None
 
-    @root_validator
+    @model_validator(mode="before")
     def validate_chain(cls, values):
         if values.get("is_agent") and not values.get("alias"):
             values["alias"] = "unnamed"

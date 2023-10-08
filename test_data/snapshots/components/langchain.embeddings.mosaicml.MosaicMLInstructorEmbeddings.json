@@ -24,13 +24,7 @@
                 "type": "number"
             }
         },
-        "required": [
-            "endpoint_url",
-            "embed_instruction",
-            "query_instruction",
-            "retry_sleep",
-            "mosaicml_api_token"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

@@ -48,19 +48,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "model_path",
-            "n_ctx",
-            "n_parts",
-            "seed",
-            "f16_kv",
-            "logits_all",
-            "vocab_only",
-            "use_mlock",
-            "n_threads",
-            "n_batch",
-            "n_gpu_layers"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

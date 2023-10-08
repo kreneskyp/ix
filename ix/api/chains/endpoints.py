@@ -17,7 +17,6 @@ from ix.api.chains.types import (
     Chain as ChainPydantic,
     ChainQueryPage,
     CreateChain,
-    NodeTypePage,
     UpdateChain,
 )
 from ix.chat.models import Chat
@@ -110,18 +109,11 @@ async def create_chain_instance(**kwargs) -> Chain:
 
 
 @router.post("/chains/", response_model=ChainPydantic, tags=["Chains"])
-<<<<<<< HEAD
-async def create_chain(chain: CreateChain):
-    new_chain = Chain(**chain.model_dump())
-    await new_chain.asave()
-    return ChainPydantic.model_validate(new_chain)
-=======
 async def create_chain(
     chain: CreateChain, user: AbstractUser = Depends(get_request_user)
 ):
-    new_chain = await create_chain_instance(**chain.dict(), user=user)
-    return ChainPydantic.from_orm(new_chain)
->>>>>>> master
+    new_chain = await create_chain_instance(**chain.model_dump(), user=user)
+    return ChainPydantic.model_validate(new_chain)
 
 
 @router.get("/chains/{chain_id}", response_model=ChainPydantic, tags=["Chains"])

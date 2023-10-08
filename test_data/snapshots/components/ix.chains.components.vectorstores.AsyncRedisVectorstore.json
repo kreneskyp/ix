@@ -37,11 +37,6 @@
             }
         },
         "required": [
-            "redis_url",
-            "index_name",
-            "content_key",
-            "metadata_key",
-            "vector_key",
             "allowed_search_types"
         ],
         "type": "object"

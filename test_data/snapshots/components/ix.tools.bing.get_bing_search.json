@@ -25,8 +25,6 @@
             }
         },
         "required": [
-            "return_direct",
-            "verbose",
             "bing_subscription_key",
             "bing_search_url"
         ],

@@ -16,11 +16,7 @@
                 "type": "object"
             }
         },
-        "required": [
-            "name",
-            "description",
-            "parameters"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

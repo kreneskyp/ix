@@ -20,12 +20,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "return_intermediate_steps",
-            "max_iterations",
-            "max_execution_time",
-            "verbose"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": [

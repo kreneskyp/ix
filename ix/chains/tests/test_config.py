@@ -1,6 +1,8 @@
 from abc import ABC
 from enum import Enum
 from typing import Literal, Optional
+from langchain.chat_models.base import BaseChatModel
+from langchain.vectorstores.base import VectorStoreRetriever
 
 import pytest
 from pydantic import BaseModel
@@ -17,16 +19,18 @@ class TestModel(BaseModel):
     field2: int
     field3: bool = False
     literal: Literal["foo", "bar"] = "bar"
+    field_with_default: str = "default"
     optional: Optional[str] = None
     choices_enum: ChoicesEnum
 
     @classmethod
     def loader(
         cls,
+        choices_enum: ChoicesEnum,
         field1: str,
         field2: int,
-        choices_enum: ChoicesEnum,
         field3: bool = False,
+        field_with_default: str = "default",
         literal: Literal["foo", "bar"] = "bar",
         optional: Optional[str] = None,
     ):
@@ -37,6 +41,7 @@ class TestABC(ABC):
     field1: str
     field2: int
     field3: bool = False
+    field_with_default: str = "default"
     literal: Literal["foo", "bar"] = "bar"
     optional: Optional[str] = None
     choices_enum: ChoicesEnum
@@ -95,6 +100,27 @@ class GetFieldsBase:
 
     field_source = None
 
+    def test_field_with_default(self, field_overrides):
+        fields = NodeTypeField.get_fields(
+            self.field_source,
+            include=["field_with_default"],
+            field_options=field_overrides,
+        )
+
+        assert fields[0]["default"] == "default"
+
+    def test_get_literal_field(self, field_overrides):
+        fields = NodeTypeField.get_fields(
+            self.field_source,
+            include=["literal"],
+            field_options=field_overrides,
+        )
+
+        assert fields[0]["choices"] == [
+            {"value": "foo", "label": "Foo"},
+            {"value": "bar", "label": "Bar"},
+        ]
+
     def test_get_fields_overrides_include(self, field_overrides):
         expected_fields_include = [
             NodeTypeField(
@@ -103,10 +129,10 @@ class GetFieldsBase:
                 type="str",
                 default="custom_default",
                 required=True,
-            ),
+            ).model_dump(),
             NodeTypeField(
                 name="field2", label="Field2", type="int", default=None, required=True
-            ),
+            ).model_dump(),
         ]
 
         assert (
@@ -131,7 +157,7 @@ class GetFieldsBase:
                     {"value": "foo", "label": "Foo"},
                     {"value": "bar", "label": "Bar"},
                 ],
-            ),
+            ).model_dump(),
         ]
 
         assert (
@@ -150,7 +176,7 @@ class GetFieldsBase:
                 default=None,
                 type="str",
                 required=False,
-            ),
+            ).model_dump(),
         ]
 
         assert (
@@ -165,14 +191,14 @@ class GetFieldsBase:
         expected_fields_exclude = [
             NodeTypeField(
                 name="field2", label="Field2", type="int", default=None, required=True
-            ),
+            ).model_dump(),
             NodeTypeField(
                 name="field3",
                 label="Field3",
                 type="boolean",
                 default=False,
                 required=False,
-            ),
+            ).model_dump(),
         ]
 
         assert (
@@ -198,7 +224,7 @@ class GetFieldsBase:
                     {"label": "CPP", "value": "cpp"},
                     {"label": "GO", "value": "go"},
                 ],
-            ),
+            ).model_dump(),
         ]
 
         fields = NodeTypeField.get_fields(
@@ -222,10 +248,10 @@ class TestGetFieldsFromModel(GetFieldsBase):
         expected_fields = [
             NodeTypeField(
                 name="field1", label="Field1", type="str", default=None, required=True
-            ),
+            ).model_dump(),
             NodeTypeField(
                 name="field2", label="Field2", type="int", default=None, required=True
-            ),
+            ).model_dump(),
         ]
 
         assert (
@@ -240,3 +266,34 @@ class TestGetFieldsFromMethod(GetFieldsBase):
 
 class TestGetFieldsFromABC(GetFieldsBase):
     field_source = TestABC
+
+
+class TestTroubleCases:
+    def test_default_string(self):
+        """
+        Defaults weren't being detected properly for
+        pydantic v1 models.
+        """
+        fields = NodeTypeField.get_fields(
+            VectorStoreRetriever,
+            include=[
+                "search_type",
+            ],
+        )
+
+        assert fields[0]["default"] == "similarity"
+
+    def test_checkbox(self):
+        """Checkbox wasn't being detected properly.
+
+        input_field needs to be optional for boolean fields to
+        default to checkbox because it's handled in the UI
+        """
+        fields = NodeTypeField.get_fields(
+            BaseChatModel,
+            include=[
+                "verbose",
+            ],
+        )
+        assert fields[0]["type"] == 'boolean'
+        assert fields[0]["input_type"] is None

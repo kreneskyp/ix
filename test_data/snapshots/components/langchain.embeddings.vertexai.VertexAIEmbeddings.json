@@ -11,9 +11,7 @@
                 "type": "string"
             }
         },
-        "required": [
-            "model_name"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

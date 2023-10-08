@@ -25,9 +25,8 @@
             }
         },
         "required": [
-            "verbose",
-            "tags",
-            "target_alias"
+            "target_alias",
+            "delegate_inputs"
         ],
         "type": "object"
     },
@@ -97,7 +96,7 @@
             "min": null,
             "name": "delegate_inputs",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "list"

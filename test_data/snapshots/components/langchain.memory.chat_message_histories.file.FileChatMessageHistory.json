@@ -8,9 +8,7 @@
                 "type": "string"
             }
         },
-        "required": [
-            "file_path"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,
