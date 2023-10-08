@@ -18,7 +18,7 @@ class TestAgentProcessHistory(MessageTeardown):
     MSG_3 = {"type": "COMMAND", "message": "THIS IS A TEST 3"}
     MSG_4 = {"type": "COMMAND", "message": "THIS IS A TEST 4"}
 
-    @pytest.mark.parametrize("content_type", TaskHistory.EXCLUDED_MSG_TYPES)
+    @pytest.mark.parametrize("content_type", sorted(TaskHistory.EXCLUDED_MSG_TYPES))
     def test_query_message_excludes_msgs(self, content_type, task):
         """Test that non-relevant messages are excluded from history"""
         msg = fake_task_log_msg_type(content_type, task=task)

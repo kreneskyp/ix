@@ -73,28 +73,15 @@ const ChainEditorProvider = ({ graph, onError, children }) => {
 export const ChainEditorView = () => {
   const { id } = useParams();
   const { response, call, isLoading } = useDetailAPI(`/api/chains/${id}/graph`);
-  const { isNew, idRef, wasCreated, setWasCreated } = useObjectEditorView(
-    id,
-    call
-  );
+  const { isNew, idRef } = useObjectEditorView(id, call);
   const toast = useToast();
 
-  // Defer to isNew and wasCreated to determine if graph response is current for
+  // Defer to isNew to determine if graph response is current for
   // UX state. This is necessary because the graph response is not cleared when
   // switching to a new chain. Also check that the id matches the response id.
   // to avoid rendering stale state when first loading a newly created chain.
   const graph =
-    (isNew && !wasCreated) || id !== response?.data?.chain?.id
-      ? null
-      : response?.data;
-
-  // load graph when chain is created to ensure graph exists
-  // whether this was a new chain or an existing chain
-  useEffect(() => {
-    if (wasCreated) {
-      call();
-    }
-  }, [wasCreated, call]);
+    isNew || id !== response?.data?.chain?.id ? null : response?.data;
 
   const rightSidebarDisclosure = useDisclosure({ defaultIsOpen: true });
 
@@ -114,7 +101,6 @@ export const ChainEditorView = () => {
       <ChainGraphEditor
         key={idRef}
         rightSidebarDisclosure={rightSidebarDisclosure}
-        onCreate={setWasCreated}
       />
     );
   } else if (isLoading || !graph) {

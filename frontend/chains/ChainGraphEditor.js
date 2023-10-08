@@ -49,7 +49,7 @@ const getExpectedTypes = (connector) => {
     : new Set([connector.source_type]);
 };
 
-const ChainGraphEditor = ({ graph, rightSidebarDisclosure, onCreate }) => {
+const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
   const reactFlowWrapper = useRef(null);
   const edgeUpdate = useRef(true);
   const { call: loadChain } = useAxios();
@@ -77,7 +77,6 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure, onCreate }) => {
       // first node creates the new chain
       // redirect to the correct URL
       if (chain?.id === undefined) {
-        onCreate(true);
         navigate(`/chains/${response.data.chain_id}`, { replace: true });
         loadChain(`/api/chains/${response.data.chain_id}`, {
           onSuccess: (response) => {
