@@ -10,6 +10,7 @@ import {
 import ArtifactModalButton from "chat/sidebar/ArtifactModalButton";
 import { useChatArtifactSubscription } from "chat/hooks/useChatArtifactSubscription";
 import { SCROLLBAR_CSS } from "site/css";
+import { FileDropZone } from "components/FileDropZone";
 
 const ARTIFACT_TYPE_ICONS = {
   file: faFile,
@@ -45,41 +46,49 @@ const SideBarArtifactList = ({ chat, artifacts: initialArtifacts }) => {
   );
 
   return (
-    <Box width="100%" minWidth={170} overflowY={"hidden"}>
+    <Box width="100%" minWidth={170} overflowY={"hidden"} height={"100vh"}>
       <FormLabel as="h3" size="md" align="left">
         Artifacts
       </FormLabel>
-      <VStack overflowY="scroll" css={SCROLLBAR_CSS} spacing={2} width="100%">
-        {!artifacts || artifacts?.length === 0 ? (
-          <Text
-            p={2}
-            fontSize="xs"
-            color={colorMode === "light" ? "gray.800" : "gray.400"}
-            sx={{ borderRadius: "5px" }}
-          >
-            Artifacts will appear here as they are created by agents.
-          </Text>
-        ) : null}
-        {artifacts?.map((artifact, i) => (
-          <Box
-            key={i}
-            bg="transparent"
-            color={colorMode === "light" ? "gray.700" : "gray.400"}
-            _hover={{
-              bg: colorMode === "light" ? "gray.300" : "gray.700",
-              cursor: "pointer",
-            }}
-            width="100%"
-          >
-            <ArtifactModalButton artifact={artifact}>
-              <HStack justify="left" py={1} pl={2} width="100%">
-                <TypeIcon artifact={artifact} />
-                <span style={{ marginLeft: 10 }}>{artifact.name}</span>
-              </HStack>
-            </ArtifactModalButton>
-          </Box>
-        ))}
-      </VStack>
+      <FileDropZone task_id={chat.task_id}>
+        <VStack
+          overflowY="scroll"
+          css={SCROLLBAR_CSS}
+          spacing={2}
+          width="100%"
+          height={"calc(100vh - 150px)"}
+        >
+          {!artifacts || artifacts?.length === 0 ? (
+            <Text
+              p={2}
+              fontSize="xs"
+              color={colorMode === "light" ? "gray.800" : "gray.400"}
+              sx={{ borderRadius: "5px" }}
+            >
+              Artifacts will appear here as they are created by agents.
+            </Text>
+          ) : null}
+          {artifacts?.map((artifact, i) => (
+            <Box
+              key={i}
+              bg="transparent"
+              color={colorMode === "light" ? "gray.700" : "gray.400"}
+              _hover={{
+                bg: colorMode === "light" ? "gray.300" : "gray.700",
+                cursor: "pointer",
+              }}
+              width="100%"
+            >
+              <ArtifactModalButton artifact={artifact}>
+                <HStack justify="left" py={1} pl={2} width="100%">
+                  <TypeIcon artifact={artifact} />
+                  <span style={{ marginLeft: 10 }}>{artifact.name}</span>
+                </HStack>
+              </ArtifactModalButton>
+            </Box>
+          ))}
+        </VStack>
+      </FileDropZone>
     </Box>
   );
 };
