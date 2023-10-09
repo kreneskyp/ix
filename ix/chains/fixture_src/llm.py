@@ -71,7 +71,7 @@ OPENAI_LLM = {
         {
             "name": "metadata",
             "type": "dict",
-        }
+        },
     ],
 }
 
