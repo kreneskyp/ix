@@ -14,12 +14,10 @@ import { useEditorColorMode } from "chains/editor/useColorMode";
  * @param {function} onChange - The callback function that is called when the dictionary is changed.
  */
 export const DictForm = ({ label, dict, onChange }) => {
-  console.log("dict: ", dict);
   let entries = Object.entries(dict);
   if (entries.length === 0) {
     entries = [["", ""]];
   }
-  console.log("entries: ", entries);
   const colorMode = useEditorColorMode();
 
   /**
@@ -50,7 +48,7 @@ export const DictForm = ({ label, dict, onChange }) => {
   return (
     <Box width="100%">
       <HStack>
-        <FormLabel justify="start" whiteSpace="nowrap">
+        <FormLabel justify="start" whiteSpace="nowrap" mr={0} pr={0}>
           {label}
         </FormLabel>
         <Text as="span" color={"green.300"}>
