@@ -2,10 +2,11 @@ import uuid
 
 from django.db import models
 from ix.agents.models import Agent, Resource
+from ix.ix_users.models import OwnedModel
 from ix.task_log.models import Task, Artifact
 
 
-class Chat(models.Model):
+class Chat(OwnedModel):
     """
     A chat is a conversation between one or more agents. A chat includes a lead agent who
     is responsible for the chat. The lead agent will respond or delegate questions to other

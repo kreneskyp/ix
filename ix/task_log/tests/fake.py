@@ -348,7 +348,14 @@ def fake_chat(**kwargs):
         task = kwargs["task"]
     else:
         task = fake_task(agent=agent)
-    chat = Chat.objects.create(id=chat_id, name=name, task=task, lead=agent)
+    chat = Chat.objects.create(
+        id=chat_id,
+        name=name,
+        task=task,
+        lead=agent,
+        user=kwargs.get("user", None),
+        group=kwargs.get("group", None),
+    )
 
     fake_feedback(
         task=task, feedback="create a django app for cat memes", message_id=-1
