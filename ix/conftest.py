@@ -48,6 +48,12 @@ async def arequest_user(mocker):
     yield mock_get_request_user
 
 
+@pytest.fixture()
+def owner_filtering(settings):
+    settings.OWNER_FILTERING = True
+    yield
+
+
 @pytest.fixture
 def clean_redis():
     """Ensure redis is clean before and after tests"""
