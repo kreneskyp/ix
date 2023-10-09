@@ -22,6 +22,25 @@ const TypeIcon = ({ artifact }) => {
   return <FontAwesomeIcon icon={icon} />;
 };
 
+const SideBarSubtext = ({ children, ...props }) => {
+  const { colorMode } = useColorMode();
+  const style = {
+    fontSize: "xs",
+    color: colorMode === "light" ? "gray.800" : "gray.500",
+    borderRadius: "5px",
+    p: 2,
+    border: "1px solid",
+    borderColor: colorMode === "light" ? "gray.300" : "gray.600",
+    bg: colorMode === "light" ? "gray.100" : "gray.800",
+    width: "100%",
+  };
+  return (
+    <Text {...style} {...props}>
+      {children}
+    </Text>
+  );
+};
+
 const SideBarArtifactList = ({ chat, artifacts: initialArtifacts }) => {
   const [artifacts, setArtifacts] = useState(initialArtifacts);
 
@@ -59,14 +78,9 @@ const SideBarArtifactList = ({ chat, artifacts: initialArtifacts }) => {
           height={"calc(100vh - 150px)"}
         >
           {!artifacts || artifacts?.length === 0 ? (
-            <Text
-              p={2}
-              fontSize="xs"
-              color={colorMode === "light" ? "gray.800" : "gray.400"}
-              sx={{ borderRadius: "5px" }}
-            >
+            <SideBarSubtext>
               Artifacts will appear here as they are created by agents.
-            </Text>
+            </SideBarSubtext>
           ) : null}
           {artifacts?.map((artifact, i) => (
             <Box
@@ -87,6 +101,9 @@ const SideBarArtifactList = ({ chat, artifacts: initialArtifacts }) => {
               </ArtifactModalButton>
             </Box>
           ))}
+          <SideBarSubtext mt={2} border={"1px dashed"} bg="transparent">
+            Drop files here to upload
+          </SideBarSubtext>
         </VStack>
       </FileDropZone>
     </Box>
