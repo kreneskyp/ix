@@ -68,6 +68,10 @@ OPENAI_LLM = {
             "type": "boolean",
             "default": True,
         },
+        {
+            "name": "metadata",
+            "type": "dict",
+        }
     ],
 }
 
