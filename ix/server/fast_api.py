@@ -20,6 +20,7 @@ app.include_router(chats_router)
 app.include_router(artifacts_router)
 app.include_router(editor_router)
 app.include_router(datasources_router)
+app.include_router(workspace_router)
 
 
 def custom_openapi():
