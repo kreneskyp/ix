@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import SliderInput from "components/SliderInput";
 import { useEditorColorMode } from "chains/editor/useColorMode";
+import { DictForm } from "components/DictForm";
 
 const getLabel = (field) => field.label || labelify(field.name || "");
 
@@ -163,6 +164,24 @@ const AutoFieldSelect = ({ field, value, onChange }) => {
   );
 };
 
+const AutoFieldDict = ({ field, value, onChange }) => {
+  const handleChange = useCallback(
+    (newValue) => {
+      // Check if newValue is null or undefined, if so, set it to an empty object
+      newValue = newValue || {};
+      onChange(field.name, newValue);
+    },
+    [field, onChange]
+  );
+
+  // Check if value is null or undefined, if so, set it to an empty object
+  value = value || {};
+
+  return (
+    <DictForm dict={value} onChange={handleChange} label={getLabel(field)} />
+  );
+};
+
 // explicit input types
 const INPUTS = {
   select: AutoFieldSelect,
@@ -171,12 +190,14 @@ const INPUTS = {
   input: AutoFieldInput,
   secret: AutoFieldSecret,
   textarea: AutoFieldTextArea,
+  dict: AutoFieldDict,
 };
 
 // type specific default inputs
 const TYPE_INPUTS = {
   boolean: "checkbox",
   bool: "checkbox",
+  dict: "dict",
 };
 
 const DEFAULT_COMPONENT = AutoFieldInput;
