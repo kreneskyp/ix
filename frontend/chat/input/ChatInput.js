@@ -30,6 +30,7 @@ import { clear_editor, INITIAL_EDITOR_CONTENT } from "utils/slate";
 import { useChatColorMode } from "chains/editor/useColorMode";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 import { useChatStyle } from "chat/ChatInterface";
+import { FileDropZone } from "components/FileDropZone";
 
 export const ChatInput = ({ chat }) => {
   const focusRef = useRef();
@@ -209,38 +210,45 @@ export const ChatInput = ({ chat }) => {
 
   return (
     <Box
-      p={2}
       border="1px solid"
       borderRadius={5}
       maxH="400px"
       overflowY="auto"
       {...chatStyle.input}
     >
-      <Popover isOpen={isOpen} placement="top-start" initialFocusRef={focusRef}>
-        <PopoverAnchor>
-          <Box ref={focusRef} width={1}></Box>
-        </PopoverAnchor>
-        <PopoverContent mb={2} boxShadow="xl">
-          <PopoverBody border="1px solid" {...chatStyle.autocomplete}>
-            {searchComponent}
-          </PopoverBody>
-        </PopoverContent>
-      </Popover>
+      <FileDropZone task_id={chat?.task_id}>
+        <Box p={2}>
+          <Popover
+            isOpen={isOpen}
+            placement="top-start"
+            initialFocusRef={focusRef}
+          >
+            <PopoverAnchor>
+              <Box ref={focusRef} width={1}></Box>
+            </PopoverAnchor>
+            <PopoverContent mb={2} boxShadow="xl">
+              <PopoverBody border="1px solid" {...chatStyle.autocomplete}>
+                {searchComponent}
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
 
-      <Slate
-        editor={editor}
-        value={INITIAL_EDITOR_CONTENT}
-        onChange={onChange}
-        width={chatStyle.input.width}
-      >
-        <Editable
-          renderElement={renderElement}
-          renderLeaf={renderLeaf}
-          onKeyDown={onKeyDown}
-          placeholder="Enter some text..."
-          width={chatStyle.input.width}
-        />
-      </Slate>
+          <Slate
+            editor={editor}
+            value={INITIAL_EDITOR_CONTENT}
+            onChange={onChange}
+            width={chatStyle.input.width}
+          >
+            <Editable
+              renderElement={renderElement}
+              renderLeaf={renderLeaf}
+              onKeyDown={onKeyDown}
+              placeholder="Enter text or drop a file..."
+              width={chatStyle.input.width}
+            />
+          </Slate>
+        </Box>
+      </FileDropZone>
     </Box>
   );
 };
