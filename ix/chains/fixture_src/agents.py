@@ -1,6 +1,5 @@
 from ix.chains.fixture_src.common import VERBOSE
 from ix.chains.fixture_src.targets import (
-    PROMPT_TARGET,
     TOOLS_TARGET,
     LLM_TARGET,
     MEMORY_TARGET,
@@ -27,12 +26,15 @@ EXECUTOR_BASE_FIELDS = [
 ]
 
 
+OPENAI_FUNCTIONS_AGENT_CLASS_PATH = (
+    "ix.chains.loaders.agents.initialize_openai_functions"
+)
 OPENAI_FUNCTIONS_AGENT = {
-    "class_path": "ix.chains.loaders.agents.initialize_openai_functions",
+    "class_path": OPENAI_FUNCTIONS_AGENT_CLASS_PATH,
     "type": "agent",
     "name": "OpenAI Function Agent",
     "description": "Agent that uses OpenAI's API to generate text.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET, MEMORY_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -41,7 +43,7 @@ OPENAI_MULTIFUNCTION_AGENT = {
     "type": "agent",
     "name": "OpenAI Multifunction Agent",
     "description": "Agent that uses OpenAI's API to generate text.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET, MEMORY_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -50,7 +52,7 @@ ZERO_SHOT_REACT_DESCRIPTION_AGENT = {
     "type": "agent",
     "name": "Zero Shot React Description Agent",
     "description": "Agent that generates descriptions by taking zero-shot approach using reaction information.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET, MEMORY_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -59,7 +61,7 @@ REACT_DOCSTORE_AGENT = {
     "type": "agent",
     "name": "React Docstore Agent",
     "description": "Agent that interacts with the document store to obtain reaction-based information.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -68,7 +70,7 @@ SELF_ASK_WITH_SEARCH_AGENT = {
     "type": "agent",
     "name": "Self Ask with Search Agent",
     "description": "Agent that asks itself queries and searches for answers in a given context.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -77,7 +79,7 @@ CONVERSATIONAL_REACT_DESCRIPTION_AGENT = {
     "type": "agent",
     "name": "Conversational React Description Agent",
     "description": "Agent that provides descriptions in a conversational manner using reaction information.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -86,7 +88,7 @@ CHAT_ZERO_SHOT_REACT_DESCRIPTION_AGENT = {
     "type": "agent",
     "name": "Chat Zero Shot React Description Agent",
     "description": "Agent that generates descriptions in a chat-based context using a zero-shot approach and reaction information.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -95,7 +97,7 @@ CHAT_CONVERSATIONAL_REACT_DESCRIPTION_AGENT = {
     "type": "agent",
     "name": "Chat Conversational React Description Agent",
     "description": "Agent that provides descriptions in a chat-based context in a conversational manner using reaction information.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 
@@ -104,7 +106,7 @@ STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION_AGENT = {
     "type": "agent",
     "name": "Structured Chat Zero Shot React Description Agent",
     "description": "Agent that generates descriptions in a structured chat context using a zero-shot approach and reaction information.",
-    "connectors": [LLM_TARGET, TOOLS_TARGET, PROMPT_TARGET, MEMORY_TARGET],
+    "connectors": [LLM_TARGET, TOOLS_TARGET],
     "fields": EXECUTOR_BASE_FIELDS,
 }
 

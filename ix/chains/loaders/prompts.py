@@ -2,7 +2,7 @@ import logging
 from typing import Dict, Any
 
 from ix.chains.loaders.context import IxContext
-from langchain import PromptTemplate
+from langchain.prompts.prompt import PromptTemplate
 from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,

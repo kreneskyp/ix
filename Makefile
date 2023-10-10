@@ -11,7 +11,7 @@ endif
 DOCKERFILE=Dockerfile
 DOCKERFILE_TARGET=app
 DOCKER_REPOSITORY=${DOCKER_REGISTRY}/kreneskyp/ix/sandbox
-HASH_FILES=requirements*.txt package.json Dockerfile
+HASH_FILES=requirements*.txt package.json Dockerfile client_config/*
 IMAGE_TAG=$(shell cat $(HASH_FILES) | ${HASHER} | cut -d ' ' -f 1)
 IMAGE_URL=$(DOCKER_REPOSITORY):$(IMAGE_TAG)
 IMAGE_SENTINEL=.sentinel/image
@@ -158,6 +158,26 @@ compile_relay: nodejs
 # =========================================================
 
 
+.PHONY: db
+db: compose
+	@echo starting IX dev db
+	@if [ -z "$$(docker ps -q -f name=ix_db_vscode)" ]; then docker-compose run --name ix_db_vscode -d -p 5432:5432 db; else echo "Container ix_db_vscode already running."; fi
+
+.PHONY: redis
+redis: compose
+	@echo starting IX dev redis
+	@if [ -z "$$(docker ps -q -f name=ix_redis_vscode)" ]; then docker-compose run --name ix_redis_vscode -d -p 6379:6379 redis; else echo "Container ix_redis_vscode already running."; fi
+
+.PHONY: vscode
+vscode: db redis
+
+.PHONY: vscode-down
+vscode-down: compose
+	@echo stopping and removing IX dev vscode, db and redis
+	@if [ ! -z "$$(docker ps -q -f name=ix_db_vscode)" ]; then docker stop ix_db_vscode; docker rm -f ix_db_vscode; else echo "Container ix_db_vscode is not running."; fi
+	@if [ ! -z "$$(docker ps -q -f name=ix_redis_vscode)" ]; then docker stop ix_redis_vscode; docker rm -f ix_redis_vscode; else echo "Container ix_redis_vscode is not running."; fi
+
+
 .PHONY: cluster
 cluster: compose
 	@echo starting IX dev cluster
@@ -263,18 +283,19 @@ agents: cluster components
 	$(LOAD_FIXTURE) agent/klarna
 	$(LOAD_FIXTURE) agent/smithy
 	$(LOAD_FIXTURE) agent/metaphor
+	$(LOAD_FIXTURE) agent/ingest
+	$(LOAD_FIXTURE) agent/knowledge
 
 
-# Generate fixture for NodeTypes defined in python fixtures.
-# This converts all NodeTypes present in the database into a
-# Django fixture required for unit tests.
-#
-# This will import_langchain and then export both
-# new and existing types from the table.
-.PHONY: node_types_fixture
-node_types_fixture: compose
+# Load components into database
+.PHONY: components
+components: compose
 	${DOCKER_COMPOSE_RUN} ./manage.py import_langchain
-	${DOCKER_COMPOSE_RUN} ./manage.py dumpdata chains.NodeType --indent 2 > ix/chains/fixtures/node_types.json
+
+# Create test snapshots for components
+.PHONY: snapshots
+snapshots: compose
+	${DOCKER_COMPOSE_RUN} pytest ix/chains/tests/test_import_langchain.py --snapshot-update
 
 # =========================================================
 # Testing

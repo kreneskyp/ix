@@ -86,6 +86,8 @@ FROM base as app
 COPY --from=wheelhouse /var/wheels /var/wheels
 RUN pip install --no-index --find-links=/var/wheels -r $APP/requirements.txt
 
+COPY client_config /var/client_config
+
 # XXX: hacky way of generating a unique key on build, needs to be removed prior to deploy readiness
 # Generate a Django secret key
 # Set the Django secret key

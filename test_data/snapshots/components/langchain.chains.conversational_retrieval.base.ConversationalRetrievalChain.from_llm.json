@@ -43,6 +43,7 @@
         {
             "key": "memory",
             "multiple": true,
+            "required": true,
             "source_type": "memory",
             "type": "target"
         },

@@ -170,7 +170,11 @@ class NodeTypeField(BaseModel):
                 )
             )
 
-        return cls._get_fields(field_objs, field_options, parent=parent)
+        return cls._get_fields(
+            field_objs,
+            field_options,
+            parent=parent,
+        )
 
     @classmethod
     def get_fields_from_method(
@@ -208,7 +212,11 @@ class NodeTypeField(BaseModel):
                 )
             )
 
-        return cls._get_fields(fields, field_options, parent=parent)
+        return cls._get_fields(
+            fields,
+            field_options,
+            parent=parent,
+        )
 
     @staticmethod
     def _get_fields(
@@ -335,12 +343,25 @@ class Connector(BaseModel):
     # be converted to another type. e.g. VectorStore.as_retriever()
     as_type: Optional[NodeTypes]
 
+    # Indicate this connector expects a template that will be lazy loaded.
+    # Loading the root component will initiate this property as a NodeTemplate
+    # instance with a reference to the connected node. The component may then
+    # initialize node and any nodes that branch from it at runtime by calling
+    # the NodeTemplate.format(input=variables) method. Given variables will
+    # replace {variables} in any of the node's config values.
+    template: Optional[bool] = False
+
     # Allow more than one connection to this connector
     multiple: bool = False
 
     # Chains connected to this property will join into an implicit SequentialChain
     # when auto_sequence is True. Disable for chains to be stored as a list.
     auto_sequence: bool = False
+
+
+class FieldGroup(BaseModel):
+    label: Optional[str] = None
+    class_path: Optional[str] = None
 
 
 class NodeType(BaseModel):
@@ -352,6 +373,7 @@ class NodeType(BaseModel):
     display_type: str = Field(default="node", max_length=10)
     connectors: Optional[List[Connector]] = None
     fields: Optional[List[NodeTypeField]] = None
+    field_groups: Optional[Dict[str, FieldGroup]] = None
     child_field: Optional[str] = Field(None, max_length=32)
 
     class Config:

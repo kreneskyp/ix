@@ -1,0 +1,110 @@
+{
+    "child_field": null,
+    "class_path": "langchain.document_loaders.JSONLoader",
+    "config_schema": {
+        "properties": {
+            "content_key": {
+                "default": null,
+                "type": "string"
+            },
+            "file_path": {
+                "default": null,
+                "type": "object"
+            },
+            "jq_schema": {
+                "default": null,
+                "type": "string"
+            },
+            "json_lines": {
+                "default": false,
+                "type": "boolean"
+            },
+            "text_content": {
+                "default": true,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "file_path",
+            "jq_schema"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Load a `JSON` file using a `jq` schema.\n\n    Example:\n        [{\"text\": ...}, {\"text\": ...}, {\"text\": ...}] -> schema = .[].text\n        {\"key\": [{\"text\": ...}, {\"text\": ...}, {\"text\": ...}]} -> schema = .key[].text\n        [\"\", \"\", \"\"] -> schema = .[]\n    ",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "File_path",
+            "max": null,
+            "min": null,
+            "name": "file_path",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "Union"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": "textarea",
+            "label": "Jq_schema",
+            "max": null,
+            "min": null,
+            "name": "jq_schema",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "Content_key",
+            "max": null,
+            "min": null,
+            "name": "content_key",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": true,
+            "input_type": null,
+            "label": "Text_content",
+            "max": null,
+            "min": null,
+            "name": "text_content",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "input_type": null,
+            "label": "Json_lines",
+            "max": null,
+            "min": null,
+            "name": "json_lines",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        }
+    ],
+    "name": "JSON Loader",
+    "type": "document_loader"
+}

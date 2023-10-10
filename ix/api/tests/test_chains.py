@@ -1,4 +1,5 @@
 from uuid import uuid4
+from faker import Faker
 
 import pytest
 import pytest_asyncio
@@ -20,8 +21,14 @@ from ix.task_log.tests.fake import (
     afake_chain_node,
     afake_chain_edge,
     afake_chain,
+    afake_node_type,
+    afake_agent,
 )
 from ix.ix_users.tests.fake import afake_user
+from ix.ix_users.tests.mixins import OwnershipTestsMixin
+
+
+faker = Faker()
 
 
 @pytest_asyncio.fixture
@@ -32,6 +39,7 @@ async def amock_node_type(anode_types):
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("arequest_user")
 class TestNodeType:
     async def test_get_node_types(self, amock_node_type):
         async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -190,6 +198,33 @@ class TestNodeType:
         assert response.status_code == 404
         result = response.json()
         assert result["detail"] == "Node type not found"
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures("anode_types", "arequest_user")
+class TestNodeTypeOwnership(OwnershipTestsMixin):
+    object_type = "node_types"
+
+    async def setup_object(self, **kwargs):
+        node_type = await afake_node_type(**kwargs)
+        return node_type
+
+    async def get_create_data(self):
+        return {
+            "name": "New Node Type",
+            "description": "New Node Type Description",
+            "class_path": "ix.chains.tests.DoesNotNeedToExistForTest",
+            "type": "chain",
+        }
+
+    async def get_update_data(self, instance):
+        return {
+            "name": "Updated Node Type",
+            "description": "Updated Node Type Description",
+            "class_path": faker.pystr(),
+            "type": "llm",
+            "config": {},
+        }
 
 
 @pytest.mark.django_db
@@ -411,6 +446,32 @@ class TestChain:
         assert response.status_code == 404, response.content
         result = response.json()
         assert result["detail"] == "Chain not found"
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures("anode_types")
+class TestChainOwnership(OwnershipTestsMixin):
+    object_type = "chains"
+
+    async def setup_object(self, **kwargs):
+        chain = await afake_chain(**kwargs)
+        await afake_agent(chain=chain)
+        return chain
+
+    async def get_create_data(self):
+        return {
+            "name": "New Chain",
+            "description": "A new chain",
+            "alias": "auto_agent_test",
+            "is_agent": True,
+        }
+
+    async def get_update_data(self, instance):
+        return {
+            "name": "Updated Chain",
+            "description": "Updated Chain",
+            "alias": "update_test",
+        }
 
 
 @pytest.mark.django_db

@@ -9,7 +9,9 @@ from langchain.chains import SequentialChain
 from langchain.chains.base import Chain as LangchainChain
 
 from ix.chains.loaders.prompts import load_prompt
+from ix.chains.loaders.templates import NodeTemplate
 from ix.chains.models import NodeType, ChainNode, ChainEdge
+from ix.utils.config import format_config
 from ix.utils.importlib import import_class
 
 import_node_class = import_class
@@ -76,7 +78,9 @@ def get_sequence_inputs(sequence: List[LangchainChain]) -> List[str]:
     return list(input_variables)
 
 
-def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
+def load_node(
+    node: ChainNode, context: IxContext, root=True, variables=None, as_template=False
+) -> Any:
     """
     Generic loader for loading the Langchain component a ChainNode represents.
 
@@ -90,10 +94,17 @@ def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
     node_type: NodeType = node.node_type
     config = node.config.copy() if node.config else {}
 
-    # resolve secrets and settings
     # TODO: implement resolve secrets from vault and settings from vocabulary
     #       neither of these subsystems are implemented yet. For now load all
     #       values as text from config dict
+    # resolve secrets and settings
+    # format the config in this order:
+    # 1. format with context variables
+    # 2. format with secrets
+    if variables is not None:
+        config = format_config(config, variables)
+    elif as_template:
+        return NodeTemplate(node, context)
 
     # load type specific config options. This is generally for loading
     # ix specific features into the config dict
@@ -116,11 +127,18 @@ def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
         # e.g. retriever converting Vectorstore.
         connector = node_type.connectors_as_dict[key]
         as_type = connector.get("as_type", None) or node_group[0].node_type.type
+        connector_is_template = connector.get("template", False)
 
         if node_group[0].node_type.type in {"chain", "agent"}:
             # load a sequence of linked nodes into a children property
             # this supports loading as a list of chains or auto-SequentialChain
-            first_instance = load_node(node_group[0], context, root=False)
+            first_instance = load_node(
+                node_group[0],
+                context,
+                root=False,
+                variables=variables,
+                as_template=connector_is_template,
+            )
             sequence = load_sequence(node_group[0], first_instance, context)
             if connector.get("auto_sequence", True):
                 input_variables = get_sequence_inputs(sequence)
@@ -143,10 +161,17 @@ def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
             else:
                 if len(node_group) > 1:
                     raise ValueError(f"Multiple values for {key} not allowed")
-                config[key] = load_node(node_group[0], context, root=False)
+                config[key] = load_node(
+                    node_group[0],
+                    context,
+                    root=False,
+                    variables=variables,
+                    as_template=connector_is_template,
+                )
 
     # converted flattened property groups back into nested properties. Fields with
-    # the same parent are grouped together into a single object.
+    # the same parent are grouped together into a single object. By default, groups
+    # are dicts but this can be overridden by setting the field_group's class_path
     property_groups = defaultdict(list)
     for field in node_type.fields or []:
         if field.get("parent"):
@@ -158,6 +183,10 @@ def load_node(node: ChainNode, context: IxContext, root=True) -> Any:
             for field in property_group_fields
             if field["name"] in config
         }
+    if node_type.field_groups:
+        for key, field_group in node_type.field_groups.items():
+            if field_group_class_path := field_group.get("class_path"):
+                config[key] = import_node_class(field_group_class_path)(**config[key])
 
     # load component class and initialize. A type specific initializer may be used here
     # for initialization common to all components of that type.

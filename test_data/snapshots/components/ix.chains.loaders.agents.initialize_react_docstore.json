@@ -43,17 +43,6 @@
                 "toolkit"
             ],
             "type": "target"
-        },
-        {
-            "key": "prompt",
-            "source_type": "prompt",
-            "type": "target"
-        },
-        {
-            "key": "memory",
-            "multiple": true,
-            "source_type": "memory",
-            "type": "target"
         }
     ],
     "description": "Agent that interacts with the document store to obtain reaction-based information.",

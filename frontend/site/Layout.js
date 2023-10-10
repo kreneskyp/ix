@@ -3,7 +3,7 @@ import { Divider, Flex, Spacer, VStack } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { ColorModeButton } from "components/ColorModeButton";
 import { CenteredSpinner } from "site/CenteredSpinner";
-import { NewChatButton } from "chat/NewChatButton";
+import { NewChatButton } from "chat/buttons/NewChatButton";
 import { NewAgentButton } from "agents/NewAgentButton";
 import Navigation from "site/Navigation";
 

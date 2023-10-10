@@ -90,19 +90,24 @@ WSGI_APPLICATION = "ix.server.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+DATABASE_HOST = os.environ.get("DATABASE_HOST", default="db")
+DATABASE_PORT = os.environ.get("DATABASE_PORT", default=5432)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "ix",
         "USER": "ix",
         "PASSWORD": "ix",
-        "HOST": "db",
-        "PORT": "5432",
+        "HOST": DATABASE_HOST,
+        "PORT": DATABASE_PORT,
     }
 }
 
 
 AUTH_USER_MODEL = "ix_users.User"
+
+# filter objects by ownership, disable for local deployments
+OWNER_FILTERING = os.environ.get("OWNER_FILTERING", "0") == "1"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -158,23 +163,36 @@ GRAPHENE = {"SCHEMA": "ix.schema.schema"}
 
 ASGI_APPLICATION = "ix.server.asgi.application"
 
+REDIS_HOST = os.environ.get("REDIS_HOST", default="redis")
+REDIS_PORT = os.environ.get("REDIS_PORT", default=6379)
+REDIS_DB = os.environ.get("REDIS_DB", default=0)
+REDIS = {
+    "host": REDIS_HOST,
+    "port": REDIS_PORT,
+    "db": REDIS_DB,
+}
+
+REDIS_DB_CHANNEL_LAYERS = os.environ.get("REDIS_DB_CHANNEL_LAYERS", default=0)
+REDIS_DB_CELERY = os.environ.get("REDIS_DB_CELERY", default=2)
+REDIS_DB_CACHES = os.environ.get("REDIS_DB_CACHES", default=1)
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis", 6379)],
+            "hosts": [(REDIS_HOST, REDIS_PORT)],
         },
     },
 }
 
 # Celery configuration
-CELERY_BROKER_URL = "redis://redis:6379/2"
-CELERY_RESULT_BACKEND = "redis://redis:6379/2"
+CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB_CELERY}"
+CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB_CELERY}"
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis:6379/1",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB_CACHES}",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -236,3 +254,5 @@ VAULT_TOKEN__USER_TOKENS = VAULT_ROOT_KEY
 VAULT_CLIENT_CRT = "/var/vault/certs/client.crt"
 VAULT_CLIENT_KEY = "/var/vault/certs/client.key"
 VAULT_TLS_VERIFY = False
+
+WORKSPACE_DIR = os.environ.get("WORKSPACE_DIR", "/var/app/workdir/")

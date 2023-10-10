@@ -1,6 +1,7 @@
 import logging
 from typing import Dict, Any, List
 from unittest.mock import MagicMock
+from django.conf import settings
 
 import pytest
 import pytest_asyncio
@@ -30,7 +31,7 @@ from ix.task_log.tests.fake import (
     afake_think,
     afake_task,
 )
-from ix.ix_users.tests.fake import get_default_user
+from ix.ix_users.tests.fake import get_default_user, afake_user
 from ix.utils.importlib import import_class, _import_class
 
 logger = logging.getLogger(__name__)
@@ -39,10 +40,24 @@ logger = logging.getLogger(__name__)
 USER_INPUT = {"user_input": "hello agent 1"}
 
 
+@pytest_asyncio.fixture
+async def arequest_user(mocker):
+    user = await afake_user()
+    mock_get_request_user = mocker.patch("ix.api.auth._get_request_user")
+    mock_get_request_user.return_value = user
+    yield mock_get_request_user
+
+
+@pytest.fixture()
+def owner_filtering(settings):
+    settings.OWNER_FILTERING = True
+    yield
+
+
 @pytest.fixture
 def clean_redis():
     """Ensure redis is clean before and after tests"""
-    redis_client = redis.Redis(host="redis", port=6379, db=0)
+    redis_client = redis.Redis(**settings.REDIS)
     redis_client.flushall()
     yield
     redis_client.flushall()

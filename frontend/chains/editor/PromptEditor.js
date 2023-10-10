@@ -1,13 +1,5 @@
 import React, { useCallback, useState } from "react";
-import {
-  Button,
-  Flex,
-  Textarea,
-  Select,
-  VStack,
-  HStack,
-  Text,
-} from "@chakra-ui/react";
+import { Button, Flex, Select, VStack, HStack, Text } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTrashAlt,
@@ -15,9 +7,8 @@ import {
   faArrowUp,
   faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
-import { SCROLLBAR_CSS } from "site/css";
-import AutoResizingTextarea from "components/AutoResizingTextArea";
 import { useEditorColorMode } from "chains/editor/useColorMode";
+import { PromptMessageInput } from "chains/editor/PromptMessageInput";
 
 const ROLE_OPTIONS = ["user", "assistant"];
 
@@ -155,18 +146,16 @@ const PromptEditor = ({ data, onChange }) => {
               )}
             </HStack>
           </Flex>
-          <AutoResizingTextarea
-            {...input}
+
+          <PromptMessageInput
             borderRadius={5}
+            border="1px solid"
+            p={2}
             width="100%"
-            value={message.template}
+            initialValue={message.template}
             placeholder="Enter template"
-            onChange={(e) =>
-              handleMessageChange(index, "template", e.target.value)
-            }
-            isRequired
-            css={scrollbar}
-            size={"sm"}
+            onChange={(text) => handleMessageChange(index, "template", text)}
+            {...input}
           />
         </VStack>
       ))}

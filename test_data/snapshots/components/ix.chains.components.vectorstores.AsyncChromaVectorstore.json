@@ -35,6 +35,14 @@
                 "default": false,
                 "type": "boolean"
             },
+            "collection_name": {
+                "default": "langchain",
+                "type": "string"
+            },
+            "persist_directory": {
+                "default": "./chroma",
+                "type": "object"
+            },
             "search_type": {
                 "default": "similarity",
                 "type": "string"
@@ -60,6 +68,34 @@
     "description": "Chroma vector database",
     "display_type": "node",
     "fields": [
+        {
+            "choices": null,
+            "default": "langchain",
+            "input_type": null,
+            "label": "Collection_name",
+            "max": null,
+            "min": null,
+            "name": "collection_name",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": "./chroma",
+            "input_type": null,
+            "label": "Persist_directory",
+            "max": null,
+            "min": null,
+            "name": "persist_directory",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
+            "type": "Optional[str]"
+        },
         {
             "choices": null,
             "default": "172.17.42.1",

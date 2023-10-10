@@ -1,3 +1,4 @@
+from ix.ix_users.tests.mixins import OwnershipTestsMixin
 from ix.server.fast_api import app
 import pytest
 from ix.agents.models import Agent
@@ -9,7 +10,7 @@ from ix.task_log.tests.fake import afake_agent, afake_chain
 
 @pytest.mark.django_db
 class TestAgent:
-    async def test_get_agents(self, anode_types):
+    async def test_get_agents(self, auser, anode_types):
         agent_1 = await afake_agent(name="Mock Agent 1", alias="mock_agent_1")
         agent_2 = await afake_agent(name="Mock Agent 2", alias="mock_agent_2")
         async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -158,3 +159,31 @@ class TestAgent:
         assert response.status_code == 404
         result = response.json()
         assert result["detail"] == "Agent not found"
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures("anode_types")
+class TestAgentOwnership(OwnershipTestsMixin):
+    object_type = "agents"
+
+    async def setup_object(self, **kwargs):
+        return await afake_agent(**kwargs)
+
+    async def get_create_data(self):
+        chain = await afake_chain()
+        return {
+            "name": "New Agent",
+            "alias": "new_guy",
+            "purpose": "New Agent Purpose",
+            "model": "gpt-4",
+            "chain_id": str(chain.id),
+        }
+
+    async def get_update_data(self, instance):
+        return {
+            "name": "New Agent",
+            "alias": "new_guy",
+            "purpose": "New Agent Purpose",
+            "model": "gpt-4",
+            "chain_id": str(instance.chain_id),
+        }

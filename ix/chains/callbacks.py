@@ -1,3 +1,5 @@
+import functools
+import json
 import logging
 import time
 import traceback
@@ -23,6 +25,20 @@ from ix.task_log.models import Task, TaskLogMessage
 
 
 logger = logging.getLogger(__name__)
+
+
+def log_error(func):
+    """simple logging decorator to expose errors in callback methods"""
+
+    @functools.wraps(func)
+    async def wrapper(*args, **kwargs):
+        try:
+            return await func(*args, **kwargs)
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            raise e
+
+    return wrapper
 
 
 @dataclasses.dataclass
@@ -89,6 +105,7 @@ class IxHandler(AsyncCallbackHandler):
     chain: Chain = None
     agent: Agent = None
     parent_think_msg = None
+    start: int = None
 
     # handlers are shared between run_managers. contexts store state
     # for the managers using run_id as the lookup.
@@ -117,6 +134,7 @@ class IxHandler(AsyncCallbackHandler):
             return None
         return chat.id
 
+    @log_error
     async def on_chat_model_start(
         self,
         serialized: Dict[str, Any],
@@ -146,6 +164,7 @@ class IxHandler(AsyncCallbackHandler):
         """Runs when an LLM model starts"""
         pass
 
+    @log_error
     async def on_llm_new_token(
         self, token: str, parent_run_id: Optional[UUID] = None, **kwargs: Any
     ) -> Any:
@@ -166,6 +185,7 @@ class IxHandler(AsyncCallbackHandler):
     ) -> Any:
         """Run when LLM errors."""
 
+    @log_error
     async def on_chain_start(
         self,
         serialized: Dict[str, Any],
@@ -180,14 +200,28 @@ class IxHandler(AsyncCallbackHandler):
         """Run when chain starts running."""
 
         if not self.parent_think_msg:
+            # Inputs will be encoded as JSON, but if they can't be, we'll just
+            # serialize them as a string.
+            try:
+                json.dumps(inputs)
+            except TypeError:
+                serialized_inputs = str(inputs)
+            else:
+                serialized_inputs = inputs
+
             self.start = time.time()
             think_msg = await TaskLogMessage.objects.acreate(
                 task_id=self.task.id,
                 role="SYSTEM",
-                content={"type": "THINK", "input": inputs, "agent": self.agent.alias},
+                content={
+                    "type": "THINK",
+                    "input": serialized_inputs,
+                    "agent": self.agent.alias,
+                },
             )
             self.parent_think_msg = think_msg
 
+    @log_error
     async def on_chain_end(
         self,
         outputs: Dict[str, Any],
@@ -203,6 +237,7 @@ class IxHandler(AsyncCallbackHandler):
 
         # only record the final thought for now
         if not parent_run_id:
+            runtime = time.time() - self.start if self.start else None
             await TaskLogMessage.objects.acreate(
                 task_id=self.task.id,
                 role="SYSTEM",
@@ -211,7 +246,7 @@ class IxHandler(AsyncCallbackHandler):
                     "type": "THOUGHT",
                     # TODO: hook usage up, might be another signal though.
                     # "usage": response["usage"],
-                    "runtime": time.time() - self.start,
+                    "runtime": runtime,
                 },
             )
 

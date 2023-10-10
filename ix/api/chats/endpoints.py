@@ -1,13 +1,15 @@
 import logging
 import re
 from asgiref.sync import sync_to_async
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 from fastapi import APIRouter, HTTPException
 from typing import Optional, Dict, Any
 from uuid import UUID
 
 from django.db.models import Q
 from django.conf import settings
+from fastapi.params import Depends
+from ix.api.auth import get_request_user
 
 from ix.api.chains.endpoints import DeletedItem
 from ix.chains.management.commands.create_ix_v2 import IX_AGENT_V2
@@ -40,12 +42,8 @@ router = APIRouter()
 
 
 @router.post("/chats/", response_model=ChatPydantic, tags=["Chats"])
-async def create_chat(chat: ChatNew):
-    user_model = get_user_model()
-    user = await user_model.objects.alatest("id")
-
-    # TODO: turn this on once auth is setup for UI
-    # user = info.context.user
+async def create_chat(chat: ChatNew, user: AbstractUser = Depends(get_request_user)):
+    # Check if user is authenticated
     if user.is_anonymous:
         raise Exception(
             "Authentication is required to create a task."
@@ -66,6 +64,7 @@ async def create_chat(chat: ChatNew):
     )
 
     chat_obj = await Chat.objects.acreate(
+        user=user,
         task=task,
         lead=lead,
         name=chat.name,
@@ -84,19 +83,25 @@ async def create_chat(chat: ChatNew):
 
 
 @router.get("/chats/{chat_id}", response_model=ChatPydantic, tags=["Chats"])
-async def get_chat(chat_id: UUID):
+async def get_chat(chat_id: UUID, user: AbstractUser = Depends(get_request_user)):
+    query = Chat.filtered_owners(user)
     try:
-        chat = await Chat.objects.aget(pk=chat_id)
+        chat = await query.aget(pk=chat_id)
     except Chat.DoesNotExist:
         raise HTTPException(status_code=404, detail="Chat not found")
     return ChatPydantic.from_orm(chat)
 
 
 @router.get("/chats/", response_model=ChatQueryPage, tags=["Chats"])
-async def get_chats(search: Optional[str] = None, limit: int = 10, offset: int = 0):
-    query = (
-        Chat.objects.filter(Q(name__icontains=search)) if search else Chat.objects.all()
-    )
+async def get_chats(
+    user: AbstractUser = Depends(get_request_user),
+    search: Optional[str] = None,
+    limit: int = 10,
+    offset: int = 0,
+):
+    query = Chat.filtered_owners(user)
+    if search:
+        query = query.filter(Q(name__icontains=search))
     query = query.order_by("-created_at")
 
     # punting on async implementation of pagination until later
@@ -106,9 +111,11 @@ async def get_chats(search: Optional[str] = None, limit: int = 10, offset: int =
 
 
 @router.put("/chats/{chat_id}", response_model=ChatPydantic, tags=["Chats"])
-async def update_chat(chat_id: UUID, chat: ChatUpdate):
+async def update_chat(
+    chat_id: UUID, chat: ChatUpdate, user: AbstractUser = Depends(get_request_user)
+):
     try:
-        chat_obj = await Chat.objects.aget(pk=chat_id)
+        chat_obj = await Chat.filtered_owners(user).aget(pk=chat_id)
     except Chat.DoesNotExist:
         raise HTTPException(status_code=404, detail="Chat not found")
 
@@ -121,22 +128,25 @@ async def update_chat(chat_id: UUID, chat: ChatUpdate):
 
 
 @router.delete("/chats/{chat_id}", response_model=DeletedItem, tags=["Chats"])
-async def delete_chat(chat_id: UUID):
+async def delete_chat(chat_id: UUID, user: AbstractUser = Depends(get_request_user)):
+    query = Chat.filtered_owners(user)
     try:
-        chat = await Chat.objects.aget(pk=chat_id)
-        await chat.adelete()
-        return DeletedItem(id=chat_id)
+        chat = await query.aget(pk=chat_id)
     except Chat.DoesNotExist:
         raise HTTPException(status_code=404, detail="Chat not found")
+    await chat.adelete()
+    return DeletedItem(id=chat_id)
 
 
 @router.delete(
     "/chats/{chat_id}/agents/{agent_id}", response_model=ChatAgentAction, tags=["Chats"]
 )
-async def remove_agent(chat_id: UUID, agent_id: UUID):
+async def remove_agent(
+    chat_id: UUID, agent_id: UUID, user: AbstractUser = Depends(get_request_user)
+):
     try:
-        chat = await Chat.objects.aget(pk=chat_id)
-        agent = await Agent.objects.aget(pk=agent_id)
+        chat = await Chat.filtered_owners(user).aget(pk=chat_id)
+        agent = await Agent.filtered_owners(user).aget(pk=agent_id)
         await chat.agents.aremove(agent)
         return ChatAgentAction(chat_id=chat.id, agent_id=agent.id)
     except Chat.DoesNotExist:
@@ -148,10 +158,12 @@ async def remove_agent(chat_id: UUID, agent_id: UUID):
 @router.put(
     "/chats/{chat_id}/agents/{agent_id}", response_model=ChatAgentAction, tags=["Chats"]
 )
-async def add_agent(chat_id: UUID, agent_id: UUID):
+async def add_agent(
+    chat_id: UUID, agent_id: UUID, user: AbstractUser = Depends(get_request_user)
+):
     try:
-        chat = await Chat.objects.aget(pk=chat_id)
-        agent = await Agent.objects.aget(pk=agent_id)
+        chat = await Chat.filtered_owners(user).aget(pk=chat_id)
+        agent = await Agent.filtered_owners(user).aget(pk=agent_id)
 
         # Check if the agent is already a lead or an agent
         if chat.lead_id == agent.id or await chat.agents.filter(id=agent.id).aexists():
@@ -167,7 +179,7 @@ async def add_agent(chat_id: UUID, agent_id: UUID):
 
 
 @router.get("/chats/{chat_id}/graph", response_model=ChatGraph, tags=["Chats"])
-async def get_chat_graph(chat_id: str):
+async def get_chat_graph(chat_id: str, user: AbstractUser = Depends(get_request_user)):
     """Chat and related objects
 
     Single object containing objects needed to render the chat view.
@@ -175,8 +187,11 @@ async def get_chat_graph(chat_id: str):
     TODO: this should be broken apart into smaller queries so the UI can
           load this incrementally.
     """
-    chat = await Chat.objects.aget(pk=chat_id)
-    lead = await Agent.objects.aget(pk=chat.lead_id)
+    try:
+        chat = await Chat.filtered_owners(user).aget(pk=chat_id)
+    except Chat.DoesNotExist:
+        raise HTTPException(status_code=404, detail="Chat does not exist.")
+    lead = await Agent.filtered_owners(user).aget(pk=chat.lead_id)
     task = await Task.objects.aget(pk=chat.task_id)
     agents = [AgentPydantic.from_orm(agent) async for agent in chat.agents.all()]
     plans = [PlanPydantic.from_orm(plan) async for plan in task.created_plans.all()]
@@ -209,8 +224,16 @@ def get_artifacts(user_input):
 @router.get(
     "/chats/{chat_id}/messages", response_model=ChatMessageQueryPage, tags=["Chats"]
 )
-async def get_messages(chat_id, limit: int = 10, offset: int = 0):
-    chat = await Chat.objects.aget(pk=chat_id)
+async def get_messages(
+    chat_id,
+    limit: int = 10,
+    offset: int = 0,
+    user: AbstractUser = Depends(get_request_user),
+):
+    try:
+        chat = await Chat.filtered_owners(user).aget(pk=chat_id)
+    except Chat.DoesNotExist:
+        raise HTTPException(status_code=404, detail="Chat does not exist.")
     task_id = chat.task_id
     query = TaskLogMessage.objects.filter(
         Q(task_id=task_id) | Q(task__parent_id=task_id)
@@ -223,8 +246,13 @@ async def get_messages(chat_id, limit: int = 10, offset: int = 0):
 
 
 @router.post("/chats/{chat_id}/messages", response_model=ChatMessage, tags=["Chats"])
-async def send_message(chat_id: str, chat_input: ChatInput):
-    chat = await Chat.objects.aget(pk=chat_id)
+async def send_message(
+    chat_id: str, chat_input: ChatInput, user: AbstractUser = Depends(get_request_user)
+):
+    try:
+        chat = await Chat.filtered_owners(user).aget(pk=chat_id)
+    except Chat.DoesNotExist:
+        raise HTTPException(status_code=404, detail="Chat does not exist.")
     text = chat_input.text
 
     # save to persistent storage
@@ -282,8 +310,14 @@ async def send_message(chat_id: str, chat_input: ChatInput):
 
 
 @router.post("/chats/{chat_id}/messages/clear", tags=["Chats"])
-async def clear_messages(chat_id: str):
-    chat = await Chat.objects.aget(pk=chat_id)
+async def clear_messages(chat_id: str, user: AbstractUser = Depends(get_request_user)):
+    try:
+        chat = await Chat.filtered_owners(user).aget(pk=chat_id)
+    except Chat.DoesNotExist:
+        raise HTTPException(status_code=404, detail="Chat does not exist.")
+    except Agent.DoesNotExist:
+        raise HTTPException(status_code=404, detail="Agent does not exist.")
+
     await TaskLogMessage.objects.filter(task_id=chat.task_id).adelete()
     await TaskLogMessage.objects.filter(task__parent_id=chat.task_id).adelete()
     return DeletedItem(id=chat_id)

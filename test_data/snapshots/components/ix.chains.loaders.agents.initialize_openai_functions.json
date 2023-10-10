@@ -45,11 +45,6 @@
             "type": "target"
         },
         {
-            "key": "prompt",
-            "source_type": "prompt",
-            "type": "target"
-        },
-        {
             "key": "memory",
             "multiple": true,
             "source_type": "memory",

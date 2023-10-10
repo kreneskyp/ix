@@ -14,47 +14,39 @@ import { v4 as uuid4 } from "uuid";
 export const useObjectEditorView = (id, load) => {
   const [idRef, setIdRef] = useState(null);
   const [isNew, setIsNew] = useState(null);
-  const [wasCreated, setWasCreated] = useState(null);
-  useEffect(() => {
-    const firstRender = isNew === null;
-    if (firstRender) {
-      // first render caches whether this started as a new chain
-      setIsNew(id === undefined);
-    } else {
-      // switch from existing to new
-      if (id === undefined && !isNew) {
-        setIsNew(true);
-        setWasCreated(false);
-      }
-      // a new chain was created
-      if (id !== undefined && isNew) {
-        setWasCreated(true);
-      }
-      // switch from created to new
-      if (id === undefined && wasCreated) {
-        setIsNew(true);
-        setWasCreated(false);
-        setIdRef(uuid4());
-      }
-    }
-  }, [id]);
 
+  // idRef changes:
+  // 1. switch between existing -> load
+  // 2. switch from new to saved -> don't load (it was created in place)
+  // 3. switch from new to existing -> existing -> load
+  // 4. switch from existing to new -> new -> don't load
   useEffect(() => {
-    // load chain if id is provided on view load
-    // otherwise state will be handled internally by the editor
+    if (idRef === null) {
+      return;
+    }
+
     if (isNew === false) {
       load();
-      setIdRef(id);
-    } else {
-      // create a uuid here to force a new editor. This helps detect
-      // creating a new object after a new object was just created.
-      setIdRef(uuid4());
     }
-  }, [isNew]);
+  }, [idRef, isNew]);
+
+  // ID change indicates:
+  // 1. Switching between existing objects
+  // 2. A new object was created (url changed)
+  // 3. switching from existing to new blank form
+  useEffect(() => {
+    if (id === undefined || id === null) {
+      const newId = uuid4();
+      setIdRef(newId);
+      setIsNew(true);
+    } else {
+      setIdRef(id);
+      setIsNew(false);
+    }
+  }, [id]);
 
   return {
     isNew,
     idRef,
-    wasCreated,
   };
 };

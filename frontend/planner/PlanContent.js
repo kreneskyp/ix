@@ -14,7 +14,7 @@ import {
   Grid,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import AuthorizeCommandButton from "chat/AuthorizeCommandButton";
+import AuthorizeCommandButton from "chat/buttons/AuthorizeCommandButton";
 
 import SyntaxHighlighter from "react-syntax-highlighter";
 import {

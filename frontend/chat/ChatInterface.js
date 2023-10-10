@@ -1,5 +1,5 @@
 import React, { createContext, Suspense } from "react";
-import { Box, Center, useColorModeValue } from "@chakra-ui/react";
+import { Center, useColorModeValue } from "@chakra-ui/react";
 import { ScrollableBox } from "site/ScrollableBox";
 import { useMessageStream } from "chat/hooks/useMessageStream";
 import ChatMessages from "chat/ChatMessages";

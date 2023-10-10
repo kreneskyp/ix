@@ -2,7 +2,8 @@ from ix.chains.asyncio import SyncToAsyncRun
 from ix.chains.loaders.tools import extract_tool_kwargs
 from typing import Any
 
-from langchain import GoogleSerperAPIWrapper, GoogleSearchAPIWrapper
+from langchain.utilities.google_search import GoogleSearchAPIWrapper
+from langchain.utilities.google_serper import GoogleSerperAPIWrapper
 from langchain.tools import (
     BaseTool,
     GoogleSearchResults,

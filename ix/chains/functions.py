@@ -2,6 +2,7 @@ import json
 import logging
 from typing import Any, TypedDict, List, TypeVar
 from langchain.schema import BaseLLMOutputParser, Generation
+from pydantic import BaseModel
 
 
 T = TypeVar("T")
@@ -16,7 +17,7 @@ class FunctionSchema(TypedDict):
     parameters: Any
 
 
-class OpenAIFunctionParser(BaseLLMOutputParser):
+class OpenAIFunctionParser(BaseLLMOutputParser, BaseModel):
     """
     OpenAI function parser. This parser is used to parse a function call
     out of a response. This is used in conjunction with functions attached
