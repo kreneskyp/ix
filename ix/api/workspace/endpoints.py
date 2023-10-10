@@ -27,7 +27,7 @@ async def upload_file(file: UploadFile = File(...), task_id: str = Form(None)):
         description="",
         storage={
             "type": "write_file",
-            "storage_id": str(file_location),
+            "id": str(file_location),
         }
     )
 
