@@ -92,7 +92,7 @@ services:
     #- .vault_file:/vault/file
     env_file:
       - .vault.env
-    command: "server -dev -dev-tls -config=/vault/config/config.hcl"
+    command: "server -dev-tls -config=/vault/config/config.hcl"
     ports:
       - "8200:8200"
     cap_add:
