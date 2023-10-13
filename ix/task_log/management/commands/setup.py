@@ -8,6 +8,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print("IX setup running...")
         call_command("migrate")
+        call_command("import_langchain")
         for fixture in [
             "fake_user",
             "agent/ix",
