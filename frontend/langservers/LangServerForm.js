@@ -233,7 +233,7 @@ export const LangServerForm = ({ langserver, onSuccess }) => {
             onSuccess={onSuccess}
           />
         )}
-        <Button colorScheme="blue" onClick={onSave}>
+        <Button colorScheme="blue" onClick={onSave} isDisabled={!valid}>
           Save
         </Button>
         <Button onClick={onClose} variant="ghost">
