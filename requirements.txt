@@ -26,6 +26,7 @@ jsonpath-ng==1.6.0
 jsonschema==4.19.1
 langchain==0.0.314
 langchain-experimental==0.0.29
+langserve==0.0.8
 llama-cpp-python==0.1.79
 metaphor-python==0.1.16
 openai==0.28.0
