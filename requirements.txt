@@ -24,6 +24,7 @@ isort==5.12.0
 jq==1.4.1
 jsonpath-ng==1.6.0
 jsonschema==4.19.1
+jsonschema-pydantic==0.1.0
 langchain==0.0.314
 langchain-experimental==0.0.29
 langserve==0.0.8
@@ -49,3 +50,7 @@ wikipedia==1.4.0
 wolframalpha==5.0.0
 unstructured==0.10.5
 uvicorn[standard]==0.23.2
+
+# dev
+respx==0.20.2
+sse_starlette==1.6.5  # needed for tests

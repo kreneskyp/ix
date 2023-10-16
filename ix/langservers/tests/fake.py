@@ -9,13 +9,18 @@ fake = faker.Faker()
 
 
 class FakeInputSchema(BaseModel):
-    foo: str
-    bar: int
+    foo: str = "bar"
+    bar: int = 1
 
 
 class FakeOutputSchema(BaseModel):
-    baz: str
-    qux: int
+    baz: str = "qux"
+    qux: int = 2
+
+
+class FakeConfigSchema(BaseModel):
+    xoo: str = "xar"
+    xar: int = 3
 
 
 def fake_langserver(**kwargs):
@@ -31,6 +36,7 @@ def fake_langserver(**kwargs):
                 name="test_route",
                 input_schema=FakeInputSchema.schema(),
                 output_schema=FakeOutputSchema.schema(),
+                config_schema=FakeConfigSchema(),
             ).dict()
         ],
     )
@@ -41,6 +47,8 @@ def fake_langserver(**kwargs):
         url=url,
         routes=routes,
         headers=headers,
+        user=kwargs.get("user", None),
+        group=kwargs.get("group", None),
     )
     return langserver
 
