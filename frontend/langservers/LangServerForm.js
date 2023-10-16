@@ -10,9 +10,13 @@ import {
   VStack,
   HStack,
   Tooltip,
+  Spinner,
+  InputGroup,
+  InputRightElement,
+  Text,
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSyncAlt } from "@fortawesome/free-solid-svg-icons";
+import { faSyncAlt, faCheck, faX } from "@fortawesome/free-solid-svg-icons";
 
 import { useCreateUpdateAPI } from "utils/hooks/useCreateUpdateAPI";
 import { DictForm } from "components/DictForm";
@@ -23,7 +27,8 @@ import { LangServerDeleteButton } from "langservers/LangServerDeleteButton";
 
 export const LangServerForm = ({ langserver, onSuccess }) => {
   const [data, setData] = React.useState(langserver || {});
-  const [imported, setImported] = React.useState(data?.id);
+  const [valid, setValid] = React.useState(data?.id ? data?.id : null);
+  const [loading, setLoading] = React.useState(false);
   const onClose = React.useContext(ModalClose);
   const style = useEditorColorMode();
 
@@ -48,6 +53,9 @@ export const LangServerForm = ({ langserver, onSuccess }) => {
 
   // callback for importing langserve config from URL
   const setFromImport = React.useCallback(async (url) => {
+    setLoading(true);
+    setValid(null);
+    const startTime = Date.now();
     const response = await fetch("/api/import_langserver/", {
       method: "POST",
       headers: {
@@ -59,7 +67,17 @@ export const LangServerForm = ({ langserver, onSuccess }) => {
     if (response.ok) {
       const langServerConfig = await response.json();
       setData((data) => ({ ...data, ...langServerConfig }));
-      setImported(true);
+      setValid(true);
+    } else {
+      setValid(false);
+    }
+    const endTime = Date.now();
+    const diffTime = endTime - startTime;
+    const minTime = 600
+    if (diffTime < minTime) {
+      setTimeout(() => setLoading(false), minTime - diffTime);
+    } else {
+      setLoading(false);
     }
   }, []);
 
@@ -76,17 +94,27 @@ export const LangServerForm = ({ langserver, onSuccess }) => {
     async (e) => {
       const url = e.target.value;
       if (!url) {
+        setValid(null);
         setData((data) => ({ ...data, url: "" }));
+        return;
       }
 
       // Auto-import the first time the url is set
       const isValidURL = !!url.match(/^https?:\/\/[^\s/$.?#].[^\s]*$/);
       setData((data) => ({ ...data, url }));
-      if (!imported && isValidURL) {
+
+      // reset import if url changes
+      if (!isValidURL) {
+        setValid(false);
+      } else if (valid) {
+        setValid(null);
+      }
+
+      if (isValidURL) {
         debouncedFromImport(url);
       }
     },
-    [data, imported, setImported, setData, setFromImport]
+    [data, valid, setValid, setData, setFromImport]
   );
 
   const onHeaderChange = React.useCallback(
@@ -100,24 +128,45 @@ export const LangServerForm = ({ langserver, onSuccess }) => {
     setFromImport(data?.url);
   }, [data?.url]);
 
+  // input displays status icon for importing from URL
+  const validityIconProps = valid
+    ? { icon: faCheck, color: "green" }
+    : { icon: faX, color: "red" };
+  const inputIcon = loading ? (
+    <Spinner size="xs" />
+  ) : valid !== null ? (
+    <FontAwesomeIcon {...validityIconProps} />
+  ) : null;
+
+  const refreshStyle = style.isLight
+    ? { enabled: "gray.800", disabled: "gray.400" }
+    : { enabled: "gray.100", disabled: "gray.600" };
+
   return (
     <Box>
       <VStack spacing={5}>
         <FormControl>
           <FormLabel>URL</FormLabel>
           <HStack>
-            <Input
-              value={data?.url || ""}
-              onChange={onUrlChange}
-              placeholder="Enter endpoint"
-              {...style.input}
-            />
-            <Tooltip label="Refresh from URL spec">
-              <FontAwesomeIcon
-                icon={faSyncAlt}
-                onClick={onRefresh}
-                cursor="pointer"
+            <InputGroup>
+              <Input
+                value={data?.url || ""}
+                onChange={onUrlChange}
+                placeholder="Enter endpoint"
+                {...style.input}
               />
+              <InputRightElement children={inputIcon} />
+            </InputGroup>
+            <Tooltip label="Refresh from URL spec">
+              <Text
+                color={data?.url ? refreshStyle.enabled : refreshStyle.disabled}
+              >
+                <FontAwesomeIcon
+                  icon={faSyncAlt}
+                  onClick={data?.url ? onRefresh : null}
+                  cursor="pointer"
+                />
+              </Text>
             </Tooltip>
           </HStack>
           <FormHelperText fontSize="xs">Enter URL to import</FormHelperText>
