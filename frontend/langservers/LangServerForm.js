@@ -73,7 +73,7 @@ export const LangServerForm = ({ langserver, onSuccess }) => {
     }
     const endTime = Date.now();
     const diffTime = endTime - startTime;
-    const minTime = 600
+    const minTime = 600;
     if (diffTime < minTime) {
       setTimeout(() => setLoading(false), minTime - diffTime);
     } else {
@@ -142,6 +142,28 @@ export const LangServerForm = ({ langserver, onSuccess }) => {
     ? { enabled: "gray.800", disabled: "gray.400" }
     : { enabled: "gray.100", disabled: "gray.600" };
 
+  // display help text for url based on whether it is "", valid, or invalid
+  let urlHelpText = "";
+  if (data?.url) {
+    if (valid) {
+      urlHelpText = (
+        <>
+          Imported routes:{" "}
+          {data?.routes?.map((route, index) => (
+            <React.Fragment key={route.name}>
+              <Text as="span" color="blue.400">
+                {route.name}
+              </Text>
+              {index !== data.routes.length - 1 && ", "}
+            </React.Fragment>
+          ))}
+        </>
+      );
+    } else if (valid === false) {
+      urlHelpText = <Text color="red.300">Unable to import from URL</Text>;
+    }
+  }
+
   return (
     <Box>
       <VStack spacing={5}>
@@ -169,7 +191,7 @@ export const LangServerForm = ({ langserver, onSuccess }) => {
               </Text>
             </Tooltip>
           </HStack>
-          <FormHelperText fontSize="xs">Enter URL to import</FormHelperText>
+          <FormHelperText fontSize="xs">{urlHelpText}</FormHelperText>
         </FormControl>
 
         <FormControl>
