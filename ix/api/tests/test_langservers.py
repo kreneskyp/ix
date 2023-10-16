@@ -47,10 +47,8 @@ class TestLangServers:
 
     @pytest.mark.respx(base_url="http://test")
     async def test_import_langserver(self, auser, respx_mock, mock_openai_key):
-
         # must input within scope of test to mock API key
         from ix.langservers.tests.mock_langserve import mock_openapi_schema
-
 
         langserver_data = {
             "url": URL,
