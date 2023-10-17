@@ -9,8 +9,7 @@ fake = faker.Faker()
 
 
 class FakeInputSchema(BaseModel):
-    foo: str = "bar"
-    bar: int = 1
+    topic: str = "parrots"
 
 
 class FakeOutputSchema(BaseModel):
@@ -33,7 +32,7 @@ def fake_langserver(**kwargs):
         "routes",
         [
             RemoteRunnableConfig(
-                name="test_route",
+                name="jokes",
                 input_schema=FakeInputSchema.schema(),
                 output_schema=FakeOutputSchema.schema(),
                 config_schema=FakeConfigSchema(),
