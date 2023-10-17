@@ -216,7 +216,11 @@ class TestChatOwnership(OwnershipTestsMixin):
         return {}
 
     async def get_update_data(self, instance):
-        return {}
+        return {
+            "lead_id": str(instance.lead_id),
+            "name": "updated chat",
+            "autonomous": True,
+        }
 
 
 @pytest.mark.django_db

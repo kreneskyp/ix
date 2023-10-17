@@ -295,5 +295,5 @@ class TestTroubleCases:
                 "verbose",
             ],
         )
-        assert fields[0]["type"] == 'boolean'
+        assert fields[0]["type"] == "boolean"
         assert fields[0]["input_type"] is None
