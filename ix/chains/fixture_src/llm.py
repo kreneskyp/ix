@@ -1,8 +1,22 @@
 from langchain import LlamaCpp
+from langchain.llms.base import BaseLLM
 from langchain.llms import Ollama
+from langchain.llms.fireworks import Fireworks
 
 from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
+
+
+BASE_LLM_FIELDS = NodeTypeField.get_fields(
+    BaseLLM,
+    include=["verbose", "tags", "metadata"],
+    field_options={
+        "metadata": {
+            "type": "dict",
+        }
+    },
+)
+
 
 OPENAI_LLM_CLASS_PATH = "langchain.chat_models.openai.ChatOpenAI"
 OPENAI_LLM = {
@@ -286,4 +300,65 @@ OLLAMA_LLM = {
 }
 
 
-LLMS = [ANTHROPIC_LLM, GOOGLE_PALM, LLAMA_CPP_LLM, OLLAMA_LLM, OPENAI_LLM]
+FIREWORKS_LLM_CLASS_PATH = "langchain.llms.fireworks.Fireworks"
+FIREWORKS_LLM = {
+    "class_path": FIREWORKS_LLM_CLASS_PATH,
+    "type": "llm",
+    "name": "Fireworks.ai",
+    "description": "Fireworks.ai LLM server",
+    "fields": NodeTypeField.get_fields(
+        Fireworks,
+        include=["model", "fireworks_api_key", "max_retries"],
+        field_options={
+            "model": {
+                "style": {"width": "100%"},
+            },
+            "fireworks_api_key": {
+                "input_type": "secret",
+                "style": {"width": "100%"},
+            },
+            "max_retries": {
+                "default": 20,
+                "input_type": "slider",
+                "min": 0,
+                "max": 50,
+                "step": 1,
+            },
+        },
+    )
+    + NodeTypeField.get_fields(
+        Fireworks,
+        parent="model_kwargs",
+        include=[
+            "temperature",
+            "max_tokens",
+            "top_p",
+        ],
+        field_options={
+            "temperature": {
+                "default": 0.8,
+                "input_type": "slider",
+                "min": 0,
+                "max": 1,
+                "step": 0.05,
+            },
+            "top_p": {
+                "default": 0.9,
+                "input_type": "slider",
+                "min": 0,
+                "max": 1,
+                "step": 0.05,
+            },
+        },
+    )
+    + BASE_LLM_FIELDS,
+}
+
+LLMS = [
+    ANTHROPIC_LLM,
+    GOOGLE_PALM,
+    LLAMA_CPP_LLM,
+    OLLAMA_LLM,
+    OPENAI_LLM,
+    FIREWORKS_LLM,
+]
