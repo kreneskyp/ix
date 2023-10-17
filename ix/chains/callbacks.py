@@ -105,6 +105,7 @@ class IxHandler(AsyncCallbackHandler):
     chain: Chain = None
     agent: Agent = None
     parent_think_msg = None
+    start: int = None
 
     # handlers are shared between run_managers. contexts store state
     # for the managers using run_id as the lookup.
@@ -236,6 +237,7 @@ class IxHandler(AsyncCallbackHandler):
 
         # only record the final thought for now
         if not parent_run_id:
+            runtime = time.time() - self.start if self.start else None
             await TaskLogMessage.objects.acreate(
                 task_id=self.task.id,
                 role="SYSTEM",
@@ -244,7 +246,7 @@ class IxHandler(AsyncCallbackHandler):
                     "type": "THOUGHT",
                     # TODO: hook usage up, might be another signal though.
                     # "usage": response["usage"],
-                    "runtime": time.time() - self.start,
+                    "runtime": runtime,
                 },
             )
 

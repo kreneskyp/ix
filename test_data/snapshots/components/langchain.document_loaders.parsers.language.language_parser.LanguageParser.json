@@ -9,7 +9,9 @@
                     "cpp",
                     "go",
                     "java",
+                    "kotlin",
                     "js",
+                    "ts",
                     "php",
                     "proto",
                     "python",
@@ -53,8 +55,16 @@
                     "value": "java"
                 },
                 {
+                    "label": "KOTLIN",
+                    "value": "kotlin"
+                },
+                {
                     "label": "JS",
                     "value": "js"
+                },
+                {
+                    "label": "TS",
+                    "value": "ts"
                 },
                 {
                     "label": "PHP",

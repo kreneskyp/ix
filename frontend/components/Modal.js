@@ -13,33 +13,60 @@ import {
 
 export const ModalClose = React.createContext(null);
 
-export const GenericModal = ({ title, isOpen, onClose, children }) => {
+export const GenericModal = ({
+  title,
+  isOpen,
+  onClose,
+  showClose,
+  children,
+  size,
+}) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="6xl">
+    <Modal isOpen={isOpen} onClose={onClose} size={size}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
         <ModalBody p={0}>{children}</ModalBody>
         <ModalFooter>
-          <Button variant="ghost" onClick={onClose}>
-            Close
-          </Button>
+          {showClose && (
+            <Button variant="ghost" onClick={onClose}>
+              Close
+            </Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>
   );
 };
 
+GenericModal.defaultProps = {
+  showClose: true,
+  size: "6xl",
+};
+
 export const ModalTriggerContent = ({ children }) => {
   return children;
 };
 
-export const ModalTrigger = ({ onOpen, children, title }) => {
+export const ModalTriggerButton = ({ children }) => {
+  return children;
+};
+
+export const ModalTrigger = ({
+  onOpen,
+  showClose,
+  children,
+  title,
+  ...props
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const button = React.Children.toArray(children).find(
-    (child) => child.type === IconButton
+    (child) =>
+      child.type === ModalTriggerButton ||
+      child.type === IconButton ||
+      child.type === Button
   );
   const content = React.Children.toArray(children).find(
     (child) => child.type === ModalTriggerContent
@@ -60,7 +87,13 @@ export const ModalTrigger = ({ onOpen, children, title }) => {
         {button}
       </div>
       {isOpen && (
-        <GenericModal title={title} isOpen={isOpen} onClose={handleClose}>
+        <GenericModal
+          title={title}
+          isOpen={isOpen}
+          onClose={handleClose}
+          showClose={showClose}
+          {...props}
+        >
           {content}
         </GenericModal>
       )}
@@ -69,3 +102,8 @@ export const ModalTrigger = ({ onOpen, children, title }) => {
 };
 
 ModalTrigger.Content = ModalTriggerContent;
+ModalTrigger.Button = ModalTriggerButton;
+
+ModalTrigger.defaultProps = {
+  showClose: true,
+};

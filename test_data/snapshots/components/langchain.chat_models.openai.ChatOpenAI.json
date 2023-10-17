@@ -14,6 +14,10 @@
                 "default": 256,
                 "type": "number"
             },
+            "metadata": {
+                "default": null,
+                "type": "object"
+            },
             "model_name": {
                 "default": "gpt-4-0613",
                 "enum": [
@@ -45,7 +49,14 @@
             }
         },
         "required": [
-            "model_name"
+            "model_name",
+            "request_timeout",
+            "max_retries",
+            "temperature",
+            "max_tokens",
+            "verbose",
+            "streaming",
+            "metadata"
         ],
         "type": "object"
     },
@@ -121,6 +132,10 @@
             "default": true,
             "name": "streaming",
             "type": "boolean"
+        },
+        {
+            "name": "metadata",
+            "type": "dict"
         }
     ],
     "name": "OpenAI LLM",
