@@ -19,6 +19,8 @@ class Command(BaseCommand):
             "agent/klarna",
             "agent/smithy",
             "agent/metaphor",
+            "agent/ingest",
+            "agent/knowledge",
         ]:
             print(f"Loading fixture: {fixture}")
             call_command("loaddata", fixture)
