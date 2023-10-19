@@ -5,6 +5,13 @@ from httpx import AsyncClient
 
 from ix.task_log.models import Artifact, Task
 from ix.task_log.tests.fake import afake_task, afake_artifact, afake_chat
+from ix.ix_users.tests.mixins import (
+    OwnershipTestsBaseMixin,
+    OwnershipCreateTestsMixin,
+    OwnershipUpdateTestsMixin,
+    OwnershipListTestsMixin,
+    OwnershipRetrieveTestsMixin,
+)
 
 
 @pytest.mark.django_db
@@ -135,3 +142,38 @@ class TestArtifact:
         assert response.status_code == 404
         result = response.json()
         assert result["detail"] == "Artifact not found"
+
+
+@pytest.mark.django_db
+class TestArtifactOwnership(
+    OwnershipTestsBaseMixin,
+    OwnershipCreateTestsMixin,
+    OwnershipUpdateTestsMixin,
+    OwnershipListTestsMixin,
+    OwnershipRetrieveTestsMixin,
+):
+    object_type = "artifacts"
+
+    async def setup_object(self, **kwargs):
+        return await afake_artifact(**kwargs)
+
+    async def get_create_data(self):
+        task = await afake_task()
+        return {
+            "task_id": str(task.id),
+            "name": "New Artifact",
+            "key": "new_key",
+            "artifact_type": "file",
+            "description": "Artifact description",
+            "storage": {"file": "/this/is/a/mock/path"},
+        }
+
+    async def get_update_data(self, instance):
+        return {
+            "task_id": str(instance.task_id),
+            "name": "Updated Artifact",
+            "key": "updated_key",
+            "artifact_type": "file",
+            "description": "Artifact description",
+            "storage": {"file": "/this/is/a/mock/path"},
+        }

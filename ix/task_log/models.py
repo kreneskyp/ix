@@ -7,6 +7,7 @@ from django.db import models
 from ix.agents.models import Agent
 from ix.chains.models import Chain
 from ix.commands.filesystem import read_file
+from ix.ix_users.models import OwnedModel
 
 
 class Task(models.Model):
@@ -139,7 +140,7 @@ class TaskLogMessage(models.Model):
         }
 
 
-class Artifact(models.Model):
+class Artifact(OwnedModel):
     """
     Artifacts represent an object or data created by an Agent. Artifacts are bits of information
     that are either a user deliverable or an input to a further step.
