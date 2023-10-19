@@ -23,6 +23,7 @@ services:
     env_file:
       - ${IX_ENV}
     volumes:
+      - ../workdir/:/var/app/workdir/
       - static:/var/static/
       - ./certs/:/vault/certs:ro,Z
     environment:
@@ -47,6 +48,7 @@ services:
       - chroma
     volumes:
       - ./certs/-/:/vault/certs:ro,Z
+      - ../workdir/:/var/app/workdir/
     env_file:
       - ${IX_ENV}
 
