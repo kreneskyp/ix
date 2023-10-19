@@ -8,7 +8,7 @@ from ix.utils.graphene.pagination import QueryPage
 class ArtifactBase(BaseModel):
     task_id: UUID4
     key: str
-    artifact_type: str
+    artifact_type: str = "file"
     name: str
     description: str
     storage: Dict[str, Any]

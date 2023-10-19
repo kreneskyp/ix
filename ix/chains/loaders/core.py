@@ -177,7 +177,7 @@ def load_node(
         if field.get("parent"):
             property_groups[field["parent"]].append(field)
     for key, property_group_fields in property_groups.items():
-        logger.error(f"key={key} property_group_fields={property_group_fields}")
+        logger.debug(f"key={key} property_group_fields={property_group_fields}")
         config[key] = {
             field["name"]: config.pop(field["name"])
             for field in property_group_fields
