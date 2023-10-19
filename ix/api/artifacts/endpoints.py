@@ -3,6 +3,7 @@ from uuid import UUID
 from asgiref.sync import sync_to_async
 from django.db.models import Q
 from fastapi import HTTPException, APIRouter, Depends
+from fastapi.responses import FileResponse
 from typing import Optional
 from ix.api.artifacts.types import (
     Artifact as ArtifactPydantic,
@@ -75,3 +76,29 @@ async def update_artifact(
         setattr(instance, attr, value)
     await instance.asave()
     return ArtifactPydantic.from_orm(instance)
+
+
+@router.get(
+    "/artifacts/{artifact_id}/download",
+    tags=["Artifacts"],
+    responses={
+        200: {
+            "content": {"application/octet-stream": {}},
+            "description": "Download the artifact",
+        },
+        404: {"description": "Artifact not found"},
+    },
+)
+async def download_artifact(artifact_id: str, user=Depends(get_request_user)):
+    try:
+        query = Artifact.objects.filter(pk=artifact_id)
+        artifact = await Artifact.filter_owners(user, query).aget()
+    except Artifact.DoesNotExist:
+        raise HTTPException(status_code=404, detail="Artifact not found")
+
+    file_path = artifact.storage["id"]
+    file_name = file_path.split("/")[-1]
+
+    return FileResponse(
+        file_path, media_type="application/octet-stream", filename=file_name
+    )
