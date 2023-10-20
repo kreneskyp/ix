@@ -5,6 +5,8 @@
         "properties": {
             "max_retries": {
                 "default": 6,
+                "description": "Max Retries",
+                "input_type": "slider",
                 "maximum": 6.0,
                 "minimum": 0.0,
                 "multipleOf": 1.0,
@@ -15,21 +17,23 @@
                 "type": "number"
             },
             "metadata": {
-                "default": null,
                 "type": "object"
             },
             "model_name": {
                 "default": "gpt-4-0613",
+                "description": "OpenAI model",
                 "enum": [
                     "gpt-4",
                     "gpt-4-0613",
                     "gpt-3.5-turbo",
                     "gpt-3.5-turbo-16k-0613"
                 ],
+                "input_type": "select",
                 "type": "string"
             },
             "request_timeout": {
                 "default": 60,
+                "description": "Request Timeout",
                 "type": "number"
             },
             "streaming": {
@@ -38,6 +42,8 @@
             },
             "temperature": {
                 "default": 0,
+                "description": "Temperature",
+                "input_type": "slider",
                 "maximum": 2.0,
                 "minimum": 0.0,
                 "multipleOf": 0.05,

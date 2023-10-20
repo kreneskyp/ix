@@ -4,15 +4,13 @@
     "config_schema": {
         "properties": {
             "content_key": {
-                "default": null,
                 "type": "string"
             },
             "file_path": {
-                "default": null,
                 "type": "object"
             },
             "jq_schema": {
-                "default": null,
+                "input_type": "textarea",
                 "type": "string"
             },
             "json_lines": {
@@ -37,6 +35,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "File_path",
             "max": null,
@@ -51,6 +50,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": "textarea",
             "label": "Jq_schema",
             "max": null,
@@ -65,6 +65,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Content_key",
             "max": null,
@@ -79,6 +80,7 @@
         {
             "choices": null,
             "default": true,
+            "description": null,
             "input_type": null,
             "label": "Text_content",
             "max": null,
@@ -93,6 +95,7 @@
         {
             "choices": null,
             "default": false,
+            "description": null,
             "input_type": null,
             "label": "Json_lines",
             "max": null,

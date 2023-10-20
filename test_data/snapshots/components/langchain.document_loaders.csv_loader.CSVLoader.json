@@ -4,15 +4,12 @@
     "config_schema": {
         "properties": {
             "encoding": {
-                "default": null,
                 "type": "string"
             },
             "file_path": {
-                "default": null,
                 "type": "string"
             },
             "source_column": {
-                "default": null,
                 "type": "string"
             }
         },
@@ -28,6 +25,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "File_path",
             "max": null,
@@ -42,6 +40,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Source_column",
             "max": null,
@@ -56,6 +55,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Encoding",
             "max": null,

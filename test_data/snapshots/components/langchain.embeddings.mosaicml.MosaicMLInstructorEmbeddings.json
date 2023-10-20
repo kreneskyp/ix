@@ -5,22 +5,33 @@
         "properties": {
             "embed_instruction": {
                 "default": "Represent the document for retrieval: ",
+                "description": "Instruction used to embed documents",
                 "type": "string"
             },
             "endpoint_url": {
                 "default": "https://models.hosted-on.mosaicml.hosting/instructor-xl/v1/predict",
+                "description": "Endpoint URL to use",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "mosaicml_api_token": {
-                "default": null,
+                "description": "MosaicML API token",
+                "input_type": "secret",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "query_instruction": {
                 "default": "Represent the question for retrieving supporting documents: ",
+                "description": "Instruction used to embed the query",
                 "type": "string"
             },
             "retry_sleep": {
                 "default": 1.0,
+                "description": "How long to try sleeping for if a rate limit is encountered",
                 "type": "number"
             }
         },

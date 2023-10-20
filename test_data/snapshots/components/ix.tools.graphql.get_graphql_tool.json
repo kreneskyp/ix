@@ -4,7 +4,6 @@
     "config_schema": {
         "properties": {
             "graphql_endpoint": {
-                "default": null,
                 "type": "string"
             },
             "return_direct": {
@@ -40,6 +39,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Graphql_endpoint",
             "max": null,

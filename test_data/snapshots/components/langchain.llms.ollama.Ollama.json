@@ -8,15 +8,12 @@
                 "type": "string"
             },
             "mirostat": {
-                "default": null,
                 "type": "number"
             },
             "mirostat_eta": {
-                "default": null,
                 "type": "number"
             },
             "mirostat_tau": {
-                "default": null,
                 "type": "number"
             },
             "model": {
@@ -24,45 +21,45 @@
                 "type": "string"
             },
             "num_ctx": {
-                "default": null,
                 "type": "number"
             },
             "num_gpu": {
                 "default": 1,
+                "input_type": "slider",
                 "maximum": 10.0,
                 "minimum": 0.0,
                 "multipleOf": 1.0,
                 "type": "number"
             },
             "num_thread": {
-                "default": null,
                 "type": "number"
             },
             "repeat_last_n": {
-                "default": null,
                 "type": "number"
             },
             "repeat_penalty": {
-                "default": null,
                 "type": "number"
             },
             "stop": {
-                "default": null,
+                "style": {
+                    "width": "100%"
+                },
                 "type": "object"
             },
             "temperature": {
                 "default": 0.8,
+                "input_type": "slider",
                 "maximum": 1.0,
                 "minimum": 0.0,
                 "multipleOf": 0.05,
                 "type": "number"
             },
             "tfs_z": {
-                "default": null,
                 "type": "number"
             },
             "top_p": {
                 "default": 0.9,
+                "input_type": "slider",
                 "maximum": 1.0,
                 "minimum": 0.0,
                 "multipleOf": 0.05,
@@ -90,6 +87,7 @@
         {
             "choices": null,
             "default": "http://localhost:11434",
+            "description": null,
             "input_type": null,
             "label": "Base_url",
             "max": null,
@@ -104,6 +102,7 @@
         {
             "choices": null,
             "default": "llama2",
+            "description": null,
             "input_type": null,
             "label": "Model",
             "max": null,
@@ -118,6 +117,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Mirostat",
             "max": null,
@@ -132,6 +132,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Mirostat_eta",
             "max": null,
@@ -146,6 +147,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Mirostat_tau",
             "max": null,
@@ -160,6 +162,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Num_ctx",
             "max": null,
@@ -174,6 +177,7 @@
         {
             "choices": null,
             "default": 1,
+            "description": null,
             "input_type": "slider",
             "label": "Num_gpu",
             "max": 10.0,
@@ -188,6 +192,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Num_thread",
             "max": null,
@@ -202,6 +207,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Repeat_last_n",
             "max": null,
@@ -216,6 +222,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Repeat_penalty",
             "max": null,
@@ -230,6 +237,7 @@
         {
             "choices": null,
             "default": 0.8,
+            "description": null,
             "input_type": "slider",
             "label": "Temperature",
             "max": 1.0,
@@ -244,6 +252,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Stop",
             "max": null,
@@ -260,6 +269,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Tfs_z",
             "max": null,
@@ -274,6 +284,7 @@
         {
             "choices": null,
             "default": 0.9,
+            "description": null,
             "input_type": "slider",
             "label": "Top_p",
             "max": 1.0,

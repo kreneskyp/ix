@@ -4,11 +4,11 @@
     "config_schema": {
         "properties": {
             "google_api_key": {
-                "default": null,
+                "input_type": "secret",
                 "type": "string"
             },
             "google_cse_id": {
-                "default": null,
+                "input_type": "secret",
                 "type": "string"
             },
             "k": {
@@ -51,6 +51,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": "secret",
             "label": "Google_api_key",
             "max": null,
@@ -65,6 +66,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": "secret",
             "label": "Google_cse_id",
             "max": null,
@@ -79,6 +81,7 @@
         {
             "choices": null,
             "default": 10,
+            "description": null,
             "input_type": null,
             "label": "K",
             "max": null,
@@ -93,6 +96,7 @@
         {
             "choices": null,
             "default": false,
+            "description": null,
             "input_type": null,
             "label": "Siterestrict",
             "max": null,

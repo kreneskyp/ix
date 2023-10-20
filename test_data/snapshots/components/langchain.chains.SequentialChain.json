@@ -5,6 +5,9 @@
         "properties": {
             "input_variables": {
                 "default": [],
+                "style": {
+                    "width": "100%"
+                },
                 "type": "object"
             },
             "verbose": {

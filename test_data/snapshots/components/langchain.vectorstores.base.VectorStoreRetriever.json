@@ -45,6 +45,7 @@
         {
             "choices": null,
             "default": "similarity",
+            "description": null,
             "input_type": null,
             "label": "Search_type",
             "max": null,

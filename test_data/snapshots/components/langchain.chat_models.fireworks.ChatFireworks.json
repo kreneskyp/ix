@@ -4,30 +4,34 @@
     "config_schema": {
         "properties": {
             "fireworks_api_key": {
-                "default": null,
+                "input_type": "secret",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "max_retries": {
                 "default": 20,
+                "input_type": "slider",
                 "maximum": 50.0,
                 "minimum": 0.0,
                 "multipleOf": 1.0,
                 "type": "number"
             },
             "metadata": {
-                "default": null,
                 "type": "object"
             },
             "model": {
                 "default": "accounts/fireworks/models/llama-v2-7b-chat",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "tags": {
-                "default": null,
                 "type": "object"
             },
             "verbose": {
-                "default": null,
                 "type": "boolean"
             }
         },
@@ -41,6 +45,7 @@
         {
             "choices": null,
             "default": "accounts/fireworks/models/llama-v2-7b-chat",
+            "description": null,
             "input_type": null,
             "label": "Model",
             "max": null,
@@ -57,6 +62,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": "secret",
             "label": "Fireworks_api_key",
             "max": null,
@@ -73,6 +79,7 @@
         {
             "choices": null,
             "default": 20,
+            "description": null,
             "input_type": "slider",
             "label": "Max_retries",
             "max": 50.0,
@@ -87,6 +94,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Verbose",
             "max": null,
@@ -101,6 +109,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Tags",
             "max": null,
@@ -115,6 +124,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Metadata",
             "max": null,

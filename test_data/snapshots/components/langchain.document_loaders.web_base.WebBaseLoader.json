@@ -12,7 +12,10 @@
                 "type": "boolean"
             },
             "web_path": {
-                "default": null,
+                "description": "URL(s) of the web page",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "object"
             }
         },
@@ -42,6 +45,7 @@
         {
             "choices": null,
             "default": true,
+            "description": null,
             "input_type": null,
             "label": "Verify_ssl",
             "max": null,
@@ -56,6 +60,7 @@
         {
             "choices": null,
             "default": false,
+            "description": null,
             "input_type": null,
             "label": "Continue_on_failure",
             "max": null,

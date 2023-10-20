@@ -4,11 +4,13 @@
     "config_schema": {
         "properties": {
             "bing_search_url": {
-                "default": null,
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "bing_subscription_key": {
-                "default": null,
+                "input_type": "secret",
                 "type": "string"
             },
             "k": {
@@ -49,6 +51,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": "secret",
             "label": "Bing_subscription_key",
             "max": null,
@@ -63,6 +66,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Bing_search_url",
             "max": null,
@@ -79,6 +83,7 @@
         {
             "choices": null,
             "default": 10,
+            "description": null,
             "input_type": null,
             "label": "K",
             "max": null,
