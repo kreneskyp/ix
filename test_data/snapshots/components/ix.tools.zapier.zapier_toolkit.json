@@ -5,14 +5,17 @@
         "properties": {
             "zapier_nla_api_base": {
                 "default": "https://nla.zapier.com/api/v1/",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "zapier_nla_api_key": {
-                "default": null,
+                "input_type": "secret",
                 "type": "string"
             },
             "zapier_nla_oauth_access_token": {
-                "default": null,
+                "input_type": "secret",
                 "type": "string"
             }
         },
@@ -29,6 +32,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": "secret",
             "label": "API Key",
             "max": null,
@@ -43,6 +47,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": "secret",
             "label": "OAuth Token",
             "max": null,
@@ -57,6 +62,7 @@
         {
             "choices": null,
             "default": "https://nla.zapier.com/api/v1/",
+            "description": null,
             "input_type": null,
             "label": "API Base",
             "max": null,

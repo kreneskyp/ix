@@ -4,11 +4,9 @@
     "config_schema": {
         "properties": {
             "file_path": {
-                "default": null,
                 "type": "string"
             },
             "password": {
-                "default": null,
                 "type": "string"
             }
         },
@@ -24,6 +22,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "File_path",
             "max": null,
@@ -38,6 +37,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Password",
             "max": null,

@@ -5,10 +5,17 @@
         "properties": {
             "description": {
                 "default": "",
+                "input_type": "textarea",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "name": {
                 "default": "",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "return_direct": {

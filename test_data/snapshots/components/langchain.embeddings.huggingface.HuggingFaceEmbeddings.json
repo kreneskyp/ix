@@ -4,19 +4,26 @@
     "config_schema": {
         "properties": {
             "cache_folder": {
-                "default": null,
+                "description": "Path to store models",
                 "type": "string"
             },
             "encode_kwargs": {
-                "default": null,
+                "description": "Key word arguments to pass when calling the `encode` method of the model",
                 "type": "object"
             },
             "model_kwargs": {
-                "default": null,
+                "description": "Key word arguments to pass to the model",
                 "type": "object"
             },
             "model_name": {
                 "default": "sentence-transformers/all-mpnet-base-v2",
+                "description": "Model name to use",
+                "enum": [
+                    "sentence-transformers/all-mpnet-base-v2"
+                ],
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             }
         },
