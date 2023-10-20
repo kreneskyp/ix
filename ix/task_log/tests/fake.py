@@ -373,6 +373,8 @@ def fake_artifact(**kwargs) -> Artifact:
         name="Test Artifact 1",
         description="This is a test artifact (1)",
         storage={"type": "file", "id": "test_artifact"},
+        user=kwargs.get("user", None),
+        group=kwargs.get("group", None),
     )
     options.update(kwargs)
 

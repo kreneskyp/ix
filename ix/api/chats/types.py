@@ -12,7 +12,7 @@ from ix.utils.graphene.pagination import QueryPage
 
 class ChatNew(BaseModel):
     name: Optional[str]
-    lead_id: Optional[UUID]
+    lead_id: Optional[UUID] = None
     autonomous: bool = False
 
 
@@ -25,10 +25,10 @@ class Chat(BaseModel):
     task_id: UUID
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
     @classmethod
-    def from_orm(cls, instance: Any) -> "Chat":
+    def model_validate(cls, instance: Any) -> "Chat":
         return cls(
             id=instance.id,
             name=instance.name,
@@ -47,9 +47,9 @@ class ChatInList(Chat):
     agents: List[Agent]
 
     @classmethod
-    def from_orm(cls, instance: Any) -> "Chat":
+    def model_validate(cls, instance: Any) -> "Chat":
         agent_query = AgentModel.objects.filter(chats__id=instance.id)
-        agents = [Agent.from_orm(agent) for agent in agent_query]
+        agents = [Agent.model_validate(agent) for agent in agent_query]
         return cls(
             id=instance.id,
             name=instance.name,
@@ -68,21 +68,21 @@ class ChatUpdate(BaseModel):
 
 class ChatAgentAction(BaseModel):
     chat_id: UUID
-    agent_id: Optional[UUID]
+    agent_id: Optional[UUID] = None
 
 
 class Task(BaseModel):
     id: UUID
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Plan(BaseModel):
     id: UUID
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ChatGraph(BaseModel):
@@ -117,7 +117,7 @@ class ChatMessage(BaseModel):
     content: Dict[str, Any]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ChatMessageQueryPage(QueryPage[ChatMessage]):

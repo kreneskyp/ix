@@ -4,7 +4,6 @@
     "config_schema": {
         "properties": {
             "function_call": {
-                "default": null,
                 "type": "string"
             },
             "output_key": {
@@ -16,11 +15,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "verbose",
-            "function_call",
-            "output_key"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": [

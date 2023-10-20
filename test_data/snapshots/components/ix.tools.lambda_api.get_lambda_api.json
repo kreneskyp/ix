@@ -4,15 +4,12 @@
     "config_schema": {
         "properties": {
             "awslambda_tool_description": {
-                "default": null,
                 "type": "string"
             },
             "awslambda_tool_name": {
-                "default": null,
                 "type": "string"
             },
             "function_name": {
-                "default": null,
                 "type": "string"
             },
             "return_direct": {
@@ -24,10 +21,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "return_direct",
-            "verbose"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,
@@ -47,6 +41,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Function_name",
             "max": null,
@@ -61,6 +56,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Awslambda_tool_name",
             "max": null,
@@ -75,6 +71,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Awslambda_tool_description",
             "max": null,

@@ -4,26 +4,32 @@
     "config_schema": {
         "properties": {
             "anthropic_api_key": {
-                "default": null,
+                "description": "ANTHROPIC_API_KEY",
+                "input_type": "secret",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "anthropic_api_url": {
                 "default": "https://api.anthropic.com",
+                "description": "API URL",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "temperature": {
                 "default": 0,
+                "description": "Temperature",
+                "input_type": "slider",
                 "maximum": 2.0,
                 "minimum": 0.0,
                 "multipleOf": 0.05,
                 "type": "number"
             }
         },
-        "required": [
-            "temperature",
-            "anthropic_api_key",
-            "anthropic_api_url"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

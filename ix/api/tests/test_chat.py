@@ -209,16 +209,18 @@ class TestChatOwnership(OwnershipTestsMixin):
     object_type = "chats"
 
     async def setup_object(self, **kwargs):
-        print("setup_object", kwargs)
         chat = await afake_chat(id=uuid4(), **kwargs)
-        print("chat", chat.id, chat.user_id, chat.group_id)
         return chat
 
     async def get_create_data(self):
         return {}
 
     async def get_update_data(self, instance):
-        return {}
+        return {
+            "lead_id": str(instance.lead_id),
+            "name": "updated chat",
+            "autonomous": True,
+        }
 
 
 @pytest.mark.django_db
@@ -387,8 +389,6 @@ class TestChatAgentsAccess:
     ):
         arequest_user.return_value = aowned_chat.non_owner
         chat = aowned_chat.object_owned
-        print("chat", chat.user_id)
-        print("non_owner", aowned_chat.non_owner.id)
         agent = await afake_agent()
 
         async with AsyncClient(app=app, base_url="http://test") as ac:

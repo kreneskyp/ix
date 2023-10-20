@@ -4,7 +4,6 @@
     "config_schema": {
         "properties": {
             "delegate_inputs": {
-                "default": null,
                 "type": "object"
             },
             "output_key": {
@@ -13,10 +12,12 @@
             },
             "tags": {
                 "default": [],
+                "style": {
+                    "width": "100%"
+                },
                 "type": "object"
             },
             "target_alias": {
-                "default": null,
                 "type": "string"
             },
             "verbose": {
@@ -25,9 +26,8 @@
             }
         },
         "required": [
-            "verbose",
-            "tags",
-            "target_alias"
+            "target_alias",
+            "delegate_inputs"
         ],
         "type": "object"
     },
@@ -63,6 +63,7 @@
         {
             "choices": null,
             "default": "delegate_to",
+            "description": null,
             "input_type": null,
             "label": "Output_key",
             "max": null,
@@ -77,6 +78,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Target_alias",
             "max": null,
@@ -91,13 +93,14 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Delegate_inputs",
             "max": null,
             "min": null,
             "name": "delegate_inputs",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "list"

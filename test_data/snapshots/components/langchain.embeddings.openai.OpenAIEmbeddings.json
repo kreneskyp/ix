@@ -4,7 +4,6 @@
     "config_schema": {
         "properties": {
             "allowed_special": {
-                "default": null,
                 "type": "object"
             },
             "chunk_size": {
@@ -17,6 +16,7 @@
             },
             "max_retries": {
                 "default": "6",
+                "input_type": "slider",
                 "maximum": 6.0,
                 "minimum": 0.0,
                 "multipleOf": 1.0,
@@ -24,16 +24,14 @@
             },
             "model": {
                 "default": "text-embedding-ada-002",
+                "enum": [
+                    "text-embedding-ada-002"
+                ],
+                "input_type": "select",
                 "type": "string"
             }
         },
-        "required": [
-            "model",
-            "allowed_special",
-            "disallowed_special",
-            "chunk_size",
-            "max_retries"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,
@@ -44,10 +42,11 @@
             "choices": [
                 {
                     "label": "text-embedding-ada-002",
-                    "name": "text-embedding-ada-002"
+                    "value": "text-embedding-ada-002"
                 }
             ],
             "default": "text-embedding-ada-002",
+            "input_type": "select",
             "name": "model",
             "type": "string"
         },

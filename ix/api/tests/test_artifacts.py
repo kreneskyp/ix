@@ -1,3 +1,7 @@
+import tempfile
+
+from fastapi.exceptions import HTTPException
+import pytest_asyncio
 from ix.server.fast_api import app
 import pytest
 from uuid import uuid4
@@ -5,6 +9,22 @@ from httpx import AsyncClient
 
 from ix.task_log.models import Artifact, Task
 from ix.task_log.tests.fake import afake_task, afake_artifact, afake_chat
+from ix.ix_users.tests.mixins import (
+    OwnerState,
+    OwnershipTestsBaseMixin,
+    OwnershipCreateTestsMixin,
+    OwnershipUpdateTestsMixin,
+    OwnershipListTestsMixin,
+    OwnershipRetrieveTestsMixin,
+)
+
+
+@pytest_asyncio.fixture
+async def mock_file():
+    with tempfile.NamedTemporaryFile() as f:
+        f.write(b"test content")
+        f.seek(0)
+        yield f
 
 
 @pytest.mark.django_db
@@ -135,3 +155,125 @@ class TestArtifact:
         assert response.status_code == 404
         result = response.json()
         assert result["detail"] == "Artifact not found"
+
+    async def test_download_artifact(self, mock_file, anode_types):
+        task = await afake_task()
+        artifact = await afake_artifact(task_id=task.id, storage={"id": mock_file.name})
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.get(f"/artifacts/{artifact.id}/download")
+        assert response.status_code == 200
+        assert response.headers["content-type"] == "application/octet-stream"
+        assert (
+            response.headers["content-disposition"]
+            == f'attachment; filename="{artifact.storage["id"].split("/")[-1]}"'
+        )
+        assert response.content == b"test content"
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures("anode_types")
+class TestArtifactOwnership(
+    OwnershipTestsBaseMixin,
+    OwnershipCreateTestsMixin,
+    OwnershipUpdateTestsMixin,
+    OwnershipListTestsMixin,
+    OwnershipRetrieveTestsMixin,
+):
+    object_type = "artifacts"
+
+    async def setup_object(self, **kwargs):
+        task = await afake_task()
+        return await afake_artifact(task_id=task.id, **kwargs)
+
+    async def get_create_data(self):
+        task = await afake_task()
+        return {
+            "task_id": str(task.id),
+            "name": "New Artifact",
+            "key": "new_key",
+            "artifact_type": "file",
+            "description": "Artifact description",
+            "storage": {"file": "/this/is/a/mock/path"},
+        }
+
+    async def get_update_data(self, instance):
+        return {
+            "task_id": str(instance.task_id),
+            "name": "Updated Artifact",
+            "key": "updated_key",
+            "artifact_type": "file",
+            "description": "Artifact description",
+            "storage": {"file": "/this/is/a/mock/path"},
+        }
+
+    async def test_download_artifact_ownership_user_owns(
+        self, mock_file, owner_state: OwnerState, arequest_user
+    ):
+        arequest_user.return_value = owner_state.owner
+        owner_state.object_owned.storage["id"] = mock_file.name
+        await owner_state.object_owned.asave()
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.get(
+                f"/artifacts/{owner_state.object_owned.id}/download",
+            )
+        assert response.status_code == 200
+        assert response.headers["content-type"] == "application/octet-stream"
+        assert (
+            response.headers["content-disposition"]
+            == f'attachment; filename="{owner_state.object_owned.storage["id"].split("/")[-1]}"'
+        )
+        assert response.content == b"test content"
+
+    async def test_download_artifact_ownership_user_does_not_own(
+        self, mock_file, owner_state: OwnerState, arequest_user
+    ):
+        arequest_user.return_value = owner_state.non_owner
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.get(
+                f"/artifacts/{owner_state.object_owned.id}/download",
+            )
+        assert response.status_code == 404
+
+    async def test_download_artifact_ownership_group_owns(
+        self, mock_file, owner_state: OwnerState, arequest_user
+    ):
+        arequest_user.return_value = owner_state.owner
+        owner_state.object_group_owned.storage["id"] = mock_file.name
+        await owner_state.object_group_owned.asave()
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.get(
+                f"/artifacts/{owner_state.object_group_owned.id}/download",
+            )
+        assert response.status_code == 200
+        assert response.headers["content-type"] == "application/octet-stream"
+        assert (
+            response.headers["content-disposition"]
+            == f'attachment; filename="{owner_state.object_group_owned.storage["id"].split("/")[-1]}"'
+        )
+        assert response.content == b"test content"
+
+    async def test_download_artifact_ownership_group_does_not_own(
+        self, mock_file, owner_state: OwnerState, arequest_user
+    ):
+        arequest_user.return_value = owner_state.non_owner
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.get(
+                f"/artifacts/{owner_state.object_group_owned.id}/download",
+            )
+        assert response.status_code == 404
+
+    async def test_download_artifact_ownership_unauthenticated(
+        self, mock_file, owner_state: OwnerState, arequest_user
+    ):
+        arequest_user.side_effect = HTTPException(
+            status_code=401, detail="Not authenticated"
+        )
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.get(
+                f"/artifacts/{owner_state.object_owned.id}/download"
+            )
+        assert response.status_code == 401

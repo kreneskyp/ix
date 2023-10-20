@@ -12,15 +12,11 @@
                 "type": "boolean"
             },
             "wolfram_alpha_app_id": {
-                "default": null,
+                "input_type": "secret",
                 "type": "string"
             }
         },
-        "required": [
-            "return_direct",
-            "verbose",
-            "wolfram_alpha_app_id"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

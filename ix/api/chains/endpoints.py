@@ -112,8 +112,8 @@ async def create_chain_instance(**kwargs) -> Chain:
 async def create_chain(
     chain: CreateChain, user: AbstractUser = Depends(get_request_user)
 ):
-    new_chain = await create_chain_instance(**chain.dict(), user=user)
-    return ChainPydantic.from_orm(new_chain)
+    new_chain = await create_chain_instance(**chain.model_dump(), user=user)
+    return ChainPydantic.model_validate(new_chain)
 
 
 @router.get("/chains/{chain_id}", response_model=ChainPydantic, tags=["Chains"])
@@ -125,8 +125,7 @@ async def get_chain_detail(
         chain = await query.aget(id=chain_id)
     except Chain.DoesNotExist:
         raise HTTPException(status_code=404, detail="Chain not found")
-
-    response = ChainPydantic.from_orm(chain)
+    response = ChainPydantic.model_validate(chain)
 
     # fetch pass through properties so a second query isn't needed
     if chain.is_agent:
@@ -167,7 +166,7 @@ async def update_chain(
         existing_chain = await query.aget(id=chain_id)
     except Chain.DoesNotExist:
         raise HTTPException(status_code=404, detail="Chain not found")
-    as_dict = chain.dict(exclude={"alias"})
+    as_dict = chain.model_dump(exclude={"alias"})
     for field, value in as_dict.items():
         setattr(existing_chain, field, value)
     await existing_chain.asave(update_fields=as_dict.keys())
@@ -181,7 +180,7 @@ async def update_chain(
         purpose=chain.description,
     )
 
-    response = ChainPydantic.from_orm(existing_chain)
+    response = ChainPydantic.model_validate(existing_chain)
     response.alias = chain.alias
     return response
 

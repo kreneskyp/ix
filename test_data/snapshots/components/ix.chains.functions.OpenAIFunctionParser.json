@@ -8,9 +8,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "parse_json"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

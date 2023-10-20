@@ -28,10 +28,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "return_direct",
-            "verbose"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,
@@ -51,6 +48,7 @@
         {
             "choices": null,
             "default": 5,
+            "description": null,
             "input_type": null,
             "label": "Max_retry",
             "max": null,
@@ -65,6 +63,7 @@
         {
             "choices": null,
             "default": 3,
+            "description": null,
             "input_type": null,
             "label": "Top_k_results",
             "max": null,
@@ -79,6 +78,7 @@
         {
             "choices": null,
             "default": 2000,
+            "description": null,
             "input_type": null,
             "label": "Doc_content_chars_max",
             "max": null,
@@ -93,6 +93,7 @@
         {
             "choices": null,
             "default": "your_email@example.com",
+            "description": null,
             "input_type": null,
             "label": "Email",
             "max": null,

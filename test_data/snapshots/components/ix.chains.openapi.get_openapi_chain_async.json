@@ -4,7 +4,9 @@
     "config_schema": {
         "properties": {
             "spec": {
-                "default": null,
+                "style": {
+                    "width": "500px"
+                },
                 "type": "string"
             },
             "verbose": {
@@ -12,10 +14,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "verbose",
-            "spec"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": [

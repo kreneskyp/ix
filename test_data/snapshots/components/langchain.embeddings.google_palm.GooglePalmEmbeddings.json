@@ -4,18 +4,19 @@
     "config_schema": {
         "properties": {
             "google_api_key": {
-                "default": null,
+                "description": "Google API key",
                 "type": "string"
             },
             "model_name": {
                 "default": "models/embedding-gecko-001",
+                "description": "Model name to use",
+                "enum": [
+                    "models/embedding-gecko-001"
+                ],
                 "type": "string"
             }
         },
-        "required": [
-            "google_api_key",
-            "model_name"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

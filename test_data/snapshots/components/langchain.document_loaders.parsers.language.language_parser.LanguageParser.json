@@ -4,7 +4,6 @@
     "config_schema": {
         "properties": {
             "language": {
-                "default": null,
                 "enum": [
                     "cpp",
                     "go",
@@ -26,6 +25,7 @@
                     "sol",
                     "csharp"
                 ],
+                "input_type": "select",
                 "type": "string"
             },
             "parser_threshold": {
@@ -120,6 +120,7 @@
                 }
             ],
             "default": null,
+            "description": null,
             "input_type": "select",
             "label": "Language",
             "max": null,
@@ -134,6 +135,7 @@
         {
             "choices": null,
             "default": 0,
+            "description": null,
             "input_type": null,
             "label": "Parser_threshold",
             "max": null,

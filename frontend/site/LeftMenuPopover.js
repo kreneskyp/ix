@@ -22,8 +22,8 @@ export const LeftSidebarPopupContent = ({ children }) => {
   return children;
 };
 
-export const LeftMenuPopover = ({ children }) => {
-  const { isOpen, onToggle, onClose, onOpen } = useDisclosure();
+export const LeftMenuPopover = ({ children, onOpen }) => {
+  const { isOpen, onToggle, onClose } = useDisclosure();
 
   const icon = React.Children.toArray(children).find(
     (child) => child.type === LeftSidebarPopupIcon
@@ -49,6 +49,7 @@ export const LeftMenuPopover = ({ children }) => {
       onClose={onClose}
       placement={"right-start"}
       closeOnBlur={false}
+      onOpen={onOpen}
     >
       <PopoverTrigger>
         <IconButton icon={icon} {...style} onClick={onToggle} />

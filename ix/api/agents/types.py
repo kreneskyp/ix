@@ -22,7 +22,7 @@ class Agent(BaseModel):
     config: dict = Field(default_factory=dict)
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class AgentPage(QueryPage[Agent]):

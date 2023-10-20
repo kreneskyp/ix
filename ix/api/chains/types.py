@@ -5,7 +5,7 @@ from typing import (
     Literal,
 )
 from uuid import UUID, uuid4
-from pydantic import BaseModel, Field, root_validator
+from pydantic import BaseModel, Field, model_validator
 
 from ix.utils.graphene.pagination import QueryPage
 
@@ -18,10 +18,10 @@ class Chain(BaseModel):
     is_agent: bool = True
 
     # agent pass through properties
-    alias: Optional[str]
+    alias: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CreateChain(BaseModel):
@@ -30,9 +30,9 @@ class CreateChain(BaseModel):
     is_agent: bool = True
 
     # agent pass through properties
-    alias: Optional[str]
+    alias: Optional[str] = None
 
-    @root_validator
+    @model_validator(mode="before")
     def validate_chain(cls, values):
         if values.get("is_agent") and not values.get("alias"):
             values["alias"] = "unnamed"
@@ -66,7 +66,7 @@ class Node(BaseModel):
     position: Position = {"x": 0, "y": 0}
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Edge(BaseModel):
@@ -76,14 +76,14 @@ class Edge(BaseModel):
     key: Optional[str]
     chain_id: UUID
     relation: Literal["LINK", "PROP"]
-    input_map: Optional[dict]
+    input_map: Optional[dict] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-    @root_validator
-    def validate_edge(cls, values):
-        if values.get("relation") == "PROP" and not values.get("key"):
+    @model_validator(mode="after")
+    def validate_edge(cls, instance: "Edge") -> "Edge":
+        if instance.relation == "PROP" and not instance.key:
             raise ValueError("'key' is required for 'PROP' relation type.")
 
-        return values
+        return instance

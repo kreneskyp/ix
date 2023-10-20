@@ -8,7 +8,9 @@
                 "type": "object"
             }
         },
-        "required": [],
+        "required": [
+            "root_dir"
+        ],
         "type": "object"
     },
     "connectors": null,
@@ -18,13 +20,14 @@
         {
             "choices": null,
             "default": "/var/app/workdir",
+            "description": null,
             "input_type": null,
             "label": "Root_dir",
             "max": null,
             "min": null,
             "name": "root_dir",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "Optional[str]"

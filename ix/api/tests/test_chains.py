@@ -531,6 +531,7 @@ class TestNode:
         The first node will create the chain
         """
         data = {
+            "id": str(uuid4()),
             "class_path": "ix.chains.llm_chain.LLMChain",
             "config": {},
             "name": "Custom Node",
@@ -593,7 +594,12 @@ class TestNode:
         non_existent_node_id = uuid4()
         update_data = {
             "name": "Updated Name",
-            # add other fields to be updated...
+            "description": "Updated Description",
+            "config": {"foo": "bar"},
+            "position": {
+                "x": 10,
+                "y": 20,
+            },
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
