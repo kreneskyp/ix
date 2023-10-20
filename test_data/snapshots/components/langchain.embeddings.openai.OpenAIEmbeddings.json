@@ -27,6 +27,7 @@
                 "enum": [
                     "text-embedding-ada-002"
                 ],
+                "input_type": "select",
                 "type": "string"
             }
         },

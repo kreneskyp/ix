@@ -35,7 +35,11 @@
                 "type": "boolean"
             }
         },
-        "required": [],
+        "required": [
+            "verbose",
+            "tags",
+            "metadata"
+        ],
         "type": "object"
     },
     "connectors": null,
@@ -101,7 +105,7 @@
             "min": null,
             "name": "verbose",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "bool"
@@ -116,7 +120,7 @@
             "min": null,
             "name": "tags",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "Optional[List[str]]"
@@ -131,7 +135,7 @@
             "min": null,
             "name": "metadata",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "dict"
