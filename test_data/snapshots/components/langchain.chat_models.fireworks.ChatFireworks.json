@@ -1,6 +1,6 @@
 {
     "child_field": null,
-    "class_path": "langchain.llms.fireworks.Fireworks",
+    "class_path": "langchain.chat_models.fireworks.ChatFireworks",
     "config_schema": {
         "properties": {
             "fireworks_api_key": {
@@ -35,7 +35,7 @@
         "type": "object"
     },
     "connectors": null,
-    "description": "Fireworks.ai LLM",
+    "description": "Fireworks.ai Chat LLM",
     "display_type": "node",
     "fields": [
         {
@@ -127,6 +127,6 @@
             "type": "dict"
         }
     ],
-    "name": "Fireworks.ai",
+    "name": "Fireworks.ai (chat)",
     "type": "llm"
 }
