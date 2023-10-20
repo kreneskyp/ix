@@ -1,6 +1,6 @@
 from typing import Optional, List, Dict, Any
 
-from pydantic import BaseModel, UUID4, root_validator
+from pydantic import BaseModel, UUID4
 
 from ix.utils.graphene.pagination import QueryPage
 
@@ -13,18 +13,7 @@ class Secret(BaseModel):
     path: str
 
     class Config:
-        orm_mode = True
-
-    @root_validator
-    def validate_secret(cls, values):
-        """
-        Path should only show information relative to the user's root.
-        Hide full path from API.
-        """
-        pk = values.get("id")
-        type_ = values.get("type")
-        values["path"] = f"{type_}/{pk}"
-        return values
+        from_attributes = True
 
 
 class CreateSecret(BaseModel):
