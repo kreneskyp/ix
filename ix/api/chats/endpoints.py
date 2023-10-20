@@ -79,7 +79,7 @@ async def create_chat(chat: ChatNew, user: AbstractUser = Depends(get_request_us
             raise
         await chat_obj.agents.aadd(agent)
 
-    return ChatPydantic.from_orm(chat_obj)
+    return ChatPydantic.model_validate(chat_obj)
 
 
 @router.get("/chats/{chat_id}", response_model=ChatPydantic, tags=["Chats"])
@@ -89,7 +89,7 @@ async def get_chat(chat_id: UUID, user: AbstractUser = Depends(get_request_user)
         chat = await query.aget(pk=chat_id)
     except Chat.DoesNotExist:
         raise HTTPException(status_code=404, detail="Chat not found")
-    return ChatPydantic.from_orm(chat)
+    return ChatPydantic.model_validate(chat)
 
 
 @router.get("/chats/", response_model=ChatQueryPage, tags=["Chats"])
@@ -119,12 +119,12 @@ async def update_chat(
     except Chat.DoesNotExist:
         raise HTTPException(status_code=404, detail="Chat not found")
 
-    for attr, value in chat.dict().items():
+    for attr, value in chat.model_dump().items():
         if value is not None:
             setattr(chat_obj, attr, value)
     await chat_obj.asave()
 
-    return ChatPydantic.from_orm(chat_obj)
+    return ChatPydantic.model_validate(chat_obj)
 
 
 @router.delete("/chats/{chat_id}", response_model=DeletedItem, tags=["Chats"])
@@ -193,17 +193,20 @@ async def get_chat_graph(chat_id: str, user: AbstractUser = Depends(get_request_
         raise HTTPException(status_code=404, detail="Chat does not exist.")
     lead = await Agent.filtered_owners(user).aget(pk=chat.lead_id)
     task = await Task.objects.aget(pk=chat.task_id)
-    agents = [AgentPydantic.from_orm(agent) async for agent in chat.agents.all()]
-    plans = [PlanPydantic.from_orm(plan) async for plan in task.created_plans.all()]
+    agents = [AgentPydantic.model_validate(agent) async for agent in chat.agents.all()]
+    plans = [
+        PlanPydantic.model_validate(plan) async for plan in task.created_plans.all()
+    ]
     artifacts = [
-        ArtifactPydantic.from_orm(artifact) async for artifact in task.artifacts.all()
+        ArtifactPydantic.model_validate(artifact)
+        async for artifact in task.artifacts.all()
     ]
     return ChatGraph(
-        chat=ChatPydantic.from_orm(chat),
-        lead=AgentPydantic.from_orm(lead),
+        chat=ChatPydantic.model_validate(chat),
+        lead=AgentPydantic.model_validate(lead),
         agents=agents,
         plans=plans,
-        task=TaskPydantic.from_orm(task),
+        task=TaskPydantic.model_validate(task),
         artifacts=artifacts,
     )
 
@@ -306,7 +309,7 @@ async def send_message(
     # the agent_runner task is responsible for blocking duplicate runners
     await start_agent(task_id, agent, inputs)
 
-    return ChatMessage.from_orm(message)
+    return ChatMessage.model_validate(message)
 
 
 @router.post("/chats/{chat_id}/messages/clear", tags=["Chats"])

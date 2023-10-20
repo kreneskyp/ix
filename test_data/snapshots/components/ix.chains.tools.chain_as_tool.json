@@ -27,12 +27,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "name",
-            "description",
-            "return_direct",
-            "verbose"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": [

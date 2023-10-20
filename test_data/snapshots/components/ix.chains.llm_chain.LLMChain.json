@@ -15,11 +15,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "verbose",
-            "function_call",
-            "output_key"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": [

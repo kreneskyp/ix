@@ -19,9 +19,7 @@
                 "type": "object"
             }
         },
-        "required": [
-            "web_path"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": [

@@ -42,10 +42,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "return_direct",
-            "verbose"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

@@ -28,14 +28,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "memory_key",
-            "human_prefix",
-            "ai_prefix",
-            "output_key",
-            "input_key",
-            "return_messages"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": [

@@ -55,14 +55,7 @@
             }
         },
         "required": [
-            "model_name",
-            "request_timeout",
-            "max_retries",
-            "temperature",
-            "max_tokens",
-            "verbose",
-            "streaming",
-            "metadata"
+            "model_name"
         ],
         "type": "object"
     },

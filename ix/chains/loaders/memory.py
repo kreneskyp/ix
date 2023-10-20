@@ -1,6 +1,9 @@
 import logging
+from abc import ABC
 from functools import singledispatch
 from typing import Dict, Any, Union, Type, Tuple, List
+
+from pydantic.v1.fields import ModelField
 
 from ix.chains.callbacks import IxHandler
 from langchain.memory import CombinedMemory
@@ -10,7 +13,7 @@ from pydantic import BaseModel
 from ix.chains.loaders.core import load_node, IxContext
 from ix.chains.models import ChainNode
 from ix.utils.importlib import import_class
-
+from ix.utils.pydantic import get_model_fields
 
 logger = logging.getLogger(__name__)
 
@@ -21,9 +24,18 @@ MEMORY_CLASSES = {}
 
 def get_memory_option(cls: Type[BaseModel], name: str, default: Any):
     """Get a memory config value from a class or default"""
-    if issubclass(cls, BaseModel) and name in cls.__fields__:
+
+    if issubclass(cls, BaseModel) and name in get_model_fields(cls):
         # support for pydantic models
-        return cls.__fields__[name].default
+        return get_model_fields(cls)[name].default
+    elif issubclass(cls, ABC) and hasattr(cls, "__fields__"):
+        # support for abstract classes
+        # Pydantic v1/v2 compat, some BaseModels will still fall into this category
+        # need to check for ModelField for that case.
+        field = cls.__fields__.get(name, default)
+        if isinstance(field, ModelField):
+            return field.default
+        return field
     elif hasattr(cls, name):
         # support for regular classes
         return getattr(cls, name)
@@ -44,7 +56,8 @@ def load_memory_config(
     memory_config = node.config.copy() if node.config else {}
 
     # load session_id if scope is supported
-    if get_memory_option(memory_class, "supports_session", False):
+    supports_session = get_memory_option(memory_class, "supports_session", False)
+    if supports_session is True:
         session_id, session_id_key = get_memory_session(
             memory_config, context, memory_class
         )

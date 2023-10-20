@@ -15,10 +15,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "verbose",
-            "input_variables"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": [

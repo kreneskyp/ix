@@ -16,11 +16,7 @@
                 "type": "string"
             }
         },
-        "required": [
-            "return_direct",
-            "verbose",
-            "wolfram_alpha_app_id"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

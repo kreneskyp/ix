@@ -33,13 +33,7 @@
                 "type": "string"
             }
         },
-        "required": [
-            "url",
-            "ttl",
-            "session_scope",
-            "session_prefix",
-            "session_key"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

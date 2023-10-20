@@ -8,9 +8,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "verbose"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": [

@@ -103,8 +103,12 @@
             }
         },
         "required": [
-            "verbose",
-            "model_path"
+            "model_path",
+            "lora_base",
+            "n_threads",
+            "n_gpu_layers",
+            "suffix",
+            "logprobs"
         ],
         "type": "object"
     },
@@ -142,7 +146,7 @@
             "min": null,
             "name": "lora_base",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "Optional[str]"
@@ -262,7 +266,7 @@
             "min": null,
             "name": "n_threads",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "Optional[int]"
@@ -292,7 +296,7 @@
             "min": null,
             "name": "n_gpu_layers",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "Optional[int]"
@@ -307,7 +311,7 @@
             "min": null,
             "name": "suffix",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "Optional[str]"
@@ -367,7 +371,7 @@
             "min": null,
             "name": "logprobs",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "Optional[int]"

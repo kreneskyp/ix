@@ -10,8 +10,9 @@ OPENAI_EMBEDDINGS = {
             "type": "string",
             "default": "text-embedding-ada-002",
             "choices": [
-                {"name": "text-embedding-ada-002", "label": "text-embedding-ada-002"},
+                {"value": "text-embedding-ada-002", "label": "text-embedding-ada-002"},
             ],
+            "input_type": "select",
         },
         {
             "name": "allowed_special",

@@ -27,12 +27,7 @@
                 "type": "string"
             }
         },
-        "required": [
-            "model_name",
-            "cache_folder",
-            "model_kwargs",
-            "encode_kwargs"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

@@ -16,12 +16,7 @@
                 "type": "string"
             }
         },
-        "required": [
-            "input_variables",
-            "map_input",
-            "map_input_to",
-            "output_key"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": [

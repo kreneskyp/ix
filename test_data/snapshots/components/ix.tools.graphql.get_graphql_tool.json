@@ -16,8 +16,6 @@
             }
         },
         "required": [
-            "return_direct",
-            "verbose",
             "graphql_endpoint"
         ],
         "type": "object"
