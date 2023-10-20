@@ -12,7 +12,7 @@
                 "type": "boolean"
             },
             "wolfram_alpha_app_id": {
-                "default": null,
+                "input_type": "secret",
                 "type": "string"
             }
         },

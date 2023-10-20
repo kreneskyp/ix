@@ -4,7 +4,6 @@
     "config_schema": {
         "properties": {
             "function_call": {
-                "default": null,
                 "type": "string"
             },
             "output_key": {

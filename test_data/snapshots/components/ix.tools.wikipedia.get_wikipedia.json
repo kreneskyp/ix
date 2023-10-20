@@ -48,6 +48,7 @@
         {
             "choices": null,
             "default": 3,
+            "description": null,
             "input_type": null,
             "label": "Top_k_results",
             "max": null,
@@ -62,6 +63,7 @@
         {
             "choices": null,
             "default": "en",
+            "description": null,
             "input_type": null,
             "label": "Lang",
             "max": null,
@@ -76,6 +78,7 @@
         {
             "choices": null,
             "default": false,
+            "description": null,
             "input_type": null,
             "label": "Load_all_available_meta",
             "max": null,
@@ -90,6 +93,7 @@
         {
             "choices": null,
             "default": 4000,
+            "description": null,
             "input_type": null,
             "label": "Doc_content_chars_max",
             "max": null,

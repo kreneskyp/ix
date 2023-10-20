@@ -4,7 +4,6 @@
     "config_schema": {
         "properties": {
             "file_path": {
-                "default": null,
                 "type": "string"
             },
             "get_text_separator": {
@@ -12,7 +11,6 @@
                 "type": "string"
             },
             "open_encoding": {
-                "default": null,
                 "type": "string"
             }
         },
@@ -28,6 +26,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "File_path",
             "max": null,
@@ -42,6 +41,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Open_encoding",
             "max": null,
@@ -56,6 +56,7 @@
         {
             "choices": null,
             "default": "",
+            "description": null,
             "input_type": null,
             "label": "Get_text_separator",
             "max": null,

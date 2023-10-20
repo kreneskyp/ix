@@ -4,7 +4,6 @@
     "config_schema": {
         "properties": {
             "max_execution_time": {
-                "default": null,
                 "type": "number"
             },
             "max_iterations": {

@@ -48,6 +48,7 @@
         {
             "choices": null,
             "default": "wt-wt",
+            "description": null,
             "input_type": null,
             "label": "Region",
             "max": null,
@@ -62,6 +63,7 @@
         {
             "choices": null,
             "default": "moderate",
+            "description": null,
             "input_type": null,
             "label": "Safesearch",
             "max": null,
@@ -76,6 +78,7 @@
         {
             "choices": null,
             "default": "y",
+            "description": null,
             "input_type": null,
             "label": "Time",
             "max": null,
@@ -90,6 +93,7 @@
         {
             "choices": null,
             "default": 5,
+            "description": null,
             "input_type": null,
             "label": "Max_results",
             "max": null,

@@ -5,6 +5,7 @@
         "properties": {
             "allow_reset": {
                 "default": false,
+                "parent": "client_settings",
                 "type": "boolean"
             },
             "allowed_search_types": {
@@ -17,22 +18,26 @@
             },
             "anonymized_telemetry": {
                 "default": true,
+                "parent": "client_settings",
                 "type": "boolean"
             },
             "chroma_server_grpc_port": {
-                "default": null,
+                "parent": "client_settings",
                 "type": "string"
             },
             "chroma_server_host": {
                 "default": "172.17.42.1",
+                "parent": "client_settings",
                 "type": "string"
             },
             "chroma_server_http_port": {
                 "default": "8020",
+                "parent": "client_settings",
                 "type": "string"
             },
             "chroma_server_ssl_enabled": {
                 "default": false,
+                "parent": "client_settings",
                 "type": "boolean"
             },
             "collection_name": {
@@ -71,6 +76,7 @@
         {
             "choices": null,
             "default": "langchain",
+            "description": null,
             "input_type": null,
             "label": "Collection_name",
             "max": null,
@@ -85,6 +91,7 @@
         {
             "choices": null,
             "default": "./chroma",
+            "description": null,
             "input_type": null,
             "label": "Persist_directory",
             "max": null,
@@ -99,6 +106,7 @@
         {
             "choices": null,
             "default": "172.17.42.1",
+            "description": null,
             "input_type": null,
             "label": "Server Host",
             "max": null,
@@ -113,6 +121,7 @@
         {
             "choices": null,
             "default": "8020",
+            "description": null,
             "input_type": null,
             "label": "HTTP Port",
             "max": null,
@@ -127,6 +136,7 @@
         {
             "choices": null,
             "default": false,
+            "description": null,
             "input_type": null,
             "label": "Chroma_server_ssl_enabled",
             "max": null,
@@ -141,6 +151,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "GRPC Port",
             "max": null,
@@ -155,6 +166,7 @@
         {
             "choices": null,
             "default": true,
+            "description": null,
             "input_type": null,
             "label": "Anonymized_telemetry",
             "max": null,
@@ -169,6 +181,7 @@
         {
             "choices": null,
             "default": false,
+            "description": null,
             "input_type": null,
             "label": "Allow_reset",
             "max": null,
@@ -193,6 +206,7 @@
         {
             "choices": null,
             "default": "similarity",
+            "description": null,
             "input_type": null,
             "label": "Search_type",
             "max": null,

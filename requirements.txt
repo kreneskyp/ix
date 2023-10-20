@@ -13,6 +13,7 @@ django-channels-graphql-ws==1.0.0rc6
 django_extensions==3.2.3
 django-redis==5.3.0
 Faker==19.6.2
+fireworks-ai==0.4.4
 flake8==6.1.0
 fastapi==0.103.2
 graphene-django==3.1.5
@@ -24,8 +25,8 @@ isort==5.12.0
 jq==1.4.1
 jsonpath-ng==1.6.0
 jsonschema==4.19.1
-langchain==0.0.314
-langchain-experimental==0.0.29
+langchain==0.0.319
+langchain-experimental==0.0.32
 llama-cpp-python==0.1.79
 metaphor-python==0.1.16
 openai==0.28.0

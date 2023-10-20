@@ -4,7 +4,9 @@
     "config_schema": {
         "properties": {
             "spec": {
-                "default": null,
+                "style": {
+                    "width": "500px"
+                },
                 "type": "string"
             },
             "verbose": {

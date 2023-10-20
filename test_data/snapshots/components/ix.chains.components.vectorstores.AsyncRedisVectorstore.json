@@ -13,18 +13,24 @@
             },
             "content_key": {
                 "default": "content",
+                "description": "Key for storing content",
                 "type": "string"
             },
             "index_name": {
-                "default": null,
+                "description": "Name of the index in the Redis",
                 "type": "string"
             },
             "metadata_key": {
                 "default": "metadata",
+                "description": "Key for storing metadata",
                 "type": "string"
             },
             "redis_url": {
                 "default": "redis://redis:6379/0",
+                "description": "URL of the Redis server",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "search_type": {
@@ -33,6 +39,7 @@
             },
             "vector_key": {
                 "default": "content_vector",
+                "description": "Key for storing vectors",
                 "type": "string"
             }
         },
@@ -101,6 +108,7 @@
         {
             "choices": null,
             "default": "similarity",
+            "description": null,
             "input_type": null,
             "label": "Search_type",
             "max": null,

@@ -91,6 +91,7 @@ class NodeTypeField(BaseModel):
     """
 
     name: str
+    description: Optional[str] = None
     parent: Optional[str] = None
     label: Optional[str] = ""
     type: str
@@ -411,22 +412,40 @@ class NodeType(BaseModel):
             else:
                 schema_type = "object"
 
-            schema["properties"][field.name] = {
+            properties = {
                 "type": schema_type,
-                "default": field.default,
             }
+
+            schema["properties"][field.name] = properties
+
+            # mapping from properties to fields with different names
+            COMPAT_FIELDS = {
+                "minimum": "min",
+                "maximum": "max",
+                "multipleOf": "step",
+            }
+
+            OPTIONAL_PROPERTIES = {
+                "description",
+                "input_type",
+                "minimum",
+                "maximum",
+                "multipleOf",
+                "style",
+                "parent",
+                "default",
+            }
+
+            for schema_property in OPTIONAL_PROPERTIES:
+                field_name = COMPAT_FIELDS.get(schema_property, schema_property)
+                if (field_value := getattr(field, field_name, None)) is not None:
+                    properties[schema_property] = field_value
+
+            if field.choices is not None:
+                properties["enum"] = [choice.value for choice in field.choices]
+
             if field.required:
                 schema["required"].append(field.name)
-
-            if field.input_type == InputType.SLIDER:
-                schema["properties"][field.name]["minimum"] = field.min
-                schema["properties"][field.name]["maximum"] = field.max
-                schema["properties"][field.name]["multipleOf"] = field.step
-
-            elif field.input_type == InputType.SELECT:
-                schema["properties"][field.name]["enum"] = [
-                    choice.value for choice in field.choices
-                ]
 
         return schema
 

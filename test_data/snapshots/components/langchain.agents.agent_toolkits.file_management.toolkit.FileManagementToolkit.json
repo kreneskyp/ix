@@ -20,6 +20,7 @@
         {
             "choices": null,
             "default": "/var/app/workdir",
+            "description": null,
             "input_type": null,
             "label": "Root_dir",
             "max": null,

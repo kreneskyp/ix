@@ -4,19 +4,15 @@
     "config_schema": {
         "properties": {
             "input_variables": {
-                "default": null,
                 "type": "object"
             },
             "map_input": {
-                "default": null,
                 "type": "string"
             },
             "map_input_to": {
-                "default": null,
                 "type": "string"
             },
             "output_key": {
-                "default": null,
                 "type": "string"
             }
         },
