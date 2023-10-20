@@ -4,7 +4,6 @@
     "config_schema": {
         "properties": {
             "max_tokens_limit": {
-                "default": null,
                 "type": "object"
             },
             "output_key": {
@@ -29,7 +28,7 @@
             }
         },
         "required": [
-            "verbose"
+            "max_tokens_limit"
         ],
         "type": "object"
     },
@@ -74,6 +73,7 @@
         {
             "choices": null,
             "default": "answer",
+            "description": null,
             "input_type": null,
             "label": "Output_key",
             "max": null,
@@ -88,6 +88,7 @@
         {
             "choices": null,
             "default": true,
+            "description": null,
             "input_type": null,
             "label": "Rephrase_question",
             "max": null,
@@ -102,6 +103,7 @@
         {
             "choices": null,
             "default": false,
+            "description": null,
             "input_type": null,
             "label": "Return_source_documents",
             "max": null,
@@ -116,6 +118,7 @@
         {
             "choices": null,
             "default": false,
+            "description": null,
             "input_type": null,
             "label": "Return_generated_question",
             "max": null,
@@ -130,13 +133,14 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Max_tokens_limit",
             "max": null,
             "min": null,
             "name": "max_tokens_limit",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "Optional[int]"

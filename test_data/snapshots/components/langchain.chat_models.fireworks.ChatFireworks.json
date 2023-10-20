@@ -1,0 +1,146 @@
+{
+    "child_field": null,
+    "class_path": "langchain.chat_models.fireworks.ChatFireworks",
+    "config_schema": {
+        "properties": {
+            "fireworks_api_key": {
+                "input_type": "secret",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
+            "max_retries": {
+                "default": 20,
+                "input_type": "slider",
+                "maximum": 50.0,
+                "minimum": 0.0,
+                "multipleOf": 1.0,
+                "type": "number"
+            },
+            "metadata": {
+                "type": "object"
+            },
+            "model": {
+                "default": "accounts/fireworks/models/llama-v2-7b-chat",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
+            "tags": {
+                "type": "object"
+            },
+            "verbose": {
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "verbose",
+            "tags",
+            "metadata"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Fireworks.ai Chat LLM",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": "accounts/fireworks/models/llama-v2-7b-chat",
+            "description": null,
+            "input_type": null,
+            "label": "Model",
+            "max": null,
+            "min": null,
+            "name": "model",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": "secret",
+            "label": "Fireworks_api_key",
+            "max": null,
+            "min": null,
+            "name": "fireworks_api_key",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": 20,
+            "description": null,
+            "input_type": "slider",
+            "label": "Max_retries",
+            "max": 50.0,
+            "min": 0.0,
+            "name": "max_retries",
+            "parent": null,
+            "required": false,
+            "step": 1.0,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Verbose",
+            "max": null,
+            "min": null,
+            "name": "verbose",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Tags",
+            "max": null,
+            "min": null,
+            "name": "tags",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "Optional[List[str]]"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Metadata",
+            "max": null,
+            "min": null,
+            "name": "metadata",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "dict"
+        }
+    ],
+    "name": "Fireworks.ai (chat)",
+    "type": "llm"
+}

@@ -20,11 +20,9 @@
                 "type": "boolean"
             },
             "logprobs": {
-                "default": null,
                 "type": "object"
             },
             "lora_base": {
-                "default": null,
                 "type": "object"
             },
             "max_tokens": {
@@ -32,7 +30,6 @@
                 "type": "object"
             },
             "model_path": {
-                "default": null,
                 "type": "string"
             },
             "n_batch": {
@@ -44,7 +41,6 @@
                 "type": "number"
             },
             "n_gpu_layers": {
-                "default": null,
                 "type": "object"
             },
             "n_parts": {
@@ -52,7 +48,6 @@
                 "type": "number"
             },
             "n_threads": {
-                "default": null,
                 "type": "object"
             },
             "repeat_penalty": {
@@ -80,7 +75,6 @@
                 "type": "boolean"
             },
             "suffix": {
-                "default": null,
                 "type": "object"
             },
             "temperature": {
@@ -109,8 +103,12 @@
             }
         },
         "required": [
-            "verbose",
-            "model_path"
+            "model_path",
+            "lora_base",
+            "n_threads",
+            "n_gpu_layers",
+            "suffix",
+            "logprobs"
         ],
         "type": "object"
     },
@@ -126,6 +124,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Model_path",
             "max": null,
@@ -140,13 +139,14 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Lora_base",
             "max": null,
             "min": null,
             "name": "lora_base",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "Optional[str]"
@@ -154,6 +154,7 @@
         {
             "choices": null,
             "default": 512,
+            "description": null,
             "input_type": null,
             "label": "N_ctx",
             "max": null,
@@ -168,6 +169,7 @@
         {
             "choices": null,
             "default": -1,
+            "description": null,
             "input_type": null,
             "label": "N_parts",
             "max": null,
@@ -182,6 +184,7 @@
         {
             "choices": null,
             "default": -1,
+            "description": null,
             "input_type": null,
             "label": "Seed",
             "max": null,
@@ -196,6 +199,7 @@
         {
             "choices": null,
             "default": true,
+            "description": null,
             "input_type": null,
             "label": "F16_kv",
             "max": null,
@@ -210,6 +214,7 @@
         {
             "choices": null,
             "default": false,
+            "description": null,
             "input_type": null,
             "label": "Logits_all",
             "max": null,
@@ -224,6 +229,7 @@
         {
             "choices": null,
             "default": false,
+            "description": null,
             "input_type": null,
             "label": "Vocab_only",
             "max": null,
@@ -238,6 +244,7 @@
         {
             "choices": null,
             "default": false,
+            "description": null,
             "input_type": null,
             "label": "Use_mlock",
             "max": null,
@@ -252,13 +259,14 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "N_threads",
             "max": null,
             "min": null,
             "name": "n_threads",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "Optional[int]"
@@ -266,6 +274,7 @@
         {
             "choices": null,
             "default": 8,
+            "description": null,
             "input_type": null,
             "label": "N_batch",
             "max": null,
@@ -280,13 +289,14 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "N_gpu_layers",
             "max": null,
             "min": null,
             "name": "n_gpu_layers",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "Optional[int]"
@@ -294,13 +304,14 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Suffix",
             "max": null,
             "min": null,
             "name": "suffix",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "Optional[str]"
@@ -308,6 +319,7 @@
         {
             "choices": null,
             "default": 256,
+            "description": null,
             "input_type": null,
             "label": "Max_tokens",
             "max": null,
@@ -322,6 +334,7 @@
         {
             "choices": null,
             "default": 0.8,
+            "description": null,
             "input_type": null,
             "label": "Temperature",
             "max": null,
@@ -336,6 +349,7 @@
         {
             "choices": null,
             "default": 0.95,
+            "description": null,
             "input_type": null,
             "label": "Top_p",
             "max": null,
@@ -350,13 +364,14 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Logprobs",
             "max": null,
             "min": null,
             "name": "logprobs",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "Optional[int]"
@@ -364,6 +379,7 @@
         {
             "choices": null,
             "default": false,
+            "description": null,
             "input_type": null,
             "label": "Echo",
             "max": null,
@@ -378,6 +394,7 @@
         {
             "choices": null,
             "default": [],
+            "description": null,
             "input_type": null,
             "label": "Stop",
             "max": null,
@@ -392,6 +409,7 @@
         {
             "choices": null,
             "default": 1.1,
+            "description": null,
             "input_type": null,
             "label": "Repeat_penalty",
             "max": null,
@@ -406,6 +424,7 @@
         {
             "choices": null,
             "default": 64,
+            "description": null,
             "input_type": null,
             "label": "Last_n_tokens_size",
             "max": null,
@@ -420,6 +439,7 @@
         {
             "choices": null,
             "default": true,
+            "description": null,
             "input_type": null,
             "label": "Use_mmap",
             "max": null,
@@ -434,6 +454,7 @@
         {
             "choices": null,
             "default": 1.0,
+            "description": null,
             "input_type": null,
             "label": "Rope_freq_scale",
             "max": null,
@@ -448,6 +469,7 @@
         {
             "choices": null,
             "default": 10000.0,
+            "description": null,
             "input_type": null,
             "label": "Rope_freq_base",
             "max": null,
@@ -462,6 +484,7 @@
         {
             "choices": null,
             "default": true,
+            "description": null,
             "input_type": null,
             "label": "Streaming",
             "max": null,
@@ -476,6 +499,7 @@
         {
             "choices": null,
             "default": true,
+            "description": null,
             "input_type": null,
             "label": "Verbose",
             "max": null,

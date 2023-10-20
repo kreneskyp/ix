@@ -20,11 +20,10 @@
                 "type": "boolean"
             },
             "serper_api_key": {
-                "default": null,
+                "input_type": "secret",
                 "type": "string"
             },
             "tbs": {
-                "default": null,
                 "type": "string"
             },
             "type": {
@@ -35,6 +34,7 @@
                     "places",
                     "images"
                 ],
+                "input_type": "select",
                 "type": "string"
             },
             "verbose": {
@@ -42,10 +42,7 @@
                 "type": "boolean"
             }
         },
-        "required": [
-            "return_direct",
-            "verbose"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,
@@ -65,6 +62,7 @@
         {
             "choices": null,
             "default": 10,
+            "description": null,
             "input_type": null,
             "label": "K",
             "max": null,
@@ -79,6 +77,7 @@
         {
             "choices": null,
             "default": "us",
+            "description": null,
             "input_type": null,
             "label": "Gl",
             "max": null,
@@ -93,6 +92,7 @@
         {
             "choices": null,
             "default": "en",
+            "description": null,
             "input_type": null,
             "label": "Hl",
             "max": null,
@@ -124,6 +124,7 @@
                 }
             ],
             "default": "search",
+            "description": null,
             "input_type": "select",
             "label": "Type",
             "max": null,
@@ -138,6 +139,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": null,
             "label": "Tbs",
             "max": null,
@@ -152,6 +154,7 @@
         {
             "choices": null,
             "default": null,
+            "description": null,
             "input_type": "secret",
             "label": "Serper_api_key",
             "max": null,

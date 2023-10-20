@@ -29,9 +29,9 @@ class AgentCreateUpdate(BaseModel):
 async def create_agent(
     agent: AgentCreateUpdate, user: AbstractUser = Depends(get_request_user)
 ):
-    agent_obj = Agent(user=user, **agent.dict())
+    agent_obj = Agent(user=user, **agent.model_dump())
     await agent_obj.asave()
-    return AgentPydantic.from_orm(agent_obj)
+    return AgentPydantic.model_validate(agent_obj)
 
 
 @router.get("/agents/{agent_id}", response_model=AgentPydantic, tags=["Agents"])
@@ -41,7 +41,7 @@ async def get_agent(agent_id: str, user: AbstractUser = Depends(get_request_user
         agent = await Agent.filter_owners(user, query).aget()
     except Agent.DoesNotExist:
         raise HTTPException(status_code=404, detail="Agent not found")
-    return AgentPydantic.from_orm(agent)
+    return AgentPydantic.model_validate(agent)
 
 
 @router.get("/agents/", response_model=AgentPage, tags=["Agents"])
@@ -76,7 +76,7 @@ async def update_agent(
         agent_obj = await Agent.filter_owners(user, query).aget()
     except Agent.DoesNotExist:
         raise HTTPException(status_code=404, detail="Agent not found")
-    for attr, value in agent.dict().items():
+    for attr, value in agent.model_dump().items():
         setattr(agent_obj, attr, value)
     await agent_obj.asave()
     return agent_obj

@@ -4,7 +4,7 @@
     "config_schema": {
         "properties": {
             "metaphor_api_key": {
-                "default": null,
+                "input_type": "secret",
                 "type": "string"
             },
             "return_direct": {
@@ -17,8 +17,6 @@
             }
         },
         "required": [
-            "return_direct",
-            "verbose",
             "metaphor_api_key"
         ],
         "type": "object"

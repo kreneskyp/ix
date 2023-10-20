@@ -8,11 +8,12 @@
                 "type": "string"
             },
             "path": {
-                "default": null,
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "suffixes": {
-                "default": null,
                 "type": "object"
             }
         },
@@ -50,6 +51,7 @@
         {
             "choices": null,
             "default": "**/[!.]*",
+            "description": null,
             "input_type": null,
             "label": "Glob",
             "max": null,

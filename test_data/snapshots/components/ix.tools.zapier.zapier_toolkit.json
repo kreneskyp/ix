@@ -1,37 +1,43 @@
 {
     "child_field": null,
-    "class_path": "langchain.document_loaders.BSHTMLLoader",
+    "class_path": "ix.tools.zapier.zapier_toolkit",
     "config_schema": {
         "properties": {
-            "file_path": {
+            "zapier_nla_api_base": {
+                "default": "https://nla.zapier.com/api/v1/",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
-            "get_text_separator": {
-                "default": "",
+            "zapier_nla_api_key": {
+                "input_type": "secret",
                 "type": "string"
             },
-            "open_encoding": {
+            "zapier_nla_oauth_access_token": {
+                "input_type": "secret",
                 "type": "string"
             }
         },
         "required": [
-            "file_path"
+            "zapier_nla_api_key",
+            "zapier_nla_oauth_access_token"
         ],
         "type": "object"
     },
     "connectors": null,
-    "description": "Load `HTML` files and parse them with `beautiful soup`.",
+    "description": "Tools for interacting with Zapier tasks",
     "display_type": "node",
     "fields": [
         {
             "choices": null,
             "default": null,
             "description": null,
-            "input_type": null,
-            "label": "File_path",
+            "input_type": "secret",
+            "label": "API Key",
             "max": null,
             "min": null,
-            "name": "file_path",
+            "name": "zapier_nla_api_key",
             "parent": null,
             "required": true,
             "step": null,
@@ -42,33 +48,35 @@
             "choices": null,
             "default": null,
             "description": null,
-            "input_type": null,
-            "label": "Open_encoding",
+            "input_type": "secret",
+            "label": "OAuth Token",
             "max": null,
             "min": null,
-            "name": "open_encoding",
+            "name": "zapier_nla_oauth_access_token",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "str"
         },
         {
             "choices": null,
-            "default": "",
+            "default": "https://nla.zapier.com/api/v1/",
             "description": null,
             "input_type": null,
-            "label": "Get_text_separator",
+            "label": "API Base",
             "max": null,
             "min": null,
-            "name": "get_text_separator",
+            "name": "zapier_nla_api_base",
             "parent": null,
             "required": false,
             "step": null,
-            "style": null,
+            "style": {
+                "width": "100%"
+            },
             "type": "str"
         }
     ],
-    "name": "Beautiful Soup HTML Loader",
-    "type": "document_loader"
+    "name": "Zapier",
+    "type": "tool"
 }

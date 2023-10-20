@@ -34,13 +34,13 @@ class NewNodeEdge(BaseModel):
 
 
 class AddNode(BaseModel):
-    id: Optional[UUID]
-    chain_id: Optional[UUID]
+    id: Optional[UUID] = None
+    chain_id: Optional[UUID] = None
     class_path: str
-    name: Optional[str]
-    description: Optional[str]
-    config: Optional[dict]
-    position: Optional[Position]
+    name: Optional[str] = None
+    description: Optional[str] = None
+    config: Optional[dict] = None
+    position: Optional[Position] = None
 
     # optionally add edges to other nodes
     edges: Optional[List[NewNodeEdge]] = None

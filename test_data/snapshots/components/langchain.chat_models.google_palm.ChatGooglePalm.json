@@ -4,18 +4,23 @@
     "config_schema": {
         "properties": {
             "google_api_key": {
-                "default": null,
+                "description": "Google API key",
+                "input_type": "secret",
                 "type": "string"
             },
             "model_name": {
                 "default": "gpt-4",
+                "description": "OpenAI model",
                 "enum": [
                     "models/chat-bison-001"
                 ],
+                "input_type": "select",
                 "type": "string"
             },
             "n": {
                 "default": 1,
+                "description": "Number of responses to sample",
+                "input_type": "slider",
                 "maximum": 5.0,
                 "minimum": 1.0,
                 "multipleOf": 1.0,
@@ -23,6 +28,8 @@
             },
             "temperature": {
                 "default": 0,
+                "description": "Temperature",
+                "input_type": "slider",
                 "maximum": 2.0,
                 "minimum": 0.0,
                 "multipleOf": 0.05,
@@ -30,6 +37,8 @@
             },
             "top_k": {
                 "default": 0,
+                "description": "Top P",
+                "input_type": "slider",
                 "maximum": 2.0,
                 "minimum": 0.0,
                 "multipleOf": 0.05,
@@ -37,6 +46,8 @@
             },
             "top_p": {
                 "default": 0,
+                "description": "Top P",
+                "input_type": "slider",
                 "maximum": 2.0,
                 "minimum": 0.0,
                 "multipleOf": 0.05,
@@ -48,13 +59,7 @@
             }
         },
         "required": [
-            "model_name",
-            "google_api_key",
-            "temperature",
-            "top_p",
-            "top_k",
-            "n",
-            "verbose"
+            "model_name"
         ],
         "type": "object"
     },

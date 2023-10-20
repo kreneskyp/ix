@@ -5,15 +5,15 @@
         "properties": {
             "model_name": {
                 "default": "textembedding-gecko",
+                "description": "Model name to use",
                 "enum": [
                     "textembedding-gecko"
                 ],
+                "input_type": "select",
                 "type": "string"
             }
         },
-        "required": [
-            "model_name"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,

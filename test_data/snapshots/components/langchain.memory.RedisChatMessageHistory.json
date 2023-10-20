@@ -12,13 +12,13 @@
                 "type": "string"
             },
             "session_scope": {
-                "default": null,
                 "enum": [
                     "chat",
                     "agent",
                     "task",
                     "user"
                 ],
+                "input_type": "select",
                 "type": "string"
             },
             "ttl": {
@@ -27,16 +27,13 @@
             },
             "url": {
                 "default": "redis://redis:6379/0",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             }
         },
-        "required": [
-            "url",
-            "ttl",
-            "session_scope",
-            "session_prefix",
-            "session_key"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,
