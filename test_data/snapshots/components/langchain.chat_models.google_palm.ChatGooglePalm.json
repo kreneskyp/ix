@@ -3,10 +3,16 @@
     "class_path": "langchain.chat_models.google_palm.ChatGooglePalm",
     "config_schema": {
         "properties": {
+            "cache": {
+                "type": "boolean"
+            },
             "google_api_key": {
                 "description": "Google API key",
                 "input_type": "secret",
                 "type": "string"
+            },
+            "metadata": {
+                "type": "object"
             },
             "model_name": {
                 "default": "gpt-4",
@@ -25,6 +31,17 @@
                 "minimum": 1.0,
                 "multipleOf": 1.0,
                 "type": "number"
+            },
+            "tags": {
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
             },
             "temperature": {
                 "default": 0,
@@ -54,12 +71,15 @@
                 "type": "number"
             },
             "verbose": {
-                "default": false,
                 "type": "boolean"
             }
         },
         "required": [
-            "model_name"
+            "model_name",
+            "cache",
+            "verbose",
+            "tags",
+            "metadata"
         ],
         "type": "object"
     },
@@ -131,9 +151,64 @@
             "type": "number"
         },
         {
-            "default": false,
-            "name": "verbose",
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Cache",
+            "max": null,
+            "min": null,
+            "name": "cache",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
             "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Verbose",
+            "max": null,
+            "min": null,
+            "name": "verbose",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Tags",
+            "max": null,
+            "min": null,
+            "name": "tags",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Metadata",
+            "max": null,
+            "min": null,
+            "name": "metadata",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "dict"
         }
     ],
     "name": "Google PaLM",

@@ -19,6 +19,23 @@
                 },
                 "type": "string"
             },
+            "cache": {
+                "type": "boolean"
+            },
+            "metadata": {
+                "type": "object"
+            },
+            "tags": {
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
             "temperature": {
                 "default": 0,
                 "description": "Temperature",
@@ -27,9 +44,17 @@
                 "minimum": 0.0,
                 "multipleOf": 0.05,
                 "type": "number"
+            },
+            "verbose": {
+                "type": "boolean"
             }
         },
-        "required": [],
+        "required": [
+            "cache",
+            "verbose",
+            "tags",
+            "metadata"
+        ],
         "type": "object"
     },
     "connectors": null,
@@ -63,6 +88,66 @@
                 "width": "100%"
             },
             "type": "string"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Cache",
+            "max": null,
+            "min": null,
+            "name": "cache",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Verbose",
+            "max": null,
+            "min": null,
+            "name": "verbose",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Tags",
+            "max": null,
+            "min": null,
+            "name": "tags",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Metadata",
+            "max": null,
+            "min": null,
+            "name": "metadata",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "dict"
         }
     ],
     "name": "Anthropic",

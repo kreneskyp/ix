@@ -68,7 +68,7 @@ export const getDefaults = (nodeType) => {
   const defaults = {};
   nodeType.fields?.forEach(
     (field) =>
-      (defaults[name] = field.default || FIELD_TYPE_DEFAULTS[field.type])
+      (defaults[field.name] = field.default || FIELD_TYPE_DEFAULTS[field.type])
   );
   return defaults;
 };
