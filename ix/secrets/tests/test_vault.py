@@ -1,8 +1,10 @@
 import textwrap
+import hvac
 
 import pytest
 from hvac.exceptions import InvalidPath
 
+from ix.secrets import vault
 from ix.secrets.vault import (
     get_token_store_client,
     create_user_policy,
@@ -12,13 +14,56 @@ from ix.secrets.vault import (
     get_user_token,
     handle_new_user,
     UserVaultClient,
+    delete_secrets_recursive,
 )
 
 TOKEN = "test_token"
 DATA = {"key": "value"}
+DATA2 = {"key": "value2"}
+
+
+class TestSecretsFixtures:
+    def test_delete_secrets_recursive(self):
+        """Sanity checking fixture to make sure it deletes secrets correctly"""
+        client = vault.get_root_client()
+
+        # Create some test secrets
+        secrets = {
+            "secret1": {"value": "value1"},
+            "level1/secret2": {"value": "value2"},
+            "level2/b/secret3": {"value": "value3"},
+        }
+        for secret_path, secret_value in secrets.items():
+            client.secrets.kv.v2.create_or_update_secret(
+                path=secret_path, secret=secret_value
+            )
+
+        # Verify that the secrets exist
+        list_response = client.secrets.kv.v2.list_secrets(path="")
+        assert "keys" in list_response["data"]
+        assert "secret1" in list_response["data"]["keys"]
+        assert "level1/" in list_response["data"]["keys"]
+        assert "level2/" in list_response["data"]["keys"]
+
+        # Call the function to delete the secrets
+        delete_secrets_recursive()
+
+        # Verify that the secrets have been deleted
+        try:
+            response = client.secrets.kv.v2.list_secrets(path="")
+        except InvalidPath:
+            # it should raise because it should be empty
+            pass
+        else:
+            # if it doesn't raise, we fail and report what keys are present
+            assert False, response
+
+        # Calling the function when there are no secrets should not raise an error.
+        delete_secrets_recursive()
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("clean_vault")
 class TestVaultIntegration:
     @pytest.fixture(autouse=True)
     def setup_teardown(self, user):
@@ -35,7 +80,7 @@ class TestVaultIntegration:
         # Delete user token (If stored)
         try:
             vault_client.secrets.kv.v2.delete_metadata_and_all_versions(
-                f"secrets/data/users/{user.id}/token"
+                f"users/{user.id}/token"
             )
         except:  # noqa E722
             pass
@@ -64,12 +109,12 @@ class TestVaultIntegration:
         expected_policy = textwrap.dedent(
             f"""
             # Allow user to read their own token
-            path "secrets/data/users/{user.id}/token" {{
+            path "secret/data/users/{user.id}/token" {{
                 capabilities = ["read"]
             }}
 
             # Allow user to perform CRUD operations on arbitrary keys
-            path "secrets/data/users/{user.id}/keys/*" {{
+            path "secret/data/users/{user.id}/keys/*" {{
                 capabilities = ["create", "read", "update", "delete"]
             }}
         """
@@ -91,7 +136,7 @@ class TestVaultIntegration:
         # 2. Use the hvac client to validate the token exists in Vault
         vault_client = get_token_store_client()
         stored_token_data = vault_client.secrets.kv.v2.read_secret_version(
-            f"secrets/data/users/{user.id}/token"
+            f"users/{user.id}/token"
         )
 
         # Ensure the token data was fetched and extract the token from the nested dictionary
@@ -106,7 +151,7 @@ class TestVaultIntegration:
 
     def test_get_user_token(self, user):
         vault_client = get_token_store_client()
-        path = f"secrets/data/users/{user.id}/token"
+        path = f"users/{user.id}/token"
         try:
             existing_token_data = vault_client.secrets.kv.v2.read_secret_version(path)
             assert existing_token_data is None
@@ -128,7 +173,7 @@ class TestVaultIntegration:
         # 2. Use the hvac client to read the stored token from Vault
         vault_client = get_token_store_client()
         stored_token_data = vault_client.secrets.kv.v2.read_secret_version(
-            f"secrets/data/users/{user.id}/token"
+            f"users/{user.id}/token"
         )
 
         # Ensure the token data was fetched and extract the token from the nested dictionary
@@ -145,14 +190,30 @@ class TestVaultIntegration:
     def test_user_vault_client(self, user):
         """Test the UserVaultClient class
 
-        client should be able to read/write data to the user's Vault
+        client should be able to read/write/delete data to the user's Vault
         """
         path = "test_path_1"  # replace with your desired path
         client = UserVaultClient(user)
         assert client.base_path == f"users/{user.id}/keys"
+
+        # sanity check secret doesn't exist yet
+        with pytest.raises(hvac.exceptions.InvalidPath):
+            client.read(path)
+
+        # read / write
         client.write(path, DATA)
         read_data = client.read(path)
         assert DATA == read_data
+
+        # write (update)
+        client.write(path, DATA2)
+        read_data = client.read(path)
+        assert DATA2 == read_data
+
+        # delete
+        client.delete(path)
+        with pytest.raises(hvac.exceptions.InvalidPath):
+            client.read(path)
 
     def test_user_vault_client_with_token(self, user):
         """Test the UserVaultClient class.

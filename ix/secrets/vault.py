@@ -32,12 +32,12 @@ def create_user_policy(user_id):
     vault_client = get_token_store_client()
     policy = f"""
     # Allow user to read their own token
-    path "secrets/data/users/{user_id}/token" {{
+    path "secret/data/users/{user_id}/token" {{
         capabilities = ["read"]
     }}
 
     # Allow user to perform CRUD operations on arbitrary keys
-    path "secrets/data/users/{user_id}/keys/*" {{
+    path "secret/data/users/{user_id}/keys/*" {{
         capabilities = ["create", "read", "update", "delete"]
     }}
     """
@@ -65,7 +65,7 @@ def create_user_token(user_id, ttl="1h"):
 
 def get_user_token(user_id):
     vault_client = get_token_store_client()
-    path = f"secrets/data/users/{user_id}/token"
+    path = f"users/{user_id}/token"
     try:
         existing_token_data = vault_client.secrets.kv.v2.read_secret_version(path)
         return existing_token_data["data"]["data"]["token"]
@@ -81,7 +81,7 @@ def set_user_token(user_id, token):
     """Set a user's access token in vault"""
     vault_client = get_token_store_client()
     return vault_client.secrets.kv.v2.create_or_update_secret(
-        f"secrets/data/users/{user_id}/token", secret={"token": token}
+        f"users/{user_id}/token", secret={"token": token}
     )
 
 
@@ -153,3 +153,16 @@ class UserVaultClient:
             path=f"{self.base_path}/{path}"
         )
         return response["data"]["data"]
+
+    def delete(self, path):
+        # Fetch the metadata of the secret which contains all the versions
+        path = f"{self.base_path}/{path}"
+        metadata = self.client.secrets.kv.v2.read_secret_metadata(path)
+
+        # Extract version IDs
+        version_ids = list(metadata["data"]["versions"].keys())
+        print("version_id: ", version_ids)
+
+        self.client.secrets.kv.v2.destroy_secret_versions(
+            path=path, versions=version_ids
+        )
