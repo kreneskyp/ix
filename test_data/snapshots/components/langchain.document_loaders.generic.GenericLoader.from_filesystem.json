@@ -14,7 +14,15 @@
                 "type": "string"
             },
             "suffixes": {
-                "type": "object"
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
             }
         },
         "required": [

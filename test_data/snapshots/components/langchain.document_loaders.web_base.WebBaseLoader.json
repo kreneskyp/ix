@@ -12,11 +12,15 @@
                 "type": "boolean"
             },
             "web_path": {
-                "description": "URL(s) of the web page",
-                "style": {
-                    "width": "100%"
-                },
-                "type": "object"
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
             }
         },
         "required": [],

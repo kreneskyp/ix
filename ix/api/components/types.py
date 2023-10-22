@@ -409,45 +409,68 @@ class NodeType(BaseModel):
                 schema_type = "number"
             elif field.type in {"bool", "boolean"}:
                 schema_type = "boolean"
+            elif field.type in {"list", "set"}:
+                schema_type = "array"
             else:
                 schema_type = "object"
 
-            properties = {
-                "type": schema_type,
-            }
-
-            schema["properties"][field.name] = properties
-
-            # mapping from properties to fields with different names
-            COMPAT_FIELDS = {
-                "minimum": "min",
-                "maximum": "max",
-                "multipleOf": "step",
-            }
-
-            OPTIONAL_PROPERTIES = {
-                "description",
-                "input_type",
-                "minimum",
-                "maximum",
-                "multipleOf",
-                "style",
-                "parent",
-                "default",
-            }
-
-            for schema_property in OPTIONAL_PROPERTIES:
-                field_name = COMPAT_FIELDS.get(schema_property, schema_property)
-                if (field_value := getattr(field, field_name, None)) is not None:
-                    properties[schema_property] = field_value
-
-            if field.choices is not None:
-                properties["enum"] = [choice.value for choice in field.choices]
+            if schema_type in {"array"}:
+                property = NodeType.build_array_property(schema, schema_type, field)
+            else:
+                property = NodeType.build_properties(schema, schema_type, field)
 
             if field.required:
                 schema["required"].append(field.name)
 
+            schema["properties"][field.name] = property
+
         return schema
+
+    @staticmethod
+    def build_array_property(schema, schema_type, field) -> dict:
+        items = []
+        if field.choices is not None:
+            items.extend([{"type": choice.value} for choice in field.choices])
+        return {
+            "type": "array",
+            "items": [{"type": "string"}],
+            # "additionalItems": False,
+            "minItems": field.min,
+            "maxItems": field.max,
+            "uniqueItems": field.type == "set",
+        }
+
+    @staticmethod
+    def build_properties(schema, schema_type, field) -> dict:
+        # mapping from properties to fields with different names
+        COMPAT_FIELDS = {
+            "minimum": "min",
+            "maximum": "max",
+            "multipleOf": "step",
+        }
+
+        OPTIONAL_PROPERTIES = {
+            "description",
+            "input_type",
+            "minimum",
+            "maximum",
+            "multipleOf",
+            "style",
+            "parent",
+            "default",
+        }
+
+        property = {"type": schema_type}
+
+        for schema_property in OPTIONAL_PROPERTIES:
+            field_name = COMPAT_FIELDS.get(schema_property, schema_property)
+            if (field_value := getattr(field, field_name, None)) is not None:
+                property[schema_property] = field_value
+
+        if field.choices is not None:
+            property["enum"] = [choice.value for choice in field.choices]
+
+        return property
 
 
 class NodeTypePage(QueryPage[NodeType]):

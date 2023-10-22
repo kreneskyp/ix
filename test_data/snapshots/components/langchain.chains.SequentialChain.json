@@ -4,11 +4,15 @@
     "config_schema": {
         "properties": {
             "input_variables": {
-                "default": [],
-                "style": {
-                    "width": "100%"
-                },
-                "type": "object"
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
             },
             "verbose": {
                 "default": false,
