@@ -170,6 +170,8 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
         id: newNodeID,
         chain_id: chain?.id || null,
         class_path: nodeType.class_path,
+        name: "",
+        description: "",
         position: position,
         config: getDefaults(nodeType),
       };
