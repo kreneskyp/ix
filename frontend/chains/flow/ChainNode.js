@@ -1,8 +1,6 @@
 import React, { useMemo } from "react";
 import { Handle, useEdges } from "reactflow";
 import { Box, VStack, Heading, Flex } from "@chakra-ui/react";
-import { TypeAutoFields } from "chains/flow/TypeAutoFields";
-import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { NodeProperties, useConnectorColor } from "chains/flow/ConfigNode";
 import { RequiredAsterisk } from "components/RequiredAsterisk";
 import { ConnectorPopover } from "chains/editor/ConnectorPopover";
