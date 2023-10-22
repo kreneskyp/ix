@@ -22,7 +22,7 @@ import { useEditorColorMode } from "chains/editor/useColorMode";
  * @param {function} onChange - The callback function that is called when the list is changed.
  */
 export const ListForm = ({ label, list, onChange }) => {
-  const [items, setItems] = useState([""]);
+  const [items, setItems] = useState(list || [""]);
   const colorMode = useEditorColorMode();
 
   // This useEffect hook ensures that there is always an empty string at the end of the items array.
