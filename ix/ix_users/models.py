@@ -21,7 +21,7 @@ class OwnedModel(models.Model):
         abstract = True
 
     @classmethod
-    def filtered_owners(cls, user: User) -> QuerySet:
+    def filtered_owners(cls, user: User, global_restricted=False) -> QuerySet:
         """Filter a queryset to only include objects available to the given user.
         Shortcut for `filter_owners(user, cls.objects.all())`
 
@@ -31,13 +31,16 @@ class OwnedModel(models.Model):
         OwnedModel.filtered_owners(user)
         ```
         """
-        return cls.filter_owners(user, cls.objects.all())
+        queryset = cls.objects.all()
+        return cls.filter_owners(user, queryset, global_restricted=global_restricted)
 
     @staticmethod
-    def filter_owners(user: User, queryset: QuerySet) -> QuerySet:
+    def filter_owners(
+        user: User, queryset: QuerySet, global_restricted=False
+    ) -> QuerySet:
         """Filter a queryset to only include objects available to the given user:
 
-        - Global objects with no owner
+        - Global objects with no owner (if global_restricted is False or user is not admin)
         - Objects owned by the user
         - Objects owned by a group the user is a member of
 
@@ -51,6 +54,11 @@ class OwnedModel(models.Model):
         if not user:
             return queryset.none()
 
-        return queryset.filter(
-            Q(user_id=None, group_id=None) | Q(user_id=user.id) | Q(group__user=user)
-        )
+        user_owned = Q(user_id=user.id)
+        group_owned = Q(group__user=user)
+        global_owned = Q(user_id=None, group_id=None)
+
+        if global_restricted and not user.is_superuser:
+            return queryset.exclude(global_owned).filter(user_owned | group_owned)
+        else:
+            return queryset.filter(user_owned | group_owned | global_owned)

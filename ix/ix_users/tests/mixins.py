@@ -214,7 +214,7 @@ class OwnershipUpdateTestsMixin:
             response = await ac.put(
                 f"/{self.object_type}/{owner_state.object_owned.id}", json=data
             )
-            assert response.status_code == 200
+            assert response.status_code == 200, response.text
 
     async def test_group_owned_update(self, owner_state: OwnerState, arequest_user):
         """
@@ -228,7 +228,7 @@ class OwnershipUpdateTestsMixin:
             response = await ac.put(
                 f"/{self.object_type}/{owner_state.object_group_owned.id}", json=data
             )
-            assert response.status_code == 200
+            assert response.status_code == 200, response.text
 
     async def test_not_owned_update(self, owner_state: OwnerState, arequest_user):
         """
@@ -242,7 +242,7 @@ class OwnershipUpdateTestsMixin:
             response = await ac.put(
                 f"/{self.object_type}/{owner_state.object_owned.id}", json=data
             )
-            assert response.status_code == 404
+            assert response.status_code == 404, response.text
 
     async def test_group_not_owned_update(self, owner_state: OwnerState, arequest_user):
         """
@@ -272,7 +272,31 @@ class OwnershipUpdateTestsMixin:
             response = await ac.put(
                 f"/{self.object_type}/{owner_state.object_owned.id}", json=data
             )
-            assert response.status_code == 401
+            assert response.status_code == 401, response.text
+
+
+class OwnershipUpdateGlobalsRestrictedTestsMixin:
+    """Tests for when globals are restricted to admins"""
+
+    async def test_update_global_admin(self, owner_state: OwnerState, arequest_admin):
+        data = await self.get_update_data(owner_state.object_global)
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.put(
+                f"/{self.object_type}/{owner_state.object_global.id}", json=data
+            )
+            assert response.status_code == 200
+
+    async def test_update_global_not_admin(
+        self, owner_state: OwnerState, arequest_user
+    ):
+        data = await self.get_update_data(owner_state.object_global)
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.put(
+                f"/{self.object_type}/{owner_state.object_global.id}", json=data
+            )
+            assert response.status_code == 404
 
 
 class OwnershipDeleteTestsMixin:
@@ -344,6 +368,26 @@ class OwnershipDeleteTestsMixin:
             assert response.status_code == 401
 
 
+class OwnershipDeleteGlobalsRestrictedTestsMixin:
+    """Tests for when globals are restricted to admins"""
+
+    async def test_delete_global_admin(self, owner_state: OwnerState, arequest_admin):
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.delete(
+                f"/{self.object_type}/{owner_state.object_global.id}"
+            )
+            assert response.status_code == 200
+
+    async def test_delete_global_not_admin(
+        self, owner_state: OwnerState, arequest_user
+    ):
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.delete(
+                f"/{self.object_type}/{owner_state.object_global.id}"
+            )
+            assert response.status_code == 404
+
+
 class OwnershipTestsBaseMixin:
     """
     Mixin for testing access to API endpoints based on ownership.
@@ -381,18 +425,21 @@ class OwnershipTestsBaseMixin:
 
     @pytest_asyncio.fixture
     async def owner_state(self, settings) -> OwnerState:
-        owner_user = await afake_user()
-        non_owner_user = await afake_user()
+        owner_user = await afake_user(username="owner")
+        non_owner_user = await afake_user(username="non-owner")
         group, _ = await Group.objects.aget_or_create(name="Test Group")
         await sync_to_async(owner_user.groups.add)(group.id)
         object_owned = await self.setup_object(user=owner_user)
-        object_group_owned = await self.setup_object(group=group)
-        object_global = await self.setup_object()
+        object_group_owned = await self.setup_object(user=None, group=group)
+        object_global = await self.setup_object(user=None, group=None)
 
         # sanity check that setup_object is working for the specific test
         assert object_owned.user_id == owner_user.id
+        assert object_owned.group_id is None
+        assert object_group_owned.user_id is None
         assert object_group_owned.group_id == group.id
         assert object_global.user_id is None
+        assert object_global.group_id is None
 
         return OwnerState(
             owner=owner_user,
