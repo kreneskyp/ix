@@ -4,7 +4,15 @@
     "config_schema": {
         "properties": {
             "input_variables": {
-                "type": "object"
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
             },
             "map_input": {
                 "type": "string"

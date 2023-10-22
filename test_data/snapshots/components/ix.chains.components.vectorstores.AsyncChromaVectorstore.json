@@ -9,12 +9,15 @@
                 "type": "boolean"
             },
             "allowed_search_types": {
-                "default": [
-                    "similarity",
-                    "similarity_score_threshold",
-                    "mmr"
+                "items": [
+                    {
+                        "type": "string"
+                    }
                 ],
-                "type": "object"
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
             },
             "anonymized_telemetry": {
                 "default": true,
