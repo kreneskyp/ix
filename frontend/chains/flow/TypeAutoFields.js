@@ -51,11 +51,12 @@ const AutoFieldInput = ({ name, field, isRequired, value, onChange }) => {
 
   return (
     <Flex justifyContent="space-between" wrap="wrap" width="100%">
-
       <FormLabel justify="start" whiteSpace="nowrap">
-          <Tooltip label={field.description}>
-            <Box p={0} m={0}>{getLabel(name)}</Box>
-          </Tooltip>
+        <Tooltip label={field.description}>
+          <Box p={0} m={0}>
+            {getLabel(name)}
+          </Box>
+        </Tooltip>
       </FormLabel>
 
       <Input
@@ -186,7 +187,12 @@ const AutoFieldDict = ({ name, field, isRequired, value, onChange }) => {
   value = value || {};
 
   return (
-    <DictForm dict={value} onChange={handleChange} label={getLabel(name)} isRequired />
+    <DictForm
+      dict={value}
+      onChange={handleChange}
+      label={getLabel(name)}
+      isRequired
+    />
   );
 };
 
@@ -204,10 +210,14 @@ const AutoFieldList = ({ name, field, isRequired, value, onChange }) => {
   value = value || [];
 
   return (
-    <ListForm list={value} onChange={handleChange} label={getLabel(name)} isRequired />
+    <ListForm
+      list={value}
+      onChange={handleChange}
+      label={getLabel(name)}
+      isRequired
+    />
   );
 };
-
 
 // explicit input types
 const INPUTS = {
@@ -256,22 +266,32 @@ export const getDefaults = (nodeType) => {
   return defaults;
 };
 
-export const TypeAutoField = ({ name, field, isRequired, config, onChange }) => {
+export const TypeAutoField = ({
+  name,
+  field,
+  isRequired,
+  config,
+  onChange,
+}) => {
   // Select component based on explicit input type, field type, or default in that order.
   const FieldComponent =
     INPUTS[field.input_type || TYPE_INPUTS[field.type]] || DEFAULT_COMPONENT;
-  const value =
-    config && name in config ? config[name] : field.default;
+  const value = config && name in config ? config[name] : field.default;
 
   return (
     <FormControl>
       <HStack>
-        <FieldComponent name={name} field={field} isRequired={isRequired} value={value} onChange={onChange} />
+        <FieldComponent
+          name={name}
+          field={field}
+          isRequired={isRequired}
+          value={value}
+          onChange={onChange}
+        />
       </HStack>
     </FormControl>
   );
 };
-
 
 export const JSONSchemaForm = ({ schema, data, onChange }) => {
   return (
@@ -293,9 +313,12 @@ export const JSONSchemaForm = ({ schema, data, onChange }) => {
   );
 };
 
-
 export const TypeAutoFields = ({ type, config, onChange }) => {
   return (
-    <JSONSchemaForm schema={type?.config_schema} data={config} onChange={onChange} />
-    );
+    <JSONSchemaForm
+      schema={type?.config_schema}
+      data={config}
+      onChange={onChange}
+    />
+  );
 };
