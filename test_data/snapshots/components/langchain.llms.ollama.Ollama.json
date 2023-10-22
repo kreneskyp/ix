@@ -7,6 +7,12 @@
                 "default": "http://localhost:11434",
                 "type": "string"
             },
+            "cache": {
+                "type": "boolean"
+            },
+            "metadata": {
+                "type": "object"
+            },
             "mirostat": {
                 "type": "number"
             },
@@ -46,6 +52,17 @@
                 },
                 "type": "object"
             },
+            "tags": {
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
             "temperature": {
                 "default": 0.8,
                 "input_type": "slider",
@@ -66,11 +83,15 @@
                 "type": "number"
             },
             "verbose": {
-                "default": false,
                 "type": "boolean"
             }
         },
-        "required": [],
+        "required": [
+            "cache",
+            "verbose",
+            "tags",
+            "metadata"
+        ],
         "type": "object"
     },
     "connectors": null,
@@ -293,6 +314,66 @@
             "step": 0.05,
             "style": null,
             "type": "int"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Cache",
+            "max": null,
+            "min": null,
+            "name": "cache",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Verbose",
+            "max": null,
+            "min": null,
+            "name": "verbose",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Tags",
+            "max": null,
+            "min": null,
+            "name": "tags",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Metadata",
+            "max": null,
+            "min": null,
+            "name": "metadata",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "dict"
         }
     ],
     "name": "Ollama",

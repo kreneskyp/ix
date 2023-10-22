@@ -3,6 +3,9 @@
     "class_path": "langchain.llms.llamacpp.LlamaCpp",
     "config_schema": {
         "properties": {
+            "cache": {
+                "type": "boolean"
+            },
             "echo": {
                 "default": false,
                 "type": "object"
@@ -27,6 +30,9 @@
             },
             "max_tokens": {
                 "default": 256,
+                "type": "object"
+            },
+            "metadata": {
                 "type": "object"
             },
             "model_path": {
@@ -77,6 +83,17 @@
             "suffix": {
                 "type": "object"
             },
+            "tags": {
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
             "temperature": {
                 "default": 0.8,
                 "type": "object"
@@ -94,7 +111,6 @@
                 "type": "object"
             },
             "verbose": {
-                "default": true,
                 "type": "boolean"
             },
             "vocab_only": {
@@ -108,7 +124,11 @@
             "n_threads",
             "n_gpu_layers",
             "suffix",
-            "logprobs"
+            "logprobs",
+            "cache",
+            "verbose",
+            "tags",
+            "metadata"
         ],
         "type": "object"
     },
@@ -498,7 +518,22 @@
         },
         {
             "choices": null,
-            "default": true,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Cache",
+            "max": null,
+            "min": null,
+            "name": "cache",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": null,
             "description": null,
             "input_type": null,
             "label": "Verbose",
@@ -506,10 +541,40 @@
             "min": null,
             "name": "verbose",
             "parent": null,
-            "required": false,
+            "required": true,
             "step": null,
             "style": null,
             "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Tags",
+            "max": null,
+            "min": null,
+            "name": "tags",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Metadata",
+            "max": null,
+            "min": null,
+            "name": "metadata",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "dict"
         }
     ],
     "name": "Llama Cpp",

@@ -3,6 +3,9 @@
     "class_path": "langchain.chat_models.openai.ChatOpenAI",
     "config_schema": {
         "properties": {
+            "cache": {
+                "type": "boolean"
+            },
             "max_retries": {
                 "default": 6,
                 "description": "Max Retries",
@@ -13,8 +16,7 @@
                 "type": "number"
             },
             "max_tokens": {
-                "default": 256,
-                "type": "number"
+                "type": "string"
             },
             "metadata": {
                 "type": "object"
@@ -31,6 +33,33 @@
                 "input_type": "select",
                 "type": "string"
             },
+            "openai_api_base": {
+                "description": "OpenAI API Base URL",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
+            "openai_api_key": {
+                "input_type": "secret",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "object"
+            },
+            "openai_organization": {
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
+            "openai_proxy": {
+                "description": "OpenAI Proxy URL",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
             "request_timeout": {
                 "default": 60,
                 "description": "Request Timeout",
@@ -39,6 +68,17 @@
             "streaming": {
                 "default": true,
                 "type": "boolean"
+            },
+            "tags": {
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
             },
             "temperature": {
                 "default": 0,
@@ -50,12 +90,20 @@
                 "type": "number"
             },
             "verbose": {
-                "default": false,
                 "type": "boolean"
             }
         },
         "required": [
-            "model_name"
+            "model_name",
+            "openai_api_key",
+            "openai_api_base",
+            "openai_organization",
+            "openai_proxy",
+            "max_tokens",
+            "cache",
+            "verbose",
+            "tags",
+            "metadata"
         ],
         "type": "object"
     },
@@ -91,6 +139,94 @@
             "type": "string"
         },
         {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": "secret",
+            "label": "API Key",
+            "max": null,
+            "min": null,
+            "name": "openai_api_key",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "Optional[str]"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": "OpenAI API Base URL",
+            "input_type": null,
+            "label": "API Base URL",
+            "max": null,
+            "min": null,
+            "name": "openai_api_base",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Organization",
+            "max": null,
+            "min": null,
+            "name": "openai_organization",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": "OpenAI Proxy URL",
+            "input_type": null,
+            "label": "Proxy URL",
+            "max": null,
+            "min": null,
+            "name": "openai_proxy",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Max_tokens",
+            "max": null,
+            "min": null,
+            "name": "max_tokens",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "string"
+        },
+        {
+            "default": true,
+            "name": "streaming",
+            "type": "boolean"
+        },
+        {
             "default": 60,
             "description": "Request Timeout",
             "label": "Timeout (sec)",
@@ -118,22 +254,63 @@
             "type": "number"
         },
         {
-            "default": 256,
-            "name": "max_tokens",
-            "type": "number"
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Cache",
+            "max": null,
+            "min": null,
+            "name": "cache",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "boolean"
         },
         {
-            "default": false,
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Verbose",
+            "max": null,
+            "min": null,
             "name": "verbose",
-            "type": "boolean"
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "bool"
         },
         {
-            "default": true,
-            "name": "streaming",
-            "type": "boolean"
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Tags",
+            "max": null,
+            "min": null,
+            "name": "tags",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "list"
         },
         {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Metadata",
+            "max": null,
+            "min": null,
             "name": "metadata",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
             "type": "dict"
         }
     ],

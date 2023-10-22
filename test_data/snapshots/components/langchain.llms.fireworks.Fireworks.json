@@ -3,6 +3,9 @@
     "class_path": "langchain.llms.fireworks.Fireworks",
     "config_schema": {
         "properties": {
+            "cache": {
+                "type": "boolean"
+            },
             "fireworks_api_key": {
                 "input_type": "secret",
                 "style": {
@@ -29,13 +32,22 @@
                 "type": "string"
             },
             "tags": {
-                "type": "object"
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
             },
             "verbose": {
                 "type": "boolean"
             }
         },
         "required": [
+            "cache",
             "verbose",
             "tags",
             "metadata"
@@ -100,6 +112,21 @@
             "default": null,
             "description": null,
             "input_type": null,
+            "label": "Cache",
+            "max": null,
+            "min": null,
+            "name": "cache",
+            "parent": null,
+            "required": true,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
             "label": "Verbose",
             "max": null,
             "min": null,
@@ -123,7 +150,7 @@
             "required": true,
             "step": null,
             "style": null,
-            "type": "Optional[List[str]]"
+            "type": "list"
         },
         {
             "choices": null,
