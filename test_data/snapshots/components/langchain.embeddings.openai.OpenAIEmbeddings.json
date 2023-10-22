@@ -4,15 +4,30 @@
     "config_schema": {
         "properties": {
             "allowed_special": {
-                "type": "object"
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
             },
             "chunk_size": {
                 "default": 1000,
                 "type": "number"
             },
             "disallowed_special": {
-                "default": "all",
-                "type": "object"
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
             },
             "max_retries": {
                 "default": "6",

@@ -4,18 +4,30 @@
     "config_schema": {
         "properties": {
             "delegate_inputs": {
-                "type": "object"
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
             },
             "output_key": {
                 "default": "delegate_to",
                 "type": "string"
             },
             "tags": {
-                "default": [],
-                "style": {
-                    "width": "100%"
-                },
-                "type": "object"
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
             },
             "target_alias": {
                 "type": "string"

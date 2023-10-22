@@ -1,6 +1,5 @@
 import { Badge, Box, Center, Heading, HStack, Text } from "@chakra-ui/react";
 import React, { useContext } from "react";
-import { TypeAutoFields } from "chains/flow/TypeAutoFields";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { NodeStateContext, SelectedNodeContext } from "chains/editor/contexts";
 import { PromptNode } from "chains/flow/PromptNode";
@@ -9,6 +8,7 @@ import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { useNodeEditorAPI } from "chains/hooks/useNodeEditorAPI";
 import { NameField } from "chains/editor/fields/NameField";
 import { DescriptionField } from "chains/editor/fields/DescriptionField";
+import { JSONSchemaForm } from "json_form/JSONSchemaForm";
 
 const CONFIG_FORM_COMPONENTS = {
   "langchain.prompts.chat.ChatPromptTemplate": PromptNode,
@@ -21,9 +21,9 @@ const DefaultForm = ({ type, node, onChange }) => {
   }
 
   return (
-    <TypeAutoFields
-      type={type}
-      config={node.config}
+    <JSONSchemaForm
+      schema={type?.config_schema}
+      data={node.config}
       onChange={onChange.field}
     />
   );

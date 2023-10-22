@@ -1,5 +1,13 @@
 import React from "react";
-import { Box, Input, VStack, HStack, FormLabel, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Input,
+  VStack,
+  HStack,
+  FormLabel,
+  Text,
+  Tooltip,
+} from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { useEditorColorMode } from "chains/editor/useColorMode";
@@ -51,16 +59,18 @@ export const DictForm = ({ label, dict, onChange }) => {
         <FormLabel justify="start" whiteSpace="nowrap" mr={0} pr={0}>
           {label}
         </FormLabel>
-        <Text as="span" color={"green.300"}>
-          <FontAwesomeIcon
-            icon={faPlusCircle}
-            onClick={handleAddClick}
-            cursor="pointer"
-          />
-        </Text>
+        <Tooltip label="add value">
+          <Text as="span" color={"green.300"}>
+            <FontAwesomeIcon
+              icon={faPlusCircle}
+              onClick={handleAddClick}
+              cursor="pointer"
+            />
+          </Text>
+        </Tooltip>
       </HStack>
 
-      <VStack align="stretch" pl={4}>
+      <VStack align="stretch">
         {entries.map(([key, value], index) => (
           <HStack key={index}>
             <Input

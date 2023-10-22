@@ -22,7 +22,7 @@ import {
 } from "chains/hooks/useGraphForReactFlow";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { RootNode } from "chains/flow/RootNode";
-import { getDefaults } from "chains/flow/TypeAutoFields";
+import { getDefaults } from "json_form/JSONSchemaForm";
 import { useDebounce } from "utils/hooks/useDebounce";
 import { useAxios } from "utils/hooks/useAxios";
 import {
@@ -170,6 +170,8 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
         id: newNodeID,
         chain_id: chain?.id || null,
         class_path: nodeType.class_path,
+        name: "",
+        description: "",
         position: position,
         config: getDefaults(nodeType),
       };

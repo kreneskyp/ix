@@ -12,8 +12,8 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/color-mode";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import ArtifactDetail from "chat/sidebar/ArtifactDetail";
 
 export const ArtifactDetailModal = ({ artifact, isOpen, onClose }) => {
@@ -40,18 +40,18 @@ export const ArtifactDetailModal = ({ artifact, isOpen, onClose }) => {
             <Text as="span" color={color}>
               <FontAwesomeIcon
                 icon={faDownload}
-                style={{ marginLeft: '10px', cursor: "pointer" }}
+                style={{ marginLeft: "10px", cursor: "pointer" }}
                 onClick={() => {
                   const url = `/api/artifacts/${artifact.id}/download`;
-                  const link = document.createElement('a');
+                  const link = document.createElement("a");
                   link.href = url;
-                  link.setAttribute('download', 'file');
+                  link.setAttribute("download", "file");
                   document.body.appendChild(link);
                   link.click();
                 }}
-            />
+              />
             </Text>
-            </Tooltip>
+          </Tooltip>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>

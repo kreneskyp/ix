@@ -1,4 +1,5 @@
 from langchain import LlamaCpp
+from langchain.chat_models import ChatOpenAI
 from langchain.llms.base import BaseLLM
 from langchain.llms import Ollama
 from langchain.llms.fireworks import Fireworks
@@ -9,14 +10,33 @@ from ix.chains.fixture_src.common import VERBOSE
 
 BASE_LLM_FIELDS = NodeTypeField.get_fields(
     BaseLLM,
-    include=["verbose", "tags", "metadata"],
+    include=["cache", "verbose", "tags", "metadata"],
     field_options={
         "metadata": {
             "type": "dict",
-        }
+        },
+        "cache": {
+            "type": "boolean",
+        },
+        "tags": {
+            "type": "list",
+        },
     },
 )
 
+REQUEST_TIMEOUT = {
+    "name": "request_timeout",
+    "label": "Timeout (sec)",
+    "type": "number",
+    "description": "Request Timeout",
+    "default": 60,
+}
+
+STREAMING = {
+    "name": "streaming",
+    "type": "boolean",
+    "default": True,
+}
 
 OPENAI_LLM_CLASS_PATH = "langchain.chat_models.openai.ChatOpenAI"
 OPENAI_LLM = {
@@ -40,13 +60,47 @@ OPENAI_LLM = {
                 {"label": "GPT-3.5 16k", "value": "gpt-3.5-turbo-16k-0613"},
             ],
         },
-        {
-            "name": "request_timeout",
-            "label": "Timeout (sec)",
-            "type": "number",
-            "description": "Request Timeout",
-            "default": 60,
+    ]
+    + NodeTypeField.get_fields(
+        ChatOpenAI,
+        include=[
+            "openai_api_key",
+            "openai_organization",
+            "openai_api_base",
+            "openai_proxy",
+            "max_tokens",
+        ],
+        field_options={
+            "openai_api_key": {
+                "input_type": "secret",
+                "label": "API Key",
+                "style": {"width": "100%"},
+            },
+            "openai_organization": {
+                "type": "string",
+                "label": "Organization",
+                "style": {"width": "100%"},
+            },
+            "openai_api_base": {
+                "type": "string",
+                "label": "API Base URL",
+                "description": "OpenAI API Base URL",
+                "style": {"width": "100%"},
+            },
+            "openai_proxy": {
+                "type": "string",
+                "label": "Proxy URL",
+                "description": "OpenAI Proxy URL",
+                "style": {"width": "100%"},
+            },
+            "max_tokens": {
+                "type": "string",
+            },
         },
+    )
+    + [
+        STREAMING,
+        REQUEST_TIMEOUT,
         {
             "name": "max_retries",
             "type": "number",
@@ -67,26 +121,8 @@ OPENAI_LLM = {
             "max": 2,
             "step": 0.05,
         },
-        {
-            "name": "max_tokens",
-            "type": "number",
-            "default": 256,
-        },
-        {
-            "name": "verbose",
-            "type": "boolean",
-            "default": False,
-        },
-        {
-            "name": "streaming",
-            "type": "boolean",
-            "default": True,
-        },
-        {
-            "name": "metadata",
-            "type": "dict",
-        },
-    ],
+    ]
+    + BASE_LLM_FIELDS,
 }
 
 GOOGLE_PALM = {
@@ -155,12 +191,8 @@ GOOGLE_PALM = {
             "max": 5,
             "step": 1,
         },
-        {
-            "name": "verbose",
-            "type": "boolean",
-            "default": False,
-        },
-    ],
+    ]
+    + BASE_LLM_FIELDS,
 }
 
 ANTHROPIC_LLM = {
@@ -193,7 +225,8 @@ ANTHROPIC_LLM = {
             "description": "API URL",
             "default": "https://api.anthropic.com",
         },
-    ],
+    ]
+    + BASE_LLM_FIELDS,
 }
 
 LLAMA_CPP_LLM_CLASS_PATH = "langchain.llms.llamacpp.LlamaCpp"
@@ -232,9 +265,9 @@ LLAMA_CPP_LLM = {
             "rope_freq_base",
             # "model_kwargs",
             "streaming",
-            "verbose",
         ],
-    ),
+    )
+    + BASE_LLM_FIELDS,
 }
 
 OLLAMA_LLM_CLASS_PATH = "langchain.llms.ollama.Ollama"
@@ -296,7 +329,8 @@ OLLAMA_LLM = {
                 "style": {"width": "100%"},
             },
         },
-    ),
+    )
+    + BASE_LLM_FIELDS,
 }
 
 
