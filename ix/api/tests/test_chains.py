@@ -1,5 +1,6 @@
 from uuid import uuid4
 from faker import Faker
+from pydantic import BaseModel
 
 import pytest
 import pytest_asyncio
@@ -36,6 +37,10 @@ async def amock_node_type(anode_types):
     return await NodeType.objects.aget(
         class_path="ix.chains.tests.mock_chain.MockChain"
     )
+
+
+class MockConfig(BaseModel):
+    value: int
 
 
 @pytest.mark.django_db
@@ -116,7 +121,7 @@ class TestNodeType:
             "description": "New Node Type Description",
             "class_path": "ix.chains.tests.DoesNotNeedToExistForTest",
             "type": "chain",
-            "config": {},
+            "config_schema": MockConfig.schema(),
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
