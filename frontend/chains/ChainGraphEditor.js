@@ -22,7 +22,7 @@ import {
 } from "chains/hooks/useGraphForReactFlow";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { RootNode } from "chains/flow/RootNode";
-import { getDefaults } from "chains/flow/TypeAutoFields";
+import { getDefaults } from "json_form/JSONSchemaForm";
 import { useDebounce } from "utils/hooks/useDebounce";
 import { useAxios } from "utils/hooks/useAxios";
 import {
