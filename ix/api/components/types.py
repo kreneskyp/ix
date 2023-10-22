@@ -393,6 +393,7 @@ class NodeType(BaseModel):
     fields: Optional[List[NodeTypeField]] = None
     field_groups: Optional[Dict[str, FieldGroup]] = None
     child_field: Optional[str] = Field(None, max_length=32)
+    config_schema: Optional[dict] = None
 
     class Config:
         from_attributes = True
