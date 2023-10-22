@@ -8,12 +8,19 @@ fake = Faker()
 
 
 def fake_user(**kwargs):
+    user_model = get_user_model()
     username = kwargs.get("username", fake.unique.user_name())
+
+    try:
+        return user_model.objects.get(username=username)
+    except user_model.DoesNotExist:
+        pass
+
     email = kwargs.get("email", fake.unique.email())
     password = kwargs.get("password", fake.password())
-    user_model = get_user_model()
+    is_superuser = kwargs.get("is_superuser", False)
     user = user_model.objects.create_user(
-        username=username, email=email, password=password
+        username=username, email=email, password=password, is_superuser=is_superuser
     )
     return user_model.objects.get(pk=user.id)
 
@@ -29,6 +36,11 @@ def get_default_user():
         return user
     except user_model.DoesNotExist:
         return fake_user()
+
+
+async def aget_default_user():
+    return await sync_to_async(get_default_user)()
+
 
 def fake_group(**kwargs):
     group_model = Group
