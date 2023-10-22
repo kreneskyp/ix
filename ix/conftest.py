@@ -49,6 +49,14 @@ async def arequest_user(mocker):
     yield mock_get_request_user
 
 
+@pytest_asyncio.fixture
+async def arequest_admin(mocker):
+    user = await afake_user(is_superuser=True)
+    mock_get_request_user = mocker.patch("ix.api.auth._get_request_user")
+    mock_get_request_user.return_value = user
+    yield mock_get_request_user
+
+
 @pytest.fixture()
 def owner_filtering(settings):
     settings.OWNER_FILTERING = True
