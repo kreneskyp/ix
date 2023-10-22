@@ -425,18 +425,21 @@ class OwnershipTestsBaseMixin:
 
     @pytest_asyncio.fixture
     async def owner_state(self, settings) -> OwnerState:
-        owner_user = await afake_user()
-        non_owner_user = await afake_user()
+        owner_user = await afake_user(username="owner")
+        non_owner_user = await afake_user(username="non-owner")
         group, _ = await Group.objects.aget_or_create(name="Test Group")
         await sync_to_async(owner_user.groups.add)(group.id)
         object_owned = await self.setup_object(user=owner_user)
-        object_group_owned = await self.setup_object(group=group)
-        object_global = await self.setup_object()
+        object_group_owned = await self.setup_object(user=None, group=group)
+        object_global = await self.setup_object(user=None, group=None)
 
         # sanity check that setup_object is working for the specific test
         assert object_owned.user_id == owner_user.id
+        assert object_owned.group_id is None
+        assert object_group_owned.user_id is None
         assert object_group_owned.group_id == group.id
         assert object_global.user_id is None
+        assert object_global.group_id is None
 
         return OwnerState(
             owner=owner_user,
