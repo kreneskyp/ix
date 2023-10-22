@@ -20,6 +20,7 @@ from ix.chains.management.commands.create_ix_v2 import (
 
 from ix.chains.models import Chain, ChainNode, NodeType
 from ix.chains.tests.mock_vector_embeddings import MOCK_VECTORSTORE_EMBEDDINGS
+from ix.secrets.vault import delete_secrets_recursive
 from ix.task_log.models import Artifact, Task
 from ix.task_log.tests.fake import (
     fake_task,
@@ -61,6 +62,18 @@ def clean_redis():
     redis_client.flushall()
     yield
     redis_client.flushall()
+
+
+@pytest.fixture(scope="function")
+def clean_vault():
+    """Fixture to clean up vault before and after each test
+
+    If a test requires a secret it should be created during the test or in
+    a fixture that applies this fixture first.
+    """
+    delete_secrets_recursive()
+    yield
+    delete_secrets_recursive()
 
 
 @pytest.fixture

@@ -42,9 +42,9 @@ async def create_secret(
     response_model=SecretPydantic,
     tags=["Secrets"],
 )
-async def get_secret(secret_id: UUID, current_user: User = Depends(get_request_user)):
+async def get_secret(secret_id: UUID, user: User = Depends(get_request_user)):
     try:
-        secret = await Secret.objects.aget(pk=secret_id, user_id=current_user.id)
+        secret = await Secret.filtered_owners(user).aget(pk=secret_id)
     except Secret.DoesNotExist:
         raise HTTPException(status_code=404, detail="Secret not found")
     return SecretPydantic.from_orm(secret)
@@ -58,10 +58,10 @@ async def get_secret(secret_id: UUID, current_user: User = Depends(get_request_u
 async def update_secret(
     secret_id: UUID,
     secret: UpdateSecret,
-    current_user: User = Depends(get_request_user),
+    user: User = Depends(get_request_user),
 ):
     try:
-        secret_obj = await Secret.objects.aget(pk=secret_id, user_id=current_user.id)
+        secret_obj = await Secret.filtered_owners(user).aget(pk=secret_id)
     except Secret.DoesNotExist:
         raise HTTPException(status_code=404, detail="Secret not found")
 
@@ -75,7 +75,7 @@ async def update_secret(
         await secret_obj.asave()
 
     # update vault value
-    client = UserVaultClient(user=current_user)
+    client = UserVaultClient(user=user)
     client.write(secret_obj.path, secret.value)
 
     return SecretPydantic.from_orm(secret_obj)
@@ -86,16 +86,14 @@ async def get_secrets(
     path: Optional[str] = None,
     limit: int = 10,
     offset: int = 0,
-    current_user: User = Depends(
-        get_request_user
-    ),  # Assuming this function is already defined
+    user: User = Depends(get_request_user),
 ):
     """List endpoint used to retrieve secret metadata from the database.
 
     Secret values must be fetched from vault. This endpoint fetches secrets for
     use rendering choices in the UX. (e.g. to show a list of choices)
     """
-    query = Secret.objects.filter(user_id=current_user.id)
+    query = Secret.filtered_owners(user).all()
     if path:
         query = query.filter(path=path)
 
@@ -109,13 +107,17 @@ async def get_secrets(
 
 
 @router.delete("/secrets/{secret_id}", response_model=DeletedItem, tags=["Secrets"])
-async def delete_secret(
-    secret_id: UUID, current_user: User = Depends(get_request_user)
-):
+async def delete_secret(secret_id: UUID, user: User = Depends(get_request_user)):
     try:
-        secret = await Secret.objects.aget(pk=secret_id, user_id=current_user.id)
+        secret = await Secret.filtered_owners(user).aget(pk=secret_id)
     except Secret.DoesNotExist:
         raise HTTPException(status_code=404, detail="Secret not found")
 
+    # delete from database
     await secret.adelete()
+
+    # update vault value
+    client = UserVaultClient(user=user)
+    client.delete(secret.path)
+
     return DeletedItem(id=str(secret_id))

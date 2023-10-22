@@ -1,5 +1,6 @@
 from functools import cached_property
 
+import hvac
 from django.conf import settings
 from hvac import Client
 from hvac.exceptions import InvalidPath
@@ -82,6 +83,35 @@ def set_user_token(user_id, token):
 def handle_new_user(user_id):
     create_user_policy(user_id)
     return create_user_token(user_id)
+
+
+def delete_secrets_recursive(path=""):
+    """Recursive function to delete secrets using hvac client"""
+    client = get_root_client()
+
+    try:
+        list_response = client.secrets.kv.v2.list_secrets(path=path)
+    except hvac.exceptions.InvalidPath:
+        # either path was invalid or list was empty. Just trying to catch the
+        # empty lists here but it throws InvalidPath so this might result in
+        # false negatives
+        list_response = None
+
+    if list_response:
+        if "keys" in list_response["data"]:
+            for key in list_response["data"]["keys"]:
+                new_path = f"{path}/{key}"  # Fix the path by adding a slash
+                if key.endswith("/"):
+                    # It's a directory, so we recurse
+                    delete_secrets_recursive(new_path)
+                else:
+                    # It's an actual secret, so we delete
+                    client.secrets.kv.v2.delete_metadata_and_all_versions(path=new_path)
+
+    # Now that the subdirectories are empty, we can delete the current directory
+    # root is not deleted.
+    if path:
+        client.secrets.kv.v2.delete_metadata_and_all_versions(path=path)
 
 
 class UserVaultClient:
