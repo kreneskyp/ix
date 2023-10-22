@@ -1,5 +1,6 @@
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from faker import Faker
 
 
@@ -28,3 +29,32 @@ def get_default_user():
         return user
     except user_model.DoesNotExist:
         return fake_user()
+
+def fake_group(**kwargs):
+    group_model = Group
+    name = kwargs.get("name", fake.unique.word())
+
+    try:
+        return group_model.objects.get(name=name)
+    except group_model.DoesNotExist:
+        pass
+
+    group = group_model.objects.create(name=name)
+    return group_model.objects.get(pk=group.id)
+
+
+async def afake_group(**kwargs):
+    return await sync_to_async(fake_group)(**kwargs)
+
+
+def get_default_group():
+    group_model = Group
+    try:
+        group = group_model.objects.earliest("id")
+        return group
+    except group_model.DoesNotExist:
+        return fake_group()
+
+
+async def aget_default_group():
+    return await sync_to_async(get_default_group)()
