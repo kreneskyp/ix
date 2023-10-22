@@ -1,9 +1,28 @@
 import uuid
 from django.db import models
-from ix.ix_users.models import User
+from ix.ix_users.models import OwnedModel
 
 
-class Secret(models.Model):
+class SecretType(OwnedModel):
+    """
+    Defines type of secret and the fields it stores. Secrets may contain a
+    dict (depth=1) of secrets. This model defines the type and a json schema
+    of the fields it stores.
+
+    This model gives a way to "cache" secret types generated from component
+    configs when importing them.
+
+    It also enables user defined types.
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=100)
+
+    # A JSON Schema for a depth=1 dict of fields stored by this type of secret
+    fields_schema = models.JSONField()
+
+
+class Secret(OwnedModel):
     """
     Catalogs a secrets that exist for a user in vault. This model provides a
     searchable store of secrets that can be used to populate forms and other
@@ -18,17 +37,11 @@ class Secret(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    type = models.CharField(max_length=100, null=True, blank=True)
+    type = models.ForeignKey(SecretType, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def path(self):
-        """Path to secret in database relative from users root
-
-        Path should only show information relative to the user's root.
-        Hide full path from API.
-        """
-        return f"{self.type}/{self.id}"
+        return f"{self.type_id}/{self.id}"
