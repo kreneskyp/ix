@@ -8,6 +8,11 @@ from hvac.exceptions import InvalidPath
 from ix.ix_users.models import User
 
 
+def get_root_client():
+    """Client with root access"""
+    return get_client(settings.VAULT_ROOT_KEY)
+
+
 def get_token_store_client():
     """Client with access to user tokens"""
     return get_client(settings.VAULT_TOKEN__USER_TOKENS)
