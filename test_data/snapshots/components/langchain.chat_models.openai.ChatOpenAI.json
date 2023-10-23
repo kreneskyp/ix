@@ -16,6 +16,7 @@
                 "type": "number"
             },
             "max_tokens": {
+                "default": 500,
                 "type": "string"
             },
             "metadata": {
@@ -208,7 +209,7 @@
         },
         {
             "choices": null,
-            "default": null,
+            "default": 500,
             "description": null,
             "input_type": null,
             "label": "Max_tokens",
