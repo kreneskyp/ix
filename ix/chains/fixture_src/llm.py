@@ -93,9 +93,7 @@ OPENAI_LLM = {
                 "description": "OpenAI Proxy URL",
                 "style": {"width": "100%"},
             },
-            "max_tokens": {
-                "type": "string",
-            },
+            "max_tokens": {"type": "string", "default": 500},
         },
     )
     + [
