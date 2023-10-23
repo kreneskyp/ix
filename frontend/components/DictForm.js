@@ -1,56 +1,53 @@
-import React from "react";
-import {
-  Box,
-  Input,
-  VStack,
-  HStack,
-  FormLabel,
-  Text,
-  Tooltip,
-} from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Box, Input, VStack, HStack, FormLabel, Text } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useEditorColorMode } from "chains/editor/useColorMode";
+import { useDebounce } from "utils/hooks/useDebounce";
 
-/**
- * DictForm is a functional component that takes a dictionary and a callback function as props.
- * It renders a form that allows the user to edit the dictionary. The form consists of a list of inputs
- * for each key-value pair in the dictionary, and buttons to add or remove key-value pairs.
- * When a key-value pair is added, removed, or changed, the callback function is called with the new dictionary.
- *
- * @param {Object} dict - The dictionary to be edited.
- * @param {function} onChange - The callback function that is called when the dictionary is changed.
- */
 export const DictForm = ({ label, dict, onChange }) => {
-  let entries = Object.entries(dict);
-  if (entries.length === 0) {
-    entries = [["", ""]];
-  }
+  const [entries, setEntries] = useState(() => {
+    let entries = Object.entries(dict);
+    if (entries.length === 0) {
+      entries = [["", ""]];
+    } else {
+      // Move entries with empty keys to the end
+      entries.sort(([keyA], [keyB]) =>
+        keyA === "" ? 1 : keyB === "" ? -1 : 0
+      );
+    }
+    return entries;
+  });
   const colorMode = useEditorColorMode();
 
-  /**
-   * Updates the dictionary entries when an input field is changed.
-   *
-   * @param {Object} e - The event object from the input field.
-   * @param {number} index - The index of the key-value pair in the dictionary entries.
-   */
   const handleInputChange = (e, index, isKey) => {
     const { value } = e.target;
     const updatedEntries = [...entries];
     updatedEntries[index] = isKey
       ? [value, updatedEntries[index][1]]
       : [updatedEntries[index][0], value];
-    onChange(Object.fromEntries(updatedEntries));
+
+    // Update local state immediately for quick feedback to the user
+    setEntries(updatedEntries);
   };
+
+  // This effect will update the parent component when entries change
+  useEffect(() => {
+    if (entries) {
+      const filteredEntries = entries.filter(([key]) => key !== "");
+      onChange(Object.fromEntries(filteredEntries));
+    }
+
+    // Check if the last entry is empty before adding a new one
+    if (entries[entries.length - 1].some((entry) => entry !== "")) {
+      setEntries([...entries, ["", ""]]); // Adds a new entry line immediately
+    }
+  }, [entries]);
 
   const handleRemoveClick = (index) => {
-    const updatedEntries = entries.filter((entry, i) => i !== index);
-    onChange(Object.fromEntries(updatedEntries));
-  };
-
-  const handleAddClick = () => {
-    const updatedEntries = [...entries, ["", ""]];
-    onChange(Object.fromEntries(updatedEntries));
+    const updatedEntries = [...entries];
+    updatedEntries.splice(index, 1);
+    setEntries(updatedEntries);
   };
 
   return (
@@ -59,15 +56,6 @@ export const DictForm = ({ label, dict, onChange }) => {
         <FormLabel justify="start" whiteSpace="nowrap" mr={0} pr={0}>
           {label}
         </FormLabel>
-        <Tooltip label="add value">
-          <Text as="span" color={"green.300"}>
-            <FontAwesomeIcon
-              icon={faPlusCircle}
-              onClick={handleAddClick}
-              cursor="pointer"
-            />
-          </Text>
-        </Tooltip>
       </HStack>
 
       <VStack align="stretch">
