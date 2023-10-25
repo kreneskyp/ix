@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
-from ix.ix_users.models import OwnedModel
+from ix.ix_users.models import OwnedModel, User
+from ix.secrets.vault import UserVaultClient
 
 
 class SecretType(OwnedModel):
@@ -45,3 +46,19 @@ class Secret(OwnedModel):
     @property
     def path(self):
         return f"{self.type_id}/{self.id}"
+
+    async def get_client(self):
+        user = await User.objects.aget(id=self.user_id)
+        return UserVaultClient(user=user)
+
+    async def read(self):
+        client = await self.get_client()
+        return client.read(self.path)
+
+    async def write(self, value):
+        client = await self.get_client()
+        return client.write(self.path, value)
+
+    async def delete_secure(self):
+        client = await self.get_client()
+        return client.delete(self.path)
