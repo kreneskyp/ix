@@ -34,6 +34,8 @@ class Secret(BaseModel):
     name: str = "default"
     path: str
 
+    type: SecretType
+
     class Config:
         from_attributes = True
 

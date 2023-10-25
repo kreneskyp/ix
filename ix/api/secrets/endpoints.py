@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List, Optional
 from asgiref.sync import sync_to_async
+from hvac.exceptions import InvalidPath
 
 from ix.api.auth import get_request_user
 from ix.api.chains.endpoints import DeletedItem
@@ -128,30 +129,24 @@ async def create_secret_type_for_data(
     )
 
 
-async def validate_secret_type(secret: CreateSecret, user: AbstractUser):
+async def validate_secret_type(secret: CreateSecret, user: AbstractUser) -> SecretType:
     """
     Validate that the secret value matches the secret type
     """
     if not secret.type_id:
         # embedded type creation
-        secret_type = await create_secret_type_for_data(user, secret)
-        type_id = secret_type.id
+        return await create_secret_type_for_data(user, secret)
     else:
         # validate user can access type
-        SecretType.filtered_owners(user).filter(pk=secret.type_id).aget()
-        if (
-            not await SecretType.filtered_owners(user)
-            .filter(pk=secret.type_id)
-            .aexists()
-        ):
+        try:
+            return await SecretType.filtered_owners(user).aget(pk=secret.type_id)
+        except SecretType.DoesNotExist:
             raise HTTPException(status_code=422, detail="Invalid secret type")
-        type_id = secret.type_id
-    return type_id
 
 
 @router.post("/secrets/", response_model=SecretPydantic, tags=["Secrets"])
 async def create_secret(secret: CreateSecret, user: User = Depends(get_request_user)):
-    type_id = await validate_secret_type(secret, user)
+    secret_type = await validate_secret_type(secret, user)
 
     # Record secret in database
     secret_kwargs = secret.model_dump(
@@ -165,7 +160,7 @@ async def create_secret(secret: CreateSecret, user: User = Depends(get_request_u
             "type_key",
         }
     )
-    secret_obj = Secret(user_id=user.id, type_id=type_id, **secret_kwargs)
+    secret_obj = Secret(user_id=user.id, type=secret_type, **secret_kwargs)
     await secret_obj.asave()
 
     # write to vault
@@ -181,10 +176,14 @@ async def create_secret(secret: CreateSecret, user: User = Depends(get_request_u
 )
 async def get_secret(secret_id: UUID, user: User = Depends(get_request_user)):
     try:
-        secret = await Secret.filtered_owners(user).aget(pk=secret_id)
+        secret_obj = await Secret.filtered_owners(user).aget(pk=secret_id)
     except Secret.DoesNotExist:
         raise HTTPException(status_code=404, detail="Secret not found")
-    return SecretPydantic.model_validate(secret)
+
+    # fetch secret type manually to avoid async weirdness
+    secret_obj.type = await SecretType.objects.aget(pk=secret_obj.type_id)
+
+    return SecretPydantic.model_validate(secret_obj)
 
 
 @router.put(
@@ -234,6 +233,9 @@ async def update_secret(
             current_value.update(secret.value)
             await secret_obj.write(current_value)
 
+    # fetch secret type manually to avoid async weirdness
+    secret_obj.type = await SecretType.objects.aget(pk=secret_obj.type_id)
+
     return SecretPydantic.model_validate(secret_obj)
 
 
@@ -257,6 +259,8 @@ async def get_secrets(
     query = query[offset : offset + limit]
 
     # punting on async implementation of pagination until later
+    # will need to handle select_related async as well
+    query.select_related("type")
     return await sync_to_async(SecretPage.paginate)(
         output_model=SecretPydantic, queryset=query, limit=limit, offset=offset
     )
