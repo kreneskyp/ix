@@ -1,10 +1,11 @@
+import pytest
 import pytest_asyncio
+
 from pydantic import BaseModel
 
 from ix.ix_users.tests.mixins import OwnershipTestsMixin
 from ix.secrets.vault import UserVaultClient
 from ix.server.fast_api import app
-import pytest
 from ix.secrets.models import Secret, SecretType
 from uuid import uuid4
 from httpx import AsyncClient
@@ -157,17 +158,81 @@ class TestSecrets:
         assert response.status_code == 200, response.content
         result = response.json()
 
-        secret = await Secret.objects.aget(id=result["id"])
-        assert result["path"] == f"{asecret_type.id}/{secret.pk}"
+        # verify response
+        secret_id = result["id"]
+        assert result["path"] == f"{asecret_type.id}/{secret_id}"
         assert result["name"] == "default key"
         assert result["user_id"] == auser.id
         assert result["type_id"] == str(asecret_type.id)
 
-    async def test_create_unauthorized_secret(self, auser, asecret_type):
+        # verify secret in database
+        secret = await Secret.objects.aget(id=secret_id)
+        assert secret.type_id == asecret_type.id
+        assert secret.path == f"{asecret_type.id}/{secret_id}"
+        assert secret.name == "default key"
+        assert secret.user_id == auser.id
+        assert secret.group_id is None
+
+        # verify secret saved to secure storage
+        client = UserVaultClient(auser)
+        assert client.read(secret.path) == {"test": "value"}
+
+    async def test_create_with_new_type(self, auser, asecret_type):
+        class DynamicModel(BaseModel):
+            # all fields will be inferred as strings
+            one: str
+            second: str
+
+        data = {
+            "type_key": "New Type",
+            "name": "default key",
+            "value": {
+                "one": "1",
+                "second": 2,
+            },
+        }
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.post("/secrets/", json=data)
+
+        assert response.status_code == 200, response.content
+        result = response.json()
+
+        # verify type was created
+        type_id = result["type_id"]
+        secret_type = await SecretType.objects.aget(id=type_id)
+        assert secret_type.name == "New Type"
+        assert secret_type.user_id == auser.id
+        assert secret_type.group_id is None
+        assert secret_type.fields_schema == DynamicModel.schema()
+
+        # verify response
+        secret_id = result["id"]
+        assert result["path"] == f"{secret_type.id}/{secret_id}"
+        assert result["name"] == "default key"
+        assert result["user_id"] == auser.id
+
+        # verify secret in database
+        secret = await Secret.objects.aget(id=secret_id)
+        assert secret.type_id == secret_type.id
+        assert secret.path == f"{secret_type.id}/{secret_id}"
+        assert secret.name == "default key"
+        assert secret.user_id == auser.id
+        assert secret.group_id is None
+
+        # verify secret saved to secure storage
+        client = UserVaultClient(auser)
+        assert client.read(secret.path) == {
+            "one": "1",
+            "second": 2,
+        }
+
+    async def test_create_unauthorized_secret(self, arequest_user, auser, asecret_type):
         """Test creating a secret for someone else's user_id
         user_id is ignored and secret is created for themselves.
         """
-        user2 = await afake_user()
+        arequest_user.return_value = auser
+        user2 = await afake_user(username="user2")
         data = {
             "user_id": user2.id,
             "type_id": str(asecret_type.id),
@@ -186,6 +251,27 @@ class TestSecrets:
         assert result["name"] == "default key"
         assert result["user_id"] == auser.id
         assert result["type_id"] == str(asecret_type.id)
+
+    async def test_create_secret_with_unauthorized_type(
+        self, arequest_user, owner_filtering, auser
+    ):
+        """User should not be able to insert a type_id that doesnt belong to them"""
+        other_user = await afake_user(username="other")
+        secret_type = await afake_secret_type(name="other", user=other_user, group=None)
+        assert secret_type.user_id != auser.id
+        assert secret_type.group_id is None
+
+        # create secret with unauthorized type
+        data = {
+            "type_id": str(secret_type.id),
+            "name": "unauthorized secret",
+            "value": {"test": "value"},
+        }
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.post("/secrets/", json=data)
+
+        assert response.status_code == 422, response.content
 
     async def test_update_secret(self, auser, asecret_type):
         secret = await afake_secret()
@@ -214,8 +300,106 @@ class TestSecrets:
         # secret value updated in vault
         assert client.read(secret.path) == {"test": "updated value"}
 
+    async def test_update_cant_change_type(self, auser, asecret_type):
+        """
+        Cant change type of secret
+        """
+        other_type = await afake_secret_type(name="other", user=auser, group=None)
+        secret = await afake_secret()
+        assert secret.type_id == asecret_type.id
+        assert secret.type_id != other_type.id
+        await secret.write({"test": "value"})
+
+        data = {
+            "name": "Updated Secret",
+            "type_id": str(other_type.id),
+            "value": {"test": "updated value"},
+        }
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.put(f"/secrets/{secret.id}", json=data)
+
+        assert response.status_code == 200, response.content
+        result = response.json()
+
+        assert result["name"] == "Updated Secret"
+        assert "value" not in result
+
+        # secret meta updated in db
+        secret = await Secret.objects.aget(id=secret.id)
+        assert secret.name == "Updated Secret"
+        assert secret.type_id == asecret_type.id
+
+    async def test_update_only_name(self, arequest_user, asecret_type):
+        """
+        If value is None then value should not be updated.
+        """
+        secret = await afake_secret()
+        await secret.write({"test": "value"})
+
+        data = {
+            "name": "Updated Secret",
+            "type_id": str(asecret_type.id),
+        }
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.put(f"/secrets/{secret.id}", json=data)
+
+        assert response.status_code == 200, response.content
+        result = response.json()
+
+        assert result["name"] == "Updated Secret"
+        assert "value" not in result
+
+        # secret meta updated in db
+        secret = await Secret.objects.aget(id=secret.id)
+        assert secret.name == "Updated Secret"
+
+        # secret value updated in vault
+        assert await secret.read() == {"test": "value"}
+
+    async def test_update_one_value_of_secret(self, arequest_user, auser):
+        """
+        SecretTypes may have more than one field. Users may update a single field.
+        """
+        arequest_user.return_value = auser
+        secret = await afake_secret(user=auser)
+        await secret.write(
+            {
+                "one": "1",
+                "two": "2",
+            }
+        )
+
+        data = {
+            "name": "updated name",
+            "value": {
+                "one": "updated value",
+            },
+        }
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.put(f"/secrets/{secret.id}", json=data)
+
+        assert response.status_code == 200, response.content
+        result = response.json()
+
+        assert result["name"] == "updated name"
+        assert "value" not in result
+
+        # secret meta updated in db
+        secret = await Secret.objects.aget(id=secret.id)
+        assert secret.name == "updated name"
+
+        # secret value updated in vault
+        assert await secret.read() == {
+            "one": "updated value",
+            "two": "2",
+        }
+
     async def test_delete_secret(self, auser):
         secret = await afake_secret(user=auser)
+        await secret.write({"test": "value"})
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.delete(f"/secrets/{secret.id}")
@@ -272,6 +456,14 @@ class TestSecretTypeOwnership(OwnershipTestsMixin):
 @pytest.mark.usefixtures("clean_vault")
 class TestSecretOwnership(OwnershipTestsMixin):
     object_type = "secrets"
+
+    @pytest.fixture(autouse=True)
+    def mock_vault(self, mocker):
+        """
+        Disable vault calls for these tests.
+        Just checking access permissions. Other tests validate read/writes
+        """
+        mocker.patch("ix.secrets.models.UserVaultClient")
 
     async def setup_object(self, **kwargs):
         secret_type = await aget_mock_secret_type()

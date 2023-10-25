@@ -39,14 +39,19 @@ class Secret(BaseModel):
 
 
 class CreateSecret(BaseModel):
-    type_id: UUID
+    type_id: Optional[UUID] = None
+    type_key: Optional[str] = None
     name: Optional[str] = "default"
     value: Dict[str, Any]
 
 
 class UpdateSecret(BaseModel):
     name: str = "default"
-    value: Dict[str, Any]
+
+    # secrets value are only sent for updates when they are updated
+    # the values are never sent in responses so the user doesn't
+    # have them to re-send with other updates.
+    value: Optional[Dict[str, Any]] = None
 
 
 class SecretPage(QueryPage[Secret]):
