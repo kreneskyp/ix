@@ -7,8 +7,9 @@ from langchain.text_splitter import TextSplitter
 from langchain.tools import BaseTool
 from langchain.vectorstores import VectorStore
 
-from ix.chains.loaders.templates import NodeTemplate, get_args_schema
+from ix.chains.loaders.templates import NodeTemplate
 from ix.chains.loaders.text_splitter import TextSplitterShim
+from ix.utils.pydantic import create_args_model
 
 
 logger = logging.getLogger(__name__)
@@ -31,7 +32,9 @@ class IngestionTool(BaseTool):
         # set args_schema containing template_variables from all templates
         template_variables = self.loader_template.get_variables()
         template_variables.update(self.vectorstore.get_variables())
-        self.args_schema = get_args_schema(template_variables)
+        self.args_schema = create_args_model(
+            template_variables, name="NodeTemplateSchema"
+        )
 
     def _run(
         self,
