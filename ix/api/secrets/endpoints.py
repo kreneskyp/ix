@@ -228,7 +228,10 @@ async def update_secret(
 
     # update vault value
     if secret.value:
-        current_value = await secret_obj.read()
+        try:
+            current_value = await secret_obj.read()
+        except InvalidPath:
+            current_value = {}
         if current_value != secret.value:
             current_value.update(secret.value)
             await secret_obj.write(current_value)
