@@ -128,7 +128,7 @@ class TestSecrets:
         secret_2 = await afake_secret(path="Mock Secret 2")
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.get("/secrets/")
+            response = await ac.get("/secrets/?limit=9000")
 
         assert response.status_code == 200, response.content
         page = response.json()
