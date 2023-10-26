@@ -349,7 +349,7 @@ clean:
 	rm .vault.env
 
 .vault.env:
-	@python ./bin/get_uuid.py > .vault.env
+	@echo "VAULT_DEV_ROOT_TOKEN_ID=$$(python ./bin/get_uuid.py)" > .vault.env
 	@echo ".vault.env file has been generated with a UUID key."
 
 
