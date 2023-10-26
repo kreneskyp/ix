@@ -60,6 +60,7 @@
             "name": "top_k_results",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"
@@ -75,6 +76,7 @@
             "name": "ARXIV_MAX_QUERY_LENGTH",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"
@@ -90,6 +92,7 @@
             "name": "load_max_docs",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"
@@ -105,6 +108,7 @@
             "name": "load_all_available_meta",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -120,6 +124,7 @@
             "name": "doc_content_chars_max",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"

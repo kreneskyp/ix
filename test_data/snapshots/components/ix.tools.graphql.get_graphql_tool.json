@@ -45,6 +45,7 @@
             "name": "graphql_endpoint",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"

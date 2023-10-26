@@ -49,6 +49,7 @@
             "name": "function_name",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -64,6 +65,7 @@
             "name": "awslambda_tool_name",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -79,6 +81,7 @@
             "name": "awslambda_tool_description",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"

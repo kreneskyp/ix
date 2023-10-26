@@ -37,6 +37,7 @@
             "input_type": "secret",
             "label": "Wolfram Alpha App ID",
             "name": "wolfram_alpha_app_id",
+            "secret_key": "Wolfram Alpha API",
             "type": "str"
         }
     ],

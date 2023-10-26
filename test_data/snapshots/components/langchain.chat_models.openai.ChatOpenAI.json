@@ -150,6 +150,7 @@
             "name": "openai_api_key",
             "parent": null,
             "required": true,
+            "secret_key": "OpenAI API",
             "step": null,
             "style": {
                 "width": "100%"
@@ -167,6 +168,7 @@
             "name": "openai_api_base",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -184,6 +186,7 @@
             "name": "openai_organization",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -201,6 +204,7 @@
             "name": "openai_proxy",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -218,6 +222,7 @@
             "name": "max_tokens",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -265,6 +270,7 @@
             "name": "cache",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -280,6 +286,7 @@
             "name": "verbose",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -295,6 +302,7 @@
             "name": "tags",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"
@@ -310,6 +318,7 @@
             "name": "metadata",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "dict"

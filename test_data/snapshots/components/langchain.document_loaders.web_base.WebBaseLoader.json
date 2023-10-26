@@ -55,6 +55,7 @@
             "name": "verify_ssl",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -70,6 +71,7 @@
             "name": "continue_on_failure",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

@@ -49,7 +49,7 @@ GOOGLE_PALM_EMBEDDINGS = {
         {
             "name": "google_api_key",
             "type": "string",
-            "description": "Google API key",
+            "description": "Google PaLM key",
         },
         {
             "name": "model_name",
@@ -233,7 +233,7 @@ MOSAICML_INSTRUCTOR_EMBEDDINGS = {
             "name": "mosaicml_api_token",
             "type": "string",
             "input_type": "secret",
-            "description": "MosaicML API token",
+            "secret_key": "MosaicML API",
             "style": {"width": "100%"},
         },
     ],

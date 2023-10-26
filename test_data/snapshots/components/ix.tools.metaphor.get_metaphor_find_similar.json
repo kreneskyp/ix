@@ -40,6 +40,7 @@
             "label": "Metaphor API Key",
             "name": "metaphor_api_key",
             "required": true,
+            "secret_key": "Metaphor API",
             "type": "str"
         }
     ],

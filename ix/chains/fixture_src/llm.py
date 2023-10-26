@@ -73,6 +73,7 @@ OPENAI_LLM = {
         field_options={
             "openai_api_key": {
                 "input_type": "secret",
+                "secret_key": "OpenAI API",
                 "label": "API Key",
                 "style": {"width": "100%"},
             },
@@ -145,8 +146,8 @@ GOOGLE_PALM = {
             "name": "google_api_key",
             "label": "API Key",
             "type": "string",
-            "description": "Google API key",
             "input_type": "secret",
+            "secret_key": "Google PaLM",
         },
         {
             "name": "temperature",
@@ -213,8 +214,8 @@ ANTHROPIC_LLM = {
             "name": "anthropic_api_key",
             "type": "string",
             "input_type": "secret",
+            "secret_key": "Anthropic API",
             "style": {"width": "100%"},
-            "description": "ANTHROPIC_API_KEY",
         },
         {
             "name": "anthropic_api_url",
@@ -331,7 +332,6 @@ OLLAMA_LLM = {
     + BASE_LLM_FIELDS,
 }
 
-
 FIREWORKS_FIELDS = NodeTypeField.get_fields(
     Fireworks,
     include=["model", "fireworks_api_key", "max_retries"],
@@ -341,6 +341,7 @@ FIREWORKS_FIELDS = NodeTypeField.get_fields(
         },
         "fireworks_api_key": {
             "input_type": "secret",
+            "secret_key": "Fireworks.ai API",
             "style": {"width": "100%"},
         },
         "max_retries": {

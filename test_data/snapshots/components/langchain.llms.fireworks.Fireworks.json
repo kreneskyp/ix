@@ -69,6 +69,7 @@
             "name": "model",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -86,6 +87,7 @@
             "name": "fireworks_api_key",
             "parent": null,
             "required": false,
+            "secret_key": "Fireworks.ai API",
             "step": null,
             "style": {
                 "width": "100%"
@@ -103,6 +105,7 @@
             "name": "max_retries",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": 1.0,
             "style": null,
             "type": "int"
@@ -118,6 +121,7 @@
             "name": "cache",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -133,6 +137,7 @@
             "name": "verbose",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -148,6 +153,7 @@
             "name": "tags",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"
@@ -163,6 +169,7 @@
             "name": "metadata",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "dict"

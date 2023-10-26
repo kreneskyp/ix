@@ -4,7 +4,6 @@
     "config_schema": {
         "properties": {
             "anthropic_api_key": {
-                "description": "ANTHROPIC_API_KEY",
                 "input_type": "secret",
                 "style": {
                     "width": "100%"
@@ -72,9 +71,9 @@
             "type": "number"
         },
         {
-            "description": "ANTHROPIC_API_KEY",
             "input_type": "secret",
             "name": "anthropic_api_key",
+            "secret_key": "Anthropic API",
             "style": {
                 "width": "100%"
             },
@@ -100,6 +99,7 @@
             "name": "cache",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -115,6 +115,7 @@
             "name": "verbose",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -130,6 +131,7 @@
             "name": "tags",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"
@@ -145,6 +147,7 @@
             "name": "metadata",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "dict"

@@ -7,7 +7,6 @@
                 "type": "boolean"
             },
             "google_api_key": {
-                "description": "Google API key",
                 "input_type": "secret",
                 "type": "string"
             },
@@ -103,10 +102,10 @@
             "type": "string"
         },
         {
-            "description": "Google API key",
             "input_type": "secret",
             "label": "API Key",
             "name": "google_api_key",
+            "secret_key": "Google PaLM",
             "type": "string"
         },
         {
@@ -161,6 +160,7 @@
             "name": "cache",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -176,6 +176,7 @@
             "name": "verbose",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -191,6 +192,7 @@
             "name": "tags",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"
@@ -206,6 +208,7 @@
             "name": "metadata",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "dict"

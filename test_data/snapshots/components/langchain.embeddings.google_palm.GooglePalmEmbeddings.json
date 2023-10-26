@@ -4,7 +4,7 @@
     "config_schema": {
         "properties": {
             "google_api_key": {
-                "description": "Google API key",
+                "description": "Google PaLM key",
                 "type": "string"
             },
             "model_name": {
@@ -24,7 +24,7 @@
     "display_type": "node",
     "fields": [
         {
-            "description": "Google API key",
+            "description": "Google PaLM key",
             "name": "google_api_key",
             "type": "string"
         },

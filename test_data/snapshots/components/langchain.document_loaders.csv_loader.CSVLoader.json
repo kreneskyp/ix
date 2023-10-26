@@ -33,6 +33,7 @@
             "name": "file_path",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -48,6 +49,7 @@
             "name": "source_column",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -63,6 +65,7 @@
             "name": "encoding",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"

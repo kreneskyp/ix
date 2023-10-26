@@ -17,7 +17,6 @@
                 "type": "string"
             },
             "mosaicml_api_token": {
-                "description": "MosaicML API token",
                 "input_type": "secret",
                 "style": {
                     "width": "100%"
@@ -70,9 +69,9 @@
             "type": "number"
         },
         {
-            "description": "MosaicML API token",
             "input_type": "secret",
             "name": "mosaicml_api_token",
+            "secret_key": "MosaicML API",
             "style": {
                 "width": "100%"
             },

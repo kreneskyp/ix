@@ -34,6 +34,7 @@
             "name": "file_path",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -49,6 +50,7 @@
             "name": "open_encoding",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -64,6 +66,7 @@
             "name": "get_text_separator",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"

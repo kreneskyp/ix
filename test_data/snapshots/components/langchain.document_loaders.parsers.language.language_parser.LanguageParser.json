@@ -128,6 +128,7 @@
             "name": "language",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -143,6 +144,7 @@
             "name": "parser_threshold",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"

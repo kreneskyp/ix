@@ -70,6 +70,7 @@
             "name": "k",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"
@@ -85,6 +86,7 @@
             "name": "gl",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -100,6 +102,7 @@
             "name": "hl",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -132,6 +135,7 @@
             "name": "type",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -147,6 +151,7 @@
             "name": "tbs",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -162,6 +167,7 @@
             "name": "serper_api_key",
             "parent": null,
             "required": false,
+            "secret_key": "Serper API",
             "step": null,
             "style": null,
             "type": "str"

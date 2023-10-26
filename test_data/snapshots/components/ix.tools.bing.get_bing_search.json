@@ -57,6 +57,7 @@
             "name": "bing_subscription_key",
             "parent": null,
             "required": true,
+            "secret_key": "Bing",
             "step": null,
             "style": null,
             "type": "str"
@@ -72,6 +73,7 @@
             "name": "bing_search_url",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -89,6 +91,7 @@
             "name": "k",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"
