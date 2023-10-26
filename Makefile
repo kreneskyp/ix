@@ -346,6 +346,7 @@ prettier: nodejs
 clean:
 	rm -rf .sentinel
 	rm -rf .certs
+	rm .vault.env
 
 .vault.env:
 	@python ./bin/get_uuid.py > .vault.env

@@ -30,6 +30,7 @@ services:
       - ./.certs/:/var/vault/certs:ro,Z
     env_file:
       - .env
+      - .vault.env
     environment:
       DJANGO_SETTINGS_MODULE: "ix.server.settings"
 
@@ -61,6 +62,7 @@ services:
       - ./.certs/:/var/vault/certs:ro,Z
     env_file:
       - .env
+      - .vault.env
 
   # nodejs / frontend builder
   nodejs:
