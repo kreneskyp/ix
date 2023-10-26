@@ -53,16 +53,12 @@ def fake_secret(**kwargs) -> Secret:
     type_id = kwargs.get("type_id", get_mock_secret_type().id)
     name = kwargs.get("name", "default instance")
 
-    value = kwargs.get("value", MockAccount(api_key=fake.password()).model_dump())
-
     secret = Secret.objects.create(
         type_id=type_id,
         name=name,
         user=kwargs.get("user", get_default_user()),
         group=kwargs.get("group", None),
     )
-
-    secret.write(value)
 
     return secret
 

@@ -272,7 +272,7 @@ class TestSecrets:
 
     async def test_update_secret(self, auser, asecret_type):
         secret = await afake_secret()
-        secret.write({"test": "value"})
+        await secret.write({"test": "value"})
 
         data = {
             "name": "Updated Secret",
@@ -396,6 +396,7 @@ class TestSecrets:
     async def test_delete_secret(self, auser):
         secret = await afake_secret(user=auser)
         await secret.write({"test": "value"})
+        assert await secret.read() == {"test": "value"}
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.delete(f"/secrets/{secret.id}")

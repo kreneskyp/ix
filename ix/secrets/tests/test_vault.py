@@ -123,6 +123,12 @@ class TestVaultIntegration:
             path "secret/data/{settings.VAULT_BASE_PATH}/users/{user.id}/keys/*" {{
                 capabilities = ["create", "read", "update", "delete"]
             }}
+            path "secret/metadata/{settings.VAULT_BASE_PATH}/users/{user.id}/keys/*" {{
+                capabilities = ["read", "delete"]
+            }}
+            path "secret/destroy/{settings.VAULT_BASE_PATH}/users/{user.id}/keys/*" {{
+                capabilities = ["update"]
+            }}
         """
         )
 

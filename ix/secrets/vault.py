@@ -40,6 +40,12 @@ def create_user_policy(user_id):
     path "secret/data/{settings.VAULT_BASE_PATH}/users/{user_id}/keys/*" {{
         capabilities = ["create", "read", "update", "delete"]
     }}
+    path "secret/metadata/{settings.VAULT_BASE_PATH}/users/{user_id}/keys/*" {{
+        capabilities = ["read", "delete"]
+    }}
+    path "secret/destroy/{settings.VAULT_BASE_PATH}/users/{user_id}/keys/*" {{
+        capabilities = ["update"]
+    }}
     """
     vault_client.sys.create_or_update_policy(
         name=f"user_{user_id}_policy", policy=policy
@@ -49,11 +55,12 @@ def create_user_policy(user_id):
 def create_user_token(user_id, ttl="1h"):
     vault_client = get_token_store_client()
 
+    # HAX: for now create policy when creating the token. This might
+    #      be better in user creation to limit how often it runs.
+    create_user_policy(user_id)
+
     # Generate a new token with TTL
-    # TODO: using root policy for now. User policy wasn't granting permissions
-    #       unblocking by using root for now.
-    # policies = [f"user_{user_id}_policy"]
-    policies = ["root"]
+    policies = [f"user_{user_id}_policy"]
     new_token = vault_client.auth.token.create(
         policies=policies, ttl=ttl, renewable=True
     )
