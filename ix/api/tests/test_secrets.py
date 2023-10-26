@@ -4,7 +4,6 @@ import pytest_asyncio
 from pydantic import BaseModel
 
 from ix.ix_users.tests.mixins import OwnershipTestsMixin
-from ix.secrets.vault import UserVaultClient
 from ix.server.fast_api import app
 from ix.secrets.models import Secret, SecretType
 from uuid import uuid4
@@ -51,7 +50,7 @@ class TestSecretTypes:
         secret_type_2 = await afake_secret_type(name="Secret Type 2")
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.get("/secret_types/")
+            response = await ac.get("/secret_types/?limit=9000")
 
         assert response.status_code == 200, response.content
         page = response.json()
@@ -174,8 +173,7 @@ class TestSecrets:
         assert secret.group_id is None
 
         # verify secret saved to secure storage
-        client = UserVaultClient(auser)
-        assert client.read(secret.path) == {"test": "value"}
+        assert await secret.read() == {"test": "value"}
 
     async def test_create_with_new_type(self, auser, asecret_type):
         class DynamicModel(BaseModel):
@@ -221,8 +219,7 @@ class TestSecrets:
         assert secret.group_id is None
 
         # verify secret saved to secure storage
-        client = UserVaultClient(auser)
-        assert client.read(secret.path) == {
+        assert await secret.read() == {
             "one": "1",
             "second": 2,
         }
@@ -275,8 +272,7 @@ class TestSecrets:
 
     async def test_update_secret(self, auser, asecret_type):
         secret = await afake_secret()
-        client = UserVaultClient(auser)
-        client.write(secret.path, {"test": "value"})
+        secret.write({"test": "value"})
 
         data = {
             "name": "Updated Secret",
@@ -298,7 +294,7 @@ class TestSecrets:
         assert secret.name == "Updated Secret"
 
         # secret value updated in vault
-        assert client.read(secret.path) == {"test": "updated value"}
+        assert await secret.read() == {"test": "updated value"}
 
     async def test_update_cant_change_type(self, auser, asecret_type):
         """

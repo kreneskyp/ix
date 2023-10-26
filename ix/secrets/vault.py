@@ -32,12 +32,12 @@ def create_user_policy(user_id):
     vault_client = get_token_store_client()
     policy = f"""
     # Allow user to read their own token
-    path "secret/data/users/{user_id}/token" {{
+    path "secret/data/{settings.VAULT_BASE_PATH}/users/{user_id}/token" {{
         capabilities = ["read"]
     }}
 
     # Allow user to perform CRUD operations on arbitrary keys
-    path "secret/data/users/{user_id}/keys/*" {{
+    path "secret/data/{settings.VAULT_BASE_PATH}/users/{user_id}/keys/*" {{
         capabilities = ["create", "read", "update", "delete"]
     }}
     """
@@ -65,7 +65,7 @@ def create_user_token(user_id, ttl="1h"):
 
 def get_user_token(user_id):
     vault_client = get_token_store_client()
-    path = f"users/{user_id}/token"
+    path = f"{settings.VAULT_BASE_PATH}/users/{user_id}/token"
     try:
         existing_token_data = vault_client.secrets.kv.v2.read_secret_version(path)
         return existing_token_data["data"]["data"]["token"]
@@ -81,7 +81,7 @@ def set_user_token(user_id, token):
     """Set a user's access token in vault"""
     vault_client = get_token_store_client()
     return vault_client.secrets.kv.v2.create_or_update_secret(
-        f"users/{user_id}/token", secret={"token": token}
+        f"{settings.VAULT_BASE_PATH}/users/{user_id}/token", secret={"token": token}
     )
 
 
@@ -126,7 +126,7 @@ class UserVaultClient:
 
     @property
     def base_path(self):
-        return f"users/{self.user.id}/keys"
+        return f"{settings.VAULT_BASE_PATH}/users/{self.user.id}/keys"
 
     @cached_property
     def token(self):

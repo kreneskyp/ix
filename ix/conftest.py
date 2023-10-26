@@ -1,12 +1,12 @@
 import logging
 from typing import Dict, Any, List
 from unittest.mock import MagicMock
-from django.conf import settings
 
 import pytest
 import pytest_asyncio
 import redis
 from asgiref.sync import sync_to_async
+from django.conf import settings
 from django.core.management import call_command
 
 from ix.agents.models import Agent
@@ -79,9 +79,9 @@ def clean_vault():
     If a test requires a secret it should be created during the test or in
     a fixture that applies this fixture first.
     """
-    delete_secrets_recursive()
+    delete_secrets_recursive(settings.VAULT_BASE_PATH)
     yield
-    delete_secrets_recursive()
+    delete_secrets_recursive(settings.VAULT_BASE_PATH)
 
 
 @pytest.fixture

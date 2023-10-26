@@ -255,5 +255,6 @@ VAULT_TOKEN__USER_TOKENS = VAULT_ROOT_KEY
 VAULT_CLIENT_CRT = "/var/vault/certs/client.crt"
 VAULT_CLIENT_KEY = "/var/vault/certs/client.key"
 VAULT_TLS_VERIFY = False
+VAULT_BASE_PATH = os.environ.get("VAULT_DEV_ROOT_TOKEN_ID", "ix")
 
 WORKSPACE_DIR = os.environ.get("WORKSPACE_DIR", "/var/app/workdir/")
