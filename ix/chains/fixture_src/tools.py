@@ -112,8 +112,14 @@ GOOGLE_SEARCH = {
         GoogleSearchAPIWrapper,
         include=["google_api_key", "google_cse_id", "k", "siterestrict"],
         field_options={
-            "google_api_key": {"input_type": "secret", "secret_key": "Google Search API"},
-            "google_cse_id": {"input_type": "secret", "secret_key": "Google Search API"},
+            "google_api_key": {
+                "input_type": "secret",
+                "secret_key": "Google Search API",
+            },
+            "google_cse_id": {
+                "input_type": "secret",
+                "secret_key": "Google Search API",
+            },
         },
     ),
 }
