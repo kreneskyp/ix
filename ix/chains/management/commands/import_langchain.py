@@ -43,6 +43,7 @@ from ix.chains.fixture_src.toolkit import TOOLKITS
 from ix.chains.fixture_src.tools import TOOLS
 from ix.chains.fixture_src.vectorstores import VECTORSTORES
 from ix.chains.models import NodeType
+from ix.secrets.models import SecretType
 
 COMPONENTS = []
 
@@ -163,6 +164,17 @@ class Command(BaseCommand):
                 # creating new node type
                 node_type = NodeType.objects.create(**component)
 
+            # generate NodeType (component config)
             fields = [NodeTypeField(**field) for field in node_type.fields or []]
             node_type.config_schema = NodeTypePydantic.generate_config_schema(fields)
             node_type.save(update_fields=["config_schema"])
+
+            # generate SecretTypes from secret fields
+            node_type_pydantic = NodeTypePydantic.model_validate(node_type)
+            for secret_group in node_type_pydantic.secret_groups:
+                try:
+                    secret_type = SecretType.objects.get(name=secret_group.key)
+                except SecretType.DoesNotExist:
+                    secret_type = SecretType(name=secret_group.key)
+                secret_type.fields_schema = secret_group.fields_schema
+                secret_type.save()
