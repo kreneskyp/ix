@@ -18,15 +18,15 @@ jobs:
     - name: Restore cache
       uses: actions/cache@v2
       with:
-        path: path/to/your/cache
+        path: image.tar
         key: ghcr.io/kreneskyp/ix/nodejs:${{ github.event.inputs.cacheKey }}
 
     - name: Archive cache
       run: |
-        tar -czf cache.tar.gz -C path/to/your/cache .
+        tar -czf cache.${{ github.event.inputs.cacheKey }}.tar.gz image.tar
 
     - name: Upload cache as artifact
       uses: actions/upload-artifact@v2
       with:
         name: cache-artifact
-        path: cache.tar.gz
+        path: cache.${{ github.event.inputs.cacheKey }}.tar.gz
