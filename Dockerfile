@@ -66,6 +66,7 @@ ENV PATH $PATH:$NODE_MODULES_BIN
 
 # build config
 COPY package.json $NPM_DIR
+COPY package-lock.json $NPM_DIR
 COPY babel.config.js $NPM_DIR
 COPY relay.config.js $NPM_DIR
 COPY webpack.config.js $NPM_DIR

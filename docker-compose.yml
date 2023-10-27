@@ -68,6 +68,7 @@ services:
     volumes:
       - ./frontend:/var/app/frontend
       - ./package.json:/var/app/package.json
+      - ./package-lock.json:/var/app/package-lock.json
       - ./babel.config.js:/var/app/babel.config.js
       - ./relay.config.js:/var/app/relay.config.js
       - ./webpack.config.js:/var/app/webpack.config.js
