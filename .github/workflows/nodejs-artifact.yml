@@ -1,6 +1,9 @@
 name: Cache to Artifact
 
 on:
+  pull_request: # This will run the workflow for every push to an open pull request.
+    branches:
+      - '**'
   workflow_dispatch:
     inputs:
       cacheKey:
@@ -19,14 +22,14 @@ jobs:
       uses: actions/cache@v2
       with:
         path: image.tar
-        key: ghcr.io/kreneskyp/ix/nodejs:${{ github.event.inputs.cacheKey }}
+        key: ghcr.io/kreneskyp/ix/nodejs:f908460311841699fd55a12f4ece8802
 
     - name: Archive cache
       run: |
-        tar -czf cache.${{ github.event.inputs.cacheKey }}.tar.gz image.tar
+        tar -czf cache.f908460311841699fd55a12f4ece8802.tar.gz image.tar
 
     - name: Upload cache as artifact
       uses: actions/upload-artifact@v2
       with:
         name: cache-artifact
-        path: cache.${{ github.event.inputs.cacheKey }}.tar.gz
+        path: cache.f908460311841699fd55a12f4ece8802.tar.gz
