@@ -120,7 +120,7 @@ image: .compiled-static ${IMAGE_SENTINEL} ${IMAGE_SENTINEL_PSQL}
 
 # nodejs / frontend builder image
 .PHONY: nodejs
-nodejs: ${IMAGE_SENTINEL_NODEJS}
+nodejs: ${IMAGE_SENTINEL_NODEJS} .vault.env
 
 
 # full frontend build

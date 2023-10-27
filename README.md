@@ -132,7 +132,7 @@ ix scale 5
 
 The client may start a specific version, including the unstable `dev` image built on `master` branch.
 ```bash
-pip up --version dev
+ix up --version dev
 ```
 
 
