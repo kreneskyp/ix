@@ -1,3 +1,4 @@
+import logging
 from uuid import UUID
 
 from django.contrib.auth.models import AbstractUser
@@ -21,6 +22,7 @@ from ix.secrets.models import SecretType, Secret
 from ix.ix_users.models import User
 from ix.utils.pydantic import create_args_model
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -244,7 +246,7 @@ async def update_secret(
 
 @router.get("/secrets/", response_model=SecretPage, tags=["Secrets"])
 async def get_secrets(
-    path: Optional[str] = None,
+    secret_type: Optional[str] = None,
     limit: int = 10,
     offset: int = 0,
     user: User = Depends(get_request_user),
@@ -255,8 +257,8 @@ async def get_secrets(
     use rendering choices in the UX. (e.g. to show a list of choices)
     """
     query = Secret.filtered_owners(user).all()
-    if path:
-        query = query.filter(path=path)
+    if secret_type:
+        query = query.filter(type__name=secret_type)
 
     # Handling pagination manually for this example
     query = query[offset : offset + limit]
