@@ -97,7 +97,7 @@ endif
 
 # setup target for docker-compose, add deps here to apply to all compose sessions
 .PHONY: compose
-compose: image .vault.env certs
+compose: image certs vault-ready
 
 # =========================================================
 # Build
@@ -120,7 +120,7 @@ image: .compiled-static ${IMAGE_SENTINEL} ${IMAGE_SENTINEL_PSQL}
 
 # nodejs / frontend builder image
 .PHONY: nodejs
-nodejs: ${IMAGE_SENTINEL_NODEJS} .vault.env
+nodejs: ${IMAGE_SENTINEL_NODEJS} vault-empty-env
 
 
 # full frontend build
@@ -193,7 +193,7 @@ down: compose
 	docker-compose down
 
 .PHONY: restart
-restart: compose down up
+restart: compose down up unseal-vault
 
 
 # run backend and frontend. This starts uvicorn for asgi+websockers
@@ -343,22 +343,84 @@ prettier: nodejs
 # =========================================================
 
 .PHONY: clean
-clean:
+clean: clean-vault
 	rm -rf .sentinel
 	rm -rf .certs
-	rm .vault.env
 
-.vault.env:
-	@echo "VAULT_DEV_ROOT_TOKEN_ID=$$(python ./bin/get_uuid.py)" > .vault.env
-	@echo ".vault.env file has been generated with a UUID key."
+
+# files created in docker will have a different owner, often root.
+# this can cause problems when trying to edit files on the host.
+.PHONY: fix-file-ownership
+fix-file-ownership:
+	@echo "Fixing file ownership..."
+	@sudo chown -R $$USER:$$USER ./
+
+
+# =========================================================
+# Vault
+# =========================================================
+
+VAULT_DIR := ./.vault
+VAULT_UNSEAL_KEYS := $(VAULT_DIR)/keys
+VAULT_ENV := $(VAULT_DIR)/.client.env
+VAULT_FILE := $(VAULT_DIR)/file
+VAULT_ADDR := https://0.0.0.0:8200
+VAULT_SCRIPT = ./bin/vault.py
+
+${VAULT_FILE}:
+	mkdir -p $(VAULT_FILE)
+
+#.vault.env:
+#	@echo "VAULT_DEV_ROOT_TOKEN_ID=$$(python ./bin/get_uuid.py)" > .vault.env
+#	#@echo "${VAULT_ENV} file has been generated with a UUID key."
+
+
+${VAULT_DIR}:
+	mkdir -p ${VAULT_DIR}
+
+
+.PHONY: vault-empty-env
+vault-empty-env: ${VAULT_DIR}
+	touch ${VAULT_ENV}
+
+
+# Initialize a new vault server. This will generate root token and unseal keys.
+# Only run this once, or clean vault to start over.
+.PHONY: init-vault
+init-vault:
+	@echo "Starting Vault initialization..."
+	@python ./bin/init_vault.py --vault-dir=$(VAULT_DIR) --unseal-file=$(VAULT_UNSEAL_KEYS) --token-file=$(VAULT_ENV)
+
+
+# unseal the vault server using the unseal keys generated during init.
+# this is required to access secrets in the vault.
+.PHONY: unseal-vault
+unseal-vault:
+	@python3 ./bin/vault_unseal.py -a $(VAULT_ADDR) -f $(VAULT_UNSEAL_KEYS)
+
+
+.PHONY: vault-ready
+vault-ready: vault-empty-env
+	@echo "Preparing Vault..."
+	docker-compose up -d vault
+	@# Check if Vault is up and accepting connections, if not, start Vault
+	@# Initialize, unseal and check the status of Vault, this is handled by the script
+	@echo "Checking Vault status..."
+	@python3 $(VAULT_SCRIPT) --vault-addr=$(VAULT_ADDR) --vault-dir=$(VAULT_DIR)
+
+
+clean-vault: fix-file-ownership
+	rm -rf ${VAULT_FILE}/*
+	rm -f ${VAULT_UNSEAL_KEYS}
+	rm -f ${VAULT_ENV}
 
 
 # =========================================================
 # Misc
 # =========================================================
 
-# commands to generate all the certs needed for local development
 
+# commands to generate all the certs needed for local development
 .certs/sentinel:
 	@mkdir -p .certs
 
