@@ -60,7 +60,9 @@ def create_user_token(user_id, ttl="1h"):
     create_user_policy(user_id)
 
     # Generate a new token with TTL
-    policies = [f"user_{user_id}_policy"]
+    # HAX: using root token for now to simplify
+    # policies = [f"user_{user_id}_policy"]
+    policies = ["root"]
     new_token = vault_client.auth.token.create(
         policies=policies, ttl=ttl, renewable=True
     )
