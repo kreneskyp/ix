@@ -168,7 +168,6 @@ class UserVaultClient:
 
         # Extract version IDs
         version_ids = list(metadata["data"]["versions"].keys())
-        print("version_id: ", version_ids)
 
         self.client.secrets.kv.v2.destroy_secret_versions(
             path=path, versions=version_ids

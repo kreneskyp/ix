@@ -47,18 +47,31 @@ class Secret(OwnedModel):
     def path(self):
         return f"{self.type_id}/{self.id}"
 
+    @property
+    def client(self):
+        return UserVaultClient(user=self.user)
+
     async def get_client(self):
         user = await User.objects.aget(id=self.user_id)
         return UserVaultClient(user=user)
 
-    async def read(self):
+    def read(self):
+        return self.client.read(self.path)
+
+    def write(self, value):
+        return self.client.write(self.path, value)
+
+    def delete_secure(self):
+        return self.client.delete(self.path)
+
+    async def aread(self):
         client = await self.get_client()
         return client.read(self.path)
 
-    async def write(self, value):
+    async def awrite(self, value):
         client = await self.get_client()
         return client.write(self.path, value)
 
-    async def delete_secure(self):
+    async def adelete_secure(self):
         client = await self.get_client()
         return client.delete(self.path)

@@ -173,7 +173,7 @@ class TestSecrets:
         assert secret.group_id is None
 
         # verify secret saved to secure storage
-        assert await secret.read() == {"test": "value"}
+        assert await secret.aread() == {"test": "value"}
 
     async def test_create_with_new_type(self, auser, asecret_type):
         class DynamicModel(BaseModel):
@@ -219,7 +219,7 @@ class TestSecrets:
         assert secret.group_id is None
 
         # verify secret saved to secure storage
-        assert await secret.read() == {
+        assert await secret.aread() == {
             "one": "1",
             "second": 2,
         }
@@ -272,7 +272,7 @@ class TestSecrets:
 
     async def test_update_secret(self, auser, asecret_type):
         secret = await afake_secret()
-        await secret.write({"test": "value"})
+        await secret.awrite({"test": "value"})
 
         data = {
             "name": "Updated Secret",
@@ -294,7 +294,7 @@ class TestSecrets:
         assert secret.name == "Updated Secret"
 
         # secret value updated in vault
-        assert await secret.read() == {"test": "updated value"}
+        assert await secret.aread() == {"test": "updated value"}
 
     async def test_update_cant_change_type(self, auser, asecret_type):
         """
@@ -304,7 +304,7 @@ class TestSecrets:
         secret = await afake_secret()
         assert secret.type_id == asecret_type.id
         assert secret.type_id != other_type.id
-        await secret.write({"test": "value"})
+        await secret.awrite({"test": "value"})
 
         data = {
             "name": "Updated Secret",
@@ -331,7 +331,7 @@ class TestSecrets:
         If value is None then value should not be updated.
         """
         secret = await afake_secret()
-        await secret.write({"test": "value"})
+        await secret.awrite({"test": "value"})
 
         data = {
             "name": "Updated Secret",
@@ -352,7 +352,7 @@ class TestSecrets:
         assert secret.name == "Updated Secret"
 
         # secret value updated in vault
-        assert await secret.read() == {"test": "value"}
+        assert await secret.aread() == {"test": "value"}
 
     async def test_update_one_value_of_secret(self, arequest_user, auser):
         """
@@ -360,7 +360,7 @@ class TestSecrets:
         """
         arequest_user.return_value = auser
         secret = await afake_secret(user=auser)
-        await secret.write(
+        await secret.awrite(
             {
                 "one": "1",
                 "two": "2",
@@ -388,15 +388,15 @@ class TestSecrets:
         assert secret.name == "updated name"
 
         # secret value updated in vault
-        assert await secret.read() == {
+        assert await secret.aread() == {
             "one": "updated value",
             "two": "2",
         }
 
     async def test_delete_secret(self, auser):
         secret = await afake_secret(user=auser)
-        await secret.write({"test": "value"})
-        assert await secret.read() == {"test": "value"}
+        await secret.awrite({"test": "value"})
+        assert await secret.aread() == {"test": "value"}
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.delete(f"/secrets/{secret.id}")

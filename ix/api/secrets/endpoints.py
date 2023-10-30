@@ -280,7 +280,10 @@ async def delete_secret(secret_id: UUID, user: User = Depends(get_request_user))
     secret.user = user
 
     # delete vault and database
-    await secret.delete_secure()
+    try:
+        await secret.adelete_secure()
+    except InvalidPath:
+        logger.warning(f"Secret {secret_id} not found in vault when deleting")
     await secret.adelete()
 
     return DeletedItem(id=str(secret_id))
