@@ -49,11 +49,14 @@ class Secret(OwnedModel):
 
     @property
     def client(self):
-        return UserVaultClient(user=self.user)
+        # TODO: make this configurable for production
+        # return UserVaultClient(user=self.user)
+        return SecretValueClient()
 
     async def get_client(self):
-        user = await User.objects.aget(id=self.user_id)
-        return UserVaultClient(user=user)
+        # TODO: make this configurable for production
+        # user = await User.objects.aget(id=self.user_id)
+        return SecretValueClient()
 
     def read(self):
         return self.client.read(self.path)
@@ -66,12 +69,69 @@ class Secret(OwnedModel):
 
     async def aread(self):
         client = await self.get_client()
-        return client.read(self.path)
+        return await client.aread(self.path)
 
     async def awrite(self, value):
         client = await self.get_client()
-        return client.write(self.path, value)
+        return await client.awrite(self.path, value)
 
     async def adelete_secure(self):
         client = await self.get_client()
-        return client.delete(self.path)
+        return await client.adelete(self.path)
+
+
+class MissingSecret(Exception):
+    pass
+
+
+class SecretValueClient:
+    def read(self, path: str):
+        return SecretValue.objects.get(path=path).data
+
+    async def aread(self, path: str):
+        try:
+            secret_value = await SecretValue.objects.aget(path=path)
+        except SecretValue.DoesNotExist:
+            raise MissingSecret()
+        return secret_value.data
+
+    def write(self, path: str, value: dict):
+        try:
+            secret_value = SecretValue.objects.get(path=path)
+        except SecretValue.DoesNotExist:
+            secret_value = SecretValue(path=path)
+        secret_value.data = value
+        secret_value.save()
+
+    async def awrite(self, path: str, value: dict):
+        try:
+            secret_value = await SecretValue.objects.aget(path=path)
+        except SecretValue.DoesNotExist:
+            secret_value = SecretValue(path=path)
+        secret_value.data = value
+        await secret_value.asave()
+
+    def delete(self, path: str):
+        try:
+            SecretValue.objects.get(path=path).delete()
+        except SecretValue.DoesNotExist:
+            pass
+
+    async def adelete(self, path: str):
+        try:
+            secret_value = await SecretValue.objects.aget(path=path)
+            await secret_value.adelete()
+        except SecretValue.DoesNotExist:
+            raise MissingSecret()
+
+
+class SecretValue(models.Model):
+    """SecretValue storage for dev environments
+
+    This is an UNENCRYPTED mock secret storage system that is intended for use
+    ONLY FOR DEVELOPMENT. This is intended for use in place of vault since vault
+    is annoying to configure for dev environments.
+    """
+
+    path = models.CharField(max_length=(36 * 2) + 1)
+    data = models.JSONField()

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 from ix.ix_users.tests.mixins import OwnershipTestsMixin
 from ix.server.fast_api import app
-from ix.secrets.models import Secret, SecretType
+from ix.secrets.models import Secret, SecretType, SecretValueClient
 from uuid import uuid4
 from httpx import AsyncClient
 
@@ -120,7 +120,6 @@ class TestSecretTypes:
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures("clean_vault")
 class TestSecrets:
     async def test_get_secrets(self, auser, asecret_type):
         secret_1 = await afake_secret(path="Mock Secret 1")
@@ -450,7 +449,6 @@ class TestSecretTypeOwnership(OwnershipTestsMixin):
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures("clean_vault")
 class TestSecretOwnership(OwnershipTestsMixin):
     object_type = "secrets"
 
@@ -464,7 +462,9 @@ class TestSecretOwnership(OwnershipTestsMixin):
 
     async def setup_object(self, **kwargs):
         secret_type = await aget_mock_secret_type()
-        return await afake_secret(type_id=secret_type.id, **kwargs)
+        secret = await afake_secret(type_id=secret_type.id, **kwargs)
+        await secret.awrite({"test": "value"})
+        return secret
 
     async def get_create_data(self):
         secret_type = await aget_mock_secret_type()

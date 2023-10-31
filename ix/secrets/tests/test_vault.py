@@ -23,6 +23,7 @@ DATA = {"key": "value"}
 DATA2 = {"key": "value2"}
 
 
+@pytest.mark.skip()
 class TestSecretsFixtures:
     def test_delete_secrets_recursive(self):
         """Sanity checking fixture to make sure it deletes secrets correctly"""
@@ -68,6 +69,7 @@ class TestSecretsFixtures:
         delete_secrets_recursive(settings.VAULT_BASE_PATH)
 
 
+@pytest.mark.skip()
 @pytest.mark.django_db
 @pytest.mark.usefixtures("clean_vault")
 class TestVaultIntegration:

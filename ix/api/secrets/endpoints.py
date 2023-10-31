@@ -5,7 +5,6 @@ from django.contrib.auth.models import AbstractUser
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List, Optional
 from asgiref.sync import sync_to_async
-from hvac.exceptions import InvalidPath
 
 from ix.api.auth import get_request_user
 from ix.api.chains.endpoints import DeletedItem
@@ -18,7 +17,7 @@ from ix.api.secrets.types import (
     CreateSecret,
     UpdateSecret,
 )
-from ix.secrets.models import SecretType, Secret
+from ix.secrets.models import SecretType, Secret, MissingSecret
 from ix.ix_users.models import User
 from ix.utils.pydantic import create_args_model
 
@@ -232,7 +231,7 @@ async def update_secret(
     if secret.value:
         try:
             current_value = await secret_obj.aread()
-        except InvalidPath:
+        except MissingSecret:
             current_value = {}
         if current_value != secret.value:
             current_value.update(secret.value)
@@ -284,7 +283,7 @@ async def delete_secret(secret_id: UUID, user: User = Depends(get_request_user))
     # delete vault and database
     try:
         await secret.adelete_secure()
-    except InvalidPath:
+    except MissingSecret:
         logger.warning(f"Secret {secret_id} not found in vault when deleting")
     await secret.adelete()
 
