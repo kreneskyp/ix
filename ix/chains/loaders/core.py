@@ -92,7 +92,8 @@ def load_secrets(config: dict, node_type: NodeType):
             if field["name"] not in config:
                 continue
             secret_id = config[field["name"]]
-            to_load.add(secret_id)
+            if secret_id:
+                to_load.add(secret_id)
 
     # load secrets and update config
     # TODO: need user here to limit access to secrets
