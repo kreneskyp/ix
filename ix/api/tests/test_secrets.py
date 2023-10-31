@@ -458,7 +458,7 @@ class TestSecretOwnership(OwnershipTestsMixin):
         Disable vault calls for these tests.
         Just checking access permissions. Other tests validate read/writes
         """
-        mocker.patch("ix.secrets.models.UserVaultClient")
+        # mocker.patch("ix.secrets.models.UserVaultClient")
 
     async def setup_object(self, **kwargs):
         secret_type = await aget_mock_secret_type()
