@@ -21,7 +21,6 @@ services:
     links:
       - db
       - redis
-      - vault
     volumes:
       - .:/var/app
       - ./bin:/usr/bin/ix
@@ -30,7 +29,7 @@ services:
       - ./.certs/:/var/vault/certs:ro,Z
     env_file:
       - .env
-      - .vault/.client.env
+      #- .vault/.client.env
     environment:
       VAULT_BASE_PATH: "ix"
       DJANGO_SETTINGS_MODULE: "ix.server.settings"
@@ -53,7 +52,6 @@ services:
     links:
       - db
       - redis
-      - vault
       - chroma
     volumes:
       - .:/var/app
@@ -63,7 +61,7 @@ services:
       - ./.certs/:/var/vault/certs:ro,Z
     env_file:
       - .env
-      - .vault/.client.env
+      #- .vault/.client.env
     environment:
       VAULT_BASE_PATH: "ix"
       DJANGO_SETTINGS_MODULE: "ix.server.settings"

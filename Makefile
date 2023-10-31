@@ -97,7 +97,7 @@ endif
 
 # setup target for docker-compose, add deps here to apply to all compose sessions
 .PHONY: compose
-compose: image certs vault-ready
+compose: image certs
 
 # =========================================================
 # Build
@@ -120,7 +120,7 @@ image: .compiled-static ${IMAGE_SENTINEL} ${IMAGE_SENTINEL_PSQL}
 
 # nodejs / frontend builder image
 .PHONY: nodejs
-nodejs: ${IMAGE_SENTINEL_NODEJS} vault-empty-env
+nodejs: ${IMAGE_SENTINEL_NODEJS}
 
 
 # full frontend build
@@ -193,7 +193,7 @@ down: compose
 	docker-compose down
 
 .PHONY: restart
-restart: compose down up unseal-vault
+restart: compose down up
 
 
 # run backend and frontend. This starts uvicorn for asgi+websockers
@@ -343,7 +343,7 @@ prettier: nodejs
 # =========================================================
 
 .PHONY: clean
-clean: clean-vault
+clean:
 	rm -rf .sentinel
 	rm -rf .certs
 
@@ -419,7 +419,7 @@ clean-vault: vault-empty-env fix-file-ownership
 
 
 # commands to generate all the certs needed for local development
-.certs/sentinel: fix-file-ownership
+.certs/sentinel:
 	@mkdir -p .certs
 
 	@if [ ! -f .certs/ca.crt ]; then \
