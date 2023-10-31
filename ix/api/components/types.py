@@ -429,6 +429,12 @@ class NodeType(BaseModel):
     class Config:
         from_attributes = True
 
+    def get_config_schema(self) -> dict:
+        """JSON schema for the config"""
+        schema = self.generate_config_schema(self.fields or [])
+        schema.update(**self.model_dump(include="display_groups"))
+        return schema
+
     @staticmethod
     def generate_config_schema(fields: List[NodeTypeField]) -> dict:
         """Generates a JSON schema from a list of NodeTypeField objects."""
