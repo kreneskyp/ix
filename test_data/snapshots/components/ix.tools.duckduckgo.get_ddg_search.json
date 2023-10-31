@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.tools.duckduckgo.get_ddg_search",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "max_results": {
                 "default": 5,
@@ -36,13 +37,33 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "return_direct",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "verbose",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {

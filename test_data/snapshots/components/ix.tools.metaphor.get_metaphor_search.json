@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.tools.metaphor.get_metaphor_search",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "metaphor_api_key": {
                 "input_type": "secret",
@@ -26,21 +27,49 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "return_direct",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "verbose",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {
+            "choices": null,
+            "default": null,
+            "description": null,
             "input_type": "secret",
             "label": "Metaphor API Key",
+            "max": null,
+            "min": null,
             "name": "metaphor_api_key",
+            "parent": null,
             "required": true,
             "secret_key": "Metaphor API",
+            "step": null,
+            "style": null,
             "type": "str"
         }
     ],

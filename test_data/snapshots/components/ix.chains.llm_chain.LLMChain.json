@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.chains.llm_chain.LLMChain",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "function_call": {
                 "type": "string"
@@ -20,34 +21,56 @@
     },
     "connectors": [
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "llm",
+            "multiple": false,
             "required": true,
             "source_type": "llm",
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "memory",
             "multiple": true,
+            "required": false,
             "source_type": "memory",
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "prompt",
+            "multiple": false,
+            "required": false,
             "source_type": "prompt",
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "functions",
             "multiple": true,
+            "required": false,
             "source_type": [
                 "tool",
                 "toolkit"
             ],
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "output_parser",
+            "multiple": false,
+            "required": false,
             "source_type": "output_parser",
+            "template": false,
             "type": "target"
         }
     ],
@@ -55,17 +78,48 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "verbose",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "function_call",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
+            "choices": null,
             "default": "text",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "output_key",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         }
     ],

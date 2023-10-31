@@ -66,7 +66,9 @@ async def get_node_type_detail(
 async def create_node_type(
     node_type: NodeTypePydantic, user: AbstractUser = Depends(get_request_user)
 ):
-    node_type_obj = NodeType(**node_type.dict(), user=user)
+    node_type_obj = NodeType(
+        **node_type.model_dump(exclude="display_groups"), user=user
+    )
     await node_type_obj.asave()
     return NodeTypePydantic.from_orm(node_type_obj)
 

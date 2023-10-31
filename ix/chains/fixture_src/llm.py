@@ -38,12 +38,40 @@ STREAMING = {
     "default": True,
 }
 
+LLM_MISC_DISPLAY_GROUP = {"key": "Misc", "fields": ["verbose", "cache"]}
+
+LLM_METADATA_DISPLAY_GROUP = {
+    "key": "Metadata",
+    "fields": ["metadata", "tags"],
+}
+
 OPENAI_LLM_CLASS_PATH = "langchain.chat_models.openai.ChatOpenAI"
 OPENAI_LLM = {
     "class_path": OPENAI_LLM_CLASS_PATH,
     "type": "llm",
     "name": "OpenAI LLM",
     "description": "OpenAI LLM",
+    "display_groups": [
+        {
+            "key": "Model",
+            "fields": ["model_name", "streaming", "temperature", "max_tokens"],
+        },
+        {
+            "key": "Authentication",
+            "fields": ["openai_api_key", "openai_organization"],
+        },
+        {
+            "key": "Server",
+            "fields": [
+                "request_timeout",
+                "max_retries",
+                "openai_api_base",
+                "openai_proxy",
+            ],
+        },
+        LLM_MISC_DISPLAY_GROUP,
+        LLM_METADATA_DISPLAY_GROUP,
+    ],
     "fields": [
         {
             "name": "model_name",

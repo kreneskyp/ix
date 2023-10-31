@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.chains.components.vectorstores.AsyncChromaVectorstore",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "allow_reset": {
                 "default": false,
@@ -63,13 +64,23 @@
     },
     "connectors": [
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "embedding",
+            "multiple": false,
+            "required": false,
             "source_type": "embeddings",
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "documents",
+            "multiple": false,
+            "required": false,
             "source_type": "text_splitter",
+            "template": false,
             "type": "target"
         }
     ],
@@ -205,13 +216,22 @@
             "type": "boolean"
         },
         {
+            "choices": null,
             "default": [
                 "similarity",
                 "similarity_score_threshold",
                 "mmr"
             ],
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "allowed_search_types",
+            "parent": null,
             "required": true,
+            "step": null,
+            "style": null,
             "type": "list"
         },
         {

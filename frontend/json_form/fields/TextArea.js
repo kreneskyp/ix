@@ -7,7 +7,7 @@ export const TextArea = ({ name, field, isRequired, value, onChange }) => {
   const colorMode = useEditorColorMode();
   const handleChange = React.useCallback(
     (event) => {
-      onChange(name, event.target.value);
+      onChange({ [name]: event.target.value });
     },
     [field, onChange]
   );

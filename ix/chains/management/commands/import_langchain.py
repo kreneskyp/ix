@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from ix.api.components.types import NodeTypeField
-from ix.api.components.types import NodeType as NodeTypePydantic
+from ix.api.components.types import NodeType as NodeTypePydantic, NodeTypeField
 from ix.chains.fixture_src.agent_interaction import AGENT_INTERACTION_CHAINS
 
 from ix.chains.fixture_src.agents import AGENTS
@@ -150,15 +149,25 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for component in COMPONENTS:
+            # validate by converting to pydantic model instance
+            # TODO: COMPONENTS should be converted to pydantic models but for now
+            #       expect that they are dicts and validated here.
+            node_type_pydantic = NodeTypePydantic(**component)
+            config_schema = node_type_pydantic.get_config_schema()
+            validated_options = node_type_pydantic.model_dump(
+                exclude={"id", "display_groups", "field_groups", "config_schema"}
+            )
+
             class_path = component.get("class_path")
             if NodeType.objects.filter(class_path=class_path).exists():
                 # updating existing node type
                 print(f"Updating component: {class_path}")
                 node_type = NodeType.objects.get(class_path=class_path)
-                for key, value in component.items():
+                for key, value in validated_options.items():
                     if key == "class_path":
                         continue
                     setattr(node_type, key, value)
+                node_type.config_schema = config_schema
                 node_type.save()
             else:
                 # creating new node type

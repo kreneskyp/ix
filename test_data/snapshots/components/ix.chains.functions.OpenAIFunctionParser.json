@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.chains.functions.OpenAIFunctionParser",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "parse_json": {
                 "default": false,
@@ -16,8 +17,18 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "parse_json",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         }
     ],

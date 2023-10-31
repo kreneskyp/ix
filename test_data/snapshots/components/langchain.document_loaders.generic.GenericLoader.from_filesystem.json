@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.document_loaders.generic.GenericLoader.from_filesystem",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "glob": {
                 "default": "**/[!.]*",
@@ -32,8 +33,13 @@
     },
     "connectors": [
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "parser",
+            "multiple": false,
+            "required": false,
             "source_type": "parser",
+            "template": false,
             "type": "target"
         }
     ],
@@ -41,19 +47,35 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
             "label": "Path",
+            "max": null,
+            "min": null,
             "name": "path",
+            "parent": null,
             "required": true,
+            "step": null,
             "style": {
                 "width": "100%"
             },
             "type": "str"
         },
         {
+            "choices": null,
             "default": null,
+            "description": null,
+            "input_type": null,
             "label": "Suffixes",
+            "max": null,
+            "min": null,
             "name": "suffixes",
+            "parent": null,
             "required": false,
+            "step": null,
+            "style": null,
             "type": "list"
         },
         {

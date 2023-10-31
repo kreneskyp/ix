@@ -2,20 +2,30 @@
     "child_field": null,
     "class_path": "ix.chains.moderator.ChatModerator",
     "config_schema": {
+        "display_groups": null,
         "properties": {},
         "required": [],
         "type": "object"
     },
     "connectors": [
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "selection_chain",
+            "multiple": false,
+            "required": false,
             "source_type": "chain",
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "memory",
             "multiple": true,
+            "required": false,
             "source_type": "memory",
+            "template": false,
             "type": "target"
         }
     ],

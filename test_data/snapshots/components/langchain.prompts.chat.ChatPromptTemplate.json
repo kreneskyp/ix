@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.prompts.chat.ChatPromptTemplate",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "messages": {
                 "items": [
@@ -20,8 +21,13 @@
     },
     "connectors": [
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "output_parser",
+            "multiple": false,
+            "required": false,
             "source_type": "output_parser",
+            "template": false,
             "type": "target"
         }
     ],
@@ -29,6 +35,7 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": [
                 {
                     "input_variables": [],
@@ -36,7 +43,16 @@
                     "template": ""
                 }
             ],
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "messages",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "list"
         }
     ],

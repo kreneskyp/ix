@@ -11,7 +11,7 @@ export const Checkbox = ({ name, field, value, onChange }) => {
   const colorMode = useEditorColorMode();
   const handleChange = React.useCallback(
     (event) => {
-      onChange(name, event.target.checked);
+      onChange({ [name]: event.target.checked });
     },
     [field, onChange]
   );

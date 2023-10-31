@@ -8,6 +8,8 @@ import { Secret } from "json_form/fields/Secret";
 import { TextArea } from "json_form/fields/TextArea";
 import { Dict } from "json_form/fields/Dict";
 import { List } from "json_form/fields/List";
+import { useDisplayGroups } from "chains/hooks/useDisplayGroups";
+import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 
 // explicit input types
 const INPUTS = {
@@ -33,11 +35,22 @@ const TYPE_INPUTS = {
 
 export const NOOP = ({}) => <div>NOOP</div>;
 
-export const AutoField = ({ name, field, isRequired, config, onChange }) => {
+export const AutoField = ({
+  name,
+  field,
+  isRequired,
+  config,
+  global,
+  onChange,
+}) => {
   // Select component based on explicit input type, field type, or default in that order.
-  const input_key = field.input_type || TYPE_INPUTS[field.type];
+  const input_key =
+    global?.input_type || field.input_type || TYPE_INPUTS[field.type];
   const FieldComponent = INPUTS[input_key] || Input;
   const value = config && name in config ? config[name] : field.default;
+
+  // repackage style prop from field to include global options
+  const style = global.style || field.style;
 
   return (
     <FormControl>
@@ -47,7 +60,9 @@ export const AutoField = ({ name, field, isRequired, config, onChange }) => {
           field={field}
           isRequired={isRequired}
           value={value}
+          config={config}
           onChange={onChange}
+          style={style}
         />
       </HStack>
     </FormControl>
@@ -73,22 +88,103 @@ export const getDefaults = (nodeType) => {
   return defaults;
 };
 
-export const JSONSchemaForm = ({ schema, data, onChange }) => {
+const SectionFields = ({ schema, global, config, onChange }) => {
+  // use schema's order if defined, else alphabetical
+  const order = schema.order || Object.keys(schema.properties).sort();
+
   return (
     <VStack spacing={3} width="100%">
-      {Object.keys(schema?.properties).map((fieldName) => {
-        const field = schema.properties[fieldName];
+      {order.map((key) => {
+        const property = schema.properties[key];
+        // HAX: disabling isRequired now since some configs are marking every field as required
+        const isRequired = schema.required?.includes(key);
         return (
           <AutoField
-            key={fieldName}
-            field={field}
-            name={fieldName}
-            isRequired={schema.required.includes(fieldName)}
-            config={data}
+            key={key}
+            field={property}
+            name={key}
+            isRequired={false}
+            config={config}
             onChange={onChange}
+            global={global}
           />
         );
       })}
     </VStack>
   );
+};
+
+const CollapsibleFormSection = ({
+  schema,
+  title,
+  config,
+  global,
+  initialShow,
+  onChange,
+}) => {
+  return (
+    <CollapsibleSection
+      key={title}
+      title={title}
+      initialShow={initialShow}
+      mt={3}
+    >
+      <SectionFields
+        schema={schema}
+        config={config}
+        global={global}
+        onChange={onChange}
+      />
+    </CollapsibleSection>
+  );
+};
+
+export const JSONSchemaForm = ({
+  schema,
+  data,
+  global,
+  defaultLabel,
+  groupProperties,
+  onChange,
+}) => {
+  if (groupProperties) {
+    // get sub-schemas for each group
+    const groupSchemas = useDisplayGroups(schema);
+
+    return (
+      <>
+        {Object.keys(groupSchemas).map((groupKey, i) => {
+          const groupSchema = groupSchemas[groupKey];
+          return (
+            <CollapsibleFormSection
+              key={groupKey}
+              title={
+                groupKey === "default" && defaultLabel ? defaultLabel : groupKey
+              }
+              schema={groupSchema}
+              global={global}
+              config={data}
+              onChange={onChange}
+              initialShow={i === 0}
+            />
+          );
+        })}
+      </>
+    );
+  } else {
+    return (
+      <SectionFields
+        schema={schema}
+        properties={schema.properties}
+        config={data}
+        global={global}
+        onChange={onChange}
+      />
+    );
+  }
+};
+
+JSONSchemaForm.defaultProps = {
+  groupProperties: true,
+  global: {},
 };

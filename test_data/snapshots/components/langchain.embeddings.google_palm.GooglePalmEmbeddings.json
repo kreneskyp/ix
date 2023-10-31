@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.embeddings.google_palm.GooglePalmEmbeddings",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "google_api_key": {
                 "description": "Google PaLM key",
@@ -25,7 +26,17 @@
     "fields": [
         {
             "description": "Google PaLM key",
+            "choices": null,
+            "default": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "google_api_key",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
@@ -37,8 +48,15 @@
             ],
             "default": "models/embedding-gecko-001",
             "description": "Model name to use",
+            "input_type": null,
             "label": "Model",
+            "max": null,
+            "min": null,
             "name": "model_name",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         }
     ],
