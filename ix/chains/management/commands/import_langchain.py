@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
 
-from ix.api.components.types import NodeTypeField
 from ix.api.components.types import NodeType as NodeTypePydantic
 from ix.chains.fixture_src.agent_interaction import AGENT_INTERACTION_CHAINS
 
@@ -174,4 +173,3 @@ class Command(BaseCommand):
                 NodeType.objects.create(
                     config_schema=config_schema, **validated_options
                 )
-
