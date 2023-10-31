@@ -58,7 +58,7 @@ OPENAI_LLM = {
         },
         {
             "key": "Authentication",
-            "fields": ["openai_api_key", "openai_organization"],
+            "fields": ["OpenAI API", "openai_organization"],
         },
         {
             "key": "Server",
