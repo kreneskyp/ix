@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.chains.loaders.agents.initialize_openai_functions",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "max_execution_time": {
                 "type": "number"
@@ -24,24 +25,36 @@
     },
     "connectors": [
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "llm",
+            "multiple": false,
             "required": true,
             "source_type": "llm",
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "tools",
             "multiple": true,
+            "required": false,
             "source_type": [
                 "tool",
                 "toolkit"
             ],
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "memory",
             "multiple": true,
+            "required": false,
             "source_type": "memory",
+            "template": false,
             "type": "target"
         }
     ],
@@ -49,24 +62,63 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "return_intermediate_steps",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {
+            "choices": null,
             "default": 15,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "max_iterations",
-            "nullable": true,
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "integer"
         },
         {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "max_execution_time",
-            "nullable": true,
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "float"
         },
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "verbose",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         }
     ],

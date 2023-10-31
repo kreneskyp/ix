@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.tools.wolfram_alpha.get_wolfram_alpha",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "return_direct": {
                 "default": false,
@@ -24,19 +25,48 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "return_direct",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "verbose",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {
+            "choices": null,
+            "default": null,
+            "description": null,
             "input_type": "secret",
             "label": "Wolfram Alpha App ID",
+            "max": null,
+            "min": null,
             "name": "wolfram_alpha_app_id",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "str"
         }
     ],

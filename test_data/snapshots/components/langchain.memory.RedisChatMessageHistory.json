@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.memory.RedisChatMessageHistory",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "session_key": {
                 "default": "session_id",
@@ -41,16 +42,35 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": "redis://redis:6379/0",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "url",
+            "parent": null,
+            "required": false,
+            "step": null,
             "style": {
                 "width": "100%"
             },
             "type": "string"
         },
         {
+            "choices": null,
             "default": 3600,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "ttl",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "number"
         },
         {
@@ -72,18 +92,47 @@
                     "value": "user"
                 }
             ],
+            "default": null,
+            "description": null,
             "input_type": "select",
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "session_scope",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
+            "choices": null,
             "default": "",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "session_prefix",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
+            "choices": null,
             "default": "session_id",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "session_key",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         }
     ],

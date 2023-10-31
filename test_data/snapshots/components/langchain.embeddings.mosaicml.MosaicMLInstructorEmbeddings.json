@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.embeddings.mosaicml.MosaicMLInstructorEmbeddings",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "embed_instruction": {
                 "default": "Represent the document for retrieval: ",
@@ -43,36 +44,79 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": "https://models.hosted-on.mosaicml.hosting/instructor-xl/v1/predict",
             "description": "Endpoint URL to use",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "endpoint_url",
+            "parent": null,
+            "required": false,
+            "step": null,
             "style": {
                 "width": "100%"
             },
             "type": "string"
         },
         {
+            "choices": null,
             "default": "Represent the document for retrieval: ",
             "description": "Instruction used to embed documents",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "embed_instruction",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
+            "choices": null,
             "default": "Represent the question for retrieving supporting documents: ",
             "description": "Instruction used to embed the query",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "query_instruction",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
+            "choices": null,
             "default": 1.0,
             "description": "How long to try sleeping for if a rate limit is encountered",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "retry_sleep",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "number"
         },
         {
+            "choices": null,
+            "default": null,
             "description": "MosaicML API token",
             "input_type": "secret",
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "mosaicml_api_token",
+            "parent": null,
+            "required": false,
+            "step": null,
             "style": {
                 "width": "100%"
             },

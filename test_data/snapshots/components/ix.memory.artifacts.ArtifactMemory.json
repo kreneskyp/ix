@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.memory.artifacts.ArtifactMemory",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "input_key": {
                 "default": "artifact_keys",
@@ -28,25 +29,63 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
             "label": "Save Artifact",
+            "max": null,
+            "min": null,
             "name": "save_artifact",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {
+            "choices": null,
             "default": true,
+            "description": null,
+            "input_type": null,
             "label": "Load Artifact",
+            "max": null,
+            "min": null,
             "name": "load_artifact",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {
+            "choices": null,
             "default": "artifact_keys",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "input_key",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
+            "choices": null,
             "default": "related_artifacts",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "memory_key",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         }
     ],

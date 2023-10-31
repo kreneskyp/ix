@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.chains.tools.chain_as_tool",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "description": {
                 "default": "",
@@ -32,8 +33,13 @@
     },
     "connectors": [
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "chain",
+            "multiple": false,
+            "required": false,
             "source_type": "chain",
+            "template": false,
             "type": "target"
         }
     ],
@@ -41,30 +47,67 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": "",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "name",
+            "parent": null,
+            "required": false,
+            "step": null,
             "style": {
                 "width": "100%"
             },
             "type": "str"
         },
         {
+            "choices": null,
             "default": "",
+            "description": null,
             "input_type": "textarea",
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "description",
+            "parent": null,
+            "required": false,
+            "step": null,
             "style": {
                 "width": "100%"
             },
             "type": "str"
         },
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "return_direct",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "verbose",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         }
     ],

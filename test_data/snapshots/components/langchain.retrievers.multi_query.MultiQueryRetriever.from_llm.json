@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.retrievers.multi_query.MultiQueryRetriever.from_llm",
     "config_schema": {
+        "display_groups": null,
         "properties": {},
         "required": [],
         "type": "object"
@@ -9,23 +10,35 @@
     "connectors": [
         {
             "as_type": "retriever",
+            "auto_sequence": true,
             "key": "retriever",
+            "multiple": false,
             "required": true,
             "source_type": [
                 "retriever",
                 "vectorstore"
             ],
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "llm",
+            "multiple": false,
             "required": true,
             "source_type": "llm",
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "prompt",
+            "multiple": false,
+            "required": false,
             "source_type": "prompt",
+            "template": false,
             "type": "target"
         }
     ],

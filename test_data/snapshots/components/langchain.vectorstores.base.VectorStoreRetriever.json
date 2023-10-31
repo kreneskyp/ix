@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.vectorstores.base.VectorStoreRetriever",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "allowed_search_types": {
                 "items": [
@@ -26,9 +27,13 @@
     },
     "connectors": [
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "vectorstore",
+            "multiple": false,
             "required": true,
             "source_type": "vectorstore",
+            "template": false,
             "type": "target"
         }
     ],
@@ -36,13 +41,22 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": [
                 "similarity",
                 "similarity_score_threshold",
                 "mmr"
             ],
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "allowed_search_types",
+            "parent": null,
             "required": true,
+            "step": null,
+            "style": null,
             "type": "list"
         },
         {

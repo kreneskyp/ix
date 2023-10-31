@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.memory.buffer_window.ConversationBufferWindowMemory",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "ai_prefix": {
                 "default": "AI",
@@ -37,9 +38,13 @@
     },
     "connectors": [
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "chat_memory",
+            "multiple": false,
             "required": true,
             "source_type": "memory_backend",
+            "template": false,
             "type": "target"
         }
     ],
@@ -47,39 +52,108 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": 5,
+            "description": null,
+            "input_type": null,
             "label": "Window Size",
+            "max": null,
+            "min": null,
             "name": "k",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "number"
         },
         {
+            "choices": null,
             "default": "history",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "memory_key",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
+            "choices": null,
             "default": "Human",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "human_prefix",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
+            "choices": null,
             "default": "AI",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "ai_prefix",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
+            "choices": null,
             "default": "output",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "output_key",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
+            "choices": null,
             "default": "input",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "input_key",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "return_messages",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         }
     ],
