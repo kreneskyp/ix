@@ -5,7 +5,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { useDebounce } from "utils/hooks/useDebounce";
 
-export const DictForm = ({ label, dict, onChange }) => {
+export const DictForm = ({ label, dict, key_props, value_props, onChange }) => {
   const [entries, setEntries] = useState(() => {
     let entries = Object.entries(dict);
     if (entries.length === 0) {
@@ -66,12 +66,14 @@ export const DictForm = ({ label, dict, onChange }) => {
               onChange={(e) => handleInputChange(e, index, true)}
               placeholder="Key"
               {...colorMode.input}
+              {...(key_props || {})}
             />
             <Input
               value={value}
               onChange={(e) => handleInputChange(e, index, false)}
               placeholder="Value"
               {...colorMode.input}
+              {...(value_props || {})}
             />
             <FontAwesomeIcon
               icon={faTrash}

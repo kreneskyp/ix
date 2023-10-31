@@ -2,6 +2,7 @@
     "child_field": "chains",
     "class_path": "langchain.chains.SequentialChain",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "input_variables": {
                 "items": [
@@ -24,15 +25,23 @@
     },
     "connectors": [
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "memory",
             "multiple": true,
+            "required": false,
             "source_type": "memory",
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
             "auto_sequence": false,
             "key": "chains",
+            "multiple": false,
+            "required": false,
             "source_type": "chain",
+            "template": false,
             "type": "target"
         }
     ],
@@ -40,13 +49,32 @@
     "display_type": "list",
     "fields": [
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "verbose",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {
+            "choices": null,
             "default": [],
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "input_variables",
+            "parent": null,
+            "required": false,
+            "step": null,
             "style": {
                 "width": "100%"
             },

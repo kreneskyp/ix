@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.agents.agent_toolkits.file_management.toolkit.FileManagementToolkit",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "root_dir": {
                 "default": "/var/app/workdir",

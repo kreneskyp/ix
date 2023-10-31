@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.chains.openapi.get_openapi_chain_async",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "spec": {
                 "style": {
@@ -19,20 +20,33 @@
     },
     "connectors": [
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "llm",
+            "multiple": false,
             "required": true,
             "source_type": "llm",
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "memory",
             "multiple": true,
+            "required": false,
             "source_type": "memory",
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "prompt",
+            "multiple": false,
+            "required": false,
             "source_type": "prompt",
+            "template": false,
             "type": "target"
         }
     ],
@@ -40,13 +54,32 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "verbose",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
             "label": "OpenAPI URL",
+            "max": null,
+            "min": null,
             "name": "spec",
+            "parent": null,
+            "required": false,
+            "step": null,
             "style": {
                 "width": "500px"
             },

@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.llms.ollama.Ollama",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "base_url": {
                 "default": "http://localhost:11434",
@@ -99,8 +100,18 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "verbose",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {

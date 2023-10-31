@@ -19,12 +19,12 @@ const DefaultForm = ({ type, node, onChange }) => {
   if (!node) {
     return null;
   }
-
   return (
     <JSONSchemaForm
       schema={type?.config_schema}
       data={node.config}
-      onChange={onChange.field}
+      onChange={onChange.fields}
+      defaultLabel={"Config"}
     />
   );
 };
@@ -69,15 +69,7 @@ export const ConfigEditorPane = () => {
             <NameField object={node} onChange={handleConfigChange.all} />
             <DescriptionField object={node} onChange={handleConfigChange.all} />
           </CollapsibleSection>
-          <CollapsibleSection title="Config" initialShow={true} mt={3}>
-            {
-              <ConfigForm
-                node={node}
-                type={type}
-                onChange={handleConfigChange}
-              />
-            }
-          </CollapsibleSection>
+          <ConfigForm node={node} type={type} onChange={handleConfigChange} />
         </Box>
       </Box>
     );

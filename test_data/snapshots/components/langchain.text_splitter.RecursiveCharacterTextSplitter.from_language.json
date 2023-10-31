@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.text_splitter.RecursiveCharacterTextSplitter.from_language",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "add_start_index": {
                 "default": false,
@@ -53,9 +54,13 @@
     },
     "connectors": [
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "document_loader",
+            "multiple": false,
             "required": true,
             "source_type": "document_loader",
+            "template": false,
             "type": "target"
         }
     ],
@@ -142,9 +147,16 @@
                 }
             ],
             "default": "python",
+            "description": null,
             "input_type": "select",
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "language",
+            "parent": null,
             "required": true,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {

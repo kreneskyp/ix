@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.document_loaders.web_base.WebBaseLoader",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "continue_on_failure": {
                 "default": false,
@@ -28,8 +29,13 @@
     },
     "connectors": [
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "parser",
+            "multiple": false,
+            "required": false,
             "source_type": "parser",
+            "template": false,
             "type": "target"
         }
     ],
@@ -37,8 +43,17 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
+            "default": null,
             "description": "URL(s) of the web page",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "web_path",
+            "parent": null,
+            "required": false,
+            "step": null,
             "style": {
                 "width": "100%"
             },

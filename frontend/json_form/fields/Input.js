@@ -9,11 +9,11 @@ import {
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { getLabel } from "json_form/utils";
 
-export const Input = ({ name, field, isRequired, value, onChange }) => {
+export const Input = ({ name, field, isRequired, value, style, onChange }) => {
   const colorMode = useEditorColorMode();
   const handleChange = React.useCallback(
     (event) => {
-      onChange(name, event.target.value);
+      onChange({ [name]: event.target.value });
     },
     [field, onChange]
   );
@@ -33,7 +33,7 @@ export const Input = ({ name, field, isRequired, value, onChange }) => {
         onChange={handleChange}
         px={2}
         py={2}
-        sx={field.style || { width: 200 }}
+        {...(style || field.style || { width: 200 })}
         {...colorMode.input}
       />
     </Flex>

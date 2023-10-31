@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.chains.functions.FunctionSchema",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "description": {
                 "default": "",
@@ -24,18 +25,48 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": "",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "name",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
+            "choices": null,
             "default": "",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "description",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
+            "choices": null,
             "default": "",
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "parameters",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "json"
         }
     ],

@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.embeddings.huggingface.HuggingFaceEmbeddings",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "cache_folder": {
                 "description": "Path to store models",
@@ -43,26 +44,62 @@
             ],
             "default": "sentence-transformers/all-mpnet-base-v2",
             "description": "Model name to use",
+            "input_type": null,
             "label": "Model",
+            "max": null,
+            "min": null,
             "name": "model_name",
+            "parent": null,
+            "required": false,
+            "step": null,
             "style": {
                 "width": "100%"
             },
             "type": "string"
         },
         {
+            "choices": null,
+            "default": null,
             "description": "Path to store models",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "cache_folder",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "string"
         },
         {
+            "choices": null,
+            "default": null,
             "description": "Key word arguments to pass to the model",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "model_kwargs",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "dictionary"
         },
         {
+            "choices": null,
+            "default": null,
             "description": "Key word arguments to pass when calling the `encode` method of the model",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "encode_kwargs",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "dictionary"
         }
     ],

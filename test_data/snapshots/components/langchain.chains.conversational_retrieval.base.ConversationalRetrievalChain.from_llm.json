@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.chains.conversational_retrieval.base.ConversationalRetrievalChain.from_llm",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "max_tokens_limit": {
                 "type": "object"
@@ -34,31 +35,46 @@
     },
     "connectors": [
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "llm",
+            "multiple": false,
             "required": true,
             "source_type": "llm",
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "memory",
             "multiple": true,
             "required": true,
             "source_type": "memory",
+            "template": false,
             "type": "target"
         },
         {
+            "as_type": null,
+            "auto_sequence": true,
             "key": "prompt",
+            "multiple": false,
+            "required": false,
             "source_type": "prompt",
+            "template": false,
             "type": "target"
         },
         {
             "as_type": "retriever",
+            "auto_sequence": true,
             "key": "retriever",
+            "multiple": false,
             "required": true,
             "source_type": [
                 "retriever",
                 "vectorstore"
             ],
+            "template": false,
             "type": "target"
         }
     ],
@@ -66,8 +82,18 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "verbose",
+            "parent": null,
+            "required": false,
+            "step": null,
+            "style": null,
             "type": "boolean"
         },
         {

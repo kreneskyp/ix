@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.chat_models.anthropic.ChatAnthropic",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "anthropic_api_key": {
                 "description": "ANTHROPIC_API_KEY",
@@ -62,28 +63,49 @@
     "display_type": "node",
     "fields": [
         {
+            "choices": null,
             "default": 0,
             "description": "Temperature",
             "input_type": "slider",
-            "max": 2,
-            "min": 0,
+            "label": "",
+            "max": 2.0,
+            "min": 0.0,
             "name": "temperature",
+            "parent": null,
+            "required": false,
             "step": 0.05,
+            "style": null,
             "type": "number"
         },
         {
+            "choices": null,
+            "default": null,
             "description": "ANTHROPIC_API_KEY",
             "input_type": "secret",
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "anthropic_api_key",
+            "parent": null,
+            "required": false,
+            "step": null,
             "style": {
                 "width": "100%"
             },
             "type": "string"
         },
         {
+            "choices": null,
             "default": "https://api.anthropic.com",
             "description": "API URL",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
             "name": "anthropic_api_url",
+            "parent": null,
+            "required": false,
+            "step": null,
             "style": {
                 "width": "100%"
             },
