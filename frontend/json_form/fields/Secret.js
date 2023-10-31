@@ -3,11 +3,11 @@ import { Input as ChakraInput, Flex, FormLabel } from "@chakra-ui/react";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { getLabel } from "json_form/utils";
 
-export const Secret = ({ name, field, isRequired, value, onChange }) => {
+export const Secret = ({ name, field, isRequired, value, style, onChange }) => {
   const colorMode = useEditorColorMode();
   const handleChange = React.useCallback(
     (event) => {
-      onChange(name, event.target.value);
+      onChange({ [name]: event.target.value });
     },
     [field, onChange]
   );
@@ -20,10 +20,10 @@ export const Secret = ({ name, field, isRequired, value, onChange }) => {
       <ChakraInput
         value={value || ""}
         onChange={handleChange}
-        px={1}
+        px={3}
         py={2}
         type={"password"}
-        sx={field.style || { width: 200 }}
+        {...(style || field.style || { width: 200 })}
         {...colorMode.input}
       />
     </Flex>

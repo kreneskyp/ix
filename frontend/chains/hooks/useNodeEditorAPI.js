@@ -28,11 +28,15 @@ export const useNodeEditorAPI = (node, setNode) => {
       all({ ...node, config: newConfig }, delay);
     };
 
+    const fields = (newFields, delay = 500) => {
+      config({ ...node.config, ...newFields }, delay);
+    };
+
     const field = (key, value, delay = 500) => {
       config({ ...node.config, [key]: value }, delay);
     };
 
-    return { all, field, config };
+    return { all, field, fields, config };
   }, [selectedNode, api, node, setNode]);
 
   return { handleConfigChange };

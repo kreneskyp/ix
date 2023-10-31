@@ -6,7 +6,7 @@ import { getLabel } from "json_form/utils";
 export const Select = ({ name, field, isRequired, value, onChange }) => {
   const colorMode = useEditorColorMode();
   const handleChange = React.useCallback((event) => {
-    onChange(name, event.target.value);
+    onChange({ [name]: event.target.value });
   });
 
   return (

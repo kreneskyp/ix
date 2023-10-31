@@ -382,6 +382,14 @@ class FieldGroup(BaseModel):
     class_path: Optional[str] = None
 
 
+class DisplayGroup(BaseModel):
+    """A group of fields that are displayed together"""
+
+    key: str
+    label: Optional[str] = None
+    fields: List[str]
+
+
 class NodeType(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     name: Optional[str] = Field(default=None, max_length=255)
@@ -394,6 +402,9 @@ class NodeType(BaseModel):
     field_groups: Optional[Dict[str, FieldGroup]] = None
     child_field: Optional[str] = Field(None, max_length=32)
     config_schema: Optional[dict] = None
+    """JSON schema for the config"""
+    display_groups: Optional[List[DisplayGroup]] = None
+    """Groups of fields that are displayed together in the order the groups should be displayed"""
 
     class Config:
         from_attributes = True

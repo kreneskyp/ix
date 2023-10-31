@@ -7,7 +7,7 @@ export const Dict = ({ name, field, isRequired, value, onChange }) => {
     (newValue) => {
       // Check if newValue is null or undefined, if so, set it to an empty object
       newValue = newValue || {};
-      onChange(name, newValue);
+      onChange({ [name]: newValue });
     },
     [field, onChange]
   );
