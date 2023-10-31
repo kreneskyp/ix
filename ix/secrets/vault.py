@@ -139,6 +139,10 @@ class UserVaultClient:
 
     @cached_property
     def token(self):
+        # HAX: user root token for now to simplify access since there are still some quirks
+        #      managing user tokens & policies. This will be fixed in the future.
+        return settings.VAULT_ROOT_KEY
+
         # Use the provided token if it's available.
         if self._provided_token:
             return self._provided_token
