@@ -18,7 +18,7 @@ def unseal_vault(vault_address, unseal_file_path):
     env = {**os.environ, "VAULT_ADDR": vault_address}
 
     try:
-        result = subprocess.run(
+        subprocess.run(
             ["vault", "operator", "unseal", unseal_key],
             capture_output=True,
             check=True,

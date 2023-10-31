@@ -16,33 +16,25 @@ def check_vault_status(vault_address):
         return None, None
 
 
-def initialize_vault(
-    vault_address, unseal_file_path, token_file_path, key_shares=1, key_threshold=1
-):
+def initialize_vault(vault_address, unseal_file_path, token_file_path):
     print("Initializing Vault...")
-
-    # Add parameters for initializing Vault
-    init_payload = {
-        "secret_shares": key_shares,  # Number of unseal keys to generate
-        "secret_threshold": key_threshold,  # Number of unseal keys required to unseal the vault
-    }
-
-    # Suppress InsecureRequestWarning
-    requests.packages.urllib3.disable_warnings(
-        requests.packages.urllib3.exceptions.InsecureRequestWarning
-    )
-
     try:
-        response = requests.put(
-            f"{vault_address}/v1/sys/init", json=init_payload, verify=False
+        result = subprocess.run(
+            [
+                "vault",
+                "operator",
+                "init",
+                f"-address={vault_address}",
+                "-key-shares=1",
+                "-key-threshold=1",
+                "-format=json",
+            ],
+            capture_output=True,
+            check=True,
+            text=True,
         )
-        try:
-            response.raise_for_status()
-        except:
-            print(f"Error initializing Vault: {response.content}", file=sys.stderr)
-            raise
 
-        vault_output = response.json()
+        vault_output = json.loads(result.stdout)
 
         with open(unseal_file_path, "w") as unseal_file:
             json.dump(vault_output, unseal_file, indent=2)
@@ -52,9 +44,9 @@ def initialize_vault(
             token_file.write(f"VAULT_DEV_ROOT_TOKEN_ID={root_token}")
 
         print("Vault initialized.")
-        return vault_output["keys"]
+        return vault_output["unseal_keys_b64"]
 
-    except requests.RequestException as e:
+    except subprocess.CalledProcessError as e:
         print(f"An error occurred while initializing Vault: {e}", file=sys.stderr)
         sys.exit(1)
 
@@ -125,9 +117,6 @@ def enable_kv_secrets_engine(vault_address, unseal_file_path):
     with open(unseal_file_path, "r") as f:
         unseal_data = json.load(f)
     root_token = unseal_data["root_token"]
-
-    # Set Vault address and token for the environment
-    env = {**os.environ, "VAULT_ADDR": vault_address, "VAULT_TOKEN": root_token}
 
     try:
         # List enabled secrets engines
