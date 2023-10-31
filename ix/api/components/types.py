@@ -537,6 +537,7 @@ class NodeType(BaseModel):
             "style",
             "parent",
             "default",
+            "secret_key",
         }
 
         property = {"type": schema_type}

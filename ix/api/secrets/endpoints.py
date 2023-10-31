@@ -166,7 +166,7 @@ async def create_secret(secret: CreateSecret, user: User = Depends(get_request_u
     await secret_obj.asave()
 
     # write to vault
-    await secret_obj.write(secret.value)
+    await secret_obj.awrite(secret.value)
 
     return SecretPydantic.model_validate(secret_obj)
 
@@ -231,12 +231,12 @@ async def update_secret(
     # update vault value
     if secret.value:
         try:
-            current_value = await secret_obj.read()
+            current_value = await secret_obj.aread()
         except InvalidPath:
             current_value = {}
         if current_value != secret.value:
             current_value.update(secret.value)
-            await secret_obj.write(current_value)
+            await secret_obj.awrite(current_value)
 
     # fetch secret type manually to avoid async weirdness
     secret_obj.type = await SecretType.objects.aget(pk=secret_obj.type_id)

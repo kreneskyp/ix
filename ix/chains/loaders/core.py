@@ -86,30 +86,28 @@ def load_secrets(config: dict, node_type: NodeType):
         return
 
     # build map of secrets to load
-    to_load = defaultdict(list)
+    to_load = set()
     for field in node_type.fields:
         if field["input_type"] == "secret":
             if field["name"] not in config:
                 continue
             secret_id = config[field["name"]]
-            to_load[secret_id].append(field["name"])
+            to_load.add(secret_id)
 
     # load secrets and update config
     # TODO: need user here to limit access to secrets
-    secrets = Secret.objects.filter(id__in=set(to_load.keys()))
+    secrets = Secret.objects.filter(id__in=set(to_load))
     for secret in secrets:
         try:
-            value = secret.sread()
+            value = secret.read()
         except Exception as e:
-            print("")
             logger.error(f"Failed to load secret {secret.id}: {e}")
-            raise Exception("Failed to load secret: {secret.id}")
-        field_names = to_load.pop(secret.id, [])
-        for field_name in field_names:
-            config[field_name] = value
+            raise Exception(f"Failed to load secret: {secret.id}")
+        to_load.remove(str(secret.id))
+        config.update(value)
 
     if to_load:
-        raise ValueError(f"Secrets not found: {to_load.keys()}")
+        raise ValueError(f"Secrets not found: {to_load}")
 
 
 def load_node(

@@ -1,4 +1,5 @@
 import logging
+from copy import deepcopy
 from typing import Dict, Any, List
 from unittest.mock import MagicMock
 
@@ -20,6 +21,7 @@ from ix.chains.management.commands.create_ix_v2 import (
 
 from ix.chains.models import Chain, ChainNode, NodeType
 from ix.chains.tests.mock_vector_embeddings import MOCK_VECTORSTORE_EMBEDDINGS
+from ix.secrets.tests.fake import afake_secret
 from ix.secrets.vault import delete_secrets_recursive
 from ix.task_log.models import Artifact, Task
 from ix.task_log.tests.fake import (
@@ -82,6 +84,21 @@ def clean_vault():
     delete_secrets_recursive(settings.VAULT_BASE_PATH)
     yield
     delete_secrets_recursive(settings.VAULT_BASE_PATH)
+
+
+@pytest.fixture
+def mock_config_secrets():
+    async def mock_config(config: dict, keys: List[str]) -> dict:
+        config = deepcopy(config)
+        for key in keys:
+            secret = await afake_secret()
+            datum = {key: config["config"][key]}
+            await secret.awrite(datum)
+            assert await secret.aread() == datum
+            config["config"][key] = str(secret.id)
+        return config
+
+    return mock_config
 
 
 @pytest.fixture
