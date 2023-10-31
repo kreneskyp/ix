@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 from ix.ix_users.tests.mixins import OwnershipTestsMixin
 from ix.server.fast_api import app
-from ix.secrets.models import Secret, SecretType, SecretValueClient
+from ix.secrets.models import Secret, SecretType
 from uuid import uuid4
 from httpx import AsyncClient
 

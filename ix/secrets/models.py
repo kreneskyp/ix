@@ -1,7 +1,6 @@
 import uuid
 from django.db import models
-from ix.ix_users.models import OwnedModel, User
-from ix.secrets.vault import UserVaultClient
+from ix.ix_users.models import OwnedModel
 
 
 class SecretType(OwnedModel):
