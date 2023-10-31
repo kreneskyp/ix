@@ -3,8 +3,8 @@ import sys
 import time
 import json
 import requests
-import subprocess
 import argparse
+import subprocess
 
 
 def check_vault_status(vault_address):
@@ -16,25 +16,33 @@ def check_vault_status(vault_address):
         return None, None
 
 
-def initialize_vault(vault_address, unseal_file_path, token_file_path):
+def initialize_vault(
+    vault_address, unseal_file_path, token_file_path, key_shares=1, key_threshold=1
+):
     print("Initializing Vault...")
-    try:
-        result = subprocess.run(
-            [
-                "vault",
-                "operator",
-                "init",
-                f"-address={vault_address}",
-                "-key-shares=1",
-                "-key-threshold=1",
-                "-format=json",
-            ],
-            capture_output=True,
-            check=True,
-            text=True,
-        )
 
-        vault_output = json.loads(result.stdout)
+    # Add parameters for initializing Vault
+    init_payload = {
+        "secret_shares": key_shares,  # Number of unseal keys to generate
+        "secret_threshold": key_threshold,  # Number of unseal keys required to unseal the vault
+    }
+
+    # Suppress InsecureRequestWarning
+    requests.packages.urllib3.disable_warnings(
+        requests.packages.urllib3.exceptions.InsecureRequestWarning
+    )
+
+    try:
+        response = requests.put(
+            f"{vault_address}/v1/sys/init", json=init_payload, verify=False
+        )
+        try:
+            response.raise_for_status()
+        except:
+            print(f"Error initializing Vault: {response.content}", file=sys.stderr)
+            raise
+
+        vault_output = response.json()
 
         with open(unseal_file_path, "w") as unseal_file:
             json.dump(vault_output, unseal_file, indent=2)
@@ -44,9 +52,9 @@ def initialize_vault(vault_address, unseal_file_path, token_file_path):
             token_file.write(f"VAULT_DEV_ROOT_TOKEN_ID={root_token}")
 
         print("Vault initialized.")
-        return vault_output["unseal_keys_b64"]
+        return vault_output["keys"]
 
-    except subprocess.CalledProcessError as e:
+    except requests.RequestException as e:
         print(f"An error occurred while initializing Vault: {e}", file=sys.stderr)
         sys.exit(1)
 
@@ -123,44 +131,35 @@ def enable_kv_secrets_engine(vault_address, unseal_file_path):
 
     try:
         # List enabled secrets engines
-        result = subprocess.run(
-            [
-                "vault",
-                "secrets",
-                "list",
-                "-format=json",
-            ],
-            capture_output=True,
-            check=True,
-            text=True,
-            env=env,
+        response = requests.get(
+            f"{vault_address}/v1/sys/mounts",
+            headers={"X-Vault-Token": root_token},
+            verify=False,
         )
+        if response.status_code != 200:
+            print(f"An error occurred: {response.content}", file=sys.stderr)
+            sys.exit(1)
 
-        engines = json.loads(result.stdout)
+        engines = response.json()
         if engines.get("secret/", {}).get("type", None) == "kv":
             print("KV secrets engine is already enabled.")
             return
 
         print("Enabling KV secrets engine...")
 
-        result = subprocess.run(
-            [
-                "vault",
-                "secrets",
-                "enable",
-                "-path=secret",
-                "-version=2",
-                "kv",
-            ],
-            capture_output=True,
-            check=True,
-            text=True,
-            env=env,
+        response = requests.post(
+            f"{vault_address}/v1/sys/mounts/secret",
+            headers={"X-Vault-Token": root_token},
+            json={"type": "kv", "options": {"version": "2"}},
+            verify=False,
         )
+        if response.status_code != 204:
+            print(f"An error occurred: {response.content}", file=sys.stderr)
+            sys.exit(1)
 
         print("KV secrets engine enabled.")
 
-    except subprocess.CalledProcessError as e:
+    except requests.exceptions.RequestException as e:
         print(f"An error occurred: {e}", file=sys.stderr)
         sys.exit(1)
 

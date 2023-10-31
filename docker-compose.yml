@@ -96,7 +96,7 @@ services:
     volumes:
     - ./vault:/vault/config/
     - ./.certs/:/vault/certs
-    - ./.vault/file:/vault/file
+    - .vault/file:/vault/file
     command: "server"
     ports:
       - "8200:8200"

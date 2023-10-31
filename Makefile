@@ -369,10 +369,7 @@ VAULT_SCRIPT = ./bin/vault.py
 
 ${VAULT_FILE}:
 	mkdir -p $(VAULT_FILE)
-
-#.vault.env:
-#	@echo "VAULT_DEV_ROOT_TOKEN_ID=$$(python ./bin/get_uuid.py)" > .vault.env
-#	#@echo "${VAULT_ENV} file has been generated with a UUID key."
+	chown -R 0:0 .vault/file
 
 
 ${VAULT_DIR}:
@@ -400,7 +397,7 @@ unseal-vault:
 
 
 .PHONY: vault-ready
-vault-ready: fix-file-ownership vault-empty-env certs
+vault-ready: fix-file-ownership ${VAULT_FILE} vault-empty-env certs
 	@echo "Preparing Vault..."
 	docker-compose up -d vault
 	@# Check if Vault is up and accepting connections, if not, start Vault
@@ -409,7 +406,8 @@ vault-ready: fix-file-ownership vault-empty-env certs
 	@python3 $(VAULT_SCRIPT) --vault-addr=$(VAULT_ADDR) --vault-dir=$(VAULT_DIR)
 
 
-clean-vault: fix-file-ownership
+clean-vault: vault-empty-env fix-file-ownership
+	docker-compose down
 	rm -rf ${VAULT_FILE}/*
 	rm -f ${VAULT_UNSEAL_KEYS}
 	rm -f ${VAULT_ENV}
