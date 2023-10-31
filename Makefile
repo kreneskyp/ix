@@ -400,7 +400,7 @@ unseal-vault:
 
 
 .PHONY: vault-ready
-vault-ready: vault-empty-env
+vault-ready: fix-file-ownership vault-empty-env certs
 	@echo "Preparing Vault..."
 	docker-compose up -d vault
 	@# Check if Vault is up and accepting connections, if not, start Vault
@@ -421,7 +421,7 @@ clean-vault: fix-file-ownership
 
 
 # commands to generate all the certs needed for local development
-.certs/sentinel:
+.certs/sentinel: fix-file-ownership
 	@mkdir -p .certs
 
 	@if [ ! -f .certs/ca.crt ]; then \
@@ -445,6 +445,7 @@ clean-vault: fix-file-ownership
 	@rm -f .certs/*.csr
 	@rm -f .certs/ca.srl
 	@touch .certs/sentinel
+	@chmod go+r .certs/server.key
 
 
 .PHONY: certs
