@@ -2,13 +2,13 @@
     "child_field": null,
     "class_path": "langchain.chat_models.fireworks.ChatFireworks",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "cache": {
                 "type": "boolean"
             },
             "fireworks_api_key": {
                 "input_type": "secret",
+                "secret_key": "Fireworks.ai API",
                 "style": {
                     "width": "100%"
                 },

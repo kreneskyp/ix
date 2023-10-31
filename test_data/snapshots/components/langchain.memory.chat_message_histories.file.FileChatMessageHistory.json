@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "langchain.memory.chat_message_histories.file.FileChatMessageHistory",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "file_path": {
                 "default": "/var/app/workdir/chat_memory.txt",
@@ -30,6 +29,7 @@
             "name": "file_path",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"

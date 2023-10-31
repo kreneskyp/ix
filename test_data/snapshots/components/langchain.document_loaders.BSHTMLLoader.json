@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "langchain.document_loaders.BSHTMLLoader",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "file_path": {
                 "type": "string"

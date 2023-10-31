@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.tools.google.get_google_serper",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "gl": {
                 "default": "us",
@@ -22,6 +21,7 @@
             },
             "serper_api_key": {
                 "input_type": "secret",
+                "secret_key": "Serper API",
                 "type": "string"
             },
             "tbs": {
@@ -61,6 +61,7 @@
             "name": "return_direct",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -76,6 +77,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

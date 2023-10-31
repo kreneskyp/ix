@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.chains.components.tools.IngestionTool",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "return_direct": {
                 "default": false,
@@ -52,6 +51,7 @@
             "name": "return_direct",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -67,6 +67,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

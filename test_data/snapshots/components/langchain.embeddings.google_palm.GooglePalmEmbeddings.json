@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "langchain.embeddings.google_palm.GooglePalmEmbeddings",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "google_api_key": {
                 "description": "Google PaLM key",
@@ -25,9 +24,9 @@
     "display_type": "node",
     "fields": [
         {
-            "description": "Google PaLM key",
             "choices": null,
             "default": null,
+            "description": "Google PaLM key",
             "input_type": null,
             "label": "",
             "max": null,
@@ -35,6 +34,7 @@
             "name": "google_api_key",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -55,6 +55,7 @@
             "name": "model_name",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"

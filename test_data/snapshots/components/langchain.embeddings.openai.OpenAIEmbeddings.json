@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "allowed_special": {
                 "items": [
@@ -70,6 +69,7 @@
             "name": "model",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -85,6 +85,7 @@
             "name": "allowed_special",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"
@@ -100,6 +101,7 @@
             "name": "disallowed_special",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"
@@ -115,6 +117,7 @@
             "name": "chunk_size",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"
@@ -130,6 +133,7 @@
             "name": "max_retries",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": 1.0,
             "style": null,
             "type": "int"

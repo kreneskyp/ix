@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "langchain.vectorstores.base.VectorStoreRetriever",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "allowed_search_types": {
                 "items": [
@@ -55,6 +54,7 @@
             "name": "allowed_search_types",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"

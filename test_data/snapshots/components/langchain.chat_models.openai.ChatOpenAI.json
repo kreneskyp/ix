@@ -2,52 +2,6 @@
     "child_field": null,
     "class_path": "langchain.chat_models.openai.ChatOpenAI",
     "config_schema": {
-        "display_groups": [
-            {
-                "fields": [
-                    "model_name",
-                    "streaming",
-                    "temperature",
-                    "max_tokens"
-                ],
-                "key": "Model",
-                "label": null
-            },
-            {
-                "fields": [
-                    "openai_api_key",
-                    "openai_organization"
-                ],
-                "key": "Authentication",
-                "label": null
-            },
-            {
-                "fields": [
-                    "request_timeout",
-                    "max_retries",
-                    "openai_api_base",
-                    "openai_proxy"
-                ],
-                "key": "Server",
-                "label": null
-            },
-            {
-                "fields": [
-                    "verbose",
-                    "cache"
-                ],
-                "key": "Misc",
-                "label": null
-            },
-            {
-                "fields": [
-                    "metadata",
-                    "tags"
-                ],
-                "key": "Metadata",
-                "label": null
-            }
-        ],
         "properties": {
             "cache": {
                 "type": "boolean"
@@ -89,6 +43,7 @@
             },
             "openai_api_key": {
                 "input_type": "secret",
+                "secret_key": "OpenAI API",
                 "style": {
                     "width": "100%"
                 },
@@ -186,6 +141,7 @@
             "name": "model_name",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -289,6 +245,7 @@
             "name": "streaming",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -304,6 +261,7 @@
             "name": "request_timeout",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "number"
@@ -319,6 +277,7 @@
             "name": "max_retries",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": 1.0,
             "style": null,
             "type": "number"
@@ -334,6 +293,7 @@
             "name": "temperature",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": 0.05,
             "style": null,
             "type": "number"

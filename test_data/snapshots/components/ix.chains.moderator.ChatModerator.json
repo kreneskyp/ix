@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.chains.moderator.ChatModerator",
     "config_schema": {
-        "display_groups": null,
         "properties": {},
         "required": [],
         "type": "object"

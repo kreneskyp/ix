@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "langchain.llms.llamacpp.LlamaCpp",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "cache": {
                 "type": "boolean"
@@ -148,6 +147,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

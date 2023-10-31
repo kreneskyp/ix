@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "langchain.prompts.chat.ChatPromptTemplate",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "messages": {
                 "items": [
@@ -51,6 +50,7 @@
             "name": "messages",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"

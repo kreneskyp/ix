@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.chains.loaders.agents.initialize_zero_shot_react_description",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "max_execution_time": {
                 "type": "number"
@@ -72,6 +71,7 @@
             "name": "return_intermediate_steps",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -87,6 +87,7 @@
             "name": "max_iterations",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "integer"
@@ -102,6 +103,7 @@
             "name": "max_execution_time",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "float"
@@ -117,6 +119,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.chains.openapi.get_openapi_chain_async",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "spec": {
                 "style": {
@@ -64,6 +63,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -79,6 +79,7 @@
             "name": "spec",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "500px"

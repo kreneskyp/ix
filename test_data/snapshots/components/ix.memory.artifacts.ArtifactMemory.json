@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.memory.artifacts.ArtifactMemory",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "input_key": {
                 "default": "artifact_keys",
@@ -39,6 +38,7 @@
             "name": "save_artifact",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -54,6 +54,7 @@
             "name": "load_artifact",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -69,6 +70,7 @@
             "name": "input_key",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -84,6 +86,7 @@
             "name": "memory_key",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"

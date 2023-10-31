@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "langchain.document_loaders.JSONLoader",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "content_key": {
                 "type": "string"

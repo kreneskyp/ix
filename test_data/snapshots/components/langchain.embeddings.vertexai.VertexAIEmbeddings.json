@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "langchain.embeddings.vertexai.VertexAIEmbeddings",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "model_name": {
                 "default": "textembedding-gecko",
@@ -37,6 +36,7 @@
             "name": "model_name",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"

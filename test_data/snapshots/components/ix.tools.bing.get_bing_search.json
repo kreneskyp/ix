@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.tools.bing.get_bing_search",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "bing_search_url": {
                 "style": {
@@ -12,6 +11,7 @@
             },
             "bing_subscription_key": {
                 "input_type": "secret",
+                "secret_key": "Bing",
                 "type": "string"
             },
             "k": {
@@ -48,6 +48,7 @@
             "name": "return_direct",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -63,6 +64,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

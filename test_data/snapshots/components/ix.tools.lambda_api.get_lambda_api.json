@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.tools.lambda_api.get_lambda_api",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "awslambda_tool_description": {
                 "type": "string"
@@ -40,6 +39,7 @@
             "name": "return_direct",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -55,6 +55,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

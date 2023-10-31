@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.tools.wolfram_alpha.get_wolfram_alpha",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "return_direct": {
                 "default": false,
@@ -14,6 +13,7 @@
             },
             "wolfram_alpha_app_id": {
                 "input_type": "secret",
+                "secret_key": "Wolfram Alpha API",
                 "type": "string"
             }
         },
@@ -35,6 +35,7 @@
             "name": "return_direct",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -50,6 +51,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -63,9 +65,9 @@
             "max": null,
             "min": null,
             "name": "wolfram_alpha_app_id",
-            "secret_key": "Wolfram Alpha API",
             "parent": null,
             "required": false,
+            "secret_key": "Wolfram Alpha API",
             "step": null,
             "style": null,
             "type": "str"

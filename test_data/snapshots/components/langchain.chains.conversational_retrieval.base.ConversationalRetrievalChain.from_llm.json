@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "langchain.chains.conversational_retrieval.base.ConversationalRetrievalChain.from_llm",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "max_tokens_limit": {
                 "type": "object"
@@ -92,6 +91,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

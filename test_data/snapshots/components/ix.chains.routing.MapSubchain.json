@@ -2,7 +2,6 @@
     "child_field": "chains",
     "class_path": "ix.chains.routing.MapSubchain",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "input_variables": {
                 "items": [
@@ -64,6 +63,7 @@
             "name": "input_variables",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"
@@ -79,6 +79,7 @@
             "name": "map_input",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -94,6 +95,7 @@
             "name": "map_input_to",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -109,6 +111,7 @@
             "name": "output_key",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"

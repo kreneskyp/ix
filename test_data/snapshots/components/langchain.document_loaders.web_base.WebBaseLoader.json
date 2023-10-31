@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "langchain.document_loaders.web_base.WebBaseLoader",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "continue_on_failure": {
                 "default": false,
@@ -53,6 +52,7 @@
             "name": "web_path",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"

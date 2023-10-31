@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.chains.functions.FunctionSchema",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "description": {
                 "default": "",
@@ -35,6 +34,7 @@
             "name": "name",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -50,6 +50,7 @@
             "name": "description",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -65,6 +66,7 @@
             "name": "parameters",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "json"

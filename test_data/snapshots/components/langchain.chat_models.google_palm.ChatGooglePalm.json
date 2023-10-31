@@ -2,13 +2,13 @@
     "child_field": null,
     "class_path": "langchain.chat_models.google_palm.ChatGooglePalm",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "cache": {
                 "type": "boolean"
             },
             "google_api_key": {
                 "input_type": "secret",
+                "secret_key": "Google PaLM",
                 "type": "string"
             },
             "metadata": {
@@ -103,6 +103,7 @@
             "name": "model_name",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -110,15 +111,15 @@
         {
             "choices": null,
             "default": null,
-            "description": "Google API key",
+            "description": null,
             "input_type": "secret",
             "label": "API Key",
             "max": null,
             "min": null,
             "name": "google_api_key",
-            "secret_key": "Google PaLM",
             "parent": null,
             "required": false,
+            "secret_key": "Google PaLM",
             "step": null,
             "style": null,
             "type": "string"
@@ -134,6 +135,7 @@
             "name": "temperature",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": 0.05,
             "style": null,
             "type": "number"
@@ -149,6 +151,7 @@
             "name": "top_p",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": 0.05,
             "style": null,
             "type": "number"
@@ -164,6 +167,7 @@
             "name": "top_k",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": 0.05,
             "style": null,
             "type": "number"
@@ -179,6 +183,7 @@
             "name": "n",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": 1.0,
             "style": null,
             "type": "number"

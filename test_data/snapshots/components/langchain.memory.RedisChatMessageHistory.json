@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "langchain.memory.RedisChatMessageHistory",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "session_key": {
                 "default": "session_id",
@@ -52,6 +51,7 @@
             "name": "url",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -69,6 +69,7 @@
             "name": "ttl",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "number"
@@ -101,6 +102,7 @@
             "name": "session_scope",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -116,6 +118,7 @@
             "name": "session_prefix",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -131,6 +134,7 @@
             "name": "session_key",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"

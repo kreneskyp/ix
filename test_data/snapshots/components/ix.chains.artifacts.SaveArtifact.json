@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.chains.artifacts.SaveArtifact",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "artifact_description": {
                 "description": "Description of the artifact to save",
@@ -65,6 +64,7 @@
             "name": "artifact_key",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -80,6 +80,7 @@
             "name": "artifact_name",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -95,6 +96,7 @@
             "name": "artifact_description",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -110,6 +112,7 @@
             "name": "artifact_type",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -125,6 +128,7 @@
             "name": "artifact_storage",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -140,6 +144,7 @@
             "name": "artifact_storage_id_key",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -155,6 +160,7 @@
             "name": "content_key",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -170,6 +176,7 @@
             "name": "output_key",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"

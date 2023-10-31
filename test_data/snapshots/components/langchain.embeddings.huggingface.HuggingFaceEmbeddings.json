@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "langchain.embeddings.huggingface.HuggingFaceEmbeddings",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "cache_folder": {
                 "description": "Path to store models",
@@ -51,6 +50,7 @@
             "name": "model_name",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -68,6 +68,7 @@
             "name": "cache_folder",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -83,6 +84,7 @@
             "name": "model_kwargs",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "dictionary"
@@ -98,6 +100,7 @@
             "name": "encode_kwargs",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "dictionary"

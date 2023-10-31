@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.chains.llm_chain.LLMChain",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "function_call": {
                 "type": "string"
@@ -88,6 +87,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -103,6 +103,7 @@
             "name": "function_call",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -118,6 +119,7 @@
             "name": "output_key",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"

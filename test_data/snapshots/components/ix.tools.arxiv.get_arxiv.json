@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.tools.arxiv.get_arxiv",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "ARXIV_MAX_QUERY_LENGTH": {
                 "default": 300,
@@ -51,6 +50,7 @@
             "name": "return_direct",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -66,6 +66,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

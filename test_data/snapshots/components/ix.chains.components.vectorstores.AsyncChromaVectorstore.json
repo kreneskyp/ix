@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.chains.components.vectorstores.AsyncChromaVectorstore",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "allow_reset": {
                 "default": false,
@@ -230,6 +229,7 @@
             "name": "allowed_search_types",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"

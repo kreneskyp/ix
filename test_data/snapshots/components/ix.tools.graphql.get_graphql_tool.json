@@ -2,7 +2,6 @@
     "child_field": null,
     "class_path": "ix.tools.graphql.get_graphql_tool",
     "config_schema": {
-        "display_groups": null,
         "properties": {
             "graphql_endpoint": {
                 "type": "string"
@@ -36,6 +35,7 @@
             "name": "return_direct",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -51,6 +51,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
