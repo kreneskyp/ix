@@ -374,7 +374,7 @@ class Connector(BaseModel):
 
     # Chains connected to this property will join into an implicit SequentialChain
     # when auto_sequence is True. Disable for chains to be stored as a list.
-    auto_sequence: bool = False
+    auto_sequence: bool = True
 
 
 class FieldGroup(BaseModel):
