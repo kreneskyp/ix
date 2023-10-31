@@ -171,15 +171,14 @@ class Command(BaseCommand):
                 node_type.save()
             else:
                 # creating new node type
-                node_type = NodeType.objects.create(**component)
+                node_type = NodeType.objects.create(**validated_options)
 
             # generate NodeType (component config)
             fields = [NodeTypeField(**field) for field in node_type.fields or []]
             node_type.config_schema = NodeTypePydantic.generate_config_schema(fields)
             node_type.save(update_fields=["config_schema"])
 
-            # generate SecretTypes from secret fields
-            node_type_pydantic = NodeTypePydantic.model_validate(node_type)
+            # Secrets - generate SecretTypes from secret fields
             for secret_group in node_type_pydantic.secret_groups:
                 try:
                     secret_type = SecretType.objects.get(name=secret_group.key)
