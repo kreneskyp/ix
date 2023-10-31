@@ -68,8 +68,8 @@ class NodeTypeField(BaseModel):
     Represents a field in a component that can be configured. This includes both
     typing information and UX information.
 
-    This class includes `get_fields_from_model` and `get_fields_from_method` helpers
-    for auto-importing fields from Pydantic model and python methods respectively.
+    This class includes `get_fields` helpers for auto-importing fields from Pydantic
+    model and python methods.
 
     Set `parent` to indicate a field is a member of a nested object at property
     with the name `parent`. Use `parent` to convert flat configs back into nested
@@ -378,6 +378,8 @@ class Connector(BaseModel):
 
 
 class FieldGroup(BaseModel):
+    """A group of fields"""
+
     label: Optional[str] = None
     class_path: Optional[str] = None
 
@@ -391,16 +393,34 @@ class DisplayGroup(BaseModel):
 
 
 class NodeType(BaseModel):
+    """A configuration object that maps a component into the IX platform. These config
+    objects are used to generate config forms for the UI, validate config input,
+    initialize components at runtime. They describe how to load, configure, connected,
+    and display components in the UI.
+
+    Components are primarily from LangChain, but may include custom components and those
+    from other libraries. The structure maps to any callable that returns an object,
+    including classes, functions, and [class|static] methods.
+    """
+
     id: UUID = Field(default_factory=uuid4)
+    """Unique identifier for the node"""
     name: Optional[str] = Field(default=None, max_length=255)
     description: Optional[str] = None
     class_path: str = Field(..., max_length=255)
-    type: str = Field(..., max_length=255)
-    display_type: str = Field(default="node", max_length=10)
-    connectors: Optional[List[Connector]] = None
-    fields: Optional[List[NodeTypeField]] = None
-    field_groups: Optional[Dict[str, FieldGroup]] = None
+    """Class path to the callable that instantiates the node. May be a class, function, or method."""
     child_field: Optional[str] = Field(None, max_length=32)
+    """Child field of class_path that will be returned as the node."""
+    type: str = Field(..., max_length=255)
+    """Type of node. e.g. llm, retriever, parser, etc."""
+    display_type: str = Field(default="node", max_length=10)
+    """unused"""
+    connectors: Optional[List[Connector]] = None
+    """Class properties that are loaded from other nodes"""
+    fields: Optional[List[NodeTypeField]] = None
+    """Node properties defined with IX internal field type"""
+    field_groups: Optional[Dict[str, FieldGroup]] = None
+    """Groups of fields that are loaded into config together"""
     config_schema: Optional[dict] = None
     """JSON schema for the config"""
     display_groups: Optional[List[DisplayGroup]] = None
