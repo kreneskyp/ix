@@ -1,7 +1,22 @@
-# wait_for_vault.py
+import os
 import requests
 import time
 import sys
+
+
+import subprocess
+
+
+def print_docker_logs():
+    if os.environ.get("WAIT_FOR_VAULT_ECHO_LOGS", 1) in [1, True, "1", "true", "True"]:
+        try:
+            output = subprocess.check_output(["docker-compose", "logs", "vault"])
+            print(output.decode())
+        except subprocess.CalledProcessError as e:
+            print(f"Error: {e}")
+    else:
+        pass
+
 
 
 def wait_for_vault(health_url):
@@ -15,9 +30,11 @@ def wait_for_vault(health_url):
             else:
                 print(response.status_code, response.content)
                 print("Vault not yet ready... waiting...")
+                print_docker_logs()
                 time.sleep(2)
         except requests.RequestException:
             print("Vault not yet ready... waiting...")
+            print_docker_logs()
             time.sleep(2)
 
 
