@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.chains.llm_chain.LLMChain",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "function_call": {
                 "type": "string"

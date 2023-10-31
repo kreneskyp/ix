@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.text_splitter.RecursiveCharacterTextSplitter.from_language",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "add_start_index": {
                 "default": false,

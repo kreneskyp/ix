@@ -2,6 +2,7 @@
     "child_field": "chains",
     "class_path": "langchain.chains.SequentialChain",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "input_variables": {
                 "items": [

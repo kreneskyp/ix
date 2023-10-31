@@ -2,6 +2,52 @@
     "child_field": null,
     "class_path": "langchain.chat_models.openai.ChatOpenAI",
     "config_schema": {
+        "display_groups": [
+            {
+                "fields": [
+                    "model_name",
+                    "streaming",
+                    "temperature",
+                    "max_tokens"
+                ],
+                "key": "Model",
+                "label": null
+            },
+            {
+                "fields": [
+                    "OpenAI API",
+                    "openai_organization"
+                ],
+                "key": "Authentication",
+                "label": null
+            },
+            {
+                "fields": [
+                    "request_timeout",
+                    "max_retries",
+                    "openai_api_base",
+                    "openai_proxy"
+                ],
+                "key": "Server",
+                "label": null
+            },
+            {
+                "fields": [
+                    "verbose",
+                    "cache"
+                ],
+                "key": "Misc",
+                "label": null
+            },
+            {
+                "fields": [
+                    "metadata",
+                    "tags"
+                ],
+                "key": "Metadata",
+                "label": null
+            }
+        ],
         "properties": {
             "cache": {
                 "type": "boolean"

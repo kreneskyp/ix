@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.retrievers.multi_query.MultiQueryRetriever.from_llm",
     "config_schema": {
+        "display_groups": null,
         "properties": {},
         "required": [],
         "type": "object"

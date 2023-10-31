@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.tools.google.get_google_search",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "google_api_key": {
                 "input_type": "secret",

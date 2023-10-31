@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.chains.llm_chain.LLMReply",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "verbose": {
                 "default": false,

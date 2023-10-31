@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.tools.graphql.get_graphql_tool",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "graphql_endpoint": {
                 "type": "string"

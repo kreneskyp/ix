@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.chains.functions.OpenAIFunctionParser",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "parse_json": {
                 "default": false,

@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.chains.loaders.agents.initialize_react_docstore",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "max_execution_time": {
                 "type": "number"

@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.chat_models.google_palm.ChatGooglePalm",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "cache": {
                 "type": "boolean"

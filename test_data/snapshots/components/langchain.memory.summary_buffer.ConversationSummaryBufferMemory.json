@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.memory.summary_buffer.ConversationSummaryBufferMemory",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "ai_prefix": {
                 "default": "AI",

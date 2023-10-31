@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "allowed_special": {
                 "items": [

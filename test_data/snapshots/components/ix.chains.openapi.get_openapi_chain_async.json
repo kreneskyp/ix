@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.chains.openapi.get_openapi_chain_async",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "spec": {
                 "style": {

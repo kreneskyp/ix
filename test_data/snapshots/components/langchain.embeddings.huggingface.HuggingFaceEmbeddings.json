@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "langchain.embeddings.huggingface.HuggingFaceEmbeddings",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "cache_folder": {
                 "description": "Path to store models",

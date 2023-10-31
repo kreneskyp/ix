@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.tools.bing.get_bing_search",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "bing_search_url": {
                 "style": {

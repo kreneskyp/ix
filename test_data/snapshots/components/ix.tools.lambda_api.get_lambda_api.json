@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.tools.lambda_api.get_lambda_api",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "awslambda_tool_description": {
                 "type": "string"

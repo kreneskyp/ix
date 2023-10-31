@@ -2,6 +2,7 @@
     "child_field": null,
     "class_path": "ix.tools.wikipedia.get_wikipedia",
     "config_schema": {
+        "display_groups": null,
         "properties": {
             "doc_content_chars_max": {
                 "default": 4000,
