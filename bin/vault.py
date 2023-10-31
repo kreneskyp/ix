@@ -69,6 +69,18 @@ def unseal_vault(vault_address, unseal_keys):
     print("Vault unsealed.")
 
 
+def print_docker_logs():
+    print("Vault container logs:")
+    if os.environ.get("WAIT_FOR_VAULT_ECHO_LOGS", 1) in {1, True, "1", "true", "True"}:
+        try:
+            output = subprocess.check_output(["docker-compose", "logs", "vault"])
+            print(output.decode())
+        except subprocess.CalledProcessError as e:
+            print(f"Error: {e}")
+    else:
+        pass
+
+
 def manage_vault(vault_address, vault_dir, unseal_file, token_file):
     unseal_file_path = os.path.join(vault_dir, unseal_file)
     token_file_path = os.path.join(vault_dir, token_file)
@@ -79,9 +91,10 @@ def manage_vault(vault_address, vault_dir, unseal_file, token_file):
         if status_code is not None:
             break
         print("Vault is not responding. Waiting...")
-        time.sleep(2)
+        time.sleep(3)
     else:
         print("Vault did not respond after several attempts. Exiting.")
+        print_docker_logs()
         sys.exit(1)
 
     if vault_status["initialized"]:
