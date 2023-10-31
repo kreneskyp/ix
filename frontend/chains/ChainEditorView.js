@@ -29,6 +29,7 @@ import { EditorRightSidebar } from "chains/editor/EditorRightSidebar";
 import { useNodeState } from "chains/hooks/useNodeState";
 import { useChainState } from "chains/hooks/useChainState";
 import { NodeTypeSearchButton } from "chains/editor/NodeTypeSearchButton";
+import { LangServersMenuItem } from "langservers/LangServersMenuItem";
 import { AgentCardListButton } from "agents/AgentCardListButton";
 import { EditorAgentCard } from "chains/editor/sidebar/EditorAgentCard";
 
@@ -121,6 +122,7 @@ export const ChainEditorView = () => {
           <LayoutLeftPane>
             <AgentCardListButton Card={EditorAgentCard} />
             <NodeTypeSearchButton />
+            <LangServersMenuItem />
           </LayoutLeftPane>
           <LayoutContent>
             <HStack>
