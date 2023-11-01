@@ -9,6 +9,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { useColorMode } from "@chakra-ui/color-mode";
+import { SecretsMenuItem } from "secrets/SecretsMenuItem";
 
 function Navigation() {
   const { colorMode } = useColorMode();
@@ -45,6 +46,7 @@ function Navigation() {
             </Link>
           </HStack>
         )}
+        <SecretsMenuItem />
         <Divider
           borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
         />
