@@ -39,6 +39,7 @@
             "name": "save_artifact",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -54,6 +55,7 @@
             "name": "load_artifact",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -69,6 +71,7 @@
             "name": "input_key",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -84,6 +87,7 @@
             "name": "memory_key",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"

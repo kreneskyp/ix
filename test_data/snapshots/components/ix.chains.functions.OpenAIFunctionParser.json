@@ -27,6 +27,7 @@
             "name": "parse_json",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

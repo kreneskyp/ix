@@ -51,6 +51,7 @@
             "name": "messages",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"

@@ -59,6 +59,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -74,6 +75,7 @@
             "name": "input_variables",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"

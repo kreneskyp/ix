@@ -29,6 +29,7 @@
             "name": "root_dir",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[str]"

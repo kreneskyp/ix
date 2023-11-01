@@ -72,6 +72,7 @@ BING_SEARCH = {
         field_options={
             "bing_subscription_key": {
                 "input_type": "secret",
+                "secret_key": "Bing",
             },
             "bing_search_url": {
                 "style": {"width": "100%"},
@@ -113,9 +114,11 @@ GOOGLE_SEARCH = {
         field_options={
             "google_api_key": {
                 "input_type": "secret",
+                "secret_key": "Google Search API",
             },
             "google_cse_id": {
                 "input_type": "secret",
+                "secret_key": "Google Search API",
             },
         },
     ),
@@ -133,6 +136,7 @@ GOOGLE_SERPER = {
         field_options={
             "serper_api_key": {
                 "input_type": "secret",
+                "secret_key": "Serper API",
             },
         },
     ),
@@ -227,6 +231,7 @@ METAPHOR_API_KEY = {
     "label": "Metaphor API Key",
     "type": "str",
     "input_type": "secret",
+    "secret_key": "Metaphor API",
     "required": True,
 }
 METAPHOR_SEARCH = {
@@ -267,6 +272,7 @@ WOLFRAM = {
             "label": "Wolfram Alpha App ID",
             "type": "str",
             "input_type": "secret",
+            "secret_key": "Wolfram Alpha API",
         },
     ],
 }
@@ -287,10 +293,12 @@ ZAPIER = {
             "zapier_nla_api_key": {
                 "label": "API Key",
                 "input_type": "secret",
+                "secret_key": "Zapier NLA API",
             },
             "zapier_nla_oauth_access_token": {
                 "label": "OAuth Token",
                 "input_type": "secret",
+                "secret_key": "Zapier NLA OAuth",
             },
             "zapier_nla_api_base": {
                 "label": "API Base",

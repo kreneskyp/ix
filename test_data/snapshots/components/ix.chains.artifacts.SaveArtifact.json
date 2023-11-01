@@ -65,6 +65,7 @@
             "name": "artifact_key",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -80,6 +81,7 @@
             "name": "artifact_name",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -95,6 +97,7 @@
             "name": "artifact_description",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -110,6 +113,7 @@
             "name": "artifact_type",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -125,6 +129,7 @@
             "name": "artifact_storage",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -140,6 +145,7 @@
             "name": "artifact_storage_id_key",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -155,6 +161,7 @@
             "name": "content_key",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -170,6 +177,7 @@
             "name": "output_key",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"

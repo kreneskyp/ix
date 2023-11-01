@@ -55,6 +55,7 @@
             "name": "allowed_search_types",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"
@@ -70,6 +71,7 @@
             "name": "search_type",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"

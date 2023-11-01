@@ -44,6 +44,7 @@
             "name": "file_path",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Union"
@@ -59,6 +60,7 @@
             "name": "jq_schema",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -74,6 +76,7 @@
             "name": "content_key",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -89,6 +92,7 @@
             "name": "text_content",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -104,6 +108,7 @@
             "name": "json_lines",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

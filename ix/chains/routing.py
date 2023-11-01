@@ -1,11 +1,17 @@
 import logging
 from typing import Dict, Any, List, Optional
+from uuid import UUID
 
 from jsonpath_ng import parse as jsonpath_parse
-from langchain.callbacks.manager import AsyncCallbackManagerForChainRun
+from langchain.callbacks.manager import (
+    AsyncCallbackManagerForChainRun,
+    CallbackManagerForChainRun,
+)
 
 from langchain.chains import SequentialChain
 from langchain.chains.base import Chain
+from ix.chains.models import Chain as ChainModel
+from ix.conftest import ix_context
 
 logger = logging.getLogger(__name__)
 
@@ -150,3 +156,48 @@ class MapSubchain(Chain):
 
         # return as output_key
         return {self.output_key: outputs}
+
+
+class ChainReference(Chain):
+    chain: Chain
+    output_key: str = "output"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.chain = self.chain_obj.load_chain(context=self.context)
+
+    @property
+    def _chain_type(self) -> str:
+        return "ix.ChainReference"  # pragma: no cover
+
+    @property
+    def input_keys(self) -> List[str]:
+        return self.chain_obj.input_variables
+
+    @property
+    def output_keys(self) -> List[str]:
+        return [self.output_key]
+
+    async def _call(
+        self,
+        inputs: Dict[str, Any],
+        run_manager: Optional[CallbackManagerForChainRun] = None,
+    ) -> Dict[str, Any]:
+        _run_manager = run_manager or CallbackManagerForChainRun.get_noop_manager()
+        output = await self.chain.run(callbacks=_run_manager.get_child(), **inputs)
+        return {self.output_key: output}
+
+    async def _acall(
+        self,
+        inputs: Dict[str, Any],
+        run_manager: Optional[AsyncCallbackManagerForChainRun] = None,
+    ) -> Dict[str, Any]:
+        _run_manager = run_manager or AsyncCallbackManagerForChainRun.get_noop_manager()
+        output = await self.chain.arun(callbacks=_run_manager.get_child(), **inputs)
+        return {self.output_key: output}
+
+    @classmethod
+    def load_from_id(cls, chain_id: UUID, context: ix_context, **kwargs):
+        chain_obj = ChainModel.objects.get(id=chain_id)
+        chain = chain_obj.load_chain(context=context)
+        return cls(chain=chain, **kwargs)

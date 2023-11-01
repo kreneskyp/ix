@@ -2,6 +2,7 @@ import inspect
 from abc import ABC
 from dataclasses import dataclass
 from enum import Enum
+from functools import cached_property
 from typing import (
     Dict,
     List,
@@ -18,7 +19,7 @@ from uuid import UUID, uuid4
 from pydantic import BaseModel, Field, model_validator
 from pydantic_core import PydanticUndefined
 
-from ix.utils.pydantic import get_model_fields
+from ix.utils.pydantic import get_model_fields, create_args_model
 from ix.utils.graphene.pagination import QueryPage
 
 
@@ -105,6 +106,11 @@ class NodeTypeField(BaseModel):
     max: Optional[float] = None
     step: Optional[float] = None
     style: Optional[Dict[str, Any]] = None
+
+    secret_key: Optional[str] = None
+    """Key for SecretType this field is part of. Fields with the same type are
+    grouped and stored together in secure storage. If not set then the
+    secret will be stored at `name`"""
 
     @model_validator(mode="before")
     def validate_min_max(cls, values):
@@ -384,6 +390,19 @@ class FieldGroup(BaseModel):
     class_path: Optional[str] = None
 
 
+class SecretGroup(BaseModel):
+    """A group of secret fields that are stored together"""
+
+    key: str
+    fields: List[NodeTypeField]
+
+    @cached_property
+    def fields_schema(self) -> dict:
+        """JSON schema for the fields"""
+        field_names = [field.name for field in self.fields]
+        return create_args_model(field_names).model_json_schema()
+
+
 class DisplayGroup(BaseModel):
     """A group of fields that are displayed together"""
 
@@ -428,6 +447,28 @@ class NodeType(BaseModel):
 
     class Config:
         from_attributes = True
+
+    @cached_property
+    def secret_groups(self) -> List[SecretGroup]:
+        """Build SecretGroups from raw list of fields"""
+        secret_groups = []
+        grouped_fields = {}
+
+        if not self.fields:
+            return secret_groups
+
+        for field in self.fields:
+            if field.input_type == "secret":
+                secret_key = field.secret_key or field.name
+                if secret_key not in grouped_fields:
+                    grouped_fields[secret_key] = []
+                grouped_fields[secret_key].append(field)
+
+        for secret_key, fields in grouped_fields.items():
+            secret_group = SecretGroup(key=secret_key, fields=fields)
+            secret_groups.append(secret_group)
+
+        return secret_groups
 
     def get_config_schema(self) -> dict:
         """JSON schema for the config"""
@@ -496,6 +537,7 @@ class NodeType(BaseModel):
             "style",
             "parent",
             "default",
+            "secret_key",
         }
 
         property = {"type": schema_type}

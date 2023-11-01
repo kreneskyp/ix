@@ -35,5 +35,6 @@ llama
 
 # vault setup
 .vault.env
+.vault
 .certs
 .vault_file

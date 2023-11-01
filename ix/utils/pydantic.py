@@ -1,7 +1,7 @@
-from typing import Any
+from typing import Any, Type
 
 import pydantic
-from pydantic import BaseModel
+from pydantic import BaseModel, create_model
 
 PYDANTIC_VERSION = pydantic.__version__.split(".")
 PYDANTIC_MAJOR_VERSION = int(PYDANTIC_VERSION[0])
@@ -21,3 +21,11 @@ def from_orm(model: BaseModel, instance: Any):
         return model.from_orm(instance)
     elif PYDANTIC_MAJOR_VERSION == 1:
         return model.model_validate(instance)
+
+
+def create_args_model(variables, name="DynamicModel") -> Type[BaseModel]:
+    """
+    Dynamically create a Pydantic model class with fields for each variable
+    """
+    field_definitions = {field: (str, ...) for field in variables}
+    return create_model(name, **field_definitions)

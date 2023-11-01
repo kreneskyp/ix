@@ -47,6 +47,7 @@
             "name": "return_direct",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -62,6 +63,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -77,6 +79,7 @@
             "name": "max_retry",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"
@@ -92,6 +95,7 @@
             "name": "top_k_results",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"
@@ -107,6 +111,7 @@
             "name": "doc_content_chars_max",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"
@@ -122,6 +127,7 @@
             "name": "email",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"

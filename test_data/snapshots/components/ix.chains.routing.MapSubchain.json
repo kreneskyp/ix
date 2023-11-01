@@ -64,6 +64,7 @@
             "name": "input_variables",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"
@@ -79,6 +80,7 @@
             "name": "map_input",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -94,6 +96,7 @@
             "name": "map_input_to",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -109,6 +112,7 @@
             "name": "output_key",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"

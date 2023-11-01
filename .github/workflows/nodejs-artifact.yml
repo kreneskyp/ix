@@ -13,17 +13,17 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Restore cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
-        path: image.tar
+        path: image-nodejs.tar
         key: ghcr.io/kreneskyp/ix/nodejs:${{ github.event.inputs.cacheKey }}
 
     - name: Archive cache
       run: |
-        tar -czf cache.${{ github.event.inputs.cacheKey }}.tar.gz image.tar
+        tar -czf cache.${{ github.event.inputs.cacheKey }}.tar.gz image-nodejs.tar
 
     - name: Upload cache as artifact
       uses: actions/upload-artifact@v2

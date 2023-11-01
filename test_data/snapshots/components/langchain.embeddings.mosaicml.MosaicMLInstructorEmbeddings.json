@@ -18,8 +18,8 @@
                 "type": "string"
             },
             "mosaicml_api_token": {
-                "description": "MosaicML API token",
                 "input_type": "secret",
+                "secret_key": "MosaicML API",
                 "style": {
                     "width": "100%"
                 },
@@ -54,6 +54,7 @@
             "name": "endpoint_url",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -71,6 +72,7 @@
             "name": "embed_instruction",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -86,6 +88,7 @@
             "name": "query_instruction",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -101,6 +104,7 @@
             "name": "retry_sleep",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "number"
@@ -108,7 +112,7 @@
         {
             "choices": null,
             "default": null,
-            "description": "MosaicML API token",
+            "description": null,
             "input_type": "secret",
             "label": "",
             "max": null,
@@ -116,6 +120,7 @@
             "name": "mosaicml_api_token",
             "parent": null,
             "required": false,
+            "secret_key": "MosaicML API",
             "step": null,
             "style": {
                 "width": "100%"

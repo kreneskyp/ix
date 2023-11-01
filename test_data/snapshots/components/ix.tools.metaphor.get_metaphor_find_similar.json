@@ -6,6 +6,7 @@
         "properties": {
             "metaphor_api_key": {
                 "input_type": "secret",
+                "secret_key": "Metaphor API",
                 "type": "string"
             },
             "return_direct": {
@@ -37,6 +38,7 @@
             "name": "return_direct",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -52,6 +54,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -67,6 +70,7 @@
             "name": "metaphor_api_key",
             "parent": null,
             "required": true,
+            "secret_key": "Metaphor API",
             "step": null,
             "style": null,
             "type": "str"

@@ -8,8 +8,8 @@
                 "type": "boolean"
             },
             "google_api_key": {
-                "description": "Google API key",
                 "input_type": "secret",
+                "secret_key": "Google PaLM",
                 "type": "string"
             },
             "metadata": {
@@ -104,6 +104,7 @@
             "name": "model_name",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -111,7 +112,7 @@
         {
             "choices": null,
             "default": null,
-            "description": "Google API key",
+            "description": null,
             "input_type": "secret",
             "label": "API Key",
             "max": null,
@@ -119,6 +120,7 @@
             "name": "google_api_key",
             "parent": null,
             "required": false,
+            "secret_key": "Google PaLM",
             "step": null,
             "style": null,
             "type": "string"
@@ -134,6 +136,7 @@
             "name": "temperature",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": 0.05,
             "style": null,
             "type": "number"
@@ -149,6 +152,7 @@
             "name": "top_p",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": 0.05,
             "style": null,
             "type": "number"
@@ -164,6 +168,7 @@
             "name": "top_k",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": 0.05,
             "style": null,
             "type": "number"
@@ -179,6 +184,7 @@
             "name": "n",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": 1.0,
             "style": null,
             "type": "number"
@@ -194,6 +200,7 @@
             "name": "cache",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -209,6 +216,7 @@
             "name": "verbose",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -224,6 +232,7 @@
             "name": "tags",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"
@@ -239,6 +248,7 @@
             "name": "metadata",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "dict"

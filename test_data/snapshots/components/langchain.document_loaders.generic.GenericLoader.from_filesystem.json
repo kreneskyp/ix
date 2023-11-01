@@ -57,6 +57,7 @@
             "name": "path",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -74,6 +75,7 @@
             "name": "suffixes",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"
@@ -89,6 +91,7 @@
             "name": "glob",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"

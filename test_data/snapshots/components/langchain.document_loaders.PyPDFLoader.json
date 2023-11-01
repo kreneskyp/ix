@@ -31,6 +31,7 @@
             "name": "file_path",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -46,6 +47,7 @@
             "name": "password",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"

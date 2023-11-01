@@ -78,6 +78,7 @@
             "name": "model_path",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -95,6 +96,7 @@
             "name": "n_ctx",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "number"
@@ -110,6 +112,7 @@
             "name": "n_parts",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "number"
@@ -125,6 +128,7 @@
             "name": "seed",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "number"
@@ -140,6 +144,7 @@
             "name": "f16_kv",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -155,6 +160,7 @@
             "name": "logits_all",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -170,6 +176,7 @@
             "name": "vocab_only",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -185,6 +192,7 @@
             "name": "use_mlock",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -200,6 +208,7 @@
             "name": "n_threads",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "number"
@@ -215,6 +224,7 @@
             "name": "n_batch",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "number"
@@ -230,6 +240,7 @@
             "name": "n_gpu_layers",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "number"

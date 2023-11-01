@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "ix.agents",
     "ix.chat",
     "ix.datasources",
+    "ix.secrets",
 ]
 
 MIDDLEWARE = [
@@ -247,11 +248,13 @@ if os.path.exists("/var/app/.vault.env"):
         key, value = key_file.strip().split("=")
         os.environ["VAULT_ROOT_KEY"] = value
 
-VAULT_ROOT_KEY = "myroot"
+VAULT_DEV_ROOT_TOKEN_ID = os.environ.get("VAULT_DEV_ROOT_TOKEN_ID", "myroot")
+VAULT_ROOT_KEY = os.environ.get("VAULT_ROOT_TOKEN", VAULT_DEV_ROOT_TOKEN_ID)
 VAULT_SERVER = os.environ.get("VAULT_SERVER", "https://vault:8200")
 VAULT_TOKEN__USER_TOKENS = VAULT_ROOT_KEY
 VAULT_CLIENT_CRT = "/var/vault/certs/client.crt"
 VAULT_CLIENT_KEY = "/var/vault/certs/client.key"
 VAULT_TLS_VERIFY = False
+VAULT_BASE_PATH = os.environ.get("VAULT_BASE_PATH", "ix")
 
 WORKSPACE_DIR = os.environ.get("WORKSPACE_DIR", "/var/app/workdir/")

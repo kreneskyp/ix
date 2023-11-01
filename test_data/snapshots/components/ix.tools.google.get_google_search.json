@@ -6,10 +6,12 @@
         "properties": {
             "google_api_key": {
                 "input_type": "secret",
+                "secret_key": "Google Search API",
                 "type": "string"
             },
             "google_cse_id": {
                 "input_type": "secret",
+                "secret_key": "Google Search API",
                 "type": "string"
             },
             "k": {
@@ -47,6 +49,7 @@
             "name": "return_direct",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -62,6 +65,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -77,6 +81,7 @@
             "name": "google_api_key",
             "parent": null,
             "required": false,
+            "secret_key": "Google Search API",
             "step": null,
             "style": null,
             "type": "str"
@@ -92,6 +97,7 @@
             "name": "google_cse_id",
             "parent": null,
             "required": false,
+            "secret_key": "Google Search API",
             "step": null,
             "style": null,
             "type": "str"
@@ -107,6 +113,7 @@
             "name": "k",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"
@@ -122,6 +129,7 @@
             "name": "siterestrict",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

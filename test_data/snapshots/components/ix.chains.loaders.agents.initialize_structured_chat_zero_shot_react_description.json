@@ -62,6 +62,7 @@
             "name": "return_intermediate_steps",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -77,6 +78,7 @@
             "name": "max_iterations",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "integer"
@@ -92,6 +94,7 @@
             "name": "max_execution_time",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "float"
@@ -107,6 +110,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

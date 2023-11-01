@@ -82,6 +82,7 @@
             "name": "max_token_limit",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "number"
@@ -97,6 +98,7 @@
             "name": "memory_key",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -112,6 +114,7 @@
             "name": "human_prefix",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -127,6 +130,7 @@
             "name": "ai_prefix",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -142,6 +146,7 @@
             "name": "output_key",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -157,6 +162,7 @@
             "name": "input_key",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -172,6 +178,7 @@
             "name": "return_messages",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

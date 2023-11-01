@@ -15,21 +15,19 @@ export const useDisplayGroups = (schema) => {
     // build secret_groups
     // HAX: disabled until secrets backend is ready.
     const secret_groups = {};
-    if (false) {
-      for (const key of Object.keys(schema.properties)) {
-        const property = schema.properties[key];
-        if (property.input_type === "secret") {
-          const secret_key = property.secret_key || key;
-          if (!secret_groups[secret_key]) {
-            secret_groups[secret_key] = [];
-            secret_groups[secret_key] = {
-              type: "secret",
-              input_type: "secret_select",
-              properties: [],
-            };
-          }
-          secret_groups[secret_key].properties.push(key);
+    for (const key of Object.keys(schema.properties)) {
+      const property = schema.properties[key];
+      if (property.input_type === "secret") {
+        const secret_key = property.secret_key || key;
+        if (!secret_groups[secret_key]) {
+          secret_groups[secret_key] = [];
+          secret_groups[secret_key] = {
+            type: "secret",
+            input_type: "secret_select",
+            properties: [],
+          };
         }
+        secret_groups[secret_key].properties.push(key);
       }
     }
 
@@ -74,7 +72,7 @@ export const useDisplayGroups = (schema) => {
       const property = schema.properties[key];
 
       // HAX: disabling secret groups until secrets backend is ready.
-      if (false && property.input_type === "secret" && !seen.has(key)) {
+      if (property.input_type === "secret" && !seen.has(key)) {
         const secret_key = property.secret_key || key;
         if (!seen.has(secret_key)) {
           defaultGroup.properties[secret_key] = secret_groups[secret_key];

@@ -11,6 +11,7 @@ from langchain.chains.base import Chain as LangchainChain
 from ix.chains.loaders.prompts import load_prompt
 from ix.chains.loaders.templates import NodeTemplate
 from ix.chains.models import NodeType, ChainNode, ChainEdge
+from ix.secrets.models import Secret
 from ix.utils.config import format_config
 from ix.utils.importlib import import_class
 
@@ -78,6 +79,38 @@ def get_sequence_inputs(sequence: List[LangchainChain]) -> List[str]:
     return list(input_variables)
 
 
+def load_secrets(config: dict, node_type: NodeType):
+    """Load secrets from vault into the config dict"""
+
+    if not node_type.fields:
+        return
+
+    # build map of secrets to load
+    to_load = set()
+    for field in node_type.fields:
+        if field["input_type"] == "secret":
+            if field["name"] not in config:
+                continue
+            secret_id = config[field["name"]]
+            if secret_id:
+                to_load.add(secret_id)
+
+    # load secrets and update config
+    # TODO: need user here to limit access to secrets
+    secrets = Secret.objects.filter(id__in=set(to_load))
+    for secret in secrets:
+        try:
+            value = secret.read()
+        except Exception as e:
+            logger.error(f"Failed to load secret {secret.id}: {e}")
+            raise Exception(f"Failed to load secret: {secret.id}")
+        to_load.remove(str(secret.id))
+        config.update(value)
+
+    if to_load:
+        raise ValueError(f"Secrets not found: {to_load}")
+
+
 def load_node(
     node: ChainNode, context: IxContext, root=True, variables=None, as_template=False
 ) -> Any:
@@ -105,6 +138,7 @@ def load_node(
         config = format_config(config, variables)
     elif as_template:
         return NodeTemplate(node, context)
+    load_secrets(config, node_type)
 
     # load type specific config options. This is generally for loading
     # ix specific features into the config dict

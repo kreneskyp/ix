@@ -8,6 +8,7 @@ import { Secret } from "json_form/fields/Secret";
 import { TextArea } from "json_form/fields/TextArea";
 import { Dict } from "json_form/fields/Dict";
 import { List } from "json_form/fields/List";
+import { SecretSelect } from "json_form/fields/SecretSelect";
 import { useDisplayGroups } from "chains/hooks/useDisplayGroups";
 import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 
@@ -18,6 +19,7 @@ const INPUTS = {
   slider: Slider,
   input: Input,
   secret: Secret,
+  secret_select: SecretSelect,
   textarea: TextArea,
   dict: Dict,
   list: List,

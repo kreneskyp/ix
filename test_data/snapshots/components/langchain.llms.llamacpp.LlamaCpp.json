@@ -148,6 +148,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -163,6 +164,7 @@
             "name": "model_path",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -178,6 +180,7 @@
             "name": "lora_base",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[str]"
@@ -193,6 +196,7 @@
             "name": "n_ctx",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"
@@ -208,6 +212,7 @@
             "name": "n_parts",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"
@@ -223,6 +228,7 @@
             "name": "seed",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "int"
@@ -238,6 +244,7 @@
             "name": "f16_kv",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -253,6 +260,7 @@
             "name": "logits_all",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -268,6 +276,7 @@
             "name": "vocab_only",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -283,6 +292,7 @@
             "name": "use_mlock",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -298,6 +308,7 @@
             "name": "n_threads",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[int]"
@@ -313,6 +324,7 @@
             "name": "n_batch",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[int]"
@@ -328,6 +340,7 @@
             "name": "n_gpu_layers",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[int]"
@@ -343,6 +356,7 @@
             "name": "suffix",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[str]"
@@ -358,6 +372,7 @@
             "name": "max_tokens",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[int]"
@@ -373,6 +388,7 @@
             "name": "temperature",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[float]"
@@ -388,6 +404,7 @@
             "name": "top_p",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[float]"
@@ -403,6 +420,7 @@
             "name": "logprobs",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[int]"
@@ -418,6 +436,7 @@
             "name": "echo",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[bool]"
@@ -433,6 +452,7 @@
             "name": "stop",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[List[str]]"
@@ -448,6 +468,7 @@
             "name": "repeat_penalty",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[float]"
@@ -463,6 +484,7 @@
             "name": "last_n_tokens_size",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[int]"
@@ -478,6 +500,7 @@
             "name": "use_mmap",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[bool]"
@@ -493,6 +516,7 @@
             "name": "rope_freq_scale",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "float"
@@ -508,6 +532,7 @@
             "name": "rope_freq_base",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "float"
@@ -523,6 +548,7 @@
             "name": "streaming",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -538,6 +564,7 @@
             "name": "cache",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -553,6 +580,7 @@
             "name": "verbose",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -568,6 +596,7 @@
             "name": "tags",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"
@@ -583,6 +612,7 @@
             "name": "metadata",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "dict"

@@ -21,7 +21,6 @@ services:
     links:
       - db
       - redis
-      - vault
     volumes:
       - .:/var/app
       - ./bin:/usr/bin/ix
@@ -30,7 +29,9 @@ services:
       - ./.certs/:/var/vault/certs:ro,Z
     env_file:
       - .env
+      #- .vault/.client.env
     environment:
+      VAULT_BASE_PATH: "ix"
       DJANGO_SETTINGS_MODULE: "ix.server.settings"
 
   # Main entry to app: static content, HTTP 1.1, websockets, proxy to app server
@@ -51,7 +52,6 @@ services:
     links:
       - db
       - redis
-      - vault
       - chroma
     volumes:
       - .:/var/app
@@ -61,6 +61,10 @@ services:
       - ./.certs/:/var/vault/certs:ro,Z
     env_file:
       - .env
+      #- .vault/.client.env
+    environment:
+      VAULT_BASE_PATH: "ix"
+      DJANGO_SETTINGS_MODULE: "ix.server.settings"
 
   # nodejs / frontend builder
   nodejs:
@@ -88,12 +92,10 @@ services:
   vault:
     image: hashicorp/vault:1.14
     volumes:
-    - ./vault/config.hcl:/vault/config/config.hcl:ro
-    - ./.certs/:/vault/certs:ro,Z
-    - .vault_file:/vault/file
-    env_file:
-      - .vault.env
-    command: "server -dev -dev-tls -config=/vault/config/config.hcl"
+    - ./vault:/vault/config/
+    - ./.certs/:/vault/certs
+    - .vault/file:/vault/file
+    command: "server"
     ports:
       - "8200:8200"
     cap_add:

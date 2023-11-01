@@ -13,10 +13,12 @@
             },
             "zapier_nla_api_key": {
                 "input_type": "secret",
+                "secret_key": "Zapier NLA API",
                 "type": "string"
             },
             "zapier_nla_oauth_access_token": {
                 "input_type": "secret",
+                "secret_key": "Zapier NLA OAuth",
                 "type": "string"
             }
         },
@@ -41,6 +43,7 @@
             "name": "zapier_nla_api_key",
             "parent": null,
             "required": true,
+            "secret_key": "Zapier NLA API",
             "step": null,
             "style": null,
             "type": "str"
@@ -56,6 +59,7 @@
             "name": "zapier_nla_oauth_access_token",
             "parent": null,
             "required": true,
+            "secret_key": "Zapier NLA OAuth",
             "step": null,
             "style": null,
             "type": "str"
@@ -71,6 +75,7 @@
             "name": "zapier_nla_api_base",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"

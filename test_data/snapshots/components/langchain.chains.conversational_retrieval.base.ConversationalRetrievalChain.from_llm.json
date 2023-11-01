@@ -92,6 +92,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -107,6 +108,7 @@
             "name": "output_key",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -122,6 +124,7 @@
             "name": "rephrase_question",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -137,6 +140,7 @@
             "name": "return_source_documents",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -152,6 +156,7 @@
             "name": "return_generated_question",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -167,6 +172,7 @@
             "name": "max_tokens_limit",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[int]"

@@ -15,7 +15,7 @@
             },
             {
                 "fields": [
-                    "openai_api_key",
+                    "OpenAI API",
                     "openai_organization"
                 ],
                 "key": "Authentication",
@@ -89,6 +89,7 @@
             },
             "openai_api_key": {
                 "input_type": "secret",
+                "secret_key": "OpenAI API",
                 "style": {
                     "width": "100%"
                 },
@@ -186,6 +187,7 @@
             "name": "model_name",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -201,6 +203,7 @@
             "name": "openai_api_key",
             "parent": null,
             "required": true,
+            "secret_key": "OpenAI API",
             "step": null,
             "style": {
                 "width": "100%"
@@ -218,6 +221,7 @@
             "name": "openai_api_base",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -235,6 +239,7 @@
             "name": "openai_organization",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -252,6 +257,7 @@
             "name": "openai_proxy",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -269,6 +275,7 @@
             "name": "max_tokens",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -284,6 +291,7 @@
             "name": "streaming",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -299,6 +307,7 @@
             "name": "request_timeout",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "number"
@@ -314,6 +323,7 @@
             "name": "max_retries",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": 1.0,
             "style": null,
             "type": "number"
@@ -329,6 +339,7 @@
             "name": "temperature",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": 0.05,
             "style": null,
             "type": "number"
@@ -344,6 +355,7 @@
             "name": "cache",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -359,6 +371,7 @@
             "name": "verbose",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "bool"
@@ -374,6 +387,7 @@
             "name": "tags",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"
@@ -389,6 +403,7 @@
             "name": "metadata",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "dict"

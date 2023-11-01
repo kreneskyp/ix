@@ -57,6 +57,7 @@
             "name": "name",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -74,6 +75,7 @@
             "name": "description",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
@@ -91,6 +93,7 @@
             "name": "return_direct",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -106,6 +109,7 @@
             "name": "verbose",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"

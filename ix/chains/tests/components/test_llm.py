@@ -41,13 +41,15 @@ FIREWORKS_CHAT_LLM = {
 
 @pytest.mark.django_db
 class TestFireworks:
-    async def test_aload(self, aload_chain):
-        component = await aload_chain(FIREWORKS_LLM)
+    async def test_aload(self, aload_chain, mock_config_secrets):
+        config = await mock_config_secrets(FIREWORKS_LLM, ["fireworks_api_key"])
+        component = await aload_chain(config)
         assert isinstance(component, Fireworks)
 
 
 @pytest.mark.django_db
 class TestFireworksChat:
-    async def test_aload(self, aload_chain):
-        component = await aload_chain(FIREWORKS_CHAT_LLM)
+    async def test_aload(self, aload_chain, mock_config_secrets):
+        config = await mock_config_secrets(FIREWORKS_CHAT_LLM, ["fireworks_api_key"])
+        component = await aload_chain(config)
         assert isinstance(component, ChatFireworks)

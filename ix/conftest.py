@@ -1,12 +1,13 @@
 import logging
+from copy import deepcopy
 from typing import Dict, Any, List
 from unittest.mock import MagicMock
-from django.conf import settings
 
 import pytest
 import pytest_asyncio
 import redis
 from asgiref.sync import sync_to_async
+from django.conf import settings
 from django.core.management import call_command
 
 from ix.agents.models import Agent
@@ -20,6 +21,8 @@ from ix.chains.management.commands.create_ix_v2 import (
 
 from ix.chains.models import Chain, ChainNode, NodeType
 from ix.chains.tests.mock_vector_embeddings import MOCK_VECTORSTORE_EMBEDDINGS
+from ix.secrets.tests.fake import afake_secret
+from ix.secrets.vault import delete_secrets_recursive
 from ix.task_log.models import Artifact, Task
 from ix.task_log.tests.fake import (
     fake_task,
@@ -48,6 +51,14 @@ async def arequest_user(mocker):
     yield mock_get_request_user
 
 
+@pytest_asyncio.fixture
+async def arequest_admin(mocker):
+    user = await afake_user(is_superuser=True)
+    mock_get_request_user = mocker.patch("ix.api.auth._get_request_user")
+    mock_get_request_user.return_value = user
+    yield mock_get_request_user
+
+
 @pytest.fixture()
 def owner_filtering(settings):
     settings.OWNER_FILTERING = True
@@ -61,6 +72,33 @@ def clean_redis():
     redis_client.flushall()
     yield
     redis_client.flushall()
+
+
+@pytest.fixture(scope="function")
+def clean_vault():
+    """Fixture to clean up vault before and after each test
+
+    If a test requires a secret it should be created during the test or in
+    a fixture that applies this fixture first.
+    """
+    delete_secrets_recursive(settings.VAULT_BASE_PATH)
+    yield
+    delete_secrets_recursive(settings.VAULT_BASE_PATH)
+
+
+@pytest.fixture
+def mock_config_secrets():
+    async def mock_config(config: dict, keys: List[str]) -> dict:
+        config = deepcopy(config)
+        for key in keys:
+            secret = await afake_secret()
+            datum = {key: config["config"][key]}
+            await secret.awrite(datum)
+            assert await secret.aread() == datum
+            config["config"][key] = str(secret.id)
+        return config
+
+    return mock_config
 
 
 @pytest.fixture

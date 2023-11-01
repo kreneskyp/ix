@@ -1,26 +1,14 @@
 from typing import TypeVar, Generic, Dict, Any, Set, Type
 
 from asgiref.sync import sync_to_async
-from pydantic import BaseModel, create_model
+from pydantic import BaseModel
 
 from ix.chains.loaders.context import IxContext
 from ix.chains.models import ChainNode
 from ix.utils.config import get_config_variables
+from ix.utils.pydantic import create_args_model
 
 T = TypeVar("T")
-
-
-def get_args_schema(variables) -> Type[BaseModel]:
-    """
-    Dynamically create a Pydantic model class with fields for each variable
-    """
-    # Use dictionary comprehension to define fields with type annotations
-    field_definitions = {field: (str, ...) for field in variables}
-
-    # Create and return the new Pydantic model class using the 'type' function
-    NodeTemplateSchema = create_model("NodeTemplateSchema", **field_definitions)
-
-    return NodeTemplateSchema
 
 
 class NodeTemplate(Generic[T]):
@@ -87,4 +75,4 @@ class NodeTemplate(Generic[T]):
         Dynamically create a Pydantic model class with fields for each variable in the template.
         """
         variables = self.get_variables()
-        return get_args_schema(variables)
+        return create_args_model(variables, name="NodeTemplateSchema")

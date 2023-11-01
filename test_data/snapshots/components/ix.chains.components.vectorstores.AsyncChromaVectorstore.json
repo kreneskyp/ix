@@ -98,6 +98,7 @@
             "name": "collection_name",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -113,6 +114,7 @@
             "name": "persist_directory",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "Optional[str]"
@@ -128,6 +130,7 @@
             "name": "chroma_server_host",
             "parent": "client_settings",
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -143,6 +146,7 @@
             "name": "chroma_server_http_port",
             "parent": "client_settings",
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -158,6 +162,7 @@
             "name": "chroma_server_ssl_enabled",
             "parent": "client_settings",
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -173,6 +178,7 @@
             "name": "chroma_server_grpc_port",
             "parent": "client_settings",
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
@@ -188,6 +194,7 @@
             "name": "anonymized_telemetry",
             "parent": "client_settings",
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -203,6 +210,7 @@
             "name": "allow_reset",
             "parent": "client_settings",
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "boolean"
@@ -222,6 +230,7 @@
             "name": "allowed_search_types",
             "parent": null,
             "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "list"
@@ -237,6 +246,7 @@
             "name": "search_type",
             "parent": null,
             "required": false,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
