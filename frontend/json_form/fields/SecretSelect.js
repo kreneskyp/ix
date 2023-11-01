@@ -16,12 +16,11 @@ export const SecretSelect = ({ name, field, isRequired, config, onChange }) => {
       // update all properties in the secret group.
       const data = {};
       for (const key of field.properties) {
-        console.log("updating key: ", key, event.target.value);
         data[key] = event.target.value;
       }
       onChange(data);
     },
-    [field]
+    [field, onChange]
   );
 
   return (
