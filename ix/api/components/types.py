@@ -101,7 +101,7 @@ class NodeTypeField(BaseModel):
     choices: Optional[List[Choice]] = None
 
     # form & display properties
-    input_type: Optional[InputType] = None
+    input_type: Optional[str] = None
     min: Optional[float] = None
     max: Optional[float] = None
     step: Optional[float] = None
