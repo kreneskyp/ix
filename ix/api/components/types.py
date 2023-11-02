@@ -428,6 +428,9 @@ class NodeType(BaseModel):
     description: Optional[str] = None
     class_path: str = Field(..., max_length=255)
     """Class path to the callable that instantiates the node. May be a class, function, or method."""
+    context: Optional[str] = None
+    """Config kwarg to set context to when loading the node. Used by IX internal components that need
+    to load other nodes (e.g. ChainReference)"""
     child_field: Optional[str] = Field(None, max_length=32)
     """Child field of class_path that will be returned as the node."""
     type: str = Field(..., max_length=255)
@@ -531,6 +534,7 @@ class NodeType(BaseModel):
         OPTIONAL_PROPERTIES = {
             "description",
             "input_type",
+            "label",
             "minimum",
             "maximum",
             "multipleOf",

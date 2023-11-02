@@ -222,6 +222,12 @@ def load_node(
             if field_group_class_path := field_group.get("class_path"):
                 config[key] = import_node_class(field_group_class_path)(**config[key])
 
+    # Add context to config if the node type has a context field. This is generally only
+    # used by reference components that need the context to load a child component from
+    # a reference ID.
+    if node_type.context:
+        config[node_type.context] = context
+
     # load component class and initialize. A type specific initializer may be used here
     # for initialization common to all components of that type.
     node_class = import_node_class(node.class_path)

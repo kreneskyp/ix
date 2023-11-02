@@ -77,6 +77,10 @@ class NodeType(OwnedModel):
     fields = models.JSONField(null=True)
     field_groups = models.JSONField(null=True)
 
+    # variable to load context in when loading node. Generally only used by IX
+    # internal components like ChainReference that need to load a chain.
+    context = models.CharField(max_length=32, null=True)
+
     # child_field is the name of the field that contains child nodes
     # used for parsing config objects
     child_field = models.CharField(max_length=32, null=True)
