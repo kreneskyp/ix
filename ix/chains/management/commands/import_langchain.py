@@ -34,6 +34,7 @@ from ix.chains.fixture_src.openai_functions import (
 )
 from ix.chains.fixture_src.parsers import PARSERS
 from ix.chains.fixture_src.prompts import CHAT_PROMPT_TEMPLATE
+from ix.chains.fixture_src.references import REFERENCES
 from ix.chains.fixture_src.retriever import RETRIEVERS
 from ix.chains.fixture_src.routing import ROUTING_CHAINS
 from ix.chains.fixture_src.testing import MOCK_MEMORY, MOCK_CHAIN
@@ -114,6 +115,9 @@ COMPONENTS.extend(RETRIEVERS)
 # IX Misc
 COMPONENTS.extend([CHAT_MODERATOR_TYPE])
 COMPONENTS.extend(AGENT_INTERACTION_CHAINS)
+
+# IX references
+COMPONENTS.extend(REFERENCES)
 
 # IX Artifacts
 COMPONENTS.extend(
