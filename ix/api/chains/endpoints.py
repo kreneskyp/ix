@@ -35,12 +35,16 @@ async def get_chains(
     search: Optional[str] = None,
     limit: int = 10,
     offset: int = 0,
+    is_agent: bool = None,
     user: AbstractUser = Depends(get_request_user),
 ):
     query = Chain.filtered_owners(user)
 
     if search:
         query = query.filter(Q(name__icontains=search))
+
+    if is_agent is not None:
+        query = query.filter(is_agent=is_agent)
 
     query = query.order_by("-created_at")
 
