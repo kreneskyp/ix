@@ -21,7 +21,7 @@ OPENAI_EMBEDDINGS = {
         {
             "name": "disallowed_special",
             "type": "list",
-            "default": "all",
+            "default": ["all"],
         },
         {
             "name": "chunk_size",
