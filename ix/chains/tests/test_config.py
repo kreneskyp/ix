@@ -338,7 +338,7 @@ class TestTroubleCases:
             ],
         )
         assert actual[0]["required"] is False
-        assert actual[0]["default"] is 40
+        assert actual[0]["default"] == 40
         assert actual[0]["type"] == "int"
 
     def test_optional_list(self):
