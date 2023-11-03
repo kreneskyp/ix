@@ -9,13 +9,16 @@ import {
 } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { ChainEditButton } from "chains/ChainEditButton";
+import { ModalClose } from "components/Modal";
 
 const ChainCard = ({ chain, children, ...props }) => {
+  const close = React.useContext(ModalClose);
+  const { colorMode } = useColorMode();
+
   if (chain == null) {
     return null;
   }
 
-  const { colorMode } = useColorMode();
   let sx = {
     border: "1px solid transparent",
     borderColor: colorMode === "light" ? "gray.300" : "transparent",
@@ -52,7 +55,7 @@ const ChainCard = ({ chain, children, ...props }) => {
           </Text>
         </VStack>
         <HStack spacing={2} pt={4} display="flex" justifyContent="flex-end">
-          <ChainEditButton chain={chain} />
+          <ChainEditButton chain={chain} onClick={close} />
         </HStack>
       </CardBody>
     </Card>
