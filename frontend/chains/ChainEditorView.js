@@ -31,6 +31,7 @@ import { useChainState } from "chains/hooks/useChainState";
 import { NodeTypeSearchButton } from "chains/editor/NodeTypeSearchButton";
 import { AgentCardListButton } from "agents/AgentCardListButton";
 import { EditorAgentCard } from "chains/editor/sidebar/EditorAgentCard";
+import { ChainCardListButton } from "chains/ChainCardListButton";
 
 const ChainEditorProvider = ({ graph, onError, children }) => {
   const chainState = useChainState(graph);
@@ -120,6 +121,7 @@ export const ChainEditorView = () => {
         <Layout>
           <LayoutLeftPane>
             <AgentCardListButton Card={EditorAgentCard} />
+            <ChainCardListButton />
             <NodeTypeSearchButton />
           </LayoutLeftPane>
           <LayoutContent>
