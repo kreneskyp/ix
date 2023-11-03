@@ -23,46 +23,59 @@ import { NameField } from "chains/editor/fields/NameField";
 import { DescriptionField } from "chains/editor/fields/DescriptionField";
 import { RequiredAsterisk } from "components/RequiredAsterisk";
 import { useChainUpdate } from "chains/hooks/useChainUpdate";
+import { getLabel } from "json_form/utils";
 
 const ChainExplanation = () => {
   return (
-    <Box>
-      Chains may be used by other agents and chains as tools with a{" "}
+    <FormHelperText fontSize={"xs"}>
+      Chains may be called via the API, or by other agents and chains with a{" "}
       <Text as={"span"} color={"blue.300"}>
         ChainReference
       </Text>{" "}
       component.
-    </Box>
+    </FormHelperText>
   );
 };
 
 const AgentExplanation = () => {
-  const { agent } = useContext(AgentState);
   return (
-    <Box>
-      Agents may be summoned to chat sessions and will respond to messages. This
-      agents responds to the alias{" "}
-      <Text as={"span"} color={"blue.300"}>
-        @{agent}
-      </Text>
-    </Box>
+    <FormHelperText fontSize={"xs"}>
+      Agents may be summoned to chat sessions for conversational interactions.
+    </FormHelperText>
   );
 };
 
-const SaveModeChooser = () => {
-  const { isOpen, onToggle } = useDisclosure({ defaultIsOpen: true });
+const SaveModeChooser = ({ chain, onChange }) => {
   const { isLight, highlight } = useEditorColorMode();
   const color = isLight
     ? { onColor: "#38A169", offColor: "gray.600" }
     : { onColor: "#38A169", offColor: "gray.600" };
+
+  const isAgent = chain?.is_agent;
+  const handleChange = useCallback(
+    (value) => {
+      onChange({
+        ...chain,
+        is_agent: value,
+      });
+    },
+    [chain, onChange]
+  );
+
   return (
-    <Box>
-      <HStack justifyItems={"fle"}>
+    <FormControl>
+      <FormLabel size="sm" justify="start">
+        Chain Type <RequiredAsterisk />
+      </FormLabel>
+      <HStack justifyItems={"flex"}>
         <Box>
           <Button
             size="sm"
-            onClick={onToggle}
-            bg={isOpen ? highlight.agent : color.offColor}
+            onClick={() => {
+              handleChange(true);
+            }}
+            bg={isAgent ? highlight.agent : color.offColor}
+            _hover={{ bg: highlight.agent }}
           >
             <FontAwesomeIcon icon={faRobot} />
             <Text as={"span"} ml={1}>
@@ -73,8 +86,11 @@ const SaveModeChooser = () => {
         <Box>
           <Button
             size="sm"
-            onClick={onToggle}
-            bg={isOpen ? color.offColor : highlight.chain}
+            onClick={() => {
+              handleChange(false);
+            }}
+            bg={isAgent === false ? highlight.chain : color.offColor}
+            _hover={{ bg: highlight.chain }}
           >
             <FontAwesomeIcon icon={faChain} />{" "}
             <Text as={"span"} ml={1}>
@@ -83,18 +99,10 @@ const SaveModeChooser = () => {
           </Button>
         </Box>
       </HStack>
-      <Box
-        border={"1px solid"}
-        borderColor={"gray.600"}
-        fontSize={"xs"}
-        color={"gray.300"}
-        bg={"blackAlpha.300"}
-        p={2}
-        m={5}
-      >
-        {isOpen ? <AgentExplanation /> : <ChainExplanation />}
+      <Box fontSize={"xs"} color={"gray.300"}>
+        {isAgent ? <AgentExplanation /> : <ChainExplanation />}
       </Box>
-    </Box>
+    </FormControl>
   );
 };
 
@@ -156,17 +164,18 @@ export const ChainEditorPane = () => {
   const { scrollbar } = useEditorColorMode();
 
   return (
-    <CollapsibleSection title="General" mt={3} initialShow={true}>
-      <VStack spacing={4}>
+    <VStack spacing={5}>
+      <SaveModeChooser chain={chain} onChange={onChainUpdate} />
+      {chain?.is_agent && (
         <AliasField object={chain} onChange={onChainUpdate} />
-        <NameField object={chain} onChange={onChainUpdate} />
-        <DescriptionField
-          object={chain}
-          onChange={onChainUpdate}
-          minH={550}
-          css={scrollbar}
-        />
-      </VStack>
-    </CollapsibleSection>
+      )}
+      <NameField object={chain} onChange={onChainUpdate} />
+      <DescriptionField
+        object={chain}
+        onChange={onChainUpdate}
+        minH={500}
+        css={scrollbar}
+      />
+    </VStack>
   );
 };

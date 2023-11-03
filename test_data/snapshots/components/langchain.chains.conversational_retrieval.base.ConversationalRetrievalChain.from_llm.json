@@ -5,7 +5,7 @@
         "display_groups": null,
         "properties": {
             "max_tokens_limit": {
-                "type": "object"
+                "type": "number"
             },
             "output_key": {
                 "default": "answer",
@@ -175,7 +175,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[int]"
+            "type": "int"
         }
     ],
     "name": "ConversationalRetrievalChain",

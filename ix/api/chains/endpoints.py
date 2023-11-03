@@ -35,7 +35,7 @@ async def get_chains(
     search: Optional[str] = None,
     limit: int = 10,
     offset: int = 0,
-    is_agent: bool = None,
+    is_agent: Optional[bool] = None,
     user: AbstractUser = Depends(get_request_user),
 ):
     query = Chain.filtered_owners(user)

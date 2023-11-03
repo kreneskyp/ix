@@ -1,16 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Card,
-  CardBody,
-  HStack,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { Box, Card, CardBody, HStack, Text, VStack } from "@chakra-ui/react";
 
 import AssistantAvatar from "chat/avatars/AssistantAvatar";
 import { useColorMode } from "@chakra-ui/color-mode";

@@ -32,7 +32,7 @@
         "langchain.document_loaders.web_base.WebBaseLoader"
       ],
       "config": {
-        "web_path": "{URL}",
+        "web_path": ["{URL}"],
         "verify_ssl": true,
         "continue_on_failure": false
       },
@@ -192,7 +192,7 @@
         "chunk_size": 1000,
         "max_retries": "6",
         "allowed_special": [],
-        "disallowed_special": "all"
+        "disallowed_special": ["all"]
       },
       "name": null,
       "description": null,

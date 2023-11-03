@@ -9,7 +9,7 @@
             },
             "echo": {
                 "default": false,
-                "type": "object"
+                "type": "boolean"
             },
             "f16_kv": {
                 "default": true,
@@ -17,21 +17,21 @@
             },
             "last_n_tokens_size": {
                 "default": 64,
-                "type": "object"
+                "type": "number"
             },
             "logits_all": {
                 "default": false,
                 "type": "boolean"
             },
             "logprobs": {
-                "type": "object"
+                "type": "number"
             },
             "lora_base": {
-                "type": "object"
+                "type": "string"
             },
             "max_tokens": {
                 "default": 256,
-                "type": "object"
+                "type": "number"
             },
             "metadata": {
                 "type": "object"
@@ -41,25 +41,25 @@
             },
             "n_batch": {
                 "default": 8,
-                "type": "object"
+                "type": "number"
             },
             "n_ctx": {
                 "default": 512,
                 "type": "number"
             },
             "n_gpu_layers": {
-                "type": "object"
+                "type": "number"
             },
             "n_parts": {
                 "default": -1,
                 "type": "number"
             },
             "n_threads": {
-                "type": "object"
+                "type": "number"
             },
             "repeat_penalty": {
                 "default": 1.1,
-                "type": "object"
+                "type": "number"
             },
             "rope_freq_base": {
                 "default": 10000.0,
@@ -74,15 +74,22 @@
                 "type": "number"
             },
             "stop": {
-                "default": [],
-                "type": "object"
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
             },
             "streaming": {
                 "default": true,
                 "type": "boolean"
             },
             "suffix": {
-                "type": "object"
+                "type": "string"
             },
             "tags": {
                 "items": [
@@ -97,11 +104,11 @@
             },
             "temperature": {
                 "default": 0.8,
-                "type": "object"
+                "type": "number"
             },
             "top_p": {
                 "default": 0.95,
-                "type": "object"
+                "type": "number"
             },
             "use_mlock": {
                 "default": false,
@@ -109,7 +116,7 @@
             },
             "use_mmap": {
                 "default": true,
-                "type": "object"
+                "type": "boolean"
             },
             "verbose": {
                 "type": "boolean"
@@ -183,7 +190,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[str]"
+            "type": "str"
         },
         {
             "choices": null,
@@ -311,7 +318,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[int]"
+            "type": "int"
         },
         {
             "choices": null,
@@ -327,7 +334,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[int]"
+            "type": "int"
         },
         {
             "choices": null,
@@ -343,7 +350,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[int]"
+            "type": "int"
         },
         {
             "choices": null,
@@ -359,7 +366,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[str]"
+            "type": "str"
         },
         {
             "choices": null,
@@ -375,7 +382,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[int]"
+            "type": "int"
         },
         {
             "choices": null,
@@ -391,7 +398,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[float]"
+            "type": "float"
         },
         {
             "choices": null,
@@ -407,7 +414,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[float]"
+            "type": "float"
         },
         {
             "choices": null,
@@ -423,7 +430,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[int]"
+            "type": "int"
         },
         {
             "choices": null,
@@ -439,7 +446,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[bool]"
+            "type": "bool"
         },
         {
             "choices": null,
@@ -455,7 +462,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[List[str]]"
+            "type": "list"
         },
         {
             "choices": null,
@@ -471,7 +478,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[float]"
+            "type": "float"
         },
         {
             "choices": null,
@@ -487,7 +494,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[int]"
+            "type": "int"
         },
         {
             "choices": null,
@@ -503,7 +510,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[bool]"
+            "type": "bool"
         },
         {
             "choices": null,
