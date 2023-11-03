@@ -3,7 +3,7 @@ from typing import List
 
 from asgiref.sync import sync_to_async
 from langchain.schema import BaseRetriever
-from langchain.vectorstores import VectorStore
+from langchain.schema.vectorstore import VectorStore
 
 from ix.chains.fixture_src.vectorstores import get_vectorstore_retriever_fieldnames
 from ix.chains.loaders.context import IxContext

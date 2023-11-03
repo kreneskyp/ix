@@ -24,7 +24,8 @@
                     "latex",
                     "html",
                     "sol",
-                    "csharp"
+                    "csharp",
+                    "cobol"
                 ],
                 "input_type": "select",
                 "type": "string"
@@ -118,6 +119,10 @@
                 {
                     "label": "CSHARP",
                     "value": "csharp"
+                },
+                {
+                    "label": "COBOL",
+                    "value": "cobol"
                 }
             ],
             "default": null,
