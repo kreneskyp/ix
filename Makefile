@@ -195,6 +195,12 @@ down: compose
 .PHONY: restart
 restart: compose down up
 
+.PHONY: restart-worker
+restart-worker: compose
+	@echo restarting worker...
+	@docker-compose up -d --scale worker=0
+	@docker-compose up -d --scale worker=1
+
 
 # run backend and frontend. This starts uvicorn for asgi+websockers
 # and nginx to serve static files
@@ -265,10 +271,6 @@ LOAD_FIXTURE = docker-compose exec -T web ./manage.py loaddata
 dev_fixtures: cluster components agents
 	$(LOAD_FIXTURE) fake_user
 
-.PHONY: components
-components: cluster
-	@echo "\nrestoring components from fixtures"
-	${DOCKER_COMPOSE_RUN} ./manage.py import_langchain
 
 .PHONY: agents
 agents: cluster components
