@@ -168,7 +168,10 @@ class ChainReference(Chain):
 
     @property
     def input_keys(self) -> List[str]:
-        return self.chain_obj.input_variables
+        # HAX: hardcoding expected input since all Chains use this as the default
+        #      this should be fixed in the future
+        return ["user_input"]
+        # return self.chain.input_variables
 
     @property
     def output_keys(self) -> List[str]:
