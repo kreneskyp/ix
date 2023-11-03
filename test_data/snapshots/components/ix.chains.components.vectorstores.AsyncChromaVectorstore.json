@@ -50,7 +50,7 @@
             },
             "persist_directory": {
                 "default": "./chroma",
-                "type": "object"
+                "type": "string"
             },
             "search_type": {
                 "default": "similarity",
@@ -117,7 +117,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[str]"
+            "type": "str"
         },
         {
             "choices": null,

@@ -6,7 +6,7 @@
         "properties": {
             "root_dir": {
                 "default": "/var/app/workdir",
-                "type": "object"
+                "type": "string"
             }
         },
         "required": [
@@ -32,7 +32,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Optional[str]"
+            "type": "str"
         }
     ],
     "name": "File Management",

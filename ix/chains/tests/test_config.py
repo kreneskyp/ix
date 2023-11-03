@@ -1,10 +1,16 @@
 from abc import ABC
 from enum import Enum
 from typing import Literal, Optional
+
+from langchain.chains.conversational_retrieval.base import (
+    BaseConversationalRetrievalChain,
+)
 from langchain.chat_models.base import BaseChatModel
+from langchain.llms.llamacpp import LlamaCpp
 from langchain.vectorstores.base import VectorStoreRetriever
 
 import pytest
+from langchain.vectorstores.chroma import Chroma
 from pydantic import BaseModel
 from ix.api.components.types import NodeTypeField, InputType
 
@@ -297,3 +303,52 @@ class TestTroubleCases:
         )
         assert fields[0]["type"] == "boolean"
         assert fields[0]["input_type"] is None
+
+    def test_optional_str(self):
+        """Testing Optional[str] field from Chroma.__init__"""
+        actual = NodeTypeField.get_fields(
+            Chroma.__init__,
+            include=[
+                "persist_directory",
+            ],
+        )
+
+        assert actual[0]["required"] is False
+        assert actual[0]["default"] is None
+        assert actual[0]["type"] == "str"
+
+    def test_optional_bool(self):
+        """Testing Optional[bool] field from BaseConversationalRetrievalChain"""
+        actual = NodeTypeField.get_fields(
+            BaseConversationalRetrievalChain,
+            include=[
+                "rephrase_question",
+            ],
+        )
+        assert actual[0]["required"] is False
+        assert actual[0]["default"] is True
+        assert actual[0]["type"] == "bool"
+
+    def test_optional_int(self):
+        """Testing Optional[int] field from LlamaCpp"""
+        actual = NodeTypeField.get_fields(
+            LlamaCpp,
+            include=[
+                "top_k",
+            ],
+        )
+        assert actual[0]["required"] is False
+        assert actual[0]["default"] is 40
+        assert actual[0]["type"] == "int"
+
+    def test_optional_list(self):
+        """Testing Optional[List[str]] field from LlamaCpp"""
+        actual = NodeTypeField.get_fields(
+            LlamaCpp,
+            include=[
+                "stop",
+            ],
+        )
+        assert actual[0]["required"] is False
+        assert actual[0]["default"] == []
+        assert actual[0]["type"] == "list"

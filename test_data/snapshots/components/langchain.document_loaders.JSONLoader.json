@@ -8,7 +8,7 @@
                 "type": "string"
             },
             "file_path": {
-                "type": "object"
+                "type": "string"
             },
             "jq_schema": {
                 "input_type": "textarea",
@@ -47,7 +47,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Union"
+            "type": "str"
         },
         {
             "choices": null,

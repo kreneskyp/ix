@@ -93,7 +93,7 @@
                 "style": {
                     "width": "100%"
                 },
-                "type": "object"
+                "type": "string"
             },
             "openai_organization": {
                 "style": {
@@ -208,7 +208,7 @@
             "style": {
                 "width": "100%"
             },
-            "type": "Optional[str]"
+            "type": "str"
         },
         {
             "choices": null,
