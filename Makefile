@@ -195,6 +195,12 @@ down: compose
 .PHONY: restart
 restart: compose down up
 
+.PHONY: restart-worker
+restart-worker: compose
+	@echo restarting worker...
+	@docker-compose up -d --scale worker=0
+	@docker-compose up -d --scale worker=1
+
 
 # run backend and frontend. This starts uvicorn for asgi+websockers
 # and nginx to serve static files
