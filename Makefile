@@ -271,10 +271,6 @@ LOAD_FIXTURE = docker-compose exec -T web ./manage.py loaddata
 dev_fixtures: cluster components agents
 	$(LOAD_FIXTURE) fake_user
 
-.PHONY: components
-components: cluster
-	@echo "\nrestoring components from fixtures"
-	${DOCKER_COMPOSE_RUN} ./manage.py import_langchain
 
 .PHONY: agents
 agents: cluster components
