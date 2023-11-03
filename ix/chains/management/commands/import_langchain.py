@@ -155,7 +155,7 @@ class Command(BaseCommand):
             node_type_pydantic = NodeTypePydantic(**component)
             config_schema = node_type_pydantic.get_config_schema()
             validated_options = node_type_pydantic.model_dump(
-                exclude={"id", "display_groups", "field_groups", "config_schema"}
+                exclude={"id", "display_groups", "config_schema"}
             )
 
             class_path = component.get("class_path")
