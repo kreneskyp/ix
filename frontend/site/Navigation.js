@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { SecretsMenuItem } from "secrets/SecretsMenuItem";
+import { ChainCardListButton } from "chains/ChainCardListButton";
 
 function Navigation() {
   const { colorMode } = useColorMode();
@@ -34,6 +35,7 @@ function Navigation() {
             {...style}
           />
         </Link>
+        <ChainCardListButton />
 
         {false && (
           <HStack align="center">
