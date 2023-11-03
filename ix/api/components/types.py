@@ -1,4 +1,5 @@
 import inspect
+import re
 from abc import ABC
 from dataclasses import dataclass
 from enum import Enum
@@ -64,6 +65,23 @@ def parse_enum_choices(enum_cls: Enum) -> List[Dict[str, str]]:
     ]
 
 
+def parse_type(type_string: str) -> str:
+    # Pattern to match Optional or Optional[List]
+    pattern = re.compile(r"(typing\.)?Optional\[(List\[\w+\]|\w+)\]")
+
+    match = pattern.match(type_string)
+    if match:
+        # If it's Optional[List[T]], return 'list'
+        if match.group(2).startswith("List"):
+            return "list"
+        # If it's Optional[T], return T
+        else:
+            return match.group(2)
+    # If no match, return the original string
+    else:
+        return type_string
+
+
 class NodeTypeField(BaseModel):
     """
     Represents a field in a component that can be configured. This includes both
@@ -101,7 +119,7 @@ class NodeTypeField(BaseModel):
     choices: Optional[List[Choice]] = None
 
     # form & display properties
-    input_type: Optional[InputType] = None
+    input_type: Optional[str] = None
     min: Optional[float] = None
     max: Optional[float] = None
     step: Optional[float] = None
@@ -260,6 +278,14 @@ class NodeTypeField(BaseModel):
                 root_field = str
             elif _is_optional:
                 root_field = get_args(field.type_)[0]
+            elif isinstance(root_field, type) and issubclass(
+                root_field, (str, int, float, bool, list, Enum)
+            ):
+                pass
+            elif root_field in {"str", "int", "float", "bool", "list"}:
+                pass
+            elif isinstance(root_field, str):
+                root_field = parse_type(root_field)
 
             if root_field is bool:
                 # Backwards compatibility for "boolean" type

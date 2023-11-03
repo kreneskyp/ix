@@ -102,6 +102,9 @@ JSON_LOADER = {
             "jq_schema": {
                 "input_type": "textarea",
             },
+            "file_path": {
+                "type": "str",
+            },
         },
     ),
 }
