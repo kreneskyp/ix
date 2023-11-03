@@ -1,39 +1,48 @@
 import React from "react";
 import {
-  Box,
   Card,
   CardBody,
   Heading,
-  useColorModeValue,
+  Text,
+  HStack,
   VStack,
 } from "@chakra-ui/react";
+import { useColorMode } from "@chakra-ui/color-mode";
+import { ChainEditButton } from "chains/ChainEditButton";
+import { ModalClose } from "components/Modal";
 
-const ChainCard = ({ chain }) => {
+const ChainCard = ({ chain, children, ...props }) => {
+  const close = React.useContext(ModalClose);
+  const { colorMode } = useColorMode();
+
   if (chain == null) {
     return null;
   }
 
-  const borderColor = useColorModeValue("gray.400", "whiteAlpha.50");
-  const bg = useColorModeValue("gray.100", "gray.700");
+  let sx = {
+    border: "1px solid transparent",
+    borderColor: colorMode === "light" ? "gray.300" : "transparent",
+  };
 
   return (
     <Card
       overflow="hidden"
       boxShadow="sm"
-      width="100%"
-      cursor="pointer"
-      border="1px solid"
-      borderColor={borderColor}
-      bg={bg}
+      width={360}
+      bg={colorMode === "light" ? "gray.200" : "blackAlpha.500"}
+      sx={sx}
+      {...props}
     >
-      <CardBody>
+      <CardBody px={5} pt={5} pb={2}>
         <VStack alignItems="start" spacing={2}>
           <Heading as="h5" size="xs">
             {chain.name}
           </Heading>
-          <Box
+          <Text
             maxWidth="350px"
-            height={75}
+            minHeight={50}
+            maxHeight={75}
+            fontSize="sm"
             overflow="hidden"
             textOverflow="ellipsis"
             css={{
@@ -43,8 +52,11 @@ const ChainCard = ({ chain }) => {
             }}
           >
             {chain.description}
-          </Box>
+          </Text>
         </VStack>
+        <HStack spacing={2} pt={4} display="flex" justifyContent="flex-end">
+          <ChainEditButton chain={chain} onClick={close} />
+        </HStack>
       </CardBody>
     </Card>
   );

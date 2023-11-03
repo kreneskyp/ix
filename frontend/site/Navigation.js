@@ -34,7 +34,6 @@ function Navigation() {
             {...style}
           />
         </Link>
-
         {false && (
           <HStack align="center">
             <Link ml={3} to="#">
