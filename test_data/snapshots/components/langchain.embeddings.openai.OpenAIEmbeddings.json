@@ -93,9 +93,7 @@
         },
         {
             "choices": null,
-            "default": [
-                "all"
-            ],
+            "default": [],
             "description": null,
             "input_type": null,
             "label": "",
