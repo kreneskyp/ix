@@ -162,10 +162,6 @@ class ChainReference(Chain):
     chain: Chain
     output_key: str = "output"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.chain = self.chain_obj.load_chain(context=self.context)
-
     @property
     def _chain_type(self) -> str:
         return "ix.ChainReference"  # pragma: no cover
