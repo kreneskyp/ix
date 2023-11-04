@@ -24,6 +24,7 @@ import { DescriptionField } from "chains/editor/fields/DescriptionField";
 import { RequiredAsterisk } from "components/RequiredAsterisk";
 import { useChainUpdate } from "chains/hooks/useChainUpdate";
 import { getLabel } from "json_form/utils";
+import { ComponentTypeSelect } from "chains/editor/ComponentTypeSelect";
 
 const ChainExplanation = () => {
   return (
@@ -45,63 +46,23 @@ const AgentExplanation = () => {
   );
 };
 
-const SaveModeChooser = ({ chain, onChange }) => {
-  const { isLight, highlight } = useEditorColorMode();
-  const color = isLight
-    ? { onColor: "#38A169", offColor: "gray.600" }
-    : { onColor: "#38A169", offColor: "gray.600" };
-
-  const isAgent = chain?.is_agent;
+export const ComponentTypeField = ({ chain, onChange }) => {
   const handleChange = useCallback(
-    (value) => {
+    (values) => {
       onChange({
         ...chain,
-        is_agent: value,
+        ...values,
       });
     },
-    [chain, onChange]
+    [chain]
   );
 
   return (
-    <FormControl>
-      <FormLabel size="sm" justify="start">
-        Chain Type <RequiredAsterisk />
+    <FormControl id="type">
+      <FormLabel>
+        Type <RequiredAsterisk />
       </FormLabel>
-      <HStack justifyItems={"flex"}>
-        <Box>
-          <Button
-            size="sm"
-            onClick={() => {
-              handleChange(true);
-            }}
-            bg={isAgent ? highlight.agent : color.offColor}
-            _hover={{ bg: highlight.agent }}
-          >
-            <FontAwesomeIcon icon={faRobot} />
-            <Text as={"span"} ml={1}>
-              Agent
-            </Text>
-          </Button>
-        </Box>
-        <Box>
-          <Button
-            size="sm"
-            onClick={() => {
-              handleChange(false);
-            }}
-            bg={isAgent === false ? highlight.chain : color.offColor}
-            _hover={{ bg: highlight.chain }}
-          >
-            <FontAwesomeIcon icon={faChain} />{" "}
-            <Text as={"span"} ml={1}>
-              Chain
-            </Text>
-          </Button>
-        </Box>
-      </HStack>
-      <Box fontSize={"xs"} color={"gray.300"}>
-        {isAgent ? <AgentExplanation /> : <ChainExplanation />}
-      </Box>
+      <ComponentTypeSelect chain={chain} onChange={handleChange} />
     </FormControl>
   );
 };
@@ -162,13 +123,9 @@ export const ChainEditorPane = () => {
   const api = useContext(ChainEditorAPIContext);
   const onChainUpdate = useChainUpdate(chain, setChain, api);
   const { scrollbar } = useEditorColorMode();
-
   return (
     <VStack spacing={5}>
-      <SaveModeChooser chain={chain} onChange={onChainUpdate} />
-      {chain?.is_agent && (
-        <AliasField object={chain} onChange={onChainUpdate} />
-      )}
+      <ComponentTypeField chain={chain} onChange={onChainUpdate} />
       <NameField object={chain} onChange={onChainUpdate} />
       <DescriptionField
         object={chain}
