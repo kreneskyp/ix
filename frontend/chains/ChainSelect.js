@@ -1,6 +1,6 @@
 import React from "react";
-import { AsyncSelect } from "chakra-react-select";
 import axios from "axios";
+import { AsyncAPIObjectSelect } from "components/AsyncAPIObjectSelect";
 
 const getOptions = async (inputValue) => {
   const response = await axios.get(
@@ -32,7 +32,7 @@ const getDetail = async (id) => {
 
 export const ChainSelect = ({ onChange, value, ...props }) => {
   return (
-    <AsyncSelect
+    <AsyncAPIObjectSelect
       getOptions={getOptions}
       getDefaultOptions={getDefaultOptions}
       getDetail={getDetail}
