@@ -295,6 +295,10 @@ class Chain(OwnedModel):
     # The endpoints are responsible for ensuring that the agent does or does not exist.
     is_agent = models.BooleanField(default=True)
 
+    # Indicate the type of component (agent, chain, memory etc.) Most chains are agents
+    # or chains but any component type can be represented by a chain.
+    type = models.CharField(max_length=128, null=True, blank=True)
+
     @property
     def root(self) -> ChainNode:
         try:
