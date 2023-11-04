@@ -9,6 +9,7 @@ from ix.chains.fixture_src.targets import (
 from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.targets import VECTORSTORE_TARGET
 
+
 VECTORSTORE_RETRIEVER_CLASS_PATH = "langchain.vectorstores.base.VectorStoreRetriever"
 VECTORSTORE_RETRIEVER = {
     "class_path": VECTORSTORE_RETRIEVER_CLASS_PATH,
