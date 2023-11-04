@@ -4,8 +4,15 @@ import time
 from collections import defaultdict
 from typing import Callable, Any, List
 
+from langchain.schema.runnable import (
+    RunnableSequence,
+    RunnablePassthrough,
+    RunnableSerializable,
+)
+from langchain.schema.runnable.utils import Input, Output
+
+from ix.chains.components.lcel import init_runnable_sequence
 from ix.chains.loaders.context import IxContext
-from langchain.chains import SequentialChain
 from langchain.chains.base import Chain as LangchainChain
 
 from ix.chains.loaders.prompts import load_prompt
@@ -175,10 +182,7 @@ def load_node(
             )
             sequence = load_sequence(node_group[0], first_instance, context)
             if connector.get("auto_sequence", True):
-                input_variables = get_sequence_inputs(sequence)
-                config[key] = SequentialChain(
-                    chains=sequence, input_variables=input_variables
-                )
+                config[key] = init_runnable_sequence(sequence)
             else:
                 config[key] = sequence
         elif property_loader := get_property_loader(as_type):
@@ -242,10 +246,7 @@ def load_node(
         # SequentialChain if there is more than one node in the sequence.
         sequential_nodes = load_sequence(node, instance, context)
         if len(sequential_nodes) > 1:
-            input_variables = get_sequence_inputs(sequential_nodes)
-            return SequentialChain(
-                chains=sequential_nodes, input_variables=input_variables
-            )
+            return init_runnable_sequence(sequential_nodes)
 
     return instance
 
