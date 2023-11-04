@@ -17,7 +17,8 @@ from typing import (
     Union,
 )
 from uuid import UUID, uuid4
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, SecretStr
+from pydantic.v1 import SecretStr as SecretStrV1
 from pydantic_core import PydanticUndefined
 
 from ix.utils.pydantic import get_model_fields, create_args_model
@@ -311,6 +312,10 @@ class NodeTypeField(BaseModel):
             elif isinstance(root_field, type) and issubclass(root_field, Enum):
                 field_info["type"] = "str"
                 field_info["choices"] = parse_enum_choices(root_field)
+
+            if root_field in {SecretStr, SecretStrV1, "SecretStr"}:
+                field_info["type"] = "str"
+                field_info["input_type"] = "secret"
 
             if field_info.get("choices", None):
                 field_info["input_type"] = "select"

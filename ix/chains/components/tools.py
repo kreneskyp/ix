@@ -3,9 +3,9 @@ from typing import Any
 
 from langchain.document_loaders.base import BaseLoader
 from langchain.schema import BaseRetriever
+from langchain.schema.vectorstore import VectorStore
 from langchain.text_splitter import TextSplitter
 from langchain.tools import BaseTool
-from langchain.vectorstores import VectorStore
 
 from ix.chains.loaders.templates import NodeTemplate
 from ix.chains.loaders.text_splitter import TextSplitterShim

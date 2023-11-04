@@ -1,18 +1,16 @@
 from ix.chains.fixture_src.targets import (
     CHAIN_TARGET,
 )
-from langchain import (
-    GoogleSearchAPIWrapper,
-    GoogleSerperAPIWrapper,
-    ArxivAPIWrapper,
-    WikipediaAPIWrapper,
-)
 from langchain.utilities import (
+    ArxivAPIWrapper,
     BingSearchAPIWrapper,
     DuckDuckGoSearchAPIWrapper,
+    GoogleSearchAPIWrapper,
+    GoogleSerperAPIWrapper,
     GraphQLAPIWrapper,
     LambdaWrapper,
     PubMedAPIWrapper,
+    WikipediaAPIWrapper,
     ZapierNLAWrapper,
 )
 

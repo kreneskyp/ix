@@ -3,7 +3,7 @@ from copy import deepcopy
 from typing import Dict, Any, Type
 
 from langchain.document_loaders.base import BaseLoader
-from langchain.vectorstores import VectorStore
+from langchain.schema.vectorstore import VectorStore
 
 from ix.chains.fixture_src.vectorstores import get_vectorstore_retriever_fieldnames
 from ix.chains.loaders.text_splitter import TextSplitterShim

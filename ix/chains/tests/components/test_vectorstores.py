@@ -1,5 +1,6 @@
 import pytest
-from langchain.vectorstores import Chroma, VectorStore
+from langchain.schema.vectorstore import VectorStore
+from langchain.vectorstores import Chroma
 
 from ix.chains.fixture_src.document_loaders import GENERIC_LOADER_CLASS_PATH
 from ix.chains.fixture_src.text_splitter import RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH
