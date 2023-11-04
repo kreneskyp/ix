@@ -6,12 +6,13 @@ from langchain.chains.conversational_retrieval.base import (
     BaseConversationalRetrievalChain,
 )
 from langchain.chat_models.base import BaseChatModel
+from langchain.llms.fireworks import Fireworks
 from langchain.llms.llamacpp import LlamaCpp
 from langchain.vectorstores.base import VectorStoreRetriever
 
 import pytest
 from langchain.vectorstores.chroma import Chroma
-from pydantic import BaseModel
+from pydantic import BaseModel, SecretStr
 from ix.api.components.types import NodeTypeField, InputType
 
 
@@ -28,6 +29,7 @@ class MockModel(BaseModel):
     field_with_default: str = "default"
     optional: Optional[str] = None
     choices_enum: ChoicesEnum
+    secret_key: Optional[SecretStr] = None
 
     @classmethod
     def loader(
@@ -265,6 +267,23 @@ class TestGetFieldsFromModel(GetFieldsBase):
             == expected_fields
         )
 
+    def test_secret(self):
+        actual = NodeTypeField.get_fields(
+            MockModel,
+            include=["secret_key"],
+        )
+        expected = [
+            NodeTypeField(
+                name="secret_key",
+                label="Secret_key",
+                type="str",
+                required=False,
+                input_type="secret",
+                secret_key=None,
+            ).model_dump()
+        ]
+        assert actual == expected
+
 
 class TestGetFieldsFromMethod(GetFieldsBase):
     field_source = MockModel.loader
@@ -352,3 +371,20 @@ class TestTroubleCases:
         assert actual[0]["required"] is False
         assert actual[0]["default"] == []
         assert actual[0]["type"] == "list"
+
+    def test_secret_str(self):
+        fields = NodeTypeField.get_fields(
+            Fireworks,
+            include=["fireworks_api_key"],
+            field_options={
+                "fireworks_api_key": {
+                    "input_type": "secret",
+                    "secret_key": "Fireworks.ai API",
+                    "style": {"width": "100%"},
+                },
+            },
+        )
+
+        assert fields[0]["type"] == "str", fields[0]
+        assert fields[0]["input_type"] == "secret", fields[0]
+        assert fields[0]["secret_key"] == "Fireworks.ai API", fields[0]
