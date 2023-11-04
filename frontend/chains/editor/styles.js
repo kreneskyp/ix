@@ -39,10 +39,19 @@ export const NODE_STYLES = {
   document_loader: {
     icon: faFileImport,
   },
+  document_transformer: {
+    icon: faFileWaveform,
+  },
+  output_parser: {
+    icon: faFileWaveform,
+  },
   retriever: {
     icon: faFileImport,
   },
   vectorstore: {
+    icon: faDatabase,
+  },
+  store: {
     icon: faDatabase,
   },
   text_splitter: {
