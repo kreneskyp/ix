@@ -3,7 +3,7 @@ from asgiref.sync import sync_to_async
 from datetime import datetime
 
 from ix.chains.models import NodeType, Chain, ChainNode, ChainEdge
-from ix.chains.tests.test_config_loader import LLM_CHAIN
+from ix.chains.tests.mock_configs import LLM_CHAIN
 from ix.chat.models import Chat
 from ix.task_log.models import Agent, Task, TaskLogMessage, Artifact
 from faker import Faker

@@ -4,7 +4,8 @@ from langchain.agents.agent_toolkits import FileManagementToolkit
 
 from ix.chains.fixture_src.toolkit import FILE_MANAGEMENT_TOOLKIT_CLASS_PATH
 from ix.chains.llm_chain import LLMChain
-from ix.chains.tests.test_config_loader import PROMPT_CHAT, OPENAI_LLM
+from ix.chains.tests.mock_configs import PROMPT_CHAT
+from ix.chains.tests.test_config_loader import OPENAI_LLM
 
 FILESYSTEM_TOOLKIT = {
     "class_path": FILE_MANAGEMENT_TOOLKIT_CLASS_PATH,
