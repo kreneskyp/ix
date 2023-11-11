@@ -72,6 +72,11 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
     event.dataTransfer.dropEffect = "move";
   }, []);
 
+  // rebuild edges if colorMode toggles
+  React.useEffect(() => {
+    setEdges(reactFlowGraph.edges);
+  }, [colorMode]);
+
   const onNodeSaved = useCallback(
     (response) => {
       // first node creates the new chain
