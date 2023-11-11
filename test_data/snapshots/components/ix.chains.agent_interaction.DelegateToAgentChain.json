@@ -27,6 +27,9 @@
                 ],
                 "maxItems": null,
                 "minItems": null,
+                "style": {
+                    "width": "100%"
+                },
                 "type": "array",
                 "uniqueItems": false
             },

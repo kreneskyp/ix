@@ -13,6 +13,7 @@
                 "type": "boolean"
             },
             "web_path": {
+                "description": "URL(s) of the web page",
                 "items": [
                     {
                         "type": "string"
@@ -20,6 +21,9 @@
                 ],
                 "maxItems": null,
                 "minItems": null,
+                "style": {
+                    "width": "100%"
+                },
                 "type": "array",
                 "uniqueItems": false
             }
