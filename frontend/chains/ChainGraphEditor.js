@@ -140,13 +140,12 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
           const style = getEdgeStyle(colorMode, flowNodeType);
           flowEdge = {
             id: edgeId,
-            type: "default",
             source: isOutput ? node.id : newNodeID,
             target: isOutput ? newNodeID : node.id,
             sourceHandle: key === "in" ? "out" : flowNodeType,
             targetHandle: key,
             data: { id: edgeId },
-            style,
+            ...style,
           };
 
           // validate flowEdge before creating datum for API
@@ -224,7 +223,7 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
       const flowNodeType =
         source.id === "root" ? "root" : source.data.type.type;
       const style = getEdgeStyle(colorMode, flowNodeType);
-      setEdges((els) => addEdge({ ...params, data: { id }, style }, els));
+      setEdges((els) => addEdge({ ...params, ...style, data: { id } }, els));
 
       // save via API
       if (source.id === "root") {
