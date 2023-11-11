@@ -5,8 +5,9 @@ from langchain.prompts import ChatPromptTemplate
 
 from ix.chains.llm_chain import LLMChain, TEMPLATE_CLASSES
 from ix.chains.loaders.prompts import create_message
+from ix.chains.tests.mock_configs import OPENAI_LLM, MOCK_MEMORY
 from ix.chains.tests.mock_memory import MockMemory
-from ix.chains.tests.test_config_loader import OPENAI_LLM, MOCK_MEMORY
+
 
 PROMPT_TEMPLATE = {
     "class_path": "langchain.prompts.chat.ChatPromptTemplate",
