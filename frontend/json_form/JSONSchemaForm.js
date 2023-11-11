@@ -11,6 +11,7 @@ import { List } from "json_form/fields/List";
 import { SecretSelect } from "json_form/fields/SecretSelect";
 import { useDisplayGroups } from "chains/hooks/useDisplayGroups";
 import { CollapsibleSection } from "chains/flow/CollapsibleSection";
+import { HashList } from "json_form/fields/HashList";
 
 // explicit input types
 const INPUTS = {
@@ -23,6 +24,7 @@ const INPUTS = {
   textarea: TextArea,
   dict: Dict,
   list: List,
+  hash_list: HashList,
 };
 
 // type specific default inputs
