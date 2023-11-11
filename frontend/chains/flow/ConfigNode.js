@@ -9,6 +9,7 @@ import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
 import { RequiredAsterisk } from "components/RequiredAsterisk";
 import { ConnectorPopover } from "chains/editor/ConnectorPopover";
 import { NodeStateContext, SelectedNodeContext } from "chains/editor/contexts";
+import { StyledIcon } from "components/StyledIcon";
 
 const CONNECTOR_CONFIG = {
   agent: {
@@ -224,7 +225,7 @@ export const ConfigNode = ({ id, data, selected }) => {
         >
           <Flex alignItems="center" justifyContent="space-between" width="100%">
             <Box pr={5}>
-              <FontAwesomeIcon icon={styles?.icon} />{" "}
+              <StyledIcon style={styles?.icon} />{" "}
               {node.name || type?.name || node.class_path.split(".").pop()}
             </Box>
             <DeleteIcon node={node} />
