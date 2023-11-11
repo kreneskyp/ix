@@ -2,14 +2,15 @@ import { useMemo } from "react";
 import { useColorMode } from "@chakra-ui/color-mode";
 
 export const getEdgeStyle = (colorMode, type) => {
+  const color = colorMode === "light" ? "black" : "white";
   return {
-    stroke: colorMode === "light" ? "black" : "#FFF",
-    strokeWidth: 2,
-    strokeLinecap: "round",
-    strokeDasharray: "4, 4",
-    strokeDashoffset: 0,
-    animation: "dash 1s linear infinite",
-    animationDirection: type === "chain" ? "reverse" : "normal",
+    type: "smoothstep",
+    markerEnd: { type: "arrowclosed", color },
+    style: {
+      stroke: color,
+      strokeWidth: 2,
+      strokeLinecap: "round",
+    },
   };
 };
 
@@ -63,12 +64,11 @@ export const useGraphForReactFlow = (graph) => {
         const sourceType = nodeTypes[nodeMap[edge.source_id].node_type_id].type;
         return {
           id: edge.id,
-          type: "default",
           source: edge.source_id,
           target: edge.target_id,
           sourceHandle: edge.relation === "PROP" ? sourceType : "out",
           targetHandle: edge.relation === "PROP" ? edge.key : "in",
-          style: sourceType === "chain" ? chainPropEdgeStyle : defaultEdgeStyle,
+          ...(sourceType === "chain" ? chainPropEdgeStyle : defaultEdgeStyle),
           data: {
             id: edge.id,
           },
@@ -89,7 +89,7 @@ export const useGraphForReactFlow = (graph) => {
         target: root.id,
         sourceHandle: "out",
         targetHandle: "in",
-        style: defaultEdgeStyle,
+        ...defaultEdgeStyle,
       });
     }
 
