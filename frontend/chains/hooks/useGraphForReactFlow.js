@@ -63,8 +63,8 @@ export const useGraphForReactFlow = (graph) => {
           id: edge.id,
           source: edge.source_id,
           target: edge.target_id,
-          sourceHandle: edge.relation === "PROP" ? sourceType : "out",
-          targetHandle: edge.relation === "PROP" ? edge.key : "in",
+          sourceHandle: edge.source_key,
+          targetHandle: edge.target_key,
           ...(sourceType === "chain" ? chainPropEdgeStyle : defaultEdgeStyle),
           data: {
             id: edge.id,

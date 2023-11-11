@@ -30,7 +30,8 @@ class NewNodeEdge(BaseModel):
     id: Optional[UUID] = None
     source_id: UUID | Literal["root"]
     target_id: UUID
-    key: str
+    source_key: str
+    target_key: str
 
 
 class AddNode(BaseModel):

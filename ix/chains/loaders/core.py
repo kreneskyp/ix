@@ -149,11 +149,11 @@ def load_node(
         config = node_loader(node, context)
 
     # prepare properties for loading. Properties should be grouped by key.
-    properties = node.incoming_edges.filter(relation="PROP").order_by("key")
-    for group in itertools.groupby(properties, lambda x: x.key):
+    properties = node.incoming_edges.filter(relation="PROP").order_by("target_key")
+    for group in itertools.groupby(properties, lambda x: x.target_key):
         key, edges = group
         node_group = [edge.source for edge in edges]
-        logger.debug(f"Loading property key={key} node_group={node_group}")
+        logger.debug(f"Loading property target_key={key} node_group={node_group}")
 
         # choose the type the incoming connection is processed as. If the source node
         # will be converted to another type, use the as_type defined on the connection
