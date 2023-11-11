@@ -78,7 +78,7 @@ export const useGraphForReactFlow = (graph) => {
       type: "root",
       position: { x: 100, y: 300 },
     });
-    roots.map((root, i) => {
+    roots?.map((root, i) => {
       edges.push({
         id: `root_connector_${i}`,
         source: "root",
