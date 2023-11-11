@@ -8,10 +8,10 @@ from langchain.schema import HumanMessage
 from ix.chains.models import ChainNode
 from ix.chains.routing import MapSubchain
 from ix.chains.tests.mock_chain import MOCK_CHAIN_CONFIG
-from ix.chains.tests.test_config_loader import (
+from ix.chains.tests.mock_configs import (
+    LLM_REPLY,
     LLM_REPLY_WITH_HISTORY,
     LLM_REPLY_WITH_HISTORY_AND_MEMORY,
-    LLM_REPLY,
 )
 from ix.task_log.tests.fake import fake_chain
 

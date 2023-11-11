@@ -62,57 +62,8 @@
         "ix.chains.llm_chain.LLMChain"
       ],
       "config": {
-        "llm": {
-          "config": {
-            "model": "gpt-4-0613",
-            "verbose": true,
-            "streaming": true,
-            "max_tokens": 1000,
-            "temperature": 0,
-            "request_timeout": 240
-          },
-          "class_path": "langchain.chat_models.openai.ChatOpenAI"
-        },
-        "prompt": {
-          "config": {
-            "messages": [
-              {
-                "role": "assistant",
-                "template": "\nYou are Ix, an AI assistant. You assist you user with requests by delegating work\nto your team of agents.\n\nRespond to all questions for help about Ix and how you work with links to discord and github.\nThe github includes documentation and source code.\n\ndiscord: https://discord.gg/jtrMKxzZZQ\ngithub: https://github.com/kreneskyp/ix\n\nAGENTS:\n{agents}\n\nCHAT_HISTORY:\n{chat_history}\n\nINSTRUCTION:\n- Choose the agent from AGENTS who can best process the user request.\n- If no AGENT can process then respond as best you can.\n- You must choose an agent or respond to the user request.\n- Consider the CHAT_HISTORY in your decisions.\n",
-                "input_variables": [
-                  "agents",
-                  "chat_history"
-                ]
-              },
-              {
-                "role": "user",
-                "template": "{user_input}",
-                "input_variables": [
-                  "user_input"
-                ]
-              }
-            ]
-          },
-          "class_path": "langchain.prompts.chat.ChatPromptTemplate"
-        },
         "verbose": true,
-        "functions": [
-          {
-            "config": {
-              "name": "delegate_to_agent",
-              "parameters": "{\n    \"title\": \"ChooseAgent\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"agent_id\": {\n            \"title\": \"Agent Id\",\n            \"type\": \"integer\"\n        }\n    },\n    \"required\": [\n        \"agent_id\"\n    ]\n}",
-              "description": "delegate the user request to this agent."
-            },
-            "class_path": "ix.chains.functions.FunctionSchema"
-          }
-        ],
-        "output_key": "delegation_or_text",
-        "output_parser": {
-          "config": {
-            "parse_json": true
-          },
-          "class_path": "ix.chains.functions.OpenAIFunctionParser"
-        }
+        "output_key": "delegation_or_text"
       },
       "name": null,
       "description": null,
@@ -154,79 +105,6 @@
         "ix.chains.moderator.ChatModerator"
       ],
       "config": {
-        "memory": [
-          {
-            "config": {
-              "input_key": "user_input",
-              "memory_key": "chat_history",
-              "output_key": "text",
-              "chat_memory": {
-                "config": {
-                  "url": "redis://redis:6379/0",
-                  "session_scope": "chat"
-                },
-                "class_path": "langchain.memory.RedisChatMessageHistory"
-              }
-            },
-            "class_path": "langchain.memory.ConversationBufferMemory"
-          }
-        ],
-        "selection_chain": {
-          "config": {
-            "llm": {
-              "config": {
-                "model": "gpt-4-0613",
-                "verbose": true,
-                "streaming": true,
-                "max_tokens": 1000,
-                "temperature": 0,
-                "request_timeout": 240
-              },
-              "class_path": "langchain.chat_models.openai.ChatOpenAI"
-            },
-            "prompt": {
-              "config": {
-                "messages": [
-                  {
-                    "role": "assistant",
-                    "template": "\nYou are Ix, an AI assistant. You assist you user with requests by delegating work\nto your team of agents.\n\nRespond to all questions for help about Ix and how you work with links to discord and github.\nThe github includes documentation and source code.\n\ndiscord: https://discord.gg/jtrMKxzZZQ\ngithub: https://github.com/kreneskyp/ix\n\nAGENTS:\n{agents}\n\nCHAT_HISTORY:\n{chat_history}\n\nINSTRUCTION:\n- Choose the agent from AGENTS who can best process the user request.\n- If no AGENT can process then respond as best you can.\n- You must choose an agent or respond to the user request.\n- Consider the CHAT_HISTORY in your decisions.\n",
-                    "input_variables": [
-                      "agents",
-                      "chat_history"
-                    ]
-                  },
-                  {
-                    "role": "user",
-                    "template": "{user_input}",
-                    "input_variables": [
-                      "user_input"
-                    ]
-                  }
-                ]
-              },
-              "class_path": "langchain.prompts.chat.ChatPromptTemplate"
-            },
-            "verbose": true,
-            "functions": [
-              {
-                "config": {
-                  "name": "delegate_to_agent",
-                  "parameters": "{\n    \"title\": \"ChooseAgent\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"agent_id\": {\n            \"title\": \"Agent Id\",\n            \"type\": \"integer\"\n        }\n    },\n    \"required\": [\n        \"agent_id\"\n    ]\n}",
-                  "description": "delegate the user request to this agent."
-                },
-                "class_path": "ix.chains.functions.FunctionSchema"
-              }
-            ],
-            "output_key": "delegation_or_text",
-            "output_parser": {
-              "config": {
-                "parse_json": true
-              },
-              "class_path": "ix.chains.functions.OpenAIFunctionParser"
-            }
-          },
-          "class_path": "ix.chains.llm_chain.LLMChain"
-        }
       },
       "name": null,
       "description": null,
