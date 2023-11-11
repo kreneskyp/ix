@@ -12,6 +12,8 @@ import { SecretSelect } from "json_form/fields/SecretSelect";
 import { useDisplayGroups } from "chains/hooks/useDisplayGroups";
 import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { HashList } from "json_form/fields/HashList";
+import { BranchesField } from "chains/editor/fields/BranchesField";
+import { MapField } from "chains/editor/fields/MapField";
 
 // explicit input types
 const INPUTS = {
@@ -25,6 +27,8 @@ const INPUTS = {
   dict: Dict,
   list: List,
   hash_list: HashList,
+  node_branch_list: BranchesField,
+  node_map_list: MapField,
 };
 
 // type specific default inputs
