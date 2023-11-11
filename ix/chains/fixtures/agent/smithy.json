@@ -164,7 +164,7 @@
     "fields": {
       "source": "70a5f508-68ba-4aee-86dd-dab8237e063f",
       "target": "7c748cc7-6a2d-4619-ab5f-73c7b350a5f5",
-      "key": "llm",
+      "target_key": "llm",
       "chain": "6cfb45bb-f928-4858-a7c6-113951608671",
       "input_map": null,
       "relation": "PROP"
@@ -174,9 +174,10 @@
     "model": "chains.chainedge",
     "pk": "de589ddc-9ed7-4e8b-b786-c7920eacc3ff",
     "fields": {
+      "source_key": "out",
       "source": "7c748cc7-6a2d-4619-ab5f-73c7b350a5f5",
       "target": "c96a49c5-64f8-47c5-a27e-561694a4ace2",
-      "key": "in",
+      "target_key": "in",
       "chain": "6cfb45bb-f928-4858-a7c6-113951608671",
       "input_map": null,
       "relation": "LINK"
@@ -188,7 +189,7 @@
     "fields": {
       "source": "31186e84-6b6b-4344-bd91-ee1754a25bf8",
       "target": "c96a49c5-64f8-47c5-a27e-561694a4ace2",
-      "key": "prompt",
+      "target_key": "prompt",
       "chain": "6cfb45bb-f928-4858-a7c6-113951608671",
       "input_map": null,
       "relation": "PROP"
@@ -200,7 +201,7 @@
     "fields": {
       "source": "7f5711ce-9d48-42c9-b2d7-fdee8a6f06ca",
       "target": "c96a49c5-64f8-47c5-a27e-561694a4ace2",
-      "key": "llm",
+      "target_key": "llm",
       "chain": "6cfb45bb-f928-4858-a7c6-113951608671",
       "input_map": null,
       "relation": "PROP"

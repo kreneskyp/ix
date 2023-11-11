@@ -106,7 +106,7 @@
     "fields": {
       "source": "aabbe898-5d4e-442d-9ec8-942ecae78efa",
       "target": "4216081f-1e3c-4b5a-bb3c-824a7a3b1403",
-      "key": "tools",
+      "target_key": "tools",
       "chain": "99e28f55-002c-405c-979d-26fb61f900bb",
       "input_map": null,
       "relation": "PROP"
@@ -118,7 +118,7 @@
     "fields": {
       "source": "275daea3-429e-4f7e-8ad2-e9a881f31886",
       "target": "4216081f-1e3c-4b5a-bb3c-824a7a3b1403",
-      "key": "llm",
+      "target_key": "llm",
       "chain": "99e28f55-002c-405c-979d-26fb61f900bb",
       "input_map": null,
       "relation": "PROP"
