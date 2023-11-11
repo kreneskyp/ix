@@ -1,5 +1,4 @@
 from copy import deepcopy
-from pathlib import Path
 
 import pytest
 from unittest.mock import MagicMock
@@ -8,17 +7,21 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.document_loaders.generic import GenericLoader
 from langchain.document_loaders.parsers import LanguageParser
 from langchain.embeddings import OpenAIEmbeddings
+from langchain.prompts.chat import ChatPromptValue
+from langchain.schema.runnable import (
+    RunnableSequence,
+    RunnableMap,
+    RunnableBranch,
+    RunnableLambda,
+)
 from langchain.text_splitter import TextSplitter
 from langchain.vectorstores import Redis
 
 from ix.chains.fixture_src.agents import OPENAI_FUNCTIONS_AGENT_CLASS_PATH
-from ix.chains.fixture_src.chains import CONVERSATIONAL_RETRIEVAL_CHAIN_CLASS_PATH
-from ix.chains.fixture_src.document_loaders import GENERIC_LOADER_CLASS_PATH
-from ix.chains.fixture_src.embeddings import OPENAI_EMBEDDINGS_CLASS_PATH
-from ix.chains.fixture_src.parsers import LANGUAGE_PARSER_CLASS_PATH
-from ix.chains.fixture_src.text_splitter import RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH
-from ix.chains.fixture_src.vectorstores import (
-    REDIS_VECTORSTORE_CLASS_PATH,
+from ix.chains.fixture_src.lcel import (
+    RUNNABLE_SEQUENCE_CLASS_PATH,
+    RUNNABLE_MAP_CLASS_PATH,
+    RUNNABLE_BRANCH_CLASS_PATH,
 )
 from ix.chains.loaders.context import IxContext
 from langchain.agents import AgentExecutor
@@ -28,15 +31,29 @@ from langchain.memory import (
     ConversationSummaryBufferMemory,
     CombinedMemory,
 )
-from langchain.schema import BaseChatMessageHistory, BaseMemory
+from langchain.schema import (
+    BaseChatMessageHistory,
+    BaseMemory,
+    AIMessage,
+    SystemMessage,
+)
 from langchain.tools import BaseTool
 
 from ix.chains.fixture_src.tools import GOOGLE_SEARCH
+from ix.chains.loaders.core import (
+    aload_chain_flow,
+    BranchPlaceholder,
+    MapPlaceholder,
+    ainit_flow,
+    ainit_chain_flow,
+)
 from ix.chains.loaders.memory import get_memory_session
 from ix.chains.loaders.text_splitter import TextSplitterShim
 from ix.chains.loaders.tools import extract_tool_kwargs
 from ix.chains.tests.mock_memory import MockMemory
 from ix.memory.artifacts import ArtifactMemory
+from ix.task_log.tests.fake import afake_chain_node, afake_chain, afake_chain_edge
+from ix.utils.importlib import import_class
 
 
 class TestLoadLLM:
@@ -667,3 +684,1059 @@ class TestLoadRetrieval:
         """Test loading a fully configured conversational chain."""
         component = await aload_chain(CONVERSATIONAL_RETRIEVAL_CHAIN)
         assert isinstance(component, ConversationalRetrievalChain)
+
+
+LCEL_BASIC_SEQUENCE = {
+    "class_path": RUNNABLE_SEQUENCE_CLASS_PATH,
+    "config": {
+        "steps": [PROMPT_CHAT, OPENAI_LLM],
+    },
+}
+
+
+@pytest.mark.django_db
+class TestLCELLoading:
+    """Testing LCEL style flows"""
+
+    async def assert_basic_sequence(self, runnable: RunnableSequence):
+        # TODO: it's not coming back as runnable sequence
+        assert isinstance(runnable, RunnableSequence)
+        assert len(runnable.steps) == 2
+        assert isinstance(runnable.steps[0], import_class(PROMPT_CHAT["class_path"]))
+        assert isinstance(runnable.steps[1], import_class(OPENAI_LLM["class_path"]))
+
+        # test invoking chain
+        output = await runnable.ainvoke(input={"user_input": "hello!"})
+        assert output == AIMessage(content="mock llm response")
+
+    async def test_basic_sequence(self, anode_types, aix_context, mock_openai):
+        """Testing a basic flow loaded from node graph.
+
+        chat_input -> prompt -> LLM -> output
+        """
+        chain = await afake_chain()
+        prompt = await afake_chain_node(chain=chain, root=True, config=PROMPT_CHAT)
+        llm = await afake_chain_node(chain=chain, config=OPENAI_LLM, root=False)
+        await afake_chain_edge(chain=chain, source=prompt, target=llm, relation="LINK")
+
+        runnable = await chain.aload_chain(context=aix_context)
+        await self.assert_basic_sequence(runnable)
+
+    async def test_basic_sequence_from_config(
+        self, aload_chain, aix_context, mock_openai
+    ):
+        """Testing a basic flow when loaded from a config dict
+
+        chat_input -> prompt -> LLM -> output
+        """
+        runnable = await aload_chain(LCEL_BASIC_SEQUENCE)
+        await self.assert_basic_sequence(runnable)
+
+    async def test_parallel(self, aix_context, mock_openai):
+        """Test creating a RunnableParallel from node graph."""
+
+        RUNNABLE_MAP = {"class_path": RUNNABLE_MAP_CLASS_PATH, "config": {}}
+
+        chain = await afake_chain()
+        runnable_map = await afake_chain_node(
+            chain=chain, root=True, config=RUNNABLE_MAP
+        )
+        prompt0 = await afake_chain_node(chain=chain, root=False, config=PROMPT_CHAT_0)
+        prompt1 = await afake_chain_node(chain=chain, root=False, config=PROMPT_CHAT_1)
+        await afake_chain_edge(
+            chain=chain,
+            source=prompt0,
+            target=runnable_map,
+            relation="PROP",
+            key="steps",
+            map_key="foo",
+        )
+        await afake_chain_edge(
+            chain=chain,
+            source=prompt1,
+            target=runnable_map,
+            relation="PROP",
+            key="steps",
+            map_key="bar",
+        )
+
+        # test loaded runnable
+        runnable = await chain.aload_chain(context=aix_context)
+        assert isinstance(runnable, RunnableMap)
+        assert len(runnable.steps) == 2
+        assert isinstance(
+            runnable.steps["foo"], import_class(PROMPT_CHAT_0["class_path"])
+        )
+        assert isinstance(
+            runnable.steps["bar"], import_class(PROMPT_CHAT_1["class_path"])
+        )
+
+        # test invoking chain
+        output = await runnable.ainvoke(input={"input": "hello!"})
+        assert output == {
+            "bar": ChatPromptValue(messages=[SystemMessage(content="You are bot 1.")]),
+            "foo": ChatPromptValue(messages=[SystemMessage(content="You are bot 0.")]),
+        }
+
+    async def test_branch(self, aix_context, mock_openai):
+        RUNNABLE_BRANCH = {"class_path": RUNNABLE_BRANCH_CLASS_PATH, "config": {}}
+
+        chain = await afake_chain()
+        runnable_branch = await afake_chain_node(
+            chain=chain, root=True, config=RUNNABLE_BRANCH
+        )
+        prompt0 = await afake_chain_node(chain=chain, root=False, config=PROMPT_CHAT_0)
+        prompt1 = await afake_chain_node(chain=chain, root=False, config=PROMPT_CHAT_1)
+        prompt2 = await afake_chain_node(chain=chain, root=False, config=PROMPT_CHAT_2)
+        await afake_chain_edge(
+            chain=chain,
+            source=prompt0,
+            target=runnable_branch,
+            relation="PROP",
+            key="default",
+        )
+        await afake_chain_edge(
+            chain=chain,
+            source=prompt1,
+            target=runnable_branch,
+            relation="PROP",
+            key="branches",
+            map_key="foo",
+        )
+        await afake_chain_edge(
+            chain=chain,
+            source=prompt2,
+            target=runnable_branch,
+            relation="PROP",
+            key="branches",
+            map_key="bar",
+        )
+
+        runnable = await chain.aload_chain(context=aix_context)
+        assert isinstance(runnable, RunnableBranch)
+        assert len(runnable.branches) == 2
+        assert isinstance(runnable.default, import_class(PROMPT_CHAT_0["class_path"]))
+        assert isinstance(runnable.branches[0][0], RunnableLambda)
+        assert isinstance(
+            runnable.branches[0][1], import_class(PROMPT_CHAT_1["class_path"])
+        )
+        assert isinstance(runnable.branches[1][0], RunnableLambda)
+        assert isinstance(
+            runnable.branches[1][1], import_class(PROMPT_CHAT_2["class_path"])
+        )
+
+        # test invoking chain
+        output = await runnable.ainvoke(input={"input": "hello!"})
+        assert output == ChatPromptValue(
+            messages=[SystemMessage(content="You are bot 0.")]
+        )
+        output = await runnable.ainvoke(input={"foo": True})
+        assert output == ChatPromptValue(
+            messages=[SystemMessage(content="You are bot 1.")]
+        )
+        output = await runnable.ainvoke(input={"bar": True})
+        assert output == ChatPromptValue(
+            messages=[SystemMessage(content="You are bot 2.")]
+        )
+
+
+@pytest.mark.django_db
+class TestLoadFlow:
+    """
+    Tests that validate loading various configurations of LCEL flows constructed
+    by nodes & edges in the database can be loaded into the intermediate data structures
+    needed to convert them into Runnable components.
+
+    These tests construct nodes & edges then validate the loaded placeholder flow.
+    These tests do not init or invoke the loaded flows.
+    The intent is just to validate the intermediate structures.
+    """
+
+    async def test_sequence(self, lcel_sequence, aix_context):
+        fixture = lcel_sequence
+        chain = fixture["chain"]
+        flow = await aload_chain_flow(chain)
+
+        assert flow == [
+            fixture["nodes"][0],
+            fixture["nodes"][1],
+        ]
+
+    async def test_map(self, lcel_map, aix_context):
+        """Test a map from the start of a chain"""
+        fixture = lcel_map
+        chain = fixture["chain"]
+
+        # assert state of fixture
+        assert isinstance(fixture["map"], MapPlaceholder)
+        assert len(fixture["map"].map) == 2
+        assert fixture["map"].map == {
+            "a": fixture["node1"],
+            "b": fixture["node2"],
+        }
+        # assert flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["map"]
+
+    async def test_map_with_one_branch(self, lcel_map_with_one_branch, aix_context):
+        fixture = lcel_map_with_one_branch
+        chain = fixture["chain"]
+
+        # assert state of fixture
+        assert isinstance(fixture["map"], MapPlaceholder)
+        assert fixture["map"].map == {
+            "a": fixture["node1"],
+        }
+        # assert flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["map"]
+
+    async def test_sequence_in_map_start(self, lcel_sequence_in_map_start, aix_context):
+        """Test a map with a nested sequence. First node in chain is the map."""
+        fixture = lcel_sequence_in_map_start
+        chain = fixture["chain"]
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["map"]
+
+    async def test_sequence_in_map_in_sequence(
+        self, lcel_sequence_in_map_in_sequence, aix_context
+    ):
+        """Test a map containing a sequence, that is contained in a sequence.
+
+        Tests that sequence_in_map works when the map is not the first node in the chain.
+        """
+        fixture = lcel_sequence_in_map_in_sequence
+        chain = fixture["chain"]
+        flow = await aload_chain_flow(chain)
+        assert flow == [
+            fixture["node1"],
+            fixture["map"],
+            fixture["node4"],
+        ]
+
+    async def test_sequence_in_map_in_sequence_n2(
+        self, lcel_sequence_in_map_in_sequence_n2, aix_context
+    ):
+        """Test a map containing a sequence, that is contained in a sequence.
+
+        Tests that sequence_in_map works when the map is not the first node in the chain.
+        """
+        fixture = lcel_sequence_in_map_in_sequence_n2
+        chain = fixture["chain"]
+        flow = await aload_chain_flow(chain)
+        assert flow == [
+            fixture["node1"],
+            fixture["map"],
+            fixture["node4"],
+            fixture["node5"],
+        ]
+
+    async def test_map_in_sequence_start(self, lcel_map_in_sequence_start, aix_context):
+        """Test a sequence starting with a map. First node in chain is a map"""
+        fixture = lcel_map_in_sequence_start
+        chain = fixture["chain"]
+        flow = await aload_chain_flow(chain)
+        assert flow == [
+            fixture["map"],
+            fixture["node2"],
+        ]
+
+    async def test_map_in_sequence_start_n2(
+        self, lcel_map_in_sequence_start_n2, aix_context
+    ):
+        """Test a sequence starting with a map. First node in chain is a map"""
+        fixture = lcel_map_in_sequence_start_n2
+        chain = fixture["chain"]
+        flow = await aload_chain_flow(chain)
+        assert flow == [
+            fixture["map"],
+            fixture["node2"],
+            fixture["node3"],
+        ]
+
+    async def test_map_in_sequence(self, lcel_map_in_sequence, aix_context):
+        """Test a sequence with a nested map. First node in chain is the first node of sequence."""
+        fixture = lcel_map_in_sequence
+        chain = lcel_map_in_sequence["chain"]
+        flow = await aload_chain_flow(chain)
+        assert flow == [
+            fixture["node1"],
+            fixture["map"],
+            fixture["node2"],
+        ]
+
+    async def test_map_in_sequence_n2(self, lcel_map_in_sequence_n2, aix_context):
+        """Test a sequence with a nested map. First node in chain is the first node of sequence."""
+        fixture = lcel_map_in_sequence_n2
+        chain = fixture["chain"]
+        flow = await aload_chain_flow(chain)
+        assert flow == [
+            fixture["node1"],
+            fixture["map"],
+            fixture["node2"],
+            fixture["node3"],
+        ]
+
+    async def test_map_in_map(self, lcel_map_in_map, aix_context):
+        """Test a map with a nested map"""
+        fixture = lcel_map_in_map
+        chain = fixture["chain"]
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["map"]
+
+    async def test_map_in_map_in_sequence_start(
+        self, lcel_map_in_map_in_sequence_start, aix_context
+    ):
+        """Test a map with a nested map"""
+        fixture = lcel_map_in_map_in_sequence_start
+        chain = fixture["chain"]
+        flow = await aload_chain_flow(chain)
+        assert flow == [
+            fixture["map"],
+            fixture["node3"],
+        ]
+
+    async def test_map_in_map_in_sequence_start_n2(
+        self, lcel_map_in_map_in_sequence_start_n2, aix_context
+    ):
+        """Test a map with a nested map"""
+        fixture = lcel_map_in_map_in_sequence_start_n2
+        chain = fixture["chain"]
+        flow = await aload_chain_flow(chain)
+        assert flow == [
+            fixture["map"],
+            fixture["node3"],
+            fixture["node4"],
+        ]
+
+    async def test_map_in_map_in_sequence(
+        self, lcel_map_in_map_in_sequence, aix_context
+    ):
+        """Test a map with a nested map"""
+        fixture = lcel_map_in_map_in_sequence
+        chain = fixture["chain"]
+        flow = await aload_chain_flow(chain)
+        assert flow == [
+            fixture["node1"],
+            fixture["map"],
+        ]
+
+    async def test_map_in_map_in_sequence_n2(
+        self, lcel_map_in_map_in_sequence_n2, aix_context
+    ):
+        """Test a map with a nested map"""
+        fixture = lcel_map_in_map_in_sequence_n2
+        chain = fixture["chain"]
+        flow = await aload_chain_flow(chain)
+        assert flow == [
+            fixture["node1"],
+            fixture["map"],
+            fixture["node4"],
+            fixture["node5"],
+        ]
+
+    async def test_branch(self, lcel_branch, aix_context):
+        fixture = lcel_branch
+        chain = fixture["chain"]
+
+        # sanity check setup
+        assert isinstance(fixture["branch"], BranchPlaceholder)
+        assert fixture["branch"].default == fixture["node1"]
+        assert fixture["branch"].branches == [
+            ("a", fixture["node2"]),
+            ("b", fixture["node3"]),
+        ]
+
+        # test loaded flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["branch"]
+
+    async def test_branch_in_branch(self, lcel_branch_in_branch, aix_context):
+        """Test a branch with a nested branch"""
+        fixture = lcel_branch_in_branch
+        chain = fixture["chain"]
+
+        # sanity check setup
+        assert isinstance(fixture["branch"], BranchPlaceholder)
+        assert fixture["branch"].default == fixture["node5"]
+        assert fixture["branch"].branches == [
+            ("a", fixture["inner_branch"]),
+            ("b", fixture["node4"]),
+        ]
+
+        # test loaded flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["branch"]
+
+    async def test_branch_in_default_branch(
+        self, lcel_branch_in_default_branch, aix_context
+    ):
+        """Test a branch with a nested branch"""
+        fixture = lcel_branch_in_default_branch
+        chain = fixture["chain"]
+
+        # sanity check setup
+        assert isinstance(fixture["branch"], BranchPlaceholder)
+        assert fixture["branch"].default == fixture["inner_branch"]
+
+        # test loaded flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["branch"]
+
+    async def test_sequence_in_branch(self, lcel_sequence_in_branch, aix_context):
+        """Test a branch with a nested sequence"""
+        fixture = lcel_sequence_in_branch
+        chain = fixture["chain"]
+
+        # sanity check setup
+        assert isinstance(fixture["branch"], BranchPlaceholder)
+        assert fixture["branch"].branches == [
+            ("a", fixture["inner_sequence"]),
+            ("b", fixture["node1"]),
+        ]
+
+        # test loaded flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["branch"]
+
+    async def test_sequence_in_default_branch(
+        self, lcel_sequence_in_default_branch, aix_context
+    ):
+        """Test a branch with a nested sequence"""
+        fixture = lcel_sequence_in_default_branch
+        chain = fixture["chain"]
+
+        # sanity check setup
+        assert isinstance(fixture["branch"], BranchPlaceholder)
+        assert fixture["branch"].default == fixture["inner_sequence"]
+
+        # test loaded flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["branch"]
+
+    async def test_map_in_branch(self, lcel_map_in_branch, aix_context):
+        """Test a branch with a nested map"""
+        fixture = lcel_map_in_branch
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["branch"]
+
+    async def test_map_in_default_branch(self, lcel_map_in_default_branch, aix_context):
+        """Test a branch with a nested map"""
+        fixture = lcel_map_in_default_branch
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["branch"]
+
+    async def test_branch_in_sequence(self, lcel_branch_in_sequence, aix_context):
+        fixture = lcel_branch_in_sequence
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["sequence"]
+
+    @pytest.mark.skip(reason="not supported yet")
+    async def test_branch_in_map_in_sequence(
+        self, lcel_branch_in_map_in_sequence, aix_context
+    ):
+        fixture = lcel_branch_in_map_in_sequence
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["sequence"]
+
+    @pytest.mark.skip(reason="not supported yet")
+    async def test_branch_in_map_start(self, lcel_branch_in_map_start, aix_context):
+        fixture = lcel_branch_in_map_start
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["map"]
+
+    async def test_join_after_branch(self, lcel_join_after_branch, aix_context):
+        """Test a join after a branch
+
+        The join is two sequences that link to the same node/placeholder/component
+        instance. This way when instantiated the chain only has one instance of
+        the component.
+
+                  |--> *: [node1]---|
+        [branch]--+                 |
+                  |--> a: [node2] --|
+                  +                 +--> [node4] --> [node5]
+                  |--> b: [node3] --|
+
+        This is structured as separate sequences for both `a` and `b`, but `node4`
+        and `node5` are the same component instance.
+
+                  |--> *: [node1] --> [node4] --> [node5]
+        [branch]--+
+                  |--> a: [node2] --> [node4] --> [node5]
+                  +
+                  |--> b: [node3] --> [node4] --> [node5]
+        """
+        fixture = lcel_join_after_branch
+        chain = fixture["chain"]
+
+        # sanity check setup
+        assert isinstance(fixture["branch"], BranchPlaceholder)
+        assert fixture["branch"].default == [
+            fixture["node1"],
+            fixture["node4"],
+            fixture["node5"],
+        ]
+        assert fixture["branch"].branches[0] == (
+            "a",
+            [
+                fixture["node2"],
+                fixture["node4"],
+                fixture["node5"],
+            ],
+        )
+        assert fixture["branch"].branches[1] == (
+            "b",
+            [
+                fixture["node3"],
+                fixture["node4"],
+                fixture["node5"],
+            ],
+        )
+
+        # test loaded flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["branch"]
+
+        # verify that the joined nodes are the same instances
+        assert flow.branches[0][1][1] == fixture["node4"]
+        assert flow.branches[1][1][1] == fixture["node4"]
+        assert flow.branches[0][1][2] == fixture["node5"]
+        assert flow.branches[1][1][2] == fixture["node5"]
+
+    async def ztest_malformed_map(self):
+        raise NotImplementedError
+
+
+@pytest.mark.django_db
+class TestFlow:
+    """Test loading, initializing, and invoking flows:
+    sequences, maps, branches, joins, and various permutations of these.
+    """
+
+    async def test_sequence(self, lcel_sequence, aix_context):
+        fixture = lcel_sequence
+        chain = fixture["chain"]
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {"input": "test", "sequence_0": 0, "sequence_1": 1}
+
+    async def test_map(self, lcel_map, aix_context):
+        """Test a map from the start of a chain"""
+        fixture = lcel_map
+        chain = fixture["chain"]
+
+        # assert flow
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {
+            "steps": {
+                "a": {"input": "test", "node1": 0},
+                "b": {"input": "test", "node1": 0},
+            }
+        }
+
+    async def test_map_with_one_branch(self, lcel_map_with_one_branch, aix_context):
+        fixture = lcel_map_with_one_branch
+        chain = fixture["chain"]
+
+        # assert flow
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {
+            "steps": {
+                "a": {"input": "test", "node1": 0},
+            }
+        }
+
+    async def test_sequence_in_map_start(self, lcel_sequence_in_map_start, aix_context):
+        """Test a map with a nested sequence. First node in chain is the map."""
+        fixture = lcel_sequence_in_map_start
+        chain = fixture["chain"]
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {
+            "steps": {
+                "a": {"input": "test", "node1": 0},
+                "b": {"input": "test", "sequence_0": 0, "sequence_1": 1},
+                "c": {"input": "test", "node2": 0},
+            }
+        }
+
+    async def test_sequence_in_map_in_sequence(
+        self, lcel_sequence_in_map_in_sequence, aix_context
+    ):
+        """Test a map containing a sequence, that is contained in a sequence.
+
+        Tests that sequence_in_map works when the map is not the first node in the chain.
+        """
+        fixture = lcel_sequence_in_map_in_sequence
+        chain = fixture["chain"]
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {
+            "steps": {
+                "a": {"input": "test", "node1": 0, "node2": 0},
+                "b": {"input": "test", "node1": 0, "sequence_1": 1},
+                "c": {"input": "test", "node1": 0, "node3": 0},
+            },
+            "node4": 0,
+        }
+
+    async def test_sequence_in_map_in_sequence_n2(
+        self, lcel_sequence_in_map_in_sequence_n2, aix_context
+    ):
+        """Test a map containing a sequence, that is contained in a sequence.
+
+        Tests that sequence_in_map works when the map is not the first node in the chain.
+        """
+        fixture = lcel_sequence_in_map_in_sequence_n2
+        chain = fixture["chain"]
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {
+            "steps": {
+                "a": {"input": "test", "node1": 0, "node2": 0},
+                "b": {"input": "test", "node1": 0, "sequence_1": 1},
+                "c": {"input": "test", "node1": 0, "node3": 0},
+            },
+            "node4": 0,
+            "node5": 0,
+        }
+
+    async def test_map_in_sequence_start(self, lcel_map_in_sequence_start, aix_context):
+        """Test a sequence starting with a map. First node in chain is a map"""
+        fixture = lcel_map_in_sequence_start
+        chain = fixture["chain"]
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {
+            "steps": {
+                "a": {"input": "test", "a": 0},
+                "b": {"input": "test", "b": 0},
+                "c": {"input": "test", "c": 0},
+            },
+            "node2": 0,
+        }
+
+    async def test_map_in_sequence_start_n2(
+        self, lcel_map_in_sequence_start_n2, aix_context
+    ):
+        """Test a sequence starting with a map. First node in chain is a map"""
+        fixture = lcel_map_in_sequence_start_n2
+        chain = fixture["chain"]
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {
+            "steps": {
+                "a": {"input": "test", "a": 0},
+                "b": {"input": "test", "b": 0},
+                "c": {"input": "test", "c": 0},
+            },
+            "node2": 0,
+            "node3": 0,
+        }
+
+    async def test_map_in_sequence(self, lcel_map_in_sequence, aix_context):
+        """Test a sequence with a nested map. First node in chain is the first node of sequence."""
+        fixture = lcel_map_in_sequence
+        chain = fixture["chain"]
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {
+            "steps": {
+                "a": {"input": "test", "node1": 0, "a": 0},
+                "b": {"input": "test", "node1": 0, "b": 0},
+                "c": {"input": "test", "node1": 0, "c": 0},
+            },
+            "node2": 0,
+        }
+
+    async def test_map_in_sequence_n2(self, lcel_map_in_sequence_n2, aix_context):
+        """Test a sequence with a nested map. First node in chain is the first node of sequence."""
+        fixture = lcel_map_in_sequence_n2
+        chain = fixture["chain"]
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {
+            "steps": {
+                "a": {"input": "test", "node1": 0, "a": 0},
+                "b": {"input": "test", "node1": 0, "b": 0},
+                "c": {"input": "test", "node1": 0, "c": 0},
+            },
+            "node2": 0,
+            "node3": 0,
+        }
+
+    async def test_map_in_map(self, lcel_map_in_map, aix_context):
+        """Test a map with a nested map"""
+        fixture = lcel_map_in_map
+        chain = fixture["chain"]
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {
+            "steps": {
+                "a": {"input": "test", "node1": 0},
+                "b": {
+                    "steps": {
+                        "a": {"input": "test", "a": 0},
+                        "b": {"input": "test", "b": 0},
+                        "c": {"input": "test", "c": 0},
+                    }
+                },
+                "c": {"input": "test", "node2": 0},
+            }
+        }
+
+    async def test_map_in_map_in_sequence_start(
+        self, lcel_map_in_map_in_sequence_start, aix_context
+    ):
+        """Test a map with a nested map"""
+        fixture = lcel_map_in_map_in_sequence_start
+        chain = fixture["chain"]
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {
+            "steps": {
+                "a": {"input": "test", "node1": 0},
+                "b": {
+                    "steps": {
+                        "a": {"input": "test", "a": 0},
+                        "b": {"input": "test", "b": 0},
+                        "c": {"input": "test", "c": 0},
+                    }
+                },
+                "c": {"input": "test", "node2": 0},
+            },
+            "node3": 0,
+        }
+
+    async def test_map_in_map_in_sequence_start_n2(
+        self, lcel_map_in_map_in_sequence_start_n2, aix_context
+    ):
+        """Test a map with a nested map"""
+        fixture = lcel_map_in_map_in_sequence_start_n2
+        chain = fixture["chain"]
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {
+            "steps": {
+                "a": {"input": "test", "node1": 0},
+                "b": {
+                    "steps": {
+                        "a": {"input": "test", "a": 0},
+                        "b": {"input": "test", "b": 0},
+                        "c": {"input": "test", "c": 0},
+                    }
+                },
+                "c": {"input": "test", "node2": 0},
+            },
+            "node3": 0,
+            "node4": 0,
+        }
+
+    async def test_map_in_map_in_sequence(
+        self, lcel_map_in_map_in_sequence, aix_context
+    ):
+        """Test a map with a nested map"""
+        fixture = lcel_map_in_map_in_sequence
+        chain = fixture["chain"]
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {
+            "steps": {
+                "a": {"input": "test", "node1": 0, "node2": 0},
+                "b": {
+                    "steps": {
+                        "a": {"input": "test", "node1": 0, "a": 0},
+                        "b": {"input": "test", "node1": 0, "b": 0},
+                        "c": {"input": "test", "node1": 0, "c": 0},
+                    }
+                },
+                "c": {"input": "test", "node1": 0, "node3": 0},
+            }
+        }
+
+    async def test_map_in_map_in_sequence_n2(
+        self, lcel_map_in_map_in_sequence_n2, aix_context
+    ):
+        """Test a map with a nested map"""
+        fixture = lcel_map_in_map_in_sequence_n2
+        chain = fixture["chain"]
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {
+            "steps": {
+                "a": {"input": "test", "node1": 0, "node2": 0},
+                "b": {
+                    "steps": {
+                        "a": {"input": "test", "node1": 0, "a": 0},
+                        "b": {"input": "test", "node1": 0, "b": 0},
+                        "c": {"input": "test", "node1": 0, "c": 0},
+                    }
+                },
+                "c": {"input": "test", "node1": 0, "node3": 0},
+            },
+            "node4": 0,
+            "node5": 0,
+        }
+
+    async def test_branch(self, lcel_branch, aix_context):
+        fixture = lcel_branch
+        chain = fixture["chain"]
+
+        # test loaded flow (default branch)
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+
+        # default branch
+        assert output == {"input": "test", "node1": 0}
+
+        # named branches
+        assert await flow.ainvoke(input={"a": 1}) == {"a": 1, "node2": 0}
+        assert await flow.ainvoke(input={"b": 1}) == {"b": 1, "node3": 0}
+
+        # test branch ordering, first branch (a) will execute when both are present
+        assert await flow.ainvoke(input={"a": 1, "b": 1}) == {
+            "a": 1,
+            "b": 1,
+            "node2": 0,
+        }
+
+        # test that falsy key will not trigger branch
+        assert await flow.ainvoke(input={"a": 0, "b": 0}) == {
+            "a": 0,
+            "b": 0,
+            "node1": 0,
+        }
+
+    async def test_branch_in_branch(self, lcel_branch_in_branch, aix_context):
+        """Test a branch with a nested branch"""
+        fixture = lcel_branch_in_branch
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {"input": "test", "node5": 0}
+
+    async def test_branch_in_default_branch(
+        self, lcel_branch_in_default_branch, aix_context
+    ):
+        """Test a branch with a nested branch"""
+        fixture = lcel_branch_in_default_branch
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await ainit_chain_flow(chain, context=aix_context)
+
+        # default branches
+        assert await flow.ainvoke(input={"input": "test"}) == {
+            "input": "test",
+            "inner_default": 0,
+        }
+        assert await flow.ainvoke(input={"inner_a_in": 1}) == {
+            "inner_a_in": 1,
+            "inner_a": 0,
+        }
+        assert await flow.ainvoke(input={"inner_b_in": 1}) == {
+            "inner_b_in": 1,
+            "inner_b": 0,
+        }
+
+        # non-default branch (inner_a params have no effect)
+        assert await flow.ainvoke(input={"a_in": 1, "inner_a_in": 1}) == {
+            "a_in": 1,
+            "inner_a_in": 1,
+            "a": 0,
+        }
+        assert await flow.ainvoke(input={"b_in": 1, "inner_a_in": 1}) == {
+            "b_in": 1,
+            "inner_a_in": 1,
+            "b": 0,
+        }
+
+    async def test_sequence_in_branch(self, lcel_sequence_in_branch, aix_context):
+        """Test a branch with a nested sequence"""
+        fixture = lcel_sequence_in_branch
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        assert await flow.ainvoke(input={"input": "test"}) == {
+            "input": "test",
+            "default": 0,
+        }
+        assert await flow.ainvoke(input={"a": 1}) == {
+            "a": 1,
+            "sequence_0": 0,
+            "sequence_1": 1,
+        }
+        assert await flow.ainvoke(input={"b": 1}) == {"b": 1, "node1": 0}
+
+    async def test_sequence_in_default_branch(
+        self, lcel_sequence_in_default_branch, aix_context
+    ):
+        """Test a branch with a nested sequence"""
+        fixture = lcel_sequence_in_default_branch
+        chain = fixture["chain"]
+
+        # sanity check setup
+        assert isinstance(fixture["branch"], BranchPlaceholder)
+        assert fixture["branch"].default == fixture["inner_sequence"]
+
+        # test loaded flow
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        assert await flow.ainvoke(input={"input": "test"}) == {
+            "input": "test",
+            "sequence_0": 0,
+            "sequence_1": 1,
+        }
+        assert await flow.ainvoke(input={"a": 1}) == {"a": 0}
+        assert await flow.ainvoke(input={"b": 1}) == {"b": 0}
+
+    async def test_map_in_branch(self, lcel_map_in_branch, aix_context):
+        """Test a branch with a nested map"""
+        fixture = lcel_map_in_branch
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        assert await flow.ainvoke(input={"input": "test"}) == {
+            "input": "test",
+            "default": 0,
+        }
+        assert await flow.ainvoke(input={"a": 1}) == {"a": 1, "node1": 0}
+        assert await flow.ainvoke(input={"b": 1}) == {
+            "steps": {"a": {"b": 1, "a": 0}, "b": {"b": 0}, "c": {"b": 1, "c": 0}}
+        }
+
+    async def test_map_in_default_branch(self, lcel_map_in_default_branch, aix_context):
+        """Test a branch with a nested map"""
+        fixture = lcel_map_in_default_branch
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        assert await flow.ainvoke(input={"input": "test"}) == {
+            "steps": {
+                "a": {"input": "test", "a": 0},
+                "b": {"input": "test", "b": 0},
+                "c": {"input": "test", "c": 0},
+            }
+        }
+        assert await flow.ainvoke(input={"a": 1}) == {"a": 0}
+        assert await flow.ainvoke(input={"b": 1}) == {"b": 0}
+
+    async def test_branch_in_sequence(self, lcel_branch_in_sequence, aix_context):
+        fixture = lcel_branch_in_sequence
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        assert await flow.ainvoke(input={"input": "test"}) == {
+            "input": "test",
+            "node0": 0,
+            "node1": 0,
+            "node4": 0,
+            "node5": 0,
+        }
+        assert await flow.ainvoke(input={"a": 1}) == {
+            "a": 1,
+            "node0": 0,
+            "node2": 0,
+            "node4": 0,
+            "node5": 0,
+        }
+        assert await flow.ainvoke(input={"b": 1}) == {
+            "b": 1,
+            "node0": 0,
+            "node3": 0,
+            "node4": 0,
+            "node5": 0,
+        }
+
+    @pytest.mark.skip(reason="not supported yet")
+    async def test_branch_in_map_in_sequence(
+        self, lcel_branch_in_map_in_sequence, aix_context
+    ):
+        fixture = lcel_branch_in_map_in_sequence
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await aload_chain_flow(chain)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {}
+
+    @pytest.mark.skip(reason="not supported yet")
+    async def test_branch_in_map_start(self, lcel_branch_in_map_start, aix_context):
+        fixture = lcel_branch_in_map_start
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        output = await flow.ainvoke(input={"input": "test"})
+        assert output == {}
+
+    async def test_join_after_branch(self, lcel_join_after_branch, aix_context):
+        """Test a join after a branch
+
+        The join is two sequences that link to the same node/placeholder/component
+        instance. This way when instantiated the chain only has one instance of
+        the component.
+
+                  |--> *: [node1]---|
+        [branch]--+                 |
+                  |--> a: [node2] --|
+                  +                 +--> [node4] --> [node5]
+                  |--> b: [node3] --|
+
+        This is structured as separate sequences for both `a` and `b`, but `node4`
+        and `node5` are the same component instance.
+
+                  |--> *: [node1] --> [node4] --> [node5]
+        [branch]--+
+                  |--> a: [node2] --> [node4] --> [node5]
+                  +
+                  |--> b: [node3] --> [node4] --> [node5]
+        """
+        fixture = lcel_join_after_branch
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await ainit_chain_flow(chain, context=aix_context)
+
+        # default
+        assert await flow.ainvoke(input={"input": "test"}) == {
+            "input": "test",
+            "node1": 0,
+            "node4": 0,
+            "node5": 0,
+        }
+        assert await flow.ainvoke(input={"a": 1}) == {
+            "a": 1,
+            "node2": 0,
+            "node4": 0,
+            "node5": 0,
+        }
+        assert await flow.ainvoke(input={"b": 1}) == {
+            "b": 1,
+            "node3": 0,
+            "node4": 0,
+            "node5": 0,
+        }
