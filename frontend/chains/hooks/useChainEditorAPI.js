@@ -49,7 +49,7 @@ export const useChainEditorAPI = ({
     []
   );
 
-  const setRoot = useCallback(
+  const setRoots = useCallback(
     (chainId, data) => {
       return axiosSetRoot(`/api/chains/${chainId}/set_root`, { data });
     },
@@ -189,7 +189,7 @@ export const useChainEditorAPI = ({
       isLoading,
       createChain,
       updateChain,
-      setRoot,
+      setRoots,
       updateNode,
       updateNodePosition,
       addNode,

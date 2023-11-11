@@ -541,7 +541,7 @@ class NodeType(BaseModel):
         items = []
         if field.choices is not None:
             items.extend([{"type": choice.value} for choice in field.choices])
-        return {
+        property = {
             "type": "array",
             "items": [{"type": "string"}],
             # "additionalItems": False,
@@ -549,6 +549,17 @@ class NodeType(BaseModel):
             "maxItems": field.max,
             "uniqueItems": field.type == "set",
         }
+
+        OPTIONAL_PROPERTIES = {
+            "description",
+            "input_type",
+            "style",
+        }
+        for schema_property in OPTIONAL_PROPERTIES:
+            if (field_value := getattr(field, schema_property, None)) is not None:
+                property[schema_property] = field_value
+
+        return property
 
     @staticmethod
     def build_properties(schema, schema_type, field) -> dict:

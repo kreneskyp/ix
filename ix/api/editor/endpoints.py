@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from uuid import UUID
 
@@ -39,22 +40,18 @@ router = APIRouter()
 )
 async def set_chain_root(chain_id: UUID, update_root: UpdateRoot):
     # update old roots:
-    old_roots = ChainNode.objects.filter(chain_id=chain_id, root=True)
+    old_roots = ChainNode.objects.filter(chain_id=chain_id, root=True).exclude(
+        id__in=update_root.node_ids
+    )
     old_root_ids = [
         str(node_id) async for node_id in old_roots.values_list("id", flat=True)
     ]
-    await old_roots.aupdate(root=False)
-    node_id = update_root.node_id
-    if node_id:
-        new_root = await ChainNode.objects.aget(id=node_id)
-        new_root.root = True
-        await new_root.asave(update_fields=["root"])
-        new_root_id = str(new_root.id)
-
-    else:
-        new_root_id = None
-
-    return UpdatedRoot(old_roots=old_root_ids, root=new_root_id)
+    remove_roots = old_roots.aupdate(root=False)
+    add_roots = ChainNode.objects.filter(
+        id__in=update_root.node_ids, root=False
+    ).aupdate(root=True)
+    await asyncio.gather(remove_roots, add_roots)
+    return UpdatedRoot(old_roots=old_root_ids, roots=update_root.node_ids)
 
 
 @router.post("/chains/nodes", response_model=NodePydantic, tags=["Chain Editor"])

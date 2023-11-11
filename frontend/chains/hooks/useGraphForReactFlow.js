@@ -2,14 +2,15 @@ import { useMemo } from "react";
 import { useColorMode } from "@chakra-ui/color-mode";
 
 export const getEdgeStyle = (colorMode, type) => {
+  const color = colorMode === "light" ? "black" : "white";
   return {
-    stroke: colorMode === "light" ? "black" : "#FFF",
-    strokeWidth: 2,
-    strokeLinecap: "round",
-    strokeDasharray: "4, 4",
-    strokeDashoffset: 0,
-    animation: "dash 1s linear infinite",
-    animationDirection: type === "chain" ? "reverse" : "normal",
+    type: "smoothstep",
+    markerEnd: { type: "arrowclosed", color },
+    style: {
+      stroke: color,
+      strokeWidth: 2,
+      strokeLinecap: "round",
+    },
   };
 };
 
@@ -41,17 +42,14 @@ export const useGraphForReactFlow = (graph) => {
   }, [graph]);
 
   return useMemo(() => {
-    let root = null;
     const nodeMap = {};
     graph?.nodes?.forEach((node) => {
       nodeMap[node.id] = node;
     });
 
+    const roots = graph?.nodes?.filter((node) => node.root);
     const nodes =
       graph?.nodes?.map((node) => {
-        if (node.root) {
-          root = node;
-        }
         return toReactFlowNode(node, nodeTypes[node.node_type_id]);
       }) || [];
 
@@ -63,12 +61,11 @@ export const useGraphForReactFlow = (graph) => {
         const sourceType = nodeTypes[nodeMap[edge.source_id].node_type_id].type;
         return {
           id: edge.id,
-          type: "default",
           source: edge.source_id,
           target: edge.target_id,
           sourceHandle: edge.relation === "PROP" ? sourceType : "out",
           targetHandle: edge.relation === "PROP" ? edge.key : "in",
-          style: sourceType === "chain" ? chainPropEdgeStyle : defaultEdgeStyle,
+          ...(sourceType === "chain" ? chainPropEdgeStyle : defaultEdgeStyle),
           data: {
             id: edge.id,
           },
@@ -81,17 +78,16 @@ export const useGraphForReactFlow = (graph) => {
       type: "root",
       position: { x: 100, y: 300 },
     });
-    if (root !== null) {
+    roots.map((root, i) => {
       edges.push({
-        id: "root_connector",
-        type: "default",
+        id: `root_connector_${i}`,
         source: "root",
         target: root.id,
         sourceHandle: "out",
         targetHandle: "in",
-        style: defaultEdgeStyle,
+        ...defaultEdgeStyle,
       });
-    }
+    });
 
     return { chain: graph?.chain, nodes, edges, root };
   }, [graph?.chain?.id, colorMode]);

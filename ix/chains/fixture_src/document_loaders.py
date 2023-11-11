@@ -10,6 +10,7 @@ from langchain.document_loaders import (
 from langchain.document_loaders.generic import GenericLoader
 
 from ix.api.components.types import NodeTypeField
+from ix.chains.components.document_loaders import StringLoader
 from ix.chains.fixture_src.targets import PARSER_TARGET
 
 
@@ -27,6 +28,22 @@ PATH_FIELD = {
     "required": True,
     "type": "str",
     "style": {"width": "100%"},
+}
+
+
+STRING_LOADER_CLASS_PATH = "ix.chains.components.document_loaders.StringLoader"
+STRING_LOADER = {
+    "class_path": STRING_LOADER_CLASS_PATH,
+    "type": "document_loader",
+    "name": "String Loader",
+    "description": "Load a static string as a document.",
+    "fields": NodeTypeField.get_fields(
+        StringLoader.__init__,
+        include=[
+            "text",
+            "metadata",
+        ],
+    ),
 }
 
 
@@ -185,6 +202,7 @@ DOCUMENT_LOADERS = [
     GENERIC_LOADER,
     JSON_LOADER,
     PDF_LOADER,
+    STRING_LOADER,
     WEB_BASE_LOADER,
     UNSTRUCTURED_HTML_LOADER,
     UNSTRUCTURED_MARKDOWN_LOADER,

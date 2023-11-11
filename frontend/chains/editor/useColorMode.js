@@ -69,9 +69,11 @@ export const useEditorColorMode = () => {
       text_splitter: retrieval,
       tool: isLight ? "yellow.500" : "yellow.600",
       toolkit: isLight ? "yellow.500" : "yellow.600",
-      embeddings: retrieval,
+      embeddings:  isLight ? "red.300" : "red.300",
       output_parser: isLight ? "gray.400" : "gray.700",
+      document_transformer: retrieval,
       vectorstore: retrieval,
+      store: retrieval,
       default: isLight ? "gray.400" : "gray.700",
     },
     scrollbar: isLight

@@ -485,48 +485,86 @@ class TestChainRoot:
         chain = await afake_chain()
         node = await afake_chain_node(chain=chain)
         await ChainNode.objects.filter(chain=chain).aupdate(root=False)
-        data = {"node_id": str(node.id)}
+        data = {"node_ids": [str(node.id)]}
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200
         result = response.json()
-        assert result["root"] == str(node.id)
+        assert result["roots"] == [str(node.id)]
         assert result["old_roots"] == []
         await node.arefresh_from_db()
         assert node.root
 
-    async def test_set_chain_root_exists(self, anode_types):
+    async def test_replace_root(self, anode_types):
         chain = await afake_chain()
         old_root = await afake_chain_node(chain=chain, root=True)
         new_root = await afake_chain_node(chain=chain, root=False)
 
-        data = {"node_id": str(new_root.id), "chain_id": str(chain.id)}
+        data = {"node_ids": [str(new_root.id)]}
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200
         result = response.json()
-        assert result["root"] == str(new_root.id)
+        assert result["roots"] == [str(new_root.id)]
         assert result["old_roots"] == [str(old_root.id)]
         await old_root.arefresh_from_db()
         await new_root.arefresh_from_db()
         assert new_root.root
         assert not old_root.root
 
-    async def test_remove_chain_root(self, anode_types):
+    async def test_add_root(self, anode_types):
+        chain = await afake_chain()
+        root1 = await afake_chain_node(chain=chain, root=True)
+        root2 = await afake_chain_node(chain=chain, root=False)
+
+        data = {"node_ids": [str(root1.id), str(root2.id)]}
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
+
+        assert response.status_code == 200
+        result = response.json()
+        assert result["roots"] == [str(root1.id), str(root2.id)]
+        assert result["old_roots"] == []
+        await root1.arefresh_from_db()
+        await root2.arefresh_from_db()
+        assert root1.root
+        assert root2.root
+
+    async def test_remove_root(self, anode_types):
         chain = await afake_chain()
         root = await afake_chain_node(chain=chain, root=True)
-        data = {"node_id": None, "chain_id": str(chain.id)}
+        data = {"node_ids": []}
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200, response.content
         result = response.json()
-        assert result["root"] is None
+        assert result["roots"] == []
         assert result["old_roots"] == [str(root.id)]
+        await root.arefresh_from_db()
+        assert not root.root
+
+    async def test_remove_one_root(self, anode_types):
+        chain = await afake_chain()
+        root1 = await afake_chain_node(chain=chain, root=True)
+        root2 = await afake_chain_node(chain=chain, root=True)
+        data = {"node_ids": [str(root2.id)]}
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
+
+        assert response.status_code == 200, response.content
+        result = response.json()
+        assert result["roots"] == [str(root2.id)]
+        assert result["old_roots"] == [str(root1.id)]
+        await root1.arefresh_from_db()
+        await root2.arefresh_from_db()
+        assert not root1.root
+        assert root2.root
 
 
 @pytest.mark.django_db

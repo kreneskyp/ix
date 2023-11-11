@@ -72,6 +72,11 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
     event.dataTransfer.dropEffect = "move";
   }, []);
 
+  // rebuild edges if colorMode toggles
+  React.useEffect(() => {
+    setEdges(reactFlowGraph.edges);
+  }, [colorMode]);
+
   const onNodeSaved = useCallback(
     (response) => {
       // first node creates the new chain
@@ -140,13 +145,12 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
           const style = getEdgeStyle(colorMode, flowNodeType);
           flowEdge = {
             id: edgeId,
-            type: "default",
             source: isOutput ? node.id : newNodeID,
             target: isOutput ? newNodeID : node.id,
             sourceHandle: key === "in" ? "out" : flowNodeType,
             targetHandle: key,
             data: { id: edgeId },
-            style,
+            ...style,
           };
 
           // validate flowEdge before creating datum for API
@@ -224,12 +228,17 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
       const flowNodeType =
         source.id === "root" ? "root" : source.data.type.type;
       const style = getEdgeStyle(colorMode, flowNodeType);
-      setEdges((els) => addEdge({ ...params, data: { id }, style }, els));
+      setEdges((els) => addEdge({ ...params, ...style, data: { id } }, els));
 
       // save via API
       if (source.id === "root") {
         // link from root node uses setRoot since it's not stored as an edge
-        api.setRoot(chain.id, { node_id: params.target });
+        const root_node_ids = reactFlowInstance
+          .getEdges()
+          .filter((edge) => edge.source === "root")
+          .map((edge) => edge.target);
+        root_node_ids.push(params.target);
+        api.setRoots(chain.id, { node_ids: root_node_ids });
       } else {
         // normal link and prop edges
         const data = {
@@ -264,7 +273,12 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
       setEdges((els) => updateEdge(oldEdge, newConnection, els));
       if (newConnection.source === "root") {
         if (oldEdge.target !== newConnection.target) {
-          api.setRoot({ chain_id: chain.id, node_id: newConnection.target });
+          const root_node_ids = reactFlowInstance
+            .getEdges()
+            .filter((edge) => edge.source === "root" && edge.id !== oldEdge.id)
+            .map((edge) => edge.target);
+          root_node_ids.push(newConnection.target);
+          api.setRoots(chain.id, { node_ids: root_node_ids });
         }
       } else {
         const isSame =
@@ -278,7 +292,7 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
         }
       }
     },
-    [chain?.id, setEdges]
+    [chain?.id, setEdges, reactFlowInstance]
   );
 
   const onEdgeUpdateEnd = useCallback(
@@ -287,14 +301,18 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
       if (!edgeUpdate.toHandle) {
         setEdges((eds) => eds.filter((e) => e.id !== edge.id));
         if (edge.source === "root") {
-          api.setRoot(chain.id, { node_id: null });
+          const root_edges = reactFlowInstance
+            .getEdges()
+            .filter((e) => e.source === "root" && e.id !== edge.id);
+          const root_node_ids = root_edges.map((edge) => edge.target);
+          api.setRoots(chain.id, { node_ids: root_node_ids });
         } else {
           api.deleteEdge(edge.data.id);
         }
       }
       edgeUpdate.edge = null;
     },
-    [chain?.id, setEdges]
+    [chain?.id, setEdges, reactFlowInstance]
   );
 
   const { callback: debouncedChainUpdate } = useDebounce((...args) => {
