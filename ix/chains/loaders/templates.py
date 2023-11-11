@@ -48,7 +48,9 @@ class NodeTemplate(Generic[T]):
         variables = get_config_variables(node.config if node.config else {})
 
         # Recursively traverse for all connected nodes
-        connected_edges = node.incoming_edges.filter(relation="PROP").order_by("key")
+        connected_edges = node.incoming_edges.filter(relation="PROP").order_by(
+            "target_key"
+        )
         for edge in connected_edges.iterator():
             connected_node = ChainNode.objects.get(pk=edge.source_id)
             variables.update(self.get_variables(connected_node))

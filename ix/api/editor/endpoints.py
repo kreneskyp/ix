@@ -78,11 +78,12 @@ async def add_chain_node(node: AddNode):
 
             edge = ChainEdge(
                 id=datum.id,
-                key=datum.key,
+                source_key=datum.source_key,
+                target_key=datum.target_key,
                 source_id=datum.source_id or new_node.id,
                 target_id=datum.target_id or new_node.id,
                 chain_id=node.chain_id,
-                relation="LINK" if datum.key in {"in", "out"} else "PROP",
+                relation="LINK" if datum.target_key in {"in", "out"} else "PROP",
             )
             node_edges.append(edge)
         if node_edges:

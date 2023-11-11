@@ -63,8 +63,8 @@ export const useGraphForReactFlow = (graph) => {
           id: edge.id,
           source: edge.source_id,
           target: edge.target_id,
-          sourceHandle: edge.relation === "PROP" ? sourceType : "out",
-          targetHandle: edge.relation === "PROP" ? edge.key : "in",
+          sourceHandle: edge.source_key,
+          targetHandle: edge.target_key,
           ...(sourceType === "chain" ? chainPropEdgeStyle : defaultEdgeStyle),
           data: {
             id: edge.id,
@@ -78,7 +78,7 @@ export const useGraphForReactFlow = (graph) => {
       type: "root",
       position: { x: 100, y: 300 },
     });
-    roots.map((root, i) => {
+    roots?.map((root, i) => {
       edges.push({
         id: `root_connector_${i}`,
         source: "root",

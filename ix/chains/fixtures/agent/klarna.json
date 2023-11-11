@@ -162,7 +162,7 @@
     "fields": {
       "source": "ecb33667-47b8-4ad6-ab4f-a7b40970fd77",
       "target": "335f59e4-34fd-4bd4-aa3e-3f2920106fd2",
-      "key": "prompt",
+      "target_key": "prompt",
       "chain": "5a3fb153-35b0-492e-9571-03553b3c24e9",
       "input_map": null,
       "relation": "PROP"
@@ -174,7 +174,7 @@
     "fields": {
       "source": "6ac9ea62-614c-47b1-bbec-cd19a534a9c8",
       "target": "b80ef475-d3bf-46e7-bdb9-37c57b4b875d",
-      "key": "llm",
+      "target_key": "llm",
       "chain": "5a3fb153-35b0-492e-9571-03553b3c24e9",
       "input_map": null,
       "relation": "PROP"
@@ -184,9 +184,10 @@
     "model": "chains.chainedge",
     "pk": "e0995e15-c445-4cb0-87c8-e0e299f32db5",
     "fields": {
+      "source_key": "out",
       "source": "b80ef475-d3bf-46e7-bdb9-37c57b4b875d",
       "target": "335f59e4-34fd-4bd4-aa3e-3f2920106fd2",
-      "key": "in",
+      "target_key": "in",
       "chain": "5a3fb153-35b0-492e-9571-03553b3c24e9",
       "input_map": null,
       "relation": "LINK"
@@ -198,7 +199,7 @@
     "fields": {
       "source": "1777422a-0c5d-4551-ba0b-a456cac229b7",
       "target": "335f59e4-34fd-4bd4-aa3e-3f2920106fd2",
-      "key": "llm",
+      "target_key": "llm",
       "chain": "5a3fb153-35b0-492e-9571-03553b3c24e9",
       "input_map": null,
       "relation": "PROP"
