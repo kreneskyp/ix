@@ -42,6 +42,7 @@ from ix.chains.fixture_src.toolkit import TOOLKITS
 from ix.chains.fixture_src.tools import TOOLS
 from ix.chains.fixture_src.vectorstores import VECTORSTORES
 from ix.chains.models import NodeType
+from ix.chains.tests.mock_runnable import MOCK_RUNNABLE_CONFIG
 from ix.secrets.models import SecretType
 
 COMPONENTS = []
@@ -128,6 +129,7 @@ COMPONENTS.extend(
     [
         MOCK_MEMORY,
         MOCK_CHAIN,
+        MOCK_RUNNABLE_CONFIG,
     ]
 )
 
