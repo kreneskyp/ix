@@ -123,8 +123,8 @@ export const ChainGraph = ({ graph }) => {
           type: "default",
           source: edge.source.id,
           target: edge.target.id,
-          sourceHandle: "out",
-          targetHandle: "in",
+          sourceHandle: edge.source_key,
+          targetHandle: edge.target_key,
           style: edgeStyle,
         });
       }

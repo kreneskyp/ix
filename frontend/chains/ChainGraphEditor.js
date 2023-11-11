@@ -163,7 +163,8 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
               id: edgeId,
               source_id: flowEdge.source,
               target_id: flowEdge.target,
-              key,
+              target_key: flowEdge.targetHandle,
+              source_key: flowEdge.sourceHandle,
             };
           }
         }
@@ -245,7 +246,8 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
           id,
           source_id: params.source,
           target_id: params.target,
-          key: params.targetHandle,
+          source_key: params.sourceHandle,
+          target_key: params.targetHandle,
           chain_id: chain?.id,
           relation: params.sourceHandle === "out" ? "LINK" : "PROP",
         };

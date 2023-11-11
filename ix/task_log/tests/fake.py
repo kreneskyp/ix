@@ -80,6 +80,9 @@ async def afake_chain_node(**kwargs):
 
 
 def fake_chain_edge(**kwargs):
+    if "key" in kwargs:
+        raise ValueError("key is deprecated, use target_key instead")
+
     chain = kwargs.get("chain", fake_chain())
 
     source_node = kwargs.get("source")
@@ -93,7 +96,8 @@ def fake_chain_edge(**kwargs):
     edge = ChainEdge.objects.create(
         source=source_node,
         target=target_node,
-        key=kwargs.get("key", "default_key"),
+        source_key=kwargs.get("source_key", source_node.node_type.type),
+        target_key=kwargs.get("target_key", "default_key"),
         chain=chain,
         input_map=kwargs.get("input_map", {}),
     )

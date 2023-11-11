@@ -783,7 +783,7 @@
     "fields": {
       "source": "eff5e303-902b-4636-8ef8-71951e7a44f0",
       "target": "57dc072f-4d9a-4ca0-87b7-c27c81454336",
-      "key": "memory",
+      "target_key": "memory",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "PROP"
@@ -795,7 +795,7 @@
     "fields": {
       "source": "8e81abc3-0e5f-470f-835f-c953f8d86748",
       "target": "7d6b84f6-a6b3-4397-aa09-bfe2fd656645",
-      "key": "functions",
+      "target_key": "functions",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "PROP"
@@ -807,7 +807,7 @@
     "fields": {
       "source": "53fb5a69-1b14-445d-85ad-841968e3a729",
       "target": "b8e27600-1837-4837-8a09-60a10c6adb45",
-      "key": "prompt",
+      "target_key": "prompt",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "PROP"
@@ -819,7 +819,7 @@
     "fields": {
       "source": "7d6b84f6-a6b3-4397-aa09-bfe2fd656645",
       "target": "57dc072f-4d9a-4ca0-87b7-c27c81454336",
-      "key": "chains",
+      "target_key": "chains",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "PROP"
@@ -831,7 +831,7 @@
     "fields": {
       "source": "8a814597-c726-417c-8e94-fb256b60092d",
       "target": "7d6b84f6-a6b3-4397-aa09-bfe2fd656645",
-      "key": "output_parser",
+      "target_key": "output_parser",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "PROP"
@@ -843,7 +843,7 @@
     "fields": {
       "source": "7678f816-f566-43b8-9e57-2d3b32f1ddd0",
       "target": "b8e27600-1837-4837-8a09-60a10c6adb45",
-      "key": "functions",
+      "target_key": "functions",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "PROP"
@@ -855,7 +855,7 @@
     "fields": {
       "source": "b5889267-252e-43bd-98d0-bdca0d997c21",
       "target": "7d6b84f6-a6b3-4397-aa09-bfe2fd656645",
-      "key": "llm",
+      "target_key": "llm",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "PROP"
@@ -865,9 +865,10 @@
     "model": "chains.chainedge",
     "pk": "af94ed23-f13b-4cd6-b63d-671fc53ae15e",
     "fields": {
+      "source_key": "out",
       "source": "e61c905a-cd49-4c76-bf5b-fa68888d426c",
       "target": "38640ea8-08d2-406a-a3fb-dd1243a0a5cc",
-      "key": null,
+      "target_key": "in",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "LINK"
@@ -877,9 +878,10 @@
     "model": "chains.chainedge",
     "pk": "b4eb1b7c-e5fa-40f2-910a-0542d4a2e8fb",
     "fields": {
+      "source_key": "out",
       "source": "7d6b84f6-a6b3-4397-aa09-bfe2fd656645",
       "target": "e61c905a-cd49-4c76-bf5b-fa68888d426c",
-      "key": null,
+      "target_key": "in",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "LINK"
@@ -891,7 +893,8 @@
     "fields": {
       "source": "b8e27600-1837-4837-8a09-60a10c6adb45",
       "target": "193d2e41-5e47-4e71-981f-6a885dafae88",
-      "key": null,
+      "source_key": "out",
+      "target_key": "in",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "LINK"
@@ -903,7 +906,7 @@
     "fields": {
       "source": "b8e27600-1837-4837-8a09-60a10c6adb45",
       "target": "38640ea8-08d2-406a-a3fb-dd1243a0a5cc",
-      "key": "chains",
+      "target_key": "chains",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "PROP"
@@ -915,7 +918,7 @@
     "fields": {
       "source": "24f454b0-9733-4498-8466-8bb004010c13",
       "target": "b8e27600-1837-4837-8a09-60a10c6adb45",
-      "key": "memory",
+      "target_key": "memory",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "PROP"
@@ -927,7 +930,7 @@
     "fields": {
       "source": "8ff340ad-556e-4a60-8080-2b3f9674ada4",
       "target": "b8e27600-1837-4837-8a09-60a10c6adb45",
-      "key": "llm",
+      "target_key": "llm",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "PROP"
@@ -939,7 +942,7 @@
     "fields": {
       "source": "c1e81d02-6a6c-4cee-8571-ff2fa1e034b0",
       "target": "b8e27600-1837-4837-8a09-60a10c6adb45",
-      "key": "output_parser",
+      "target_key": "output_parser",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "PROP"
@@ -951,7 +954,7 @@
     "fields": {
       "source": "b4b7d373-1ec9-49d4-8a0f-d3295577f440",
       "target": "7d6b84f6-a6b3-4397-aa09-bfe2fd656645",
-      "key": "prompt",
+      "target_key": "prompt",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10010c",
       "input_map": null,
       "relation": "PROP"

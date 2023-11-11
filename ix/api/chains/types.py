@@ -73,7 +73,8 @@ class Edge(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     source_id: UUID
     target_id: UUID
-    key: Optional[str]
+    source_key: Optional[str] = None
+    target_key: Optional[str] = None
     chain_id: UUID
     relation: Literal["LINK", "PROP"]
     input_map: Optional[dict] = None
@@ -83,7 +84,7 @@ class Edge(BaseModel):
 
     @model_validator(mode="after")
     def validate_edge(cls, instance: "Edge") -> "Edge":
-        if instance.relation == "PROP" and not instance.key:
-            raise ValueError("'key' is required for 'PROP' relation type.")
+        if instance.relation == "PROP" and not instance.target_key:
+            raise ValueError("'target_key' is required for 'PROP' relation type.")
 
         return instance

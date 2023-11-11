@@ -711,13 +711,15 @@ class TestChainEdge:
         node1 = await afake_chain_node(chain=chain)
         node2 = await afake_chain_node(chain=chain)
         edge_id = str(uuid4())
+        node1_type = await NodeType.objects.aget(id=node1.node_type_id)
 
         # Prepare data for the API request
         data = {
             "id": edge_id,
             "source_id": str(node1.id),
             "target_id": str(node2.id),
-            "key": "Custom Key",
+            "source_key": node1_type.type,
+            "target_key": "Custom Key",
             "chain_id": str(chain.id),
             "relation": "LINK",
             "input_map": {},
@@ -732,7 +734,8 @@ class TestChainEdge:
         assert edge_data["id"] == edge_id
         assert edge_data["source_id"] == str(node1.id)
         assert edge_data["target_id"] == str(node2.id)
-        assert edge_data["key"] == "Custom Key"
+        assert edge_data["source_key"] == node1_type.type
+        assert edge_data["target_key"] == "Custom Key"
         assert edge_data["input_map"] == {}
 
     async def test_update_chain_edge(self, anode_types):
@@ -742,11 +745,14 @@ class TestChainEdge:
         chain = await afake_chain()
         node1 = await afake_chain_node(chain=chain)
         node2 = await afake_chain_node(chain=chain)
+        node1_type = await NodeType.objects.aget(id=node1.node_type_id)
 
         # Prepare data for the API request
         data = {
             "source_id": str(node1.id),
             "target_id": str(node2.id),
+            "target_key": "Custom Key",
+            "source_key": node1_type.type,
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -775,13 +781,15 @@ class TestChainEdge:
         node1 = await afake_chain_node(chain=chain)
         node2 = await afake_chain_node(chain=chain)
         edge_id = str(uuid4())
+        node1_type = await NodeType.objects.aget(id=node1.node_type_id)
 
         non_existent_edge_id = uuid4()
         data = {
             "id": edge_id,
             "source_id": str(node1.id),
             "target_id": str(node2.id),
-            "key": "Custom Key",
+            "source_key": node1_type.type,
+            "target_key": "Custom Key",
             "chain_id": str(chain.id),
             "relation": "LINK",
             "input_map": {},

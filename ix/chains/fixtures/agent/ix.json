@@ -229,7 +229,7 @@
     "fields": {
       "source": "c053289d-cf5b-46a5-b72c-5c34d91e54c7",
       "target": "1d35e7c6-473a-4f03-a7ef-ea422f7d214e",
-      "key": "llm",
+      "target_key": "llm",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10001c",
       "input_map": null,
       "relation": "PROP"
@@ -241,7 +241,7 @@
     "fields": {
       "source": "f1fffe7f-8e43-49db-beb1-b5b175d7be13",
       "target": "1d35e7c6-473a-4f03-a7ef-ea422f7d214e",
-      "key": "functions",
+      "target_key": "functions",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10001c",
       "input_map": null,
       "relation": "PROP"
@@ -253,7 +253,7 @@
     "fields": {
       "source": "0fd7a411-b486-45ba-8c98-8027e42d013c",
       "target": "bb8062cb-1a21-4d40-8603-103d8520dd68",
-      "key": "memory",
+      "target_key": "memory",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10001c",
       "input_map": null,
       "relation": "PROP"
@@ -265,7 +265,7 @@
     "fields": {
       "source": "ed5d31b8-28c2-4122-b456-069ac1e600dd",
       "target": "1d35e7c6-473a-4f03-a7ef-ea422f7d214e",
-      "key": "prompt",
+      "target_key": "prompt",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10001c",
       "input_map": null,
       "relation": "PROP"
@@ -277,7 +277,7 @@
     "fields": {
       "source": "be4b9f1b-b984-4001-a916-35206f5983e1",
       "target": "0fd7a411-b486-45ba-8c98-8027e42d013c",
-      "key": "chat_memory",
+      "target_key": "chat_memory",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10001c",
       "input_map": null,
       "relation": "PROP"
@@ -289,7 +289,7 @@
     "fields": {
       "source": "1d35e7c6-473a-4f03-a7ef-ea422f7d214e",
       "target": "bb8062cb-1a21-4d40-8603-103d8520dd68",
-      "key": "selection_chain",
+      "target_key": "selection_chain",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10001c",
       "input_map": null,
       "relation": "PROP"
@@ -301,7 +301,7 @@
     "fields": {
       "source": "2cab752c-ccca-4f7e-ae3e-fbd1d94ab1a1",
       "target": "1d35e7c6-473a-4f03-a7ef-ea422f7d214e",
-      "key": "output_parser",
+      "target_key": "output_parser",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10001c",
       "input_map": null,
       "relation": "PROP"

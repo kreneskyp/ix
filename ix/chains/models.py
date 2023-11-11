@@ -162,9 +162,10 @@ class ChainNodeManager(models.Manager):
                     ChainEdge.objects.create(
                         chain_id=node.chain_id,
                         source=nested_node,
+                        source_key=nested_node.node_type.type,
                         target=node,
                         relation="PROP",
-                        key=key,
+                        target_key=key,
                     )
         elif property_configs:
             logger.error(
@@ -200,6 +201,8 @@ class ChainNodeManager(models.Manager):
                         chain=chain,
                         source=source_node,
                         target=latest_child,
+                        source_key="out",
+                        target_key="in",
                         relation="LINK",
                     )
 
@@ -210,7 +213,8 @@ class ChainNodeManager(models.Manager):
                         source=latest_child,
                         target=node,
                         relation="PROP",
-                        key=node_type.child_field,
+                        source_key=latest_child.node_type.type,
+                        target_key=node_type.child_field,
                     )
 
         logger.debug(f"created node_id={node.id} class_path={node.class_path}")
@@ -265,7 +269,10 @@ class ChainEdge(models.Model):
     target = models.ForeignKey(
         ChainNode, on_delete=models.CASCADE, related_name="incoming_edges"
     )
-    key = models.CharField(max_length=255, null=True)
+
+    source_key = models.CharField(max_length=255, null=True)
+    target_key = models.CharField(max_length=255, null=True)
+
     chain = models.ForeignKey(
         "Chain", on_delete=models.CASCADE, related_name="edges", null=True
     )

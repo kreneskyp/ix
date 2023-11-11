@@ -188,7 +188,7 @@
     "fields": {
       "source": "4a969db0-1227-4e4e-a0a5-283c5b53e37e",
       "target": "1c841e4f-1ece-4647-8e10-16469c197e64",
-      "key": "chat_memory",
+      "target_key": "chat_memory",
       "chain": "5d44787c-8f19-42e0-9705-b572ab281449",
       "input_map": null,
       "relation": "PROP"
@@ -200,7 +200,7 @@
     "fields": {
       "source": "1c841e4f-1ece-4647-8e10-16469c197e64",
       "target": "d6fc0452-8f21-4402-a777-4f81a17cfc82",
-      "key": "memory",
+      "target_key": "memory",
       "chain": "5d44787c-8f19-42e0-9705-b572ab281449",
       "input_map": null,
       "relation": "PROP"
@@ -212,7 +212,7 @@
     "fields": {
       "source": "b04e3211-0c4c-47c5-aa56-4fdf1583d616",
       "target": "d6fc0452-8f21-4402-a777-4f81a17cfc82",
-      "key": "llm",
+      "target_key": "llm",
       "chain": "5d44787c-8f19-42e0-9705-b572ab281449",
       "input_map": null,
       "relation": "PROP"
@@ -224,7 +224,7 @@
     "fields": {
       "source": "0dd311c8-1172-45b8-a885-7eddd5e922bf",
       "target": "25bc3dc9-266f-4b25-abc5-dc4577749e7b",
-      "key": "embedding",
+      "target_key": "embedding",
       "chain": "5d44787c-8f19-42e0-9705-b572ab281449",
       "input_map": null,
       "relation": "PROP"
@@ -236,7 +236,7 @@
     "fields": {
       "source": "25bc3dc9-266f-4b25-abc5-dc4577749e7b",
       "target": "d6fc0452-8f21-4402-a777-4f81a17cfc82",
-      "key": "retriever",
+      "target_key": "retriever",
       "chain": "5d44787c-8f19-42e0-9705-b572ab281449",
       "input_map": null,
       "relation": "PROP"

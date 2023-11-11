@@ -193,7 +193,7 @@
     "fields": {
       "source": "df82910c-5a6a-4782-9e24-c79bb956f351",
       "target": "4f257c0e-4164-49d4-a3a6-b83450b99071",
-      "key": "llm",
+      "target_key": "llm",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
       "input_map": null,
       "relation": "PROP"
@@ -205,7 +205,7 @@
     "fields": {
       "source": "acf5396c-c4e0-4d29-b59f-f5e0bee755ea",
       "target": "4f257c0e-4164-49d4-a3a6-b83450b99071",
-      "key": "memory",
+      "target_key": "memory",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
       "input_map": null,
       "relation": "PROP"
@@ -217,7 +217,7 @@
     "fields": {
       "source": "77ed925b-5617-4b6e-9ff2-6e3a787ef994",
       "target": "db12306b-786b-47ef-8373-b211c2f82dfd",
-      "key": "chat_memory",
+      "target_key": "chat_memory",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
       "input_map": null,
       "relation": "PROP"
@@ -229,7 +229,7 @@
     "fields": {
       "source": "2bd1464d-1020-4091-89a6-3429bff4b8a0",
       "target": "4f257c0e-4164-49d4-a3a6-b83450b99071",
-      "key": "prompt",
+      "target_key": "prompt",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
       "input_map": null,
       "relation": "PROP"
@@ -241,7 +241,7 @@
     "fields": {
       "source": "db12306b-786b-47ef-8373-b211c2f82dfd",
       "target": "4f257c0e-4164-49d4-a3a6-b83450b99071",
-      "key": "memory",
+      "target_key": "memory",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
       "input_map": null,
       "relation": "PROP"
@@ -253,7 +253,7 @@
     "fields": {
       "source": "c467c63f-becd-421d-8799-36fc22c58ba0",
       "target": "db12306b-786b-47ef-8373-b211c2f82dfd",
-      "key": "llm",
+      "target_key": "llm",
       "chain": "b7d8f662-12f6-4525-b07b-c9ea7c10004c",
       "input_map": null,
       "relation": "PROP"
