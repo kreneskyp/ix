@@ -42,17 +42,14 @@ export const useGraphForReactFlow = (graph) => {
   }, [graph]);
 
   return useMemo(() => {
-    let root = null;
     const nodeMap = {};
     graph?.nodes?.forEach((node) => {
       nodeMap[node.id] = node;
     });
 
+    const roots = graph?.nodes?.filter((node) => node.root);
     const nodes =
       graph?.nodes?.map((node) => {
-        if (node.root) {
-          root = node;
-        }
         return toReactFlowNode(node, nodeTypes[node.node_type_id]);
       }) || [];
 
@@ -81,17 +78,16 @@ export const useGraphForReactFlow = (graph) => {
       type: "root",
       position: { x: 100, y: 300 },
     });
-    if (root !== null) {
+    roots.map((root, i) => {
       edges.push({
-        id: "root_connector",
-        type: "default",
+        id: `root_connector_${i}`,
         source: "root",
         target: root.id,
         sourceHandle: "out",
         targetHandle: "in",
         ...defaultEdgeStyle,
       });
-    }
+    });
 
     return { chain: graph?.chain, nodes, edges, root };
   }, [graph?.chain?.id, colorMode]);

@@ -16,12 +16,12 @@ class PositionUpdate(BaseModel):
 
 
 class UpdatedRoot(BaseModel):
-    root: Optional[UUID]
-    old_roots: List[str]
+    roots: List[UUID]
+    old_roots: List[UUID]
 
 
 class UpdateRoot(BaseModel):
-    node_id: Optional[UUID]
+    node_ids: List[UUID]
 
 
 class NewNodeEdge(BaseModel):
