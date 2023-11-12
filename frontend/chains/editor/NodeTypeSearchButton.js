@@ -17,6 +17,7 @@ import { SelectedNodeContext } from "chains/editor/contexts";
 
 export const NodeTypeSearchButton = () => {
   const { isOpen, onToggle, onClose, onOpen } = useDisclosure();
+  const initialFocusRef = React.useRef();
 
   // auto-open when connector is [de]selected
   // HAX: couldn't get this to work when closeOnBlur={true}
@@ -54,6 +55,7 @@ export const NodeTypeSearchButton = () => {
       onClose={onClose}
       placement={"right-start"}
       closeOnBlur={false}
+      initialFocusRef={initialFocusRef}
     >
       <PopoverTrigger>
         <IconButton
@@ -77,7 +79,7 @@ export const NodeTypeSearchButton = () => {
         </PopoverHeader>
         <PopoverArrow />
         <PopoverCloseButton />
-        <NodeTypeSearch />
+        <NodeTypeSearch initialFocusRef={initialFocusRef} />
       </PopoverContent>
     </Popover>
   );

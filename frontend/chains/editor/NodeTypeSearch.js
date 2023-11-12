@@ -13,6 +13,9 @@ import {
   Heading,
   HStack,
   Input,
+  InputGroup,
+  InputRightElement,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -147,7 +150,7 @@ const NodeTypeSearchBadge = ({ type, onRemove }) => {
  * Provides a search widget including a search bar and a list of components.
  * Searching queries SearchNodeTypeQuery
  */
-export const NodeTypeSearch = () => {
+export const NodeTypeSearch = ({ initialFocusRef }) => {
   const { border } = useSideBarColorMode();
   const { input: inputStyle, scrollbar } = useEditorColorMode();
   const { selectedConnector } = useContext(SelectedNodeContext);
@@ -224,14 +227,22 @@ export const NodeTypeSearch = () => {
         ))}
       </Box>
       <Box px={2}>
-        <Input
-          onChange={onSearchChange}
-          placeholder="search components"
-          mb={2}
-          borderColor={border}
-          value={query.search}
-          {...inputStyle}
-        />
+        <InputGroup>
+          <Input
+            onChange={onSearchChange}
+            placeholder="search components"
+            mt={2}
+            mb={2}
+            mx={1}
+            borderColor={border}
+            value={query.search}
+            {...inputStyle}
+            ref={initialFocusRef}
+          />
+          <InputRightElement>
+            {isLoading && <Spinner size={"sm"} />}
+          </InputRightElement>
+        </InputGroup>
       </Box>
       <VStack
         overflowY="auto"
