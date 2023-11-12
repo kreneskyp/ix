@@ -71,6 +71,7 @@ export const NodeTypeSearchButton = () => {
         zIndex={99998}
         pb={2}
         boxShadow="0px 0px 10px 0px rgba(0,0,0,0.15)"
+        css={NO_SCROLLBAR_CSS}
       >
         <PopoverHeader
           borderBottom="2px solid"

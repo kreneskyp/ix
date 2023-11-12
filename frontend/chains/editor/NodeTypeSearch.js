@@ -221,6 +221,7 @@ export const NodeTypeSearch = ({ initialFocusRef }) => {
       width="100%"
       minWidth={170}
       overflowY={"hidden"}
+      overflowX={"hidden"}
       maxHeight={"calc(100vh - 170px)"}
     >
       <Box px={3} pb={1}>
@@ -253,6 +254,7 @@ export const NodeTypeSearch = ({ initialFocusRef }) => {
         maxHeight={"calc(100vh - 170px)"}
         spacing={2}
         width="100%"
+        overflowX={"hidden"}
       >
         {groupedTypes?.map(([key, group]) => {
           return <NodeTypeGroup key={key} typeKey={key} group={group} />;
