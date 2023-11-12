@@ -27,7 +27,8 @@ import { SelectedNodeContext } from "chains/editor/contexts";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const NodeSelectorHeader = ({ label, icon }) => {
-  const { color } = useSideBarColorMode();
+  const { color, isLight } = useSideBarColorMode();
+  const style = getOptionStyle(isLight);
 
   return (
     <HStack
@@ -38,6 +39,7 @@ const NodeSelectorHeader = ({ label, icon }) => {
       borderColor="gray.600"
       px={2}
       pt={1}
+      {...style.label}
     >
       <FontAwesomeIcon icon={icon} />
       <Text>{label}</Text>
@@ -112,7 +114,7 @@ const NodeTypeGroup = ({ typeKey, group }) => {
   const typeStyle = NODE_STYLES[typeKey] || DEFAULT_NODE_STYLE;
 
   return (
-    <Box width="95%">
+    <Box mx={2} px={2} width={"100%"}>
       <NodeSelectorHeader label={typeKey} icon={typeStyle.icon} />
       {group?.map((type) => {
         return <NodeSelector key={type.id} type={type} />;
