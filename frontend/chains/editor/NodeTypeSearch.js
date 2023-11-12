@@ -27,6 +27,7 @@ import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 import { SelectedNodeContext } from "chains/editor/contexts";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { ComponentTypeMultiSelect } from "chains/editor/ComponentTypeMultiSelect";
 
 const NodeSelectorHeader = ({ label, icon }) => {
   const { color, isLight } = useSideBarColorMode();
@@ -156,10 +157,13 @@ export const NodeTypeSearch = ({ initialFocusRef }) => {
   const [query, setQuery] = useState({ search: "", types: [] });
 
   // component query
-  const { load, page, clearPage } = usePaginatedAPI(`/api/node_types/`, {
-    load: false,
-    limit: 50,
-  });
+  const { load, page, clearPage, isLoading } = usePaginatedAPI(
+    `/api/node_types/`,
+    {
+      load: false,
+      limit: 50,
+    }
+  );
   const { callback: debouncedLoad, clear: clearLoad } = useDebounce(load, 400);
 
   // trigger query when query state changes
@@ -199,13 +203,12 @@ export const NodeTypeSearch = ({ initialFocusRef }) => {
     setQuery((prev) => ({ ...prev, search: event.target.value }));
   }, []);
 
-  // callback for removing a type from the query
-  const onRemoveType = useCallback((type) => {
-    setQuery((prev) => ({
-      ...prev,
-      types: prev.types.filter((t) => t !== type),
-    }));
-  }, []);
+  const handleTypeChange = useCallback(
+    (types) => {
+      setQuery((prev) => ({ ...prev, types }));
+    },
+    [setQuery]
+  );
 
   const groupedTypes = useMemo(() => {
     return groupByNodeTypeGroup(page?.objects || []);
@@ -221,9 +224,10 @@ export const NodeTypeSearch = ({ initialFocusRef }) => {
       maxHeight={"calc(100vh - 170px)"}
     >
       <Box px={3} pb={1}>
-        {query.types?.map((type) => (
-          <NodeTypeSearchBadge key={type} type={type} onRemove={onRemoveType} />
-        ))}
+        <ComponentTypeMultiSelect
+          value={query.types}
+          onChange={handleTypeChange}
+        />
       </Box>
       <Box px={2}>
         <InputGroup>

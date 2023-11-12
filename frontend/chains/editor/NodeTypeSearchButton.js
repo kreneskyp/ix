@@ -14,6 +14,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { SelectedNodeContext } from "chains/editor/contexts";
+import { ComponentTypeMultiSelect } from "chains/editor/ComponentTypeMultiSelect";
+import { NO_SCROLLBAR_CSS } from "site/css";
 
 export const NodeTypeSearchButton = () => {
   const { isOpen, onToggle, onClose, onOpen } = useDisclosure();
