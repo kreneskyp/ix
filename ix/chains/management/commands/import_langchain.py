@@ -20,13 +20,9 @@ from ix.chains.fixture_src.embeddings import (
     MOSAICML_INSTRUCTOR_EMBEDDINGS,
 )
 from ix.chains.fixture_src.ix import CHAT_MODERATOR_TYPE
+from ix.chains.fixture_src.lcel import LANGCHAIN_EXPRESSION_LANGUAGE
 from ix.chains.fixture_src.llm import LLMS
-from ix.chains.fixture_src.memory import (
-    CONVERSATION_BUFFER_MEMORY,
-    CONVERSATION_SUMMARY_BUFFER_MEMORY,
-    CONVERSATION_BUFFER_WINDOW_MEMORY,
-    CONVERSATION_TOKEN_BUFFER_MEMORY,
-)
+from ix.chains.fixture_src.memory import MEMORY
 from ix.chains.fixture_src.openai_functions import (
     FUNCTION_SCHEMA,
     FUNCTION_OUTPUT_PARSER,
@@ -88,14 +84,7 @@ COMPONENTS.extend(
 )
 
 # Memory
-COMPONENTS.extend(
-    [
-        CONVERSATION_BUFFER_MEMORY,
-        CONVERSATION_BUFFER_WINDOW_MEMORY,
-        CONVERSATION_SUMMARY_BUFFER_MEMORY,
-        CONVERSATION_TOKEN_BUFFER_MEMORY,
-    ]
-)
+COMPONENTS.extend(MEMORY)
 
 # Memory Backends
 COMPONENTS.extend(
