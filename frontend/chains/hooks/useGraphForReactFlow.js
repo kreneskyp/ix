@@ -1,15 +1,28 @@
 import { useMemo } from "react";
 import { useColorMode } from "@chakra-ui/color-mode";
 
-export const getEdgeStyle = (colorMode, type) => {
-  const color = colorMode === "light" ? "black" : "white";
+export const getEdgeStyle = (colorMode) => {
+  const linkColor = colorMode === "light" ? "black" : "white";
+  const propColor = colorMode === "light" ? "#888" : "#666";
+
   return {
-    type: "smoothstep",
-    markerEnd: { type: "arrowclosed", color },
-    style: {
-      stroke: color,
-      strokeWidth: 2,
-      strokeLinecap: "round",
+    LINK: {
+      type: "smoothstep",
+      markerEnd: { type: "arrowclosed", color: linkColor },
+      style: {
+        stroke: linkColor,
+        strokeWidth: 2,
+        strokeLinecap: "round",
+      },
+    },
+    PROP: {
+      type: "smoothstep",
+      markerEnd: { type: "arrowclosed", color: propColor },
+      style: {
+        stroke: propColor,
+        strokeWidth: 2,
+        strokeLinecap: "round",
+      },
     },
   };
 };
@@ -53,8 +66,8 @@ export const useGraphForReactFlow = (graph) => {
         return toReactFlowNode(node, nodeTypes[node.node_type_id]);
       }) || [];
 
-    const chainPropEdgeStyle = getEdgeStyle(colorMode, "chain");
-    const defaultEdgeStyle = getEdgeStyle(colorMode);
+    const edgeStyle = getEdgeStyle(colorMode, "chain");
+    const defaultEdgeStyle = edgeStyle.LINK;
 
     const edges =
       graph?.edges?.map((edge) => {
@@ -65,7 +78,7 @@ export const useGraphForReactFlow = (graph) => {
           target: edge.target_id,
           sourceHandle: edge.source_key,
           targetHandle: edge.target_key,
-          ...(sourceType === "chain" ? chainPropEdgeStyle : defaultEdgeStyle),
+          ...(edgeStyle[edge.relation] || defaultEdgeStyle),
           data: {
             id: edge.id,
           },
