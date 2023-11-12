@@ -32,7 +32,7 @@ const TOOL_HELP_TEXT =
 const DOCUMENT_TRANSFORMER_HELP_TEXT = "Transformer that operates on documents";
 const VECTORSTORE_HELP_TEXT = "VectorStores store and retrieve vectors";
 
-const COMPONENT_TYPE_OPTIONS = [
+export const COMPONENT_TYPE_OPTIONS = [
   { value: "agent", label: "Agent", helpText: AGENT_HELP_TEXT },
   { value: "chain", label: "Chain", helpText: CHAIN_HELP_TEXT },
   { value: "prompt", label: "Prompt", helpText: PROMPT_HELP_TEXT },
@@ -70,7 +70,7 @@ const COMPONENT_TYPE_OPTIONS = [
   },
 ];
 
-const getOptionStyle = (isLight) => {
+export const getOptionStyle = (isLight) => {
   return isLight
     ? {
         hover: {
@@ -105,11 +105,11 @@ const getOptionStyle = (isLight) => {
       };
 };
 
-const findOption = (value) => {
+export const findOption = (value) => {
   return COMPONENT_TYPE_OPTIONS.find((option) => option.value === value);
 };
 
-const MenuList = ({ children }) => {
+export const MenuList = ({ children }) => {
   const { isLight } = useEditorColorMode();
   const theme = useTheme();
   const style = isLight
@@ -117,13 +117,13 @@ const MenuList = ({ children }) => {
         bg: "white",
         border: "1px solid",
         borderColor: "gray.200",
-        boxShadow: "md",
+        boxShadow: "0 0 10px rgba(0,0,0,0.5)",
       }
     : {
         bg: "gray.700",
         border: "1px solid",
         borderColor: "gray.600",
-        boxShadow: "md",
+        boxShadow: "0 0 10px rgba(0,0,0,0.5)",
       };
 
   const scrollbar_css = {
@@ -182,12 +182,22 @@ const ValueContainer = ({ children, ...props }) => {
   );
 };
 
+export const useSelectStyles = () => {
+  const { input: styles } = useEditorColorMode();
+  return {
+    menuPortal: (base) => ({ ...base, zIndex: 99999 }),
+    valueContainer: (base) => ({ ...base, padding: 0 }),
+    input: (base) => ({ ...base, ...styles }),
+  };
+};
+
 export const ComponentTypeSelect = ({ chain, onChange, value, ...props }) => {
   const { input: styles } = useEditorColorMode();
   const chakraStyles = {
     control: (base) => ({ ...base, ...styles, width: 400 }),
     dropdownIndicator: (base) => ({ ...base, ...styles }),
   };
+  const selectStyles = useSelectStyles();
 
   const CustomOption = React.useMemo(() => {
     const onClick = (newValue) => {
@@ -233,11 +243,7 @@ export const ComponentTypeSelect = ({ chain, onChange, value, ...props }) => {
         default={"agent"}
         options={COMPONENT_TYPE_OPTIONS}
         value={findOption(chain?.type || "agent")}
-        styles={{
-          menuPortal: (base) => ({ ...base, zIndex: 99999 }),
-          valueContainer: (base) => ({ ...base, padding: 0 }),
-          input: (base) => ({ ...base, ...styles }),
-        }}
+        styles={selectStyles}
         menuPortalTarget={document.body}
         chakraStyles={chakraStyles}
         components={{ Option: CustomOption, MenuList, ValueContainer }}
