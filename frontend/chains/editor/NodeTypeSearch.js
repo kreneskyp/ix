@@ -5,12 +5,11 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { NodeSelector } from "chains/editor/NodeSelector";
+import { getOptionStyle, NodeSelector } from "chains/editor/NodeSelector";
 import { useDebounce } from "utils/hooks/useDebounce";
 import {
   Badge,
   Box,
-  Heading,
   HStack,
   Input,
   InputGroup,
