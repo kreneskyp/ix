@@ -84,8 +84,6 @@ export const ChainEditorView = () => {
   const graph =
     isNew || id !== response?.data?.chain?.id ? null : response?.data;
 
-  const rightSidebarDisclosure = useDisclosure({ defaultIsOpen: true });
-
   const onAPIError = useCallback((err) => {
     toast({
       title: "Error",
@@ -98,21 +96,11 @@ export const ChainEditorView = () => {
 
   let content;
   if (isNew) {
-    content = (
-      <ChainGraphEditor
-        key={idRef}
-        rightSidebarDisclosure={rightSidebarDisclosure}
-      />
-    );
+    content = <ChainGraphEditor key={idRef} />;
   } else if (isLoading || !graph) {
     content = <Spinner />;
   } else {
-    content = (
-      <ChainGraphEditor
-        graph={graph}
-        rightSidebarDisclosure={rightSidebarDisclosure}
-      />
-    );
+    content = <ChainGraphEditor graph={graph} />;
   }
 
   return (
@@ -136,7 +124,7 @@ export const ChainEditorView = () => {
               >
                 {content}
               </VStack>
-              <EditorRightSidebar {...rightSidebarDisclosure} />
+              <EditorRightSidebar />
             </HStack>
           </LayoutContent>
         </Layout>
