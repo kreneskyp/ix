@@ -37,6 +37,7 @@
     "@testing-library/user-event": "^13.5.0",
     "babel-loader": "^9.1.2",
     "babel-plugin-relay": "^15.0.0",
+    "chakra-react-select": "^4.7.6",
     "css-loader": "^6.7.3",
     "framer-motion": "^10.11.2",
     "graphql": "^16.6.0",
