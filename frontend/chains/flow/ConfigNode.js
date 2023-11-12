@@ -199,7 +199,7 @@ export const ConfigNode = ({ id, data, selected }) => {
         borderWidth="0px"
         borderRadius={8}
         padding="0"
-        minWidth={250}
+        minWidth={200}
         {...nodeStyle}
       >
         <Handle
