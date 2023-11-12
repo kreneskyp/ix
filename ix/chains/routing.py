@@ -10,6 +10,9 @@ from langchain.callbacks.manager import (
 
 from langchain.chains import SequentialChain
 from langchain.chains.base import Chain
+from langchain.schema.runnable import Runnable, RunnableSequence
+
+from ix.chains.components.lcel import init_sequence
 from ix.chains.models import Chain as ChainModel
 from ix.conftest import ix_context
 
@@ -29,8 +32,8 @@ class MapSubchain(Chain):
     Results are output as a list under `output_key`
     """
 
-    chain: SequentialChain  #: :meta private:
-    chains: List[Chain]
+    chain: Runnable  #: :meta private:
+    chains: List[Runnable]
     input_variables: List[str]
     map_input: str
     map_input_to: str
@@ -41,7 +44,9 @@ class MapSubchain(Chain):
         map_input_to = kwargs.get("map_input_to", "map_input")
         output_key = kwargs.get("output_key", "outputs")
         memory = kwargs.get("memory", None)
-        chains = kwargs.get("chains", [])
+        chains = kwargs.pop("chains", [])
+        if not isinstance(chains, list):
+            chains = [chains]
 
         # add input that will be mapped on each iteration
         if map_input_to not in input_variables:
@@ -56,7 +61,7 @@ class MapSubchain(Chain):
         )
         kwargs["chain"] = chain
 
-        super().__init__(*args, **kwargs)
+        super().__init__(chains=chains, *args, **kwargs)
 
     @property
     def _chain_type(self) -> str:
