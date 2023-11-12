@@ -9,12 +9,17 @@ import {
   faMessage,
   faRobot,
   faTools,
+  faArrowRightToBracket,
+  faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { ChainNode } from "chains/flow/ChainNode";
+import { BranchNode } from "chains/flow/BranchNode";
+import { MapNode } from "chains/flow/MapNode";
 
 export const NODE_STYLES = {
   llm: {
     icon: faBrain,
+    component: ChainNode,
   },
   chain: {
     icon: faChain,
@@ -28,6 +33,7 @@ export const NODE_STYLES = {
   },
   prompt: {
     icon: faMessage,
+    component: ChainNode,
   },
   agent: {
     icon: faRobot,
@@ -47,6 +53,7 @@ export const NODE_STYLES = {
   },
   retriever: {
     icon: faFileImport,
+    component: ChainNode,
   },
   vectorstore: {
     icon: faDatabase,
@@ -59,12 +66,21 @@ export const NODE_STYLES = {
   },
   tool: {
     icon: faTools,
+    component: ChainNode,
   },
   toolkit: {
     icon: faTools,
   },
   embeddings: {
     icon: faBrain,
+  },
+  branch: {
+    icon: faArrowRightFromBracket,
+    component: BranchNode,
+  },
+  map: {
+    icon: faArrowRightToBracket,
+    component: MapNode,
   },
 };
 
