@@ -62,7 +62,7 @@ export const ListForm = ({ label, list, onChange }) => {
       </HStack>
 
       <VStack align="stretch">
-        {items.map((value, index) => (
+        {items?.map((value, index) => (
           <HStack key={index}>
             <Input
               value={value}
