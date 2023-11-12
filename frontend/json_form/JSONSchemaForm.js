@@ -54,6 +54,11 @@ export const AutoField = ({
   // Select component based on explicit input type, field type, or default in that order.
   const input_key =
     global?.input_type || field.input_type || TYPE_INPUTS[field.type];
+
+  // do not render hidden fields
+  if (input_key === "hidden") {
+    return null;
+  }
   const FieldComponent = INPUTS[input_key] || Input;
   const value = config && name in config ? config[name] : field.default;
 
