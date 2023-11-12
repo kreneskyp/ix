@@ -14,9 +14,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { SelectedNodeContext } from "chains/editor/contexts";
+import { ComponentTypeMultiSelect } from "chains/editor/ComponentTypeMultiSelect";
+import { NO_SCROLLBAR_CSS } from "site/css";
 
 export const NodeTypeSearchButton = () => {
   const { isOpen, onToggle, onClose, onOpen } = useDisclosure();
+  const initialFocusRef = React.useRef();
 
   // auto-open when connector is [de]selected
   // HAX: couldn't get this to work when closeOnBlur={true}
@@ -54,6 +57,7 @@ export const NodeTypeSearchButton = () => {
       onClose={onClose}
       placement={"right-start"}
       closeOnBlur={false}
+      initialFocusRef={initialFocusRef}
     >
       <PopoverTrigger>
         <IconButton
@@ -67,6 +71,7 @@ export const NodeTypeSearchButton = () => {
         zIndex={99998}
         pb={2}
         boxShadow="0px 0px 10px 0px rgba(0,0,0,0.15)"
+        css={NO_SCROLLBAR_CSS}
       >
         <PopoverHeader
           borderBottom="2px solid"
@@ -77,7 +82,7 @@ export const NodeTypeSearchButton = () => {
         </PopoverHeader>
         <PopoverArrow />
         <PopoverCloseButton />
-        <NodeTypeSearch />
+        <NodeTypeSearch initialFocusRef={initialFocusRef} />
       </PopoverContent>
     </Popover>
   );

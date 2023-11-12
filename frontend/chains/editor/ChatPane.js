@@ -123,9 +123,9 @@ export const ChatPane = ({ chatId }) => {
       {isLoading || !graph ? (
         <Spinner />
       ) : (
-        <Box mt={0}>
+        <Box mt={0} mt={2}>
           <ChatInterface graph={graph} />
-          <Box width={"100%"} bg={"gray.800"} p={1}>
+          <Box width={"100%"} bg={"gray.800"} p={1} m={0}>
             <IconButton
               icon={<FontAwesomeIcon icon={faTrash} bg={"gray.800"} />}
               onClick={clearMessages}

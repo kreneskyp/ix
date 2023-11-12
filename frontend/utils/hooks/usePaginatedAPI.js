@@ -7,7 +7,7 @@ export function usePaginatedAPI(
   { offset = 0, limit = 10, load = true, loadDependencies = [] } = {}
 ) {
   const [page, setPage] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(load);
 
   const _load = useCallback(
     async (args = {}) => {

@@ -1,8 +1,10 @@
 import { useColorMode } from "@chakra-ui/color-mode";
+import { useTheme } from "@chakra-ui/react";
 
 export const useEditorColorMode = () => {
   const { colorMode } = useColorMode();
   const isLight = colorMode === "light";
+  const theme = useTheme();
 
   const retrieval = isLight ? "gray.700" : "gray.800";
 
@@ -69,7 +71,7 @@ export const useEditorColorMode = () => {
       text_splitter: retrieval,
       tool: isLight ? "yellow.500" : "yellow.600",
       toolkit: isLight ? "yellow.500" : "yellow.600",
-      embeddings:  isLight ? "red.300" : "red.300",
+      embeddings: isLight ? "red.300" : "red.300",
       output_parser: isLight ? "gray.400" : "gray.700",
       document_transformer: retrieval,
       vectorstore: retrieval,
@@ -79,13 +81,13 @@ export const useEditorColorMode = () => {
     scrollbar: isLight
       ? {
           "&::-webkit-scrollbar": {
-            width: "8px",
+            width: "5px",
           },
           "&::-webkit-scrollbar-track": {
             background: "transparent",
           },
           "&::-webkit-scrollbar-thumb": {
-            background: "#bbb",
+            background: "#ddd",
             borderRadius: "4px",
           },
           "&::-webkit-scrollbar-thumb:hover": {
@@ -94,17 +96,17 @@ export const useEditorColorMode = () => {
         }
       : {
           "&::-webkit-scrollbar": {
-            width: "8px",
+            width: "5px",
           },
           "&::-webkit-scrollbar-track": {
             background: "transparent",
           },
           "&::-webkit-scrollbar-thumb": {
-            background: "#333",
+            background: theme.colors.gray[600],
             borderRadius: "4px",
           },
           "&::-webkit-scrollbar-thumb:hover": {
-            background: "#555",
+            background: theme.colors.gray[500],
           },
         },
     input: isLight

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Tab, TabPanel, Tooltip } from "@chakra-ui/react";
+import { Box, Tab, TabPanel, Tooltip } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faComments,
@@ -10,16 +10,14 @@ import { ConfigEditorPane } from "chains/editor/ConfigEditorPane";
 import { ChainEditorPane } from "chains/editor/ChainEditorPane";
 import { TestChatPane } from "chains/editor/TestChatPane";
 import { SelectedNodeContext } from "chains/editor/contexts";
-import { RightSidebar } from "site/RightSidebar";
 import {
   SidebarTabList,
   SidebarTabPanels,
   SidebarTabs,
 } from "site/SidebarTabs";
+import Sidebar from "site/sidebar/Sidebar";
 
-const SIZES = ["sm", "xl", "xs"];
-
-export const EditorRightSidebar = ({ isOpen, onClose }) => {
+export const EditorRightSidebar = () => {
   // Tabs state
   const [tabIndex, setTabIndex] = React.useState(1);
 
@@ -33,7 +31,7 @@ export const EditorRightSidebar = ({ isOpen, onClose }) => {
   }, [selectedNode]);
 
   return (
-    <RightSidebar isOpen={isOpen} onClose={onClose} sizes={SIZES}>
+    <Sidebar position={"right"}>
       <SidebarTabs index={tabIndex} onChange={setTabIndex}>
         <SidebarTabList>
           <Tooltip label="Node" aria-label="Node">
@@ -66,6 +64,7 @@ export const EditorRightSidebar = ({ isOpen, onClose }) => {
             flex="1"
             flexDirection="column"
             justifyContent="flex-end"
+            height={"calc(100vh)"}
           >
             <TestChatPane />
           </TabPanel>
@@ -77,6 +76,6 @@ export const EditorRightSidebar = ({ isOpen, onClose }) => {
           </TabPanel>
         </SidebarTabPanels>
       </SidebarTabs>
-    </RightSidebar>
+    </Sidebar>
   );
 };

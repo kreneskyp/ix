@@ -34,6 +34,7 @@ import { useConnectionValidator } from "chains/hooks/useConnectionValidator";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightLeft } from "@fortawesome/free-solid-svg-icons";
 import { useChainUpdate } from "chains/hooks/useChainUpdate";
+import { useRightSidebarContext } from "site/sidebar/context";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
@@ -49,7 +50,7 @@ const getExpectedTypes = (connector) => {
     : new Set([connector.source_type]);
 };
 
-const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
+const ChainGraphEditor = ({ graph }) => {
   const reactFlowWrapper = useRef(null);
   const edgeUpdate = useRef(true);
   const { call: loadChain } = useAxios();
@@ -142,7 +143,7 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
           // create flow edge to validate and add to ReactFlow
           const edgeId = uuid4();
           const flowNodeType = nodeType.type;
-          const style = getEdgeStyle(colorMode, flowNodeType);
+          const style = getEdgeStyle(colorMode);
           flowEdge = {
             id: edgeId,
             source: isOutput ? node.id : newNodeID,
@@ -361,6 +362,7 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
     }
   }, [graph?.chain?.id]);
 
+  const { toggleSidebar } = useRightSidebarContext();
   return (
     <Box height="93vh">
       <Box display="flex" alignItems="center">
@@ -382,7 +384,7 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
         <IconButton
           ml="auto"
           icon={<FontAwesomeIcon icon={faRightLeft} />}
-          onClick={rightSidebarDisclosure.onOpen}
+          onClick={toggleSidebar}
           aria-label="Open Sidebar"
           title={"Open Sidebar"}
         />

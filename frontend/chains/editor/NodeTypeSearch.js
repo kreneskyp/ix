@@ -5,14 +5,16 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { NodeSelector } from "chains/editor/NodeSelector";
+import { getOptionStyle, NodeSelector } from "chains/editor/NodeSelector";
 import { useDebounce } from "utils/hooks/useDebounce";
 import {
   Badge,
   Box,
-  Heading,
   HStack,
   Input,
+  InputGroup,
+  InputRightElement,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -25,9 +27,11 @@ import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 import { SelectedNodeContext } from "chains/editor/contexts";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { ComponentTypeMultiSelect } from "chains/editor/ComponentTypeMultiSelect";
 
 const NodeSelectorHeader = ({ label, icon }) => {
-  const { color } = useSideBarColorMode();
+  const { color, isLight } = useSideBarColorMode();
+  const style = getOptionStyle(isLight);
 
   return (
     <HStack
@@ -38,6 +42,7 @@ const NodeSelectorHeader = ({ label, icon }) => {
       borderColor="gray.600"
       px={2}
       pt={1}
+      {...style.label}
     >
       <FontAwesomeIcon icon={icon} />
       <Text>{label}</Text>
@@ -112,7 +117,7 @@ const NodeTypeGroup = ({ typeKey, group }) => {
   const typeStyle = NODE_STYLES[typeKey] || DEFAULT_NODE_STYLE;
 
   return (
-    <Box width="95%">
+    <Box mx={2} px={2} width={"100%"}>
       <NodeSelectorHeader label={typeKey} icon={typeStyle.icon} />
       {group?.map((type) => {
         return <NodeSelector key={type.id} type={type} />;
@@ -145,17 +150,20 @@ const NodeTypeSearchBadge = ({ type, onRemove }) => {
  * Provides a search widget including a search bar and a list of components.
  * Searching queries SearchNodeTypeQuery
  */
-export const NodeTypeSearch = () => {
+export const NodeTypeSearch = ({ initialFocusRef }) => {
   const { border } = useSideBarColorMode();
   const { input: inputStyle, scrollbar } = useEditorColorMode();
   const { selectedConnector } = useContext(SelectedNodeContext);
   const [query, setQuery] = useState({ search: "", types: [] });
 
   // component query
-  const { load, page, clearPage } = usePaginatedAPI(`/api/node_types/`, {
-    load: false,
-    limit: 50,
-  });
+  const { load, page, clearPage, isLoading } = usePaginatedAPI(
+    `/api/node_types/`,
+    {
+      load: false,
+      limit: 50,
+    }
+  );
   const { callback: debouncedLoad, clear: clearLoad } = useDebounce(load, 400);
 
   // trigger query when query state changes
@@ -195,13 +203,12 @@ export const NodeTypeSearch = () => {
     setQuery((prev) => ({ ...prev, search: event.target.value }));
   }, []);
 
-  // callback for removing a type from the query
-  const onRemoveType = useCallback((type) => {
-    setQuery((prev) => ({
-      ...prev,
-      types: prev.types.filter((t) => t !== type),
-    }));
-  }, []);
+  const handleTypeChange = useCallback(
+    (types) => {
+      setQuery((prev) => ({ ...prev, types }));
+    },
+    [setQuery]
+  );
 
   const groupedTypes = useMemo(() => {
     return groupByNodeTypeGroup(page?.objects || []);
@@ -214,22 +221,32 @@ export const NodeTypeSearch = () => {
       width="100%"
       minWidth={170}
       overflowY={"hidden"}
+      overflowX={"hidden"}
       maxHeight={"calc(100vh - 170px)"}
     >
       <Box px={3} pb={1}>
-        {query.types?.map((type) => (
-          <NodeTypeSearchBadge key={type} type={type} onRemove={onRemoveType} />
-        ))}
+        <ComponentTypeMultiSelect
+          value={query.types}
+          onChange={handleTypeChange}
+        />
       </Box>
       <Box px={2}>
-        <Input
-          onChange={onSearchChange}
-          placeholder="search components"
-          mb={2}
-          borderColor={border}
-          value={query.search}
-          {...inputStyle}
-        />
+        <InputGroup>
+          <Input
+            onChange={onSearchChange}
+            placeholder="search components"
+            mt={2}
+            mb={2}
+            mx={1}
+            borderColor={border}
+            value={query.search}
+            {...inputStyle}
+            ref={initialFocusRef}
+          />
+          <InputRightElement>
+            {isLoading && <Spinner size={"sm"} />}
+          </InputRightElement>
+        </InputGroup>
       </Box>
       <VStack
         overflowY="auto"
@@ -237,6 +254,7 @@ export const NodeTypeSearch = () => {
         maxHeight={"calc(100vh - 170px)"}
         spacing={2}
         width="100%"
+        overflowX={"hidden"}
       >
         {groupedTypes?.map(([key, group]) => {
           return <NodeTypeGroup key={key} typeKey={key} group={group} />;
