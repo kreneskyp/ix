@@ -308,12 +308,15 @@ class Chain(OwnedModel):
     def __str__(self):
         return f"{self.name} ({self.id})"
 
-    def load_chain(self, context) -> LangChain:
-        return self.root.load(context)
+    def load_chain(self, context) -> Runnable:
+        from ix.chains.loaders.core import init_chain_flow
 
-    async def aload_chain(self, context) -> LangChain:
-        root = await ChainNode.objects.aget(chain_id=self.id, root=True)
-        return await sync_to_async(root.load)(context)
+        return init_chain_flow(self, context=context)
+
+    async def aload_chain(self, context) -> Runnable:
+        from ix.chains.loaders.core import init_chain_flow
+
+        return await sync_to_async(init_chain_flow)(self, context=context)
 
     def clear_chain(self):
         """removes the chain nodes associated with this chain"""

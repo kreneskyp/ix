@@ -1,6 +1,6 @@
 import logging
 from copy import deepcopy
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Callable
 from unittest.mock import MagicMock
 
 import pytest
@@ -9,6 +9,7 @@ import redis
 from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.core.management import call_command
+from langchain.schema.runnable import Runnable
 
 from ix.agents.models import Agent
 from ix.agents.tests.mock_llm import MockChatOpenAI
@@ -33,6 +34,7 @@ from ix.task_log.tests.fake import (
     fake_chain,
     afake_think,
     afake_task,
+    afake_chain,
 )
 from ix.ix_users.tests.fake import get_default_user, afake_user
 from ix.utils.importlib import import_class, _import_class
@@ -285,7 +287,7 @@ def mock_chain(mocker):
 
 
 @pytest.fixture()
-def load_chain(node_types, task, clean_redis):
+def load_chain(node_types, task, clean_redis) -> Callable[[Dict[str, Any]], Runnable]:
     """
     yields a function for creating a mock chain. Used for generating
     mock functions for other chains and configs. The function takes a
@@ -293,11 +295,11 @@ def load_chain(node_types, task, clean_redis):
     loaded and returned.
     """
 
-    def _mock_chain(config: Dict[str, Any], context: IxContext = None) -> Chain:
+    def _mock_chain(config: Dict[str, Any], context: IxContext = None) -> Runnable:
         chain = fake_chain()
-        chain_node = ChainNode.objects.create_from_config(chain, config, root=True)
+        ChainNode.objects.create_from_config(chain, config, root=True)
 
-        return chain_node.load(
+        return chain.load_chain(
             context or IxContext(agent=task.agent, task=task, chain=task.chain)
         )
 
@@ -316,13 +318,13 @@ async def aload_chain(anode_types, achat):
     chat = achat["chat"]
     task = await Task.objects.aget(id=chat.task_id)
     agent = await Agent.objects.aget(id=chat.lead_id)
-    chain = await Chain.objects.aget(id=task.chain_id)
+    chain = await afake_chain()
 
     async def _mock_chain(config: Dict[str, Any], context: IxContext = None) -> Chain:
-        chain_node = await sync_to_async(ChainNode.objects.create_from_config)(
+        await sync_to_async(ChainNode.objects.create_from_config)(
             chain, config, root=True
         )
-        return await sync_to_async(chain_node.load)(
+        return await chain.aload_chain(
             context or IxContext(agent=agent, task=task, chain=chain)
         )
 
