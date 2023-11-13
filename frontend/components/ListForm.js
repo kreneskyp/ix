@@ -33,12 +33,6 @@ export const ListForm = ({ label, list, onChange }) => {
     }
   }, [items]);
 
-  /**
-   * Updates the list items when an input field is changed.
-   *
-   * @param {Object} e - The event object from the input field.
-   * @param {number} index - The index of the item in the list.
-   */
   const handleInputChange = (e, index) => {
     const { value } = e.target;
     const updatedItems = [...items];
