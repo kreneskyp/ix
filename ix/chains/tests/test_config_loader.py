@@ -1,3 +1,4 @@
+import uuid
 from copy import deepcopy
 
 import pytest
@@ -44,12 +45,12 @@ from ix.chains.loaders.core import (
     aload_chain_flow,
     BranchPlaceholder,
     MapPlaceholder,
-    ainit_flow,
     ainit_chain_flow,
 )
 from ix.chains.loaders.memory import get_memory_session
 from ix.chains.loaders.text_splitter import TextSplitterShim
 from ix.chains.loaders.tools import extract_tool_kwargs
+from ix.chains.models import Chain
 from ix.chains.tests.mock_configs import (
     CONVERSATIONAL_RETRIEVAL_CHAIN,
     EMBEDDINGS,
@@ -65,9 +66,14 @@ from ix.chains.tests.mock_configs import (
     AGENT_MEMORY,
     REDIS_VECTORSTORE,
     OPENAI_LLM,
+    PROMPT_CHAT,
+    PROMPT_CHAT_0,
+    PROMPT_CHAT_1,
+    PROMPT_CHAT_2,
 )
 from ix.chains.tests.mock_memory import MockMemory
 from ix.chains.tests.test_templates import TEXT_SPLITTER
+from ix.conftest import aload_fixture
 from ix.memory.artifacts import ArtifactMemory
 from ix.task_log.tests.fake import afake_chain_node, afake_chain, afake_chain_edge
 from ix.utils.importlib import import_class
@@ -558,29 +564,37 @@ class TestLCELLoading:
     async def test_parallel(self, aix_context, mock_openai):
         """Test creating a RunnableParallel from node graph."""
 
-        RUNNABLE_MAP = {"class_path": RUNNABLE_MAP_CLASS_PATH, "config": {}}
+        foo_hash = str(uuid.uuid4())
+        bar_hash = str(uuid.uuid4())
+        RUNNABLE_MAP = {
+            "class_path": RUNNABLE_MAP_CLASS_PATH,
+            "config": {
+                "steps": ["foo", "bar"],
+                "steps_hash": [foo_hash, bar_hash],
+            },
+        }
 
         chain = await afake_chain()
         runnable_map = await afake_chain_node(
-            chain=chain, root=True, config=RUNNABLE_MAP
+            chain=chain, root=False, config=RUNNABLE_MAP
         )
-        prompt0 = await afake_chain_node(chain=chain, root=False, config=PROMPT_CHAT_0)
-        prompt1 = await afake_chain_node(chain=chain, root=False, config=PROMPT_CHAT_1)
+        prompt0 = await afake_chain_node(chain=chain, root=True, config=PROMPT_CHAT_0)
+        prompt1 = await afake_chain_node(chain=chain, root=True, config=PROMPT_CHAT_1)
         await afake_chain_edge(
             chain=chain,
             source=prompt0,
             target=runnable_map,
-            relation="PROP",
-            key="steps",
-            map_key="foo",
+            relation="LINK",
+            source_key="out",
+            target_key=foo_hash,
         )
         await afake_chain_edge(
             chain=chain,
             source=prompt1,
             target=runnable_map,
-            relation="PROP",
-            key="steps",
-            map_key="bar",
+            relation="LINK",
+            source_key="out",
+            target_key=bar_hash,
         )
 
         # test loaded runnable
@@ -602,7 +616,16 @@ class TestLCELLoading:
         }
 
     async def test_branch(self, aix_context, mock_openai):
-        RUNNABLE_BRANCH = {"class_path": RUNNABLE_BRANCH_CLASS_PATH, "config": {}}
+        foo_uuid = str(uuid.uuid4())
+        bar_uuid = str(uuid.uuid4())
+
+        RUNNABLE_BRANCH = {
+            "class_path": RUNNABLE_BRANCH_CLASS_PATH,
+            "config": {
+                "branches": ["foo", "bar"],
+                "branches_hash": [foo_uuid, bar_uuid],
+            },
+        }
 
         chain = await afake_chain()
         runnable_branch = await afake_chain_node(
@@ -613,26 +636,27 @@ class TestLCELLoading:
         prompt2 = await afake_chain_node(chain=chain, root=False, config=PROMPT_CHAT_2)
         await afake_chain_edge(
             chain=chain,
-            source=prompt0,
-            target=runnable_branch,
-            relation="PROP",
-            key="default",
+            source=runnable_branch,
+            target=prompt0,
+            relation="LINK",
+            source_key="default",
+            target_key="in",
         )
         await afake_chain_edge(
             chain=chain,
-            source=prompt1,
-            target=runnable_branch,
-            relation="PROP",
-            key="branches",
-            map_key="foo",
+            source=runnable_branch,
+            target=prompt1,
+            relation="LINK",
+            source_key=foo_uuid,
+            target_key="in",
         )
         await afake_chain_edge(
             chain=chain,
-            source=prompt2,
-            target=runnable_branch,
-            relation="PROP",
-            key="branches",
-            map_key="bar",
+            source=runnable_branch,
+            target=prompt2,
+            relation="LINK",
+            source_key=bar_uuid,
+            target_key="in",
         )
 
         runnable = await chain.aload_chain(context=aix_context)
@@ -1068,10 +1092,8 @@ class TestFlow:
         flow = await ainit_chain_flow(chain, context=aix_context)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
-            "steps": {
-                "a": {"input": "test", "node1": 0},
-                "b": {"input": "test", "node1": 0},
-            }
+            "a": {"input": "test", "node1": 0},
+            "b": {"input": "test", "node2": 0},
         }
 
     async def test_map_with_one_branch(self, lcel_map_with_one_branch, aix_context):
@@ -1082,9 +1104,7 @@ class TestFlow:
         flow = await ainit_chain_flow(chain, context=aix_context)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
-            "steps": {
-                "a": {"input": "test", "node1": 0},
-            }
+            "a": {"input": "test", "node1": 0},
         }
 
     async def test_sequence_in_map_start(self, lcel_sequence_in_map_start, aix_context):
@@ -1094,11 +1114,9 @@ class TestFlow:
         flow = await ainit_chain_flow(chain, context=aix_context)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
-            "steps": {
-                "a": {"input": "test", "node1": 0},
-                "b": {"input": "test", "sequence_0": 0, "sequence_1": 1},
-                "c": {"input": "test", "node2": 0},
-            }
+            "a": {"input": "test", "node1": 0},
+            "b": {"input": "test", "sequence_0": 0, "sequence_1": 1},
+            "c": {"input": "test", "node2": 0},
         }
 
     async def test_sequence_in_map_in_sequence(
@@ -1113,11 +1131,9 @@ class TestFlow:
         flow = await ainit_chain_flow(chain, context=aix_context)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
-            "steps": {
-                "a": {"input": "test", "node1": 0, "node2": 0},
-                "b": {"input": "test", "node1": 0, "sequence_1": 1},
-                "c": {"input": "test", "node1": 0, "node3": 0},
-            },
+            "a": {"input": "test", "node1": 0, "node2": 0},
+            "b": {"input": "test", "node1": 0, "sequence_1": 1},
+            "c": {"input": "test", "node1": 0, "node3": 0},
             "node4": 0,
         }
 
@@ -1133,11 +1149,9 @@ class TestFlow:
         flow = await ainit_chain_flow(chain, context=aix_context)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
-            "steps": {
-                "a": {"input": "test", "node1": 0, "node2": 0},
-                "b": {"input": "test", "node1": 0, "sequence_1": 1},
-                "c": {"input": "test", "node1": 0, "node3": 0},
-            },
+            "a": {"input": "test", "node1": 0, "node2": 0},
+            "b": {"input": "test", "node1": 0, "sequence_1": 1},
+            "c": {"input": "test", "node1": 0, "node3": 0},
             "node4": 0,
             "node5": 0,
         }
@@ -1149,11 +1163,9 @@ class TestFlow:
         flow = await ainit_chain_flow(chain, context=aix_context)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
-            "steps": {
-                "a": {"input": "test", "a": 0},
-                "b": {"input": "test", "b": 0},
-                "c": {"input": "test", "c": 0},
-            },
+            "a": {"input": "test", "a": 0},
+            "b": {"input": "test", "b": 0},
+            "c": {"input": "test", "c": 0},
             "node2": 0,
         }
 
@@ -1166,11 +1178,9 @@ class TestFlow:
         flow = await ainit_chain_flow(chain, context=aix_context)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
-            "steps": {
-                "a": {"input": "test", "a": 0},
-                "b": {"input": "test", "b": 0},
-                "c": {"input": "test", "c": 0},
-            },
+            "a": {"input": "test", "a": 0},
+            "b": {"input": "test", "b": 0},
+            "c": {"input": "test", "c": 0},
             "node2": 0,
             "node3": 0,
         }
@@ -1182,11 +1192,9 @@ class TestFlow:
         flow = await ainit_chain_flow(chain, context=aix_context)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
-            "steps": {
-                "a": {"input": "test", "node1": 0, "a": 0},
-                "b": {"input": "test", "node1": 0, "b": 0},
-                "c": {"input": "test", "node1": 0, "c": 0},
-            },
+            "a": {"input": "test", "node1": 0, "a": 0},
+            "b": {"input": "test", "node1": 0, "b": 0},
+            "c": {"input": "test", "node1": 0, "c": 0},
             "node2": 0,
         }
 
@@ -1197,11 +1205,9 @@ class TestFlow:
         flow = await ainit_chain_flow(chain, context=aix_context)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
-            "steps": {
-                "a": {"input": "test", "node1": 0, "a": 0},
-                "b": {"input": "test", "node1": 0, "b": 0},
-                "c": {"input": "test", "node1": 0, "c": 0},
-            },
+            "a": {"input": "test", "node1": 0, "a": 0},
+            "b": {"input": "test", "node1": 0, "b": 0},
+            "c": {"input": "test", "node1": 0, "c": 0},
             "node2": 0,
             "node3": 0,
         }
@@ -1213,17 +1219,13 @@ class TestFlow:
         flow = await ainit_chain_flow(chain, context=aix_context)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
-            "steps": {
-                "a": {"input": "test", "node1": 0},
-                "b": {
-                    "steps": {
-                        "a": {"input": "test", "a": 0},
-                        "b": {"input": "test", "b": 0},
-                        "c": {"input": "test", "c": 0},
-                    }
-                },
-                "c": {"input": "test", "node2": 0},
-            }
+            "a": {"input": "test", "node1": 0},
+            "b": {
+                "a": {"input": "test", "a": 0},
+                "b": {"input": "test", "b": 0},
+                "c": {"input": "test", "c": 0},
+            },
+            "c": {"input": "test", "node2": 0},
         }
 
     async def test_map_in_map_in_sequence_start(
@@ -1235,17 +1237,13 @@ class TestFlow:
         flow = await ainit_chain_flow(chain, context=aix_context)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
-            "steps": {
-                "a": {"input": "test", "node1": 0},
-                "b": {
-                    "steps": {
-                        "a": {"input": "test", "a": 0},
-                        "b": {"input": "test", "b": 0},
-                        "c": {"input": "test", "c": 0},
-                    }
-                },
-                "c": {"input": "test", "node2": 0},
+            "a": {"input": "test", "node1": 0},
+            "b": {
+                "a": {"input": "test", "a": 0},
+                "b": {"input": "test", "b": 0},
+                "c": {"input": "test", "c": 0},
             },
+            "c": {"input": "test", "node2": 0},
             "node3": 0,
         }
 
@@ -1258,17 +1256,13 @@ class TestFlow:
         flow = await ainit_chain_flow(chain, context=aix_context)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
-            "steps": {
-                "a": {"input": "test", "node1": 0},
-                "b": {
-                    "steps": {
-                        "a": {"input": "test", "a": 0},
-                        "b": {"input": "test", "b": 0},
-                        "c": {"input": "test", "c": 0},
-                    }
-                },
-                "c": {"input": "test", "node2": 0},
+            "a": {"input": "test", "node1": 0},
+            "b": {
+                "a": {"input": "test", "a": 0},
+                "b": {"input": "test", "b": 0},
+                "c": {"input": "test", "c": 0},
             },
+            "c": {"input": "test", "node2": 0},
             "node3": 0,
             "node4": 0,
         }
@@ -1282,17 +1276,13 @@ class TestFlow:
         flow = await ainit_chain_flow(chain, context=aix_context)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
-            "steps": {
-                "a": {"input": "test", "node1": 0, "node2": 0},
-                "b": {
-                    "steps": {
-                        "a": {"input": "test", "node1": 0, "a": 0},
-                        "b": {"input": "test", "node1": 0, "b": 0},
-                        "c": {"input": "test", "node1": 0, "c": 0},
-                    }
-                },
-                "c": {"input": "test", "node1": 0, "node3": 0},
-            }
+            "a": {"input": "test", "node1": 0, "node2": 0},
+            "b": {
+                "a": {"input": "test", "node1": 0, "a": 0},
+                "b": {"input": "test", "node1": 0, "b": 0},
+                "c": {"input": "test", "node1": 0, "c": 0},
+            },
+            "c": {"input": "test", "node1": 0, "node3": 0},
         }
 
     async def test_map_in_map_in_sequence_n2(
@@ -1304,17 +1294,13 @@ class TestFlow:
         flow = await ainit_chain_flow(chain, context=aix_context)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
-            "steps": {
-                "a": {"input": "test", "node1": 0, "node2": 0},
-                "b": {
-                    "steps": {
-                        "a": {"input": "test", "node1": 0, "a": 0},
-                        "b": {"input": "test", "node1": 0, "b": 0},
-                        "c": {"input": "test", "node1": 0, "c": 0},
-                    }
-                },
-                "c": {"input": "test", "node1": 0, "node3": 0},
+            "a": {"input": "test", "node1": 0, "node2": 0},
+            "b": {
+                "a": {"input": "test", "node1": 0, "a": 0},
+                "b": {"input": "test", "node1": 0, "b": 0},
+                "c": {"input": "test", "node1": 0, "c": 0},
             },
+            "c": {"input": "test", "node1": 0, "node3": 0},
             "node4": 0,
             "node5": 0,
         }
@@ -1446,7 +1432,9 @@ class TestFlow:
         }
         assert await flow.ainvoke(input={"a": 1}) == {"a": 1, "node1": 0}
         assert await flow.ainvoke(input={"b": 1}) == {
-            "steps": {"a": {"b": 1, "a": 0}, "b": {"b": 0}, "c": {"b": 1, "c": 0}}
+            "a": {"b": 1, "a": 0},
+            "b": {"b": 0},
+            "c": {"b": 1, "c": 0},
         }
 
     async def test_map_in_default_branch(self, lcel_map_in_default_branch, aix_context):
@@ -1457,11 +1445,9 @@ class TestFlow:
         # test loaded flow
         flow = await ainit_chain_flow(chain, context=aix_context)
         assert await flow.ainvoke(input={"input": "test"}) == {
-            "steps": {
-                "a": {"input": "test", "a": 0},
-                "b": {"input": "test", "b": 0},
-                "c": {"input": "test", "c": 0},
-            }
+            "a": {"input": "test", "a": 0},
+            "b": {"input": "test", "b": 0},
+            "c": {"input": "test", "c": 0},
         }
         assert await flow.ainvoke(input={"a": 1}) == {"a": 0}
         assert await flow.ainvoke(input={"b": 1}) == {"b": 0}

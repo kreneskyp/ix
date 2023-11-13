@@ -1,6 +1,8 @@
+import uuid
+
 from ix.chains.fixture_src.lcel import RUNNABLE_BRANCH_CLASS_PATH
 from ix.chains.loaders.core import BranchPlaceholder
-from ix.chains.models import ChainNode
+from ix.chains.models import ChainNode, NodeType
 from ix.chains.tests.fake import (
     afake_node_sequence,
     afake_node_map,
@@ -27,7 +29,7 @@ async def lcel_sequence(anode_types) -> dict:
 async def lcel_map(anode_types) -> dict:
     chain = await afake_chain()
     node1 = await afake_runnable(chain=chain, name="node1", root=True)
-    node2 = await afake_runnable(chain=chain, name="node1", root=True)
+    node2 = await afake_runnable(chain=chain, name="node2", root=True)
     map_placeholder = await afake_node_map(
         chain=chain,
         nodes={
@@ -656,12 +658,16 @@ async def lcel_branch_in_sequence(anode_types) -> dict:
         root=False,
     )
 
+    a_uuid = str(uuid.uuid4())
+    b_uuid = str(uuid.uuid4())
     branch = await ChainNode.objects.acreate(
         chain=chain,
         class_path=RUNNABLE_BRANCH_CLASS_PATH,
+        node_type=await NodeType.objects.aget(class_path=RUNNABLE_BRANCH_CLASS_PATH),
         root=False,
         config={
             "branches": ["a", "b"],
+            "branches_hash": [a_uuid, b_uuid],
         },
     )
     branch_placeholder = BranchPlaceholder(
@@ -678,25 +684,30 @@ async def lcel_branch_in_sequence(anode_types) -> dict:
         chain=chain,
         source=node0,
         target=branch_placeholder.node,
+        source_key="out",
+        target_key="in",
     )
     # edge from branch node to sequences
     await afake_chain_edge(
         chain=chain,
         source=branch_placeholder.node,
         target=node1,
-        key="default",
+        source_key="default",
+        target_key="in",
     )
     await afake_chain_edge(
         chain=chain,
         source=branch_placeholder.node,
         target=node2,
-        key="a",
+        source_key=a_uuid,
+        target_key="in",
     )
     await afake_chain_edge(
         chain=chain,
         source=branch_placeholder.node,
         target=node3,
-        key="b",
+        source_key=b_uuid,
+        target_key="in",
     )
 
     return {

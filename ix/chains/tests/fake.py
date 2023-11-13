@@ -8,7 +8,7 @@ from ix.chains.fixture_src.lcel import (
     RUNNABLE_BRANCH_CLASS_PATH,
 )
 from ix.chains.loaders.core import MapPlaceholder, BranchPlaceholder
-from ix.chains.models import Chain, ChainNode, ChainEdge
+from ix.chains.models import Chain, ChainNode, ChainEdge, NodeType
 from ix.chains.tests.mock_runnable import MOCK_RUNNABLE_CLASS_PATH
 from faker import Faker
 
@@ -46,7 +46,7 @@ MOCK_RUNNABLE = {
 }
 
 
-def fake_chain_node(**kwargs):
+def fake_chain_node(**kwargs) -> ChainNode:
     """
     Create a fake chain node.
     """
@@ -95,6 +95,9 @@ def afake_runnable(name="default", value=0, **kwargs):
 
 
 def fake_chain_edge(**kwargs):
+    if "key" in kwargs:
+        raise ValueError("key is deprecated, use target_key instead")
+
     chain = kwargs.get("chain", fake_chain())
 
     source_node = kwargs.get("source")
@@ -108,7 +111,8 @@ def fake_chain_edge(**kwargs):
     edge = ChainEdge.objects.create(
         source=source_node,
         target=target_node,
-        key=kwargs.get("key", "in"),
+        source_key=kwargs.get("source_key", source_node.node_type.type),
+        target_key=kwargs.get("target_key", "default_key"),
         map_key=kwargs.get("map_key", None),
         chain=chain,
         input_map=kwargs.get("input_map", {}),
@@ -130,7 +134,7 @@ def find_roots(
 ) -> List[ChainNode]:
     """Finds the first node(s) for a node or node group.
 
-    Used to find the node that should recieve the incoming edge when connecting
+    Used to find the node that should receive the incoming edge when connecting
     the node group to a sequence
     """
     if isinstance(node, list):
@@ -199,14 +203,26 @@ def fake_node_sequence(
             # The nodes should already be connected correctly internally.
             # Lastly, connect the outgoing edge to the map node itself.
             for map_root in find_roots(node):
-                fake_chain_edge(chain=chain, source=current_node, target=map_root)
+                fake_chain_edge(
+                    chain=chain,
+                    source=current_node,
+                    target=map_root,
+                    source_key="out",
+                    target_key="in",
+                )
             current_node = node.node
         elif isinstance(node, BranchPlaceholder):
             raise ValueError(
                 "Build sequence for branch's branches instead of including branch in sequence"
             )
         else:
-            fake_chain_edge(chain=chain, source=current_node, target=node)
+            fake_chain_edge(
+                chain=chain,
+                source=current_node,
+                target=node,
+                source_key="out",
+                target_key="in",
+            )
             current_node = node
     return nodes
 
@@ -238,20 +254,28 @@ def fake_node_map(
     root: bool = True,
 ) -> MapPlaceholder:
     """Add ChainEdges to match the structure of a dict of ChainNodes"""
+    node_map = nodes or fake_node_dict(chain, ["a", "b", "c"], root=root)
+
+    map_type = NodeType.objects.get(class_path=RUNNABLE_MAP_CLASS_PATH)
     map_node = ChainNode.objects.create(
         chain=chain,
         class_path=RUNNABLE_MAP_CLASS_PATH,
+        node_type=map_type,
         root=False,
+        config={
+            "steps": list(node_map.keys()),
+            "steps_hash": [str(uuid.uuid4()) for _ in range(len(node_map))],
+        },
     )
 
-    node_map = nodes or fake_node_dict(chain, ["a", "b", "c"], root=root)
     for map_key, node in node_map.items():
         if input_node is not None:
             fake_chain_edge(
                 chain=chain,
                 source=input_node,
                 target=node,
-                key="in",
+                source_key="out",
+                target_key="in",
                 relation="LINK",
             )
 
@@ -262,11 +286,15 @@ def fake_node_map(
         else:
             source = node
 
+        # calculate target from steps hash_list
+        index_of_key = map_node.config["steps"].index(map_key)
+        key_hash = map_node.config["steps_hash"][index_of_key]
+
         ChainEdge.objects.create(
             source=source,
             target=map_node,
-            key="steps",
-            map_key=map_key,
+            source_key="out",
+            target_key=key_hash,
             chain=chain,
             relation="LINK",
         )
@@ -289,13 +317,17 @@ def fake_node_branch(
     chain = chain or fake_chain()
 
     branch_keys = ["a", "b", "c"] if branches is None else [key for key, _ in branches]
+    branch_uuids = [str(uuid.uuid4()) for _ in range(len(branch_keys))]
 
+    branch_type = NodeType.objects.get(class_path=RUNNABLE_BRANCH_CLASS_PATH)
     branch_node = ChainNode.objects.create(
         chain=chain,
         class_path=RUNNABLE_BRANCH_CLASS_PATH,
+        node_type=branch_type,
         root=root,
         config={
             "branches": branch_keys,
+            "branches_hash": branch_uuids,
         },
     )
 
@@ -304,15 +336,28 @@ def fake_node_branch(
         (key, fake_runnable(chain=chain, name=key, root=False)) for key in branch_keys
     ]
 
+    # encode branches with uuids for edges
+    encoded_branches = [
+        (branch_uuids[i], branch_node) for i, [key, branch_node] in enumerate(branches)
+    ]
+
     for branch_root in find_roots(default):
         fake_chain_edge(
-            source=branch_node, target=branch_root, key="default", relation="LINK"
+            source=branch_node,
+            target=branch_root,
+            source_key="default",
+            target_key="in",
+            relation="LINK",
         )
 
-    for key, branch in branches:
+    for branch_uuid, branch in encoded_branches:
         for branch_root in find_roots(branch):
             fake_chain_edge(
-                source=branch_node, target=branch_root, key=key, relation="LINK"
+                source=branch_node,
+                target=branch_root,
+                source_key=branch_uuid,
+                target_key="in",
+                relation="LINK",
             )
 
     return BranchPlaceholder(
