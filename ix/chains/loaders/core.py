@@ -131,7 +131,10 @@ def load_secrets(config: dict, node_type: NodeType):
 
 
 def load_node(
-    node: ChainNode, context: IxContext, root=True, variables=None, as_template=False
+    node: ChainNode,
+    context: IxContext,
+    variables: Dict[str, Any] = None,
+    as_template: bool = False,
 ) -> Any:
     """
     Generic loader for loading the Langchain component a ChainNode represents.
@@ -171,50 +174,46 @@ def load_node(
     properties = node.incoming_edges.filter(relation="PROP").order_by("target_key")
     for group in itertools.groupby(properties, lambda x: x.target_key):
         key, edges = group
-        node_group = [edge.source for edge in edges]
-        logger.debug(f"Loading property target_key={key} node_group={node_group}")
+        edge_group: List[ChainEdge] = [edge for edge in edges]
+        logger.debug(f"Loading property target_key={key} edge_group={edge_group}")
 
         # choose the type the incoming connection is processed as. If the source node
         # will be converted to another type, use the as_type defined on the connection
         # this allows a single property loader to encapsulate any necessary conversions.
         # e.g. retriever converting Vectorstore.
         connector = node_type.connectors_as_dict[key]
-        as_type = connector.get("as_type", None) or node_group[0].node_type.type
+        as_type = connector.get("as_type", None) or edge_group[0].source.node_type.type
         connector_is_template = connector.get("template", False)
 
-        if node_group[0].node_type.type in {"chain", "agent"}:
-            # load a sequence of linked nodes into a children property
-            # this supports loading as a list of chains or auto-SequentialChain
-            first_instance = load_node(
-                node_group[0],
+        if connector.get("collection", None):
+            # load connector as a collection
+
+            config[key] = load_collection(
+                connector,
+                edge_group,
                 context,
-                root=False,
                 variables=variables,
-                as_template=connector_is_template,
+                # TODO: will templates be allowed in collections?
+                # as_template=connector_is_template,
             )
-            sequence = load_sequence(node_group[0], first_instance, context)
-            if connector.get("auto_sequence", True):
-                config[key] = init_runnable_sequence(sequence)
-            else:
-                config[key] = sequence
         elif property_loader := get_property_loader(as_type):
             # load type specific config options. This is generally for loading
             # ix specific features into the config dict
             logger.debug(f"Loading with property loader for type={node_type.type}")
+            node_group = [edge.source for edge in edge_group]
             config[key] = property_loader(node_group, context)
         else:
-            # default recursive loading
+            # default recursive property loading
             if connector.get("multiple", False):
                 config[key] = [
-                    prop_node.load(context, root=False) for prop_node in node_group
+                    init_flow_node(edge.source, context) for edge in edge_group
                 ]
             else:
-                if len(node_group) > 1:
+                if len(edge_group) > 1:
                     raise ValueError(f"Multiple values for {key} not allowed")
                 config[key] = load_node(
-                    node_group[0],
+                    edge_group[0].source,
                     context,
-                    root=False,
                     variables=variables,
                     as_template=connector_is_template,
                 )
@@ -251,14 +250,6 @@ def load_node(
         logger.error(f"Exception loading node class={node.class_path}")
         raise
     logger.debug(f"Loaded node class={node.class_path} in {time.time() - start_time}s")
-
-    if node_type.type in {"chain"} and root:
-        # Linked chains but no parent indicates the possible first node in an
-        # implicit SequentialChain. Traverse the sequence and create a
-        # SequentialChain if there is more than one node in the sequence.
-        sequential_nodes = load_sequence(node, instance, context)
-        if len(sequential_nodes) > 1:
-            return init_runnable_sequence(sequential_nodes)
 
     return instance
 

@@ -409,9 +409,7 @@ class Connector(BaseModel):
     # Allow more than one connection to this connector
     multiple: bool = False
 
-    # Chains connected to this property will join into an implicit SequentialChain
-    # when auto_sequence is True. Disable for chains to be stored as a list.
-    auto_sequence: bool = True
+    collection: Optional[Literal["list", "flow", "map", "map_tuples"]] = None
 
 
 class FieldGroup(BaseModel):
