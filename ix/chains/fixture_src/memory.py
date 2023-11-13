@@ -3,7 +3,8 @@ from ix.chains.components.memory import LoadMemory, SaveMemory
 from ix.chains.fixture_src.targets import (
     MEMORY_BACKEND_TARGET,
     LLM_TARGET,
-    PROMPT_TARGET, MEMORY_TARGET,
+    PROMPT_TARGET,
+    MEMORY_TARGET,
 )
 
 MEMORY_KEY = {
@@ -147,7 +148,7 @@ LOAD_MEMORY = {
         field_options={
             "memory_inputs": {
                 "type": "list",
-           },
+            },
         },
     ),
 }
@@ -168,7 +169,7 @@ SAVE_MEMORY = {
             },
             "output_keys": {
                 "type": "list",
-           },
+            },
         },
     ),
 }
