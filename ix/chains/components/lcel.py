@@ -1,53 +1,49 @@
-from typing import Dict, Any, List
+from copy import deepcopy
+from typing import Dict, Any, List, Tuple, Optional, Type, Iterator, AsyncIterator
 
 from langchain.schema.runnable import (
+    Runnable,
     RunnableParallel,
-    RunnableSerializable,
     RunnableBranch,
     RunnableSequence,
     RunnablePassthrough,
+    RunnableSerializable,
+    RunnableConfig,
 )
+from langchain.schema.runnable.base import Other
 from langchain.schema.runnable.utils import Input, Output
 
 
-def init_runnable_sequence(
-    sequential_nodes: List[RunnableSerializable[Input, Output]]
-) -> RunnableSequence:
+def init_pass_through() -> RunnablePassthrough:
+    """Helper to convert a RunnablePassthrough into a RunnablePassthrough."""
+    return RunnablePassthrough()
+
+
+def init_sequence(steps: List[Runnable[Input, Output]]) -> RunnableSequence:
     """Helper to convert a sequence of RunnableSerializable into a RunnableSequence."""
-    if not sequential_nodes:
+    if not steps:
         raise ValueError("sequential_nodes must have at least one element")
 
     return RunnableSequence(
-        first=sequential_nodes[0],
-        middle=(sequential_nodes[-1] if len(sequential_nodes) > 1 else []),
-        last=(
-            sequential_nodes[1:-1]
-            if len(sequential_nodes) > 2
-            else RunnablePassthrough()
-        ),
+        first=steps[0],
+        middle=(steps[1:-1] if len(steps) > 2 else []),
+        last=(steps[-1] if len(steps) > 1 else RunnablePassthrough()),
     )
 
 
-def init_parallel(
-    **kwargs: Dict[str, Any | RunnableSerializable[Input, Output]]
-) -> RunnableParallel:
+def init_parallel(steps: Dict[str, Any | Runnable[Input, Output]]) -> RunnableParallel:
     """
     RunnableParallel is constructed by mapping RunnableSerializable to output
     keys. The config keys are dynamic and depends on the specific logic being
     implemented by the user. This function routes the RunnableSerializable
     passed in to a new RunnableParallel object.
     """
-    return RunnableParallel(
-        steps={
-            key: value
-            for key, value in kwargs.items()
-            if isinstance(value, RunnableSerializable)
-        }
-    )
+    return RunnableParallel(steps)
 
 
 def init_branch(
-    default:  RunnableSerializable[Input, Output], **kwargs: Dict[str, RunnableSerializable[Input, Output]]
+    default: Runnable[Input, Output],
+    branches: List[Tuple[str, Runnable[Input, Output]]],
 ) -> RunnableBranch:
     """
     TODO: need to make a final decision on how to connect decision functions to the branches.
@@ -56,10 +52,10 @@ def init_branch(
           - separating is most flexible
     """
     return RunnableBranch(
-        [
-            (lambda key: key, value)
-            for key, value in kwargs.items()
-            if isinstance(value, RunnableSerializable)
+        *[
+            (lambda x, k=key: x.get(k, False), value)
+            for key, value in branches
+            if isinstance(value, Runnable)
         ],
         default,
     )
