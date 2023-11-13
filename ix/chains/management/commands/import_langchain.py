@@ -20,6 +20,7 @@ from ix.chains.fixture_src.embeddings import (
     MOSAICML_INSTRUCTOR_EMBEDDINGS,
 )
 from ix.chains.fixture_src.ix import CHAT_MODERATOR_TYPE
+from ix.chains.fixture_src.json import JSON
 from ix.chains.fixture_src.lcel import LANGCHAIN_EXPRESSION_LANGUAGE
 from ix.chains.fixture_src.llm import LLMS
 from ix.chains.fixture_src.memory import MEMORY
@@ -101,8 +102,9 @@ COMPONENTS.extend(DOCUMENT_LOADERS)
 COMPONENTS.extend(VECTORSTORES)
 COMPONENTS.extend(RETRIEVERS)
 
-# IX LCEL integrations
+# IX LCEL integrations & flow
 COMPONENTS.extend(LANGCHAIN_EXPRESSION_LANGUAGE)
+COMPONENTS.extend(JSON)
 
 # IX Misc
 COMPONENTS.extend([CHAT_MODERATOR_TYPE])
