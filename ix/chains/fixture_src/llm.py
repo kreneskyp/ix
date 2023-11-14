@@ -87,7 +87,10 @@ OPENAI_LLM = {
                 {"label": "GPT-4 (0613)", "value": "gpt-4-0613"},
                 {"label": "GPT-4 32k (0613)", "value": "gpt-4-32k-0613"},
                 {"label": "GPT-4 Turbo (1106-preview)", "value": "gpt-4-1106-preview"},
-                {"label": "GPT-4 Turbo vision (1106-preview)", "value": "gpt-4-vision-preview"},
+                {
+                    "label": "GPT-4 Turbo vision (1106-preview)",
+                    "value": "gpt-4-vision-preview",
+                },
                 {"label": "GPT-3.5 Turbo (1106)", "value": "gpt-3.5-turbo-1106"},
                 {"label": "GPT-3.5 ", "value": "gpt-3.5-turbo"},
                 {"label": "GPT-3.5 16k", "value": "gpt-3.5-turbo-16k-0613"},
