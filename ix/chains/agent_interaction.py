@@ -1,9 +1,10 @@
 import logging
 from typing import Dict, Any, List, Optional
 
+from langchain.schema import BasePromptTemplate
+
 from ix.agents.models import Agent
 from ix.chains.callbacks import IxHandler
-from langchain import BasePromptTemplate
 
 from ix.chat.models import Chat
 from langchain.callbacks.manager import (

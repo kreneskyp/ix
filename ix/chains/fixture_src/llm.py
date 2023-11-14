@@ -1,8 +1,8 @@
-from langchain import LlamaCpp
 from langchain.chat_models import ChatOpenAI
 from langchain.llms.base import BaseLLM
 from langchain.llms import Ollama
 from langchain.llms.fireworks import Fireworks
+from langchain.llms.llamacpp import LlamaCpp
 
 from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
@@ -83,9 +83,18 @@ OPENAI_LLM = {
             "default": "gpt-4-0613",
             "choices": [
                 {"label": "GPT-4", "value": "gpt-4"},
+                {"label": "GPT-4 32K", "value": "gpt-4-32k"},
                 {"label": "GPT-4 (0613)", "value": "gpt-4-0613"},
+                {"label": "GPT-4 32k (0613)", "value": "gpt-4-32k-0613"},
+                {"label": "GPT-4 Turbo (1106-preview)", "value": "gpt-4-1106-preview"},
+                {
+                    "label": "GPT-4 Turbo vision (1106-preview)",
+                    "value": "gpt-4-vision-preview",
+                },
+                {"label": "GPT-3.5 Turbo (1106)", "value": "gpt-3.5-turbo-1106"},
                 {"label": "GPT-3.5 ", "value": "gpt-3.5-turbo"},
                 {"label": "GPT-3.5 16k", "value": "gpt-3.5-turbo-16k-0613"},
+                {"label": "GPT-3.5 Turbo Instruct", "value": "gpt-3.5-turbo-instruct"},
             ],
         },
     ]
