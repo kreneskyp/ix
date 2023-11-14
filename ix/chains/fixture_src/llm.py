@@ -1,8 +1,8 @@
-from langchain import LlamaCpp
 from langchain.chat_models import ChatOpenAI
 from langchain.llms.base import BaseLLM
 from langchain.llms import Ollama
 from langchain.llms.fireworks import Fireworks
+from langchain.llms.llamacpp import LlamaCpp
 
 from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
