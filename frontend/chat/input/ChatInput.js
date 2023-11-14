@@ -38,7 +38,6 @@ export const ChatInput = ({ chat }) => {
   const [targetType, setTargetType] = useState();
   const [index, setIndex] = useState(0);
   const [search, setSearch] = useState("");
-  const [results, setResults] = useState([]);
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(
@@ -48,36 +47,25 @@ export const ChatInput = ({ chat }) => {
   const chatStyle = useChatStyle();
 
   const { load: loadAgents, page: agentPage } = usePaginatedAPI(`/api/agents/`);
-
   const { load: loadArtifacts, page: artifactPage } =
     usePaginatedAPI(`/api/artifacts/`);
+  const hasAgents =
+    targetType === "mention" && agentPage && agentPage.objects.length > 0;
+  const hasArtifacts =
+    targetType === "artifact" && agentPage && artifactPage.objects.length > 0;
+  const results = hasAgents
+    ? agentPage.objects
+    : hasArtifacts
+    ? artifactPage.objects
+    : [];
 
-  const searchAgents = useCallback((search) => {
-    loadAgents({ search, chat_id: chat.id });
-  }, []);
-
-  const searchArtifacts = useCallback((search) => {
-    loadArtifacts({ search, chat_id: chat.id });
-  }, []);
-
-  useEffect(() => {
-    if (agentPage) {
-      setResults(agentPage.objects);
-    }
-  }, [agentPage]);
-
-  useEffect(() => {
-    if (artifactPage) {
-      setResults(artifactPage.objects);
-    }
-  }, [artifactPage]);
-
+  // Open auto-complete window
   useEffect(() => {
     if (target) {
       if (targetType === "mention") {
-        searchAgents(search);
+        loadAgents({ search, chat_id: chat.id });
       } else if (targetType === "artifact") {
-        searchArtifacts(search);
+        loadArtifacts({ search, chat_id: chat.id });
       }
     }
   }, [search]);
@@ -186,7 +174,7 @@ export const ChatInput = ({ chat }) => {
   });
 
   // Search results popover content
-  const isOpen = target && results.length > 0;
+  const isOpen = target && (hasAgents || hasArtifacts);
   let searchComponent = null;
   if (isOpen) {
     if (targetType === "mention") {
