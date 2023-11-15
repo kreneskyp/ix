@@ -17,7 +17,7 @@
         "type": "object"
     },
     "connectors": null,
-    "description": "Load PDF using pypdf into list of documents.\n\n    Loader chunks by page and stores page numbers in metadata.\n    ",
+    "description": "Load a PDF file into a document.",
     "display_type": "node",
     "fields": [
         {
