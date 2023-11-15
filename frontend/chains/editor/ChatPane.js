@@ -11,6 +11,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useClearMessages } from "chat/hooks/useClearMessages";
+import {ChatInputProvider} from "chat/input/ChatInputProvider";
 
 const SCROLLBOX = {
   height: "calc(100vh - 50px - 140px)",
@@ -119,22 +120,24 @@ export const ChatPane = ({ chatId }) => {
   }, [chatId]);
 
   return (
-    <ChatStyle.Provider value={CHAT_PANE_STYLE}>
-      {isLoading || !graph ? (
-        <Spinner />
-      ) : (
-        <Box mt={0} mt={2}>
-          <ChatInterface graph={graph} />
-          <Box width={"100%"} bg={"gray.800"} p={1} m={0}>
-            <IconButton
-              icon={<FontAwesomeIcon icon={faTrash} bg={"gray.800"} />}
-              onClick={clearMessages}
-              size={"xs"}
-              title={"clear messages"}
-            />
+    <ChatInputProvider>
+      <ChatStyle.Provider value={CHAT_PANE_STYLE}>
+        {isLoading || !graph ? (
+          <Spinner />
+        ) : (
+          <Box mt={0} mt={2}>
+            <ChatInterface graph={graph} />
+            <Box width={"100%"} bg={"gray.800"} p={1} m={0}>
+              <IconButton
+                icon={<FontAwesomeIcon icon={faTrash} bg={"gray.800"} />}
+                onClick={clearMessages}
+                size={"xs"}
+                title={"clear messages"}
+              />
+            </Box>
           </Box>
-        </Box>
-      )}
-    </ChatStyle.Provider>
+        )}
+      </ChatStyle.Provider>
+    </ChatInputProvider>
   );
 };
