@@ -6,6 +6,7 @@ from typing import Any, Dict
 
 from django.db import models
 from langchain.chains.base import Chain as LangChain
+from langchain.schema.runnable import Runnable
 
 from ix.ix_users.models import OwnedModel
 from ix.pg_vector.tests.models import PGVectorMixin
