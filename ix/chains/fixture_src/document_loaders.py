@@ -69,7 +69,7 @@ CSV_LOADER = {
     "class_path": CSV_LOADER_CLASS_PATH,
     "type": "document_loader",
     "name": "CSV Loader",
-    "description": CSVLoader.__doc__,
+    "description": "Load a CSV file into a list of documents.",
     "fields": NodeTypeField.get_fields(
         CSVLoader.__init__,
         include=[
@@ -105,7 +105,7 @@ JSON_LOADER = {
     "class_path": JSON_LOADER_CLASS_PATH,
     "type": "document_loader",
     "name": "JSON Loader",
-    "description": JSONLoader.__doc__,
+    "description": "Load a JSON file into a document.",
     "fields": NodeTypeField.get_fields(
         JSONLoader.__init__,
         include=[
@@ -132,7 +132,7 @@ PDF_LOADER = {
     "class_path": PDF_LOADER_CLASS_PATH,
     "type": "document_loader",
     "name": "PDF Loader",
-    "description": PyPDFLoader.__doc__,
+    "description": "Load a PDF file into a document.",
     "fields": NodeTypeField.get_fields(
         PyPDFLoader.__init__,
         include=[
@@ -175,7 +175,7 @@ UNSTRUCTURED_HTML_LOADER = {
     "class_path": UNSTRUCTURED_HTML_LOADER_CLASS_PATH,
     "type": "document_loader",
     "name": "Unstructured HTML Loader",
-    "description": UnstructuredHTMLLoader.__doc__,
+    "description": "Load an HTML file into a document with Unstructured.io",
     "fields": NodeTypeField.get_fields(
         UnstructuredHTMLLoader.__init__, include=["file_path" "mode"]
     ),
@@ -189,7 +189,7 @@ UNSTRUCTURED_MARKDOWN_LOADER = {
     "class_path": UNSTRUCTURED_MARKDOWN_LOADER_CLASS_PATH,
     "type": "document_loader",
     "name": "Unstructured Markdown Loader",
-    "description": UnstructuredMarkdownLoader.__doc__,
+    "description": "Load a markdown file into a document with Unstructured.io",
     "fields": NodeTypeField.get_fields(
         UnstructuredMarkdownLoader.__init__, include=["file_path" "mode"]
     ),

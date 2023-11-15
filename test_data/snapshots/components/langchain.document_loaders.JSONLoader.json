@@ -30,7 +30,7 @@
         "type": "object"
     },
     "connectors": null,
-    "description": "Load a `JSON` file using a `jq` schema.\n\n    Example:\n        [{\"text\": ...}, {\"text\": ...}, {\"text\": ...}] -> schema = .[].text\n        {\"key\": [{\"text\": ...}, {\"text\": ...}, {\"text\": ...}]} -> schema = .key[].text\n        [\"\", \"\", \"\"] -> schema = .[]\n    ",
+    "description": "Load a JSON file into a document.",
     "display_type": "node",
     "fields": [
         {

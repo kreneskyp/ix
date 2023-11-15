@@ -31,7 +31,7 @@
             "type": "target"
         }
     ],
-    "description": "Template for constructing chat prompts from messages.",
+    "description": "Template for Chat style LLM request. Renders System, User, and AI messages",
     "display_type": "node",
     "fields": [
         {

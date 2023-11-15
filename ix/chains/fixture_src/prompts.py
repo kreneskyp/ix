@@ -12,7 +12,7 @@ CHAT_PROMPT_TEMPLATE = {
     "class_path": "langchain.prompts.chat.ChatPromptTemplate",
     "type": "prompt",
     "name": "Chat Prompt Template",
-    "description": "Template for constructing chat prompts from messages.",
+    "description": "Template for Chat style LLM request. Renders System, User, and AI messages",
     "connectors": [OUTPUT_PARSER_TARGET],
     "fields": [
         {
