@@ -1,0 +1,506 @@
+[
+  {
+    "model": "agents.agent",
+    "pk": "41b62df7-efdf-45b7-a2b2-8724a64e45af",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "pirate (LCEL)",
+      "alias": "pirate2",
+      "purpose": "Pirate: \n\nExample agent implement with new runnable (LCEL) based flow. \n\nUses flow nodes `PassThrough`, `GatherInput` to create input map containing memories and the user_input.\n\nSession based memory is implemented with `LoadMemories`, and `SaveMemories`.\n\n",
+      "created_at": "2023-11-11T22:13:02.202Z",
+      "model": "",
+      "config": {},
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+      "is_test": false
+    }
+  },
+  {
+    "model": "chains.chain",
+    "pk": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "pirate (LCEL)",
+      "description": "Pirate: \n\nExample agent implement with new runnable (LCEL) based flow. \n\nUses flow nodes `PassThrough`, `GatherInput` to create input map containing memories and the user_input.\n\nSession based memory is implemented with `LoadMemories`, and `SaveMemories`.\n\n",
+      "created_at": "2023-11-11T22:13:02.183Z",
+      "is_agent": true
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "000ebac0-0bc4-4aa0-ac11-3ec4cb2a6a59",
+    "fields": {
+      "class_path": "ix.chains.components.memory.SaveMemory",
+      "node_type": [
+        "ix.chains.components.memory.SaveMemory"
+      ],
+      "config": {
+        "input_keys": [
+          "user_input"
+        ],
+        "output_keys": [
+          "chat_output"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1860.0,
+        "y": 310.0
+      },
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "0dd66c25-0870-44f8-adcd-200aa80f2764",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONPath",
+      "node_type": [
+        "ix.chains.components.json.JSONPath"
+      ],
+      "config": {
+        "path": "user_input"
+      },
+      "name": "Chat Pass Through",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 930.0,
+        "y": 290.0
+      },
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "4e55597f-489b-4222-ae93-9f79f7f382c2",
+    "fields": {
+      "class_path": "ix.chains.components.lcel.init_parallel",
+      "node_type": [
+        "ix.chains.components.lcel.init_parallel"
+      ],
+      "config": {
+        "steps": [
+          "user_input",
+          "memories"
+        ],
+        "steps_hash": [
+          "fb2d74f9-51fd-408e-949f-377d09ac7d5d",
+          "31568ef6-bfa7-47bc-92c3-7987327d1c0a"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 610.0,
+        "y": 160.0
+      },
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "6342383c-a96d-4457-8f13-28701359a143",
+    "fields": {
+      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
+      "config": {
+        "tags": [],
+        "cache": false,
+        "metadata": {},
+        "streaming": true,
+        "max_tokens": 500,
+        "model_name": "gpt-3.5-turbo",
+        "max_retries": 6,
+        "temperature": 0,
+        "openai_proxy": "",
+        "openai_api_base": "",
+        "request_timeout": 60,
+        "openai_organization": ""
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1240.0,
+        "y": 160.0
+      },
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "65590a66-5770-415b-a06b-6ff47e0b8b76",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONPath",
+      "node_type": [
+        "ix.chains.components.json.JSONPath"
+      ],
+      "config": {
+        "path": "user_input"
+      },
+      "name": "Chat Pass Through",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 320.0,
+        "y": 140.0
+      },
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "660d1a89-59ce-4fcf-af92-b7afdded609e",
+    "fields": {
+      "class_path": "langchain.memory.RedisChatMessageHistory",
+      "node_type": [
+        "langchain.memory.RedisChatMessageHistory"
+      ],
+      "config": {
+        "ttl": 3600,
+        "url": "redis://redis:6379/0",
+        "session_key": "session_id",
+        "session_scope": "",
+        "session_prefix": ""
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 290.0,
+        "y": 510.0
+      },
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "6cfc303d-73a3-4da9-ab62-989b66c92738",
+    "fields": {
+      "class_path": "::ROOT::",
+      "node_type": [
+        "::ROOT::"
+      ],
+      "config": {
+        "outputs": [
+          "user_input",
+          "artifact_ids"
+        ],
+        "outputs_hash": [
+          "user_input",
+          "artifact_ids"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": true,
+      "position": {
+        "x": -20.0,
+        "y": 220.0
+      },
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "7f166d00-1cb3-4357-9c2c-621203dff9c1",
+    "fields": {
+      "class_path": "ix.chains.components.memory.LoadMemory",
+      "node_type": [
+        "ix.chains.components.memory.LoadMemory"
+      ],
+      "config": {
+        "output_key": "memories",
+        "memory_inputs": []
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 320.0,
+        "y": 320.0
+      },
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "82a4f531-b068-44f6-ad31-d00c9bbb4bed",
+    "fields": {
+      "class_path": "langchain.memory.ConversationBufferMemory",
+      "node_type": [
+        "langchain.memory.ConversationBufferMemory"
+      ],
+      "config": {
+        "ai_prefix": "AI",
+        "input_key": "user_input",
+        "memory_key": "memories",
+        "output_key": "chat_output",
+        "human_prefix": "Human",
+        "return_messages": false
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 600.0,
+        "y": 510.0
+      },
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "8ab5ca4d-308e-431a-9fc5-c6fc8ff2c732",
+    "fields": {
+      "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+      "node_type": [
+        "langchain.prompts.chat.ChatPromptTemplate"
+      ],
+      "config": {
+        "messages": [
+          {
+            "role": "system",
+            "template": "You are a pirate. Respond to the user in pirate talk. Memories: {memories}",
+            "input_variables": [
+              "memories"
+            ]
+          },
+          {
+            "role": "user",
+            "template": "User: {user_input}",
+            "input_variables": [
+              "user_input"
+            ],
+            "partial_variables": {}
+          }
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 930.0,
+        "y": 160.0
+      },
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "de2d57a8-99b4-49a1-a056-5c89bf1654b6",
+    "fields": {
+      "class_path": "ix.chains.components.lcel.init_parallel",
+      "node_type": [
+        "ix.chains.components.lcel.init_parallel"
+      ],
+      "config": {
+        "steps": [
+          "chat_output",
+          "user_input"
+        ],
+        "steps_hash": [
+          "dc295692-1555-44a7-b741-6fe8e41a7c7b",
+          "e30a89d3-9d10-4b34-ade6-52ca1f37d24a"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1540.0,
+        "y": 230.0
+      },
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "3fb52393-cbe6-441d-a79f-095f80357899",
+    "fields": {
+      "source": "65590a66-5770-415b-a06b-6ff47e0b8b76",
+      "target": "4e55597f-489b-4222-ae93-9f79f7f382c2",
+      "source_key": "out",
+      "target_key": "fb2d74f9-51fd-408e-949f-377d09ac7d5d",
+      "map_key": null,
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "60f8bf84-6746-43d6-8203-ef12048d9d98",
+    "fields": {
+      "source": "82a4f531-b068-44f6-ad31-d00c9bbb4bed",
+      "target": "7f166d00-1cb3-4357-9c2c-621203dff9c1",
+      "source_key": "memory",
+      "target_key": "memory",
+      "map_key": null,
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "7606b7d2-fde2-4060-a3cc-cac54f28201a",
+    "fields": {
+      "source": "82a4f531-b068-44f6-ad31-d00c9bbb4bed",
+      "target": "000ebac0-0bc4-4aa0-ac11-3ec4cb2a6a59",
+      "source_key": "memory",
+      "target_key": "memory",
+      "map_key": null,
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "8cd7ea68-cb01-4edb-8545-3c729b199559",
+    "fields": {
+      "source": "6cfc303d-73a3-4da9-ab62-989b66c92738",
+      "target": "65590a66-5770-415b-a06b-6ff47e0b8b76",
+      "source_key": "user_input",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "a1712185-c48f-4fb2-b955-1d0949b07ebb",
+    "fields": {
+      "source": "4e55597f-489b-4222-ae93-9f79f7f382c2",
+      "target": "8ab5ca4d-308e-431a-9fc5-c6fc8ff2c732",
+      "source_key": "out",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "a5c51b1d-742d-48bc-b359-57b7309e0973",
+    "fields": {
+      "source": "8ab5ca4d-308e-431a-9fc5-c6fc8ff2c732",
+      "target": "6342383c-a96d-4457-8f13-28701359a143",
+      "source_key": "out",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "c0f494bc-44f6-4aa5-91a8-59b9e382f41e",
+    "fields": {
+      "source": "7f166d00-1cb3-4357-9c2c-621203dff9c1",
+      "target": "4e55597f-489b-4222-ae93-9f79f7f382c2",
+      "source_key": "out",
+      "target_key": "31568ef6-bfa7-47bc-92c3-7987327d1c0a",
+      "map_key": null,
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "c66ba29c-b01a-46d4-aa39-05b4b22ae91b",
+    "fields": {
+      "source": "4e55597f-489b-4222-ae93-9f79f7f382c2",
+      "target": "0dd66c25-0870-44f8-adcd-200aa80f2764",
+      "source_key": "out",
+      "target_key": "e30a89d3-9d10-4b34-ade6-52ca1f37d24a",
+      "map_key": null,
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "dd4c6dd5-595b-4bca-9832-742238d95e5d",
+    "fields": {
+      "source": "660d1a89-59ce-4fcf-af92-b7afdded609e",
+      "target": "82a4f531-b068-44f6-ad31-d00c9bbb4bed",
+      "source_key": "memory_backend",
+      "target_key": "chat_memory",
+      "map_key": null,
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "e1ce8220-7434-4598-8a5d-ab201f6cd4a8",
+    "fields": {
+      "source": "de2d57a8-99b4-49a1-a056-5c89bf1654b6",
+      "target": "000ebac0-0bc4-4aa0-ac11-3ec4cb2a6a59",
+      "source_key": "out",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "e949afdf-f53d-4024-9678-00a68459da64",
+    "fields": {
+      "source": "0dd66c25-0870-44f8-adcd-200aa80f2764",
+      "target": "de2d57a8-99b4-49a1-a056-5c89bf1654b6",
+      "source_key": "out",
+      "target_key": "e30a89d3-9d10-4b34-ade6-52ca1f37d24a",
+      "map_key": null,
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "edee2d89-8b6b-4a9c-9d18-23805a9929b2",
+    "fields": {
+      "source": "6cfc303d-73a3-4da9-ab62-989b66c92738",
+      "target": "7f166d00-1cb3-4357-9c2c-621203dff9c1",
+      "source_key": "user_input",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "f9c0d9be-0ea6-4906-8823-a04df17efd3c",
+    "fields": {
+      "source": "6342383c-a96d-4457-8f13-28701359a143",
+      "target": "de2d57a8-99b4-49a1-a056-5c89bf1654b6",
+      "source_key": "out",
+      "target_key": "dc295692-1555-44a7-b741-6fe8e41a7c7b",
+      "map_key": null,
+      "chain": "52537bd4-c35a-4ede-af3b-92a45c75b680",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  }
+]
