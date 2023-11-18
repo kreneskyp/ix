@@ -1,6 +1,6 @@
 from typing import Dict, Any, Optional, List
 
-from langchain.schema import BaseMemory
+from langchain.schema import BaseMemory, BaseMessage
 from langchain.schema.runnable import RunnableSerializable, RunnableConfig
 from langchain.schema.runnable.utils import Input, Output
 
@@ -48,8 +48,15 @@ class SaveMemory(RunnableSerializable[Input, Output]):
         **kwargs: Any,
     ) -> Dict[str, Any]:
         memory_inputs = {key: input.get(key, None) for key in self.input_keys}
-        memory_outputs = {key: input.get(key, None) for key in self.output_keys}
+        memory_outputs = {}
+        for key in self.output_keys:
+            if key in input:
+                output = input[key]
+                if isinstance(output, BaseMessage):
+                    output = output.content
+                memory_outputs[key] = output
+
         self.memory.save_context(memory_inputs, memory_outputs)
 
-        # no new output, just pass through inputs
+        # no new output, pass through all inputs
         return input
