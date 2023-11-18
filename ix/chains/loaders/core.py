@@ -293,12 +293,20 @@ class MapPlaceholder:
     node: ChainNode
     map: Dict[str, "FlowPlaceholder"]
 
+    @property
+    def id(self):
+        return self.node.id
+
 
 @dataclass
 class BranchPlaceholder:
     node: ChainNode
     branches: List[Tuple[str, "FlowPlaceholder"]]
     default: "FlowPlaceholder"
+
+    @property
+    def id(self):
+        return self.node.id
 
 
 FlowPlaceholder = (
@@ -373,16 +381,14 @@ def load_flow_map(
     nodes: List[ChainNode],
     seen: Dict[str, FlowPlaceholder],
 ) -> FlowPlaceholder:
-    logger.debug(">>>LOADING MAP")
     new_nodes = []
     for node in nodes:
-        logger.debug(f">>>>>>> {node}")
-        new_nodes = load_flow_sequence(node, seen=seen)
+        new_nodes.append(load_flow_sequence(node, seen=seen))
 
-    # Nested maps collapse into the last node where all branches of the edges
-    # merge back in. It doesn't matter which return value is used here since
-    # they are all the same.
-    return new_nodes
+    # The first branch is explored the deepest. Subsequent runs fill in missing
+    # branches from the first run. The first run will always be complete after
+    # all branches have been processed.
+    return new_nodes[0]
 
 
 def load_flow_branch(
@@ -441,75 +447,96 @@ def load_flow_sequence(
             current.outgoing_edges.select_related("target").filter(relation="LINK")
         )
 
-        if len(outgoing_links) > 1 and current.class_path != BRANCH_CLASS_PATH:
-            # multiple links: start of implicitly defined map
-            targets = [link.target for link in outgoing_links]
-            map_nodes = load_flow_map(targets, seen=seen)
-            sequential_nodes.append(current)
-            sequential_nodes.extend(
-                map_nodes if isinstance(map_nodes, list) else [map_nodes]
-            )
+        # single outgoing link
+        if current.class_path == MAP_CLASS_PATH:
+            # Since MAP node comes after the branches feeding into it,
+            # look at incoming LINKs
+            was_seen = current.id in seen
+            node_map = seen.setdefault(current.id, MapPlaceholder(node=current, map={}))
 
-            # Node for next iteration is the last node in the sequence that is returned
-            current = sequential_nodes[-1]
-            if isinstance(current, MapPlaceholder):
-                current = current.node
+            # unpack if single item
+            map_sequence = sequential_nodes
+            if isinstance(sequential_nodes, list) and len(sequential_nodes) == 1:
+                map_sequence = sequential_nodes[0]
 
-        else:
-            # single outgoing link
-            if outgoing_links and outgoing_links[0].target.class_path == MAP_CLASS_PATH:
-                # Since MAP node comes after the branches feeding into it,
-                # look at outgoing LINKs to determine if the current sequence
-                # should be aggregated forward into it.
-                target = outgoing_links[0].target
-                node_map = seen.setdefault(
-                    target.id, MapPlaceholder(node=target, map={})
-                )
-                if not sequential_nodes:
-                    map_sequence = current
-                elif current.class_path == MAP_CLASS_PATH:
-                    map_sequence = sequential_nodes
-                else:
-                    map_sequence = sequential_nodes + [current]
-                if isinstance(map_sequence, list) and len(map_sequence) == 1:
-                    map_sequence = map_sequence[0]
+            if False and current.root:
+                # TODO: add passthrough from root input
+                # auto add passthrough lambda for root input
+                # map_sequence = [RunnableLambda(lambda x: x[target_key])]
+                pass
 
-                # resolve the map connector hash into the key
-                target_key = outgoing_links[0].target_key
-                step_index = target.config["steps_hash"].index(target_key)
-                map_key = target.config["steps"][step_index]
+            elif len(sequential_nodes) == 0:
+                # TODO: add auto passthrough.
+                # no incoming links for now do nothing.
+                pass
+                # if incoming link targets "in" then all keys are taken as input
+                # if incoming link does not target "in" then just that input is taken
+                # if incoming link source is "out" then and target is not "in" then input[target_key]
+
+            else:
+                # has incoming links
+                # resolve the map edge hash into the key
+                try:
+                    incoming_link = current.incoming_edges.get(
+                        relation="LINK", source_id=sequential_nodes[-1].id
+                    )
+                except ChainEdge.DoesNotExist:
+                    raise Exception(
+                        f"Unable to find incoming link from {sequential_nodes[-1]} "
+                        f"to map node {current}"
+                    )
+                target_key = incoming_link.target_key
+                step_index = current.config["steps_hash"].index(target_key)
+                map_key = current.config["steps"][step_index]
                 node_map.map[map_key] = map_sequence
 
-                # add to sequence here since it's a placeholder and current
-                # must be a node
-                sequential_nodes = [node_map]
+            # the prior sequence rolled up into the map
+            sequential_nodes = [node_map]
 
-                current = target
-                continue
-
-            elif current.class_path == BRANCH_CLASS_PATH:
-                # start of explicitly defined branch
-                branch_placeholder = load_flow_branch(current, seen=seen)
-                sequential_nodes.append(branch_placeholder)
-
-                # branches must be fully explored so there is nothing remaining to traverse
+            # only first iteration traverses past a map
+            if was_seen:
                 break
+
+        elif current.class_path == BRANCH_CLASS_PATH:
+            # start of explicitly defined branch
+            branch_placeholder = load_flow_branch(current, seen=seen)
+            sequential_nodes.append(branch_placeholder)
+
+            # branches must be fully explored so there is nothing remaining to traverse
+            break
+        else:
+            # Add nodes that were not already added in the forward traversal for
+            # a map node. This includes map node and last node in the map sequence
+            if current.class_path != MAP_CLASS_PATH and (
+                not sequential_nodes or sequential_nodes[-1] != current
+            ):
+                if current.id in seen:
+                    sequential_nodes.append(seen[current.id])
+                else:
+                    sequential_nodes.append(current)
+                    seen[current.id] = current
+
+        if len(outgoing_links) > 1 and current.class_path != BRANCH_CLASS_PATH:
+            # multiple links: start of split that will end in a map node.
+            targets = [link.target for link in outgoing_links]
+            map_node = load_flow_map(targets, seen=seen)
+
+            # add to sequence
+            if isinstance(map_node, list):
+                sequential_nodes.extend(map_node)
+            elif isinstance(map_node, MapPlaceholder):
+                sequential_nodes.append(map_node)
             else:
-                # Add nodes that were not already added in the forward traversal for
-                # a map node. This includes map node and last node in the map sequence
-                if current.class_path != MAP_CLASS_PATH and (
-                    not sequential_nodes or sequential_nodes[-1] != current
-                ):
-                    if current.id in seen:
-                        sequential_nodes.append(seen[current.id])
-                    else:
-                        sequential_nodes.append(current)
-                        seen[current.id] = current
+                raise ValueError(
+                    f"unsupported return type after processing flow split. type={type(map_node)}"
+                )
 
-            if len(outgoing_links) == 0:
-                break
+            # all branches explored past the map node
+            break
 
-            # there should only be one outgoing link here.
+        elif len(outgoing_links) == 0:
+            break
+        else:
             current = outgoing_links[0].target
 
     if len(sequential_nodes) == 1:
