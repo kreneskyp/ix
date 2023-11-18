@@ -14,6 +14,7 @@ from langchain.schema.runnable import (
 )
 
 from ix.chains.components.lcel import init_sequence, init_branch
+from ix.chains.fixture_src.flow import ROOT_CLASS_PATH
 from ix.chains.loaders.context import IxContext
 
 from ix.chains.loaders.prompts import load_prompt
@@ -336,9 +337,17 @@ async def ainit_flow(
 
 
 def load_chain_flow(chain: Chain) -> FlowPlaceholder:
-    roots = chain.nodes.filter(root=True)
-    logger.debug(f"Loading chain flow with roots: {roots}")
-    return load_flow_node(roots)
+    try:
+        root = chain.nodes.get(root=True, class_path=ROOT_CLASS_PATH)
+        nodes = chain.nodes.filter(incoming_edges__source=root)
+        logger.debug(f"Loading chain flow with roots: {root}")
+    except ChainNode.DoesNotExist:
+        # fallback to old style roots:
+        # TODO: remove this fallback after all chains have been migrated
+        nodes = chain.nodes.filter(root=True)
+        logger.debug(f"Loading chain flow with roots: {nodes}")
+
+    return load_flow_node(nodes)
 
 
 async def aload_chain_flow(chain: Chain) -> FlowPlaceholder:
