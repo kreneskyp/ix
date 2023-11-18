@@ -15,7 +15,6 @@ from langchain.schema.runnable import (
 
 from ix.chains.components.lcel import init_sequence, init_branch
 from ix.chains.loaders.context import IxContext
-from langchain.chains.base import Chain as LangchainChain
 
 from ix.chains.loaders.prompts import load_prompt
 from ix.chains.loaders.templates import NodeTemplate
@@ -83,19 +82,6 @@ def get_node_initializer(node_type: str) -> Callable:
         "text_splitter": initialize_text_splitter,
         "vectorstore": initialize_vectorstore,
     }.get(node_type, None)
-
-
-def get_sequence_inputs(sequence: List[LangchainChain]) -> List[str]:
-    """Aggregate all inputs for a list of chains"""
-    input_variables = set()
-    output_variables = set()
-    for sequence_chain in sequence:
-        # Intermediate outputs are excluded from input_variables.
-        # Filter out any inputs that are already in the output variables
-        filtered_inputs = set(sequence_chain.input_keys) - output_variables
-        input_variables.update(filtered_inputs)
-        output_variables.update(sequence_chain.output_keys)
-    return list(input_variables)
 
 
 def load_secrets(config: dict, node_type: NodeType):

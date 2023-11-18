@@ -390,7 +390,7 @@ class Connector(BaseModel):
     type: Literal["source", "target"]
     required: bool = False
 
-    # Simplified categorization of LangChain components. Class inheritance
+    # Simplified categorization of AI workflow components. Class inheritance
     # can't be checked in JS so these categories are used for a proxy instead.
     source_type: NodeTypes | List[NodeTypes]
 
