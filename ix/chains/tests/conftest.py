@@ -630,33 +630,42 @@ async def lcel_branch_in_sequence(anode_types) -> dict:
     node4 = await afake_runnable(chain=chain, name="node4", root=False)
     node5 = await afake_runnable(chain=chain, name="node5", root=False)
 
-    sequence_x = await afake_node_sequence(
+    await afake_node_sequence(
         chain=chain,
         nodes=[
             node1,
             node4,
-            node5,
         ],
         root=False,
     )
-    sequence_a = await afake_node_sequence(
+    await afake_node_sequence(
         chain=chain,
         nodes=[
             node2,
             node4,
-            node5,
         ],
         root=False,
     )
-    sequence_b = await afake_node_sequence(
+    await afake_node_sequence(
         chain=chain,
         nodes=[
             node3,
+            node4,
+        ],
+        root=False,
+    )
+    await afake_node_sequence(
+        chain=chain,
+        nodes=[
             node4,
             node5,
         ],
         root=False,
     )
+
+    sequence_x = [node1, node4, node5]
+    sequence_a = [node2, node4, node5]
+    sequence_b = [node3, node4, node5]
 
     a_uuid = str(uuid.uuid4())
     b_uuid = str(uuid.uuid4())
@@ -764,30 +773,38 @@ async def lcel_join_after_branch(anode_types) -> dict:
     node4 = await afake_runnable(chain=chain, name="node4", root=False)
     node5 = await afake_runnable(chain=chain, name="node5", root=False)
 
-    sequence_default = await afake_node_sequence(
+    await afake_node_sequence(
         chain=chain,
         nodes=[
             node1,
             node4,
-            node5,
         ],
     )
-    sequence_a = await afake_node_sequence(
+    await afake_node_sequence(
         chain=chain,
         nodes=[
             node2,
             node4,
-            node5,
         ],
     )
-    sequence_b = await afake_node_sequence(
+    await afake_node_sequence(
         chain=chain,
         nodes=[
             node3,
             node4,
+        ],
+    )
+    await afake_node_sequence(
+        chain=chain,
+        nodes=[
+            node4,
             node5,
         ],
     )
+
+    sequence_default = [node1, node4, node5]
+    sequence_a = [node2, node4, node5]
+    sequence_b = [node3, node4, node5]
 
     branch = await afake_node_branch(
         chain=chain,

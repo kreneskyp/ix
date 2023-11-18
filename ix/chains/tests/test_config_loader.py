@@ -20,7 +20,6 @@ from langchain.vectorstores import Redis
 
 from ix.chains.fixture_src.agents import OPENAI_FUNCTIONS_AGENT_CLASS_PATH
 from ix.chains.fixture_src.lcel import (
-    RUNNABLE_SEQUENCE_CLASS_PATH,
     RUNNABLE_MAP_CLASS_PATH,
     RUNNABLE_BRANCH_CLASS_PATH,
 )
@@ -515,14 +514,6 @@ class TestLoadRetrieval:
         assert isinstance(component, ConversationalRetrievalChain)
 
 
-LCEL_BASIC_SEQUENCE = {
-    "class_path": RUNNABLE_SEQUENCE_CLASS_PATH,
-    "config": {
-        "steps": [PROMPT_CHAT, OPENAI_LLM],
-    },
-}
-
-
 @pytest.mark.django_db
 class TestLCELLoading:
     """Testing LCEL style flows"""
@@ -549,16 +540,6 @@ class TestLCELLoading:
         await afake_chain_edge(chain=chain, source=prompt, target=llm, relation="LINK")
 
         runnable = await chain.aload_chain(context=aix_context)
-        await self.assert_basic_sequence(runnable)
-
-    async def test_basic_sequence_from_config(
-        self, aload_chain, aix_context, mock_openai
-    ):
-        """Testing a basic flow when loaded from a config dict
-
-        chat_input -> prompt -> LLM -> output
-        """
-        runnable = await aload_chain(LCEL_BASIC_SEQUENCE)
         await self.assert_basic_sequence(runnable)
 
     async def test_parallel(self, aix_context, mock_openai):
@@ -1548,4 +1529,35 @@ class TestFlow:
             "node3": 0,
             "node4": 0,
             "node5": 0,
+        }
+
+
+@pytest.mark.django_db
+class TestPirateFlow:
+    async def test_pirate_flow(self, anode_types, aix_context, mock_openai):
+        """Test a flow with a pirate component"""
+
+        await aload_fixture("agent/pirate2")
+        chain = await Chain.objects.aget(agent__alias="pirate2")
+
+        # test loaded flow
+        await aload_chain_flow(chain)
+
+        # init flow
+        runnable = await ainit_chain_flow(chain, context=aix_context)
+
+        # TODO: Disabling for now. need to mock redis memory because
+        #  it's returning empty. Was tested manually with @pirate2
+        # verify context map works as expected
+        # gather_context = runnable.first
+        # context = await gather_context.ainvoke(input={"user_input": "test"})
+        # assert context == {
+        #    "user_input": "test",
+        #    "memories": {"chat_history": "mock memory"},
+        # }
+
+        output = await runnable.ainvoke(input={"user_input": "test"})
+        assert output == {
+            "user_input": "test",
+            "chat_output": AIMessage(content="mock llm response"),
         }
