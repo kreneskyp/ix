@@ -230,7 +230,17 @@ const ChainGraphEditor = ({ graph }) => {
       const flowNodeType =
         source.id === "root" ? "root" : source.data.type.type;
       const style = getEdgeStyle(colorMode, flowNodeType);
-      setEdges((els) => addEdge({ ...params, ...style, data: { id } }, els));
+
+      // normal LINK and PROP edges
+      const from_root =
+        source.id === "root" || source.data.type.class_path === "::ROOT::";
+      const is_out = params.sourceHandle === "out";
+      const from_branch = source.data.type.type === "branch";
+      const relation = from_root || is_out || from_branch ? "LINK" : "PROP";
+
+      setEdges((els) =>
+        addEdge({ ...params, ...style[relation], data: { id } }, els)
+      );
 
       // save via API
       if (source.id === "root") {
@@ -242,7 +252,6 @@ const ChainGraphEditor = ({ graph }) => {
         root_node_ids.push(params.target);
         api.setRoots(chain.id, { node_ids: root_node_ids });
       } else {
-        // normal link and prop edges
         const data = {
           id,
           source_id: params.source,
@@ -250,7 +259,7 @@ const ChainGraphEditor = ({ graph }) => {
           source_key: params.sourceHandle,
           target_key: params.targetHandle,
           chain_id: chain?.id,
-          relation: params.sourceHandle === "out" ? "LINK" : "PROP",
+          relation,
         };
         api.addEdge(data);
       }
