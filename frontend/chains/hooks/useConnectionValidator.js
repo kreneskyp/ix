@@ -13,6 +13,9 @@ export const useConnectionValidator = (edgeUpdate) => {
       sourceType,
       targetType,
     }) => {
+      // TODO: disabling all validation until rules can be updated for flow changes
+      return true;
+
       // target
       // hax: targetNode isn't available when creating a new node
       //      require targetType when not available
