@@ -85,22 +85,27 @@ export const useGraphForReactFlow = (graph) => {
         };
       }) || [];
 
-    // Push static root and add an edge if a root node exists
-    nodes.push({
-      id: "root",
-      type: "root",
-      position: { x: 100, y: 300 },
-    });
-    roots?.map((root, i) => {
-      edges.push({
-        id: `root_connector_${i}`,
-        source: "root",
-        target: root.id,
-        sourceHandle: "out",
-        targetHandle: "in",
-        ...defaultEdgeStyle,
+    // Deprecated direct roots: support for chains that haven't converted to the
+    // new root node type.
+    const hasDirectRoot = roots?.find((root) => root.class_path !== "::ROOT::");
+    if (hasDirectRoot) {
+      // Push static root and add an edge if a root node exists
+      nodes.push({
+        id: "root",
+        type: "direct_root",
+        position: { x: 100, y: 300 },
       });
-    });
+      roots?.map((root, i) => {
+        edges.push({
+          id: `root_connector_${i}`,
+          source: "root",
+          target: root.id,
+          sourceHandle: "out",
+          targetHandle: "in",
+          ...defaultEdgeStyle,
+        });
+      });
+    }
 
     return { chain: graph?.chain, nodes, edges, root };
   }, [graph?.chain?.id, colorMode]);

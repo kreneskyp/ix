@@ -35,6 +35,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightLeft } from "@fortawesome/free-solid-svg-icons";
 import { useChainUpdate } from "chains/hooks/useChainUpdate";
 import { useRightSidebarContext } from "site/sidebar/context";
+import { DirectRootNode } from "chains/flow/DirectRootNode";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
@@ -42,6 +43,7 @@ const nodeTypes = {
   node: ConfigNode,
   list: ConfigNode,
   root: RootNode,
+  direct_root: DirectRootNode,
 };
 
 const getExpectedTypes = (connector) => {

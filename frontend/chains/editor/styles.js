@@ -5,6 +5,7 @@ import {
   faDatabase,
   faFileImport,
   faFileWaveform,
+  faKeyboard,
   faMemory,
   faMessage,
   faRobot,
@@ -15,6 +16,7 @@ import {
 import { ChainNode } from "chains/flow/ChainNode";
 import { BranchNode } from "chains/flow/BranchNode";
 import { MapNode } from "chains/flow/MapNode";
+import { RootNode } from "chains/flow/RootNode";
 
 export const NODE_STYLES = {
   llm: {
@@ -81,6 +83,10 @@ export const NODE_STYLES = {
   map: {
     icon: faArrowRightToBracket,
     component: MapNode,
+  },
+  root: {
+    icon: faKeyboard,
+    component: RootNode,
   },
 };
 
