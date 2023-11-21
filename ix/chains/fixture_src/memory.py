@@ -27,7 +27,6 @@ SCOPED_MEMORY_FIELDS = [
         "name": "session_scope",
         "label": "Session Scope",
         "type": "string",
-
         "input_type": "select",
         "choices": [
             {"label": "chat", "value": "chat"},
@@ -41,7 +40,7 @@ SCOPED_MEMORY_FIELDS = [
         "name": "session_prefix",
         "label": "Session Prefix",
         "description": "prefix applied to the session ID. e.g. 'chat' will result in 'chat:session_id'."
-                      "Chains with the same scope and prefix will share the same session.",
+        "Chains with the same scope and prefix will share the same session.",
         "type": "string",
         "default": "",
         "style": {"width": "100%"},
