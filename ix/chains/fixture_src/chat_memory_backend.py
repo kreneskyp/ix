@@ -1,4 +1,4 @@
-from ix.chains.fixture_src.memory import SCOPED_MEMORY_FIELDS
+from ix.chains.fixture_src.memory import SCOPED_MEMORY_FIELDS, SCOPED_MEMORY_FIELD_GROUP
 
 REDIS_MEMORY_BACKEND = {
     "class_path": "langchain.memory.RedisChatMessageHistory",
@@ -36,3 +36,43 @@ FILESYSTEM_MEMORY_BACKEND = {
         },
     ],
 }
+
+
+POSTGRES_CHAT_HISTORY_CLASS_PATH = (
+    "langchain.memory.chat_message_histories.postgres.PostgresChatMessageHistory"
+)
+POSTGRES_CHAT_HISTORY = {
+    "class_path": POSTGRES_CHAT_HISTORY_CLASS_PATH,
+    "type": "memory_backend",
+    "name": "Postgres Chat History",
+    "description": "Stores chat history in a Postgres database",
+    "display_groups": [
+        {
+            "key": "Database",
+            "fields": ["connection_string", "table_name"],
+        },
+        SCOPED_MEMORY_FIELD_GROUP,
+    ],
+    "fields": [
+        {
+            "name": "connection_string",
+            "label": "Connection String",
+            "type": "string",
+            "default": "postgresql://ix:ix@db:5432/ix",
+            "style": {"width": "100%"},
+        },
+        {
+            "name": "table_name",
+            "type": "string",
+            "default": "message_store",
+            "style": {"width": "100%"},
+        },
+    ]
+    + SCOPED_MEMORY_FIELDS,
+}
+
+MEMORY_BACKEND = [
+    REDIS_MEMORY_BACKEND,
+    FILESYSTEM_MEMORY_BACKEND,
+    POSTGRES_CHAT_HISTORY,
+]

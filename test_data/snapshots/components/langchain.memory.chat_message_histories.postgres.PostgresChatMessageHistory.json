@@ -1,9 +1,34 @@
 {
     "child_field": null,
-    "class_path": "langchain.memory.RedisChatMessageHistory",
+    "class_path": "langchain.memory.chat_message_histories.postgres.PostgresChatMessageHistory",
     "config_schema": {
-        "display_groups": null,
+        "display_groups": [
+            {
+                "fields": [
+                    "connection_string",
+                    "table_name"
+                ],
+                "key": "Database",
+                "label": null
+            },
+            {
+                "fields": [
+                    "session_scope",
+                    "session_prefix",
+                    "session_key"
+                ],
+                "key": "Session",
+                "label": null
+            }
+        ],
         "properties": {
+            "connection_string": {
+                "default": "postgresql://ix:ix@db:5432/ix",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
             "session_key": {
                 "default": "session_id",
                 "description": "component session will be initialized with this argument.",
@@ -33,12 +58,8 @@
                 },
                 "type": "string"
             },
-            "ttl": {
-                "default": 3600,
-                "type": "number"
-            },
-            "url": {
-                "default": "redis://redis:6379/0",
+            "table_name": {
+                "default": "message_store",
                 "style": {
                     "width": "100%"
                 },
@@ -49,18 +70,18 @@
         "type": "object"
     },
     "connectors": null,
-    "description": "Redis Memory Backend",
+    "description": "Stores chat history in a Postgres database",
     "display_type": "node",
     "fields": [
         {
             "choices": null,
-            "default": "redis://redis:6379/0",
+            "default": "postgresql://ix:ix@db:5432/ix",
             "description": null,
             "input_type": null,
-            "label": "",
+            "label": "Connection String",
             "max": null,
             "min": null,
-            "name": "url",
+            "name": "connection_string",
             "parent": null,
             "required": false,
             "secret_key": null,
@@ -72,19 +93,21 @@
         },
         {
             "choices": null,
-            "default": 3600,
+            "default": "message_store",
             "description": null,
             "input_type": null,
             "label": "",
             "max": null,
             "min": null,
-            "name": "ttl",
+            "name": "table_name",
             "parent": null,
             "required": false,
             "secret_key": null,
             "step": null,
-            "style": null,
-            "type": "number"
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
         },
         {
             "choices": [
@@ -158,6 +181,6 @@
             "type": "string"
         }
     ],
-    "name": "Redis Memory Backend",
+    "name": "Postgres Chat History",
     "type": "memory_backend"
 }
