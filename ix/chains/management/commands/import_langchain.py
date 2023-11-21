@@ -12,14 +12,7 @@ from ix.chains.fixture_src.chat_memory_backend import (
 )
 from ix.chains.fixture_src.dalle import DALLE
 from ix.chains.fixture_src.document_loaders import DOCUMENT_LOADERS
-from ix.chains.fixture_src.embeddings import (
-    OPENAI_EMBEDDINGS,
-    GOOGLE_PALM_EMBEDDINGS,
-    LLAMA_CPP_EMBEDDINGS,
-    VERTEXAI_EMBEDDINGS,
-    HUGGINGFACE_EMBEDDINGS,
-    MOSAICML_INSTRUCTOR_EMBEDDINGS,
-)
+from ix.chains.fixture_src.embeddings import EMBEDDINGS
 from ix.chains.fixture_src.ix import CHAT_MODERATOR_TYPE
 from ix.chains.fixture_src.llm import LLMS
 from ix.chains.fixture_src.memory import (
@@ -48,16 +41,7 @@ from ix.secrets.models import SecretType
 COMPONENTS = []
 
 # Embeddings
-COMPONENTS.extend(
-    [
-        OPENAI_EMBEDDINGS,
-        GOOGLE_PALM_EMBEDDINGS,
-        LLAMA_CPP_EMBEDDINGS,
-        VERTEXAI_EMBEDDINGS,
-        HUGGINGFACE_EMBEDDINGS,
-        MOSAICML_INSTRUCTOR_EMBEDDINGS,
-    ]
-)
+COMPONENTS.extend(EMBEDDINGS)
 
 # Agents
 COMPONENTS.extend(AGENTS)
