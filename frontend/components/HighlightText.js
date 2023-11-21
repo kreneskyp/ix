@@ -43,6 +43,12 @@ const HighlightText = ({ content }) => {
         ),
       }, // Markdown Bold
       {
+        regex: /!\[([^\]]+)\]\(([^)]+)\)/g,
+        component: (match, idx, execResult) => (
+          <img src={execResult[2]} alt={execResult[1]} key={idx} />
+        ),
+      },
+      {
         regex: /\[([^\]]+)\]\(([^)]+)\)/g,
         component: (match, idx, execResult) => (
           <Link href={execResult[2]} key={idx} isExternal color={"blue.400"}>
