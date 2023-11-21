@@ -1,0 +1,118 @@
+{
+    "child_field": null,
+    "class_path": "langchain.embeddings.huggingface.HuggingFaceBgeEmbeddings",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "cache_folder": {
+                "type": "string"
+            },
+            "encode_kwargs": {
+                "type": "object"
+            },
+            "model_kwargs": {
+                "type": "object"
+            },
+            "model_name": {
+                "default": "BAAI/bge-large-en",
+                "type": "string"
+            },
+            "query_instruction": {
+                "default": "Represent this question for searching relevant passages: ",
+                "type": "string"
+            }
+        },
+        "required": [
+            "model_kwargs",
+            "encode_kwargs"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "HuggingFace BGE Embeddings",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": "BAAI/bge-large-en",
+            "description": null,
+            "input_type": null,
+            "label": "Model_name",
+            "max": null,
+            "min": null,
+            "name": "model_name",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Cache_folder",
+            "max": null,
+            "min": null,
+            "name": "cache_folder",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Model_kwargs",
+            "max": null,
+            "min": null,
+            "name": "model_kwargs",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "Dict"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Encode_kwargs",
+            "max": null,
+            "min": null,
+            "name": "encode_kwargs",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "Dict"
+        },
+        {
+            "choices": null,
+            "default": "Represent this question for searching relevant passages: ",
+            "description": null,
+            "input_type": null,
+            "label": "Query_instruction",
+            "max": null,
+            "min": null,
+            "name": "query_instruction",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "HuggingFace BGE Embeddings",
+    "type": "embeddings"
+}
