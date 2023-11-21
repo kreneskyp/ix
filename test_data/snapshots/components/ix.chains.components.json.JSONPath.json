@@ -1,0 +1,59 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.components.json.JSONPath",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "path": {
+                "type": "string"
+            },
+            "return_list": {
+                "default": false,
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "path"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Parse a value from inputs using a JSONPath",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Path",
+            "max": null,
+            "min": null,
+            "name": "path",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "Return_list",
+            "max": null,
+            "min": null,
+            "name": "return_list",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        }
+    ],
+    "name": "JSON Path",
+    "type": "chain"
+}
