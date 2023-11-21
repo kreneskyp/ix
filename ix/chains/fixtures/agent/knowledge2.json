@@ -1,0 +1,437 @@
+[
+  {
+    "model": "agents.agent",
+    "pk": "27b11aec-af6f-4af3-b9f1-1e049ba07160",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "knowledge (LCEL)",
+      "alias": "knowledge2",
+      "purpose": "Implementation of a (RAG) retrieval agent that reads from a vectorstore to answer user questions.",
+      "created_at": "2023-11-18T19:49:39.026Z",
+      "model": "",
+      "config": {},
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
+      "is_test": false
+    }
+  },
+  {
+    "model": "chains.chain",
+    "pk": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "knowledge (LCEL)",
+      "description": "Implementation of a (RAG) retrieval agent that reads from a vectorstore to answer user questions.",
+      "created_at": "2023-11-18T19:49:39.001Z",
+      "is_agent": true
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "0d49c55f-896e-4dc8-9bf6-36e8057adfeb",
+    "fields": {
+      "class_path": "langchain.schema.vectorstore.VectorStoreRetriever",
+      "node_type": [
+        "langchain.schema.vectorstore.VectorStoreRetriever"
+      ],
+      "config": {
+        "search_type": "similarity",
+        "search_kwargs": {},
+        "allowed_search_types": [
+          "similarity",
+          "similarity_score_threshold",
+          "mmr"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 470.0,
+        "y": 760.0
+      },
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "43e1d43e-4117-41c8-bbee-26efbff67ea3",
+    "fields": {
+      "class_path": "::ROOT::",
+      "node_type": [
+        "::ROOT::"
+      ],
+      "config": {
+        "outputs": [
+          "user_input",
+          "artifact_ids"
+        ],
+        "outputs_hash": [
+          "chat_input",
+          "artifact_ids"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": true,
+      "position": {
+        "x": 150.0,
+        "y": 700.0
+      },
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "4e15524b-1cb1-4960-8fea-e29f765ba751",
+    "fields": {
+      "class_path": "ix.chains.components.lcel.init_parallel",
+      "node_type": [
+        "ix.chains.components.lcel.init_parallel"
+      ],
+      "config": {
+        "steps": [
+          "user_input",
+          "documents"
+        ],
+        "steps_hash": [
+          "a48e4eb7-b834-411b-84f3-7a5f1f21ac12",
+          "9ec31589-d265-49ae-9b9d-686b0ba82d42"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1000.0,
+        "y": 670.0
+      },
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "6b1f1828-4bdf-4a8b-8cde-0c9a276c220c",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONPath",
+      "node_type": [
+        "ix.chains.components.json.JSONPath"
+      ],
+      "config": {
+        "path": "output"
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 720.0,
+        "y": 760.0
+      },
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "74abbc5e-bd81-4b9c-a29f-561850995f67",
+    "fields": {
+      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
+      "config": {
+        "tags": [],
+        "cache": false,
+        "metadata": {},
+        "streaming": true,
+        "max_tokens": 500,
+        "model_name": "gpt-4-0613",
+        "max_retries": 6,
+        "temperature": 0,
+        "openai_proxy": "",
+        "openai_api_base": "",
+        "request_timeout": 60,
+        "openai_organization": ""
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1530.0,
+        "y": 670.0
+      },
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "a3274983-debb-4e34-b1eb-ff758b22a547",
+    "fields": {
+      "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
+      "node_type": [
+        "langchain.embeddings.openai.OpenAIEmbeddings"
+      ],
+      "config": {
+        "model": "text-embedding-ada-002",
+        "chunk_size": 1000,
+        "max_retries": "6",
+        "allowed_special": [],
+        "disallowed_special": []
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": -60.0,
+        "y": 850.0
+      },
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "e4bca73a-e160-4182-9984-a9594cf2149a",
+    "fields": {
+      "class_path": "ix.chains.components.vectorstores.AsyncChromaVectorstore",
+      "node_type": [
+        "ix.chains.components.vectorstores.AsyncChromaVectorstore"
+      ],
+      "config": {
+        "allow_reset": false,
+        "search_type": "similarity",
+        "search_kwargs": {},
+        "collection_name": "knowledge2",
+        "persist_directory": "./chroma",
+        "chroma_server_host": "172.17.42.1",
+        "allowed_search_types": [
+          "similarity",
+          "similarity_score_threshold",
+          "mmr"
+        ],
+        "anonymized_telemetry": true,
+        "chroma_server_http_port": "8020",
+        "chroma_server_ssl_enabled": false
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 210.0,
+        "y": 850.0
+      },
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "fbd0e538-59c3-4b1d-bd5f-95e3d536b08d",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONPath",
+      "node_type": [
+        "ix.chains.components.json.JSONPath"
+      ],
+      "config": {
+        "path": "user_input"
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 470.0,
+        "y": 640.0
+      },
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "fc537461-26f6-45da-931d-a8c8e37f0b34",
+    "fields": {
+      "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+      "node_type": [
+        "langchain.prompts.chat.ChatPromptTemplate"
+      ],
+      "config": {
+        "messages": [
+          {
+            "role": "system",
+            "template": "You are an expert information retrieval agent. You answer user questions.Retrieved documents: {documents}",
+            "input_variables": [
+              "documents"
+            ]
+          },
+          {
+            "role": "user",
+            "template": "user:{user_input}",
+            "input_variables": [
+              "user_input"
+            ],
+            "partial_variables": {}
+          }
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1260.0,
+        "y": 670.0
+      },
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "06c25dac-3972-4cbe-a798-748095ccda89",
+    "fields": {
+      "source": "a3274983-debb-4e34-b1eb-ff758b22a547",
+      "target": "e4bca73a-e160-4182-9984-a9594cf2149a",
+      "source_key": "embeddings",
+      "target_key": "embedding",
+      "map_key": null,
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "11313d8c-82a1-4e70-90a8-6b46279ce712",
+    "fields": {
+      "source": "4e15524b-1cb1-4960-8fea-e29f765ba751",
+      "target": "fc537461-26f6-45da-931d-a8c8e37f0b34",
+      "source_key": "out",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "4df4cbc6-a42a-4535-ab9d-37d04d2ca247",
+    "fields": {
+      "source": "0d49c55f-896e-4dc8-9bf6-36e8057adfeb",
+      "target": "6b1f1828-4bdf-4a8b-8cde-0c9a276c220c",
+      "source_key": "out",
+      "target_key": "9ec31589-d265-49ae-9b9d-686b0ba82d42",
+      "map_key": null,
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "4f0edb35-6a71-4bb1-ae60-12e35d89f327",
+    "fields": {
+      "source": "e4bca73a-e160-4182-9984-a9594cf2149a",
+      "target": "0d49c55f-896e-4dc8-9bf6-36e8057adfeb",
+      "source_key": "vectorstore",
+      "target_key": "vectorstore",
+      "map_key": null,
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "87cae9a5-2b31-45d2-8c6e-2907fa000951",
+    "fields": {
+      "source": "6b1f1828-4bdf-4a8b-8cde-0c9a276c220c",
+      "target": "4e15524b-1cb1-4960-8fea-e29f765ba751",
+      "source_key": "out",
+      "target_key": "9ec31589-d265-49ae-9b9d-686b0ba82d42",
+      "map_key": null,
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "9b3d1155-17ba-4440-a104-8fd6281eb58a",
+    "fields": {
+      "source": "43e1d43e-4117-41c8-bbee-26efbff67ea3",
+      "target": "0d49c55f-896e-4dc8-9bf6-36e8057adfeb",
+      "source_key": "chat_input",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "bd960a30-7632-456e-a050-626f3abdfd45",
+    "fields": {
+      "source": "fc537461-26f6-45da-931d-a8c8e37f0b34",
+      "target": "74abbc5e-bd81-4b9c-a29f-561850995f67",
+      "source_key": "out",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "bfe56dd6-8010-4871-9644-f1bea0273cfc",
+    "fields": {
+      "source": "fbd0e538-59c3-4b1d-bd5f-95e3d536b08d",
+      "target": "4e15524b-1cb1-4960-8fea-e29f765ba751",
+      "source_key": "out",
+      "target_key": "a48e4eb7-b834-411b-84f3-7a5f1f21ac12",
+      "map_key": null,
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "c39c567a-9754-46ac-bcfa-58ab18ce2000",
+    "fields": {
+      "source": "fbd0e538-59c3-4b1d-bd5f-95e3d536b08d",
+      "target": "43e1d43e-4117-41c8-bbee-26efbff67ea3",
+      "source_key": "chain",
+      "target_key": "chat_input",
+      "map_key": null,
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "caa53c20-976d-4547-b2cc-c0a81dff34c8",
+    "fields": {
+      "source": "fbd0e538-59c3-4b1d-bd5f-95e3d536b08d",
+      "target": "4e15524b-1cb1-4960-8fea-e29f765ba751",
+      "source_key": "out",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "eae2a2c9-af0a-4666-9177-39e2a95e7c3a",
+    "fields": {
+      "source": "43e1d43e-4117-41c8-bbee-26efbff67ea3",
+      "target": "fbd0e538-59c3-4b1d-bd5f-95e3d536b08d",
+      "source_key": "chat_input",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  }
+]

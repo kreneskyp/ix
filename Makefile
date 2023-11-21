@@ -280,13 +280,16 @@ agents: cluster components
 	$(LOAD_FIXTURE) agent/ix
 	$(LOAD_FIXTURE) agent/readme
 	$(LOAD_FIXTURE) agent/code
+	$(LOAD_FIXTURE) agent/owl
 	$(LOAD_FIXTURE) agent/pirate
+	$(LOAD_FIXTURE) agent/pirate2
 	$(LOAD_FIXTURE) agent/wikipedia
 	$(LOAD_FIXTURE) agent/klarna
 	$(LOAD_FIXTURE) agent/smithy
 	$(LOAD_FIXTURE) agent/metaphor
 	$(LOAD_FIXTURE) agent/ingest
 	$(LOAD_FIXTURE) agent/knowledge
+	$(LOAD_FIXTURE) agent/knowledge2
 
 
 # Load components into database

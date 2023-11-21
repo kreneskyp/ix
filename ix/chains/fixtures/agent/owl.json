@@ -1,0 +1,509 @@
+[
+  {
+    "model": "agents.agent",
+    "pk": "1e239734-bcca-44bd-8c20-1425dc2cde2e",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Owl",
+      "alias": "owl",
+      "purpose": "Owl is a test bot for PostgreSQL based chat memory.",
+      "created_at": "2023-11-21T17:36:12.411Z",
+      "model": "",
+      "config": {},
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+      "is_test": false
+    }
+  },
+  {
+    "model": "chains.chain",
+    "pk": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Owl",
+      "description": "Owl is a test bot for PostgreSQL based chat memory.",
+      "created_at": "2023-11-21T17:36:12.395Z",
+      "is_agent": true
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "21fbd793-5453-4401-8ed7-fd9c70231449",
+    "fields": {
+      "class_path": "ix.chains.components.lcel.init_parallel",
+      "node_type": [
+        "ix.chains.components.lcel.init_parallel"
+      ],
+      "config": {
+        "steps": [
+          "chat_output",
+          "user_input"
+        ],
+        "steps_hash": [
+          "302042e5-cfab-47a9-8fe3-b7c4494a5c4b",
+          "657398fc-0285-476c-9fc8-17d2b4073dd7"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1780.0,
+        "y": 280.0
+      },
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "483cb5e7-11df-4986-a8cb-e72fbfeecb07",
+    "fields": {
+      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
+      "config": {
+        "tags": [],
+        "cache": false,
+        "metadata": {},
+        "streaming": true,
+        "max_tokens": 500,
+        "model_name": "gpt-4-0613",
+        "max_retries": 6,
+        "temperature": 0,
+        "openai_proxy": "",
+        "openai_api_base": "",
+        "request_timeout": 60,
+        "openai_organization": ""
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1500.0,
+        "y": 260.0
+      },
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "4b014e09-376b-43d1-aafb-939a02610189",
+    "fields": {
+      "class_path": "langchain.memory.chat_message_histories.postgres.PostgresChatMessageHistory",
+      "node_type": [
+        "langchain.memory.chat_message_histories.postgres.PostgresChatMessageHistory"
+      ],
+      "config": {
+        "table_name": "message_store",
+        "session_key": "session_id",
+        "session_scope": "",
+        "session_prefix": "",
+        "connection_string": "postgresql://ix:ix@db:5432/ix"
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 640.0,
+        "y": 570.0
+      },
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "64d9c0cb-f47b-4631-87fe-e1d4134ebed0",
+    "fields": {
+      "class_path": "ix.chains.components.memory.LoadMemory",
+      "node_type": [
+        "ix.chains.components.memory.LoadMemory"
+      ],
+      "config": {
+        "output_key": "memories",
+        "memory_inputs": [
+          "user_input"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 600.0,
+        "y": 400.0
+      },
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "7220da2c-5b47-4e9c-87e4-2010de68ee09",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONPath",
+      "node_type": [
+        "ix.chains.components.json.JSONPath"
+      ],
+      "config": {
+        "path": "user_input",
+        "return_list": false
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 600.0,
+        "y": 260.0
+      },
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "bb2c912e-700d-43e9-8a75-df0f90aad839",
+    "fields": {
+      "class_path": "ix.chains.components.lcel.init_parallel",
+      "node_type": [
+        "ix.chains.components.lcel.init_parallel"
+      ],
+      "config": {
+        "steps": [
+          "user_input",
+          "memories"
+        ],
+        "steps_hash": [
+          "a9849947-5073-4708-9c75-2fb337c6aa0a",
+          "033ff99d-1028-4024-b42c-7eadeb78e7ae"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 930.0,
+        "y": 300.0
+      },
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "bb4dd36a-3a45-4a9a-b197-09821fda40a9",
+    "fields": {
+      "class_path": "ix.chains.components.memory.SaveMemory",
+      "node_type": [
+        "ix.chains.components.memory.SaveMemory"
+      ],
+      "config": {
+        "input_keys": [
+          "user_input"
+        ],
+        "output_keys": [
+          "chat_output"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 2050.0,
+        "y": 400.0
+      },
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "c225fa15-8495-41c6-9df3-758c5efd17ae",
+    "fields": {
+      "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+      "node_type": [
+        "langchain.prompts.chat.ChatPromptTemplate"
+      ],
+      "config": {
+        "messages": [
+          {
+            "role": "system",
+            "template": "You are a smart owl. Respond to the user like the smarty pants you are.\n\nmemories: \n{memories}\n",
+            "input_variables": [
+              "memories"
+            ]
+          },
+          {
+            "role": "user",
+            "template": "{user_input}\n",
+            "input_variables": [
+              "user_input"
+            ],
+            "partial_variables": {}
+          }
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1210.0,
+        "y": 260.0
+      },
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "d642cb38-1534-4dd5-ac0f-5c64310cc957",
+    "fields": {
+      "class_path": "langchain.memory.ConversationBufferMemory",
+      "node_type": [
+        "langchain.memory.ConversationBufferMemory"
+      ],
+      "config": {
+        "ai_prefix": "AI",
+        "input_key": "user_input",
+        "memory_key": "memories",
+        "output_key": "chat_output",
+        "human_prefix": "Human",
+        "return_messages": false
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 950.0,
+        "y": 570.0
+      },
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "dafbc548-04ec-4909-b31d-9fdb042a6c3f",
+    "fields": {
+      "class_path": "::ROOT::",
+      "node_type": [
+        "::ROOT::"
+      ],
+      "config": {
+        "outputs": [
+          "user_input",
+          "artifact_ids"
+        ],
+        "outputs_hash": [
+          "user_input",
+          "artifact_ids"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": true,
+      "position": {
+        "x": 300.0,
+        "y": 330.0
+      },
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "f255e50d-8181-4f58-91db-55c5be6949d5",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONPath",
+      "node_type": [
+        "ix.chains.components.json.JSONPath"
+      ],
+      "config": {
+        "path": "user_input"
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1210.0,
+        "y": 400.0
+      },
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "126e6abb-6240-49ac-b75b-97bef8d99180",
+    "fields": {
+      "source": "d642cb38-1534-4dd5-ac0f-5c64310cc957",
+      "target": "bb4dd36a-3a45-4a9a-b197-09821fda40a9",
+      "source_key": "memory",
+      "target_key": "memory",
+      "map_key": null,
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "305e7a1d-825f-410f-8a02-0221cec86020",
+    "fields": {
+      "source": "c225fa15-8495-41c6-9df3-758c5efd17ae",
+      "target": "483cb5e7-11df-4986-a8cb-e72fbfeecb07",
+      "source_key": "out",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "465897ce-0539-4a86-a532-ed8b44c101ad",
+    "fields": {
+      "source": "bb2c912e-700d-43e9-8a75-df0f90aad839",
+      "target": "c225fa15-8495-41c6-9df3-758c5efd17ae",
+      "source_key": "out",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "556aa29c-b934-49bd-89a5-0dc766fe8b95",
+    "fields": {
+      "source": "bb2c912e-700d-43e9-8a75-df0f90aad839",
+      "target": "f255e50d-8181-4f58-91db-55c5be6949d5",
+      "source_key": "out",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "59b6bac2-d5c6-4d3d-a74c-61a571df0efb",
+    "fields": {
+      "source": "f255e50d-8181-4f58-91db-55c5be6949d5",
+      "target": "21fbd793-5453-4401-8ed7-fd9c70231449",
+      "source_key": "out",
+      "target_key": "657398fc-0285-476c-9fc8-17d2b4073dd7",
+      "map_key": null,
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "63f0517d-51b4-44cd-879b-ef0fecf7e965",
+    "fields": {
+      "source": "64d9c0cb-f47b-4631-87fe-e1d4134ebed0",
+      "target": "bb2c912e-700d-43e9-8a75-df0f90aad839",
+      "source_key": "out",
+      "target_key": "033ff99d-1028-4024-b42c-7eadeb78e7ae",
+      "map_key": null,
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "71f17b4e-52e2-4e33-acfe-607b732f4796",
+    "fields": {
+      "source": "4b014e09-376b-43d1-aafb-939a02610189",
+      "target": "d642cb38-1534-4dd5-ac0f-5c64310cc957",
+      "source_key": "memory_backend",
+      "target_key": "chat_memory",
+      "map_key": null,
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "8159e941-03c6-4fc2-94cb-dc24d8d6b4a6",
+    "fields": {
+      "source": "7220da2c-5b47-4e9c-87e4-2010de68ee09",
+      "target": "bb2c912e-700d-43e9-8a75-df0f90aad839",
+      "source_key": "out",
+      "target_key": "a9849947-5073-4708-9c75-2fb337c6aa0a",
+      "map_key": null,
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "96e535d2-be45-4e2c-823c-8d5f89ca6b20",
+    "fields": {
+      "source": "d642cb38-1534-4dd5-ac0f-5c64310cc957",
+      "target": "64d9c0cb-f47b-4631-87fe-e1d4134ebed0",
+      "source_key": "memory",
+      "target_key": "memory",
+      "map_key": null,
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "a73e72c0-cff0-40bd-87ec-e370dc3e791a",
+    "fields": {
+      "source": "dafbc548-04ec-4909-b31d-9fdb042a6c3f",
+      "target": "64d9c0cb-f47b-4631-87fe-e1d4134ebed0",
+      "source_key": "user_input",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "bccd27fb-030b-41e6-9b1c-c395681e3a10",
+    "fields": {
+      "source": "dafbc548-04ec-4909-b31d-9fdb042a6c3f",
+      "target": "7220da2c-5b47-4e9c-87e4-2010de68ee09",
+      "source_key": "user_input",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "c5efd519-2c36-4f3e-9d47-1c8bcae242af",
+    "fields": {
+      "source": "21fbd793-5453-4401-8ed7-fd9c70231449",
+      "target": "bb4dd36a-3a45-4a9a-b197-09821fda40a9",
+      "source_key": "out",
+      "target_key": "in",
+      "map_key": null,
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "f97249c9-4d25-458f-a862-e06ae8427123",
+    "fields": {
+      "source": "483cb5e7-11df-4986-a8cb-e72fbfeecb07",
+      "target": "21fbd793-5453-4401-8ed7-fd9c70231449",
+      "source_key": "out",
+      "target_key": "302042e5-cfab-47a9-8fe3-b7c4494a5c4b",
+      "map_key": null,
+      "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  }
+]
