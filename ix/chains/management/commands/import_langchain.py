@@ -10,6 +10,7 @@ from ix.chains.fixture_src.dalle import DALLE
 from ix.chains.fixture_src.chat_memory_backend import MEMORY_BACKEND
 from ix.chains.fixture_src.document_loaders import DOCUMENT_LOADERS
 from ix.chains.fixture_src.embeddings import EMBEDDINGS
+from ix.chains.fixture_src.flow import FLOW
 from ix.chains.fixture_src.ix import CHAT_MODERATOR_TYPE
 from ix.chains.fixture_src.json import JSON
 from ix.chains.fixture_src.lcel import LANGCHAIN_EXPRESSION_LANGUAGE
@@ -81,6 +82,7 @@ COMPONENTS.extend(RETRIEVERS)
 # IX LCEL integrations & flow
 COMPONENTS.extend(LANGCHAIN_EXPRESSION_LANGUAGE)
 COMPONENTS.extend(JSON)
+COMPONENTS.extend(FLOW)
 
 # IX Misc
 COMPONENTS.extend([CHAT_MODERATOR_TYPE])
