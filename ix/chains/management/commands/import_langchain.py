@@ -10,6 +10,7 @@ from ix.chains.fixture_src.chat_memory_backend import (
     FILESYSTEM_MEMORY_BACKEND,
     REDIS_MEMORY_BACKEND,
 )
+from ix.chains.fixture_src.dalle import DALLE
 from ix.chains.fixture_src.document_loaders import DOCUMENT_LOADERS
 from ix.chains.fixture_src.embeddings import (
     OPENAI_EMBEDDINGS,
@@ -65,6 +66,7 @@ COMPONENTS.extend(TOOLKITS)
 
 # LLMS
 COMPONENTS.extend(LLMS)
+COMPONENTS.extend(DALLE)
 
 # Chains
 COMPONENTS.extend(CHAINS)

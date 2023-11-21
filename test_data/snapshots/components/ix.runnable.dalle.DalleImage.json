@@ -1,0 +1,227 @@
+{
+    "child_field": null,
+    "class_path": "ix.runnable.dalle.DalleImage",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "disable_detail_rewrite": {
+                "default": false,
+                "type": "boolean"
+            },
+            "input_key": {
+                "default": "prompt",
+                "type": "string"
+            },
+            "model": {
+                "default": "dall-e-3",
+                "type": "string"
+            },
+            "n": {
+                "default": 1,
+                "type": "number"
+            },
+            "openai_api_key": {
+                "input_type": "secret",
+                "secret_key": "OpenAI API",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
+            "quality": {
+                "default": "standard",
+                "enum": [
+                    "standard",
+                    "hd"
+                ],
+                "input_type": "select",
+                "type": "string"
+            },
+            "separator": {
+                "default": "\n",
+                "type": "string"
+            },
+            "size": {
+                "default": "1024x1024",
+                "enum": [
+                    "256x256",
+                    "512x512",
+                    "1024x1024",
+                    "1792x1024",
+                    "1024x1792"
+                ],
+                "input_type": "select",
+                "type": "object"
+            }
+        },
+        "required": [],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Generate an image with Dall-e API",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": "prompt",
+            "description": null,
+            "input_type": null,
+            "label": "Input_key",
+            "max": null,
+            "min": null,
+            "name": "input_key",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": "secret",
+            "label": "API Key",
+            "max": null,
+            "min": null,
+            "name": "openai_api_key",
+            "parent": null,
+            "required": false,
+            "secret_key": "OpenAI API",
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": "dall-e-3",
+            "description": null,
+            "input_type": null,
+            "label": "Model",
+            "max": null,
+            "min": null,
+            "name": "model",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": 1,
+            "description": null,
+            "input_type": null,
+            "label": "N",
+            "max": null,
+            "min": null,
+            "name": "n",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": [
+                {
+                    "label": "256x256",
+                    "value": "256x256"
+                },
+                {
+                    "label": "512x512",
+                    "value": "512x512"
+                },
+                {
+                    "label": "1024x1024",
+                    "value": "1024x1024"
+                },
+                {
+                    "label": "1792x1024",
+                    "value": "1792x1024"
+                },
+                {
+                    "label": "1024x1792",
+                    "value": "1024x1792"
+                }
+            ],
+            "default": "1024x1024",
+            "description": null,
+            "input_type": "select",
+            "label": "Size",
+            "max": null,
+            "min": null,
+            "name": "size",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "Literal"
+        },
+        {
+            "choices": [
+                {
+                    "label": "Standard",
+                    "value": "standard"
+                },
+                {
+                    "label": "Hd",
+                    "value": "hd"
+                }
+            ],
+            "default": "standard",
+            "description": null,
+            "input_type": "select",
+            "label": "Quality",
+            "max": null,
+            "min": null,
+            "name": "quality",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": "\n",
+            "description": null,
+            "input_type": null,
+            "label": "Separator",
+            "max": null,
+            "min": null,
+            "name": "separator",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "description": null,
+            "input_type": null,
+            "label": "Disable_detail_rewrite",
+            "max": null,
+            "min": null,
+            "name": "disable_detail_rewrite",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        }
+    ],
+    "name": "Dalle Image",
+    "type": "chain"
+}
