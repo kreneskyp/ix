@@ -1,0 +1,60 @@
+{
+    "child_field": null,
+    "class_path": "langchain.embeddings.huggingface.HuggingFaceInferenceAPIEmbeddings",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "api_key": {
+                "input_type": "secret",
+                "type": "string"
+            },
+            "model_name": {
+                "default": "sentence-transformers/all-MiniLM-L6-v2",
+                "type": "string"
+            }
+        },
+        "required": [
+            "api_key"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "HuggingFace Inference API Embeddings",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": "secret",
+            "label": "Api_key",
+            "max": null,
+            "min": null,
+            "name": "api_key",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": "sentence-transformers/all-MiniLM-L6-v2",
+            "description": null,
+            "input_type": null,
+            "label": "Model_name",
+            "max": null,
+            "min": null,
+            "name": "model_name",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "HuggingFace Inference API Embeddings",
+    "type": "embeddings"
+}

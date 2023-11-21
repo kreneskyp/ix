@@ -1,35 +1,30 @@
 {
     "child_field": null,
-    "class_path": "langchain.embeddings.huggingface.HuggingFaceEmbeddings",
+    "class_path": "langchain.embeddings.huggingface_hub.HuggingFaceHubEmbeddings",
     "config_schema": {
         "display_groups": null,
         "properties": {
-            "cache_folder": {
+            "huggingfacehub_api_token": {
+                "input_type": "secret",
                 "type": "string"
-            },
-            "encode_kwargs": {
-                "type": "object"
             },
             "model_kwargs": {
                 "type": "object"
             },
-            "model_name": {
+            "repo_id": {
                 "default": "sentence-transformers/all-mpnet-base-v2",
                 "type": "string"
             },
-            "multi_process": {
-                "default": false,
-                "type": "boolean"
+            "task": {
+                "default": "feature-extraction",
+                "type": "string"
             }
         },
-        "required": [
-            "model_kwargs",
-            "encode_kwargs"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": null,
-    "description": "HuggingFace Embeddings",
+    "description": "HuggingFace Hub Embeddings",
     "display_type": "node",
     "fields": [
         {
@@ -37,10 +32,10 @@
             "default": "sentence-transformers/all-mpnet-base-v2",
             "description": null,
             "input_type": null,
-            "label": "Model_name",
+            "label": "Repo_id",
             "max": null,
             "min": null,
-            "name": "model_name",
+            "name": "repo_id",
             "parent": null,
             "required": false,
             "secret_key": null,
@@ -50,13 +45,13 @@
         },
         {
             "choices": null,
-            "default": null,
+            "default": "feature-extraction",
             "description": null,
             "input_type": null,
-            "label": "Cache_folder",
+            "label": "Task",
             "max": null,
             "min": null,
-            "name": "cache_folder",
+            "name": "task",
             "parent": null,
             "required": false,
             "secret_key": null,
@@ -74,45 +69,29 @@
             "min": null,
             "name": "model_kwargs",
             "parent": null,
-            "required": true,
+            "required": false,
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "Dict"
+            "type": "dict"
         },
         {
             "choices": null,
             "default": null,
             "description": null,
-            "input_type": null,
-            "label": "Encode_kwargs",
+            "input_type": "secret",
+            "label": "Huggingfacehub_api_token",
             "max": null,
             "min": null,
-            "name": "encode_kwargs",
-            "parent": null,
-            "required": true,
-            "secret_key": null,
-            "step": null,
-            "style": null,
-            "type": "Dict"
-        },
-        {
-            "choices": null,
-            "default": false,
-            "description": null,
-            "input_type": null,
-            "label": "Multi_process",
-            "max": null,
-            "min": null,
-            "name": "multi_process",
+            "name": "huggingfacehub_api_token",
             "parent": null,
             "required": false,
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "boolean"
+            "type": "str"
         }
     ],
-    "name": "HuggingFace Embeddings",
+    "name": "HuggingFace Hub Embeddings",
     "type": "embeddings"
 }
