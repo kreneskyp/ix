@@ -25,7 +25,9 @@ AI_PREFIX = {
 SCOPED_MEMORY_FIELDS = [
     {
         "name": "session_scope",
+        "label": "Session Scope",
         "type": "string",
+
         "input_type": "select",
         "choices": [
             {"label": "chat", "value": "chat"},
@@ -33,18 +35,30 @@ SCOPED_MEMORY_FIELDS = [
             {"label": "task", "value": "task"},
             {"label": "user", "value": "user"},
         ],
+        "style": {"width": "100%"},
     },
     {
         "name": "session_prefix",
+        "label": "Session Prefix",
+        "description": "prefix applied to the session ID. e.g. 'chat' will result in 'chat:session_id'."
+                      "Chains with the same scope and prefix will share the same session.",
         "type": "string",
         "default": "",
+        "style": {"width": "100%"},
     },
     {
         "name": "session_key",
+        "label": "Session Key",
+        "description": "component session will be initialized with this argument.",
         "type": "string",
         "default": "session_id",
+        "style": {"width": "100%"},
     },
 ]
+SCOPED_MEMORY_FIELD_GROUP = {
+    "key": "Session",
+    "fields": ["session_scope", "session_prefix", "session_key"],
+}
 
 
 CHAT_MEMORY_FIELDS = [
