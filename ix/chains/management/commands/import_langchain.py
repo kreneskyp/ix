@@ -6,11 +6,8 @@ from ix.chains.fixture_src.agent_interaction import AGENT_INTERACTION_CHAINS
 from ix.chains.fixture_src.agents import AGENTS
 from ix.chains.fixture_src.artifacts import ARTIFACT_MEMORY, SAVE_ARTIFACT
 from ix.chains.fixture_src.chains import CHAINS
-from ix.chains.fixture_src.chat_memory_backend import (
-    FILESYSTEM_MEMORY_BACKEND,
-    REDIS_MEMORY_BACKEND,
-)
 from ix.chains.fixture_src.dalle import DALLE
+from ix.chains.fixture_src.chat_memory_backend import MEMORY_BACKEND
 from ix.chains.fixture_src.document_loaders import DOCUMENT_LOADERS
 from ix.chains.fixture_src.embeddings import EMBEDDINGS
 from ix.chains.fixture_src.ix import CHAT_MODERATOR_TYPE
@@ -81,14 +78,7 @@ COMPONENTS.extend(
         CONVERSATION_TOKEN_BUFFER_MEMORY,
     ]
 )
-
-# Memory Backends
-COMPONENTS.extend(
-    [
-        REDIS_MEMORY_BACKEND,
-        FILESYSTEM_MEMORY_BACKEND,
-    ]
-)
+COMPONENTS.extend(MEMORY_BACKEND)
 
 # Document retrieval
 COMPONENTS.extend(PARSERS)
