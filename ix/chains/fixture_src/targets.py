@@ -1,3 +1,14 @@
+RUNNABLE_TYPES = [
+    "agent",
+    "chain",
+    "llm",
+    "prompt",
+    "retriever",
+    "tool",
+]
+FLOW_TYPES = sorted(RUNNABLE_TYPES + ["root", "branch", "map", "flow"])
+
+
 EMBEDDINGS_TARGET = {
     "key": "embedding",
     "type": "target",
@@ -50,11 +61,18 @@ CHAIN_TARGET = {
     "source_type": "chain",
 }
 
+WORKFLOW_TARGET = {
+    "key": "workflow",
+    "type": "target",
+    "source_type": FLOW_TYPES,
+}
+
 FUNCTION_TARGET = {
     "key": "functions",
     "type": "target",
-    "source_type": ["tool", "toolkit"],
+    "source_type": ["tool", "toolkit", "schema"],
     "multiple": True,
+    "auto_sequence": False,
 }
 
 VECTORSTORE_TARGET = {
@@ -69,6 +87,7 @@ TOOLS_TARGET = {
     "type": "target",
     "source_type": ["tool", "toolkit"],
     "multiple": True,
+    "as_type": "tool",
 }
 
 PARSER_TARGET = {

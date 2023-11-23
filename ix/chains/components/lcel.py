@@ -10,7 +10,7 @@ from langchain.schema.runnable import (
     RunnableSerializable,
     RunnableConfig,
 )
-from langchain.schema.runnable.base import Other
+from langchain.schema.runnable.base import Other, RunnableEach
 from langchain.schema.runnable.utils import Input, Output
 
 
@@ -39,6 +39,12 @@ def init_parallel(steps: Dict[str, Any | Runnable[Input, Output]]) -> RunnablePa
     passed in to a new RunnableParallel object.
     """
     return RunnableParallel(steps)
+
+
+def init_each(
+    workflow: RunnableSerializable[List[Input], List[Output]]
+) -> RunnableEach:
+    return RunnableEach(bound=workflow)
 
 
 def init_branch(
