@@ -50,7 +50,7 @@ class AddNode(BaseModel):
     @model_validator(mode="before")
     def validate_root(cls, value) -> bool:
         # set root automatically for root nodes
-        if value["class_path"] == "::ROOT::":
+        if value["class_path"] == "__ROOT__":
             value["root"] = True
 
         return value

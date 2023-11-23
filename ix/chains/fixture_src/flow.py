@@ -1,4 +1,4 @@
-ROOT_CLASS_PATH = "::ROOT::"
+ROOT_CLASS_PATH = "__ROOT__"
 ROOT_NODE = {
     "class_path": ROOT_CLASS_PATH,
     "name": "Chat Input",

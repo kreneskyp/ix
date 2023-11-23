@@ -184,9 +184,9 @@
     "model": "chains.chainnode",
     "pk": "6cfc303d-73a3-4da9-ab62-989b66c92738",
     "fields": {
-      "class_path": "::ROOT::",
+      "class_path": "__ROOT__",
       "node_type": [
-        "::ROOT::"
+        "__ROOT__"
       ],
       "config": {
         "outputs": [
