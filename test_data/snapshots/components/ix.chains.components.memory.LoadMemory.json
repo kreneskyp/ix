@@ -1,0 +1,78 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.components.memory.LoadMemory",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "memory_inputs": {
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
+            "output_key": {
+                "default": "memories",
+                "type": "string"
+            }
+        },
+        "required": [
+            "memory_inputs"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "key": "memory",
+            "multiple": true,
+            "required": false,
+            "source_type": "memory",
+            "template": false,
+            "type": "target"
+        }
+    ],
+    "description": "Load memories from short term storage for use in a prompt.",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": "memories",
+            "description": null,
+            "input_type": null,
+            "label": "Output_key",
+            "max": null,
+            "min": null,
+            "name": "output_key",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Memory_inputs",
+            "max": null,
+            "min": null,
+            "name": "memory_inputs",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        }
+    ],
+    "name": "Load Memories",
+    "type": "chain"
+}

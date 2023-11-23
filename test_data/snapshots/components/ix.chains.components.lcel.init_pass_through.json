@@ -1,0 +1,16 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.components.lcel.init_pass_through",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {},
+        "required": [],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Passes inputs through to outputs",
+    "display_type": "node",
+    "fields": null,
+    "name": "Pass Through",
+    "type": "chain"
+}

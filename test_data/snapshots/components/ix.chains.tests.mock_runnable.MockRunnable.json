@@ -1,0 +1,16 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.tests.mock_runnable.MockRunnable",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {},
+        "required": [],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "mock runnable for testing",
+    "display_type": "node",
+    "fields": null,
+    "name": "mock_runnable",
+    "type": "chain"
+}

@@ -1,0 +1,79 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.components.lcel.init_parallel",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "steps": {
+                "description": "Input variables mapped from the output of the branch connected to it.",
+                "input_type": "node_map_list",
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
+            "steps_hash": {
+                "description": "Input variables hashes in order they should be displayed. These hashes are used for connector identifiers. The step names may change without requiring edges to update unless the step is removed. Must be same length as steps. ",
+                "input_type": "hidden",
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            }
+        },
+        "required": [
+            "steps",
+            "steps_hash"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Map inputs to the output of flow branches (chains, agents, prompts, tools, etc.)",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": "Input variables mapped from the output of the branch connected to it.",
+            "input_type": "node_map_list",
+            "label": "Input Branches",
+            "max": null,
+            "min": null,
+            "name": "steps",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": "Input variables hashes in order they should be displayed. These hashes are used for connector identifiers. The step names may change without requiring edges to update unless the step is removed. Must be same length as steps. ",
+            "input_type": "hidden",
+            "label": "",
+            "max": null,
+            "min": null,
+            "name": "steps_hash",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        }
+    ],
+    "name": "Gather Input",
+    "type": "map"
+}
