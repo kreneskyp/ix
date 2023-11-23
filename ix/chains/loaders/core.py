@@ -63,10 +63,12 @@ def get_property_loader(name: str) -> Callable:
     """
     from ix.chains.loaders.memory import load_memory_property
     from ix.chains.loaders.retriever import load_retriever_property
+    from ix.chains.loaders.tools import load_tool_property
 
     return {
         "memory": load_memory_property,
         "retriever": load_retriever_property,
+        "tool": load_tool_property,
     }.get(name, None)
 
 

@@ -26,7 +26,7 @@
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "llm",
             "multiple": false,
             "required": true,
@@ -35,8 +35,8 @@
             "type": "target"
         },
         {
-            "as_type": null,
-            "auto_sequence": true,
+            "as_type": "tool",
+            "collection": null,
             "key": "tools",
             "multiple": true,
             "required": false,
@@ -49,7 +49,7 @@
         },
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "memory",
             "multiple": true,
             "required": false,
