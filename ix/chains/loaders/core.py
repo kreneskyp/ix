@@ -332,10 +332,22 @@ async def ainit_chain_flow(
 
 
 def init_flow(
-    nodes: List[ChainNode], context: IxContext, variables: Dict[str, Any] = None
-) -> Runnable:
-    flow_root = load_flow_node(nodes)
-    return init_flow_node(flow_root, context=context, variables=variables)
+    nodes: List[ChainNode],
+    context: IxContext,
+    variables: Dict[str, Any] = None,
+    seen: dict = None,
+) -> Runnable[Input, Output] | List[Runnable[Input, Output]]:
+    flow_roots = load_flow_node(nodes, seen=seen)
+    if not isinstance(flow_roots, list):
+        flow_roots = [flow_roots]
+
+    flows = []
+    for flow_root in flow_roots:
+        flows.append(init_flow_node(flow_root, context=context, variables=variables))
+
+    if len(flows) == 1:
+        return flows[0]
+    return flows
 
 
 async def ainit_flow(
@@ -362,34 +374,62 @@ async def aload_chain_flow(chain: Chain) -> FlowPlaceholder:
     return await sync_to_async(load_chain_flow)(chain)
 
 
-def load_flow_node(nodes: List[ChainNode]) -> FlowPlaceholder:
+def load_flow_node(
+    nodes: List[ChainNode], seen: dict = None
+) -> FlowPlaceholder | List[FlowPlaceholder]:
     """Loads a node or group of node connected to a map"""
     if len(nodes) == 0:
         raise ValueError("No root nodes found")
 
-    seen = {}
+    seen = seen or {}
     if len(nodes) == 1:
         return load_flow_sequence(nodes[0], seen)
     return load_flow_map(nodes, seen)
 
 
-async def aload_flow_node(chain: Chain, context=None, variables=None) -> None:
-    return await sync_to_async(load_flow_node)(chain)
+async def aload_flow_node(
+    nodes: List[ChainNode], seen: dict = None
+) -> FlowPlaceholder | List[FlowPlaceholder]:
+    return await sync_to_async(load_flow_node)(nodes, seen)
 
 
 def load_flow_map(
     nodes: List[ChainNode],
     seen: Dict[str, FlowPlaceholder],
-) -> FlowPlaceholder:
-    new_nodes = []
+) -> FlowPlaceholder | List[FlowPlaceholder]:
+    """
+    Load all paths starting from the given group of nodes. The returned nodes are
+    the set of distinct flows that should be created given the input nodes:
+
+    - distinct/disjoint paths are returned.
+    - map nodes are de-duped and returned as a single map node.
+
+    Example single flow:
+    Each.workflow --> Foo --> Bar --> Baz
+
+    Example multiple flows:
+    Agent.tools --> Foo --> Bar --> Baz
+                --> SearchTool
+    """
+    local_seen: Dict[UUID, FlowPlaceholder] = {}
+    new_nodes: List[FlowPlaceholder] = []
     for node in nodes:
-        new_nodes.append(load_flow_sequence(node, seen=seen))
+        # Load & dedupe returned nodes:
+        # The first branch is explored the deepest. Subsequent runs fill in missing
+        # branches from the first run. The first run will always be complete after
+        # all branches have been processed.
+        loaded_node = load_flow_sequence(node, seen=seen)
+        node_id = loaded_node[0].id if isinstance(loaded_node, list) else loaded_node.id
+        if node_id in local_seen:
+            local_seen.update(seen)
+            continue
+        local_seen.update(seen)
+        new_nodes.append(loaded_node)
 
-    # The first branch is explored the deepest. Subsequent runs fill in missing
-    # branches from the first run. The first run will always be complete after
-    # all branches have been processed.
-    return new_nodes[0]
+    if len(new_nodes) == 1:
+        return new_nodes[0]
 
+    return new_nodes
 
 def load_flow_branch(
     node: ChainNode,
