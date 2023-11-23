@@ -29,7 +29,7 @@
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "memory",
             "multiple": true,
             "required": false,
@@ -39,7 +39,7 @@
         },
         {
             "as_type": null,
-            "auto_sequence": false,
+            "collection": null,
             "key": "chains",
             "multiple": false,
             "required": false,

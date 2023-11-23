@@ -10,7 +10,7 @@
     "connectors": [
         {
             "as_type": "retriever",
-            "auto_sequence": true,
+            "collection": null,
             "key": "retriever",
             "multiple": false,
             "required": true,
@@ -23,7 +23,7 @@
         },
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "llm",
             "multiple": false,
             "required": true,
@@ -33,7 +33,7 @@
         },
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "prompt",
             "multiple": false,
             "required": false,

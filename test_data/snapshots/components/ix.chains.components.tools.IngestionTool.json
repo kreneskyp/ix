@@ -19,7 +19,7 @@
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "loader_template",
             "multiple": false,
             "required": true,
@@ -29,7 +29,7 @@
         },
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "vectorstore",
             "multiple": false,
             "required": true,

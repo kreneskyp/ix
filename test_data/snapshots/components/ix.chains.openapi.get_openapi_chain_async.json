@@ -21,7 +21,7 @@
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "llm",
             "multiple": false,
             "required": true,
@@ -31,7 +31,7 @@
         },
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "memory",
             "multiple": true,
             "required": false,
@@ -41,7 +41,7 @@
         },
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "prompt",
             "multiple": false,
             "required": false,

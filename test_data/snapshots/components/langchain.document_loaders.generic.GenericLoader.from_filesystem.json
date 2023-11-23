@@ -34,7 +34,7 @@
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "parser",
             "multiple": false,
             "required": false,

@@ -69,7 +69,7 @@
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "embedding",
             "multiple": false,
             "required": false,
@@ -79,7 +79,7 @@
         },
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "documents",
             "multiple": false,
             "required": false,

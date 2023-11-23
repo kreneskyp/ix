@@ -56,7 +56,7 @@
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "document_loader",
             "multiple": false,
             "required": true,

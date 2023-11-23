@@ -39,7 +39,7 @@
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "chat_memory",
             "multiple": false,
             "required": true,

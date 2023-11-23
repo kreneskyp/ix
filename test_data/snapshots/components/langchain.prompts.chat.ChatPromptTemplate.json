@@ -22,7 +22,7 @@
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
             "key": "output_parser",
             "multiple": false,
             "required": false,
