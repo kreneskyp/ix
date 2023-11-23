@@ -6,6 +6,8 @@ import {
   faFileImport,
   faFileWaveform,
   faKeyboard,
+  faList,
+  faTableList,
   faMemory,
   faMessage,
   faRobot,
@@ -25,6 +27,10 @@ export const NODE_STYLES = {
   },
   chain: {
     icon: faChain,
+    component: ChainNode,
+  },
+  flow: {
+    icon: faList,
     component: ChainNode,
   },
   memory: {

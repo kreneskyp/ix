@@ -7,6 +7,7 @@ export const useEditorColorMode = () => {
   const theme = useTheme();
 
   const retrieval = isLight ? "gray.700" : "gray.800";
+  const flow = isLight ? "gray.700" : "gray.800";
 
   return {
     isLight,
@@ -58,7 +59,10 @@ export const useEditorColorMode = () => {
       selected: isLight ? "blue.400" : "blue.400",
     },
     highlight: {
-      root: isLight ? "gray.300" : "gray.900",
+      root: isLight ? "gray.800" : "gray.900",
+      flow: flow,
+      map: flow,
+      branch: flow,
       document_loader: retrieval,
       llm: isLight ? "red.300" : "red.300",
       prompt: isLight ? "orange.300" : "orange.500",
