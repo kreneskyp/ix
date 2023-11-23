@@ -15,6 +15,11 @@ class LoadMemory(RunnableSerializable[Input, Output]):
     memory: BaseMemory
     """Memory component to load from."""
 
+    @classmethod
+    def is_lc_serializable(cls) -> bool:
+        """Is this class serializable?"""
+        return True
+
     def invoke(
         self,
         input: Dict[str, Any],
@@ -40,6 +45,11 @@ class SaveMemory(RunnableSerializable[Input, Output]):
 
     memory: BaseMemory
     """Memory component instance to save to."""
+
+    @classmethod
+    def is_lc_serializable(cls) -> bool:
+        """Is this class serializable?"""
+        return True
 
     def invoke(
         self,
