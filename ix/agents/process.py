@@ -6,6 +6,7 @@ from langchain.schema.runnable import RunnableConfig
 
 from ix.agents.models import Agent
 from ix.chains.callbacks import IxHandler
+from ix.chains.loaders.context import IxContext
 from ix.chains.models import Chain as ChainModel
 from ix.task_log.models import Task
 
@@ -46,10 +47,11 @@ class AgentProcess:
 
     async def chat_with_ai(self, user_input: Dict[str, Any]) -> Any:
         handler = IxHandler(agent=self.agent, chain=self.chain, task=self.task)
+        context = await IxContext.afrom_task(task=self.task)
 
         try:
             # TODO: chain loading needs to be made async
-            chain = await sync_to_async(self.chain.load_chain)(handler)
+            chain = await sync_to_async(self.chain.load_chain)(context=context)
 
             logger.info(
                 f"Sending request to chain={self.chain.name} prompt={user_input}"

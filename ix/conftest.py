@@ -299,9 +299,7 @@ def load_chain(node_types, task, clean_redis) -> Callable[[Dict[str, Any]], Runn
         chain = fake_chain()
         ChainNode.objects.create_from_config(chain, config, root=True)
 
-        return chain.load_chain(
-            context or IxContext(agent=task.agent, task=task, chain=task.chain)
-        )
+        return chain.load_chain(context or IxContext.from_task(task=task))
 
     yield _mock_chain
 
