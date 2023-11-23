@@ -148,9 +148,9 @@ def get_memory_session(
     if scope == "chat":
         scope_id = context.chat_id
     elif scope == "agent":
-        scope_id = context.agent.id
+        scope_id = context.agent_id
     elif scope == "task":
-        scope_id = context.task.id
+        scope_id = context.task_id
     elif scope == "user":
         scope_id = context.user_id
     else:

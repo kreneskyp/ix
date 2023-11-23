@@ -290,8 +290,8 @@ class TestGetMemorySession:
         context = MagicMock()
         context.task = task
         context.chat_id = "1000"
-        context.agent.id = "1001"
-        context.task.id = "1002"
+        context.agent_id = "1001"
+        context.task_id = "1002"
         context.user_id = "1003"
 
         result = get_memory_session(config, context, cls)
@@ -304,7 +304,7 @@ class TestGetMemorySession:
             "session_id_key": "session_id",
         }
         cls = BaseChatMessageHistory
-        context = IxContext(agent=task.agent, chain=task.chain, task=task)
+        context = IxContext.from_task(task=task)
         with pytest.raises(ValueError) as excinfo:
             get_memory_session(config, context, cls)
         assert "unknown scope" in str(excinfo.value)

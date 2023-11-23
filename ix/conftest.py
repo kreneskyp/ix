@@ -244,19 +244,19 @@ def mock_openai_embeddings(mock_import_class, mock_openai_key):
 
 
 @pytest.fixture
-def ix_context(task):
-    return IxContext(agent=task.agent, chain=task.chain, task=task)
+def ix_context(task) -> IxContext:
+    return IxContext.from_task(task=task)
 
 
 @pytest_asyncio.fixture
-async def aix_context(atask):
-    agent = await Agent.objects.aget(id=atask.agent_id)
-    chain = await Chain.objects.aget(id=atask.chain_id)
-    yield IxContext(agent=agent, chain=chain, task=atask)
+async def aix_context(atask) -> IxContext:
+    await Agent.objects.aget(id=atask.agent_id)
+    await Chain.objects.aget(id=atask.chain_id)
+    return await IxContext.afrom_task(task=atask)
 
 
 @pytest.fixture
-def ix_handler(chat):
+def ix_handler(chat) -> IxHandler:
     chat = chat["chat"]
     task = Task.objects.get(id=chat.task_id)
     agent = Agent.objects.get(id=task.agent_id)
@@ -317,16 +317,14 @@ async def aload_chain(anode_types, achat):
 
     chat = achat["chat"]
     task = await Task.objects.aget(id=chat.task_id)
-    agent = await Agent.objects.aget(id=chat.lead_id)
     chain = await afake_chain()
 
     async def _mock_chain(config: Dict[str, Any], context: IxContext = None) -> Chain:
         await sync_to_async(ChainNode.objects.create_from_config)(
             chain, config, root=True
         )
-        return await chain.aload_chain(
-            context or IxContext(agent=agent, task=task, chain=chain)
-        )
+        context = context or await IxContext.afrom_task(task=task)
+        return await chain.aload_chain(context)
 
     yield _mock_chain
 
