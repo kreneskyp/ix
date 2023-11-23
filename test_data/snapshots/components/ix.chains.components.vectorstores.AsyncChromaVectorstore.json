@@ -52,13 +52,17 @@
                 "default": "./chroma",
                 "type": "string"
             },
+            "search_kwargs": {
+                "type": "object"
+            },
             "search_type": {
                 "default": "similarity",
                 "type": "string"
             }
         },
         "required": [
-            "allowed_search_types"
+            "allowed_search_types",
+            "search_kwargs"
         ],
         "type": "object"
     },
@@ -250,6 +254,22 @@
             "step": null,
             "style": null,
             "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "input_type": null,
+            "label": "Search_kwargs",
+            "max": null,
+            "min": null,
+            "name": "search_kwargs",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "dict"
         }
     ],
     "name": "Chroma",
