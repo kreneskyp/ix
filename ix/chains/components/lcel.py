@@ -24,11 +24,7 @@ def init_sequence(steps: List[Runnable[Input, Output]]) -> RunnableSequence:
     if not steps:
         raise ValueError("sequential_nodes must have at least one element")
 
-    return RunnableSequence(
-        first=steps[0],
-        middle=(steps[1:-1] if len(steps) > 2 else []),
-        last=(steps[-1] if len(steps) > 1 else RunnablePassthrough()),
-    )
+    return reduce(or_, steps)
 
 
 def init_parallel(steps: Dict[str, Any | Runnable[Input, Output]]) -> RunnableParallel:
