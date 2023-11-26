@@ -294,11 +294,21 @@ def load_collection(
 class MapPlaceholder:
     node: ChainNode
     map: Dict[str, "FlowPlaceholder"]
+    branch_depths: Set[List[int]] = dataclasses.field(default_factory=lambda: {tuple()})
 
     @property
     def id(self):
         return self.node.id
 
+    @property
+    def spans_branches(self) -> bool:
+        return len(self.branch_depths) > 1
+
+    def __eq__(self, other):
+        # exclude branch depths from equality check
+        if isinstance(other, MapPlaceholder):
+            return self.node.id == other.node.id and self.map == other.map
+        return False
 
 @dataclass
 class BranchPlaceholder:
@@ -383,10 +393,11 @@ def load_flow_node(
     if len(nodes) == 0:
         raise ValueError("No root nodes found")
 
+    branch_depth = tuple()
     seen = seen or {}
     if len(nodes) == 1:
-        return load_flow_sequence(nodes[0], seen)
-    return load_flow_map(nodes, seen)
+        return load_flow_sequence(nodes[0], seen, branch_depth=branch_depth)
+    return load_flow_map(nodes, seen, branch_depth=branch_depth)
 
 
 async def aload_flow_node(
@@ -398,6 +409,7 @@ async def aload_flow_node(
 def load_flow_map(
     nodes: List[ChainNode],
     seen: Dict[str, FlowPlaceholder],
+    branch_depth: Tuple[str] = None,
 ) -> FlowPlaceholder | List[FlowPlaceholder]:
     """
     Load all paths starting from the given group of nodes. The returned nodes are
@@ -420,7 +432,7 @@ def load_flow_map(
         # The first branch is explored the deepest. Subsequent runs fill in missing
         # branches from the first run. The first run will always be complete after
         # all branches have been processed.
-        loaded_node = load_flow_sequence(node, seen=seen)
+        loaded_node = load_flow_sequence(node, seen=seen, branch_depth=branch_depth)
         node_id = loaded_node[0].id if isinstance(loaded_node, list) else loaded_node.id
         if node_id in local_seen:
             local_seen.update(seen)
@@ -433,9 +445,11 @@ def load_flow_map(
 
     return new_nodes
 
+
 def load_flow_branch(
     node: ChainNode,
     seen: Dict[str, FlowPlaceholder],
+    branch_depth: Tuple[str] = None,
 ) -> BranchPlaceholder:
     # gather branches
     outgoing_links = (
@@ -445,12 +459,15 @@ def load_flow_branch(
     )
     branches = {}
     for key, group in itertools.groupby(outgoing_links, lambda edge: edge.source_key):
+        _branch_depth = branch_depth + (key,) if branch_depth else (key,)
         group_as_list = list(group)
         if len(group_as_list) > 1:
             targets = [edge.target for edge in group_as_list]
-            nodes = load_flow_map(targets, seen=seen)
+            nodes = load_flow_map(targets, seen=seen, branch_depth=_branch_depth)
         else:
-            nodes = load_flow_sequence(group_as_list[0].target, seen=seen)
+            nodes = load_flow_sequence(
+                group_as_list[0].target, seen=seen, branch_depth=_branch_depth
+            )
         branches[key] = nodes
 
     # build sorted list from branch node's config
@@ -476,7 +493,8 @@ MAP_CLASS_PATH = "ix.chains.components.lcel.init_parallel"
 def load_flow_sequence(
     start: ChainNode,
     seen: Dict[str, FlowPlaceholder],
-) -> Runnable | RunnableSequence:
+    branch_depth: Tuple[str] = None,
+) -> Runnable | SequencePlaceholder:
     sequential_nodes = []
 
     # traverse the sequence
@@ -531,6 +549,7 @@ def load_flow_sequence(
                 step_index = current.config["steps_hash"].index(target_key)
                 map_key = current.config["steps"][step_index]
                 node_map.map[map_key] = map_sequence
+                node_map.branch_depths.add(branch_depth)
 
             # the prior sequence rolled up into the map
             sequential_nodes = [node_map]
@@ -541,7 +560,9 @@ def load_flow_sequence(
 
         elif current.class_path == BRANCH_CLASS_PATH:
             # start of explicitly defined branch
-            branch_placeholder = load_flow_branch(current, seen=seen)
+            branch_placeholder = load_flow_branch(
+                current, seen=seen, branch_depth=branch_depth
+            )
             sequential_nodes.append(branch_placeholder)
 
             # branches must be fully explored so there is nothing remaining to traverse
@@ -561,7 +582,7 @@ def load_flow_sequence(
         if len(outgoing_links) > 1 and current.class_path != BRANCH_CLASS_PATH:
             # multiple links: start of split that will end in a map node.
             targets = [link.target for link in outgoing_links]
-            map_node = load_flow_map(targets, seen=seen)
+            map_node = load_flow_map(targets, seen=seen, branch_depth=branch_depth)
 
             # add to sequence
             if isinstance(map_node, list):
