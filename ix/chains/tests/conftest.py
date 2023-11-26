@@ -92,19 +92,20 @@ async def lcel_sequence_in_map_in_sequence(anode_types) -> dict:
         input_node=node1,
         nodes={
             "a": node2,
-            "b": inner_sequence[-1],  # last node in sequence gets edge to map
+            "b": inner_sequence,  # last node in sequence gets edge to map
             "c": node3,
         },
         root=False,
     )
-    sequence = await afake_node_sequence(
+
+    await afake_chain_edge(
         chain=chain,
-        nodes=[
-            node1,
-            inner_map,
-            node4,
-        ],
+        source=inner_map.node,
+        target=node4,
+        source_key="out",
+        target_key="in",
     )
+
     return {
         "chain": chain,
         "node1": node1,
@@ -112,7 +113,7 @@ async def lcel_sequence_in_map_in_sequence(anode_types) -> dict:
         "node3": node3,
         "node4": node4,
         "inner_sequence": inner_sequence,
-        "sequence": sequence,
+        "sequence": [node1, inner_map, node4],
         "map": inner_map,
     }
 
@@ -134,7 +135,7 @@ async def lcel_sequence_in_map_in_sequence_n2(anode_types) -> dict:
         chain=chain,
         nodes={
             "a": node2,
-            "b": inner_sequence[-1],  # last node in sequence gets edge to map
+            "b": inner_sequence,  # last node in sequence gets edge to map
             "c": node3,
         },
         root=False,
@@ -168,15 +169,16 @@ async def lcel_map_in_sequence(anode_types) -> dict:
     node1 = await afake_runnable(chain=chain, name="node1", root=True)
     inner_map = await afake_node_map(chain=chain, input_node=node1, root=False)
     node2 = await afake_runnable(chain=chain, name="node2", root=False)
-    sequence = await afake_node_sequence(
+
+    await afake_chain_edge(
         chain=chain,
-        nodes=[
-            node1,
-            inner_map,
-            node2,
-        ],
-        root=False,
+        source=inner_map.node,
+        target=node2,
+        source_key="out",
+        target_key="in",
     )
+
+    sequence = [node1, inner_map, node2]
     return {
         "chain": chain,
         "sequence": sequence,

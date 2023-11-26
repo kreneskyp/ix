@@ -269,22 +269,25 @@ def fake_node_map(
     )
 
     for map_key, node in node_map.items():
+        if isinstance(node, MapPlaceholder):
+            first_node = node.node
+            source = node.node
+        elif isinstance(node, list):
+            first_node = node[0]
+            source = node[-1]
+        else:
+            first_node = node
+            source = node
+
         if input_node is not None:
             fake_chain_edge(
                 chain=chain,
                 source=input_node,
-                target=node,
+                target=first_node,
                 source_key="out",
                 target_key="in",
                 relation="LINK",
             )
-
-        if isinstance(node, MapPlaceholder):
-            source = node.node
-        elif isinstance(node, list):
-            source = node[-1]
-        else:
-            source = node
 
         # calculate target from steps hash_list
         index_of_key = map_node.config["steps"].index(map_key)
