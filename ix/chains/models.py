@@ -250,15 +250,6 @@ class ChainNode(models.Model):
     def __str__(self):
         return f"{str(self.id)[:8]} ({self.class_path})"
 
-    def load(self, context, root=True):
-        """
-        Load this node, traversing the graph and loading all child nodes,
-        properties, and downstream nodes.
-        """
-        from ix.chains.loaders.core import load_node
-
-        return load_node(self, context, root=root)
-
 
 class ChainEdge(models.Model):
     RELATION_CHOICES = (("PROP", "prop"), ("LINK", "link"))
