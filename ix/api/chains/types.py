@@ -7,6 +7,7 @@ from typing import (
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field, model_validator
 
+from ix.api.components.types import NodeType
 from ix.utils.graphene.pagination import QueryPage
 
 
