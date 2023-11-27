@@ -8,6 +8,7 @@ export const useEditorColorMode = () => {
 
   const retrieval = isLight ? "gray.700" : "gray.800";
   const flow = isLight ? "gray.700" : "gray.800";
+  const data = isLight ? "gray.500" : "gray.500";
 
   return {
     isLight,
@@ -59,6 +60,7 @@ export const useEditorColorMode = () => {
       selected: isLight ? "blue.400" : "blue.400",
     },
     highlight: {
+      data: data,
       root: isLight ? "gray.800" : "gray.900",
       flow: flow,
       map: flow,
@@ -72,6 +74,7 @@ export const useEditorColorMode = () => {
       agent: isLight ? "green.500" : "green.600",
       parser: retrieval,
       retriever: retrieval,
+      schema: data,
       text_splitter: retrieval,
       tool: isLight ? "yellow.500" : "yellow.600",
       toolkit: isLight ? "yellow.500" : "yellow.600",

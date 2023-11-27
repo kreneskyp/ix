@@ -8,6 +8,7 @@ import {
   faKeyboard,
   faList,
   faTableList,
+  faFile,
   faMemory,
   faMessage,
   faRobot,
@@ -62,6 +63,10 @@ export const NODE_STYLES = {
   retriever: {
     icon: faFileImport,
     component: ChainNode,
+  },
+  schema: {
+    icon: faFile,
+    component: ChainNode
   },
   vectorstore: {
     icon: faDatabase,
