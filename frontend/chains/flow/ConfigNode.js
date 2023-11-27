@@ -94,6 +94,9 @@ export const NodeProperties = ({ node, type }) => {
   const left = [];
   const right = [];
   propertyTargets?.forEach((connector) => {
+    if (connector.key === "in" || connector.key === "out") {
+      return;
+    }
     const source_type = Array.isArray(connector.source_type)
       ? connector.source_type[0]
       : connector.source_type;
