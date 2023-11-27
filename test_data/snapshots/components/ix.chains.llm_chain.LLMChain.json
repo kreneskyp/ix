@@ -23,7 +23,10 @@
         {
             "as_type": null,
             "collection": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "llm",
+            "label": null,
             "multiple": false,
             "required": true,
             "source_type": "llm",
@@ -33,7 +36,10 @@
         {
             "as_type": null,
             "collection": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "memory",
+            "label": null,
             "multiple": true,
             "required": false,
             "source_type": "memory",
@@ -43,7 +49,10 @@
         {
             "as_type": null,
             "collection": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "prompt",
+            "label": null,
             "multiple": false,
             "required": false,
             "source_type": "prompt",
@@ -53,12 +62,16 @@
         {
             "as_type": null,
             "collection": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "functions",
+            "label": null,
             "multiple": true,
             "required": false,
             "source_type": [
                 "tool",
-                "toolkit"
+                "toolkit",
+                "schema"
             ],
             "template": false,
             "type": "target"
@@ -66,7 +79,10 @@
         {
             "as_type": null,
             "collection": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "output_parser",
+            "label": null,
             "multiple": false,
             "required": false,
             "source_type": "output_parser",
@@ -81,6 +97,7 @@
             "choices": null,
             "default": false,
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -97,6 +114,7 @@
             "choices": null,
             "default": null,
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -113,6 +131,7 @@
             "choices": null,
             "default": "text",
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,

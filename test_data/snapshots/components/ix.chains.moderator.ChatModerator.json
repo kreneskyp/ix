@@ -11,7 +11,10 @@
         {
             "as_type": null,
             "collection": "flow",
+            "init_modes": null,
+            "init_type": "init",
             "key": "selection_chain",
+            "label": null,
             "multiple": false,
             "required": false,
             "source_type": [
@@ -32,7 +35,10 @@
         {
             "as_type": null,
             "collection": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "memory",
+            "label": null,
             "multiple": true,
             "required": false,
             "source_type": "memory",

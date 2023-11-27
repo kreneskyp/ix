@@ -11,7 +11,10 @@
         {
             "as_type": null,
             "collection": "flow",
+            "init_modes": null,
+            "init_type": "init",
             "key": "steps",
+            "label": null,
             "multiple": false,
             "required": false,
             "source_type": [

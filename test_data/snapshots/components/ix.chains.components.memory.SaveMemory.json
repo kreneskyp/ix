@@ -34,7 +34,10 @@
         {
             "as_type": null,
             "collection": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "memory",
+            "label": null,
             "multiple": true,
             "required": false,
             "source_type": "memory",
@@ -51,6 +54,7 @@
                 "input"
             ],
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Input_keys",
             "max": null,
@@ -69,6 +73,7 @@
                 "output"
             ],
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Output_keys",
             "max": null,

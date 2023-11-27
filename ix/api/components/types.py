@@ -119,6 +119,11 @@ class NodeTypeField(BaseModel):
     required: bool = False
     choices: Optional[List[Choice]] = None
 
+    init_type: Literal["init", "bind"] = "init"
+    """Method te value received by this connector is initialized on the component instance.
+      - init: kwarg passed to initializer callable, e.g. __init__
+      - bind: bound with Runnable.bind()"""
+
     # form & display properties
     input_type: Optional[str] = None
     min: Optional[float] = None
@@ -387,6 +392,7 @@ class Connector(BaseModel):
     """
 
     key: str
+    label: Optional[str] = None
     type: Literal["source", "target"]
     required: bool = False
 
@@ -408,6 +414,19 @@ class Connector(BaseModel):
 
     # Allow more than one connection to this connector
     multiple: bool = False
+
+    # Way in which the value received by this connector is initialized on
+    # the component instance.
+    #  - init: kwarg passed to initializer callable, e.g. __init__
+    #  - bind: bound with Runnable.bind()
+    init_type: Optional[Literal["init", "bind"]] = "init"
+
+    # Set of acceptable init_mode. If None, all input_modes are accepted.
+    # If any connector is init_mode "input" then the component will be
+    # lazy loaded.
+    #  - init: value is set at init time
+    #  - input: value is set at runtime
+    init_modes: Optional[Literal["init", "input"]] = None
 
     collection: Optional[Literal["list", "flow", "map", "map_tuples"]] = None
 

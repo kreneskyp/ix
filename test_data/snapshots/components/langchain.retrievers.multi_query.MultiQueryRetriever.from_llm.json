@@ -11,7 +11,10 @@
         {
             "as_type": "retriever",
             "collection": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "retriever",
+            "label": null,
             "multiple": false,
             "required": true,
             "source_type": [
@@ -24,7 +27,10 @@
         {
             "as_type": null,
             "collection": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "llm",
+            "label": null,
             "multiple": false,
             "required": true,
             "source_type": "llm",
@@ -34,7 +40,10 @@
         {
             "as_type": null,
             "collection": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "prompt",
+            "label": null,
             "multiple": false,
             "required": false,
             "source_type": "prompt",

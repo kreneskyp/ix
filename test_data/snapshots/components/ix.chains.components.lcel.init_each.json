@@ -11,7 +11,10 @@
         {
             "as_type": null,
             "collection": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "workflow",
+            "label": null,
             "multiple": false,
             "required": false,
             "source_type": [
