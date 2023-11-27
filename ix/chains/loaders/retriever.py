@@ -24,7 +24,7 @@ setattr(BaseRetriever, "_aget_relevant_documents", async_aget_relevant_documents
 
 
 def load_retriever_property(
-    node_group: List[ChainNode], context: IxContext
+    edge_group: List[ChainEdge], context: IxContext, **kwargs
 ) -> BaseRetriever:
     """Property loader for retriever.
 
@@ -32,9 +32,8 @@ def load_retriever_property(
     a retriever by calling `vectorstore.as_retriever`. This allows for VectorStore
     to determine the exact Retriever subclass (e.g. redis has a custom retriever).
     """
-
-    assert len(node_group) == 1
-    node = node_group[0]
+    assert len(edge_group) == 1
+    node = edge_group[0].source
     component_class = import_class(node.class_path)
 
     if isinstance(component_class, type) and issubclass(component_class, VectorStore):

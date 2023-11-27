@@ -195,13 +195,18 @@ def load_node(
             # load type specific config options. This is generally for loading
             # ix specific features into the config dict
             logger.debug(f"Loading with property loader for type={node_type.type}")
-            node_group = [edge.source for edge in edge_group]
-            config[key] = property_loader(node_group, context)
+            config[key] = property_loader(edge_group, context)
         else:
             # default recursive property loading
             if connector.get("multiple", False):
                 config[key] = [
-                    init_flow_node(edge.source, context) for edge in edge_group
+                    load_node(
+                        edge.source,
+                        context,
+                        variables=variables,
+                        as_template=connector_is_template,
+                    )
+                    for edge in edge_group
                 ]
             else:
                 if len(edge_group) > 1:
