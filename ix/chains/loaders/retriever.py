@@ -8,7 +8,7 @@ from langchain.schema.vectorstore import VectorStore
 from ix.chains.fixture_src.vectorstores import get_vectorstore_retriever_fieldnames
 from ix.chains.loaders.context import IxContext
 from ix.chains.loaders.core import load_node
-from ix.chains.models import ChainNode
+from ix.chains.models import ChainEdge
 from ix.utils.importlib import import_class
 
 
