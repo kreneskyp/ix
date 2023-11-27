@@ -13,6 +13,7 @@ from langchain.schema.runnable import (
     RunnableParallel,
     Runnable,
 )
+from langchain.schema.runnable.utils import Input, Output
 
 from ix.api.components.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic, InputConfig
