@@ -237,6 +237,12 @@ def load_node(
     node_class = import_node_class(node.class_path)
     node_initializer = get_node_initializer(node_type.type)
 
+    # use name and description from ChainNode.
+    if "name" not in config and "name" in node_type_pydantic.field_map:
+        config["name"] = node.name
+    if "description" not in config and "description" in node_type_pydantic.field_map:
+        config["description"] = node.description
+
     # filter out config values that are not passed to the initializer
     if node_type_pydantic.init_exclude:
         config = {
