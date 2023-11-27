@@ -105,6 +105,7 @@
             "choices": null,
             "default": false,
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Json_lines",
             "max": null,
