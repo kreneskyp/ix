@@ -10,7 +10,6 @@ const SidebarSizer = () => {
     useRightSidebarContext();
   const style = useSideBarStyle();
 
-  console.log("sizes", Object.keys(sizes || {}));
   const sizeMap = {
     ...Object.fromEntries(sizes),
   };

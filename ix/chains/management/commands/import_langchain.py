@@ -13,7 +13,7 @@ from ix.chains.fixture_src.embeddings import EMBEDDINGS
 from ix.chains.fixture_src.flow import FLOW
 from ix.chains.fixture_src.ix import CHAT_MODERATOR_TYPE
 from ix.chains.fixture_src.json import JSON
-from ix.chains.fixture_src.lcel import LANGCHAIN_EXPRESSION_LANGUAGE
+from ix.chains.fixture_src.lcel import LANGCHAIN_RUNNABLES
 from ix.chains.fixture_src.llm import LLMS
 from ix.chains.fixture_src.memory import MEMORY
 from ix.chains.fixture_src.openai_functions import (
@@ -80,7 +80,7 @@ COMPONENTS.extend(VECTORSTORES)
 COMPONENTS.extend(RETRIEVERS)
 
 # IX LCEL integrations & flow
-COMPONENTS.extend(LANGCHAIN_EXPRESSION_LANGUAGE)
+COMPONENTS.extend(LANGCHAIN_RUNNABLES)
 COMPONENTS.extend(JSON)
 COMPONENTS.extend(FLOW)
 

@@ -6,7 +6,7 @@ from langchain.llms.llamacpp import LlamaCpp
 
 from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
-
+from ix.chains.fixture_src.targets import FLOW_TYPES
 
 BASE_LLM_FIELDS = NodeTypeField.get_fields(
     BaseLLM,

@@ -1,5 +1,6 @@
-from copy import deepcopy
-from typing import Dict, Any, List, Tuple, Optional, Type, Iterator, AsyncIterator
+from functools import reduce
+from operator import or_
+from typing import Dict, Any, List, Tuple, Optional, Iterator, AsyncIterator
 
 from langchain.schema.runnable import (
     Runnable,
