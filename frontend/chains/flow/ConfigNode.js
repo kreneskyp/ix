@@ -13,20 +13,19 @@ import { StyledIcon } from "components/StyledIcon";
 
 const CONNECTOR_CONFIG = {
   agent: {
-    source_position: "left",
-    target_position: "right",
+    source_position: "right",
+    target_position: "left",
   },
   chain: {
-    source_position: "left",
-    target_position: "right",
+    source_position: "right",
+    target_position: "left",
   },
   tool: {
-    source_position: "left",
-    target_position: "right",
-  },
+    source_position: "right",
+    target_position: "left",},
   toolkit: {
-    source_position: "left",
-    target_position: "right",
+    source_position: "right",
+    target_position: "left",
   },
 };
 
