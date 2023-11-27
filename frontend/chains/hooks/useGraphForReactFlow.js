@@ -87,7 +87,7 @@ export const useGraphForReactFlow = (graph) => {
 
     // Deprecated direct roots: support for chains that haven't converted to the
     // new root node type.
-    const hasDirectRoot = roots?.find((root) => root.class_path !== "::ROOT::");
+    const hasDirectRoot = roots?.find((root) => root.class_path !== "__ROOT__");
     if (hasDirectRoot) {
       // Push static root and add an edge if a root node exists
       nodes.push({

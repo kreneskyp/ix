@@ -235,7 +235,7 @@ const ChainGraphEditor = ({ graph }) => {
 
       // normal LINK and PROP edges
       const from_root =
-        source.id === "root" || source.data.type.class_path === "::ROOT::";
+        source.id === "root" || source.data.type.class_path === "__ROOT__";
       const is_out = params.sourceHandle === "out";
       const from_branch = source.data.type.type === "branch";
       const relation = from_root || is_out || from_branch ? "LINK" : "PROP";
