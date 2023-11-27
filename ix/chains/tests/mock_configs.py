@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 
@@ -15,6 +16,33 @@ from ix.chains.fixture_src.tools import GOOGLE_SEARCH
 OPENAI_LLM = {
     "class_path": "langchain.chat_models.openai.ChatOpenAI",
     "config": {"verbose": True},
+}
+
+OPENAI_FUNCTION_SCHEMA = {
+    "class_path": "ix.runnable.schema.Schema",
+    "name": "openai_function",
+    "description": "Run an OpenAI function.",
+    "config": {
+        "parameters": json.dumps(
+            {
+                "type": "object",
+                "properties": {
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "filename": {"type": "string"},
+                                "description": {"type": "string"},
+                            },
+                            "required": ["filename", "description"],
+                        },
+                    },
+                },
+            },
+            indent=4,
+        ),
+    },
 }
 
 MOCK_MEMORY = {
