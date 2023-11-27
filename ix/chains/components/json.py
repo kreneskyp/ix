@@ -54,3 +54,31 @@ class JSONPath(RunnableSerializable[Input, Output | List[Output]]):
             raise ValueError(f"could not find input at {self.path} searched: {input}")
         else:
             return json_matches[0].value
+
+
+class JSONData(RunnableSerializable[Input, Output]):
+    """Load static data from a JSON list or object."""
+
+    @classmethod
+    def is_lc_serializable(cls) -> bool:
+        """Is this class serializable?"""
+        return True
+
+    data: Dict[str, Any]
+    """JSON data to load"""
+
+    def invoke(
+        self,
+        input: Dict[str, Any],
+        config: Optional[RunnableConfig] = None,
+        **kwargs: Any,
+    ) -> Output:
+        return self.data
+
+    async def ainvoke(
+        self,
+        input: Dict[str, Any],
+        config: Optional[RunnableConfig] = None,
+        **kwargs: Any,
+    ) -> Output:
+        return self.data
