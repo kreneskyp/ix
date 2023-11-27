@@ -59,6 +59,8 @@ export const InputConnector = ({ type, node }) => {
 export const OutputConnector = ({ type, node }) => {
   const { output } = useFlowConnectors(node);
   const outputColor = useConnectorColor(node, output);
+  const outputConnector = type.connectors?.find((c) => c.key === "out");
+
   return (
     <Box position="relative">
       <Handle
@@ -72,7 +74,7 @@ export const OutputConnector = ({ type, node }) => {
           type={type}
           node={node}
           connector={output}
-          label={"Output"}
+          label={outputConnector?.label || "Output"}
           placement={"right"}
         />
       </Heading>
