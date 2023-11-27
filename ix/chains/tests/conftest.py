@@ -1,7 +1,10 @@
 import uuid
-
 from ix.chains.fixture_src.lcel import RUNNABLE_BRANCH_CLASS_PATH
-from ix.chains.loaders.core import BranchPlaceholder
+from ix.chains.loaders.core import (
+    BranchPlaceholder,
+    ImplicitJoin,
+    MapPlaceholder,
+)
 from ix.chains.models import ChainNode, NodeType
 from ix.chains.tests.fake import (
     afake_node_sequence,
@@ -681,12 +684,27 @@ async def lcel_branch_in_sequence(anode_types) -> dict:
             "branches_hash": [a_uuid, b_uuid],
         },
     )
+
+    def get_join(node: ChainNode):
+        return [
+            ImplicitJoin(
+                source=[node],
+                target=MapPlaceholder(
+                    node=node4,
+                    map={
+                        "in": node1,
+                    },
+                ),
+            ),
+            node5,
+        ]
+
     branch_placeholder = BranchPlaceholder(
         node=branch,
-        default=sequence_x,
+        default=get_join(sequence_x[0]),
         branches=[
-            ("a", sequence_a),
-            ("b", sequence_b),
+            ("a", get_join(sequence_a[0])),
+            ("b", get_join(sequence_b[0])),
         ],
     )
 
@@ -808,19 +826,68 @@ async def lcel_join_after_branch(anode_types) -> dict:
     sequence_a = [node2, node4, node5]
     sequence_b = [node3, node4, node5]
 
-    branch = await afake_node_branch(
+    a_uuid = str(uuid.uuid4())
+    b_uuid = str(uuid.uuid4())
+    branch = await ChainNode.objects.acreate(
         chain=chain,
+        class_path=RUNNABLE_BRANCH_CLASS_PATH,
+        node_type=await NodeType.objects.aget(class_path=RUNNABLE_BRANCH_CLASS_PATH),
         root=True,
-        default=sequence_default,
+        config={
+            "branches": ["a", "b"],
+            "branches_hash": [a_uuid, b_uuid],
+        },
+    )
+
+    def get_join(node: ChainNode):
+        return [
+            ImplicitJoin(
+                source=[node],
+                target=MapPlaceholder(
+                    node=node4,
+                    map={
+                        "in": node1,
+                    },
+                ),
+            ),
+            node5,
+        ]
+
+    branch_placeholder = BranchPlaceholder(
+        node=branch,
+        default=get_join(sequence_default[0]),
         branches=[
-            ("a", sequence_a),
-            ("b", sequence_b),
+            ("a", get_join(sequence_a[0])),
+            ("b", get_join(sequence_b[0])),
         ],
+    )
+
+    # edge from branch node to sequences
+    await afake_chain_edge(
+        chain=chain,
+        source=branch_placeholder.node,
+        target=node1,
+        source_key="default",
+        target_key="in",
+    )
+    await afake_chain_edge(
+        chain=chain,
+        source=branch_placeholder.node,
+        target=node2,
+        source_key=a_uuid,
+        target_key="in",
+    )
+    await afake_chain_edge(
+        chain=chain,
+        source=branch_placeholder.node,
+        target=node3,
+        source_key=b_uuid,
+        target_key="in",
     )
 
     return {
         "chain": chain,
-        "branch": branch,
+        "branch": branch_placeholder,
         "sequence_default": sequence_default,
         "sequence_a": sequence_a,
         "sequence_b": sequence_b,

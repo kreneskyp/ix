@@ -20,6 +20,7 @@ from ix.chains.loaders.context import IxContext
 from ix.chains.loaders.prompts import load_prompt
 from ix.chains.loaders.templates import NodeTemplate
 from ix.chains.models import NodeType, ChainNode, ChainEdge, Chain
+from ix.runnable.flow import MergeList
 from ix.secrets.models import Secret
 from ix.utils.config import format_config
 from ix.utils.importlib import import_class
@@ -290,7 +291,29 @@ def load_collection(
         raise ValueError(f"Unknown collection type: {collection_type}")
 
 
-@dataclass
+@dataclasses.dataclass
+class AggPlaceholder:
+    type: str
+    steps: List["FlowPlaceholder"]
+
+    def id(self):
+        return id(self)
+
+    def __eq__(self, other):
+        # step order doesn't matter
+        if isinstance(other, AggPlaceholder):
+            return self.type == other.type and set(self.steps) == set(other.steps)
+        return False
+
+    @classmethod
+    def for_connector(
+        cls, connector: dict, steps: List["FlowPlaceholder"]
+    ) -> "AggPlaceholder":
+        collection = connector.get("collection", "list") if connector else "list"
+        return cls(type=collection, steps=steps)
+
+
+@dataclasses.dataclass
 class MapPlaceholder:
     node: ChainNode
     map: Dict[str, "FlowPlaceholder"]
@@ -310,7 +333,42 @@ class MapPlaceholder:
             return self.node.id == other.node.id and self.map == other.map
         return False
 
-@dataclass
+
+@dataclasses.dataclass
+class ImplicitJoin:
+    """Represents a joining point of multiple paths that meet at a single node that isn't
+    a Map.
+
+    The join is either an implicit map or an implicit post-branch join. It can't be
+    known which until all incoming branches are explored.
+
+    This class acts as a placeholder in the first pass. It is converted to either a Map
+    or a sequence of nodes in the second pass.
+    """
+
+    source: ChainNode | List[ChainNode]
+    target: MapPlaceholder
+    """map of nodes grouped by target keys"""
+
+    @property
+    def id(self):
+        return self.target.id
+
+    def resolve(self) -> MapPlaceholder | List[ChainNode]:
+        """Resolve into either a Map or a sequence of nodes based on whether the incoming
+        links to the join target are within the same branch or across multiple branches.
+        """
+        if self.target.spans_branches:
+            # return as sequence
+            if isinstance(self.source, list):
+                return self.source + [self.target.node]
+            return [self.source, self.target.node]
+        else:
+            # return as map
+            return self.target
+
+
+@dataclasses.dataclass
 class BranchPlaceholder:
     node: ChainNode
     branches: List[Tuple[str, "FlowPlaceholder"]]
@@ -322,7 +380,7 @@ class BranchPlaceholder:
 
 
 FlowPlaceholder = (
-    ChainNode | List["FlowPlaceholder"] | MapPlaceholder | BranchPlaceholder
+    ChainNode | SequencePlaceholder | MapPlaceholder | BranchPlaceholder | ImplicitJoin
 )
 
 
@@ -506,9 +564,11 @@ def load_flow_sequence(
         outgoing_links = list(
             current.outgoing_edges.select_related("target").filter(relation="LINK")
         )
+        incoming_links = list(current.incoming_edges.filter(relation="LINK"))
 
         # single outgoing link
-        if current.class_path == MAP_CLASS_PATH:
+        # TODO: non map nodes with multiple incoming links require a map node.
+        if current.class_path == MAP_CLASS_PATH or len(incoming_links) > 1:
             # Since MAP node comes after the branches feeding into it,
             # look at incoming LINKs
             was_seen = current.id in seen
@@ -545,17 +605,62 @@ def load_flow_sequence(
                         f"Unable to find incoming link from {sequential_nodes[-1]} "
                         f"to map node {current}"
                     )
-                target_key = incoming_link.target_key
-                step_index = current.config["steps_hash"].index(target_key)
-                map_key = current.config["steps"][step_index]
+                if current.class_path == MAP_CLASS_PATH:
+                    target_key = incoming_link.target_key
+                    step_index = current.config["steps_hash"].index(target_key)
+                    map_key = current.config["steps"][step_index]
+                    next_node = node_map
+                else:
+                    # implicit map & aggregator
+                    map_key = incoming_link.target_key
+                    connector = current.node_type.connectors_as_dict.get(map_key, None)
+
+                    # current sequence + join target stored.
+                    next_node = ImplicitJoin(source=sequential_nodes, target=node_map)
+
+                    # aggregate with existing map where multiple links are joining.
+                    if map_key in node_map.map:
+                        aggregate = connector is None or connector.get("multiple", True)
+                        aggregator = node_map.map[map_key]
+                        if aggregate:
+                            # new aggregator
+                            if not isinstance(aggregator, AggPlaceholder):
+                                aggregator = AggPlaceholder.for_connector(
+                                    connector=connector,
+                                    steps=map_sequence,
+                                )
+                                node_map.map[map_key] = aggregator
+                            # append to existing aggregator
+                            else:
+                                if len(map_sequence.steps) == 1:
+                                    map_sequence.steps.append(sequential_nodes[0])
+                                else:
+                                    map_sequence.steps.append(sequential_nodes)
+                        else:
+                            raise ValueError(
+                                "Received multiple values for a single key"
+                            )
+
+                    else:
+                        aggregate = connector and connector.get("multiple", False)
+                        if aggregate:
+                            # TODO: this is repacking after unpacking above.
+                            if not isinstance(map_sequence, list):
+                                map_sequence = [map_sequence]
+                            map_sequence = AggPlaceholder.for_connector(
+                                connector=connector,
+                                steps=map_sequence,
+                            )
+
                 node_map.map[map_key] = map_sequence
                 node_map.branch_depths.add(branch_depth)
 
             # the prior sequence rolled up into the map
-            sequential_nodes = [node_map]
+            sequential_nodes = [next_node]
 
-            # only first iteration traverses past a map
-            if was_seen:
+            # only first iteration traverses past a map. Implicit join
+            # still requires full traversal on all branches.
+            if was_seen and not isinstance(next_node, ImplicitJoin):
                 break
 
         elif current.class_path == BRANCH_CLASS_PATH:
@@ -627,16 +732,34 @@ def init_flow_node(
             ],
         )
     elif isinstance(root, MapPlaceholder):
-        return RunnableParallel(
+        runnable_map = RunnableParallel(
             **{
                 key: init_flow_node(node, context=context, variables=variables)
                 for key, node in root.map.items()
             }
         )
+        if root.node.class_path == MAP_CLASS_PATH:
+            return runnable_map
+        else:
+            # create an implicit [map -> node] sequence.
+            sequence = runnable_map | init_flow_node(
+                root.node, context=context, variables=variables
+            )
+            return sequence
     elif isinstance(root, list):
         nodes = [
             init_flow_node(node, context=context, variables=variables) for node in root
         ]
         return init_sequence(steps=nodes)
+    elif isinstance(root, AggPlaceholder):
+        return MergeList(
+            steps=[
+                init_flow_node(node, context=context, variables=variables)
+                for node in root.steps
+            ]
+        )
+    elif isinstance(root, ImplicitJoin):
+        return init_flow_node(root.resolve(), context=context, variables=variables)
+
     else:
         raise Exception("Invalid flow type: " + str(type(root)))

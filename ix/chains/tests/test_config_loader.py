@@ -1013,39 +1013,17 @@ class TestLoadFlow:
         fixture = lcel_join_after_branch
         chain = fixture["chain"]
 
-        # sanity check setup
-        assert isinstance(fixture["branch"], BranchPlaceholder)
-        assert fixture["branch"].default == [
-            fixture["node1"],
-            fixture["node4"],
-            fixture["node5"],
-        ]
-        assert fixture["branch"].branches[0] == (
-            "a",
-            [
-                fixture["node2"],
-                fixture["node4"],
-                fixture["node5"],
-            ],
-        )
-        assert fixture["branch"].branches[1] == (
-            "b",
-            [
-                fixture["node3"],
-                fixture["node4"],
-                fixture["node5"],
-            ],
-        )
-
         # test loaded flow
         flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
         # verify that the joined nodes are the same instances
-        assert flow.branches[0][1][1] == fixture["node4"]
-        assert flow.branches[1][1][1] == fixture["node4"]
-        assert flow.branches[0][1][2] == fixture["node5"]
-        assert flow.branches[1][1][2] == fixture["node5"]
+        # HAX: disabling this since the optimization was disabled to support
+        #      implicit joins
+        # assert flow.branches[0][1][1] == fixture["node4"]
+        # assert flow.branches[1][1][1] == fixture["node4"]
+        # assert flow.branches[0][1][2] == fixture["node5"]
+        # assert flow.branches[1][1][2] == fixture["node5"]
 
     async def ztest_malformed_map(self):
         raise NotImplementedError
