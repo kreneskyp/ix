@@ -13,6 +13,7 @@ import { JSONSchemaForm } from "json_form/JSONSchemaForm";
 const CONFIG_FORM_COMPONENTS = {
   "langchain.prompts.chat.ChatPromptTemplate": PromptNode,
   "ix.chains.functions.FunctionSchema": FunctionSchemaNode,
+  "ix.runnable.schema.Schema": FunctionSchemaNode,
 };
 
 const DefaultForm = ({ type, node, onChange }) => {
