@@ -6,7 +6,8 @@ class TestChatModerator:
     def test_agent_prompt(self, chat):
         """Test that the agent prompt is formatted correctly"""
 
-        chat_moderator = chat["instance"]
+        ix_node = chat["instance"]
+        chat_moderator = ix_node.child
         agent_prompt = chat_moderator.agent_prompt(chat["chat"])
 
         assert (
@@ -22,7 +23,8 @@ class TestChatModerator:
             name="delegate_to_agent", arguments={"agent_id": 1}
         )
 
-        chat_moderator = achat["instance"]
+        ix_node = achat["instance"]
+        chat_moderator = ix_node.child
 
         result = await chat_moderator.acall(
             {"user_input": "say hello to agent 1", "chat_id": str(achat["chat"].id)},

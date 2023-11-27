@@ -45,7 +45,8 @@ class What(BaseModel):
 @pytest.mark.django_db
 class TestIngestionTool:
     async def test_load(self, aload_chain):
-        component = await aload_chain(INGESTION_TOOL)
+        ix_node = await aload_chain(INGESTION_TOOL)
+        component = ix_node.child
         assert isinstance(component, IngestionTool)
         assert component.name == "ingest"
         assert component.description == "Ingest data into a vectorstore"
@@ -82,13 +83,15 @@ class TestIngestionTool:
         }
 
     async def test_load_override_name_and_description(self, aload_chain):
-        component = await aload_chain(NAMED_INGESTION_TOOL)
+        ix_node = await aload_chain(NAMED_INGESTION_TOOL)
+        component = ix_node.child
         assert isinstance(component, IngestionTool)
         assert component.name == "custom_ingest"
         assert component.description == "custom description"
 
     async def test_ainvoke(self, aload_chain, mock_openai_embeddings):
-        component = await aload_chain(INGESTION_TOOL)
+        ix_node = await aload_chain(INGESTION_TOOL)
+        component = ix_node.child
         args = dict(PATH=str(TEST_DOCUMENTS), COLLECTION_NAME="test_collection")
         try:
             result = await component.ainvoke(input=args)

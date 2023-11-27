@@ -39,7 +39,8 @@ class TestFileManagementToolkit:
 @pytest.mark.django_db
 class TestToolkitIntegrations:
     async def test_load_chain_functions(self, aload_chain):
-        component = await aload_chain(LLM_CHAIN)
+        ix_node = await aload_chain(LLM_CHAIN)
+        component = ix_node.child
         assert isinstance(component, LLMChain)
 
         # chain doesn't unpack tools until load_functions is called
@@ -48,6 +49,7 @@ class TestToolkitIntegrations:
         assert len(component.llm_kwargs.get("functions", [])) == 7
 
     async def test_load_agent_toolkit(self, aload_chain):
-        component = await aload_chain(AGENT_WITH_TOOLKIT)
+        ix_node = await aload_chain(AGENT_WITH_TOOLKIT)
+        component = ix_node.child
         assert isinstance(component, AgentExecutor)
         assert len(component.tools) == 7

@@ -1,9 +1,10 @@
+import dataclasses
 import itertools
 import logging
 import time
 from collections import defaultdict
-from dataclasses import dataclass
-from typing import Callable, Any, List, Tuple, Dict
+from typing import Callable, Any, List, Tuple, Dict, Set
+from uuid import UUID
 
 from asgiref.sync import sync_to_async
 from langchain.schema.runnable import (
@@ -13,6 +14,8 @@ from langchain.schema.runnable import (
     Runnable,
 )
 
+from ix.api.components.types import NodeType as NodeTypePydantic
+from ix.api.chains.types import Node as NodePydantic, InputConfig
 from ix.chains.components.lcel import init_sequence, init_branch
 from ix.chains.fixture_src.flow import ROOT_CLASS_PATH
 from ix.chains.loaders.context import IxContext
@@ -21,6 +24,7 @@ from ix.chains.loaders.prompts import load_prompt
 from ix.chains.loaders.templates import NodeTemplate
 from ix.chains.models import NodeType, ChainNode, ChainEdge, Chain
 from ix.runnable.flow import MergeList
+from ix.runnable.ix import IxNode
 from ix.secrets.models import Secret
 from ix.utils.config import format_config
 from ix.utils.importlib import import_class
@@ -137,6 +141,7 @@ def load_node(
     logger.debug(f"Loading chain for name={node.name} class_path={node.class_path}")
     start_time = time.time()
     node_type: NodeType = node.node_type
+    node_type_pydantic = NodeTypePydantic.model_validate(node_type)
     config = node.config.copy() if node.config else {}
 
     # TODO: implement resolve secrets from vault and settings from vocabulary
@@ -231,6 +236,15 @@ def load_node(
     # for initialization common to all components of that type.
     node_class = import_node_class(node.class_path)
     node_initializer = get_node_initializer(node_type.type)
+
+    # filter out config values that are not passed to the initializer
+    if node_type_pydantic.init_exclude:
+        config = {
+            key: value
+            for key, value in config.items()
+            if key not in node_type_pydantic.init_exclude
+        }
+
     try:
         if node_initializer:
             instance = node_initializer(node.class_path, config)
@@ -714,15 +728,28 @@ def load_flow_sequence(
 
 
 def init_flow_node(
-    root: FlowPlaceholder, context: IxContext, variables: Dict[str, Any] = None
+    root: FlowPlaceholder,
+    context: IxContext,
+    variables: Dict[str, Any] = None,
+    **kwargs,
 ) -> Runnable:
     """Initial a flow node
 
     Assumes a collection of ChainNodes and placeholders constructed by load_flow.
     """
-
     if isinstance(root, ChainNode):
-        return load_node(root, context=context, variables=variables)
+        node_type = NodeTypePydantic.model_validate(root.node_type)
+        instance = load_node(root, context=context, variables=variables)
+
+        if isinstance(instance, Runnable):
+            instance = IxNode(
+                node_id=root.id,
+                child=instance,
+                context=context,
+                config=root.config,
+                bind_points=node_type.bind_points,
+            )
+        return instance
     elif isinstance(root, BranchPlaceholder):
         return init_branch(
             default=init_flow_node(root.default, context=context, variables=variables),

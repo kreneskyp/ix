@@ -74,6 +74,7 @@ from ix.chains.tests.mock_memory import MockMemory
 from ix.chains.tests.test_templates import TEXT_SPLITTER
 from ix.conftest import aload_fixture
 from ix.memory.artifacts import ArtifactMemory
+from ix.runnable.ix import IxNode
 from ix.task_log.tests.fake import afake_chain_node, afake_chain, afake_chain_edge
 from ix.utils.importlib import import_class
 
@@ -95,7 +96,8 @@ class TestLoadMemory:
 
         LLM_CONFIG = deepcopy(LLM_REPLY_WITH_HISTORY)
         LLM_CONFIG["config"]["memory"] = [MEMORY, MEMORY2]
-        chain = load_chain(LLM_CONFIG)
+        ix_node = load_chain(LLM_CONFIG)
+        chain = ix_node.child
         instance = chain.memory
         assert isinstance(instance, CombinedMemory)
         assert len(instance.memories) == 2
@@ -359,7 +361,8 @@ class TestGoogleTools:
         }
 
         instance = await aload_chain(config)
-        assert isinstance(instance, BaseTool)
+        assert isinstance(instance, IxNode)
+        assert isinstance(instance.child, BaseTool)
 
 
 @pytest.mark.django_db
@@ -384,10 +387,9 @@ class TestLoadAgents:
         for name in self.KNOWN_AGENTS:
             assert name in FUNCTION_NAMES
 
-    async def test_load_agents(self, aload_chain, mock_openai, mock_google_api_key):
-        """Test that agent can be loaded."""
-
-        agents = [
+    @pytest.mark.parametrize(
+        "agent_name",
+        [
             "initialize_zero_shot_react_description",
             "initialize_conversational_react_description",
             "initialize_chat_zero_shot_react_description",
@@ -395,18 +397,23 @@ class TestLoadAgents:
             "initialize_structured_chat_zero_shot_react_description",
             "initialize_openai_functions",
             "initialize_openai_multi_functions",
-        ]
+        ],
+    )
+    async def test_load_agents(
+        self, agent_name, aload_chain, mock_openai, mock_google_api_key
+    ):
+        """Test that agent can be loaded."""
 
-        for name in agents:
-            config = {
-                "class_path": f"ix.chains.loaders.agents.{name}",
-                "name": "tester",
-                "description": "test",
-                "config": {"tools": [GOOGLE_SEARCH_CONFIG], "llm": OPENAI_LLM},
-            }
+        config = {
+            "class_path": f"ix.chains.loaders.agents.{agent_name}",
+            "name": "tester",
+            "description": "test",
+            "config": {"tools": [GOOGLE_SEARCH_CONFIG], "llm": OPENAI_LLM},
+        }
 
-            instance = await aload_chain(config)
-            assert isinstance(instance, AgentExecutor)
+        ix_node = await aload_chain(config)
+        instance = ix_node.child
+        assert isinstance(instance, AgentExecutor)
 
     async def test_agent_memory(self, mock_openai, aload_chain, mock_google_api_key):
         config = {
@@ -419,7 +426,8 @@ class TestLoadAgents:
                 "memory": AGENT_MEMORY,
             },
         }
-        executor = await aload_chain(config)
+        ix_node = await aload_chain(config)
+        executor = ix_node.child
         assert isinstance(executor, AgentExecutor)  # sanity check
 
         # 1. test that prompt includes placeholders
@@ -510,7 +518,8 @@ class TestLoadRetrieval:
         self, clean_redis, aload_chain, mock_openai_embeddings
     ):
         """Test loading a fully configured conversational chain."""
-        component = await aload_chain(CONVERSATIONAL_RETRIEVAL_CHAIN)
+        ix_node = await aload_chain(CONVERSATIONAL_RETRIEVAL_CHAIN)
+        component = ix_node.child
         assert isinstance(component, ConversationalRetrievalChain)
 
 
@@ -522,8 +531,12 @@ class TestLCELLoading:
         # TODO: it's not coming back as runnable sequence
         assert isinstance(runnable, RunnableSequence)
         assert len(runnable.steps) == 2
-        assert isinstance(runnable.steps[0], import_class(PROMPT_CHAT["class_path"]))
-        assert isinstance(runnable.steps[1], import_class(OPENAI_LLM["class_path"]))
+        assert isinstance(
+            runnable.steps[0].child, import_class(PROMPT_CHAT["class_path"])
+        )
+        assert isinstance(
+            runnable.steps[1].child, import_class(OPENAI_LLM["class_path"])
+        )
 
         # test invoking chain
         output = await runnable.ainvoke(input={"user_input": "hello!"})
@@ -583,10 +596,10 @@ class TestLCELLoading:
         assert isinstance(runnable, RunnableMap)
         assert len(runnable.steps) == 2
         assert isinstance(
-            runnable.steps["foo"], import_class(PROMPT_CHAT_0["class_path"])
+            runnable.steps["foo"].child, import_class(PROMPT_CHAT_0["class_path"])
         )
         assert isinstance(
-            runnable.steps["bar"], import_class(PROMPT_CHAT_1["class_path"])
+            runnable.steps["bar"].child, import_class(PROMPT_CHAT_1["class_path"])
         )
 
         # test invoking chain
@@ -643,14 +656,17 @@ class TestLCELLoading:
         runnable = await chain.aload_chain(context=aix_context)
         assert isinstance(runnable, RunnableBranch)
         assert len(runnable.branches) == 2
-        assert isinstance(runnable.default, import_class(PROMPT_CHAT_0["class_path"]))
+        assert isinstance(runnable.default, IxNode)
+        assert isinstance(
+            runnable.default.child, import_class(PROMPT_CHAT_0["class_path"])
+        )
         assert isinstance(runnable.branches[0][0], RunnableLambda)
         assert isinstance(
-            runnable.branches[0][1], import_class(PROMPT_CHAT_1["class_path"])
+            runnable.branches[0][1].child, import_class(PROMPT_CHAT_1["class_path"])
         )
         assert isinstance(runnable.branches[1][0], RunnableLambda)
         assert isinstance(
-            runnable.branches[1][1], import_class(PROMPT_CHAT_2["class_path"])
+            runnable.branches[1][1].child, import_class(PROMPT_CHAT_2["class_path"])
         )
 
         # test invoking chain
@@ -666,6 +682,34 @@ class TestLCELLoading:
         assert output == ChatPromptValue(
             messages=[SystemMessage(content="You are bot 2.")]
         )
+
+    async def test_each(self, aix_context, mock_openai):
+        raise NotImplementedError
+
+
+MOCK_PLAN_RESPONSE = dict(name="plan_coding", arguments={"agent_id": 1})
+
+
+@pytest.mark.skip(reason="Test is having an issue with the return type.")
+@pytest.mark.django_db
+class TestRunnableBinding:
+    async def test_bind_functions(self, anode_types, aix_context, mock_openai):
+        """Test a flow with plan agent"""
+        await aload_fixture("agent/plan")
+        chain = await Chain.objects.aget(agent__alias="plan")
+
+        # test loaded flow
+        await aload_chain_flow(chain)
+
+        # init flow
+        runnable = await ainit_chain_flow(chain, context=aix_context)
+        output = await runnable.ainvoke(input={"user_input": "code a fizzbuzz"})
+
+        # HAX: using standard mocked response
+        assert output == {
+            "user_input": "test",
+            "chat_output": MOCK_PLAN_RESPONSE,
+        }
 
 
 @pytest.mark.django_db
@@ -1091,7 +1135,7 @@ class TestFlow:
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
             "a": {"input": "test", "node1": 0, "node2": 0},
-            "b": {"input": "test", "node1": 0, "sequence_1": 1},
+            "b": {"input": "test", "node1": 0, "sequence_0": 0, "sequence_1": 1},
             "c": {"input": "test", "node1": 0, "node3": 0},
             "node4": 0,
         }
@@ -1109,7 +1153,7 @@ class TestFlow:
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {
             "a": {"input": "test", "node1": 0, "node2": 0},
-            "b": {"input": "test", "node1": 0, "sequence_1": 1},
+            "b": {"input": "test", "node1": 0, "sequence_0": 0, "sequence_1": 1},
             "c": {"input": "test", "node1": 0, "node3": 0},
             "node4": 0,
             "node5": 0,

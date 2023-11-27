@@ -1,7 +1,7 @@
 import pytest
 
 from ix.chains.agent_interaction import DelegateToAgentChain
-
+from ix.runnable.ix import IxNode
 
 DELEGATE_TO_AGENT_CHAIN = {
     "class_path": "ix.chains.agent_interaction.DelegateToAgentChain",
@@ -58,15 +58,18 @@ class TestDelegateToAgentChain:
         """Verify that the chain will delegate to the agent"""
         chat = achat["chat"]
         chain = await aload_chain(DELEGATE_TO_AGENT_CHAIN)
-        assert isinstance(chain, DelegateToAgentChain)
+        assert isinstance(chain, IxNode)
+        assert isinstance(chain.child, DelegateToAgentChain)
 
-        result = await chain.arun(
-            chat_id=str(chat.id),
-            user_input="test task delegation",
-            extra_input="testing extra input",
-            callbacks=[aix_handler],
+        result = await chain.ainvoke(
+            dict(
+                chat_id=str(chat.id),
+                user_input="test task delegation",
+                extra_input="testing extra input",
+            ),
+            config=dict(callbacks=[aix_handler]),
         )
-        assert result == "Delegating to @agent_1"
+        assert result["delegate_to"] == "Delegating to @agent_1"
         assert start_agent_loop.delay.call_args_list[0].kwargs["inputs"] == {
             "chat_id": str(chat.id),
             "user_input": "System: Write a sea shanty for user input: test task delegation.",
@@ -79,18 +82,21 @@ class TestDelegateToAgentChain:
         """Verify that the chain will delegate to the agent"""
         chat = achat["chat"]
         chain = await aload_chain(DELEGATE_TO_AGENT_CHAIN)
-        assert isinstance(chain, DelegateToAgentChain)
+        assert isinstance(chain, IxNode)
+        assert isinstance(chain.child, DelegateToAgentChain)
 
         # remove agents
         await chat.agents.all().adelete()
         assert await chat.agents.aexists() is False
 
-        result = await chain.arun(
-            chat_id=str(chat.id),
-            user_input="test task delegation",
-            callbacks=[aix_handler],
+        result = await chain.ainvoke(
+            dict(
+                chat_id=str(chat.id),
+                user_input="test task delegation",
+            ),
+            config=dict(callbacks=[aix_handler]),
         )
-        assert result == "Delegating to @agent_1"
+        assert result["delegate_to"] == "Delegating to @agent_1"
         assert await chat.agents.filter(alias="agent_1").aexists()
 
     async def test_delegate_to_agent_filter_inputs(
@@ -99,15 +105,18 @@ class TestDelegateToAgentChain:
         """Verify that the chain will delegate to the agent"""
         chat = achat["chat"]
         chain = await aload_chain(DELEGATE_TO_AGENT_CHAIN_FILTER_INPUTS)
-        assert isinstance(chain, DelegateToAgentChain)
+        assert isinstance(chain, IxNode)
+        assert isinstance(chain.child, DelegateToAgentChain)
 
-        result = await chain.arun(
-            chat_id=str(chat.id),
-            user_input="test task delegation",
-            excluded_input="this input won't be passed to the agent",
-            callbacks=[aix_handler],
+        result = await chain.ainvoke(
+            dict(
+                chat_id=str(chat.id),
+                user_input="test task delegation",
+                excluded_input="this input won't be passed to the agent",
+            ),
+            config=dict(callbacks=[aix_handler]),
         )
-        assert result == "Delegating to @agent_1"
+        assert result["delegate_to"] == "Delegating to @agent_1"
         start_agent_loop.delay.assert_called_once()
         assert start_agent_loop.delay.call_args_list[0].kwargs["inputs"] == {
             "chat_id": str(chat.id),
