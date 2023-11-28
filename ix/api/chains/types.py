@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 from typing import (
     List,
@@ -52,6 +53,13 @@ class ChainQueryPage(QueryPage[Chain]):
 class Position(BaseModel):
     x: float
     y: float
+
+
+@dataclass
+class InputConfig:
+    to_input: List[str]
+    to_config: List[str]
+    to_bind: List[str]
 
 
 class Node(BaseModel):
