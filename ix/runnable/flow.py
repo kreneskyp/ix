@@ -1,0 +1,108 @@
+from typing import Any, List, Optional, Dict
+
+from langchain.callbacks.manager import (
+    CallbackManagerForChainRun,
+    AsyncCallbackManagerForChainRun,
+)
+from langchain.schema.runnable import (
+    RunnableSerializable,
+    RunnableConfig,
+    patch_config,
+    RunnableParallel,
+)
+from langchain.schema.runnable.utils import Input, Output
+
+
+class RunnableEachSequential(RunnableSerializable[List[Input], List[Output]]):
+    """Runs a flow for each item in a list sequentially."""
+
+    workflow: RunnableSerializable[Input, Output]
+
+    def _invoke(
+        self,
+        inputs: List[Input],
+        run_manager: CallbackManagerForChainRun,
+        config: RunnableConfig,
+        **kwargs: Any,
+    ) -> List[Output]:
+        results = []
+        for item in inputs:
+            result = self.workflow.invoke(
+                item, patch_config(config, callbacks=run_manager.get_child()), **kwargs
+            )
+            result.append(result)
+        return results
+
+    def invoke(
+        self, input: List[Input], config: Optional[RunnableConfig] = None, **kwargs: Any
+    ) -> List[Output]:
+        return self._call_with_config(self._invoke, input, config, **kwargs)
+
+    async def _ainvoke(
+        self,
+        inputs: List[Input],
+        run_manager: AsyncCallbackManagerForChainRun,
+        config: RunnableConfig,
+        **kwargs: Any,
+    ) -> List[Output]:
+        results = []
+        for item in inputs:
+            result = await self.workflow.ainvoke(
+                item, patch_config(config, callbacks=run_manager.get_child()), **kwargs
+            )
+            result.append(result)
+        return results
+
+    async def ainvoke(
+        self, input: List[Input], config: Optional[RunnableConfig] = None, **kwargs: Any
+    ) -> List[Output]:
+        return await self._acall_with_config(self._ainvoke, input, config, **kwargs)
+
+
+class MergeList(RunnableSerializable[Input, Output | List[Output]]):
+    """Merge values into a list."""
+
+    steps: List[RunnableSerializable[Input, Output]]
+    """Steps to run and merge into a single list."""
+
+    @classmethod
+    def is_lc_serializable(cls) -> bool:
+        """Is this class serializable?"""
+        return True
+
+    def invoke(
+        self,
+        input: Dict[str, Any],
+        config: Optional[RunnableConfig] = None,
+        **kwargs: Any,
+    ) -> List[Output]:
+        runnable_map = RunnableParallel(
+            **{i: step for i, step in enumerate(self.steps)}
+        )
+        raw_output = runnable_map.invoke(input, config, **kwargs)
+        output = []
+        for run in raw_output:
+            if isinstance(run, list):
+                output.extend(run)
+            else:
+                output.append(run)
+        return output
+
+    async def ainvoke(
+        self,
+        input: Dict[str, Any],
+        config: Optional[RunnableConfig] = None,
+        **kwargs: Any,
+    ) -> List[Output]:
+        runnable_map = RunnableParallel(
+            **{str(i): step for i, step in enumerate(self.steps)}
+        )
+        raw_output = await runnable_map.ainvoke(input, config, **kwargs)
+        output = []
+        for run in raw_output.values():
+            if isinstance(run, list):
+                output.extend(run)
+            else:
+                output.append(run)
+
+        return output
