@@ -82,6 +82,7 @@ class IxContext(BaseModel):
     Includes references to the task, agent, chain, and user who initiated the request. Also
     provides a listener and eventually other client callbacks.
     """
+
     agent_id: str
     chain_id: str
     task_id: str
