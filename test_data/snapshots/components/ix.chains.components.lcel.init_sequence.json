@@ -11,6 +11,8 @@
         {
             "as_type": null,
             "collection": "flow",
+            "fields": null,
+            "from_field": null,
             "init_modes": null,
             "init_type": "init",
             "key": "steps",

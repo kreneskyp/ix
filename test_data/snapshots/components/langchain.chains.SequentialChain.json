@@ -30,6 +30,8 @@
         {
             "as_type": null,
             "collection": null,
+            "fields": null,
+            "from_field": null,
             "init_modes": null,
             "init_type": "init",
             "key": "memory",
@@ -43,6 +45,8 @@
         {
             "as_type": null,
             "collection": null,
+            "fields": null,
+            "from_field": null,
             "init_modes": null,
             "init_type": "init",
             "key": "chains",

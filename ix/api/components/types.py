@@ -436,6 +436,12 @@ class Connector(BaseModel):
     #  - input: value is set at runtime
     init_modes: Optional[Literal["init", "input"]] = None
 
+    # List of subfields provided by this connector.
+    fields: Optional[List[str]] = None
+
+    # When set subfield names are parsed from config[from_field]
+    from_field: Optional[str] = None
+
     collection: Optional[Literal["list", "flow", "map", "map_tuples"]] = None
 
 

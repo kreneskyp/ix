@@ -70,6 +70,8 @@
         {
             "as_type": null,
             "collection": null,
+            "fields": null,
+            "from_field": null,
             "init_modes": null,
             "init_type": "init",
             "key": "embedding",
@@ -83,6 +85,8 @@
         {
             "as_type": null,
             "collection": null,
+            "fields": null,
+            "from_field": null,
             "init_modes": null,
             "init_type": "init",
             "key": "documents",
