@@ -101,7 +101,9 @@ def load_memory_property(edge_group: List[ChainEdge], context: IxContext) -> Bas
 def get_memory_session(
     config: Dict[str, Any],
     context: IxContext,
-    cls: Union[BaseMemory, BaseChatMessageHistory],
+    cls: Union[BaseMemory, BaseChatMessageHistory]
+    | Type[BaseMemory]
+    | Type[BaseChatMessageHistory],
 ) -> Tuple[str, str]:
     """
     Parse the session scope from the given configuration and callback manager.
