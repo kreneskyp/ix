@@ -3,7 +3,7 @@ import itertools
 import logging
 import time
 from collections import defaultdict
-from typing import Callable, Any, List, Tuple, Dict, Set
+from typing import Callable, Any, List, Tuple, Dict, Set, Union
 from uuid import UUID
 
 from asgiref.sync import sync_to_async
@@ -372,15 +372,17 @@ class ImplicitJoin:
     def id(self):
         return self.target.id
 
-    def resolve(self) -> MapPlaceholder | List[ChainNode]:
+    def resolve(self) -> Union[MapPlaceholder, "SequencePlaceholder"]:
         """Resolve into either a Map or a sequence of nodes based on whether the incoming
         links to the join target are within the same branch or across multiple branches.
         """
         if self.target.spans_branches:
             # return as sequence
             if isinstance(self.source, list):
-                return self.source + [self.target.node]
-            return [self.source, self.target.node]
+                steps = self.source + [self.target.node]
+            else:
+                steps = [self.source, self.target.node]
+            return SequencePlaceholder(steps=steps)
         else:
             # return as map
             return self.target
@@ -395,6 +397,22 @@ class BranchPlaceholder:
     @property
     def id(self):
         return self.node.id
+
+
+@dataclasses.dataclass
+class SequencePlaceholder:
+    steps: List["FlowPlaceholder"]
+
+    @property
+    def id(self):
+        return self.steps[0][0].id
+
+    def __eq__(self, other):
+        if isinstance(other, SequencePlaceholder):
+            return self.steps == other.steps
+        elif isinstance(other, list):
+            return self.steps == other
+        return False
 
 
 FlowPlaceholder = (
@@ -518,7 +536,11 @@ def load_flow_map(
         # branches from the first run. The first run will always be complete after
         # all branches have been processed.
         loaded_node = load_flow_sequence(node, seen=seen, branch_depth=branch_depth)
-        node_id = loaded_node[0].id if isinstance(loaded_node, list) else loaded_node.id
+        node_id = (
+            loaded_node.steps[0].id
+            if isinstance(loaded_node, SequencePlaceholder)
+            else loaded_node.id
+        )
         if node_id in local_seen:
             local_seen.update(seen)
             continue
@@ -567,9 +589,7 @@ def load_flow_branch(
         raise ValueError("Branch node must have a default branch")
 
     return BranchPlaceholder(
-        node=node,
-        default=branches["default"],
-        branches=branch_tuples
+        node=node, default=branches["default"], branches=branch_tuples
     )
 
 
@@ -639,6 +659,10 @@ def load_flow_sequence(
                     step_index = current.config["steps_hash"].index(target_key)
                     map_key = current.config["steps"][step_index]
                     next_node = node_map
+                    if len(sequential_nodes) == 1:
+                        map_sequence = sequential_nodes[0]
+                    else:
+                        map_sequence = SequencePlaceholder(steps=sequential_nodes)
                 else:
                     # implicit map & aggregator
                     map_key = incoming_link.target_key
@@ -719,8 +743,8 @@ def load_flow_sequence(
             map_node = load_flow_map(targets, seen=seen, branch_depth=branch_depth)
 
             # add to sequence
-            if isinstance(map_node, list):
-                sequential_nodes.extend(map_node)
+            if isinstance(map_node, SequencePlaceholder):
+                sequential_nodes.extend(map_node.steps)
             elif isinstance(map_node, MapPlaceholder):
                 sequential_nodes.append(map_node)
             else:
@@ -739,7 +763,7 @@ def load_flow_sequence(
     if len(sequential_nodes) == 1:
         return sequential_nodes[0]
     else:
-        return sequential_nodes
+        return SequencePlaceholder(steps=sequential_nodes)
 
 
 def init_flow_node(
@@ -789,8 +813,16 @@ def init_flow_node(
             )
             return sequence
     elif isinstance(root, list):
+        # Still callable from load_node/load_collection
         nodes = [
             init_flow_node(node, context=context, variables=variables) for node in root
+        ]
+        return init_sequence(steps=nodes)
+
+    elif isinstance(root, SequencePlaceholder):
+        nodes = [
+            init_flow_node(node, context=context, variables=variables)
+            for node in root.steps
         ]
         return init_sequence(steps=nodes)
     elif isinstance(root, AggPlaceholder):
