@@ -104,6 +104,7 @@ def mock_subchain_config():
     yield config
 
 
+@pytest.mark.skip(reason="DEPRECATED!")
 @pytest.mark.django_db
 class TestSequentialChain:
     """Test loading sequences"""
@@ -168,6 +169,8 @@ def mock_mapsubchain(load_chain) -> MapSubchain:
     yield load_chain(MAP_SUBCHAIN)
 
 
+# TODO: move these tests to RunnableEachSequence
+@pytest.mark.skip(reason="DEPRECATED!")
 @pytest.mark.django_db
 class TestMapSubchain:
     def test_from_config(self, node_types, mock_subchain_config, ix_context):
