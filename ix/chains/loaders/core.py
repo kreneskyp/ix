@@ -680,15 +680,15 @@ def load_flow_sequence(
                             if not isinstance(aggregator, AggPlaceholder):
                                 aggregator = AggPlaceholder.for_connector(
                                     connector=connector,
-                                    steps=map_sequence,
+                                    steps=sequential_nodes,
                                 )
                                 node_map.map[map_key] = aggregator
                             # append to existing aggregator
                             else:
-                                if len(map_sequence.steps) == 1:
-                                    map_sequence.steps.append(sequential_nodes[0])
+                                if len(sequential_nodes) == 1:
+                                    aggregator.steps.append(sequential_nodes[0])
                                 else:
-                                    map_sequence.steps.append(sequential_nodes)
+                                    aggregator.steps.append(sequential_nodes)
                         else:
                             raise ValueError(
                                 "Received multiple values for a single key"
@@ -697,12 +697,9 @@ def load_flow_sequence(
                     else:
                         aggregate = connector and connector.get("multiple", False)
                         if aggregate:
-                            # TODO: this is repacking after unpacking above.
-                            if not isinstance(map_sequence, list):
-                                map_sequence = [map_sequence]
                             map_sequence = AggPlaceholder.for_connector(
                                 connector=connector,
-                                steps=map_sequence,
+                                steps=sequential_nodes,
                             )
 
                 node_map.map[map_key] = map_sequence
