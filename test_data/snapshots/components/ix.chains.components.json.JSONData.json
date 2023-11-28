@@ -1,0 +1,16 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.components.json.JSONData",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {},
+        "required": [],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Parse a value from inputs using a JSONPath",
+    "display_type": "node",
+    "fields": [],
+    "name": "JSON Data",
+    "type": "data"
+}

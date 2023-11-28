@@ -1,0 +1,547 @@
+{
+    "child_field": null,
+    "class_path": "ix.runnable.llm.IXChatOpenAI",
+    "config_schema": {
+        "display_groups": [
+            {
+                "fields": [
+                    "model_name",
+                    "streaming",
+                    "temperature",
+                    "max_tokens",
+                    "function_call"
+                ],
+                "key": "Model",
+                "label": null
+            },
+            {
+                "fields": [
+                    "OpenAI API",
+                    "openai_organization"
+                ],
+                "key": "Authentication",
+                "label": null
+            },
+            {
+                "fields": [
+                    "request_timeout",
+                    "max_retries",
+                    "openai_api_base",
+                    "openai_proxy"
+                ],
+                "key": "Server",
+                "label": null
+            },
+            {
+                "fields": [
+                    "verbose",
+                    "cache"
+                ],
+                "key": "Misc",
+                "label": null
+            },
+            {
+                "fields": [
+                    "metadata",
+                    "tags"
+                ],
+                "key": "Metadata",
+                "label": null
+            }
+        ],
+        "properties": {
+            "cache": {
+                "type": "boolean"
+            },
+            "function_call": {
+                "type": "string"
+            },
+            "max_retries": {
+                "default": 6,
+                "description": "Max Retries",
+                "input_type": "slider",
+                "maximum": 6.0,
+                "minimum": 0.0,
+                "multipleOf": 1.0,
+                "type": "number"
+            },
+            "max_tokens": {
+                "default": 500,
+                "type": "string"
+            },
+            "metadata": {
+                "type": "object"
+            },
+            "model_name": {
+                "default": "gpt-4-0613",
+                "description": "OpenAI model",
+                "enum": [
+                    "gpt-4",
+                    "gpt-4-32k",
+                    "gpt-4-0613",
+                    "gpt-4-32k-0613",
+                    "gpt-4-1106-preview",
+                    "gpt-4-vision-preview",
+                    "gpt-3.5-turbo-1106",
+                    "gpt-3.5-turbo",
+                    "gpt-3.5-turbo-16k-0613",
+                    "gpt-3.5-turbo-instruct"
+                ],
+                "input_type": "select",
+                "type": "string"
+            },
+            "openai_api_base": {
+                "description": "OpenAI API Base URL",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
+            "openai_api_key": {
+                "input_type": "secret",
+                "secret_key": "OpenAI API",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
+            "openai_organization": {
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
+            "openai_proxy": {
+                "description": "OpenAI Proxy URL",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
+            "request_timeout": {
+                "default": 60,
+                "description": "Request Timeout",
+                "type": "number"
+            },
+            "streaming": {
+                "default": true,
+                "type": "boolean"
+            },
+            "tags": {
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
+            "temperature": {
+                "default": 0,
+                "description": "Temperature",
+                "input_type": "slider",
+                "maximum": 2.0,
+                "minimum": 0.0,
+                "multipleOf": 0.05,
+                "type": "number"
+            },
+            "verbose": {
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "model_name",
+            "openai_api_key",
+            "openai_api_base",
+            "openai_organization",
+            "openai_proxy",
+            "max_tokens",
+            "cache",
+            "verbose",
+            "tags",
+            "metadata"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "in",
+            "label": "Prompt",
+            "multiple": false,
+            "required": false,
+            "source_type": [
+                "agent",
+                "branch",
+                "chain",
+                "flow",
+                "llm",
+                "map",
+                "prompt",
+                "retriever",
+                "root",
+                "tool"
+            ],
+            "template": false,
+            "type": "target"
+        },
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "out",
+            "label": "AI Message",
+            "multiple": false,
+            "required": false,
+            "source_type": "data",
+            "template": false,
+            "type": "source"
+        },
+        {
+            "as_type": null,
+            "collection": "list",
+            "fields": null,
+            "from_field": null,
+            "init_modes": "input",
+            "init_type": "bind",
+            "key": "functions",
+            "label": null,
+            "multiple": true,
+            "required": false,
+            "source_type": [
+                "agent",
+                "branch",
+                "chain",
+                "flow",
+                "llm",
+                "map",
+                "prompt",
+                "retriever",
+                "root",
+                "tool"
+            ],
+            "template": false,
+            "type": "target"
+        }
+    ],
+    "description": "OpenAI LLM with function calling support.",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": [
+                {
+                    "label": "GPT-4",
+                    "value": "gpt-4"
+                },
+                {
+                    "label": "GPT-4 32K",
+                    "value": "gpt-4-32k"
+                },
+                {
+                    "label": "GPT-4 (0613)",
+                    "value": "gpt-4-0613"
+                },
+                {
+                    "label": "GPT-4 32k (0613)",
+                    "value": "gpt-4-32k-0613"
+                },
+                {
+                    "label": "GPT-4 Turbo (1106-preview)",
+                    "value": "gpt-4-1106-preview"
+                },
+                {
+                    "label": "GPT-4 Turbo vision (1106-preview)",
+                    "value": "gpt-4-vision-preview"
+                },
+                {
+                    "label": "GPT-3.5 Turbo (1106)",
+                    "value": "gpt-3.5-turbo-1106"
+                },
+                {
+                    "label": "GPT-3.5 ",
+                    "value": "gpt-3.5-turbo"
+                },
+                {
+                    "label": "GPT-3.5 16k",
+                    "value": "gpt-3.5-turbo-16k-0613"
+                },
+                {
+                    "label": "GPT-3.5 Turbo Instruct",
+                    "value": "gpt-3.5-turbo-instruct"
+                }
+            ],
+            "default": "gpt-4-0613",
+            "description": "OpenAI model",
+            "init_type": "init",
+            "input_type": "select",
+            "label": "Model",
+            "max": null,
+            "min": null,
+            "name": "model_name",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "string"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": "secret",
+            "label": "API Key",
+            "max": null,
+            "min": null,
+            "name": "openai_api_key",
+            "parent": null,
+            "required": true,
+            "secret_key": "OpenAI API",
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": "OpenAI API Base URL",
+            "init_type": "init",
+            "input_type": null,
+            "label": "API Base URL",
+            "max": null,
+            "min": null,
+            "name": "openai_api_base",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Organization",
+            "max": null,
+            "min": null,
+            "name": "openai_organization",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": "OpenAI Proxy URL",
+            "init_type": "init",
+            "input_type": null,
+            "label": "Proxy URL",
+            "max": null,
+            "min": null,
+            "name": "openai_proxy",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "choices": null,
+            "default": 500,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Max_tokens",
+            "max": null,
+            "min": null,
+            "name": "max_tokens",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "string"
+        },
+        {
+            "choices": null,
+            "default": true,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
+            "name": "streaming",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": 60,
+            "description": "Request Timeout",
+            "init_type": "init",
+            "input_type": null,
+            "label": "Timeout (sec)",
+            "max": null,
+            "min": null,
+            "name": "request_timeout",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "number"
+        },
+        {
+            "choices": null,
+            "default": 6,
+            "description": "Max Retries",
+            "init_type": "init",
+            "input_type": "slider",
+            "label": "",
+            "max": 6.0,
+            "min": 0.0,
+            "name": "max_retries",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": 1.0,
+            "style": null,
+            "type": "number"
+        },
+        {
+            "choices": null,
+            "default": 0,
+            "description": "Temperature",
+            "init_type": "init",
+            "input_type": "slider",
+            "label": "",
+            "max": 2.0,
+            "min": 0.0,
+            "name": "temperature",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": 0.05,
+            "style": null,
+            "type": "number"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Cache",
+            "max": null,
+            "min": null,
+            "name": "cache",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Verbose",
+            "max": null,
+            "min": null,
+            "name": "verbose",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Tags",
+            "max": null,
+            "min": null,
+            "name": "tags",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Metadata",
+            "max": null,
+            "min": null,
+            "name": "metadata",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "dict"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "bind",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
+            "name": "function_call",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "OpenAI LLM",
+    "type": "llm"
+}
