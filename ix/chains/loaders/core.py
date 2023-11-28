@@ -36,16 +36,6 @@ import_node_class = import_class
 logger = logging.getLogger(__name__)
 
 
-RUNNABLE_TYPES = {
-    "agent",
-    "chain",
-    "llm",
-    "prompt",
-    "retriever",
-    "tool",
-}
-
-
 def get_node_loader(name: str) -> Callable:
     """
     Get a node config loader by node type.
