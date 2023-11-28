@@ -66,7 +66,7 @@ export const NODE_STYLES = {
   },
   schema: {
     icon: faFile,
-    component: ChainNode
+    component: ChainNode,
   },
   vectorstore: {
     icon: faDatabase,

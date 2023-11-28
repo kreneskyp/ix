@@ -11,7 +11,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useClearMessages } from "chat/hooks/useClearMessages";
-import {ChatInputProvider} from "chat/input/ChatInputProvider";
+import { ChatInputProvider } from "chat/input/ChatInputProvider";
 
 const SCROLLBOX = {
   height: "calc(100vh - 50px - 140px)",

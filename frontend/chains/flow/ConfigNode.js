@@ -22,7 +22,8 @@ const CONNECTOR_CONFIG = {
   },
   tool: {
     source_position: "right",
-    target_position: "left",},
+    target_position: "left",
+  },
   toolkit: {
     source_position: "right",
     target_position: "left",
