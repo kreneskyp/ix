@@ -2,7 +2,7 @@ import logging
 import uuid
 from asgiref.sync import sync_to_async
 from functools import cached_property
-from typing import Any, Dict
+from typing import Any, Dict, Type
 
 from django.db import models
 from langchain.schema.runnable import Runnable
@@ -244,6 +244,10 @@ class ChainNode(models.Model):
         blank=True,
     )
 
+    incoming_edges: models.QuerySet["ChainEdge"]
+    outgoing_edges: models.QuerySet["ChainEdge"]
+    DoesNotExist: Type[models.ObjectDoesNotExist]
+
     objects = ChainNodeManager()
 
     def __str__(self):
@@ -272,6 +276,8 @@ class ChainEdge(models.Model):
         max_length=4, null=True, choices=RELATION_CHOICES, default="LINK"
     )
 
+    DoesNotExist: Type[models.ObjectDoesNotExist]
+
 
 class Chain(OwnedModel):
     """
@@ -288,6 +294,8 @@ class Chain(OwnedModel):
     # Indicate that this chain is an agent. This is used to record the config choice.
     # The endpoints are responsible for ensuring that the agent does or does not exist.
     is_agent = models.BooleanField(default=True)
+
+    nodes: models.QuerySet[ChainNode]
 
     @property
     def root(self) -> ChainNode:

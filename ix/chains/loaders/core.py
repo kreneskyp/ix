@@ -343,7 +343,9 @@ class AggPlaceholder:
 class MapPlaceholder:
     node: ChainNode
     map: Dict[str, "FlowPlaceholder"]
-    branch_depths: Set[List[int]] = dataclasses.field(default_factory=lambda: {tuple()})
+    branch_depths: Set[Tuple[str]] = dataclasses.field(
+        default_factory=lambda: {tuple()}
+    )
 
     @property
     def id(self):
@@ -406,7 +408,13 @@ class BranchPlaceholder:
 
 
 FlowPlaceholder = (
-    ChainNode | SequencePlaceholder | MapPlaceholder | BranchPlaceholder | ImplicitJoin
+    ChainNode
+    | SequencePlaceholder
+    | MapPlaceholder
+    | BranchPlaceholder
+    | ImplicitJoin
+    | AggPlaceholder
+    | List["FlowPlaceholder"]
 )
 
 
@@ -431,7 +439,7 @@ def init_flow(
     nodes: List[ChainNode],
     context: IxContext,
     variables: Dict[str, Any] = None,
-    seen: dict = None,
+    seen: Dict[UUID, "FlowPlaceholder"] = None,
 ) -> Runnable[Input, Output] | List[Runnable[Input, Output]]:
     flow_roots = load_flow_node(nodes, seen=seen)
     if not isinstance(flow_roots, list):
@@ -447,9 +455,12 @@ def init_flow(
 
 
 async def ainit_flow(
-    nodes: List[ChainNode], context: IxContext, variables: Dict[str, Any] = None
+    nodes: List[ChainNode],
+    context: IxContext,
+    variables: Dict[str, Any] = None,
+    seen: Dict[UUID, "FlowPlaceholder"] = None,
 ) -> Runnable:
-    return await sync_to_async(init_flow)(nodes, context, variables)
+    return await sync_to_async(init_flow)(nodes, context, variables, seen)
 
 
 def load_chain_flow(chain: Chain) -> FlowPlaceholder:
@@ -471,7 +482,7 @@ async def aload_chain_flow(chain: Chain) -> FlowPlaceholder:
 
 
 def load_flow_node(
-    nodes: List[ChainNode], seen: dict = None
+    nodes: List[ChainNode], seen: Dict[UUID, "FlowPlaceholder"] = None
 ) -> FlowPlaceholder | List[FlowPlaceholder]:
     """Loads a node or group of node connected to a map"""
     if len(nodes) == 0:
@@ -485,14 +496,14 @@ def load_flow_node(
 
 
 async def aload_flow_node(
-    nodes: List[ChainNode], seen: dict = None
+    nodes: List[ChainNode], seen: Dict[UUID, "FlowPlaceholder"] = None
 ) -> FlowPlaceholder | List[FlowPlaceholder]:
     return await sync_to_async(load_flow_node)(nodes, seen)
 
 
 def load_flow_map(
     nodes: List[ChainNode],
-    seen: Dict[str, FlowPlaceholder],
+    seen: Dict[UUID, FlowPlaceholder],
     branch_depth: Tuple[str] = None,
 ) -> FlowPlaceholder | List[FlowPlaceholder]:
     """
@@ -532,7 +543,7 @@ def load_flow_map(
 
 def load_flow_branch(
     node: ChainNode,
-    seen: Dict[str, FlowPlaceholder],
+    seen: Dict[UUID, FlowPlaceholder],
     branch_depth: Tuple[str] = None,
 ) -> BranchPlaceholder:
     # gather branches
@@ -566,7 +577,9 @@ def load_flow_branch(
         raise ValueError("Branch node must have a default branch")
 
     return BranchPlaceholder(
-        node=node, default=branches["default"], branches=branch_tuples
+        node=node,
+        default=branches["default"],
+        branches=branch_tuples
     )
 
 
@@ -576,7 +589,7 @@ MAP_CLASS_PATH = "ix.chains.components.lcel.init_parallel"
 
 def load_flow_sequence(
     start: ChainNode,
-    seen: Dict[str, FlowPlaceholder],
+    seen: Dict[UUID, FlowPlaceholder],
     branch_depth: Tuple[str] = None,
 ) -> Runnable | SequencePlaceholder:
     sequential_nodes = []
