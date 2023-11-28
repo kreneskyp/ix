@@ -113,7 +113,6 @@ def fake_chain_edge(**kwargs):
         target=target_node,
         source_key=kwargs.get("source_key", source_node.node_type.type),
         target_key=kwargs.get("target_key", "default_key"),
-        map_key=kwargs.get("map_key", None),
         chain=chain,
         input_map=kwargs.get("input_map", {}),
         relation=kwargs.get("relation", "LINK"),

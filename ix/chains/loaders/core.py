@@ -280,29 +280,6 @@ def load_collection(
             # load property as a Runnable flow
             nodes = [edge.source for edge in edge_group]
             return init_flow_node(nodes, context=context, variables=variables)
-    elif collection_type == "map":
-        return {
-            edge.map_key: load_node(
-                edge.source,
-                context,
-                variables=variables,
-                as_template=connector_is_template,
-            )
-            for edge in edge_group
-        }
-    elif collection_type == "map_tuples":
-        return [
-            (
-                edge.map_key,
-                load_node(
-                    edge.source,
-                    context,
-                    variables=variables,
-                    as_template=connector_is_template,
-                ),
-            )
-            for edge in edge_group
-        ]
     else:
         raise ValueError(f"Unknown collection type: {collection_type}")
 

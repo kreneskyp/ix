@@ -332,7 +332,6 @@
       "target": "bb4dd36a-3a45-4a9a-b197-09821fda40a9",
       "source_key": "memory",
       "target_key": "memory",
-      "map_key": null,
       "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
       "input_map": null,
       "relation": "PROP"
@@ -346,7 +345,6 @@
       "target": "483cb5e7-11df-4986-a8cb-e72fbfeecb07",
       "source_key": "out",
       "target_key": "in",
-      "map_key": null,
       "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
       "input_map": null,
       "relation": "LINK"
@@ -360,7 +358,6 @@
       "target": "c225fa15-8495-41c6-9df3-758c5efd17ae",
       "source_key": "out",
       "target_key": "in",
-      "map_key": null,
       "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
       "input_map": null,
       "relation": "LINK"
@@ -374,7 +371,6 @@
       "target": "f255e50d-8181-4f58-91db-55c5be6949d5",
       "source_key": "out",
       "target_key": "in",
-      "map_key": null,
       "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
       "input_map": null,
       "relation": "LINK"
@@ -388,7 +384,6 @@
       "target": "21fbd793-5453-4401-8ed7-fd9c70231449",
       "source_key": "out",
       "target_key": "657398fc-0285-476c-9fc8-17d2b4073dd7",
-      "map_key": null,
       "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
       "input_map": null,
       "relation": "LINK"
@@ -402,7 +397,6 @@
       "target": "bb2c912e-700d-43e9-8a75-df0f90aad839",
       "source_key": "out",
       "target_key": "033ff99d-1028-4024-b42c-7eadeb78e7ae",
-      "map_key": null,
       "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
       "input_map": null,
       "relation": "LINK"
@@ -416,7 +410,6 @@
       "target": "d642cb38-1534-4dd5-ac0f-5c64310cc957",
       "source_key": "memory_backend",
       "target_key": "chat_memory",
-      "map_key": null,
       "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
       "input_map": null,
       "relation": "PROP"
@@ -430,7 +423,6 @@
       "target": "bb2c912e-700d-43e9-8a75-df0f90aad839",
       "source_key": "out",
       "target_key": "a9849947-5073-4708-9c75-2fb337c6aa0a",
-      "map_key": null,
       "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
       "input_map": null,
       "relation": "LINK"
@@ -444,7 +436,6 @@
       "target": "64d9c0cb-f47b-4631-87fe-e1d4134ebed0",
       "source_key": "memory",
       "target_key": "memory",
-      "map_key": null,
       "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
       "input_map": null,
       "relation": "PROP"
@@ -458,7 +449,6 @@
       "target": "64d9c0cb-f47b-4631-87fe-e1d4134ebed0",
       "source_key": "user_input",
       "target_key": "in",
-      "map_key": null,
       "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
       "input_map": null,
       "relation": "LINK"
@@ -472,7 +462,6 @@
       "target": "7220da2c-5b47-4e9c-87e4-2010de68ee09",
       "source_key": "user_input",
       "target_key": "in",
-      "map_key": null,
       "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
       "input_map": null,
       "relation": "LINK"
@@ -486,7 +475,6 @@
       "target": "bb4dd36a-3a45-4a9a-b197-09821fda40a9",
       "source_key": "out",
       "target_key": "in",
-      "map_key": null,
       "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
       "input_map": null,
       "relation": "LINK"
@@ -500,7 +488,6 @@
       "target": "21fbd793-5453-4401-8ed7-fd9c70231449",
       "source_key": "out",
       "target_key": "302042e5-cfab-47a9-8fe3-b7c4494a5c4b",
-      "map_key": null,
       "chain": "b8cc0cf0-f07c-4c15-a738-5b96e5dc188a",
       "input_map": null,
       "relation": "LINK"
