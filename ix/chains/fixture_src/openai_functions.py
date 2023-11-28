@@ -3,7 +3,7 @@ from ix.chains.fixture_src.targets import LLM_TARGET, MEMORY_TARGET, PROMPT_TARG
 
 FUNCTION_SCHEMA = {
     "class_path": "ix.chains.functions.FunctionSchema",
-    "type": "tool",
+    "type": "schema",
     "name": "Function Schema",
     "description": "Describes a function using json. Compatible with OpenAI",
     "fields": [
