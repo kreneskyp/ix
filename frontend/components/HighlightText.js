@@ -15,6 +15,17 @@ const HighlightText = ({ content }) => {
   const regexComponentPairs = React.useMemo(
     () => [
       {
+        regex: /```([\w\s]*?)\n([\s\S]*?)(```|$)/g,
+        component: (match, idx, execResult) => {
+          // execResult[1] contains the language
+          const language = execResult[1];
+          // execResult[2] contains the actual code content
+          const codeText = execResult[2].replace(/\s+$/, "");
+
+          return <HighlightedCode language={language} text={codeText} />;
+        },
+      },
+      {
         regex: /`([^`]+)`/g,
         component: (match, idx, execResult) => (
           <Code key={idx}>{execResult[1]}</Code>
@@ -55,14 +66,6 @@ const HighlightText = ({ content }) => {
             {execResult[1]}
           </Link>
         ),
-      },
-      {
-        regex: /```([\w\s]*?)\n([\s\S]*?)(```|$)/g,
-        component: (match, idx, execResult) => {
-          // execResult[2] contains the actual code content
-          const codeText = execResult[2].replace(/\s+$/, "");
-          return <HighlightedCode text={codeText} />;
-        },
       },
     ],
     [mention, artifact]
