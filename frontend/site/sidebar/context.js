@@ -8,6 +8,7 @@ export const DEFAULT_SIZES_LEFT = [
 ];
 
 export const DEFAULT_SIZES_RIGHT = [
+  ["2xl", "850px"],
   ["xl", "650px"],
   ["lg", "450px"],
   ["md", "350px"],

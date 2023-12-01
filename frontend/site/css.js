@@ -1,4 +1,6 @@
 export const SCROLLBAR_CSS = {
+  scrollbarWidth: "thin", // For Firefox
+  scrollbarColor: "#333 transparent", // For Firefox
   "&::-webkit-scrollbar": {
     width: "10px",
   },
