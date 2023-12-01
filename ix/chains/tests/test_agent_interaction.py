@@ -1,11 +1,8 @@
 import pytest
 
 from ix.chains.agent_interaction import DelegateToAgentChain
-<<<<<<< HEAD
 from ix.runnable.ix import IxNode
-=======
 from ix.task_log.models import Task
->>>>>>> master
 
 DELEGATE_TO_AGENT_CHAIN = {
     "class_path": "ix.chains.agent_interaction.DelegateToAgentChain",
