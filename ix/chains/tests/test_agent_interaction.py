@@ -1,7 +1,7 @@
 import pytest
 
 from ix.chains.agent_interaction import DelegateToAgentChain
-
+from ix.task_log.models import Task
 
 DELEGATE_TO_AGENT_CHAIN = {
     "class_path": "ix.chains.agent_interaction.DelegateToAgentChain",
@@ -57,6 +57,7 @@ class TestDelegateToAgentChain:
     ):
         """Verify that the chain will delegate to the agent"""
         chat = achat["chat"]
+        task = await Task.objects.aget(id=chat.task_id)
         chain = await aload_chain(DELEGATE_TO_AGENT_CHAIN)
         assert isinstance(chain, DelegateToAgentChain)
 
@@ -67,6 +68,9 @@ class TestDelegateToAgentChain:
             callbacks=[aix_handler],
         )
         assert result == "Delegating to @agent_1"
+        assert start_agent_loop.delay.call_args_list[0].kwargs["user_id"] == str(
+            task.user_id
+        )
         assert start_agent_loop.delay.call_args_list[0].kwargs["inputs"] == {
             "chat_id": str(chat.id),
             "user_input": "System: Write a sea shanty for user input: test task delegation.",
