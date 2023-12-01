@@ -1,3 +1,4 @@
+import asyncio
 from typing import Dict, Any
 
 from celery_singleton import Singleton
@@ -25,7 +26,10 @@ logger = logging.getLogger(__name__)
 )
 @sync
 async def start_agent_loop(
-    task_id: str, chain_id: str = None, inputs: Dict[str, Any] = None
+    task_id: str,
+    user_id: str,
+    chain_id: str = None,
+    inputs: Dict[str, Any] = None,
 ):
     """
     Start agent process loop.
@@ -35,10 +39,19 @@ async def start_agent_loop(
 
     This method expects `task_id` to be a string to be compatible with celery Singleton.
     """
-    task = await Task.objects.aget(pk=task_id)
-    agent = await Agent.objects.aget(pk=task.agent_id)
-    chain = await Chain.objects.aget(pk=chain_id)
-    process = AgentProcess(task, agent, chain)
+    agent, chain = await asyncio.gather(
+        Agent.objects.aget(task__id=task_id),
+        Chain.objects.aget(pk=chain_id),
+    )
+
+    chat_subtask = await Task.objects.acreate(
+        parent_id=task_id,
+        agent_id=agent.id,
+        chain_id=chain_id,
+        user_id=user_id,
+    )
+
+    process = AgentProcess(chat_subtask, agent, chain)
     return await process.start(inputs)
 
 

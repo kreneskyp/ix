@@ -32,7 +32,10 @@ async def adelegate_task(chat: Chat, delegate_to: str, inputs: Dict[str, Any]):
     logger.debug(f"Delegated to agent={agent.alias} task={subtask.id} input={inputs}")
 
     start_agent_loop.delay(
-        task_id=str(subtask.id), chain_id=str(agent.chain_id), inputs=inputs
+        task_id=str(subtask.id),
+        chain_id=str(agent.chain_id),
+        inputs=inputs,
+        user_id=str(subtask.user_id),
     )
 
 
