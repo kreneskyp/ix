@@ -307,7 +307,7 @@ async def send_message(
 
     # Start agent loop. This does NOT check if the loop is already running
     # the agent_runner task is responsible for blocking duplicate runners
-    await start_agent(task_id, agent, inputs)
+    await start_agent(task_id, agent, inputs, user=user)
 
     return ChatMessage.model_validate(message)
 
@@ -326,10 +326,14 @@ async def clear_messages(chat_id: str, user: AbstractUser = Depends(get_request_
     return DeletedItem(id=chat_id)
 
 
-async def start_agent(task_id: UUID, agent: Agent, inputs: Dict[str, Any]):
+async def start_agent(
+    task_id: UUID, agent: Agent, inputs: Dict[str, Any], user: AbstractUser
+):
     """Shim for start_agent_loop
 
     The async decorator on start_agent_loop sometimes causes issues in tests.
     Moving the function into this shim allows it to work correctly.
     """
-    return start_agent_loop.delay(str(task_id), str(agent.chain_id), inputs=inputs)
+    return start_agent_loop.delay(
+        str(task_id), chain_id=str(agent.chain_id), user_id=str(user.id), inputs=inputs
+    )
