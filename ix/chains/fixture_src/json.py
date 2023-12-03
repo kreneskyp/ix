@@ -46,15 +46,18 @@ JSON_DATA = {
     "name": "JSON Data",
     "description": "Parse a value from inputs using a JSONPath",
     "type": "data",
-    "fields": NodeTypeField.get_fields(
-        JSONPath,
-        include=["data"],
-        field_options={
-            "data": {
-                "input_type": "textarea",
-            }
-        },
-    ),
+    "fields": [
+        {
+            "name": "data",
+            "description": "JSON data",
+            "type": "list",
+            "input_type": "textarea",
+            "required": True,
+            "style": {
+                "width": "100%",
+            },
+        }
+    ],
 }
 
 JSON = [JSON_SCHEMA, JSON_PATH, JSON_DATA]

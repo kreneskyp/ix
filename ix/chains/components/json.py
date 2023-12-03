@@ -64,7 +64,7 @@ class JSONData(RunnableSerializable[Input, Output]):
         """Is this class serializable?"""
         return True
 
-    data: Dict[str, Any]
+    data: Dict[str, Any] | List[Any] | str
     """JSON data to load"""
 
     def invoke(
@@ -73,6 +73,8 @@ class JSONData(RunnableSerializable[Input, Output]):
         config: Optional[RunnableConfig] = None,
         **kwargs: Any,
     ) -> Output:
+        if isinstance(self.data, str):
+            return json.loads(self.data)
         return self.data
 
     async def ainvoke(
@@ -81,4 +83,6 @@ class JSONData(RunnableSerializable[Input, Output]):
         config: Optional[RunnableConfig] = None,
         **kwargs: Any,
     ) -> Output:
+        if isinstance(self.data, str):
+            return json.loads(self.data)
         return self.data
