@@ -61,10 +61,11 @@ CHAIN_TARGET = {
     "source_type": "chain",
 }
 
-WORKFLOW_TARGET = {
+WORKFLOW_SOURCE = {
     "key": "workflow",
-    "type": "target",
+    "type": "source",
     "source_type": FLOW_TYPES,
+    "collection": "flow",
 }
 
 FUNCTION_TARGET = {

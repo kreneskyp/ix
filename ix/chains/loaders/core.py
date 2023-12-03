@@ -9,7 +9,6 @@ from uuid import UUID
 from asgiref.sync import sync_to_async
 from langchain.schema.runnable import (
     RunnableSerializable,
-    RunnableSequence,
     RunnableParallel,
     Runnable,
 )
@@ -115,6 +114,39 @@ def load_secrets(config: dict, node_type: NodeType):
         raise ValueError(f"Secrets not found: {to_load}")
 
 
+def load_flow_props(
+    node: ChainNode,
+    node_type: NodeType,
+    context: IxContext,
+    variables: Dict[str, Any] = None,
+) -> Dict[str, Runnable]:
+    """Load properties that create a runnable flow.
+
+    This props use outgoing edges to the input on the first node in the flow.
+    Returns a dict of props that can be merged into the nodes config dict.
+    """
+    config = {}
+    properties = node.outgoing_edges.filter(relation="PROP").order_by("source_key")
+
+    for group in itertools.groupby(properties, lambda x: x.source_key):
+        key, edges = group
+        edge_group: List[ChainEdge] = [edge for edge in edges]
+
+        # ignore non-flow collections
+        connector = node_type.connectors_as_dict.get(key, None)
+        if connector is None or not connector.get("collection", None) == "flow":
+            continue
+
+        logger.debug(
+            f"Loading flow property source_key={key} target_key={edge_group[0].target_key} edge_group={edge_group}"
+        )
+
+        nodes = [edge.target for edge in edge_group]
+        config[key] = init_flow(nodes, context=context, variables=variables)
+
+    return config
+
+
 def load_node(
     node: ChainNode,
     context: IxContext,
@@ -157,7 +189,11 @@ def load_node(
         config = node_loader(node, context)
 
     # prepare properties for loading. Properties should be grouped by key.
-    properties = node.incoming_edges.filter(relation="PROP").order_by("target_key")
+    properties = (
+        node.incoming_edges.filter(relation="PROP")
+        .exclude(target_key="in")
+        .order_by("target_key")
+    )
     for group in itertools.groupby(properties, lambda x: x.target_key):
         key, edges = group
         edge_group: List[ChainEdge] = [edge for edge in edges]
@@ -208,6 +244,15 @@ def load_node(
                     variables=variables,
                     as_template=connector_is_template,
                 )
+
+    config.update(
+        load_flow_props(
+            node,
+            node_type=node_type,
+            context=context,
+            variables=variables,
+        )
+    )
 
     # converted flattened property groups back into nested properties. Fields with
     # the same parent are grouped together into a single object. By default, groups
@@ -272,7 +317,6 @@ def load_collection(
     between how a graph is structured as nodes  &edges in the database/UX and how it
     is represented with LangChain Expression Language components.
     """
-    connector_is_template = connector.get("template", False)
     collection_type = connector.get("collection", None)
 
     if collection_type in {"flow"}:

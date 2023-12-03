@@ -524,8 +524,8 @@ class TestLoadRetrieval:
 
 
 @pytest.mark.django_db
-class TestLCELLoading:
-    """Testing LCEL style flows"""
+class TestFlowComponents:
+    """Testing flow components: sequences, maps, branches, eachs, etc."""
 
     async def assert_basic_sequence(self, runnable: RunnableSequence):
         # TODO: it's not coming back as runnable sequence
@@ -683,8 +683,26 @@ class TestLCELLoading:
             messages=[SystemMessage(content="You are bot 2.")]
         )
 
-    async def test_each(self, aix_context, mock_openai):
-        raise NotImplementedError
+    async def test_each(self, aix_context, mock_openai, lcel_flow_each_in_sequence):
+        """Test RunnableEach"""
+        chain = lcel_flow_each_in_sequence["chain"]
+        runnable = await chain.aload_chain(context=aix_context)
+        assert isinstance(runnable, RunnableSequence)
+        assert len(runnable.steps) == 2
+        assert isinstance(runnable.steps[0], IxNode)
+        assert isinstance(runnable.steps[0].child, RunnableEach)
+        assert isinstance(runnable.steps[1], IxNode)
+        assert isinstance(runnable.steps[1].child, MockRunnable)
+
+        output = await runnable.ainvoke(input=["one", "two", "three"])
+        assert output == {
+            "input": [
+                {"input": "one", "node1": 0},
+                {"input": "two", "node1": 0},
+                {"input": "three", "node1": 0},
+            ],
+            "node2": 0,
+        }
 
 
 MOCK_PLAN_RESPONSE = dict(name="plan_coding", arguments={"agent_id": 1})
@@ -1071,6 +1089,22 @@ class TestLoadFlow:
 
     async def ztest_malformed_map(self):
         raise NotImplementedError
+
+    async def test_each(self, lcel_flow_each):
+        fixture = lcel_flow_each
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["each"]
+
+    async def test_sequence_in_each(self, lcel_flow_each_sequence):
+        fixture = lcel_flow_each_sequence
+        chain = fixture["chain"]
+
+        # test loaded flow
+        flow = await aload_chain_flow(chain)
+        assert flow == fixture["each"]
 
 
 @pytest.mark.django_db
@@ -1553,9 +1587,87 @@ class TestFlow:
             "node5": 0,
         }
 
+    async def test_each(self, lcel_flow_each, aix_context: IxContext):
+        """
+        Test invoking a RunnableEach
+        :param lcel_flow_each:
+        :param aix_context:
+        :return:
+        """
+        fixture = lcel_flow_each
+        chain = fixture["chain"]
+        runnable = await ainit_chain_flow(chain, context=aix_context)
+
+        # validate loaded instance
+        assert isinstance(runnable, IxNode)
+        assert isinstance(runnable.child, RunnableEach)
+        assert isinstance(runnable.child.bound, IxNode)
+        assert isinstance(runnable.child.bound.child, MockRunnable)
+
+        # validate output
+        result = await runnable.ainvoke(input=["value1", "value2", "value3"])
+        assert result == [
+            {"input": "value1", "node1": 0},
+            {"input": "value2", "node1": 0},
+            {"input": "value3", "node1": 0},
+        ]
+
+    async def test_sequence_in_each(
+        self, lcel_flow_each_sequence, aix_context: IxContext
+    ):
+        """Sequence in the RunnableEach's workflow"""
+        fixture = lcel_flow_each_sequence
+        chain = fixture["chain"]
+        runnable = await ainit_chain_flow(chain, context=aix_context)
+
+        # validate loaded instance
+        assert isinstance(runnable, IxNode)
+        runnable_each = runnable.child
+        assert isinstance(runnable_each, RunnableEach)
+        assert isinstance(runnable_each.bound, RunnableSequence)
+
+        # validate output
+        result = await runnable.ainvoke(input=["value1", "value2", "value3"])
+        assert result == [
+            {"input": "value1", "node1": 0, "node2": 0},
+            {"input": "value2", "node1": 0, "node2": 0},
+            {"input": "value3", "node1": 0, "node2": 0},
+        ]
+
+    async def test_each_in_sequence(
+        self, lcel_flow_each_in_sequence, aix_context: IxContext
+    ):
+        """A RunnableEach in sequence with other nodes."""
+        fixture = lcel_flow_each_in_sequence
+        chain = fixture["chain"]
+        runnable = await ainit_chain_flow(chain, context=aix_context)
+
+        # validate loaded instance
+        assert isinstance(runnable, RunnableSequence)
+        runnable_each = runnable.first
+        assert isinstance(runnable_each.child, RunnableEach)
+        assert isinstance(runnable_each.child.bound, IxNode)
+        assert isinstance(runnable_each.child.bound.child, MockRunnable)
+
+        # validate output
+        result = await runnable.ainvoke(input=["value1", "value2", "value3"])
+        assert result == {
+            "input": [
+                {"input": "value1", "node1": 0},
+                {"input": "value2", "node1": 0},
+                {"input": "value3", "node1": 0},
+            ],
+            "node2": 0,
+        }
+
 
 @pytest.mark.django_db
-class TestPirateFlow:
+class TestExampleFlows:
+    """
+    Tests for example flows that may be tricky. Generally something that was
+    tested in TestLoadFlow and TestFlow but didnt work in the UX created flow.
+    """
+
     async def test_pirate_flow(self, anode_types, aix_context, mock_openai):
         """Test a flow with a pirate component"""
 
@@ -1583,3 +1695,25 @@ class TestPirateFlow:
             "user_input": "test",
             "chat_output": AIMessage(content="mock llm response"),
         }
+
+    async def test_each(self, anode_types, aix_context):
+        await aload_fixture("agent/each")
+        chain = await Chain.objects.aget(agent__alias="each")
+
+        # init flow
+        runnable = await chain.aload_chain(context=aix_context)
+        output = await runnable.ainvoke(input={"user_input": "test"})
+        assert output == [
+            {
+                "content": "Graceful feline leaps,\nWhiskers twitch, eyes gleam with pride,\nCats, nature's delight.",
+                "additional_kwargs": {},
+                "type": "AIMessageChunk",
+                "example": False,
+            },
+            {
+                "content": "Vast expanse above,\nStars and planets dance in space,\nMysteries unfold.",
+                "additional_kwargs": {},
+                "type": "AIMessageChunk",
+                "example": False,
+            },
+        ]

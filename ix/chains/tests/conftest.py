@@ -897,3 +897,71 @@ async def lcel_join_after_branch(anode_types) -> dict:
         "node4": node4,
         "node5": node5,
     }
+
+
+@pytest_asyncio.fixture
+async def lcel_flow_each(anode_types) -> dict:
+    chain = await afake_chain()
+    node_type = await NodeType.objects.aget(class_path=RUNNABLE_EACH_CLASS_PATH)
+    each = await ChainNode.objects.acreate(
+        chain=chain,
+        class_path=RUNNABLE_EACH_CLASS_PATH,
+        node_type=node_type,
+        root=True,
+        config={},
+    )
+
+    node1 = await afake_runnable(chain=chain, name="node1", root=False)
+
+    await afake_chain_edge(
+        chain=chain,
+        source=each,
+        target=node1,
+        relation="PROP",
+        source_key="workflow",
+        target_key="in",
+    )
+
+    return {
+        "chain": chain,
+        "each": each,
+        "node1": node1,
+    }
+
+
+@pytest_asyncio.fixture
+async def lcel_flow_each_sequence(lcel_flow_each) -> dict:
+    """Sequence in the RunnableEach's workflow"""
+    datum = lcel_flow_each.copy()
+    datum["node2"] = await afake_runnable(
+        chain=datum["chain"], name="node2", root=False
+    )
+    datum["sequence"] = SequencePlaceholder(steps=[datum["each"], datum["node2"]])
+    await afake_chain_edge(
+        chain=datum["chain"],
+        source=datum["node1"],
+        target=datum["node2"],
+        relation="LINK",
+        source_key="out",
+        target_key="in",
+    )
+    return datum
+
+
+@pytest_asyncio.fixture
+async def lcel_flow_each_in_sequence(lcel_flow_each) -> dict:
+    """A RunnableEach in sequence with other nodes."""
+    datum = lcel_flow_each.copy()
+    datum["node2"] = await afake_runnable(
+        chain=datum["chain"], name="node2", root=False
+    )
+    datum["sequence"] = SequencePlaceholder(steps=[datum["each"], datum["node2"]])
+    await afake_chain_edge(
+        chain=datum["chain"],
+        source=datum["each"],
+        target=datum["node2"],
+        relation="LINK",
+        source_key="out",
+        target_key="in",
+    )
+    return datum

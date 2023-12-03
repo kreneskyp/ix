@@ -1,5 +1,5 @@
 from ix.api.components.types import NodeTypeField
-from ix.chains.fixture_src.targets import WORKFLOW_TARGET, RUNNABLE_TYPES
+from ix.chains.fixture_src.targets import WORKFLOW_SOURCE, RUNNABLE_TYPES
 
 RUNNABLE_PASS_THROUGH_CLASS_PATH = "ix.chains.components.lcel.init_pass_through"
 RUNNABLE_PASS_THROUGH = {
@@ -94,7 +94,7 @@ RUNNABLE_EACH = {
     "name": "Each",
     "description": "Executes a sub-workflow for each input in a list of inputs",
     "type": "flow",
-    "connectors": [WORKFLOW_TARGET],
+    "connectors": [WORKFLOW_SOURCE],
 }
 
 

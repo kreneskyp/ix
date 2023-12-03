@@ -266,3 +266,5 @@ CONVERSATIONAL_RETRIEVAL_CHAIN = {
     "class_path": CONVERSATIONAL_RETRIEVAL_CHAIN_CLASS_PATH,
     "config": {"llm": OPENAI_LLM, "retriever": REDIS_VECTORSTORE},
 }
+
+RUNNABLE_EACH = {"class_path": RUNNABLE_EACH_CLASS_PATH, "config": {}}
