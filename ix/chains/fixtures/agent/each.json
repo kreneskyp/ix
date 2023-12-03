@@ -1,0 +1,218 @@
+[
+  {
+    "model": "agents.agent",
+    "pk": "9560fee5-1f49-4aee-a7a1-252efc168274",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Each Test",
+      "alias": "each",
+      "purpose": "",
+      "created_at": "2023-11-22T01:27:35.162Z",
+      "model": "",
+      "config": {},
+      "chain": "c4c8d63c-75d7-4f35-89fb-bb29fa24e4e9",
+      "is_test": false
+    }
+  },
+  {
+    "model": "chains.chain",
+    "pk": "c4c8d63c-75d7-4f35-89fb-bb29fa24e4e9",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Each Test",
+      "description": "",
+      "created_at": "2023-11-22T01:27:35.139Z",
+      "is_agent": true
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "1293548b-0f9c-4821-88b9-a75560e7d701",
+    "fields": {
+      "class_path": "__ROOT__",
+      "node_type": [
+        "__ROOT__"
+      ],
+      "config": {
+        "outputs": [
+          "user_input",
+          "artifact_ids"
+        ],
+        "outputs_hash": [
+          "user_input",
+          "artifact_ids"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": true,
+      "position": {
+        "x": -340.0,
+        "y": 520.0
+      },
+      "chain": "c4c8d63c-75d7-4f35-89fb-bb29fa24e4e9"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "5ead1f65-6a51-427f-b9a0-be89cf60145e",
+    "fields": {
+      "class_path": "ix.chains.components.lcel.init_each",
+      "node_type": [
+        "ix.chains.components.lcel.init_each"
+      ],
+      "config": {},
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 200.0,
+        "y": 520.0
+      },
+      "chain": "c4c8d63c-75d7-4f35-89fb-bb29fa24e4e9"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "93c4aa1a-e9ed-415d-bf93-22f8cecfd9b3",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONData",
+      "node_type": [
+        "ix.chains.components.json.JSONData"
+      ],
+      "config": {
+        "data": "[\n{\"user_input\": \"cats\"},\n{\"user_input\": \"space\"}\n]",
+        "parameters": "[\n{\"user_input\": \"cat\"}\n]"
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": -70.0,
+        "y": 520.0
+      },
+      "chain": "c4c8d63c-75d7-4f35-89fb-bb29fa24e4e9"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "d9dd8385-dd26-4b11-a80b-ffbf462c1d85",
+    "fields": {
+      "class_path": "ix.runnable.llm.IXChatOpenAI",
+      "node_type": [
+        "ix.runnable.llm.IXChatOpenAI"
+      ],
+      "config": {
+        "tags": [],
+        "cache": false,
+        "metadata": {},
+        "streaming": true,
+        "max_tokens": 500,
+        "model_name": "gpt-3.5-turbo",
+        "max_retries": 6,
+        "temperature": 0,
+        "openai_proxy": "",
+        "openai_api_base": "",
+        "request_timeout": 60,
+        "openai_organization": ""
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 800.0,
+        "y": 610.0
+      },
+      "chain": "c4c8d63c-75d7-4f35-89fb-bb29fa24e4e9"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "f3d661d2-3fc3-4fa2-9200-2baa189c77e3",
+    "fields": {
+      "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+      "node_type": [
+        "langchain.prompts.chat.ChatPromptTemplate"
+      ],
+      "config": {
+        "messages": [
+          {
+            "role": "system",
+            "template": "you are a poet. write haiku for the user's message\n",
+            "input_variables": []
+          },
+          {
+            "role": "user",
+            "template": "{user_input}\n",
+            "input_variables": [
+              "user_input"
+            ],
+            "partial_variables": {}
+          }
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 480.0,
+        "y": 610.0
+      },
+      "chain": "c4c8d63c-75d7-4f35-89fb-bb29fa24e4e9"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "0cc4ad81-8db6-4642-add0-f14d32e41624",
+    "fields": {
+      "source": "5ead1f65-6a51-427f-b9a0-be89cf60145e",
+      "target": "f3d661d2-3fc3-4fa2-9200-2baa189c77e3",
+      "source_key": "workflow",
+      "target_key": "in",
+      "chain": "c4c8d63c-75d7-4f35-89fb-bb29fa24e4e9",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "53bb1218-d026-4ae5-9fa3-a3aaede1e7fc",
+    "fields": {
+      "source": "f3d661d2-3fc3-4fa2-9200-2baa189c77e3",
+      "target": "d9dd8385-dd26-4b11-a80b-ffbf462c1d85",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "c4c8d63c-75d7-4f35-89fb-bb29fa24e4e9",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "7e00b523-a219-48be-b3f9-50f66bb797d7",
+    "fields": {
+      "source": "93c4aa1a-e9ed-415d-bf93-22f8cecfd9b3",
+      "target": "5ead1f65-6a51-427f-b9a0-be89cf60145e",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "c4c8d63c-75d7-4f35-89fb-bb29fa24e4e9",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "f351518c-9f6c-48e7-a5c3-09c84279d9c2",
+    "fields": {
+      "source": "1293548b-0f9c-4821-88b9-a75560e7d701",
+      "target": "93c4aa1a-e9ed-415d-bf93-22f8cecfd9b3",
+      "source_key": "user_input",
+      "target_key": "in",
+      "chain": "c4c8d63c-75d7-4f35-89fb-bb29fa24e4e9",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  }
+]
