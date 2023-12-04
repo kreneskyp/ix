@@ -29,7 +29,13 @@ class MockRunnable(Runnable[Input, Output], BaseModel):
         self,
         input: Input,
         config: Optional[RunnableConfig] = None,
-    ) -> str:
-        output = deepcopy(input)
-        output[self.name] = self.value
-        return output
+    ) -> dict:
+        if isinstance(input, dict):
+            output = deepcopy(input)
+            output[self.name] = self.value
+            return output
+
+        return {
+            "input": input,
+            self.name: self.value,
+        }
