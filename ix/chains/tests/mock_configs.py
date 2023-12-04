@@ -5,6 +5,7 @@ from pathlib import Path
 from ix.chains.fixture_src.chains import CONVERSATIONAL_RETRIEVAL_CHAIN_CLASS_PATH
 from ix.chains.fixture_src.document_loaders import GENERIC_LOADER_CLASS_PATH
 from ix.chains.fixture_src.embeddings import OPENAI_EMBEDDINGS_CLASS_PATH
+from ix.chains.fixture_src.lcel import RUNNABLE_EACH_CLASS_PATH
 from ix.chains.fixture_src.parsers import LANGUAGE_PARSER_CLASS_PATH
 from ix.chains.fixture_src.text_splitter import RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH
 from ix.chains.fixture_src.vectorstores import (

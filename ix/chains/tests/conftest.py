@@ -1,9 +1,13 @@
 import uuid
-from ix.chains.fixture_src.lcel import RUNNABLE_BRANCH_CLASS_PATH
+from ix.chains.fixture_src.lcel import (
+    RUNNABLE_BRANCH_CLASS_PATH,
+    RUNNABLE_EACH_CLASS_PATH,
+)
 from ix.chains.loaders.core import (
     BranchPlaceholder,
     ImplicitJoin,
     MapPlaceholder,
+    SequencePlaceholder,
 )
 from ix.chains.models import ChainNode, NodeType
 from ix.chains.tests.fake import (
