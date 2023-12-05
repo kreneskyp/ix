@@ -11,6 +11,7 @@ from uuid import UUID
 
 from channels.layers import get_channel_layer
 from django.db.models import Q
+from langchain.schema.runnable import RunnableConfig
 
 from ix.schema.subscriptions import ChatMessageTokenSubscription
 from langchain.callbacks.manager import AsyncCallbackManagerForChainRun
@@ -318,7 +319,7 @@ class IxHandler(AsyncCallbackHandler):
         return failure_msg
 
     @staticmethod
-    def from_manager(run_manager: AsyncCallbackManagerForChainRun):
+    def from_manager(run_manager: AsyncCallbackManagerForChainRun) -> "IxHandler":
         """Helper method for finding the IxHandler in a run_manager."""
         ix_handlers = [
             handler
@@ -329,4 +330,18 @@ class IxHandler(AsyncCallbackHandler):
             raise ValueError("Expected at least one IxHandler in run_manager")
         if len(ix_handlers) != 1:
             raise ValueError("Expected exactly one IxHandler in run_manager")
+        return ix_handlers[0]
+
+    @staticmethod
+    def from_config(config: RunnableConfig) -> "IxHandler":
+        """Helper method for finding the IxHandler in a config."""
+        ix_handlers = [
+            handler
+            for handler in config.get("callbacks", [])
+            if isinstance(handler, IxHandler)
+        ]
+        if len(ix_handlers) == 0:
+            raise ValueError("Expected at least one IxHandler in config")
+        if len(ix_handlers) != 1:
+            raise ValueError("Expected exactly one IxHandler in config")
         return ix_handlers[0]
