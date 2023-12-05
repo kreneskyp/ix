@@ -65,15 +65,11 @@ export const useConnectorColor = (node, connector) => {
 
 export const PropertyTarget = ({ type, node, connector }) => {
   const color = useConnectorColor(node, connector);
-  const source_type = Array.isArray(connector.source_type)
-    ? connector.source_type[0]
-    : connector.source_type;
-
-  const position = CONNECTOR_CONFIG[source_type]?.target_position || "left";
+  const position = connector.type === "source" ? "right" : "left";
 
   return (
     <Box position="relative" width="100%">
-      <Handle id={connector.key} type="target" position={position} />
+      <Handle id={connector.key} type={connector.type} position={position} />
       <Box px={2} m={0} color={color}>
         <ConnectorPopover
           type={type}
@@ -97,10 +93,8 @@ export const NodeProperties = ({ node, type }) => {
     if (connector.key === "in" || connector.key === "out") {
       return;
     }
-    const source_type = Array.isArray(connector.source_type)
-      ? connector.source_type[0]
-      : connector.source_type;
-    const position = CONNECTOR_CONFIG[source_type]?.target_position || "left";
+
+    const position = connector.type === "source" ? "right" : "left";
     if (position === "right") {
       right.push(connector);
     } else {
