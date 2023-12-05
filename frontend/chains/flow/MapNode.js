@@ -23,7 +23,7 @@ const useFlowConnectors = (node) => {
         source_type: ["agent", "chain", "tool", "retriever", "flow"],
         required: true,
         connected: edges?.find(
-          (edge) => edge.source === node.id && edge.sourceHandle === mapKey
+          (edge) => edge.target === node.id && edge.targetHandle === mapKey
         ),
       })),
     };

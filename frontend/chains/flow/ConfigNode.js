@@ -34,12 +34,12 @@ const usePropertyTargets = (node, type) => {
   const edges = useEdges();
 
   return useMemo(() => {
-    const connectors = type.connectors?.filter(
-      (connector) => connector.type === "target"
-    );
+    const connectors = type.connectors;
     return connectors?.map((connector) => {
       const edge = edges?.find(
-        (edge) => edge.target === node.id && edge.targetHandle === connector.key
+        (edge) =>
+          (edge.target === node.id && edge.targetHandle === connector.key) ||
+          (edge.source === node.id && edge.sourceHandle === connector.key)
       );
       return { ...connector, connected: !!edge };
     });
