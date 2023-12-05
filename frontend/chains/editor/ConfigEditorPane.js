@@ -101,7 +101,7 @@ export const ConfigEditorPane = () => {
               {name}
             </Heading>
             <Text color={"gray.500"} fontSize={"xs"}>
-              {type?.name}
+              {type?.description}
             </Text>
           </Box>
         </HStack>
