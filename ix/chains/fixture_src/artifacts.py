@@ -1,3 +1,7 @@
+from ix.api.components.types import NodeTypeField
+from ix.chains.fixture_src.targets import FLOW_TYPES
+from ix.runnable.artifacts import ArtifactMeta
+
 ARTIFACT_MEMORY = {
     "class_path": "ix.memory.artifacts.ArtifactMemory",
     "type": "memory",
@@ -89,3 +93,53 @@ SAVE_ARTIFACT = {
         },
     ],
 }
+
+
+RUNNABLE_SAVE_ARTIFACT_CLASS_PATH = "ix.runnable.artifacts.SaveArtifact"
+RUNNABLE_SAVE_ARTIFACT = {
+    "class_path": RUNNABLE_SAVE_ARTIFACT_CLASS_PATH,
+    "type": "chain",
+    "name": "Save Artifact",
+    "description": "Saves an input as an artifact",
+    "connectors": [
+        {
+            "key": "in",
+            "label": "data",
+            "type": "target",
+            "source_type": FLOW_TYPES,
+        }
+    ],
+    "fields": NodeTypeField.get_fields(
+        ArtifactMeta,
+        include=[
+            "type",
+            "key",
+            "name",
+            "description",
+            "storage_backend",
+            "storage_id",
+        ],
+    ),
+}
+
+
+RUNNABLE_LOAD_ARTIFACTS_CLASS_PATH = "ix.runnable.artifacts.LoadArtifacts"
+RUNNABLE_LOAD_ARTIFACTS = {
+    "class_path": RUNNABLE_LOAD_ARTIFACTS_CLASS_PATH,
+    "type": "chain",
+    "name": "Load Artifacts",
+    "description": "Loads artifacts from the database",
+    "fields": [],
+    "input_fields": NodeTypeField.get_fields(
+        ArtifactMeta,
+        include=["artifact_ids"],
+    ),
+}
+
+
+ARTIFACTS = [
+    ARTIFACT_MEMORY,
+    SAVE_ARTIFACT,
+    RUNNABLE_SAVE_ARTIFACT,
+    RUNNABLE_LOAD_ARTIFACTS,
+]

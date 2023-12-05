@@ -4,7 +4,7 @@ from ix.api.components.types import NodeType as NodeTypePydantic
 from ix.chains.fixture_src.agent_interaction import AGENT_INTERACTION_CHAINS
 
 from ix.chains.fixture_src.agents import AGENTS
-from ix.chains.fixture_src.artifacts import ARTIFACT_MEMORY, SAVE_ARTIFACT
+from ix.chains.fixture_src.artifacts import ARTIFACTS
 from ix.chains.fixture_src.chains import CHAINS
 from ix.chains.fixture_src.dalle import DALLE
 from ix.chains.fixture_src.chat_memory_backend import MEMORY_BACKEND
@@ -89,12 +89,7 @@ COMPONENTS.extend([CHAT_MODERATOR_TYPE])
 COMPONENTS.extend(AGENT_INTERACTION_CHAINS)
 
 # IX Artifacts
-COMPONENTS.extend(
-    [
-        ARTIFACT_MEMORY,
-        SAVE_ARTIFACT,
-    ]
-)
+COMPONENTS.extend(ARTIFACTS)
 
 # Testing
 COMPONENTS.extend(
