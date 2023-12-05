@@ -153,7 +153,7 @@ const ChainGraphEditor = ({ graph }) => {
             sourceHandle: key === "in" ? "out" : flowNodeType,
             targetHandle: key,
             data: { id: edgeId },
-            ...style,
+            ...style[key === "in" || key === "out" ? "LINK" : "PROP"],
           };
 
           // validate flowEdge before creating datum for API
@@ -237,8 +237,10 @@ const ChainGraphEditor = ({ graph }) => {
       const from_root =
         source.id === "root" || source.data.type.class_path === "__ROOT__";
       const is_out = params.sourceHandle === "out";
+      const is_in = params.targetHandle === "in";
       const from_branch = source.data.type.type === "branch";
-      const relation = from_root || is_out || from_branch ? "LINK" : "PROP";
+      const relation =
+        from_root || is_out || is_in || from_branch ? "LINK" : "PROP";
 
       setEdges((els) =>
         addEdge({ ...params, ...style[relation], data: { id } }, els)
