@@ -30,6 +30,10 @@ export const NODE_STYLES = {
     icon: faChain,
     component: ChainNode,
   },
+  data: {
+    icon: faFile,
+    component: ChainNode,
+  },
   flow: {
     icon: faList,
     component: ChainNode,
