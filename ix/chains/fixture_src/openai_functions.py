@@ -39,6 +39,29 @@ FUNCTION_OUTPUT_PARSER = {
     ],
 }
 
+PARSE_FUNCTION_CALL_CLASS_PATH = "ix.runnable.output_parser.ParseFunctionCall"
+PARSE_FUNCTION_CALL = {
+    "class_path": PARSE_FUNCTION_CALL_CLASS_PATH,
+    "type": "chain",
+    "name": "Parse Function Call",
+    "description": "Parse a function call from an AI Message",
+    "fields": [],
+    "connectors": [
+        {
+            "key": "in",
+            "type": "target",
+            "label": "AI Message",
+            "source_type": "llm",
+        },
+        {
+            "key": "out",
+            "type": "source",
+            "label": "Function Call",
+            "source_type": "flow",
+        },
+    ],
+}
+
 FUNCTION_CALL = {
     "name": "function_call",
     "type": "string",
@@ -63,3 +86,10 @@ OPENAPI_CHAIN = {
         },
     ],
 }
+
+OPENAI_FUNCTIONS = [
+    FUNCTION_SCHEMA,
+    FUNCTION_OUTPUT_PARSER,
+    PARSE_FUNCTION_CALL,
+    OPENAPI_CHAIN,
+]

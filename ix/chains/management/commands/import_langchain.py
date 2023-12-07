@@ -16,11 +16,7 @@ from ix.chains.fixture_src.json import JSON
 from ix.chains.fixture_src.lcel import LANGCHAIN_RUNNABLES
 from ix.chains.fixture_src.llm import LLMS
 from ix.chains.fixture_src.memory import MEMORY
-from ix.chains.fixture_src.openai_functions import (
-    FUNCTION_SCHEMA,
-    FUNCTION_OUTPUT_PARSER,
-    OPENAPI_CHAIN,
-)
+from ix.chains.fixture_src.openai_functions import OPENAI_FUNCTIONS
 from ix.chains.fixture_src.parsers import PARSERS
 from ix.chains.fixture_src.prompts import CHAT_PROMPT_TEMPLATE
 from ix.chains.fixture_src.retriever import RETRIEVERS
@@ -53,13 +49,7 @@ COMPONENTS.extend(CHAINS)
 COMPONENTS.extend(ROUTING_CHAINS)
 
 # OpenAI Functions
-COMPONENTS.extend(
-    [
-        FUNCTION_SCHEMA,
-        FUNCTION_OUTPUT_PARSER,
-        OPENAPI_CHAIN,
-    ]
-)
+COMPONENTS.extend(OPENAI_FUNCTIONS)
 
 # Prompts
 COMPONENTS.extend(
