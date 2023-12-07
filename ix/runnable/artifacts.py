@@ -7,7 +7,6 @@ from langchain.schema.runnable import RunnableSerializable, RunnableConfig, Runn
 from pydantic import BaseModel
 
 from ix.chains.callbacks import IxHandler
-from ix.chains.loaders.context import IxContext
 from ix.commands.filesystem import write_to_file, read_file
 from ix.task_log.models import Artifact, TaskLogMessage
 from ix.api.artifacts.types import Artifact as ArtifactPydantic, ArtifactContent
@@ -80,14 +79,14 @@ class ArtifactMeta(BaseModel):
 
 class SaveArtifact(Runnable[ArtifactMeta, ArtifactPydantic], BaseModel):
     # how to make this available
-    context: IxContext
+    # context: IxContext
 
-    type: str
-    key: str
-    name: str
-    description: str
-    storage_backend: str = "filesystem"
-    storage_id: str
+    type: Optional[str] = None
+    key: Optional[str] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
+    storage_backend: Optional[str] = "filesystem"
+    storage_id: Optional[str] = None
 
     def invoke(
         self,
@@ -115,6 +114,8 @@ class SaveArtifact(Runnable[ArtifactMeta, ArtifactPydantic], BaseModel):
         config: Optional[RunnableConfig] = None,
         **kwargs: Any,
     ) -> ArtifactPydantic:
+        ix_handler = IxHandler.from_config(config)
+
         # merge settings with input, input takes precedence
         artifact_kwargs = self.model_dump(
             include={
@@ -143,7 +144,7 @@ class SaveArtifact(Runnable[ArtifactMeta, ArtifactPydantic], BaseModel):
         # save artifact meta to database
         artifact = await Artifact.objects.acreate(
             **artifact_kwargs,
-            task_id=self.context.task_id,
+            task=ix_handler.task,
             storage=storage,
         )
 
@@ -157,11 +158,10 @@ class SaveArtifact(Runnable[ArtifactMeta, ArtifactPydantic], BaseModel):
             write_to_file(file_path, content)
 
         # send message to log
-        ix_handler = IxHandler.from_config(config)
         await TaskLogMessage.objects.acreate(
             role="ASSISTANT",
-            task_id=self.context.task_id,
-            agent_id=self.context.agent_id,
+            task=self.ix_handler.task,
+            agent=self.ix_handler.agent,
             parent=ix_handler.parent_think_msg,
             content={
                 "type": "ARTIFACT",
