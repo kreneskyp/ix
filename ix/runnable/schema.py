@@ -26,6 +26,12 @@ class Schema(RunnableSerializable[Input, Output]):
     description: str
     parameters: Any
 
+    def __repr__(self):
+        return f"Schema(name={self.name!r})"
+
+    def __str__(self):
+        return f"Schema(name={self.name})"
+
     @classmethod
     def is_lc_serializable(cls) -> bool:
         """Is this class serializable?"""
