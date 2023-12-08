@@ -135,7 +135,7 @@ class SaveArtifact(Chain):
         # frontend API call can include artifacts from any descendant
         # of the Chat's task.
         task = ix_handler.task
-        artifact_task_id = task.parent_id if task.parent_id else task.id
+        artifact_task_id = task.root_id if task.root_id else task.id
 
         # build kwargs
         try:
@@ -249,7 +249,7 @@ class SaveArtifact(Chain):
         # frontend API call can include artifacts from any descendant
         # of the Chat's task.
         task = ix_handler.task
-        artifact_task_id = task.parent_id if task.parent_id else task.id
+        artifact_task_id = task.root_id if task.root_id else task.id
 
         # build kwargs
         try:

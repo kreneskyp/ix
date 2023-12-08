@@ -1,7 +1,6 @@
 import logging
 from functools import cached_property
 
-from django.db.models import Q
 from langchain.callbacks.manager import CallbackManager
 
 from ix.agents.models import Agent
@@ -60,8 +59,9 @@ class IxCallbackManager(CallbackManager):
 
     @cached_property
     def chat_id(self) -> str:
+        task_id = self.task.root_id if self.task.root_id else self.task.id
         try:
-            chat = Chat.objects.get(Q(task=self.task) | Q(task_id=self.task.parent_id))
+            chat = Chat.objects.get(task_id=task_id)
         except Chat.DoesNotExist:
             return None
         return chat.id

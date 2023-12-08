@@ -10,7 +10,6 @@ from typing import Dict, Union, Any, List, Optional
 from uuid import UUID
 
 from channels.layers import get_channel_layer
-from django.db.models import Q
 
 from ix.schema.subscriptions import ChatMessageTokenSubscription
 from langchain.callbacks.manager import AsyncCallbackManagerForChainRun
@@ -128,8 +127,9 @@ class IxHandler(AsyncCallbackHandler):
 
     @cached_property
     def chat_id(self) -> str:
+        root_id = self.task.root_id if self.task.root_id else self.task.id
         try:
-            chat = Chat.objects.get(Q(task=self.task) | Q(task_id=self.task.parent_id))
+            chat = Chat.objects.get(task_id=root_id)
         except Chat.DoesNotExist:
             return None
         return chat.id

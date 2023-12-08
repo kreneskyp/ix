@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from functools import cached_property
 
-from django.db.models import Q
-
 from ix.agents.models import Agent
 from ix.chains.models import Chain
 from ix.chat.models import Chat
@@ -23,8 +21,9 @@ class IxContext:
 
     @cached_property
     def chat_id(self) -> str:
+        root_id = self.task.root_id if self.task.root_id else self.task.id
         try:
-            chat = Chat.objects.get(Q(task=self.task) | Q(task_id=self.task.parent_id))
+            chat = Chat.objects.get(task_id=root_id)
         except Chat.DoesNotExist:
             return None
         return chat.id
