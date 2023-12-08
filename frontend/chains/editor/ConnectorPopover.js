@@ -15,7 +15,6 @@ import {
 import { SelectedNodeContext } from "chains/editor/contexts";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 
-
 const DEFAULT_DESCRIPTION = (
   <>
     <Text mb={2}>Click the connector to search for matching components.</Text>

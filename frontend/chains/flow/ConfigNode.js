@@ -14,7 +14,7 @@ import {
   SelectedNodeContext,
 } from "chains/editor/contexts";
 import { StyledIcon } from "components/StyledIcon";
-import { RunIcon } from "chains/flow/RunIcon";
+import { RunIcon } from "chains/editor/run_log/RunIcon";
 
 const CONNECTOR_CONFIG = {
   agent: {

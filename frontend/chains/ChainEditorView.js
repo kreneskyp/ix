@@ -32,7 +32,7 @@ import { NodeTypeSearchButton } from "chains/editor/NodeTypeSearchButton";
 import { AgentCardListButton } from "agents/AgentCardListButton";
 import { EditorAgentCard } from "chains/editor/sidebar/EditorAgentCard";
 import { ChainCardListButton } from "chains/ChainCardListButton";
-import { RunLogProvider } from "chains/RunLogProvider";
+import { RunLogProvider } from "chains/editor/run_log/RunLogProvider";
 
 const ChainEditorProvider = ({ graph, onError, children }) => {
   const chainState = useChainState(graph);
