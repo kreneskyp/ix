@@ -16,7 +16,7 @@ from langchain.schema.runnable.utils import Input, Output
 
 from ix.api.components.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic, InputConfig
-from ix.chains.components.lcel import init_sequence, init_branch, RunnableProxy
+from ix.chains.components.lcel import init_sequence, init_branch
 from ix.chains.fixture_src.flow import ROOT_CLASS_PATH
 from ix.chains.loaders.context import IxContext
 
@@ -473,7 +473,6 @@ def init_flow(
     seen: Dict[UUID, "FlowPlaceholder"] = None,
 ) -> Runnable[Input, Output] | List[Runnable[Input, Output]]:
     flow_roots = load_flow_node(nodes, seen=seen)
-    print("flow_roots: ", flow_roots)
     if not isinstance(flow_roots, list):
         flow_roots = [flow_roots]
 
@@ -824,33 +823,10 @@ def init_flow_node(
     Assumes a collection of ChainNodes and placeholders constructed by load_flow.
     """
     if isinstance(root, ChainNode):
-        # proxy_fields = []
-        # TODO: can just use template here? Since it works the same as a template?
-        #     : Reason for RunnableProxy is to fit within Runnable interface, but
-        #       if code is integrated into IxNode then that is moot.
-        #     : IxNode expects a runnable so proxy might still make sense
-        # TODO: Template may work here if this logic is pushed down into format_config()
         node_type = NodeTypePydantic.model_validate(root.node_type)
-        input_config = get_input_config(root, node_type)
-
-        # TODO: if to_config has all possible connections (from connectors) how to know to proxy or not?
-        has_input_config = bool(input_config.to_config)
-
-        # input fields require a lazy load since they must be passed to the initializer
-        if has_input_config:
-            print("RUNNABLE PROXY")
-            instance = RunnableProxy(
-                node=root,
-                input_config=input_config,
-                context=context,
-            )
-        else:
-            instance = load_node(root, context=context, variables=variables)
+        instance = load_node(root, context=context, variables=variables)
 
         if isinstance(instance, Runnable):
-            # TODO: core needs to exclude bind points from config
-            # TODO: config here is before any processing load_node would do. (secrets, etc)
-            # TODO: does it matter? if values are from input then shouldn't matter.
             instance = IxNode(
                 node_id=root.id,
                 child=instance,

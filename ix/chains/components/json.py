@@ -49,12 +49,6 @@ class JSONPath(RunnableSerializable[Input, Output | List[Output]]):
         formatted_input = to_json_serializable(input)
         json_matches = jsonpath_expr.find(formatted_input)
 
-        print()
-        from pprint import pprint
-
-        pprint(formatted_input)
-        print()
-
         if len(json_matches) > 1 or self.return_list:
             return [match.value for match in json_matches]
         elif len(json_matches) == 0:

@@ -31,67 +31,29 @@ const useFlowConnectors = (node) => {
   }, [edges, node.id]);
 };
 
-function useTemplateInputVariables(config) {
-  let inputVariables = [];
-
-  if (config && config.messages && Array.isArray(config.messages)) {
-    config.messages.forEach((message) => {
-      if (message.input_variables && Array.isArray(message.input_variables)) {
-        inputVariables = inputVariables.concat(message.input_variables);
-      }
-    });
-  }
-
-  return inputVariables;
-}
-
 export const InputConnector = ({ type, node }) => {
   const { input } = useFlowConnectors(node);
   const intputColor = useConnectorColor(node, input);
-  const inputConnector = type.connectors?.find((c) => c.key === "in");
-
-  const input_variables = useTemplateInputVariables(node.config);
 
   return (
-    <VStack alignItems={"start"}>
-      <Box position="relative">
-        <Handle
-          id="in"
-          type="target"
-          position="left"
-          style={{ top: "50%", transform: "translateY(-50%)" }}
-        />
-        <Heading fontSize="xs" px={2} color={intputColor}>
-          <ConnectorPopover
-            type={type}
-            node={node}
-            connector={input}
-            label={inputConnector?.label || "Input"}
-            placement={"left"}
-          />{" "}
-          <RequiredAsterisk color={intputColor} />
-        </Heading>
-      </Box>
-      {input_variables.map((variable, index) => {
-        return (
-          <Box key={index} px={2} py={1} fontSize="xs" position="relative">
-            <Handle
-              id={variable}
-              type="target"
-              position="left"
-              style={{ top: "50%", transform: "translateY(-50%)" }}
-            />
-            <ConnectorPopover
-              type={type}
-              node={node}
-              connector={input}
-              label={variable}
-              placement={"left"}
-            />
-          </Box>
-        );
-      })}
-    </VStack>
+    <Box position="relative">
+      <Handle
+        id="in"
+        type="target"
+        position="left"
+        style={{ top: "50%", transform: "translateY(-50%)" }}
+      />
+      <Heading fontSize="xs" px={2} color={intputColor}>
+        <ConnectorPopover
+          type={type}
+          node={node}
+          connector={input}
+          label={"Input"}
+          placement={"left"}
+        />{" "}
+        <RequiredAsterisk color={intputColor} />
+      </Heading>
+    </Box>
   );
 };
 

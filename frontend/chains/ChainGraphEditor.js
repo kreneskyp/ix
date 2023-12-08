@@ -142,9 +142,6 @@ const ChainGraphEditor = ({ graph }) => {
           const isOutput = edgeConnector.key === "out";
           const key = isOutput ? "in" : edgeConnector.key;
 
-          // TODO: need to replicate logic from onConnect for edge style
-          //     : missing some references to source/target node
-
           // create flow edge to validate and add to ReactFlow
           const edgeId = uuid4();
           const flowNodeType = nodeType.type;

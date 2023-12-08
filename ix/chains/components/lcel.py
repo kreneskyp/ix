@@ -1,6 +1,6 @@
 from functools import reduce
 from operator import or_
-from typing import Dict, Any, List, Tuple, Optional, Iterator, AsyncIterator
+from typing import Dict, Any, List, Tuple
 
 from langchain.schema.runnable import (
     Runnable,
@@ -9,13 +9,9 @@ from langchain.schema.runnable import (
     RunnableSequence,
     RunnablePassthrough,
     RunnableSerializable,
-    RunnableConfig,
 )
-from langchain.schema.runnable.base import Other, RunnableEach
+from langchain.schema.runnable.base import RunnableEach
 from langchain.schema.runnable.utils import Input, Output
-
-from ix.api.chains.types import InputConfig
-from ix.chains.loaders.context import IxContext
 
 
 def init_pass_through() -> RunnablePassthrough:
@@ -65,113 +61,3 @@ def init_branch(
         ],
         default,
     )
-
-
-class InputMask(RunnableSerializable[Input, Output]):
-    """Reduce input to the value of a single key."""
-
-    key: str
-
-    def invoke(
-        self,
-        input: Dict[str, Any],
-        config: Optional[RunnableConfig] = None,
-        **kwargs: Any,
-    ):
-        return input[self.key]
-
-
-class RunnableProxy(Runnable[Input, Output]):
-    # runnable_class: Type[Runnable]
-    node: Any  # : ChainNode
-    input_config: InputConfig
-    context: IxContext
-    # proxy_inputs: List[str]
-
-    def build_runnable(self, input: Input) -> Runnable:
-        """
-        Build a runnable using inputs that are passed in. This delays the
-        creation of the runnable until the input is available.
-        """
-        from ix.chains.loaders.core import load_node
-
-        # TODO: push this into load_node / format_config()
-        # build config with values from input
-        config = self.node.config.copy()
-        for key in self.input_config.to_config:
-            if key not in input:
-                raise ValueError(f"Missing input key: {key}")
-            config[key] = input[key]
-
-        # HAX: Set merged config on object. This alters the objects but
-        #      doesn't write to the db.
-        self.node.config = config
-
-        # TODO: variables formats config for template, doesn't work here.
-        return load_node(self.node, context=self.context, variables=input)
-
-        # TODO: bind happens after, but it's part of IxNode.
-        #     : need to align usage of node objects.
-
-        # return self.runnable_class(**config)
-
-    def invoke(
-        self,
-        input: Dict[str, Any],
-        config: Optional[RunnableConfig] = None,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        runnable = self.build_runnable(input)
-        return runnable.invoke(input, config)
-
-    async def ainvoke(
-        self,
-        input: Dict[str, Any],
-        config: Optional[RunnableConfig] = None,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        runnable = self.build_runnable(input)
-        return await runnable.ainvoke(input, config)
-
-    def transform(
-        self,
-        input: Iterator[Dict[str, Any]],
-        config: Optional[RunnableConfig] = None,
-        **kwargs: Any,
-    ) -> Iterator[Dict[str, Any]]:
-        runnable = self.build_runnable(input)
-        return runnable.transform(input, config)
-
-    async def atransform(
-        self,
-        input: AsyncIterator[Dict[str, Any]],
-        config: Optional[RunnableConfig] = None,
-        **kwargs: Any,
-    ) -> AsyncIterator[Dict[str, Any]]:
-        runnable = self.build_runnable(input)
-
-        async def input_aiter() -> AsyncIterator[Other]:
-            yield input
-
-        async for chunk in runnable.atransform(input_aiter(), config, **kwargs):
-            yield chunk
-
-    def stream(
-        self, input: Other, config: Optional[RunnableConfig] = None, **kwargs: Any
-    ) -> Iterator[Other]:
-        runnable = self.build_runnable(input)
-        return runnable.stream(input, config)
-
-    async def astream(
-        self,
-        input: Other,
-        config: Optional[RunnableConfig] = None,
-        **kwargs: Any,
-    ) -> AsyncIterator[Other]:
-        runnable = self.build_runnable(input)
-
-        async def input_aiter() -> AsyncIterator[Other]:
-            yield input
-
-        async for chunk in runnable.astream(input_aiter(), config, **kwargs):
-            yield chunk

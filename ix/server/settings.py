@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     "ix.chat",
     "ix.datasources",
     "ix.secrets",
-    "ix.runnable_log",
+    # "ix.runnable_log",
 ]
 
 MIDDLEWARE = [

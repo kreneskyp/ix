@@ -394,31 +394,6 @@ NodeTypes = Literal[
 ]
 
 
-def mask_input(input, source_mask, target_mask):
-    # Choose full input or single key.
-    if source_mask in [None, "out"]:
-        intermediate = input
-    else:
-        # TODO: create InputMask runnable?
-        intermediate = input[source_mask]
-
-    intermediate = source_mask(input)
-    return target_mask(intermediate)
-
-
-def mask_input2(data: dict, connected_keys: Set[str], masks):
-    pass
-    # 1)
-    # iterate over connected inputs
-    # merge connected inputs into main input
-
-    # 2)
-    # Non-inputs need to be directed to bindings and lazy loading.
-    # TODO
-
-    # return masked_inputs
-
-
 class Connector(BaseModel):
     """
     A connection point for a property on a node.

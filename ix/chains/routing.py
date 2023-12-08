@@ -54,12 +54,6 @@ class MapSubchain(Chain):
         if output_key not in input_variables:
             input_variables.append(output_key)
 
-        # create internal chain
-        print("chains type: ", type(chains))
-        print(f"chains: [{chains}]")
-
-        # Add LCEL for memory
-
         chain = SequentialChain(
             memory=memory, chains=chains, input_variables=input_variables
         )

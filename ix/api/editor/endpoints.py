@@ -1,6 +1,5 @@
 import asyncio
 import logging
-from pprint import pformat
 from uuid import UUID
 
 from django.contrib.auth.models import AbstractUser
@@ -22,9 +21,7 @@ from ix.api.editor.types import (
     UpdatedRoot,
     AddNode,
     UpdateRoot,
-    ChainStructure,
 )
-from ix.chains.loaders.core import aload_chain_flow
 from ix.chains.models import Chain, ChainNode, NodeType, ChainEdge
 
 from ix.api.chains.types import (
@@ -222,22 +219,3 @@ async def get_chain_chat(
     """Return test chat instance for the chain"""
     chat = await _get_test_chat(chain_id, user)
     return ChatPydantic.from_orm(chat)
-
-
-@router.get(
-    "/chains/{chain_id}/structure", response_model=ChainStructure, tags=["Chain Editor"]
-)
-async def get_chain_structure(
-    chain_id: UUID, user: AbstractUser = Depends(get_request_user)
-):
-    """
-    endpoint that returns rendered flow.  Debugging tool to verify a chain is parsed
-    from graph into LangChain as execpted.
-
-    Uses load_chain_flow because it shows structure prior to secret loading.
-    # TODO: implement a way to mock secret loading.
-    """
-    chain = await Chain.filtered_owners(user).aget(id=chain_id)
-    loaded_chain_flow = await aload_chain_flow(chain=chain)
-    pretty_text = pformat(loaded_chain_flow)
-    return ChainStructure(text=pretty_text)

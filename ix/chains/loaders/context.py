@@ -9,9 +9,11 @@ from django.db.models import Q
 from pydantic import BaseModel
 
 from ix.chat.models import Chat
-from ix.runnable_log.models import RunnableExecution
+
+# from ix.runnable_log.models import RunnableExecution
 from ix.task_log.models import Task
-from ix.utils.json import to_json_serializable
+
+# from ix.utils.json import to_json_serializable
 
 logger = logging.getLogger(__name__)
 
@@ -49,20 +51,22 @@ class Listener:
     async def alog_run(
         self, input, output, message: str = None, completed: bool = True
     ):
-        input = to_json_serializable(input)
-        output = to_json_serializable(output)
+        return
 
-        await RunnableExecution.objects.acreate(
-            user_id=self.context.user_id,
-            task_id=self.context.task_id,
-            node_id=self.node_id,
-            started_at=self.start,
-            finished_at=now(),
-            inputs=input,
-            outputs=output,
-            message=message,
-            completed=completed,
-        )
+        # input = to_json_serializable(input)
+        # output = to_json_serializable(output)
+        #
+        # await RunnableExecution.objects.acreate(
+        #     user_id=self.context.user_id,
+        #     task_id=self.context.task_id,
+        #     node_id=self.node_id,
+        #     started_at=self.start,
+        #     finished_at=now(),
+        #     inputs=input,
+        #     outputs=output,
+        #     message=message,
+        #     completed=completed,
+        # )
 
     @property
     def callbacks(self) -> Dict[str, Callable]:
