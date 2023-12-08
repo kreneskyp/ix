@@ -239,7 +239,7 @@ async def get_messages(
         raise HTTPException(status_code=404, detail="Chat does not exist.")
     task_id = chat.task_id
     query = TaskLogMessage.objects.filter(
-        Q(task_id=task_id) | Q(task__parent_id=task_id)
+        Q(task__root_id=task_id) | Q(task__id=task_id)
     ).order_by("created_at")
 
     # punting on async implementation of pagination until later
@@ -321,8 +321,7 @@ async def clear_messages(chat_id: str, user: AbstractUser = Depends(get_request_
     except Agent.DoesNotExist:
         raise HTTPException(status_code=404, detail="Agent does not exist.")
 
-    await TaskLogMessage.objects.filter(task_id=chat.task_id).adelete()
-    await TaskLogMessage.objects.filter(task__parent_id=chat.task_id).adelete()
+    await TaskLogMessage.objects.filter(task__root=chat.task_id).adelete()
     return DeletedItem(id=chat_id)
 
 

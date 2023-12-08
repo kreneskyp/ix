@@ -151,7 +151,20 @@ async def afake_agent(**kwargs):
 def fake_task(**kwargs):
     user = kwargs.pop("user", None) or fake_user()
     agent = kwargs.pop("agent", None) or fake_agent()
-    task = Task.objects.create(user=user, agent=agent, chain=agent.chain, **kwargs)
+    if "parent" in kwargs:
+        root_id = (
+            kwargs["parent"].root_id
+            if kwargs["parent"].root_id
+            else kwargs["parent"].id
+        )
+    elif "parent_id" in kwargs:
+        parent = Task.objects.get(pk=kwargs["parent_id"])
+        root_id = parent.root_id if parent.root_id else parent.id
+    else:
+        root_id = kwargs.pop("root_id", None)
+    task = Task.objects.create(
+        user=user, agent=agent, chain=agent.chain, root_id=root_id, **kwargs
+    )
     return task
 
 
