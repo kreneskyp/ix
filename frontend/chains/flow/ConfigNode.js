@@ -8,8 +8,13 @@ import { ChainEditorAPIContext } from "chains/editor/ChainEditorAPIContext";
 import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
 import { RequiredAsterisk } from "components/RequiredAsterisk";
 import { ConnectorPopover } from "chains/editor/ConnectorPopover";
-import { NodeStateContext, SelectedNodeContext } from "chains/editor/contexts";
+import {
+  NodeStateContext,
+  RunLog,
+  SelectedNodeContext,
+} from "chains/editor/contexts";
 import { StyledIcon } from "components/StyledIcon";
+import { RunIcon } from "chains/flow/RunIcon";
 
 const CONNECTOR_CONFIG = {
   agent: {
@@ -163,6 +168,10 @@ export const ConfigNode = ({ id, data, selected }) => {
   const { nodes } = useContext(NodeStateContext);
   const node = nodes[data.node.id];
 
+  // run log when available
+  const { log_by_node } = React.useContext(RunLog);
+  const run_event = log_by_node[node?.id];
+
   const nodeStyle = {
     color,
     border: "1px solid",
@@ -228,6 +237,11 @@ export const ConfigNode = ({ id, data, selected }) => {
             <DeleteIcon node={node} />
           </Flex>
         </Heading>
+        {run_event && (
+          <Box position={"absolute"} top={5} right={0}>
+            <RunIcon execution={run_event} />
+          </Box>
+        )}
         <Box minHeight={25} cursor="default">
           {content}
         </Box>

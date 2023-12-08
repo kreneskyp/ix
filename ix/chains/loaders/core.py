@@ -16,7 +16,7 @@ from langchain.schema.runnable.utils import Input, Output
 
 from ix.api.components.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic, InputConfig
-from ix.chains.components.lcel import init_sequence, init_branch
+from ix.chains.components.lcel import init_sequence, init_branch, RunnableProxy
 from ix.chains.fixture_src.flow import ROOT_CLASS_PATH
 from ix.chains.loaders.context import IxContext
 
@@ -130,7 +130,9 @@ def load_flow_props(
 
     for group in itertools.groupby(properties, lambda x: x.source_key):
         key, edges = group
+        print("key", key)
         edge_group: List[ChainEdge] = [edge for edge in edges]
+        print("edges", edge_group)
 
         # ignore non-flow collections
         connector = node_type.connectors_as_dict.get(key, None)
@@ -471,6 +473,7 @@ def init_flow(
     seen: Dict[UUID, "FlowPlaceholder"] = None,
 ) -> Runnable[Input, Output] | List[Runnable[Input, Output]]:
     flow_roots = load_flow_node(nodes, seen=seen)
+    print("flow_roots: ", flow_roots)
     if not isinstance(flow_roots, list):
         flow_roots = [flow_roots]
 
@@ -514,6 +517,9 @@ def load_flow_node(
     nodes: List[ChainNode], seen: Dict[UUID, "FlowPlaceholder"] = None
 ) -> FlowPlaceholder | List[FlowPlaceholder]:
     """Loads a node or group of node connected to a map"""
+    # TODO: this can be collapsed into load_flow_map. in both cases it runs
+    #       load_flow_sequence and returns from the first iteration.
+    # TODO: consider a better name "load_flow_targets"
     if len(nodes) == 0:
         raise ValueError("No root nodes found")
 
@@ -656,6 +662,10 @@ def load_flow_sequence(
                 pass
 
             elif len(sequential_nodes) == 0:
+                raise ValueError(
+                    f"No sequence detected mapping to {current.class_path}, add "
+                    f"a JSONPath or PassThrough node to connect directly to a Map/Gather node."
+                )
                 # TODO: add auto passthrough.
                 # no incoming links for now do nothing.
                 pass
@@ -784,6 +794,25 @@ def load_flow_sequence(
         return SequencePlaceholder(steps=sequential_nodes)
 
 
+def get_input_config(node: ChainNode, node_type: NodeTypePydantic) -> InputConfig:
+    """
+    Build an input config that describes what values will be passed in the input dict.
+    This uses the node, connections, and node_type to determine what this specific
+    node is configured to receive. The config will be used to unpack the input values
+    at runtime.
+    """
+    node_pydantic = NodePydantic.model_validate(node)
+    input_keys = node_pydantic.get_input_keys(node_type)
+    bind_keys = node_pydantic.get_bind_keys(node_type)
+    config_keys = node_pydantic.get_config_keys(node_type)
+
+    return InputConfig(
+        to_input=input_keys,
+        to_config=config_keys,
+        to_bind=bind_keys,
+    )
+
+
 def init_flow_node(
     root: FlowPlaceholder,
     context: IxContext,
@@ -795,10 +824,33 @@ def init_flow_node(
     Assumes a collection of ChainNodes and placeholders constructed by load_flow.
     """
     if isinstance(root, ChainNode):
+        # proxy_fields = []
+        # TODO: can just use template here? Since it works the same as a template?
+        #     : Reason for RunnableProxy is to fit within Runnable interface, but
+        #       if code is integrated into IxNode then that is moot.
+        #     : IxNode expects a runnable so proxy might still make sense
+        # TODO: Template may work here if this logic is pushed down into format_config()
         node_type = NodeTypePydantic.model_validate(root.node_type)
-        instance = load_node(root, context=context, variables=variables)
+        input_config = get_input_config(root, node_type)
+
+        # TODO: if to_config has all possible connections (from connectors) how to know to proxy or not?
+        has_input_config = bool(input_config.to_config)
+
+        # input fields require a lazy load since they must be passed to the initializer
+        if has_input_config:
+            print("RUNNABLE PROXY")
+            instance = RunnableProxy(
+                node=root,
+                input_config=input_config,
+                context=context,
+            )
+        else:
+            instance = load_node(root, context=context, variables=variables)
 
         if isinstance(instance, Runnable):
+            # TODO: core needs to exclude bind points from config
+            # TODO: config here is before any processing load_node would do. (secrets, etc)
+            # TODO: does it matter? if values are from input then shouldn't matter.
             instance = IxNode(
                 node_id=root.id,
                 child=instance,

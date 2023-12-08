@@ -32,6 +32,7 @@ import { NodeTypeSearchButton } from "chains/editor/NodeTypeSearchButton";
 import { AgentCardListButton } from "agents/AgentCardListButton";
 import { EditorAgentCard } from "chains/editor/sidebar/EditorAgentCard";
 import { ChainCardListButton } from "chains/ChainCardListButton";
+import { RunLogProvider } from "chains/RunLogProvider";
 
 const ChainEditorProvider = ({ graph, onError, children }) => {
   const chainState = useChainState(graph);
@@ -57,17 +58,19 @@ const ChainEditorProvider = ({ graph, onError, children }) => {
   }, [graph?.chain?.id, chainState.chain]);
 
   return (
-    <ChainState.Provider value={chainState}>
-      <NodeStateContext.Provider value={nodeState}>
-        <NodeEditorContext.Provider value={nodeEditor}>
-          <SelectedNodeContext.Provider value={selectedNode}>
-            <ChainEditorAPIContext.Provider value={api}>
-              {children}
-            </ChainEditorAPIContext.Provider>
-          </SelectedNodeContext.Provider>
-        </NodeEditorContext.Provider>
-      </NodeStateContext.Provider>
-    </ChainState.Provider>
+    <RunLogProvider chain_id={graph?.chain?.id}>
+      <ChainState.Provider value={chainState}>
+        <NodeStateContext.Provider value={nodeState}>
+          <NodeEditorContext.Provider value={nodeEditor}>
+            <SelectedNodeContext.Provider value={selectedNode}>
+              <ChainEditorAPIContext.Provider value={api}>
+                {children}
+              </ChainEditorAPIContext.Provider>
+            </SelectedNodeContext.Provider>
+          </NodeEditorContext.Provider>
+        </NodeStateContext.Provider>
+      </ChainState.Provider>
+    </RunLogProvider>
   );
 };
 

@@ -73,3 +73,7 @@ class GraphModel(BaseModel):
     nodes: List[NodePydantic]
     edges: List[EdgePydantic]
     types: List[NodeTypePydantic]
+
+
+class ChainStructure(BaseModel):
+    text: str

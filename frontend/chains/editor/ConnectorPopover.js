@@ -14,6 +14,29 @@ import {
 } from "@chakra-ui/react";
 import { SelectedNodeContext } from "chains/editor/contexts";
 import { useEditorColorMode } from "chains/editor/useColorMode";
+import SchemaDisplay from "components/SchemaDisplay";
+
+const SCHEMA = {
+  title: "AIMessage",
+  description: "A Message from an AI.",
+  type: "object",
+  properties: {
+    content: {
+      title: "Content",
+      anyOf: [
+        { type: "string" },
+        {
+          type: "array",
+          items: { anyOf: [{ type: "string" }, { type: "object" }] },
+        },
+      ],
+    },
+    additional_kwargs: { title: "Additional Kwargs", type: "object" },
+    type: { title: "Type", default: "ai", enum: ["ai"], type: "string" },
+    example: { title: "Example", default: false, type: "boolean" },
+  },
+  required: ["content"],
+};
 
 const DEFAULT_DESCRIPTION = (
   <>
@@ -22,6 +45,7 @@ const DEFAULT_DESCRIPTION = (
       Attach components to this connector by dragging them from the search
       results in the left panel.
     </Text>
+    <SchemaDisplay schema={SCHEMA} />
   </>
 );
 

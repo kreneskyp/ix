@@ -78,7 +78,10 @@ export const useGraphForReactFlow = (graph) => {
           target: edge.target_id,
           sourceHandle: edge.source_key,
           targetHandle: edge.target_key,
-          ...(edgeStyle[edge.relation] || defaultEdgeStyle),
+          // HAX: using === "in" works for some flow props but not all. This covers most cases
+          // but will need to update when implicit maps and auto-masking is supported.
+          ...(edgeStyle[edge.target_key === "in" ? "LINK" : edge.relation] ||
+            defaultEdgeStyle),
           data: {
             id: edge.id,
           },

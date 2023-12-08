@@ -45,7 +45,6 @@ class TestSaveArtifact:
             description="this is a test artifact",
             storage_backend="filesystem",
             storage_id="test_artifact.txt",
-            context=aix_context,
         )
 
         inputs = ArtifactMeta(
@@ -90,7 +89,6 @@ class TestSaveArtifact:
             description="this is a test artifact",
             storage_backend="filesystem",
             storage_id="test_artifact.txt",
-            context=aix_context,
         )
 
         inputs = ArtifactMeta(

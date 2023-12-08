@@ -10,7 +10,7 @@
     "connectors": [
         {
             "as_type": null,
-            "collection": null,
+            "collection": "flow",
             "fields": null,
             "from_field": null,
             "init_modes": null,
@@ -32,7 +32,7 @@
                 "tool"
             ],
             "template": false,
-            "type": "target"
+            "type": "source"
         }
     ],
     "description": "Executes a sub-workflow for each input in a list of inputs",

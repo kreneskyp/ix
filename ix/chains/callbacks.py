@@ -311,11 +311,11 @@ class IxHandler(AsyncCallbackHandler):
                 "details": traceback_string,
             },
         )
-        logger.error(
-            f"@@@@ EXECUTE ERROR logged as id={failure_msg.id} message_id={parent_id} error_type={error_type}"
-        )
-        logger.error(f"@@@@ EXECUTE ERROR {failure_msg.content['text']}")
-        logger.error(exception_to_string(error))
+        # logger.error(
+        #    f"@@@@ EXECUTE ERROR logged as id={failure_msg.id} message_id={parent_id} error_type={error_type}"
+        # )
+        # logger.error(f"@@@@ EXECUTE ERROR {failure_msg.content['text']}")
+        # logger.error(exception_to_string(error))
         return failure_msg
 
     @staticmethod

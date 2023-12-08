@@ -10,9 +10,8 @@ from langchain.callbacks.manager import (
 
 from langchain.chains import SequentialChain
 from langchain.chains.base import Chain
-from langchain.schema.runnable import Runnable, RunnableSequence
+from langchain.schema.runnable import Runnable
 
-from ix.chains.components.lcel import init_sequence
 from ix.chains.models import Chain as ChainModel
 from ix.conftest import ix_context
 
@@ -56,6 +55,11 @@ class MapSubchain(Chain):
             input_variables.append(output_key)
 
         # create internal chain
+        print("chains type: ", type(chains))
+        print(f"chains: [{chains}]")
+
+        # Add LCEL for memory
+
         chain = SequentialChain(
             memory=memory, chains=chains, input_variables=input_variables
         )

@@ -1,11 +1,14 @@
 import asyncio
 import logging
+from pprint import pformat
 from uuid import UUID
 
+from django.contrib.auth.models import AbstractUser
 from django.db.models import Q
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 
 from ix.agents.models import Agent
+from ix.api.auth import get_request_user
 from ix.api.chains.endpoints import (
     DeletedItem,
     create_chain_instance,
@@ -19,7 +22,9 @@ from ix.api.editor.types import (
     UpdatedRoot,
     AddNode,
     UpdateRoot,
+    ChainStructure,
 )
+from ix.chains.loaders.core import aload_chain_flow
 from ix.chains.models import Chain, ChainNode, NodeType, ChainEdge
 
 from ix.api.chains.types import (
@@ -197,15 +202,42 @@ async def get_chain_graph(chain_id: UUID):
     )
 
 
-@router.get(
-    "/chains/{chain_id}/chat", response_model=ChatPydantic, tags=["Chain Editor"]
-)
-async def get_chain_chat(chain_id: UUID):
-    """Return test chat instance for the chain"""
+async def _get_test_chat(chain_id: UUID, user: AbstractUser) -> Chat:
     try:
-        chat = await Chat.objects.aget(lead__chain_id=chain_id, lead__is_test=True)
+        chat = await Chat.filtered_owners(user).aget(
+            lead__chain_id=chain_id, lead__is_test=True
+        )
     except Chat.DoesNotExist:
         chain = await Chain.objects.aget(id=chain_id)
         chat = await create_chain_chat(chain)
+    return chat
 
+
+@router.get(
+    "/chains/{chain_id}/chat", response_model=ChatPydantic, tags=["Chain Editor"]
+)
+async def get_chain_chat(
+    chain_id: UUID, user: AbstractUser = Depends(get_request_user)
+):
+    """Return test chat instance for the chain"""
+    chat = await _get_test_chat(chain_id, user)
     return ChatPydantic.from_orm(chat)
+
+
+@router.get(
+    "/chains/{chain_id}/structure", response_model=ChainStructure, tags=["Chain Editor"]
+)
+async def get_chain_structure(
+    chain_id: UUID, user: AbstractUser = Depends(get_request_user)
+):
+    """
+    endpoint that returns rendered flow.  Debugging tool to verify a chain is parsed
+    from graph into LangChain as execpted.
+
+    Uses load_chain_flow because it shows structure prior to secret loading.
+    # TODO: implement a way to mock secret loading.
+    """
+    chain = await Chain.filtered_owners(user).aget(id=chain_id)
+    loaded_chain_flow = await aload_chain_flow(chain=chain)
+    pretty_text = pformat(loaded_chain_flow)
+    return ChainStructure(text=pretty_text)

@@ -7,6 +7,7 @@ from ix.chains.llm_chain import LLMChain
 from ix.chains.management.commands.create_coder_v2 import CODER_V2_CHAIN
 from ix.chains.models import Chain
 from ix.chains.routing import MapSubchain
+from ix.conftest import aload_fixture
 
 
 @pytest.mark.django_db
@@ -27,3 +28,24 @@ class TestCreateCoder:
         mapsubchain = chain.chains[2]
         assert isinstance(mapsubchain.chains[0], LLMChain)
         assert isinstance(mapsubchain.chains[1], SaveArtifact)
+
+    async def test_create_coder2(self, anode_types, aix_context, aix_handler):
+        await aload_fixture("agent/code2")
+        chain = await Chain.objects.aget(agent__alias="code2")
+
+        # init flow
+        runnable = await chain.aload_chain(context=aix_context)
+
+        from pprint import pprint
+
+        pprint(runnable)
+
+        # 0/0
+        result = await runnable.ainvoke(
+            input={"user_input": "write a python fizzbuzz"},
+            config={"callbacks": [aix_handler]},
+        )
+        print()
+        pprint(result)
+
+        0 / 0

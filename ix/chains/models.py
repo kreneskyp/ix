@@ -232,6 +232,9 @@ class ChainNode(models.Model):
     # node is root of graph
     root = models.BooleanField(default=False)
 
+    # Fields that are expected to be passed in as inputs.
+    # proxy_fields = models.JSONField(null=True, default=dict)
+
     # graph position
     position = models.JSONField(default=default_position)
 
