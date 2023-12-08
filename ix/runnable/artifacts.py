@@ -160,8 +160,8 @@ class SaveArtifact(Runnable[ArtifactMeta, ArtifactPydantic], BaseModel):
         # send message to log
         await TaskLogMessage.objects.acreate(
             role="ASSISTANT",
-            task=self.ix_handler.task,
-            agent=self.ix_handler.agent,
+            task=ix_handler.task,
+            agent=ix_handler.agent,
             parent=ix_handler.parent_think_msg,
             content={
                 "type": "ARTIFACT",
