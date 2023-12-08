@@ -39,8 +39,7 @@ async def start_agent_loop(
 
     This method expects `task_id` to be a string to be compatible with celery Singleton.
     """
-    task = await Task.objects.aget(pk=task_id)
-    agent, chain = await asyncio.gather(
+    agent, chain, task = await asyncio.gather(
         Agent.objects.aget(task__id=task_id),
         Chain.objects.aget(pk=chain_id),
         Task.objects.aget(pk=task_id),
@@ -54,7 +53,7 @@ async def start_agent_loop(
         user_id=user_id,
     )
 
-    process = AgentProcess(task, agent, chain)
+    process = AgentProcess(chat_subtask, agent, chain)
     return await process.start(inputs)
 
 
