@@ -114,8 +114,9 @@ class IxContext(BaseModel):
             kwargs["user_id"] = str(task.user_id)
 
         if "chat_id" not in kwargs:
+            root_id = task.root_id if task.root_id else task.id
             try:
-                chat = Chat.objects.get(Q(task=task) | Q(task_id=task.parent_id))
+                chat = Chat.objects.get(task_id=root_id)
                 kwargs["chat_id"] = str(chat.id)
             except Chat.DoesNotExist:
                 pass
