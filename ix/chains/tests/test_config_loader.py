@@ -1025,6 +1025,10 @@ class TestLoadFlow:
         assert flow == fixture["branch"]
 
     async def test_branch_in_sequence(self, lcel_branch_in_sequence, aix_context):
+        """Test a sequence with a nested branch.
+
+        This test is flaky, unknown cause.
+        """
         fixture = lcel_branch_in_sequence
         chain = fixture["chain"]
 
