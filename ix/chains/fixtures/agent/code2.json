@@ -1,0 +1,702 @@
+[
+  {
+    "model": "agents.agent",
+    "pk": "5003e280-cbd7-4029-a152-1cee12411d27",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Coder (flow)",
+      "alias": "code2",
+      "purpose": "Testing function schema by generating a plan to code a solution to the user's request.",
+      "created_at": "2023-11-23T21:43:56.571Z",
+      "model": "",
+      "config": {},
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "is_test": false
+    }
+  },
+  {
+    "model": "chains.chain",
+    "pk": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Coder (flow)",
+      "description": "Testing function schema by generating a plan to code a solution to the user's request.",
+      "created_at": "2023-11-23T21:43:56.547Z",
+      "is_agent": true
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "221cac72-2b64-4185-9b92-e7a07d838835",
+    "fields": {
+      "class_path": "ix.runnable.artifacts.LoadArtifacts",
+      "node_type": [
+        "ix.runnable.artifacts.LoadArtifacts"
+      ],
+      "config": {},
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1440.0,
+        "y": 720.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "24d0a73b-b072-410f-bb3d-68afff186b9a",
+    "fields": {
+      "class_path": "ix.runnable.schema.Schema",
+      "node_type": [
+        "ix.runnable.schema.Schema"
+      ],
+      "config": {
+        "parameters": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"files\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"filename\": {\n                        \"type\": \"string\"\n                    },\n                    \"description\": {\n                        \"type\": \"string\"\n                    }\n                },\n                \"required\": [\n                    \"filename\",\n                    \"description\"\n                ]\n            }\n        }\n    }\n}"
+      },
+      "name": "plan_coding",
+      "description": "Plan a solution to a user's coding request. Returns a list of files with a description of the requirements.",
+      "root": false,
+      "position": {
+        "x": 240.0,
+        "y": 540.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "2bc5eefc-fbaf-4333-9805-fc7c2b6f3c2a",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONPath",
+      "node_type": [
+        "ix.chains.components.json.JSONPath"
+      ],
+      "config": {
+        "path": "$[*].id",
+        "return_list": true
+      },
+      "name": "Select artifact_ids",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1180.0,
+        "y": 730.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "361af2fa-7b07-49ed-9d5c-0a2ba17a52ed",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONPath",
+      "node_type": [
+        "ix.chains.components.json.JSONPath"
+      ],
+      "config": {
+        "path": "$.arguments",
+        "return_list": false
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 2810.0,
+        "y": 670.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "3e63e3e0-2e6b-4554-9b8f-e58e22709725",
+    "fields": {
+      "class_path": "ix.runnable.llm.IXChatOpenAI",
+      "node_type": [
+        "ix.runnable.llm.IXChatOpenAI"
+      ],
+      "config": {
+        "tags": [],
+        "cache": false,
+        "metadata": {},
+        "streaming": true,
+        "max_tokens": 500,
+        "model_name": "gpt-4-0613",
+        "max_retries": 6,
+        "temperature": 0,
+        "openai_proxy": "",
+        "function_call": "write_python",
+        "openai_api_base": "",
+        "request_timeout": 60,
+        "openai_organization": ""
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 2260.0,
+        "y": 670.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "468f7468-ccaf-44e9-87ef-adc942456231",
+    "fields": {
+      "class_path": "ix.runnable.llm.IXChatOpenAI",
+      "node_type": [
+        "ix.runnable.llm.IXChatOpenAI"
+      ],
+      "config": {
+        "tags": [],
+        "cache": false,
+        "metadata": {},
+        "streaming": true,
+        "max_tokens": 500,
+        "model_name": "gpt-4-0613",
+        "max_retries": 6,
+        "temperature": 0,
+        "openai_proxy": "",
+        "openai_api_base": "",
+        "request_timeout": 60,
+        "openai_organization": ""
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 610.0,
+        "y": 470.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "593a8fe1-83ae-4878-94be-9f050c096e4d",
+    "fields": {
+      "class_path": "ix.runnable.schema.Schema",
+      "node_type": [
+        "ix.runnable.schema.Schema"
+      ],
+      "config": {
+        "parameters": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"storage_id\": {\n            \"type\": \"string\"\n        },\n        \"key\": {\n            \"type\": \"string\"\n        },\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"description\": {\n            \"type\": \"string\"\n        },\n        \"data\": {\n            \"type\": \"string\"\n        }\n    },\n    \"required\": [\n        \"name\",\n        \"key\",\n        \"storage_id\",\n        \"description\",\n        \"data\"\n    ]\n}"
+      },
+      "name": "write_python",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1180.0,
+        "y": 830.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "68aa4a2b-fc2a-491b-a556-b8624dba932b",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONPath",
+      "node_type": [
+        "ix.chains.components.json.JSONPath"
+      ],
+      "config": {
+        "path": "$.arguments.files",
+        "return_list": false
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 670.0,
+        "y": 720.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "72deaf18-1098-4c3f-864d-d3f7ec6e9748",
+    "fields": {
+      "class_path": "ix.chains.components.lcel.init_parallel",
+      "node_type": [
+        "ix.chains.components.lcel.init_parallel"
+      ],
+      "config": {
+        "steps": [
+          "artifacts",
+          "description"
+        ],
+        "steps_hash": [
+          "68153b65-e8fe-4a7f-9029-f68c4fa36c42",
+          "8dcfb01d-7f04-494a-a280-55e75c257bab"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1700.0,
+        "y": 550.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "82ad09f7-a50e-4715-8a54-16b7875f6642",
+    "fields": {
+      "class_path": "__ROOT__",
+      "node_type": [
+        "__ROOT__"
+      ],
+      "config": {
+        "outputs": [
+          "user_input",
+          "artifact_ids"
+        ],
+        "outputs_hash": [
+          "user_input",
+          "artifact_ids"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": true,
+      "position": {
+        "x": -140.0,
+        "y": 480.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "88cf0f93-aed4-415d-82a6-0a8945588e6b",
+    "fields": {
+      "class_path": "ix.runnable.output_parser.ParseFunctionCall",
+      "node_type": [
+        "ix.runnable.output_parser.ParseFunctionCall"
+      ],
+      "config": {},
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 420.0,
+        "y": 720.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "8fe87149-e5ca-4004-b9b6-93cfda0e6a03",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONPath",
+      "node_type": [
+        "ix.chains.components.json.JSONPath"
+      ],
+      "config": {
+        "path": "$.description",
+        "return_list": false
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1310.0,
+        "y": 490.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "b23e6772-8a5e-421b-9bf1-f7766ce6ec03",
+    "fields": {
+      "class_path": "ix.runnable.artifacts.SaveArtifact",
+      "node_type": [
+        "ix.runnable.artifacts.SaveArtifact"
+      ],
+      "config": {
+        "key": "",
+        "name": "",
+        "type": "file",
+        "storage_id": "",
+        "description": "",
+        "storage_backend": "filesystem"
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 3090.0,
+        "y": 670.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "d3e882fe-ca28-4615-929a-ef52c9232451",
+    "fields": {
+      "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+      "node_type": [
+        "langchain.prompts.chat.ChatPromptTemplate"
+      ],
+      "config": {
+        "messages": [
+          {
+            "role": "system",
+            "template": "Generate a response to user's input using the function.\n",
+            "input_variables": []
+          },
+          {
+            "role": "user",
+            "template": "{user_input}\n\n",
+            "input_variables": [
+              "user_input"
+            ],
+            "partial_variables": {}
+          }
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 230.0,
+        "y": 400.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "ea8cc9b6-c070-406f-90e2-3467ed5cb3ea",
+    "fields": {
+      "class_path": "ix.runnable.output_parser.ParseFunctionCall",
+      "node_type": [
+        "ix.runnable.output_parser.ParseFunctionCall"
+      ],
+      "config": {},
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 2530.0,
+        "y": 670.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "f116c21c-b573-47ba-93d9-c9cc6e1ff65f",
+    "fields": {
+      "class_path": "ix.chains.components.lcel.init_each",
+      "node_type": [
+        "ix.chains.components.lcel.init_each"
+      ],
+      "config": {},
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 920.0,
+        "y": 550.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "f48a298d-86b8-4db7-979b-5ca4ca08c086",
+    "fields": {
+      "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+      "node_type": [
+        "langchain.prompts.chat.ChatPromptTemplate"
+      ],
+      "config": {
+        "messages": [
+          {
+            "role": "system",
+            "template": "You are an expert python coder. Write python for the user's request.\n\nINSTRUCTIONS:\n- Set storage_id to filename\n- write content to data key\n\nRelated Files:\n{artifacts}\n\n\n\n",
+            "input_variables": [
+              "artifacts"
+            ]
+          },
+          {
+            "role": "user",
+            "template": "Create this file:\n{description}\n\n",
+            "input_variables": [
+              "description"
+            ],
+            "partial_variables": {}
+          }
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 1990.0,
+        "y": 550.0
+      },
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "0fb78b57-8d89-48cb-9af7-a908921e417c",
+    "fields": {
+      "source": "82ad09f7-a50e-4715-8a54-16b7875f6642",
+      "target": "24d0a73b-b072-410f-bb3d-68afff186b9a",
+      "source_key": "user_input",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "265dba03-a0f3-47b0-a4df-21b3710a728e",
+    "fields": {
+      "source": "f116c21c-b573-47ba-93d9-c9cc6e1ff65f",
+      "target": "2bc5eefc-fbaf-4333-9805-fc7c2b6f3c2a",
+      "source_key": "workflow",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "273e8d60-0a57-4116-9d23-63b7d3c8ba55",
+    "fields": {
+      "source": "f116c21c-b573-47ba-93d9-c9cc6e1ff65f",
+      "target": "593a8fe1-83ae-4878-94be-9f050c096e4d",
+      "source_key": "workflow",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "2f3db7a3-fea6-4f35-97ef-4c82855e6abe",
+    "fields": {
+      "source": "3e63e3e0-2e6b-4554-9b8f-e58e22709725",
+      "target": "ea8cc9b6-c070-406f-90e2-3467ed5cb3ea",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "30c9e7b9-be94-4617-bda1-f2bd2e8e7995",
+    "fields": {
+      "source": "f116c21c-b573-47ba-93d9-c9cc6e1ff65f",
+      "target": "8fe87149-e5ca-4004-b9b6-93cfda0e6a03",
+      "source_key": "workflow",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "344f6b1e-af71-40cd-abb8-debd730861c6",
+    "fields": {
+      "source": "f48a298d-86b8-4db7-979b-5ca4ca08c086",
+      "target": "3e63e3e0-2e6b-4554-9b8f-e58e22709725",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "3662a06a-386f-4b12-bd6c-aba34ca3f1dc",
+    "fields": {
+      "source": "68aa4a2b-fc2a-491b-a556-b8624dba932b",
+      "target": "f116c21c-b573-47ba-93d9-c9cc6e1ff65f",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "37e1633b-3843-4073-9fd0-801d197b21d8",
+    "fields": {
+      "source": "221cac72-2b64-4185-9b92-e7a07d838835",
+      "target": "72deaf18-1098-4c3f-864d-d3f7ec6e9748",
+      "source_key": "out",
+      "target_key": "68153b65-e8fe-4a7f-9029-f68c4fa36c42",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "780fd806-4158-4f58-8bc4-a6a79fd14563",
+    "fields": {
+      "source": "ea8cc9b6-c070-406f-90e2-3467ed5cb3ea",
+      "target": "361af2fa-7b07-49ed-9d5c-0a2ba17a52ed",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "85fde211-b521-4059-9513-ee8741bb8bab",
+    "fields": {
+      "source": "361af2fa-7b07-49ed-9d5c-0a2ba17a52ed",
+      "target": "b23e6772-8a5e-421b-9bf1-f7766ce6ec03",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "98ed156e-16f2-4cf3-a854-b75f5e9639e4",
+    "fields": {
+      "source": "24d0a73b-b072-410f-bb3d-68afff186b9a",
+      "target": "468f7468-ccaf-44e9-87ef-adc942456231",
+      "source_key": "out",
+      "target_key": "functions",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "9afdddf2-e77d-4000-951e-c8c9c05246a1",
+    "fields": {
+      "source": "d3e882fe-ca28-4615-929a-ef52c9232451",
+      "target": "468f7468-ccaf-44e9-87ef-adc942456231",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "af7ac03c-467e-46ac-922d-b743bc681a9b",
+    "fields": {
+      "source": "8fe87149-e5ca-4004-b9b6-93cfda0e6a03",
+      "target": "72deaf18-1098-4c3f-864d-d3f7ec6e9748",
+      "source_key": "out",
+      "target_key": "8dcfb01d-7f04-494a-a280-55e75c257bab",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "c0d369ec-1826-4a7f-8bf9-2cb69a74aea6",
+    "fields": {
+      "source": "593a8fe1-83ae-4878-94be-9f050c096e4d",
+      "target": "3e63e3e0-2e6b-4554-9b8f-e58e22709725",
+      "source_key": "out",
+      "target_key": "functions",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "d18928a4-1a17-4a5a-8157-6c725412180c",
+    "fields": {
+      "source": "2bc5eefc-fbaf-4333-9805-fc7c2b6f3c2a",
+      "target": "221cac72-2b64-4185-9b92-e7a07d838835",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "ed741a73-c931-4ffc-8df2-b7348ed23e6f",
+    "fields": {
+      "source": "468f7468-ccaf-44e9-87ef-adc942456231",
+      "target": "88cf0f93-aed4-415d-82a6-0a8945588e6b",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "f3259427-779d-4cdb-b3df-9ccbaca0e289",
+    "fields": {
+      "source": "88cf0f93-aed4-415d-82a6-0a8945588e6b",
+      "target": "68aa4a2b-fc2a-491b-a556-b8624dba932b",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "f81f447e-2bab-4ecc-8bac-6e9e9a8c55fc",
+    "fields": {
+      "source": "72deaf18-1098-4c3f-864d-d3f7ec6e9748",
+      "target": "f48a298d-86b8-4db7-979b-5ca4ca08c086",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "fe037437-1e52-421e-b133-0edd291a3307",
+    "fields": {
+      "source": "82ad09f7-a50e-4715-8a54-16b7875f6642",
+      "target": "d3e882fe-ca28-4615-929a-ef52c9232451",
+      "source_key": "user_input",
+      "target_key": "in",
+      "chain": "c0bb5ada-2caf-4760-a8e3-649a1d97b022",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  }
+]
