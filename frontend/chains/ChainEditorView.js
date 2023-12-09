@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import {
   HStack,
   Spinner,
-  useDisclosure,
   useToast,
   VStack,
 } from "@chakra-ui/react";
@@ -24,6 +23,7 @@ import {
   NodeStateContext,
   NodeEditorContext,
   ChainState,
+  ChainTypes,
 } from "chains/editor/contexts";
 import { EditorRightSidebar } from "chains/editor/EditorRightSidebar";
 import { useNodeState } from "chains/hooks/useNodeState";
@@ -58,19 +58,21 @@ const ChainEditorProvider = ({ graph, onError, children }) => {
   }, [graph?.chain?.id, chainState.chain]);
 
   return (
-    <RunLogProvider chain_id={graph?.chain?.id}>
+    <ChainTypes.Provider value={graph?.types}>
       <ChainState.Provider value={chainState}>
         <NodeStateContext.Provider value={nodeState}>
           <NodeEditorContext.Provider value={nodeEditor}>
             <SelectedNodeContext.Provider value={selectedNode}>
               <ChainEditorAPIContext.Provider value={api}>
-                {children}
+                <RunLogProvider chain_id={graph?.chain?.id}>
+                  {children}
+                </RunLogProvider>
               </ChainEditorAPIContext.Provider>
             </SelectedNodeContext.Provider>
           </NodeEditorContext.Provider>
         </NodeStateContext.Provider>
       </ChainState.Provider>
-    </RunLogProvider>
+    </ChainTypes.Provider>
   );
 };
 
