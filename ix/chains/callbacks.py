@@ -261,7 +261,6 @@ class IxHandler(AsyncCallbackHandler):
         **kwargs: Any,
     ) -> None:
         """Run when chain errors."""
-        await self.send_error_msg(error)
 
     async def on_tool_start(
         self, serialized: Dict[str, Any], input_str: str, **kwargs: Any
