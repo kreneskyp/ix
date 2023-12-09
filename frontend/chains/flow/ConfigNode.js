@@ -14,7 +14,6 @@ import {
   SelectedNodeContext,
 } from "chains/editor/contexts";
 import { StyledIcon } from "components/StyledIcon";
-import { RunIcon } from "chains/editor/run_log/RunIcon";
 
 const CONNECTOR_CONFIG = {
   agent: {
@@ -237,11 +236,7 @@ export const ConfigNode = ({ id, data, selected }) => {
             <DeleteIcon node={node} />
           </Flex>
         </Heading>
-        {run_event && (
-          <Box position={"absolute"} top={5} right={0}>
-            <RunIcon execution={run_event} />
-          </Box>
-        )}
+        {run_event && <Box position={"absolute"} top={5} right={0}></Box>}
         <Box minHeight={25} cursor="default">
           {content}
         </Box>
