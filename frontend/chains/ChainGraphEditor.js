@@ -239,11 +239,10 @@ const ChainGraphEditor = ({ graph }) => {
       const is_out = params.sourceHandle === "out";
       const is_in = params.targetHandle === "in";
       const from_branch = source.data.type.type === "branch";
-      const relation =
+      const displayRelation =
         from_root || is_out || is_in || from_branch ? "LINK" : "PROP";
-
       setEdges((els) =>
-        addEdge({ ...params, ...style[relation], data: { id } }, els)
+        addEdge({ ...params, ...style[displayRelation], data: { id } }, els)
       );
 
       // save via API
@@ -256,6 +255,7 @@ const ChainGraphEditor = ({ graph }) => {
         root_node_ids.push(params.target);
         api.setRoots(chain.id, { node_ids: root_node_ids });
       } else {
+        const relation = from_root || is_out || from_branch ? "LINK" : "PROP";
         const data = {
           id,
           source_id: params.source,
