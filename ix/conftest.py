@@ -389,7 +389,7 @@ def chat(node_types, task, load_chain, mock_openai_key, ix_context, clean_redis)
 
 
 @pytest_asyncio.fixture
-async def achat(anode_types, atask, aix_agent, aix_context):
+async def achat(anode_types, atask, aix_agent, aix_context, mock_openai_key):
     chat = await sync_to_async(fake_chat)(task=atask)
     fake_agent_1 = await sync_to_async(fake_agent)(
         name="agent 1", alias="agent_1", purpose="to test selections"
