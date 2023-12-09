@@ -116,6 +116,9 @@ class SaveArtifact(Runnable[ArtifactMeta, ArtifactPydantic], BaseModel):
     ) -> ArtifactPydantic:
         ix_handler = IxHandler.from_config(config)
 
+        if isinstance(input, dict):
+            input = ArtifactMeta(**input)
+
         # merge settings with input, input takes precedence
         artifact_kwargs = self.model_dump(
             include={
