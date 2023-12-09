@@ -335,10 +335,19 @@ class IxHandler(AsyncCallbackHandler):
     @staticmethod
     def from_config(config: RunnableConfig) -> "IxHandler":
         """Helper method for finding the IxHandler in a config."""
+        callbacks = config.get("callbacks", None)
+        if callbacks is None:
+            raise ValueError(
+                "Expected a callback manager, was IxHandler configured on invoke?"
+            )
+
+        if isinstance(callbacks, list):
+            handlers = callbacks
+        else:
+            handlers = callbacks.handlers
+
         ix_handlers = [
-            handler
-            for handler in config.get("callbacks", [])
-            if isinstance(handler, IxHandler)
+            handler for handler in handlers if isinstance(handler, IxHandler)
         ]
         if len(ix_handlers) == 0:
             raise ValueError("Expected at least one IxHandler in config")
