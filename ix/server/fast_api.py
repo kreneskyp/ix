@@ -56,3 +56,30 @@ def custom_openapi():
 
 
 app.openapi = custom_openapi
+
+
+@app.exception_handler(Exception)
+async def exception_handler(request: Request, exc: Exception):
+    error_message = str(exc)
+    error_message_lines = error_message.splitlines()
+
+    # Check if settings.DEBUG is True before including the traceback
+    if settings.DEBUG:
+        traceback_info = traceback.format_exc()
+        traceback_lines = traceback_info.splitlines()
+    else:
+        traceback_lines = []
+
+    # Create a JSON object with separate fields for error message and traceback
+    error_response = {
+        "error_message": error_message_lines,
+        "traceback": traceback_lines,
+    }
+
+    # Return a JSON response with the error response object and a 500 status code
+    response = JSONResponse(status_code=500, content=error_response)
+
+    # Set the content type
+    response.headers["Content-Type"] = "application/json; charset=utf-8"
+
+    return response
