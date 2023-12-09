@@ -321,7 +321,9 @@ async def clear_messages(chat_id: str, user: AbstractUser = Depends(get_request_
     except Agent.DoesNotExist:
         raise HTTPException(status_code=404, detail="Agent does not exist.")
 
-    await TaskLogMessage.objects.filter(task__root=chat.task_id).adelete()
+    await TaskLogMessage.objects.filter(
+        Q(task__root_id=chat.task_id) | Q(task_id=chat.task_id)
+    ).adelete()
     return DeletedItem(id=chat_id)
 
 
