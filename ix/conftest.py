@@ -45,6 +45,23 @@ logger = logging.getLogger(__name__)
 USER_INPUT = {"user_input": "hello agent 1"}
 
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--openai-api",
+        action="store_true",
+        default=False,
+        help="Run tests marked with '@pytest.mark.openai_api'.",
+    )
+
+
+def pytest_collection_modifyitems(config, items):
+    run_openai_api_tests = config.getoption("--openai-api")
+    for item in items:
+        if "openai_api" in item.keywords:
+            if not run_openai_api_tests:
+                item.add_marker(pytest.mark.skip(reason="Skipping OpenAI API tests."))
+
+
 @pytest_asyncio.fixture
 async def arequest_user(mocker):
     user = await afake_user()
