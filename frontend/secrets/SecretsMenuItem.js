@@ -12,6 +12,7 @@ import {
 } from "site/LeftMenuPopover";
 import { SecretsTable } from "secrets/SecretsTable";
 import { SecretsFormModalButton } from "secrets/SecretsFormModalButton";
+import { MenuItem } from "site/MenuItem";
 
 export const SecretsMenuItem = ({ editor }) => {
   const { page, isLoading, load } = usePaginatedAPI("/api/secrets/", {
@@ -23,7 +24,9 @@ export const SecretsMenuItem = ({ editor }) => {
   return (
     <LeftMenuPopover onOpen={load}>
       <LeftSidebarPopupIcon>
-        <FontAwesomeIcon icon={faKey} />
+        <MenuItem title="Secrets">
+          <FontAwesomeIcon icon={faKey} />
+        </MenuItem>
       </LeftSidebarPopupIcon>
       <LeftSidebarPopupHeader>
         <Flex width={"100%"} justifyContent={"space-between"}>

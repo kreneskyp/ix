@@ -1,12 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  HStack,
-  Spinner,
-  useDisclosure,
-  useToast,
-  VStack,
-} from "@chakra-ui/react";
+import { HStack, Spinner, useToast, VStack } from "@chakra-ui/react";
 import { ReactFlowProvider, useReactFlow } from "reactflow";
 
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";

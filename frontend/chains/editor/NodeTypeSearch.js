@@ -222,7 +222,7 @@ export const NodeTypeSearch = ({ initialFocusRef }) => {
       minWidth={170}
       overflowY={"hidden"}
       overflowX={"hidden"}
-      maxHeight={"calc(100vh - 170px)"}
+      maxHeight={"calc(100vh - 250px)"}
     >
       <Box px={3} pb={1}>
         <ComponentTypeMultiSelect

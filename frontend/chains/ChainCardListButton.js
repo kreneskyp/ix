@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, IconButton, SimpleGrid } from "@chakra-ui/react";
+import { Box, SimpleGrid } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChain } from "@fortawesome/free-solid-svg-icons";
 
@@ -10,6 +10,7 @@ import {
   useSideBarColorMode,
 } from "chains/editor/useColorMode";
 import ChainCard from "chains/ChainCard";
+import { MenuItem } from "site/MenuItem";
 
 const ChainCardList = ({ chains, Card }) => {
   const { scrollbar } = useEditorColorMode();
@@ -40,11 +41,9 @@ export const ChainCardListButton = ({ Card }) => {
 
   return (
     <ModalTrigger onOpen={load} title={"Chains"}>
-      <IconButton
-        icon={<FontAwesomeIcon icon={faChain} />}
-        title={"Chains"}
-        {...style.button}
-      />
+      <MenuItem title="Chains">
+        <FontAwesomeIcon icon={faChain} />
+      </MenuItem>
       <ModalTrigger.Content title="Manage Chains">
         <ChainCardList chains={page?.objects} Card={ChainCard} />
       </ModalTrigger.Content>
