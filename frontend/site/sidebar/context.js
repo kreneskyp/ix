@@ -3,8 +3,8 @@ import React, { createContext, useState, useContext } from "react";
 const SidebarContext = createContext(null);
 
 export const DEFAULT_SIZES_LEFT = [
-  ["icons", "75px"],
-  ["text", "150px"],
+  ["icons", "32px"],
+  ["text", "175px"],
 ];
 
 export const DEFAULT_SIZES_RIGHT = [
