@@ -85,6 +85,10 @@ export const useEditorColorMode = () => {
       store: retrieval,
       default: isLight ? "gray.400" : "gray.700",
     },
+    indicator: {
+      success: isLight ? "green.600" : "green.400",
+      error: isLight ? "red.500" : "red.400",
+    },
     scrollbar: isLight
       ? {
           "&::-webkit-scrollbar": {
@@ -115,6 +119,13 @@ export const useEditorColorMode = () => {
           "&::-webkit-scrollbar-thumb:hover": {
             background: theme.colors.gray[500],
           },
+        },
+    badge: isLight
+      ? {
+          color: "white",
+        }
+      : {
+          color: "gray.900",
         },
     input: isLight
       ? {

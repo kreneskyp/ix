@@ -1,15 +1,11 @@
 import React from "react";
 import { Box, Divider, HStack, IconButton, Stack } from "@chakra-ui/react";
-import {
-  faCog,
-  faSignOutAlt,
-  faServer,
-  faMessage,
-} from "@fortawesome/free-solid-svg-icons";
+import { faServer, faMessage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { SecretsMenuItem } from "secrets/SecretsMenuItem";
+import { MenuItem } from "site/MenuItem";
 
 function Navigation() {
   const { colorMode } = useColorMode();
@@ -28,11 +24,9 @@ function Navigation() {
     <Box as="nav" color={colorMode === "light" ? "gray.900" : "gray.200"}>
       <Stack spacing={3}>
         <Link ml={3} to="/chats">
-          <IconButton
-            icon={<FontAwesomeIcon icon={faMessage} />}
-            title={"Chat history"}
-            {...style}
-          />
+          <MenuItem title="Chat History">
+            <FontAwesomeIcon icon={faMessage} />
+          </MenuItem>
         </Link>
         {false && (
           <HStack align="center">
@@ -45,24 +39,12 @@ function Navigation() {
             </Link>
           </HStack>
         )}
-        <SecretsMenuItem />
+        <MenuItem>
+          <SecretsMenuItem />
+        </MenuItem>
         <Divider
           borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
         />
-        <Link ml={3} to="#">
-          <IconButton
-            icon={<FontAwesomeIcon icon={faCog} />}
-            title={"Settings"}
-            {...style}
-          />
-        </Link>
-        <Link ml={3} to="#">
-          <IconButton
-            icon={<FontAwesomeIcon icon={faSignOutAlt} />}
-            title={"Sign out"}
-            {...style}
-          />
-        </Link>
       </Stack>
     </Box>
   );

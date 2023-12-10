@@ -10,6 +10,7 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import { MenuItem } from "site/MenuItem";
 
 export const ModalClose = React.createContext(null);
 
@@ -64,6 +65,7 @@ export const ModalTrigger = ({
 
   const button = React.Children.toArray(children).find(
     (child) =>
+      child.type === MenuItem ||
       child.type === ModalTriggerButton ||
       child.type === IconButton ||
       child.type === Button

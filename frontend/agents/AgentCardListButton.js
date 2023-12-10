@@ -1,14 +1,12 @@
 import React from "react";
-import { Box, IconButton, SimpleGrid } from "@chakra-ui/react";
+import { Box, SimpleGrid } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAddressBook } from "@fortawesome/free-solid-svg-icons";
 
 import { ModalTrigger } from "components/Modal";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
-import {
-  useEditorColorMode,
-  useSideBarColorMode,
-} from "chains/editor/useColorMode";
+import { useEditorColorMode } from "chains/editor/useColorMode";
+import { MenuItem } from "site/MenuItem";
 
 const AgentCardList = ({ agents, Card }) => {
   const { scrollbar } = useEditorColorMode();
@@ -34,7 +32,6 @@ const AgentCardList = ({ agents, Card }) => {
 };
 
 export const AgentCardListButton = ({ Card }) => {
-  const style = useSideBarColorMode();
   const { page, load } = usePaginatedAPI("/api/agents/", {
     limit: 1000,
     load: false,
@@ -42,11 +39,9 @@ export const AgentCardListButton = ({ Card }) => {
 
   return (
     <ModalTrigger onOpen={load} title={"Agents"}>
-      <IconButton
-        icon={<FontAwesomeIcon icon={faAddressBook} />}
-        title={"add/remove assistants"}
-        {...style.button}
-      />
+      <MenuItem title={"Assistants"}>
+        <FontAwesomeIcon icon={faAddressBook} />
+      </MenuItem>
       <ModalTrigger.Content title="Manage Agents">
         <AgentCardList agents={page?.objects} Card={Card} />
       </ModalTrigger.Content>

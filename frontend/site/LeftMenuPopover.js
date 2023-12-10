@@ -1,14 +1,15 @@
 import React from "react";
 import {
   useDisclosure,
+  Box,
   Popover,
   PopoverTrigger,
   PopoverContent,
   PopoverArrow,
   PopoverHeader as ChakraPopoverHeader,
-  IconButton,
   useColorMode,
 } from "@chakra-ui/react";
+import { useLeftSidebarContext } from "site/sidebar/context";
 
 export const LeftSidebarPopupIcon = ({ children }) => {
   return children;
@@ -24,6 +25,7 @@ export const LeftSidebarPopupContent = ({ children }) => {
 
 export const LeftMenuPopover = ({ children, onOpen }) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
+  const sideBar = useLeftSidebarContext();
 
   const icon = React.Children.toArray(children).find(
     (child) => child.type === LeftSidebarPopupIcon
@@ -36,12 +38,9 @@ export const LeftMenuPopover = ({ children, onOpen }) => {
   );
 
   const { colorMode } = useColorMode();
-  const style =
-    colorMode === "light"
-      ? { border: "1px solid", borderColor: "gray.300" }
-      : { border: "1px solid", borderColor: "whiteAlpha.50" };
   const highlightColor = colorMode === "light" ? "blue.500" : "blue.400";
   const color = colorMode === "light" ? "gray.800" : "white";
+  const width = sideBar.size === "icons" ? "25px" : "110px";
 
   return (
     <Popover
@@ -52,7 +51,13 @@ export const LeftMenuPopover = ({ children, onOpen }) => {
       onOpen={onOpen}
     >
       <PopoverTrigger>
-        <IconButton icon={icon} {...style} onClick={onToggle} />
+        <Box
+          onClick={onToggle}
+          width={width}
+          transition="width 0.3s ease-out, max-width 0.3s ease-out"
+        >
+          {icon}
+        </Box>
       </PopoverTrigger>
       <PopoverContent
         zIndex={99998}
