@@ -179,19 +179,21 @@ export const ConfigNode = ({ id, data, selected }) => {
   }
 
   // node type specific content
-  let NodeComponent = null;
-  if (styles?.component) {
-    NodeComponent = styles.component;
-  }
-  const node_component_props = {
-    type,
-    node,
-  };
-  const content = NodeComponent ? (
-    <NodeComponent {...node_component_props} />
-  ) : (
-    <DefaultNodeContent {...node_component_props} />
-  );
+  const content = React.useMemo(() => {
+    let NodeComponent = null;
+    if (styles?.component) {
+      NodeComponent = styles.component;
+    }
+    const node_component_props = {
+      type,
+      node,
+    };
+    return NodeComponent ? (
+      <NodeComponent {...node_component_props} />
+    ) : (
+      <DefaultNodeContent {...node_component_props} />
+    );
+  }, [type, node, styles]);
 
   return (
     <Box p={5} className="config-node">
