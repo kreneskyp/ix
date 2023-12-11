@@ -1677,14 +1677,14 @@ class TestExampleFlows:
     async def test_pirate_flow(self, anode_types, aix_context, mock_openai):
         """Test a flow with a pirate component"""
 
-        await aload_fixture("agent/pirate2")
-        chain = await Chain.objects.aget(agent__alias="pirate2")
+        await aload_fixture("agent/pirate")
+        chain = await Chain.objects.aget(agent__alias="pirate")
 
         # init flow
         runnable = await ainit_chain_flow(chain, context=aix_context)
 
         # TODO: Disabling for now. need to mock redis memory because
-        #  it's returning empty. Was tested manually with @pirate2
+        #  it's returning empty. Was tested manually with @pirate
         # verify context map works as expected
         # gather_context = runnable.first
         # context = await gather_context.ainvoke(input={"user_input": "test"})

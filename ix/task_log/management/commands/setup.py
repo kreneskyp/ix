@@ -16,7 +16,6 @@ class Command(BaseCommand):
             "agent/code",
             "agent/owl",
             "agent/pirate",
-            "agent/pirate2",
             "agent/wikipedia",
             "agent/klarna",
             "agent/smithy",
