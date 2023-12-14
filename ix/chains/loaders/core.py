@@ -1,16 +1,30 @@
+import dataclasses
 import itertools
 import logging
 import time
 from collections import defaultdict
-from typing import Callable, Any, List
+from typing import Callable, Any, List, Tuple, Dict, Set, Union
+from uuid import UUID
 
+from asgiref.sync import sync_to_async
+from langchain.schema.runnable import (
+    RunnableSerializable,
+    RunnableParallel,
+    Runnable,
+)
+from langchain.schema.runnable.utils import Input, Output
+
+from ix.api.components.types import NodeType as NodeTypePydantic
+from ix.api.chains.types import Node as NodePydantic, InputConfig
+from ix.chains.components.lcel import init_sequence, init_branch
+from ix.chains.fixture_src.flow import ROOT_CLASS_PATH
 from ix.chains.loaders.context import IxContext
-from langchain.chains import SequentialChain
-from langchain.chains.base import Chain as LangchainChain
 
 from ix.chains.loaders.prompts import load_prompt
 from ix.chains.loaders.templates import NodeTemplate
-from ix.chains.models import NodeType, ChainNode, ChainEdge
+from ix.chains.models import NodeType, ChainNode, ChainEdge, Chain
+from ix.runnable.flow import MergeList
+from ix.runnable.ix import IxNode
 from ix.secrets.models import Secret
 from ix.utils.config import format_config
 from ix.utils.importlib import import_class
@@ -44,10 +58,12 @@ def get_property_loader(name: str) -> Callable:
     """
     from ix.chains.loaders.memory import load_memory_property
     from ix.chains.loaders.retriever import load_retriever_property
+    from ix.chains.loaders.tools import load_tool_property
 
     return {
         "memory": load_memory_property,
         "retriever": load_retriever_property,
+        "tool": load_tool_property,
     }.get(name, None)
 
 
@@ -64,19 +80,6 @@ def get_node_initializer(node_type: str) -> Callable:
         "text_splitter": initialize_text_splitter,
         "vectorstore": initialize_vectorstore,
     }.get(node_type, None)
-
-
-def get_sequence_inputs(sequence: List[LangchainChain]) -> List[str]:
-    """Aggregate all inputs for a list of chains"""
-    input_variables = set()
-    output_variables = set()
-    for sequence_chain in sequence:
-        # Intermediate outputs are excluded from input_variables.
-        # Filter out any inputs that are already in the output variables
-        filtered_inputs = set(sequence_chain.input_keys) - output_variables
-        input_variables.update(filtered_inputs)
-        output_variables.update(sequence_chain.output_keys)
-    return list(input_variables)
 
 
 def load_secrets(config: dict, node_type: NodeType):
@@ -111,8 +114,46 @@ def load_secrets(config: dict, node_type: NodeType):
         raise ValueError(f"Secrets not found: {to_load}")
 
 
+def load_flow_props(
+    node: ChainNode,
+    node_type: NodeType,
+    context: IxContext,
+    variables: Dict[str, Any] = None,
+) -> Dict[str, Runnable]:
+    """Load properties that create a runnable flow.
+
+    This props use outgoing edges to the input on the first node in the flow.
+    Returns a dict of props that can be merged into the nodes config dict.
+    """
+    config = {}
+    properties = node.outgoing_edges.filter(relation="PROP").order_by("source_key")
+
+    for group in itertools.groupby(properties, lambda x: x.source_key):
+        key, edges = group
+        print("key", key)
+        edge_group: List[ChainEdge] = [edge for edge in edges]
+        print("edges", edge_group)
+
+        # ignore non-flow collections
+        connector = node_type.connectors_as_dict.get(key, None)
+        if connector is None or not connector.get("collection", None) == "flow":
+            continue
+
+        logger.debug(
+            f"Loading flow property source_key={key} target_key={edge_group[0].target_key} edge_group={edge_group}"
+        )
+
+        nodes = [edge.target for edge in edge_group]
+        config[key] = init_flow(nodes, context=context, variables=variables)
+
+    return config
+
+
 def load_node(
-    node: ChainNode, context: IxContext, root=True, variables=None, as_template=False
+    node: ChainNode,
+    context: IxContext,
+    variables: Dict[str, Any] = None,
+    as_template: bool = False,
 ) -> Any:
     """
     Generic loader for loading the Langchain component a ChainNode represents.
@@ -125,6 +166,7 @@ def load_node(
     logger.debug(f"Loading chain for name={node.name} class_path={node.class_path}")
     start_time = time.time()
     node_type: NodeType = node.node_type
+    node_type_pydantic = NodeTypePydantic.model_validate(node_type)
     config = node.config.copy() if node.config else {}
 
     # TODO: implement resolve secrets from vault and settings from vocabulary
@@ -149,59 +191,70 @@ def load_node(
         config = node_loader(node, context)
 
     # prepare properties for loading. Properties should be grouped by key.
-    properties = node.incoming_edges.filter(relation="PROP").order_by("target_key")
+    properties = (
+        node.incoming_edges.filter(relation="PROP")
+        .exclude(target_key="in")
+        .order_by("target_key")
+    )
     for group in itertools.groupby(properties, lambda x: x.target_key):
         key, edges = group
-        node_group = [edge.source for edge in edges]
-        logger.debug(f"Loading property target_key={key} node_group={node_group}")
+        edge_group: List[ChainEdge] = [edge for edge in edges]
+        logger.debug(f"Loading property target_key={key} edge_group={edge_group}")
 
         # choose the type the incoming connection is processed as. If the source node
         # will be converted to another type, use the as_type defined on the connection
         # this allows a single property loader to encapsulate any necessary conversions.
         # e.g. retriever converting Vectorstore.
         connector = node_type.connectors_as_dict[key]
-        as_type = connector.get("as_type", None) or node_group[0].node_type.type
+        as_type = connector.get("as_type", None) or edge_group[0].source.node_type.type
         connector_is_template = connector.get("template", False)
 
-        if node_group[0].node_type.type in {"chain", "agent"}:
-            # load a sequence of linked nodes into a children property
-            # this supports loading as a list of chains or auto-SequentialChain
-            first_instance = load_node(
-                node_group[0],
+        if connector.get("collection", None):
+            # load connector as a collection
+
+            config[key] = load_collection(
+                connector,
+                edge_group,
                 context,
-                root=False,
                 variables=variables,
-                as_template=connector_is_template,
+                # TODO: will templates be allowed in collections?
+                # as_template=connector_is_template,
             )
-            sequence = load_sequence(node_group[0], first_instance, context)
-            if connector.get("auto_sequence", True):
-                input_variables = get_sequence_inputs(sequence)
-                config[key] = SequentialChain(
-                    chains=sequence, input_variables=input_variables
-                )
-            else:
-                config[key] = sequence
         elif property_loader := get_property_loader(as_type):
             # load type specific config options. This is generally for loading
             # ix specific features into the config dict
             logger.debug(f"Loading with property loader for type={node_type.type}")
-            config[key] = property_loader(node_group, context)
+            config[key] = property_loader(edge_group, context)
         else:
-            # default recursive loading
+            # default recursive property loading
             if connector.get("multiple", False):
                 config[key] = [
-                    prop_node.load(context, root=False) for prop_node in node_group
+                    load_node(
+                        edge.source,
+                        context,
+                        variables=variables,
+                        as_template=connector_is_template,
+                    )
+                    for edge in edge_group
                 ]
             else:
-                if len(node_group) > 1:
+                if len(edge_group) > 1:
                     raise ValueError(f"Multiple values for {key} not allowed")
                 config[key] = load_node(
-                    node_group[0],
+                    edge_group[0].source,
                     context,
-                    root=False,
                     variables=variables,
                     as_template=connector_is_template,
                 )
+
+    config.update(
+        load_flow_props(
+            node,
+            node_type=node_type,
+            context=context,
+            variables=variables,
+        )
+    )
 
     # converted flattened property groups back into nested properties. Fields with
     # the same parent are grouped together into a single object. By default, groups
@@ -226,6 +279,21 @@ def load_node(
     # for initialization common to all components of that type.
     node_class = import_node_class(node.class_path)
     node_initializer = get_node_initializer(node_type.type)
+
+    # use name and description from ChainNode.
+    if "name" not in config and "name" in node_type_pydantic.field_map:
+        config["name"] = node.name
+    if "description" not in config and "description" in node_type_pydantic.field_map:
+        config["description"] = node.description
+
+    # filter out config values that are not passed to the initializer
+    if node_type_pydantic.init_exclude:
+        config = {
+            key: value
+            for key, value in config.items()
+            if key not in node_type_pydantic.init_exclude
+        }
+
     try:
         if node_initializer:
             instance = node_initializer(node.class_path, config)
@@ -236,49 +304,582 @@ def load_node(
         raise
     logger.debug(f"Loaded node class={node.class_path} in {time.time() - start_time}s")
 
-    if node_type.type in {"chain"} and root:
-        # Linked chains but no parent indicates the possible first node in an
-        # implicit SequentialChain. Traverse the sequence and create a
-        # SequentialChain if there is more than one node in the sequence.
-        sequential_nodes = load_sequence(node, instance, context)
-        if len(sequential_nodes) > 1:
-            input_variables = get_sequence_inputs(sequential_nodes)
-            return SequentialChain(
-                chains=sequential_nodes, input_variables=input_variables
-            )
-
     return instance
 
 
-def load_sequence(
-    first_node: ChainNode,
-    first_instance: LangchainChain,
+def load_collection(
+    connector: dict,
+    edge_group: List[ChainEdge],
     context: IxContext,
-) -> List[LangchainChain]:
+    variables: Dict[str, Any] = None,
+) -> RunnableSerializable | List[Tuple[str, RunnableSerializable]]:
+    """Load connector as a collection (list, map, map-tuples, etc). These properties
+    are special in that the graph is traversed and contained within flow control
+    `Runnable` such as `RunnableSequence`, `RunnableMa`p, etc. This bridges the gap
+    between how a graph is structured as nodes  &edges in the database/UX and how it
+    is represented with LangChain Expression Language components.
     """
-    Load a sequence of nodes.
-    """
-    sequential_nodes = [first_instance]
+    collection_type = connector.get("collection", None)
 
-    # handle linked nodes
-    # for now only a single outgoing link is supported
-    outgoing_link = None
+    if collection_type in {"flow"}:
+        if collection_type == "flow":
+            # load property as a Runnable flow
+            nodes = [edge.source for edge in edge_group]
+            return init_flow_node(nodes, context=context, variables=variables)
+    else:
+        raise ValueError(f"Unknown collection type: {collection_type}")
+
+
+@dataclasses.dataclass
+class AggPlaceholder:
+    type: str
+    steps: List["FlowPlaceholder"]
+
+    def id(self):
+        return id(self)
+
+    def __eq__(self, other):
+        # step order doesn't matter
+        if isinstance(other, AggPlaceholder):
+            return self.type == other.type and set(self.steps) == set(other.steps)
+        return False
+
+    @classmethod
+    def for_connector(
+        cls, connector: dict, steps: List["FlowPlaceholder"]
+    ) -> "AggPlaceholder":
+        collection = connector.get("collection", "list") if connector else "list"
+        return cls(type=collection, steps=steps)
+
+
+@dataclasses.dataclass
+class MapPlaceholder:
+    node: ChainNode
+    map: Dict[str, "FlowPlaceholder"]
+    branch_depths: Set[Tuple[str]] = dataclasses.field(
+        default_factory=lambda: {tuple()}
+    )
+
+    @property
+    def id(self):
+        return self.node.id
+
+    @property
+    def spans_branches(self) -> bool:
+        return len(self.branch_depths) > 1
+
+    def __eq__(self, other):
+        # exclude branch depths from equality check
+        if isinstance(other, MapPlaceholder):
+            return self.node.id == other.node.id and self.map == other.map
+        return False
+
+
+@dataclasses.dataclass
+class ImplicitJoin:
+    """Represents a joining point of multiple paths that meet at a single node that isn't
+    a Map.
+
+    The join is either an implicit map or an implicit post-branch join. It can't be
+    known which until all incoming branches are explored.
+
+    This class acts as a placeholder in the first pass. It is converted to either a Map
+    or a sequence of nodes in the second pass.
+    """
+
+    source: ChainNode | List[ChainNode]
+    target: MapPlaceholder
+    """map of nodes grouped by target keys"""
+
+    @property
+    def id(self):
+        return self.target.id
+
+    def resolve(self) -> Union[MapPlaceholder, "SequencePlaceholder"]:
+        """Resolve into either a Map or a sequence of nodes based on whether the incoming
+        links to the join target are within the same branch or across multiple branches.
+        """
+        if self.target.spans_branches:
+            # return as sequence
+            if isinstance(self.source, list):
+                steps = self.source + [self.target.node]
+            else:
+                steps = [self.source, self.target.node]
+            return SequencePlaceholder(steps=steps)
+        else:
+            # return as map
+            return self.target
+
+
+@dataclasses.dataclass
+class BranchPlaceholder:
+    node: ChainNode
+    branches: List[Tuple[str, "FlowPlaceholder"]]
+    default: "FlowPlaceholder"
+
+    @property
+    def id(self):
+        return self.node.id
+
+
+@dataclasses.dataclass
+class SequencePlaceholder:
+    steps: List["FlowPlaceholder"]
+
+    @property
+    def id(self):
+        return self.steps[0][0].id
+
+    def __eq__(self, other):
+        if isinstance(other, SequencePlaceholder):
+            return self.steps == other.steps
+        elif isinstance(other, list):
+            return self.steps == other
+        return False
+
+
+FlowPlaceholder = (
+    ChainNode
+    | SequencePlaceholder
+    | MapPlaceholder
+    | BranchPlaceholder
+    | ImplicitJoin
+    | AggPlaceholder
+    | List["FlowPlaceholder"]
+)
+
+
+def init_chain_flow(
+    chain: Chain, context: IxContext, variables: Dict[str, Any] = None
+) -> Runnable:
+    """
+    Initialize a flow from a chain.
+    """
+    flow_root = load_chain_flow(chain=chain)
+    logger.debug(f"init_chain_flow chain={chain.id} flow_root={flow_root}")
+    return init_flow_node(flow_root, context=context, variables=variables)
+
+
+async def ainit_chain_flow(
+    chain: Chain, context: IxContext, variables: Dict[str, Any] = None
+):
+    return await sync_to_async(init_chain_flow)(chain, context, variables)
+
+
+def init_flow(
+    nodes: List[ChainNode],
+    context: IxContext,
+    variables: Dict[str, Any] = None,
+    seen: Dict[UUID, "FlowPlaceholder"] = None,
+) -> Runnable[Input, Output] | List[Runnable[Input, Output]]:
+    flow_roots = load_flow_node(nodes, seen=seen)
+    if not isinstance(flow_roots, list):
+        flow_roots = [flow_roots]
+
+    flows = []
+    for flow_root in flow_roots:
+        flows.append(init_flow_node(flow_root, context=context, variables=variables))
+
+    if len(flows) == 1:
+        return flows[0]
+    return flows
+
+
+async def ainit_flow(
+    nodes: List[ChainNode],
+    context: IxContext,
+    variables: Dict[str, Any] = None,
+    seen: Dict[UUID, "FlowPlaceholder"] = None,
+) -> Runnable:
+    return await sync_to_async(init_flow)(nodes, context, variables, seen)
+
+
+def load_chain_flow(chain: Chain) -> FlowPlaceholder:
     try:
-        outgoing_link = first_node.outgoing_edges.select_related("target").get(
-            relation="LINK"
+        root = chain.nodes.get(root=True, class_path=ROOT_CLASS_PATH)
+        nodes = chain.nodes.filter(incoming_edges__source=root)
+        logger.debug(f"Loading chain flow with roots: {root}")
+    except ChainNode.DoesNotExist:
+        # fallback to old style roots:
+        # TODO: remove this fallback after all chains have been migrated
+        nodes = chain.nodes.filter(root=True)
+        logger.debug(f"Loading chain flow with roots: {nodes}")
+
+    return load_flow_node(nodes)
+
+
+async def aload_chain_flow(chain: Chain) -> FlowPlaceholder:
+    return await sync_to_async(load_chain_flow)(chain)
+
+
+def load_flow_node(
+    nodes: List[ChainNode], seen: Dict[UUID, "FlowPlaceholder"] = None
+) -> FlowPlaceholder | List[FlowPlaceholder]:
+    """Loads a node or group of node connected to a map"""
+    # TODO: this can be collapsed into load_flow_map. in both cases it runs
+    #       load_flow_sequence and returns from the first iteration.
+    # TODO: consider a better name "load_flow_targets"
+    if len(nodes) == 0:
+        raise ValueError("No root nodes found")
+
+    branch_depth = tuple()
+    seen = seen or {}
+    if len(nodes) == 1:
+        return load_flow_sequence(nodes[0], seen, branch_depth=branch_depth)
+    return load_flow_map(nodes, seen, branch_depth=branch_depth)
+
+
+async def aload_flow_node(
+    nodes: List[ChainNode], seen: Dict[UUID, "FlowPlaceholder"] = None
+) -> FlowPlaceholder | List[FlowPlaceholder]:
+    return await sync_to_async(load_flow_node)(nodes, seen)
+
+
+def load_flow_map(
+    nodes: List[ChainNode],
+    seen: Dict[UUID, FlowPlaceholder],
+    branch_depth: Tuple[str] = None,
+) -> FlowPlaceholder | List[FlowPlaceholder]:
+    """
+    Load all paths starting from the given group of nodes. The returned nodes are
+    the set of distinct flows that should be created given the input nodes:
+
+    - distinct/disjoint paths are returned.
+    - map nodes are de-duped and returned as a single map node.
+
+    Example single flow:
+    Each.workflow --> Foo --> Bar --> Baz
+
+    Example multiple flows:
+    Agent.tools --> Foo --> Bar --> Baz
+                --> SearchTool
+    """
+    local_seen: Dict[UUID, FlowPlaceholder] = {}
+    new_nodes: List[FlowPlaceholder] = []
+    for node in nodes:
+        # Load & dedupe returned nodes:
+        # The first branch is explored the deepest. Subsequent runs fill in missing
+        # branches from the first run. The first run will always be complete after
+        # all branches have been processed.
+        loaded_node = load_flow_sequence(node, seen=seen, branch_depth=branch_depth)
+        node_id = (
+            loaded_node.steps[0].id
+            if isinstance(loaded_node, SequencePlaceholder)
+            else loaded_node.id
         )
-    except ChainEdge.DoesNotExist:
-        pass
+        if node_id in local_seen:
+            local_seen.update(seen)
+            continue
+        local_seen.update(seen)
+        new_nodes.append(loaded_node)
+
+    if len(new_nodes) == 1:
+        return new_nodes[0]
+
+    return new_nodes
+
+
+def load_flow_branch(
+    node: ChainNode,
+    seen: Dict[UUID, FlowPlaceholder],
+    branch_depth: Tuple[str] = None,
+) -> BranchPlaceholder:
+    # gather branches
+    outgoing_links = (
+        node.outgoing_edges.select_related("target")
+        .filter(relation="LINK")
+        .order_by("source_key")
+    )
+    branches = {}
+    for key, group in itertools.groupby(outgoing_links, lambda edge: edge.source_key):
+        _branch_depth = branch_depth + (key,) if branch_depth else (key,)
+        group_as_list = list(group)
+        if len(group_as_list) > 1:
+            targets = [edge.target for edge in group_as_list]
+            nodes = load_flow_map(targets, seen=seen, branch_depth=_branch_depth)
+        else:
+            nodes = load_flow_sequence(
+                group_as_list[0].target, seen=seen, branch_depth=_branch_depth
+            )
+        branches[key] = nodes
+
+    # build sorted list from branch node's config
+    branch_keys = node.config.get("branches", [])
+    branch_uuids = node.config.get("branches_hash", [])
+    branch_tuples = [
+        (key, branches[branch_uuid])
+        for key, branch_uuid in zip(branch_keys, branch_uuids)
+    ]
+
+    if "default" not in branches:
+        raise ValueError("Branch node must have a default branch")
+
+    return BranchPlaceholder(
+        node=node, default=branches["default"], branches=branch_tuples
+    )
+
+
+BRANCH_CLASS_PATH = "ix.chains.components.lcel.init_branch"
+MAP_CLASS_PATH = "ix.chains.components.lcel.init_parallel"
+
+
+def load_flow_sequence(
+    start: ChainNode,
+    seen: Dict[UUID, FlowPlaceholder],
+    branch_depth: Tuple[str] = None,
+) -> Runnable | SequencePlaceholder:
+    sequential_nodes = []
 
     # traverse the sequence
-    while outgoing_link:
-        next_instance = outgoing_link.target.load(context, root=False)
-        sequential_nodes.append(next_instance)
-        try:
-            outgoing_link = outgoing_link.target.outgoing_edges.select_related(
-                "target"
-            ).get(relation="LINK")
-        except ChainEdge.DoesNotExist:
-            outgoing_link = None
+    current = start
+    infinite_loop_safety_count = 0
+    while infinite_loop_safety_count < 1000:
+        infinite_loop_safety_count += 1
 
-    return sequential_nodes
+        outgoing_links = list(
+            current.outgoing_edges.select_related("target").filter(relation="LINK")
+        )
+        incoming_links = list(current.incoming_edges.filter(relation="LINK"))
+
+        # single outgoing link
+        # TODO: non map nodes with multiple incoming links require a map node.
+        if current.class_path == MAP_CLASS_PATH or len(incoming_links) > 1:
+            # Since MAP node comes after the branches feeding into it,
+            # look at incoming LINKs
+            was_seen = current.id in seen
+            node_map = seen.setdefault(current.id, MapPlaceholder(node=current, map={}))
+
+            # unpack if single item
+            map_sequence = sequential_nodes
+            if isinstance(sequential_nodes, list) and len(sequential_nodes) == 1:
+                map_sequence = sequential_nodes[0]
+
+            if False and current.root:
+                # TODO: add passthrough from root input
+                # auto add passthrough lambda for root input
+                # map_sequence = [RunnableLambda(lambda x: x[target_key])]
+                pass
+
+            elif len(sequential_nodes) == 0:
+                raise ValueError(
+                    f"No sequence detected mapping to {current.class_path}, add "
+                    f"a JSONPath or PassThrough node to connect directly to a Map/Gather node."
+                )
+                # TODO: add auto passthrough.
+                # no incoming links for now do nothing.
+                pass
+                # if incoming link targets "in" then all keys are taken as input
+                # if incoming link does not target "in" then just that input is taken
+                # if incoming link source is "out" then and target is not "in" then input[target_key]
+
+            else:
+                # has incoming links
+                # resolve the map edge hash into the key
+                try:
+                    incoming_link = current.incoming_edges.get(
+                        relation="LINK", source_id=sequential_nodes[-1].id
+                    )
+                except ChainEdge.DoesNotExist:
+                    raise Exception(
+                        f"Unable to find incoming link from {sequential_nodes[-1]} "
+                        f"to map node {current}"
+                    )
+                if current.class_path == MAP_CLASS_PATH:
+                    target_key = incoming_link.target_key
+                    step_index = current.config["steps_hash"].index(target_key)
+                    map_key = current.config["steps"][step_index]
+                    next_node = node_map
+                    if len(sequential_nodes) == 1:
+                        map_sequence = sequential_nodes[0]
+                    else:
+                        map_sequence = SequencePlaceholder(steps=sequential_nodes)
+                else:
+                    # implicit map & aggregator
+                    map_key = incoming_link.target_key
+                    connector = current.node_type.connectors_as_dict.get(map_key, None)
+
+                    # current sequence + join target stored.
+                    next_node = ImplicitJoin(source=sequential_nodes, target=node_map)
+
+                    # aggregate with existing map where multiple links are joining.
+                    if map_key in node_map.map:
+                        aggregate = connector is None or connector.get("multiple", True)
+                        aggregator = node_map.map[map_key]
+                        if aggregate:
+                            # new aggregator
+                            if not isinstance(aggregator, AggPlaceholder):
+                                aggregator = AggPlaceholder.for_connector(
+                                    connector=connector,
+                                    steps=sequential_nodes,
+                                )
+                                node_map.map[map_key] = aggregator
+                            # append to existing aggregator
+                            else:
+                                if len(sequential_nodes) == 1:
+                                    aggregator.steps.append(sequential_nodes[0])
+                                else:
+                                    aggregator.steps.append(sequential_nodes)
+                        else:
+                            raise ValueError(
+                                "Received multiple values for a single key"
+                            )
+
+                    else:
+                        aggregate = connector and connector.get("multiple", False)
+                        if aggregate:
+                            map_sequence = AggPlaceholder.for_connector(
+                                connector=connector,
+                                steps=sequential_nodes,
+                            )
+
+                node_map.map[map_key] = map_sequence
+                node_map.branch_depths.add(branch_depth)
+
+            # the prior sequence rolled up into the map
+            sequential_nodes = [next_node]
+
+            # only first iteration traverses past a map. Implicit join
+            # still requires full traversal on all branches.
+            if was_seen and not isinstance(next_node, ImplicitJoin):
+                break
+
+        elif current.class_path == BRANCH_CLASS_PATH:
+            # start of explicitly defined branch
+            branch_placeholder = load_flow_branch(
+                current, seen=seen, branch_depth=branch_depth
+            )
+            sequential_nodes.append(branch_placeholder)
+
+            # branches must be fully explored so there is nothing remaining to traverse
+            break
+        else:
+            # Add nodes that were not already added in the forward traversal for
+            # a map node. This includes map node and last node in the map sequence
+            if current.class_path != MAP_CLASS_PATH and (
+                not sequential_nodes or sequential_nodes[-1] != current
+            ):
+                if current.id in seen:
+                    sequential_nodes.append(seen[current.id])
+                else:
+                    sequential_nodes.append(current)
+                    seen[current.id] = current
+
+        if len(outgoing_links) > 1 and current.class_path != BRANCH_CLASS_PATH:
+            # multiple links: start of split that will end in a map node.
+            targets = [link.target for link in outgoing_links]
+            map_node = load_flow_map(targets, seen=seen, branch_depth=branch_depth)
+
+            # add to sequence
+            if isinstance(map_node, SequencePlaceholder):
+                sequential_nodes.extend(map_node.steps)
+            elif isinstance(map_node, MapPlaceholder):
+                sequential_nodes.append(map_node)
+            else:
+                raise ValueError(
+                    f"unsupported return type after processing flow split. type={type(map_node)}"
+                )
+
+            # all branches explored past the map node
+            break
+
+        elif len(outgoing_links) == 0:
+            break
+        else:
+            current = outgoing_links[0].target
+
+    if len(sequential_nodes) == 1:
+        return sequential_nodes[0]
+    else:
+        return SequencePlaceholder(steps=sequential_nodes)
+
+
+def get_input_config(node: ChainNode, node_type: NodeTypePydantic) -> InputConfig:
+    """
+    Build an input config that describes what values will be passed in the input dict.
+    This uses the node, connections, and node_type to determine what this specific
+    node is configured to receive. The config will be used to unpack the input values
+    at runtime.
+    """
+    node_pydantic = NodePydantic.model_validate(node)
+    input_keys = node_pydantic.get_input_keys(node_type)
+    bind_keys = node_pydantic.get_bind_keys(node_type)
+    config_keys = node_pydantic.get_config_keys(node_type)
+
+    return InputConfig(
+        to_input=input_keys,
+        to_config=config_keys,
+        to_bind=bind_keys,
+    )
+
+
+def init_flow_node(
+    root: FlowPlaceholder,
+    context: IxContext,
+    variables: Dict[str, Any] = None,
+    **kwargs,
+) -> Runnable:
+    """Initial a flow node
+
+    Assumes a collection of ChainNodes and placeholders constructed by load_flow.
+    """
+    if isinstance(root, ChainNode):
+        node_type = NodeTypePydantic.model_validate(root.node_type)
+        instance = load_node(root, context=context, variables=variables)
+
+        if isinstance(instance, Runnable):
+            instance = IxNode(
+                node_id=root.id,
+                child=instance,
+                context=context,
+                config=root.config,
+                bind_points=node_type.bind_points,
+            )
+        return instance
+    elif isinstance(root, BranchPlaceholder):
+        return init_branch(
+            default=init_flow_node(root.default, context=context, variables=variables),
+            branches=[
+                (key, init_flow_node(branch, context=context, variables=variables))
+                for key, branch in root.branches
+            ],
+        )
+    elif isinstance(root, MapPlaceholder):
+        runnable_map = RunnableParallel(
+            **{
+                key: init_flow_node(node, context=context, variables=variables)
+                for key, node in root.map.items()
+            }
+        )
+        if root.node.class_path == MAP_CLASS_PATH:
+            return runnable_map
+        else:
+            # create an implicit [map -> node] sequence.
+            sequence = runnable_map | init_flow_node(
+                root.node, context=context, variables=variables
+            )
+            return sequence
+    elif isinstance(root, list):
+        # Still callable from load_node/load_collection
+        nodes = [
+            init_flow_node(node, context=context, variables=variables) for node in root
+        ]
+        return init_sequence(steps=nodes)
+
+    elif isinstance(root, SequencePlaceholder):
+        nodes = [
+            init_flow_node(node, context=context, variables=variables)
+            for node in root.steps
+        ]
+        return init_sequence(steps=nodes)
+    elif isinstance(root, AggPlaceholder):
+        return MergeList(
+            steps=[
+                init_flow_node(node, context=context, variables=variables)
+                for node in root.steps
+            ]
+        )
+    elif isinstance(root, ImplicitJoin):
+        return init_flow_node(root.resolve(), context=context, variables=variables)
+
+    else:
+        raise Exception("Invalid flow type: " + str(type(root)))

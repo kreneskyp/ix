@@ -13,6 +13,7 @@ import { JSONSchemaForm } from "json_form/JSONSchemaForm";
 const CONFIG_FORM_COMPONENTS = {
   "langchain.prompts.chat.ChatPromptTemplate": PromptNode,
   "ix.chains.functions.FunctionSchema": FunctionSchemaNode,
+  "ix.runnable.schema.Schema": FunctionSchemaNode,
 };
 
 const DefaultForm = ({ type, node, onChange }) => {
@@ -100,7 +101,7 @@ export const ConfigEditorPane = () => {
               {name}
             </Heading>
             <Text color={"gray.500"} fontSize={"xs"}>
-              {type?.name}
+              {type?.description}
             </Text>
           </Box>
         </HStack>

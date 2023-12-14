@@ -37,6 +37,9 @@
                 },
                 "type": "string"
             },
+            "search_kwargs": {
+                "type": "object"
+            },
             "search_type": {
                 "default": "similarity",
                 "type": "string"
@@ -48,15 +51,21 @@
             }
         },
         "required": [
-            "allowed_search_types"
+            "allowed_search_types",
+            "search_kwargs"
         ],
         "type": "object"
     },
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "embedding",
+            "label": null,
             "multiple": false,
             "required": false,
             "source_type": "embeddings",
@@ -65,8 +74,13 @@
         },
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "documents",
+            "label": null,
             "multiple": false,
             "required": false,
             "source_type": "text_splitter",
@@ -81,6 +95,7 @@
             "choices": null,
             "default": "redis://redis:6379/0",
             "description": "URL of the Redis server",
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -99,6 +114,7 @@
             "choices": null,
             "default": null,
             "description": "Name of the index in the Redis",
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -115,6 +131,7 @@
             "choices": null,
             "default": "content",
             "description": "Key for storing content",
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -131,6 +148,7 @@
             "choices": null,
             "default": "metadata",
             "description": "Key for storing metadata",
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -147,6 +165,7 @@
             "choices": null,
             "default": "content_vector",
             "description": "Key for storing vectors",
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -167,6 +186,7 @@
                 "mmr"
             ],
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -183,6 +203,7 @@
             "choices": null,
             "default": "similarity",
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Search_type",
             "max": null,
@@ -194,6 +215,23 @@
             "step": null,
             "style": null,
             "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Search_kwargs",
+            "max": null,
+            "min": null,
+            "name": "search_kwargs",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "dict"
         }
     ],
     "name": "Redis Vector Store",

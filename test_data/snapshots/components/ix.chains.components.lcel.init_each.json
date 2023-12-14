@@ -1,0 +1,43 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.components.lcel.init_each",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {},
+        "required": [],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": "flow",
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "workflow",
+            "label": null,
+            "multiple": false,
+            "required": false,
+            "source_type": [
+                "agent",
+                "branch",
+                "chain",
+                "flow",
+                "llm",
+                "map",
+                "prompt",
+                "retriever",
+                "root",
+                "tool"
+            ],
+            "template": false,
+            "type": "source"
+        }
+    ],
+    "description": "Executes a sub-workflow for each input in a list of inputs",
+    "display_type": "node",
+    "fields": null,
+    "name": "Each",
+    "type": "flow"
+}

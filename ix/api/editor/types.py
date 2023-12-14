@@ -1,7 +1,7 @@
 from typing import Optional, List, Literal
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 
 from ix.api.chains.types import Position
 from ix.api.components.types import NodeType as NodeTypePydantic
@@ -42,9 +42,18 @@ class AddNode(BaseModel):
     description: Optional[str] = None
     config: Optional[dict] = None
     position: Optional[Position] = None
+    root: Optional[bool] = False
 
     # optionally add edges to other nodes
     edges: Optional[List[NewNodeEdge]] = None
+
+    @model_validator(mode="before")
+    def validate_root(cls, value) -> bool:
+        # set root automatically for root nodes
+        if value["class_path"] == "__ROOT__":
+            value["root"] = True
+
+        return value
 
 
 class UpdateNode(BaseModel):

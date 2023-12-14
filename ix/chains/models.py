@@ -2,10 +2,10 @@ import logging
 import uuid
 from asgiref.sync import sync_to_async
 from functools import cached_property
-from typing import Any, Dict
+from typing import Any, Dict, Type
 
 from django.db import models
-from langchain.chains.base import Chain as LangChain
+from langchain.schema.runnable import Runnable
 
 from ix.ix_users.models import OwnedModel
 from ix.pg_vector.tests.models import PGVectorMixin
@@ -244,19 +244,14 @@ class ChainNode(models.Model):
         blank=True,
     )
 
+    incoming_edges: models.QuerySet["ChainEdge"]
+    outgoing_edges: models.QuerySet["ChainEdge"]
+    DoesNotExist: Type[models.ObjectDoesNotExist]
+
     objects = ChainNodeManager()
 
     def __str__(self):
         return f"{str(self.id)[:8]} ({self.class_path})"
-
-    def load(self, context, root=True):
-        """
-        Load this node, traversing the graph and loading all child nodes,
-        properties, and downstream nodes.
-        """
-        from ix.chains.loaders.core import load_node
-
-        return load_node(self, context, root=root)
 
 
 class ChainEdge(models.Model):
@@ -281,6 +276,8 @@ class ChainEdge(models.Model):
         max_length=4, null=True, choices=RELATION_CHOICES, default="LINK"
     )
 
+    DoesNotExist: Type[models.ObjectDoesNotExist]
+
 
 class Chain(OwnedModel):
     """
@@ -298,6 +295,8 @@ class Chain(OwnedModel):
     # The endpoints are responsible for ensuring that the agent does or does not exist.
     is_agent = models.BooleanField(default=True)
 
+    nodes: models.QuerySet[ChainNode]
+
     @property
     def root(self) -> ChainNode:
         try:
@@ -308,12 +307,15 @@ class Chain(OwnedModel):
     def __str__(self):
         return f"{self.name} ({self.id})"
 
-    def load_chain(self, context) -> LangChain:
-        return self.root.load(context)
+    def load_chain(self, context) -> Runnable:
+        from ix.chains.loaders.core import init_chain_flow
 
-    async def aload_chain(self, context) -> LangChain:
-        root = await ChainNode.objects.aget(chain_id=self.id, root=True)
-        return await sync_to_async(root.load)(context)
+        return init_chain_flow(self, context=context)
+
+    async def aload_chain(self, context) -> Runnable:
+        from ix.chains.loaders.core import init_chain_flow
+
+        return await sync_to_async(init_chain_flow)(self, context=context)
 
     def clear_chain(self):
         """removes the chain nodes associated with this chain"""

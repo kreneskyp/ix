@@ -1,0 +1,165 @@
+{
+    "child_field": null,
+    "class_path": "ix.runnable.artifacts.SaveArtifact",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "description": {
+                "type": "string"
+            },
+            "key": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "storage_backend": {
+                "type": "string"
+            },
+            "storage_id": {
+                "type": "string"
+            },
+            "type": {
+                "type": "string"
+            }
+        },
+        "required": [],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "in",
+            "label": "data",
+            "multiple": false,
+            "required": false,
+            "source_type": [
+                "agent",
+                "branch",
+                "chain",
+                "flow",
+                "llm",
+                "map",
+                "prompt",
+                "retriever",
+                "root",
+                "tool"
+            ],
+            "template": false,
+            "type": "target"
+        }
+    ],
+    "description": "Saves an input as an artifact",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Type",
+            "max": null,
+            "min": null,
+            "name": "type",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Key",
+            "max": null,
+            "min": null,
+            "name": "key",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Name",
+            "max": null,
+            "min": null,
+            "name": "name",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Description",
+            "max": null,
+            "min": null,
+            "name": "description",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Storage_backend",
+            "max": null,
+            "min": null,
+            "name": "storage_backend",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Storage_id",
+            "max": null,
+            "min": null,
+            "name": "storage_id",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "Save Artifact",
+    "type": "chain"
+}

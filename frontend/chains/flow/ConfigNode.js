@@ -8,25 +8,29 @@ import { ChainEditorAPIContext } from "chains/editor/ChainEditorAPIContext";
 import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
 import { RequiredAsterisk } from "components/RequiredAsterisk";
 import { ConnectorPopover } from "chains/editor/ConnectorPopover";
-import { NodeStateContext, SelectedNodeContext } from "chains/editor/contexts";
+import {
+  NodeStateContext,
+  RunLog,
+  SelectedNodeContext,
+} from "chains/editor/contexts";
 import { StyledIcon } from "components/StyledIcon";
 
 const CONNECTOR_CONFIG = {
   agent: {
-    source_position: "left",
-    target_position: "right",
+    source_position: "right",
+    target_position: "left",
   },
   chain: {
-    source_position: "left",
-    target_position: "right",
+    source_position: "right",
+    target_position: "left",
   },
   tool: {
-    source_position: "left",
-    target_position: "right",
+    source_position: "right",
+    target_position: "left",
   },
   toolkit: {
-    source_position: "left",
-    target_position: "right",
+    source_position: "right",
+    target_position: "left",
   },
 };
 
@@ -34,12 +38,12 @@ const usePropertyTargets = (node, type) => {
   const edges = useEdges();
 
   return useMemo(() => {
-    const connectors = type.connectors?.filter(
-      (connector) => connector.type === "target"
-    );
+    const connectors = type.connectors;
     return connectors?.map((connector) => {
       const edge = edges?.find(
-        (edge) => edge.target === node.id && edge.targetHandle === connector.key
+        (edge) =>
+          (edge.target === node.id && edge.targetHandle === connector.key) ||
+          (edge.source === node.id && edge.sourceHandle === connector.key)
       );
       return { ...connector, connected: !!edge };
     });
@@ -65,15 +69,11 @@ export const useConnectorColor = (node, connector) => {
 
 export const PropertyTarget = ({ type, node, connector }) => {
   const color = useConnectorColor(node, connector);
-  const source_type = Array.isArray(connector.source_type)
-    ? connector.source_type[0]
-    : connector.source_type;
-
-  const position = CONNECTOR_CONFIG[source_type]?.target_position || "left";
+  const position = connector.type === "source" ? "right" : "left";
 
   return (
     <Box position="relative" width="100%">
-      <Handle id={connector.key} type="target" position={position} />
+      <Handle id={connector.key} type={connector.type} position={position} />
       <Box px={2} m={0} color={color}>
         <ConnectorPopover
           type={type}
@@ -94,10 +94,11 @@ export const NodeProperties = ({ node, type }) => {
   const left = [];
   const right = [];
   propertyTargets?.forEach((connector) => {
-    const source_type = Array.isArray(connector.source_type)
-      ? connector.source_type[0]
-      : connector.source_type;
-    const position = CONNECTOR_CONFIG[source_type]?.target_position || "left";
+    if (connector.key === "in" || connector.key === "out") {
+      return;
+    }
+
+    const position = connector.type === "source" ? "right" : "left";
     if (position === "right") {
       right.push(connector);
     } else {
@@ -166,6 +167,10 @@ export const ConfigNode = ({ id, data, selected }) => {
   const { nodes } = useContext(NodeStateContext);
   const node = nodes[data.node.id];
 
+  // run log when available
+  const { log_by_node } = React.useContext(RunLog);
+  const run_event = log_by_node[node?.id];
+
   const nodeStyle = {
     color,
     border: "1px solid",
@@ -201,7 +206,7 @@ export const ConfigNode = ({ id, data, selected }) => {
         borderWidth="0px"
         borderRadius={8}
         padding="0"
-        minWidth={250}
+        minWidth={200}
         {...nodeStyle}
       >
         <Handle
@@ -233,6 +238,7 @@ export const ConfigNode = ({ id, data, selected }) => {
             <DeleteIcon node={node} />
           </Flex>
         </Heading>
+        {run_event && <Box position={"absolute"} top={5} right={0}></Box>}
         <Box minHeight={25} cursor="default">
           {content}
         </Box>

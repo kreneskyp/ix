@@ -1,0 +1,81 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.components.lcel.init_branch",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "branches": {
+                "description": "input variables corresponding to branches in the order they will be considered. The first branch whose input variable is True will be executed. If none are True, the default branch will be executed.",
+                "input_type": "node_branch_list",
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
+            "branches_hash": {
+                "description": "Hashes for branches in order they should be displayed. These hashes are used for connector identifiers. The step names may change without requiring edges to update unless the step is removed. Must be same length as branches.",
+                "input_type": "hidden",
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            }
+        },
+        "required": [
+            "branches",
+            "branches_hash"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Executes the first branch whose input key is True, or default if none are True.",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": "input variables corresponding to branches in the order they will be considered. The first branch whose input variable is True will be executed. If none are True, the default branch will be executed.",
+            "init_type": "init",
+            "input_type": "node_branch_list",
+            "label": "Branch Variables",
+            "max": null,
+            "min": null,
+            "name": "branches",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": "Hashes for branches in order they should be displayed. These hashes are used for connector identifiers. The step names may change without requiring edges to update unless the step is removed. Must be same length as branches.",
+            "init_type": "init",
+            "input_type": "hidden",
+            "label": "",
+            "max": null,
+            "min": null,
+            "name": "branches_hash",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        }
+    ],
+    "name": "Choose Path",
+    "type": "branch"
+}

@@ -35,6 +35,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightLeft } from "@fortawesome/free-solid-svg-icons";
 import { useChainUpdate } from "chains/hooks/useChainUpdate";
 import { useRightSidebarContext } from "site/sidebar/context";
+import { DirectRootNode } from "chains/flow/DirectRootNode";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
@@ -42,6 +43,7 @@ const nodeTypes = {
   node: ConfigNode,
   list: ConfigNode,
   root: RootNode,
+  direct_root: DirectRootNode,
 };
 
 const getExpectedTypes = (connector) => {
@@ -151,7 +153,7 @@ const ChainGraphEditor = ({ graph }) => {
             sourceHandle: key === "in" ? "out" : flowNodeType,
             targetHandle: key,
             data: { id: edgeId },
-            ...style,
+            ...style[key === "in" || key === "out" ? "LINK" : "PROP"],
           };
 
           // validate flowEdge before creating datum for API
@@ -230,7 +232,18 @@ const ChainGraphEditor = ({ graph }) => {
       const flowNodeType =
         source.id === "root" ? "root" : source.data.type.type;
       const style = getEdgeStyle(colorMode, flowNodeType);
-      setEdges((els) => addEdge({ ...params, ...style, data: { id } }, els));
+
+      // normal LINK and PROP edges
+      const from_root =
+        source.id === "root" || source.data.type.class_path === "__ROOT__";
+      const is_out = params.sourceHandle === "out";
+      const is_in = params.targetHandle === "in";
+      const from_branch = source.data.type.type === "branch";
+      const displayRelation =
+        from_root || is_out || is_in || from_branch ? "LINK" : "PROP";
+      setEdges((els) =>
+        addEdge({ ...params, ...style[displayRelation], data: { id } }, els)
+      );
 
       // save via API
       if (source.id === "root") {
@@ -242,7 +255,7 @@ const ChainGraphEditor = ({ graph }) => {
         root_node_ids.push(params.target);
         api.setRoots(chain.id, { node_ids: root_node_ids });
       } else {
-        // normal link and prop edges
+        const relation = from_root || is_out || from_branch ? "LINK" : "PROP";
         const data = {
           id,
           source_id: params.source,
@@ -250,7 +263,7 @@ const ChainGraphEditor = ({ graph }) => {
           source_key: params.sourceHandle,
           target_key: params.targetHandle,
           chain_id: chain?.id,
-          relation: params.sourceHandle === "out" ? "LINK" : "PROP",
+          relation,
         };
         api.addEdge(data);
       }

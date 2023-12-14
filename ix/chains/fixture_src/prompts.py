@@ -1,5 +1,3 @@
-from ix.chains.fixture_src.targets import OUTPUT_PARSER_TARGET
-
 DEFAULT_MESSAGES = [
     {
         "role": "system",
@@ -13,7 +11,22 @@ CHAT_PROMPT_TEMPLATE = {
     "type": "prompt",
     "name": "Chat Prompt Template",
     "description": "Template for Chat style LLM request. Renders System, User, and AI messages",
-    "connectors": [OUTPUT_PARSER_TARGET],
+    "connectors": [
+        {
+            "key": "out",
+            "label": "Prompt",
+            "type": "source",
+            "source_type": "prompt",
+        },
+        # HAX: disabled for now because this might not work.
+        # {
+        #    "key": "in",
+        #    "label": "Input",
+        #    "type": "target",
+        #    "from_field": "input_variables",
+        #    "source_type": FLOW_TYPES,
+        # },
+    ],
     "fields": [
         {
             "name": "messages",

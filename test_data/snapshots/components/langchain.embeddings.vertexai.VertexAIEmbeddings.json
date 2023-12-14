@@ -30,6 +30,7 @@
             ],
             "default": "textembedding-gecko",
             "description": "Model name to use",
+            "init_type": "init",
             "input_type": "select",
             "label": "Model",
             "max": null,

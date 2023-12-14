@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 from typing import (
     List,
@@ -7,6 +8,7 @@ from typing import (
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field, model_validator
 
+from ix.api.components.types import NodeType
 from ix.utils.graphene.pagination import QueryPage
 
 
@@ -53,6 +55,13 @@ class Position(BaseModel):
     y: float
 
 
+@dataclass
+class InputConfig:
+    to_input: List[str]
+    to_config: List[str]
+    to_bind: List[str]
+
+
 class Node(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     chain_id: UUID
@@ -67,6 +76,43 @@ class Node(BaseModel):
 
     class Config:
         from_attributes = True
+
+    def get_input_keys(self, node_type: NodeType) -> List[str]:
+        """Input keys for this node. Includes both the static "in" and subfields."""
+        keys = ["in"]
+        if in_connector := node_type.connector_map.get("in"):
+            if in_connector.from_field:
+                field_value = self.config.get(in_connector.from_field)
+                if field_value:
+                    keys.extend(field_value)
+            elif in_connector.fields:
+                keys.extend(in_connector.fields)
+        return keys
+
+    def get_output_keys(self, node_type: NodeType) -> List[str]:
+        """Output keys for this node. Includes both the static "out" and subfields."""
+        keys = ["out"]
+        if out_connector := node_type.connector_map.get("out"):
+            if out_connector.from_field:
+                field_value = self.config.get(out_connector.from_field)
+                keys.extend(field_value)
+            elif out_connector.fields:
+                keys.extend(out_connector.fields)
+        return keys
+
+    def get_config_keys(self, node_type: NodeType) -> List[str]:
+        keys = []
+        for key, connector in node_type.connector_map.items():
+            if connector.init_type == "config":
+                keys.append(key)
+        return keys
+
+    def get_bind_keys(self, node_type: NodeType) -> List[str]:
+        keys = []
+        for key, connector in node_type.connector_map.items():
+            if connector.init_type == "bind":
+                keys.append(key)
+        return keys
 
 
 class Edge(BaseModel):

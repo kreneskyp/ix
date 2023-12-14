@@ -11,7 +11,7 @@ from langchain.schema import BaseMemory, BaseChatMessageHistory
 from pydantic import BaseModel
 
 from ix.chains.loaders.core import load_node, IxContext
-from ix.chains.models import ChainNode
+from ix.chains.models import ChainNode, ChainEdge
 from ix.utils.importlib import import_class
 from ix.utils.pydantic import get_model_fields
 
@@ -83,10 +83,11 @@ def load_chat_memory_backend_config(node: ChainNode, ix_handler: IxHandler):
     return backend_config
 
 
-def load_memory_property(node_group: List[ChainNode], context: IxContext) -> BaseMemory:
+def load_memory_property(edge_group: List[ChainEdge], context: IxContext) -> BaseMemory:
     """
     Load memories from a list of configs and merge in to a CombinedMemory instance.
     """
+    node_group = [edge.source for edge in edge_group]
     logger.debug(f"Combining memory classes config={node_group}")
 
     if len(node_group) == 1:
@@ -100,7 +101,9 @@ def load_memory_property(node_group: List[ChainNode], context: IxContext) -> Bas
 def get_memory_session(
     config: Dict[str, Any],
     context: IxContext,
-    cls: Union[BaseMemory, BaseChatMessageHistory],
+    cls: Union[BaseMemory, BaseChatMessageHistory]
+    | Type[BaseMemory]
+    | Type[BaseChatMessageHistory],
 ) -> Tuple[str, str]:
     """
     Parse the session scope from the given configuration and callback manager.
@@ -148,9 +151,9 @@ def get_memory_session(
     if scope == "chat":
         scope_id = context.chat_id
     elif scope == "agent":
-        scope_id = context.agent.id
+        scope_id = context.agent_id
     elif scope == "task":
-        scope_id = context.task.id
+        scope_id = context.task_id
     elif scope == "user":
         scope_id = context.user_id
     else:

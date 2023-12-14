@@ -28,6 +28,7 @@
             "choices": null,
             "default": "",
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -44,6 +45,7 @@
             "choices": null,
             "default": "",
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -60,6 +62,7 @@
             "choices": null,
             "default": "",
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -74,5 +77,5 @@
         }
     ],
     "name": "Function Schema",
-    "type": "tool"
+    "type": "schema"
 }

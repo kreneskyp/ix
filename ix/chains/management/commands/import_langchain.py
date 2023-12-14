@@ -4,25 +4,19 @@ from ix.api.components.types import NodeType as NodeTypePydantic
 from ix.chains.fixture_src.agent_interaction import AGENT_INTERACTION_CHAINS
 
 from ix.chains.fixture_src.agents import AGENTS
-from ix.chains.fixture_src.artifacts import ARTIFACT_MEMORY, SAVE_ARTIFACT
+from ix.chains.fixture_src.artifacts import ARTIFACTS
 from ix.chains.fixture_src.chains import CHAINS
 from ix.chains.fixture_src.dalle import DALLE
 from ix.chains.fixture_src.chat_memory_backend import MEMORY_BACKEND
 from ix.chains.fixture_src.document_loaders import DOCUMENT_LOADERS
 from ix.chains.fixture_src.embeddings import EMBEDDINGS
+from ix.chains.fixture_src.flow import FLOW
 from ix.chains.fixture_src.ix import CHAT_MODERATOR_TYPE
+from ix.chains.fixture_src.json import JSON
+from ix.chains.fixture_src.lcel import LANGCHAIN_RUNNABLES
 from ix.chains.fixture_src.llm import LLMS
-from ix.chains.fixture_src.memory import (
-    CONVERSATION_BUFFER_MEMORY,
-    CONVERSATION_SUMMARY_BUFFER_MEMORY,
-    CONVERSATION_BUFFER_WINDOW_MEMORY,
-    CONVERSATION_TOKEN_BUFFER_MEMORY,
-)
-from ix.chains.fixture_src.openai_functions import (
-    FUNCTION_SCHEMA,
-    FUNCTION_OUTPUT_PARSER,
-    OPENAPI_CHAIN,
-)
+from ix.chains.fixture_src.memory import MEMORY
+from ix.chains.fixture_src.openai_functions import OPENAI_FUNCTIONS
 from ix.chains.fixture_src.parsers import PARSERS
 from ix.chains.fixture_src.prompts import CHAT_PROMPT_TEMPLATE
 from ix.chains.fixture_src.retriever import RETRIEVERS
@@ -33,6 +27,7 @@ from ix.chains.fixture_src.toolkit import TOOLKITS
 from ix.chains.fixture_src.tools import TOOLS
 from ix.chains.fixture_src.vectorstores import VECTORSTORES
 from ix.chains.models import NodeType
+from ix.chains.tests.mock_runnable import MOCK_RUNNABLE_CONFIG
 from ix.secrets.models import SecretType
 
 COMPONENTS = []
@@ -54,13 +49,7 @@ COMPONENTS.extend(CHAINS)
 COMPONENTS.extend(ROUTING_CHAINS)
 
 # OpenAI Functions
-COMPONENTS.extend(
-    [
-        FUNCTION_SCHEMA,
-        FUNCTION_OUTPUT_PARSER,
-        OPENAPI_CHAIN,
-    ]
-)
+COMPONENTS.extend(OPENAI_FUNCTIONS)
 
 # Prompts
 COMPONENTS.extend(
@@ -70,14 +59,7 @@ COMPONENTS.extend(
 )
 
 # Memory
-COMPONENTS.extend(
-    [
-        CONVERSATION_BUFFER_MEMORY,
-        CONVERSATION_BUFFER_WINDOW_MEMORY,
-        CONVERSATION_SUMMARY_BUFFER_MEMORY,
-        CONVERSATION_TOKEN_BUFFER_MEMORY,
-    ]
-)
+COMPONENTS.extend(MEMORY)
 COMPONENTS.extend(MEMORY_BACKEND)
 
 # Document retrieval
@@ -87,23 +69,24 @@ COMPONENTS.extend(DOCUMENT_LOADERS)
 COMPONENTS.extend(VECTORSTORES)
 COMPONENTS.extend(RETRIEVERS)
 
+# IX LCEL integrations & flow
+COMPONENTS.extend(LANGCHAIN_RUNNABLES)
+COMPONENTS.extend(JSON)
+COMPONENTS.extend(FLOW)
+
 # IX Misc
 COMPONENTS.extend([CHAT_MODERATOR_TYPE])
 COMPONENTS.extend(AGENT_INTERACTION_CHAINS)
 
 # IX Artifacts
-COMPONENTS.extend(
-    [
-        ARTIFACT_MEMORY,
-        SAVE_ARTIFACT,
-    ]
-)
+COMPONENTS.extend(ARTIFACTS)
 
 # Testing
 COMPONENTS.extend(
     [
         MOCK_MEMORY,
         MOCK_CHAIN,
+        MOCK_RUNNABLE_CONFIG,
     ]
 )
 
@@ -123,6 +106,9 @@ class Command(BaseCommand):
 
     help = "Imports LangChain components from python fixtures."
 
+    def to_stdout(self, msg):
+        self.stdout.write(msg)
+
     def handle(self, *args, **options):
         for component in COMPONENTS:
             # validate by converting to pydantic model instance
@@ -137,7 +123,7 @@ class Command(BaseCommand):
             class_path = component.get("class_path")
             if NodeType.objects.filter(class_path=class_path).exists():
                 # updating existing node type
-                print(f"Updating component: {class_path}")
+                self.to_stdout(f"Updating component: {class_path}")
                 node_type = NodeType.objects.get(class_path=class_path)
                 for key, value in validated_options.items():
                     if key == "class_path":

@@ -1,9 +1,10 @@
-from ix.chains.fixture_src.targets import MEMORY_TARGET
+from ix.chains.fixture_src.targets import MEMORY_TARGET, FLOW_TYPES
 
 SELECTION_CHAIN_TARGET = {
     "key": "selection_chain",
     "type": "target",
-    "source_type": "chain",
+    "source_type": FLOW_TYPES,
+    "collection": "flow",
 }
 
 CHAT_MODERATOR_TYPE = {

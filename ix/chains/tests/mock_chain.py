@@ -48,6 +48,12 @@ class MockChain(Chain):
     async def _acall(self, inputs: Dict[str, str]) -> Dict[str, str]:
         return mock_chain_func(inputs)
 
+    def __str__(self):
+        return f"MockChain({id(self)})"
+
+    def __repr__(self):
+        return str(self)
+
     @classmethod
     def from_config(
         cls, config: Dict[str, Any], callback_manager: IxCallbackManager

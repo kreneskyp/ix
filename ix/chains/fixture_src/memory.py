@@ -1,7 +1,10 @@
+from ix.api.components.types import NodeTypeField
+from ix.chains.components.memory import LoadMemory, SaveMemory
 from ix.chains.fixture_src.targets import (
     MEMORY_BACKEND_TARGET,
     LLM_TARGET,
     PROMPT_TARGET,
+    MEMORY_TARGET,
 )
 
 MEMORY_KEY = {
@@ -144,3 +147,51 @@ CONVERSATION_BUFFER_WINDOW_MEMORY = {
     ]
     + CHAT_MEMORY_FIELDS,
 }
+
+LOAD_MEMORY_CLASS_PATH = "ix.chains.components.memory.LoadMemory"
+LOAD_MEMORY = {
+    "class_path": LOAD_MEMORY_CLASS_PATH,
+    "type": "chain",
+    "name": "Load Memories",
+    "description": "Load memories from short term storage for use in a prompt.",
+    "connectors": [MEMORY_TARGET],
+    "fields": NodeTypeField.get_fields(
+        LoadMemory,
+        include=["output_key", "memory_inputs"],
+        field_options={
+            "memory_inputs": {
+                "type": "list",
+            },
+        },
+    ),
+}
+
+SAVE_MEMORY_CLASS_PATH = "ix.chains.components.memory.SaveMemory"
+SAVE_MEMORY = {
+    "class_path": SAVE_MEMORY_CLASS_PATH,
+    "type": "chain",
+    "name": "Save Memories",
+    "description": "Save memories to short term storage.",
+    "connectors": [MEMORY_TARGET],
+    "fields": NodeTypeField.get_fields(
+        SaveMemory,
+        include=["input_keys", "output_keys"],
+        field_options={
+            "input_keys": {
+                "type": "list",
+            },
+            "output_keys": {
+                "type": "list",
+            },
+        },
+    ),
+}
+
+MEMORY = [
+    CONVERSATION_BUFFER_MEMORY,
+    CONVERSATION_TOKEN_BUFFER_MEMORY,
+    CONVERSATION_SUMMARY_BUFFER_MEMORY,
+    CONVERSATION_BUFFER_WINDOW_MEMORY,
+    LOAD_MEMORY,
+    SAVE_MEMORY,
+]

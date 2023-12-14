@@ -52,9 +52,9 @@
     "model": "chains.chainnode",
     "pk": "331cc49f-5c94-4bbd-baea-b7cb7693362d",
     "fields": {
-      "class_path": "::ROOT::",
+      "class_path": "__ROOT__",
       "node_type": [
-        "::ROOT::"
+        "__ROOT__"
       ],
       "config": {
         "outputs": [

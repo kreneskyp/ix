@@ -14,7 +14,7 @@ function extractPlainText(nodes) {
   return nodes
     .map((n) => {
       if (n.text) return n.text;
-      if (n.children) return extractPlainText(n.children);
+      if (n.children) return extractPlainText(n.children) + "\n";
       return "";
     })
     .join("");

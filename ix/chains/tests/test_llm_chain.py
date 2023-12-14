@@ -58,7 +58,8 @@ class TestChatPromptTemplate:
 
     def test_from_config(self, load_chain):
         config = deepcopy(PROMPT_TEMPLATE)
-        chain = load_chain(config)
+        ix_node = load_chain(config)
+        chain = ix_node.child
         assert isinstance(chain, ChatPromptTemplate)
         assert len(chain.messages) == 3
         assert isinstance(chain.messages[0], TEMPLATE_CLASSES["system"])
@@ -70,7 +71,8 @@ class TestChatPromptTemplate:
 class TestLLMChain:
     def test_from_config(self, load_chain, mock_openai_key):
         config = deepcopy(EXAMPLE_CONFIG)
-        chain = load_chain(config)
+        ix_node = load_chain(config)
+        chain = ix_node.child
 
         assert isinstance(chain, LLMChain)
         assert (

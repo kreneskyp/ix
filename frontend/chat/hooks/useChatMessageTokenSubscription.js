@@ -59,7 +59,6 @@ export function useChatMessageTokenSubscription(chatId, onToken) {
         subscription: chatMessageTokenSubscription,
         variables: { chatId },
         updater: (store, data) => {
-          const parentId = data.chatMessageTokenSubscription.parentId;
           onToken(data.chatMessageTokenSubscription);
         },
         onError: (error) => {

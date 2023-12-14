@@ -1,0 +1,39 @@
+{
+    "child_field": "steps",
+    "class_path": "ix.chains.components.lcel.init_sequence",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {},
+        "required": [],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": "flow",
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "steps",
+            "label": null,
+            "multiple": false,
+            "required": false,
+            "source_type": [
+                "agent",
+                "chain",
+                "llm",
+                "prompt",
+                "retriever",
+                "tool"
+            ],
+            "template": false,
+            "type": "target"
+        }
+    ],
+    "description": "Executes a sequence of runnables (chains, agents, prompts, tools, etc.)",
+    "display_type": "node",
+    "fields": null,
+    "name": "Runnable Sequence",
+    "type": "sequence"
+}

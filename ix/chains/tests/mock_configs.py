@@ -1,9 +1,11 @@
+import json
 from pathlib import Path
 
 
 from ix.chains.fixture_src.chains import CONVERSATIONAL_RETRIEVAL_CHAIN_CLASS_PATH
 from ix.chains.fixture_src.document_loaders import GENERIC_LOADER_CLASS_PATH
 from ix.chains.fixture_src.embeddings import OPENAI_EMBEDDINGS_CLASS_PATH
+from ix.chains.fixture_src.lcel import RUNNABLE_EACH_CLASS_PATH
 from ix.chains.fixture_src.parsers import LANGUAGE_PARSER_CLASS_PATH
 from ix.chains.fixture_src.text_splitter import RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH
 from ix.chains.fixture_src.vectorstores import (
@@ -15,6 +17,33 @@ from ix.chains.fixture_src.tools import GOOGLE_SEARCH
 OPENAI_LLM = {
     "class_path": "langchain.chat_models.openai.ChatOpenAI",
     "config": {"verbose": True},
+}
+
+OPENAI_FUNCTION_SCHEMA = {
+    "class_path": "ix.runnable.schema.Schema",
+    "name": "openai_function",
+    "description": "Run an OpenAI function.",
+    "config": {
+        "parameters": json.dumps(
+            {
+                "type": "object",
+                "properties": {
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "filename": {"type": "string"},
+                                "description": {"type": "string"},
+                            },
+                            "required": ["filename", "description"],
+                        },
+                    },
+                },
+            },
+            indent=4,
+        ),
+    },
 }
 
 MOCK_MEMORY = {
@@ -238,3 +267,5 @@ CONVERSATIONAL_RETRIEVAL_CHAIN = {
     "class_path": CONVERSATIONAL_RETRIEVAL_CHAIN_CLASS_PATH,
     "config": {"llm": OPENAI_LLM, "retriever": REDIS_VECTORSTORE},
 }
+
+RUNNABLE_EACH = {"class_path": RUNNABLE_EACH_CLASS_PATH, "config": {}}

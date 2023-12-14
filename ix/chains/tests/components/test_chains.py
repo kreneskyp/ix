@@ -16,5 +16,6 @@ OPENAPI_CHAIN = {
 @pytest.mark.django_db
 class TestOpenAPIChain:
     async def test_load(self, aload_chain):
-        component = await aload_chain(OPENAPI_CHAIN)
+        ix_node = await aload_chain(OPENAPI_CHAIN)
+        component = ix_node.child
         assert isinstance(component, SequentialChain)

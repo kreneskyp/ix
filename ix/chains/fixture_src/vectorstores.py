@@ -4,7 +4,10 @@ from langchain.vectorstores.base import VectorStoreRetriever
 from langchain.vectorstores.redis.base import RedisVectorStoreRetriever
 
 from ix.api.components.types import NodeTypeField
-from ix.chains.fixture_src.targets import EMBEDDINGS_TARGET, DOCUMENTS_TARGET
+from ix.chains.fixture_src.targets import (
+    EMBEDDINGS_TARGET,
+    DOCUMENTS_TARGET,
+)
 from django.conf import settings
 
 VECTORSTORE_CONNECTORS = [EMBEDDINGS_TARGET, DOCUMENTS_TARGET]
@@ -19,9 +22,7 @@ VECTORSTORE_RETRIEVER_FIELDS = [
     }
 ] + NodeTypeField.get_fields(
     VectorStoreRetriever,
-    include=[
-        "search_type",
-    ],
+    include=["search_type", "search_kwargs"],
 )
 
 

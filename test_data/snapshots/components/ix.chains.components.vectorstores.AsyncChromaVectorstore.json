@@ -52,21 +52,30 @@
                 "default": "./chroma",
                 "type": "string"
             },
+            "search_kwargs": {
+                "type": "object"
+            },
             "search_type": {
                 "default": "similarity",
                 "type": "string"
             }
         },
         "required": [
-            "allowed_search_types"
+            "allowed_search_types",
+            "search_kwargs"
         ],
         "type": "object"
     },
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "embedding",
+            "label": null,
             "multiple": false,
             "required": false,
             "source_type": "embeddings",
@@ -75,8 +84,13 @@
         },
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "documents",
+            "label": null,
             "multiple": false,
             "required": false,
             "source_type": "text_splitter",
@@ -91,6 +105,7 @@
             "choices": null,
             "default": "langchain",
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Collection_name",
             "max": null,
@@ -107,6 +122,7 @@
             "choices": null,
             "default": "./chroma",
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Persist_directory",
             "max": null,
@@ -123,6 +139,7 @@
             "choices": null,
             "default": "172.17.42.1",
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Server Host",
             "max": null,
@@ -139,6 +156,7 @@
             "choices": null,
             "default": "8020",
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "HTTP Port",
             "max": null,
@@ -155,6 +173,7 @@
             "choices": null,
             "default": false,
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Chroma_server_ssl_enabled",
             "max": null,
@@ -171,6 +190,7 @@
             "choices": null,
             "default": null,
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "GRPC Port",
             "max": null,
@@ -187,6 +207,7 @@
             "choices": null,
             "default": true,
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Anonymized_telemetry",
             "max": null,
@@ -203,6 +224,7 @@
             "choices": null,
             "default": false,
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Allow_reset",
             "max": null,
@@ -223,6 +245,7 @@
                 "mmr"
             ],
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -239,6 +262,7 @@
             "choices": null,
             "default": "similarity",
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Search_type",
             "max": null,
@@ -250,6 +274,23 @@
             "step": null,
             "style": null,
             "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Search_kwargs",
+            "max": null,
+            "min": null,
+            "name": "search_kwargs",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "dict"
         }
     ],
     "name": "Chroma",

@@ -22,13 +22,18 @@
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
-            "key": "output_parser",
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "out",
+            "label": "Prompt",
             "multiple": false,
             "required": false,
-            "source_type": "output_parser",
+            "source_type": "prompt",
             "template": false,
-            "type": "target"
+            "type": "source"
         }
     ],
     "description": "Template for Chat style LLM request. Renders System, User, and AI messages",
@@ -44,6 +49,7 @@
                 }
             ],
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,

@@ -1,9 +1,8 @@
 import json
 import logging
-from typing import Any, TypedDict, List, TypeVar
+from typing import Any, List, TypeVar, Dict
 from langchain.schema import BaseLLMOutputParser, Generation
-from pydantic import BaseModel
-
+from pydantic import BaseModel, model_validator
 
 T = TypeVar("T")
 
@@ -11,10 +10,16 @@ T = TypeVar("T")
 logger = logging.getLogger(__name__)
 
 
-class FunctionSchema(TypedDict):
+class FunctionSchema(BaseModel):
     name: str
     description: str
-    parameters: Any
+    parameters: Dict[str, Any]
+
+    @model_validator(mode="before")
+    def validate_parameters(cls, values):
+        if isinstance(values["parameters"], str):
+            values["parameters"] = json.loads(values["parameters"])
+        return values
 
 
 class OpenAIFunctionParser(BaseLLMOutputParser, BaseModel):
