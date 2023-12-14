@@ -1,11 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  HStack,
-  Spinner,
-  useToast,
-  VStack,
-} from "@chakra-ui/react";
+import { HStack, Spinner, useToast, VStack } from "@chakra-ui/react";
 import { ReactFlowProvider, useReactFlow } from "reactflow";
 
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
@@ -33,6 +28,7 @@ import { AgentCardListButton } from "agents/AgentCardListButton";
 import { EditorAgentCard } from "chains/editor/sidebar/EditorAgentCard";
 import { ChainCardListButton } from "chains/ChainCardListButton";
 import { RunLogProvider } from "chains/editor/run_log/RunLogProvider";
+import { RunLogMenuButton } from "chains/editor/run_log/RunLogMenuButton";
 
 const ChainEditorProvider = ({ graph, onError, children }) => {
   const chainState = useChainState(graph);
@@ -116,6 +112,7 @@ export const ChainEditorView = () => {
             <AgentCardListButton Card={EditorAgentCard} />
             <ChainCardListButton />
             <NodeTypeSearchButton />
+            <RunLogMenuButton />
           </LayoutLeftPane>
           <LayoutContent>
             <HStack>
