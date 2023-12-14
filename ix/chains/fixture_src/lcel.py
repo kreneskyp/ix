@@ -32,7 +32,7 @@ RUNNABLE_SEQUENCE = {
 RUNNABLE_MAP_CLASS_PATH = "ix.chains.components.lcel.init_parallel"
 RUNNABLE_MAP = {
     "class_path": RUNNABLE_MAP_CLASS_PATH,
-    "name": "Gather Input",
+    "name": "Map Input",
     "description": "Map inputs to the output of flow branches (chains, agents, prompts, tools, etc.)",
     "type": "map",
     "fields": [

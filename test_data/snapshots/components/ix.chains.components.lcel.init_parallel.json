@@ -76,6 +76,6 @@
             "type": "list"
         }
     ],
-    "name": "Gather Input",
+    "name": "Map Input",
     "type": "map"
 }
