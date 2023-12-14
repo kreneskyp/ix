@@ -1,7 +1,7 @@
 import logging
 from copy import deepcopy
 from typing import Dict, Any, List, Callable
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 import pytest_asyncio
@@ -60,6 +60,13 @@ def pytest_collection_modifyitems(config, items):
         if "openai_api" in item.keywords:
             if not run_openai_api_tests:
                 item.add_marker(pytest.mark.skip(reason="Skipping OpenAI API tests."))
+
+
+@pytest.fixture(scope="session", autouse=True)
+def silence_import_langchain():
+    """silence import_langchain command"""
+    patch("ix.chains.management.commands.import_langchain.Command.to_stdout")
+    yield
 
 
 @pytest_asyncio.fixture
