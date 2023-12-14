@@ -183,3 +183,4 @@ class Subscription(graphene.ObjectType):
     chatMessageSubscription = ChatMessageSubscription.Field()
     chatMessageTokenSubscription = ChatMessageTokenSubscription.Field()
     chatArtifactSubscription = ChatArtifactSubscription.Field()
+    runEventSubscription = RunEventSubscription.Field()
