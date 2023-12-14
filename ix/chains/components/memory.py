@@ -64,6 +64,8 @@ class SaveMemory(RunnableSerializable[Input, Output]):
                 output = input[key]
                 if isinstance(output, BaseMessage):
                     output = output.content
+                if "content" in output:
+                    output = output["content"]
                 memory_outputs[key] = output
 
         self.memory.save_context(memory_inputs, memory_outputs)
