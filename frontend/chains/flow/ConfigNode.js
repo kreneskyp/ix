@@ -180,10 +180,6 @@ export const ConfigNode = ({ id, data, selected }) => {
     boxShadow: selected ? selectionShadow : "md",
   };
 
-  if (!node) {
-    return null;
-  }
-
   // node type specific content
   const content = React.useMemo(() => {
     let NodeComponent = null;
@@ -200,6 +196,10 @@ export const ConfigNode = ({ id, data, selected }) => {
       <DefaultNodeContent {...node_component_props} />
     );
   }, [type, node, styles]);
+
+  if (!node) {
+    return null;
+  }
 
   return (
     <Box p={5} className="config-node">
