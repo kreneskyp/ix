@@ -127,10 +127,13 @@ class IxHandler(AsyncCallbackHandler):
         return str(self.task.user_id)
 
     @cached_property
+    def root_id(self) -> UUID:
+        return self.task.root_id if self.task.root_id else self.task.id
+
+    @cached_property
     def chat_id(self) -> str:
-        root_id = self.task.root_id if self.task.root_id else self.task.id
         try:
-            chat = Chat.objects.get(task_id=root_id)
+            chat = Chat.objects.get(task_id=self.root_id)
         except Chat.DoesNotExist:
             return None
         return chat.id

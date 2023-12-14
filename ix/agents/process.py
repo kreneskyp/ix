@@ -8,6 +8,7 @@ from ix.agents.models import Agent
 from ix.chains.callbacks import IxHandler
 from ix.chains.loaders.context import IxContext
 from ix.chains.models import Chain as ChainModel
+from ix.runnable_log.subscription import RunEventSubscription
 from ix.task_log.models import Task
 
 
@@ -48,6 +49,11 @@ class AgentProcess:
     async def chat_with_ai(self, user_input: Dict[str, Any]) -> Any:
         handler = IxHandler(agent=self.agent, chain=self.chain, task=self.task)
         context = await IxContext.afrom_task(task=self.task)
+
+        # send run events only for 1st level children which are currently all
+        # the root for
+        # if self.task.parent_id == self.task.root_id :
+        RunEventSubscription.on_run(chain_id=self.chain.id, task_id=handler.root_id)
 
         try:
             # TODO: chain loading needs to be made async

@@ -14,6 +14,7 @@ import {
   SelectedNodeContext,
 } from "chains/editor/contexts";
 import { StyledIcon } from "components/StyledIcon";
+import { NodeExecutionIcon } from "chains/editor/run_log/NodeExecutionIcon";
 
 const CONNECTOR_CONFIG = {
   agent: {
@@ -179,10 +180,6 @@ export const ConfigNode = ({ id, data, selected }) => {
     boxShadow: selected ? selectionShadow : "md",
   };
 
-  if (!node) {
-    return null;
-  }
-
   // node type specific content
   const content = React.useMemo(() => {
     let NodeComponent = null;
@@ -199,6 +196,10 @@ export const ConfigNode = ({ id, data, selected }) => {
       <DefaultNodeContent {...node_component_props} />
     );
   }, [type, node, styles]);
+
+  if (!node) {
+    return null;
+  }
 
   return (
     <Box p={5} className="config-node">
@@ -238,7 +239,9 @@ export const ConfigNode = ({ id, data, selected }) => {
             <DeleteIcon node={node} />
           </Flex>
         </Heading>
-        {run_event && <Box position={"absolute"} top={5} right={0}></Box>}
+        <Box position={"absolute"} top={5} right={0}>
+          <NodeExecutionIcon node={node} />
+        </Box>
         <Box minHeight={25} cursor="default">
           {content}
         </Box>

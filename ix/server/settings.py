@@ -13,6 +13,8 @@ import logging
 import os
 from pathlib import Path
 
+TRUTHY_VALUES = ["true", "1", "yes", "y", "on"]
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -53,7 +55,7 @@ INSTALLED_APPS = [
     "ix.chat",
     "ix.datasources",
     "ix.secrets",
-    # "ix.runnable_log",
+    "ix.runnable_log",
 ]
 
 MIDDLEWARE = [
@@ -258,3 +260,5 @@ VAULT_TLS_VERIFY = False
 VAULT_BASE_PATH = os.environ.get("VAULT_BASE_PATH", "ix")
 
 WORKSPACE_DIR = os.environ.get("WORKSPACE_DIR", "/var/app/workdir/")
+
+RUNNABLE_LOG_ENABLED = os.environ.get("RUNNABLE_LOG_ENABLED", "1") in TRUTHY_VALUES
