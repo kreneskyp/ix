@@ -46,6 +46,8 @@ from ix.chains.loaders.core import (
     BranchPlaceholder,
     MapPlaceholder,
     ainit_chain_flow,
+    SequencePlaceholder,
+    ImplicitJoin,
 )
 from ix.chains.loaders.memory import get_memory_session
 from ix.chains.loaders.text_splitter import TextSplitterShim
@@ -1027,14 +1029,64 @@ class TestLoadFlow:
     async def test_branch_in_sequence(self, lcel_branch_in_sequence, aix_context):
         """Test a sequence with a nested branch.
 
-        This test is flaky, unknown cause.
+        implicit maps are inherently flaky so this test requires manually checking
+        the loaded flow.
         """
         fixture = lcel_branch_in_sequence
         chain = fixture["chain"]
 
         # test loaded flow
         flow = await aload_chain_flow(chain)
-        assert flow == fixture["sequence"]
+
+        # Verify the class of the flow using isinstance
+        assert isinstance(flow, SequencePlaceholder)
+        assert flow.steps[0] == fixture["node0"]
+        assert isinstance(flow.steps[1], BranchPlaceholder)
+
+        # default branch
+        default = flow.steps[1].default
+        assert isinstance(default, SequencePlaceholder)
+        assert isinstance(default.steps[0], ImplicitJoin)
+        assert default.steps[0].source == [fixture["node1"]]
+        assert default.steps[0].target.node == fixture["node4"]
+        assert default.steps[1] == fixture["node5"]
+
+        # branch a
+        label_a, branch_a = flow.steps[1].branches[0]
+        assert label_a == "a"
+        assert isinstance(branch_a, SequencePlaceholder)
+        assert isinstance(branch_a.steps[0], ImplicitJoin)
+        assert branch_a.steps[0].source == [fixture["node2"]]
+        assert branch_a.steps[0].target.node == fixture["node4"]
+        assert branch_a.steps[1] == fixture["node5"]
+
+        # branch b
+        label_b, branch_b = flow.steps[1].branches[1]
+        assert label_b == "b"
+        assert isinstance(branch_b, SequencePlaceholder)
+        assert isinstance(branch_b.steps[0], ImplicitJoin)
+        assert branch_b.steps[0].source == [fixture["node3"]]
+        assert branch_b.steps[0].target.node == fixture["node4"]
+        assert branch_b.steps[1] == fixture["node5"]
+
+        # The maps are implicit maps so the mapped value isn't used but verifying
+        # it was parsed as expected. This value is one of the source nodes randomly
+        # based on the order the graph was parsed.
+        assert default.steps[0].target.map["in"] in [
+            fixture["node1"],
+            fixture["node2"],
+            fixture["node3"],
+        ]
+        assert branch_a.steps[0].target.map["in"] in [
+            fixture["node1"],
+            fixture["node2"],
+            fixture["node3"],
+        ]
+        assert branch_b.steps[0].target.map["in"] in [
+            fixture["node1"],
+            fixture["node2"],
+            fixture["node3"],
+        ]
 
     @pytest.mark.skip(reason="not supported yet")
     async def test_branch_in_map_in_sequence(
@@ -1083,7 +1135,55 @@ class TestLoadFlow:
 
         # test loaded flow
         flow = await aload_chain_flow(chain)
-        assert flow == fixture["branch"]
+
+        # root is a branch
+        assert isinstance(flow, BranchPlaceholder)
+        assert flow.node == fixture["branch_node"]
+
+        # default branch
+        default = flow.default
+        assert isinstance(default, SequencePlaceholder)
+        assert isinstance(default.steps[0], ImplicitJoin)
+        assert default.steps[0].source == [fixture["node1"]]
+        assert default.steps[0].target.node == fixture["node4"]
+        assert default.steps[1] == fixture["node5"]
+
+        # branch a
+        label_a, branch_a = flow.branches[0]
+        assert label_a == "a"
+        assert isinstance(branch_a, SequencePlaceholder)
+        assert isinstance(branch_a.steps[0], ImplicitJoin)
+        assert branch_a.steps[0].source == [fixture["node2"]]
+        assert branch_a.steps[0].target.node == fixture["node4"]
+        assert branch_a.steps[1] == fixture["node5"]
+
+        # branch b
+        label_b, branch_b = flow.branches[1]
+        assert label_b == "b"
+        assert isinstance(branch_b, SequencePlaceholder)
+        assert isinstance(branch_b.steps[0], ImplicitJoin)
+        assert branch_b.steps[0].source == [fixture["node3"]]
+        assert branch_b.steps[0].target.node == fixture["node4"]
+        assert branch_b.steps[1] == fixture["node5"]
+
+        # The maps are implicit maps so the mapped value isn't used but verifying
+        # it was parsed as expected. This value is one of the source nodes randomly
+        # based on the order the graph was parsed.
+        assert default.steps[0].target.map["in"] in [
+            fixture["node1"],
+            fixture["node2"],
+            fixture["node3"],
+        ]
+        assert branch_a.steps[0].target.map["in"] in [
+            fixture["node1"],
+            fixture["node2"],
+            fixture["node3"],
+        ]
+        assert branch_b.steps[0].target.map["in"] in [
+            fixture["node1"],
+            fixture["node2"],
+            fixture["node3"],
+        ]
 
         # verify that the joined nodes are the same instances
         # HAX: disabling this since the optimization was disabled to support
@@ -1092,9 +1192,6 @@ class TestLoadFlow:
         # assert flow.branches[1][1][1] == fixture["node4"]
         # assert flow.branches[0][1][2] == fixture["node5"]
         # assert flow.branches[1][1][2] == fixture["node5"]
-
-    async def ztest_malformed_map(self):
-        raise NotImplementedError
 
     async def test_each(self, lcel_flow_each):
         fixture = lcel_flow_each

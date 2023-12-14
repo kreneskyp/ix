@@ -892,6 +892,7 @@ async def lcel_join_after_branch(anode_types) -> dict:
     return {
         "chain": chain,
         "branch": branch_placeholder,
+        "branch_node": branch,
         "sequence_default": sequence_default,
         "sequence_a": sequence_a,
         "sequence_b": sequence_b,
