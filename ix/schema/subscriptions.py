@@ -8,6 +8,9 @@ from graphene_django import DjangoObjectType
 
 from ix.agents.models import Agent
 from ix.chat.models import Chat
+from ix.runnable_log.subscription import RunEventSubscription
+
+# from ix.runnable_log.subscription import RunEventSubscription
 from ix.task_log.models import TaskLogMessage, Artifact, Task
 
 logger = logging.getLogger(__name__)

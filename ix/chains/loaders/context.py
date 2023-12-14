@@ -1,19 +1,20 @@
+import asyncio
 import logging
 from datetime import datetime
 from typing import Callable, Dict, Optional
-from uuid import UUID
+from uuid import UUID, uuid4
 from zoneinfo import ZoneInfo
 
-
+from django.conf import settings
 from django.db.models import Q
+from langchain.schema.runnable.utils import Input
 from pydantic import BaseModel
 
 from ix.chat.models import Chat
-
-# from ix.runnable_log.models import RunnableExecution
+from ix.runnable_log.models import RunnableExecution
+from ix.runnable_log.subscription import RunEventSubscription
 from ix.task_log.models import Task
-
-# from ix.utils.json import to_json_serializable
+from ix.utils.json import to_json_serializable
 
 logger = logging.getLogger(__name__)
 
@@ -26,47 +27,58 @@ def now() -> datetime:
 
 class Listener:
     node_id: UUID
-    start: int = None
+    run: dict = {}
 
     def __init__(self, context: "IxContext", node_id: UUID):
         self.context = context
         self.node_id = node_id
 
-    def on_start(self):
-        self.start = now()
+    def on_start(self, input: Input) -> None:
+        self.run = {
+            "id": str(uuid4()),
+            "user_id": str(self.context.user_id),
+            "task_id": str(self.context.task_id),
+            "node_id": str(self.node_id),
+            "started_at": datetime.now(tz=ZoneInfo("America/Los_Angeles")),
+            "inputs": to_json_serializable(input),
+            "completed": False,
+        }
 
-    def on_end(self, input, output):
+        RunEventSubscription.on_execution(
+            chain_id=self.context.chain_id,
+            event=self.run,
+        )
+
+    def on_end(self, output):
         self.log_run(input, output, completed=True)
         pass
 
-    async def aon_end(self, input, output):
-        await self.alog_run(input, output, completed=True)
+    async def aon_end(self, output):
+        await self.alog_run(output, completed=True)
         pass
 
-    async def on_error(self, input: dict, exception: Exception):
-        await self.alog_run(
-            input=input, output={}, message=str(exception), completed=False
+    async def on_error(self, exception: Exception):
+        await self.alog_run(output={}, message=str(exception), completed=False)
+
+    async def alog_run(self, output, message: str = None, completed: bool = True):
+        if not settings.RUNNABLE_LOG_ENABLED:
+            return
+
+        self.run.update(
+            dict(
+                completed=completed,
+                message=message,
+                outputs=to_json_serializable(output),
+                finished_at=datetime.now(tz=ZoneInfo("America/Los_Angeles")),
+            )
         )
-
-    async def alog_run(
-        self, input, output, message: str = None, completed: bool = True
-    ):
-        return
-
-        # input = to_json_serializable(input)
-        # output = to_json_serializable(output)
-        #
-        # await RunnableExecution.objects.acreate(
-        #     user_id=self.context.user_id,
-        #     task_id=self.context.task_id,
-        #     node_id=self.node_id,
-        #     started_at=self.start,
-        #     finished_at=now(),
-        #     inputs=input,
-        #     outputs=output,
-        #     message=message,
-        #     completed=completed,
-        # )
+        await asyncio.gather(
+            RunEventSubscription.aon_execution(
+                chain_id=self.context.chain_id,
+                event=self.run,
+            ),
+            RunnableExecution.objects.acreate(**self.run),
+        )
 
     @property
     def callbacks(self) -> Dict[str, Callable]:

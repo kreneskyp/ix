@@ -83,7 +83,7 @@ class IxNode(RunnableSerializable[Input, Output]):
         **kwargs: Any,
     ) -> Output:
         listener = self.context.get_listener(self.node_id)
-        listener.on_start()
+        listener.on_start(input=input)
         runnable = self.build_runnable(input)
 
         # unpack input if it's a dict
@@ -93,10 +93,9 @@ class IxNode(RunnableSerializable[Input, Output]):
         try:
             response = await runnable.ainvoke(input, config, **kwargs)
         except Exception as e:
-            await listener.on_error(input=input, exception=e)
+            await listener.on_error(exception=e)
             raise
         await listener.aon_end(
-            input=input,
             output=response,
         )
         return response
