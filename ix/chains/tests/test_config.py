@@ -320,7 +320,7 @@ class TestTroubleCases:
                 "verbose",
             ],
         )
-        assert fields[0]["type"] == "boolean"
+        assert fields[0]["type"] == "bool"
         assert fields[0]["input_type"] is None
 
     def test_optional_str(self):

@@ -5,6 +5,7 @@
         "display_groups": null,
         "properties": {
             "language": {
+                "default": "python",
                 "enum": [
                     "cpp",
                     "go",
@@ -125,7 +126,7 @@
                     "value": "cobol"
                 }
             ],
-            "default": null,
+            "default": "python",
             "description": null,
             "init_type": "init",
             "input_type": "select",
@@ -138,7 +139,7 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "str"
+            "type": "string"
         },
         {
             "choices": null,

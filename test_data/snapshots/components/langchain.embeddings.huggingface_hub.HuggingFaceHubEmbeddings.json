@@ -12,7 +12,6 @@
                 "type": "object"
             },
             "repo_id": {
-                "default": "sentence-transformers/all-mpnet-base-v2",
                 "type": "string"
             },
             "task": {
@@ -29,7 +28,7 @@
     "fields": [
         {
             "choices": null,
-            "default": "sentence-transformers/all-mpnet-base-v2",
+            "default": null,
             "description": null,
             "init_type": "init",
             "input_type": null,
