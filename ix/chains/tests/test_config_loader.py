@@ -1771,7 +1771,7 @@ class TestExampleFlows:
     tested in TestLoadFlow and TestFlow but didnt work in the UX created flow.
     """
 
-    async def test_pirate_flow(self, anode_types, aix_context, mock_openai):
+    async def test_pirate_flow(self, anode_types, aix_context, mock_openai_streaming):
         """Test a flow with a pirate component"""
 
         await aload_fixture("agent/pirate")

@@ -130,9 +130,7 @@ def load_flow_props(
 
     for group in itertools.groupby(properties, lambda x: x.source_key):
         key, edges = group
-        print("key", key)
         edge_group: List[ChainEdge] = [edge for edge in edges]
-        print("edges", edge_group)
 
         # ignore non-flow collections
         connector = node_type.connectors_as_dict.get(key, None)

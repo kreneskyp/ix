@@ -155,7 +155,7 @@ def mock_openai_key(monkeypatch):
 
 
 MOCKABLE_LLM_CLASSES = [
-    "langchain.chat_models.openai.ChatOpenAI",
+    "langchain_community.chat_models.openai.ChatOpenAI",
 ]
 
 
@@ -172,7 +172,9 @@ def mock_openai(mocker, mock_openai_key):
         return content
 
     # async completions are outside the class and need to be mocked separately
-    mock_acomplete = mocker.patch("langchain.chat_models.openai.acompletion_with_retry")
+    mock_acomplete = mocker.patch(
+        "langchain_community.chat_models.openai.acompletion_with_retry"
+    )
     mock_acomplete.side_effect = _mock_acompletion_with_retry
     mock_llm.acompletion_with_retry = mock_acomplete
 
@@ -199,6 +201,7 @@ def mock_openai_streaming(mocker, mock_openai_key):
     # create a mock instance of the class
     mock_llm = MockChatOpenAI()
     mock_llm.return_value = "mock llm response"
+    mock_llm.streaming = True
 
     async def _mock_acompletion_with_retry(*args, **kwargs):
         if mock_llm.raise_exception:
@@ -225,7 +228,9 @@ def mock_openai_streaming(mocker, mock_openai_key):
                 }
 
     # async completions are outside the class and need to be mocked separately
-    mock_acomplete = mocker.patch("langchain.chat_models.openai.acompletion_with_retry")
+    mock_acomplete = mocker.patch(
+        "langchain_community.chat_models.openai.acompletion_with_retry"
+    )
     mock_acomplete.side_effect = _mock_acompletion_with_retry
     mock_llm.acompletion_with_retry = mock_acomplete
 
