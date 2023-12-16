@@ -1,10 +1,14 @@
 import { useColorMode } from "@chakra-ui/color-mode";
+import { useTheme } from "@chakra-ui/react";
 
 export const useEditorColorMode = () => {
   const { colorMode } = useColorMode();
   const isLight = colorMode === "light";
+  const theme = useTheme();
 
   const retrieval = isLight ? "gray.700" : "gray.800";
+  const flow = isLight ? "gray.700" : "gray.800";
+  const data = isLight ? "gray.500" : "gray.500";
 
   return {
     isLight,
@@ -56,7 +60,11 @@ export const useEditorColorMode = () => {
       selected: isLight ? "blue.400" : "blue.400",
     },
     highlight: {
-      root: isLight ? "gray.300" : "gray.900",
+      data: data,
+      root: isLight ? "gray.800" : "gray.900",
+      flow: flow,
+      map: flow,
+      branch: flow,
       document_loader: retrieval,
       llm: isLight ? "red.300" : "red.300",
       prompt: isLight ? "orange.300" : "orange.500",
@@ -66,24 +74,31 @@ export const useEditorColorMode = () => {
       agent: isLight ? "green.500" : "green.600",
       parser: retrieval,
       retriever: retrieval,
+      schema: data,
       text_splitter: retrieval,
       tool: isLight ? "yellow.500" : "yellow.600",
       toolkit: isLight ? "yellow.500" : "yellow.600",
-      embeddings: retrieval,
+      embeddings: isLight ? "red.300" : "red.300",
       output_parser: isLight ? "gray.400" : "gray.700",
+      document_transformer: retrieval,
       vectorstore: retrieval,
+      store: retrieval,
       default: isLight ? "gray.400" : "gray.700",
+    },
+    indicator: {
+      success: isLight ? "green.600" : "green.400",
+      error: isLight ? "red.500" : "red.400",
     },
     scrollbar: isLight
       ? {
           "&::-webkit-scrollbar": {
-            width: "8px",
+            width: "5px",
           },
           "&::-webkit-scrollbar-track": {
             background: "transparent",
           },
           "&::-webkit-scrollbar-thumb": {
-            background: "#bbb",
+            background: "#ddd",
             borderRadius: "4px",
           },
           "&::-webkit-scrollbar-thumb:hover": {
@@ -92,18 +107,25 @@ export const useEditorColorMode = () => {
         }
       : {
           "&::-webkit-scrollbar": {
-            width: "8px",
+            width: "5px",
           },
           "&::-webkit-scrollbar-track": {
             background: "transparent",
           },
           "&::-webkit-scrollbar-thumb": {
-            background: "#333",
+            background: theme.colors.gray[600],
             borderRadius: "4px",
           },
           "&::-webkit-scrollbar-thumb:hover": {
-            background: "#555",
+            background: theme.colors.gray[500],
           },
+        },
+    badge: isLight
+      ? {
+          color: "white",
+        }
+      : {
+          color: "gray.900",
         },
     input: isLight
       ? {

@@ -6,10 +6,18 @@
         "properties": {
             "session_key": {
                 "default": "session_id",
+                "description": "component session will be initialized with this argument.",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "session_prefix": {
                 "default": "",
+                "description": "prefix applied to the session ID. e.g. 'chat' will result in 'chat:session_id'.Chains with the same scope and prefix will share the same session.",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "session_scope": {
@@ -20,6 +28,9 @@
                     "user"
                 ],
                 "input_type": "select",
+                "style": {
+                    "width": "100%"
+                },
                 "type": "string"
             },
             "ttl": {
@@ -45,6 +56,7 @@
             "choices": null,
             "default": "redis://redis:6379/0",
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -63,6 +75,7 @@
             "choices": null,
             "default": 3600,
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -96,8 +109,9 @@
             ],
             "default": null,
             "description": null,
+            "init_type": "init",
             "input_type": "select",
-            "label": "",
+            "label": "Session Scope",
             "max": null,
             "min": null,
             "name": "session_scope",
@@ -105,15 +119,18 @@
             "required": false,
             "secret_key": null,
             "step": null,
-            "style": null,
+            "style": {
+                "width": "100%"
+            },
             "type": "string"
         },
         {
             "choices": null,
             "default": "",
-            "description": null,
+            "description": "prefix applied to the session ID. e.g. 'chat' will result in 'chat:session_id'.Chains with the same scope and prefix will share the same session.",
+            "init_type": "init",
             "input_type": null,
-            "label": "",
+            "label": "Session Prefix",
             "max": null,
             "min": null,
             "name": "session_prefix",
@@ -121,15 +138,18 @@
             "required": false,
             "secret_key": null,
             "step": null,
-            "style": null,
+            "style": {
+                "width": "100%"
+            },
             "type": "string"
         },
         {
             "choices": null,
             "default": "session_id",
-            "description": null,
+            "description": "component session will be initialized with this argument.",
+            "init_type": "init",
             "input_type": null,
-            "label": "",
+            "label": "Session Key",
             "max": null,
             "min": null,
             "name": "session_key",
@@ -137,7 +157,9 @@
             "required": false,
             "secret_key": null,
             "step": null,
-            "style": null,
+            "style": {
+                "width": "100%"
+            },
             "type": "string"
         }
     ],

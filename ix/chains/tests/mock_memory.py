@@ -9,6 +9,7 @@ class MockMemory(BaseMemory):
     Used for testing only.
     """
 
+    memory_variable: str = "memories"
     value_map: Dict[str, str] = {"chat_history": "mock memory"}
     session_id: str = "mock_session_id"
     supports_session: bool = True
@@ -18,7 +19,7 @@ class MockMemory(BaseMemory):
         return list(self.value_map.keys())
 
     def load_memory_variables(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
-        return self.value_map
+        return {self.memory_variable: self.value_map}
 
     def save_context(self, inputs: Dict[str, Any], outputs: Dict[str, str]) -> None:
         pass

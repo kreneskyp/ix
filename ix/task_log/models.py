@@ -14,6 +14,13 @@ class Task(models.Model):
     """An instance of an agent running."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    root = models.ForeignKey(
+        "self",
+        related_name="descendants",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
     parent = models.ForeignKey(
         "self", related_name="children", null=True, blank=True, on_delete=models.CASCADE
     )
@@ -36,6 +43,7 @@ class Task(models.Model):
         Create a subtask in which a delegated task will run.
         """
         return Task.objects.create(
+            root_id=self.root_id or self.id,
             parent=self,
             name=f"delegating to agent {agent.alias}",
             agent_id=agent.id,
@@ -52,6 +60,7 @@ class Task(models.Model):
         chain = await Chain.objects.aget(id=agent.chain_id)
         user = await user_model.objects.aget(id=self.user_id)
         return await Task.objects.acreate(
+            root_id=self.root_id or self.id,
             parent=self,
             name=f"delegating to agent {agent.alias}",
             agent_id=agent.id,

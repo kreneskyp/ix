@@ -34,18 +34,21 @@ METAPHOR_SIMILAR = {
 class TestMetaphorTools:
     async def test_load_search(self, aload_chain, mock_config_secrets):
         config = await mock_config_secrets(METAPHOR_SEARCH, ["metaphor_api_key"])
-        component = await aload_chain(config)
+        ix_node = await aload_chain(config)
+        component = ix_node.child
         assert isinstance(component, Tool)
         assert component.name == "metaphor_search"
 
     async def test_load_contents(self, aload_chain, mock_config_secrets):
         config = await mock_config_secrets(METAPHOR_CONTENTS, ["metaphor_api_key"])
-        component = await aload_chain(config)
+        ix_node = await aload_chain(config)
+        component = ix_node.child
         assert isinstance(component, Tool)
         assert component.name == "metaphor_get_contents"
 
     async def test_load_similar(self, aload_chain, mock_config_secrets):
         config = await mock_config_secrets(METAPHOR_SIMILAR, ["metaphor_api_key"])
-        component = await aload_chain(config)
+        ix_node = await aload_chain(config)
+        component = ix_node.child
         assert isinstance(component, Tool)
         assert component.name == "metaphor_find_similar"

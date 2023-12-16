@@ -5,6 +5,7 @@
         "display_groups": null,
         "properties": {
             "language": {
+                "default": "python",
                 "enum": [
                     "cpp",
                     "go",
@@ -24,7 +25,8 @@
                     "latex",
                     "html",
                     "sol",
-                    "csharp"
+                    "csharp",
+                    "cobol"
                 ],
                 "input_type": "select",
                 "type": "string"
@@ -118,10 +120,15 @@
                 {
                     "label": "CSHARP",
                     "value": "csharp"
+                },
+                {
+                    "label": "COBOL",
+                    "value": "cobol"
                 }
             ],
-            "default": null,
+            "default": "python",
             "description": null,
+            "init_type": "init",
             "input_type": "select",
             "label": "Language",
             "max": null,
@@ -132,12 +139,13 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "str"
+            "type": "string"
         },
         {
             "choices": null,
             "default": 0,
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Parser_threshold",
             "max": null,

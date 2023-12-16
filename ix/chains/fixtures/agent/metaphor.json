@@ -145,7 +145,7 @@
     "fields": {
       "source": "2b96ae9e-bdd2-4410-8513-e849473c777d",
       "target": "fdd474c9-78a7-495d-86d4-05523fdfbdd3",
-      "key": "llm",
+      "target_key": "llm",
       "chain": "349ce049-9880-4811-9cf5-9f644cddded2",
       "input_map": null,
       "relation": "PROP"
@@ -157,7 +157,7 @@
     "fields": {
       "source": "74d77d59-24f4-4e43-b067-f011b4b2d53e",
       "target": "fdd474c9-78a7-495d-86d4-05523fdfbdd3",
-      "key": "tools",
+      "target_key": "tools",
       "chain": "349ce049-9880-4811-9cf5-9f644cddded2",
       "input_map": null,
       "relation": "PROP"
@@ -169,7 +169,7 @@
     "fields": {
       "source": "3c83d7d4-7708-4d7e-9b38-1e493068f770",
       "target": "fdd474c9-78a7-495d-86d4-05523fdfbdd3",
-      "key": "tools",
+      "target_key": "tools",
       "chain": "349ce049-9880-4811-9cf5-9f644cddded2",
       "input_map": null,
       "relation": "PROP"
@@ -181,7 +181,7 @@
     "fields": {
       "source": "ed91c79b-1d38-4d96-b60f-587322c3e058",
       "target": "fdd474c9-78a7-495d-86d4-05523fdfbdd3",
-      "key": "tools",
+      "target_key": "tools",
       "chain": "349ce049-9880-4811-9cf5-9f644cddded2",
       "input_map": null,
       "relation": "PROP"

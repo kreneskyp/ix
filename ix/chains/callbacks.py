@@ -10,7 +10,7 @@ from typing import Dict, Union, Any, List, Optional
 from uuid import UUID
 
 from channels.layers import get_channel_layer
-from django.db.models import Q
+from langchain.schema.runnable import RunnableConfig
 
 from ix.schema.subscriptions import ChatMessageTokenSubscription
 from langchain.callbacks.manager import AsyncCallbackManagerForChainRun
@@ -127,9 +127,13 @@ class IxHandler(AsyncCallbackHandler):
         return str(self.task.user_id)
 
     @cached_property
+    def root_id(self) -> UUID:
+        return self.task.root_id if self.task.root_id else self.task.id
+
+    @cached_property
     def chat_id(self) -> str:
         try:
-            chat = Chat.objects.get(Q(task=self.task) | Q(task_id=self.task.parent_id))
+            chat = Chat.objects.get(task_id=self.root_id)
         except Chat.DoesNotExist:
             return None
         return chat.id
@@ -260,7 +264,6 @@ class IxHandler(AsyncCallbackHandler):
         **kwargs: Any,
     ) -> None:
         """Run when chain errors."""
-        await self.send_error_msg(error)
 
     async def on_tool_start(
         self, serialized: Dict[str, Any], input_str: str, **kwargs: Any
@@ -318,7 +321,7 @@ class IxHandler(AsyncCallbackHandler):
         return failure_msg
 
     @staticmethod
-    def from_manager(run_manager: AsyncCallbackManagerForChainRun):
+    def from_manager(run_manager: AsyncCallbackManagerForChainRun) -> "IxHandler":
         """Helper method for finding the IxHandler in a run_manager."""
         ix_handlers = [
             handler
@@ -329,4 +332,27 @@ class IxHandler(AsyncCallbackHandler):
             raise ValueError("Expected at least one IxHandler in run_manager")
         if len(ix_handlers) != 1:
             raise ValueError("Expected exactly one IxHandler in run_manager")
+        return ix_handlers[0]
+
+    @staticmethod
+    def from_config(config: RunnableConfig) -> "IxHandler":
+        """Helper method for finding the IxHandler in a config."""
+        callbacks = config.get("callbacks", None)
+        if callbacks is None:
+            raise ValueError(
+                "Expected a callback manager, was IxHandler configured on invoke?"
+            )
+
+        if isinstance(callbacks, list):
+            handlers = callbacks
+        else:
+            handlers = callbacks.handlers
+
+        ix_handlers = [
+            handler for handler in handlers if isinstance(handler, IxHandler)
+        ]
+        if len(ix_handlers) == 0:
+            raise ValueError("Expected at least one IxHandler in config")
+        if len(ix_handlers) != 1:
+            raise ValueError("Expected exactly one IxHandler in config")
         return ix_handlers[0]

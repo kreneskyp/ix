@@ -1,0 +1,47 @@
+{
+    "child_field": null,
+    "class_path": "ix.runnable.output_parser.ParseFunctionCall",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {},
+        "required": [],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "in",
+            "label": "AI Message",
+            "multiple": false,
+            "required": false,
+            "source_type": "llm",
+            "template": false,
+            "type": "target"
+        },
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "out",
+            "label": "Function Call",
+            "multiple": false,
+            "required": false,
+            "source_type": "flow",
+            "template": false,
+            "type": "source"
+        }
+    ],
+    "description": "Parse a function call from an AI Message",
+    "display_type": "node",
+    "fields": [],
+    "name": "Parse Function Call",
+    "type": "chain"
+}

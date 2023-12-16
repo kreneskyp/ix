@@ -5,30 +5,27 @@
         "display_groups": null,
         "properties": {
             "cache_folder": {
-                "description": "Path to store models",
                 "type": "string"
             },
             "encode_kwargs": {
-                "description": "Key word arguments to pass when calling the `encode` method of the model",
                 "type": "object"
             },
             "model_kwargs": {
-                "description": "Key word arguments to pass to the model",
                 "type": "object"
             },
             "model_name": {
                 "default": "sentence-transformers/all-mpnet-base-v2",
-                "description": "Model name to use",
-                "enum": [
-                    "sentence-transformers/all-mpnet-base-v2"
-                ],
-                "style": {
-                    "width": "100%"
-                },
                 "type": "string"
+            },
+            "multi_process": {
+                "default": false,
+                "type": "boolean"
             }
         },
-        "required": [],
+        "required": [
+            "model_kwargs",
+            "encode_kwargs"
+        ],
         "type": "object"
     },
     "connectors": null,
@@ -36,16 +33,12 @@
     "display_type": "node",
     "fields": [
         {
-            "choices": [
-                {
-                    "label": "all-mpnet-base-v2",
-                    "value": "sentence-transformers/all-mpnet-base-v2"
-                }
-            ],
+            "choices": null,
             "default": "sentence-transformers/all-mpnet-base-v2",
-            "description": "Model name to use",
+            "description": null,
+            "init_type": "init",
             "input_type": null,
-            "label": "Model",
+            "label": "Model_name",
             "max": null,
             "min": null,
             "name": "model_name",
@@ -53,17 +46,16 @@
             "required": false,
             "secret_key": null,
             "step": null,
-            "style": {
-                "width": "100%"
-            },
-            "type": "string"
+            "style": null,
+            "type": "str"
         },
         {
             "choices": null,
             "default": null,
-            "description": "Path to store models",
+            "description": null,
+            "init_type": "init",
             "input_type": null,
-            "label": "",
+            "label": "Cache_folder",
             "max": null,
             "min": null,
             "name": "cache_folder",
@@ -72,39 +64,58 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "string"
+            "type": "str"
         },
         {
             "choices": null,
             "default": null,
-            "description": "Key word arguments to pass to the model",
+            "description": null,
+            "init_type": "init",
             "input_type": null,
-            "label": "",
+            "label": "Model_kwargs",
             "max": null,
             "min": null,
             "name": "model_kwargs",
             "parent": null,
-            "required": false,
+            "required": true,
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "dictionary"
+            "type": "Dict"
         },
         {
             "choices": null,
             "default": null,
-            "description": "Key word arguments to pass when calling the `encode` method of the model",
+            "description": null,
+            "init_type": "init",
             "input_type": null,
-            "label": "",
+            "label": "Encode_kwargs",
             "max": null,
             "min": null,
             "name": "encode_kwargs",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "Dict"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Multi_process",
+            "max": null,
+            "min": null,
+            "name": "multi_process",
             "parent": null,
             "required": false,
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "dictionary"
+            "type": "boolean"
         }
     ],
     "name": "HuggingFace Embeddings",

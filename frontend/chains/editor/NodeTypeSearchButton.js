@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { NodeTypeSearch } from "chains/editor/NodeTypeSearch";
 import {
-  IconButton,
+  Box,
   Popover,
   PopoverArrow,
   PopoverCloseButton,
@@ -14,9 +14,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { SelectedNodeContext } from "chains/editor/contexts";
+import { NO_SCROLLBAR_CSS } from "site/css";
+import { MenuItem } from "site/MenuItem";
+import { useLeftSidebarContext } from "site/sidebar/context";
 
 export const NodeTypeSearchButton = () => {
   const { isOpen, onToggle, onClose, onOpen } = useDisclosure();
+  const initialFocusRef = React.useRef();
 
   // auto-open when connector is [de]selected
   // HAX: couldn't get this to work when closeOnBlur={true}
@@ -32,18 +36,11 @@ export const NodeTypeSearchButton = () => {
   }, [selectedConnector]);
 
   const { colorMode } = useColorMode();
-  const style =
-    colorMode === "light"
-      ? {
-          border: "1px solid",
-          borderColor: "gray.300",
-        }
-      : {
-          border: "1px solid",
-          borderColor: "whiteAlpha.50",
-        };
   const highlightColor = colorMode === "light" ? "blue.500" : "blue.400";
   const color = colorMode === "light" ? "gray.800" : "white";
+
+  const sideBar = useLeftSidebarContext();
+  const width = sideBar.size === "icons" ? "25px" : "110px";
 
   // HAX: Popover must be closedOnBlue=False to allow for connectors to
   //      switch without closing the popover. It proved very difficult to
@@ -54,19 +51,24 @@ export const NodeTypeSearchButton = () => {
       onClose={onClose}
       placement={"right-start"}
       closeOnBlur={false}
+      initialFocusRef={initialFocusRef}
     >
       <PopoverTrigger>
-        <IconButton
-          icon={<FontAwesomeIcon size={"lg"} icon={faSquarePlus} />}
-          {...style}
+        <Box
           onClick={onToggle}
-          title={"Add components"}
-        />
+          width={width}
+          transition="width 0.3s ease-out, max-width 0.3s ease-out"
+        >
+          <MenuItem onClick={onToggle} title={"Add Node"}>
+            <FontAwesomeIcon size={"lg"} icon={faSquarePlus} />
+          </MenuItem>
+        </Box>
       </PopoverTrigger>
       <PopoverContent
         zIndex={99998}
         pb={2}
         boxShadow="0px 0px 10px 0px rgba(0,0,0,0.15)"
+        css={NO_SCROLLBAR_CSS}
       >
         <PopoverHeader
           borderBottom="2px solid"
@@ -77,7 +79,7 @@ export const NodeTypeSearchButton = () => {
         </PopoverHeader>
         <PopoverArrow />
         <PopoverCloseButton />
-        <NodeTypeSearch />
+        <NodeTypeSearch initialFocusRef={initialFocusRef} />
       </PopoverContent>
     </Popover>
   );

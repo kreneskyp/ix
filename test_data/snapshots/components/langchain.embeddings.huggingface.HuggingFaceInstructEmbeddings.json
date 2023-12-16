@@ -1,0 +1,123 @@
+{
+    "child_field": null,
+    "class_path": "langchain.embeddings.huggingface.HuggingFaceInstructEmbeddings",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "cache_folder": {
+                "type": "string"
+            },
+            "embed_instruction": {
+                "default": "Represent the document for retrieval: ",
+                "type": "string"
+            },
+            "encode_kwargs": {
+                "type": "object"
+            },
+            "model_name": {
+                "default": "hkunlp/instructor-large",
+                "type": "string"
+            },
+            "query_instruction": {
+                "default": "Represent the question for retrieving supporting documents: ",
+                "type": "string"
+            }
+        },
+        "required": [
+            "encode_kwargs"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "HuggingFace Instruct Embeddings",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": "hkunlp/instructor-large",
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Model_name",
+            "max": null,
+            "min": null,
+            "name": "model_name",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Cache_folder",
+            "max": null,
+            "min": null,
+            "name": "cache_folder",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Encode_kwargs",
+            "max": null,
+            "min": null,
+            "name": "encode_kwargs",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "Dict"
+        },
+        {
+            "choices": null,
+            "default": "Represent the document for retrieval: ",
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Embed_instruction",
+            "max": null,
+            "min": null,
+            "name": "embed_instruction",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": "Represent the question for retrieving supporting documents: ",
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Query_instruction",
+            "max": null,
+            "min": null,
+            "name": "query_instruction",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "HuggingFace Instruct Embeddings",
+    "type": "embeddings"
+}

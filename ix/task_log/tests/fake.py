@@ -3,7 +3,7 @@ from asgiref.sync import sync_to_async
 from datetime import datetime
 
 from ix.chains.models import NodeType, Chain, ChainNode, ChainEdge
-from ix.chains.tests.test_config_loader import LLM_CHAIN
+from ix.chains.tests.mock_configs import LLM_CHAIN
 from ix.chat.models import Chat
 from ix.task_log.models import Agent, Task, TaskLogMessage, Artifact
 from faker import Faker
@@ -80,6 +80,9 @@ async def afake_chain_node(**kwargs):
 
 
 def fake_chain_edge(**kwargs):
+    if "key" in kwargs:
+        raise ValueError("key is deprecated, use target_key instead")
+
     chain = kwargs.get("chain", fake_chain())
 
     source_node = kwargs.get("source")
@@ -93,9 +96,11 @@ def fake_chain_edge(**kwargs):
     edge = ChainEdge.objects.create(
         source=source_node,
         target=target_node,
-        key=kwargs.get("key", "default_key"),
+        source_key=kwargs.get("source_key", source_node.node_type.type),
+        target_key=kwargs.get("target_key", "default_key"),
         chain=chain,
         input_map=kwargs.get("input_map", {}),
+        relation=kwargs.get("relation", "LINK"),
     )
 
     return edge
@@ -147,7 +152,20 @@ async def afake_agent(**kwargs):
 def fake_task(**kwargs):
     user = kwargs.pop("user", None) or fake_user()
     agent = kwargs.pop("agent", None) or fake_agent()
-    task = Task.objects.create(user=user, agent=agent, chain=agent.chain, **kwargs)
+    if "parent" in kwargs:
+        root_id = (
+            kwargs["parent"].root_id
+            if kwargs["parent"].root_id
+            else kwargs["parent"].id
+        )
+    elif "parent_id" in kwargs:
+        parent = Task.objects.get(pk=kwargs["parent_id"])
+        root_id = parent.root_id if parent.root_id else parent.id
+    else:
+        root_id = kwargs.pop("root_id", None)
+    task = Task.objects.create(
+        user=user, agent=agent, chain=agent.chain, root_id=root_id, **kwargs
+    )
     return task
 
 

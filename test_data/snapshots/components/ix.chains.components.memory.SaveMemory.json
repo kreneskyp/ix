@@ -1,0 +1,94 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.components.memory.SaveMemory",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "input_keys": {
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
+            "output_keys": {
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            }
+        },
+        "required": [],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "memory",
+            "label": null,
+            "multiple": true,
+            "required": false,
+            "source_type": "memory",
+            "template": false,
+            "type": "target"
+        }
+    ],
+    "description": "Save memories to short term storage.",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": [
+                "input"
+            ],
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Input_keys",
+            "max": null,
+            "min": null,
+            "name": "input_keys",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": [
+                "output"
+            ],
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Output_keys",
+            "max": null,
+            "min": null,
+            "name": "output_keys",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        }
+    ],
+    "name": "Save Memories",
+    "type": "chain"
+}

@@ -76,7 +76,7 @@ export const ConnectorPopover = ({
           title={"shift-click for help"}
           _hover={hover}
         >
-          {children || label || connector.key}
+          {children || label || connector.label || connector.key}
         </Box>
       </PopoverTrigger>
       <PopoverContent zIndex={99999} color={"white"}>

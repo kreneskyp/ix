@@ -55,7 +55,8 @@ class TestIxHandler:
         agent = await Agent.objects.aget(id=task.agent_id)
 
         handler = IxHandler(agent=agent, chain=chain, task=task)
-        langchain_chain = await aload_chain(CHAIN_WITH_LLM)
+        ix_node = await aload_chain(CHAIN_WITH_LLM)
+        langchain_chain = ix_node.child
         langchain_chain.llm.streaming = True
         assert langchain_chain.llm.streaming is True
 

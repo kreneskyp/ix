@@ -1,8 +1,46 @@
 import React from "react";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { useSideBarColorMode } from "chains/editor/useColorMode";
+import {
+  useEditorColorMode,
+  useSideBarColorMode,
+} from "chains/editor/useColorMode";
+
+export const getOptionStyle = (isLight) => {
+  return isLight
+    ? {
+        hover: {
+          bg: "blackAlpha.100",
+        },
+        label: {
+          color: "gray.600",
+        },
+        container: {
+          color: "gray.700",
+        },
+        help: {
+          color: "gray.500",
+        },
+        icon: {
+          color: "gray.600",
+        },
+      }
+    : {
+        hover: {
+          bg: "blackAlpha.300",
+        },
+        label: {
+          color: "gray.300",
+        },
+        help: {
+          color: "gray.500",
+        },
+        icon: {
+          color: "gray.300",
+        },
+      };
+};
 
 /**
  * Represents a node that can be dragged from the toolbar into the graph.
@@ -10,7 +48,8 @@ import { useSideBarColorMode } from "chains/editor/useColorMode";
  * and other configuration for creating the node in the graph.
  */
 export const NodeSelector = ({ type }) => {
-  const { isLight } = useSideBarColorMode();
+  const { isLight, highlight } = useEditorColorMode();
+  const style = getOptionStyle(isLight);
 
   const handleStart = (event, data) => {
     event.dataTransfer.setData("application/reactflow", JSON.stringify(type));
@@ -21,27 +60,27 @@ export const NodeSelector = ({ type }) => {
     <Box
       p={1}
       m={2}
+      mr={0}
+      ml={0}
+      pl={2}
       minHeight={25}
-      minWidth={150}
-      width="95%"
-      color={isLight ? "gray.800" : "gray.400"}
-      bg={isLight ? "gray.100" : "gray.800"}
-      border="1px solid"
-      borderColor={isLight ? "gray.400" : "gray.700"}
-      borderRadius={3}
+      width="100%"
       onDragStart={(event) => handleStart(event, "input")}
       cursor={"grab"}
       draggable
+      borderLeft={"6px solid"}
+      borderLeftColor={highlight[type.type]}
+      borderRadius={5}
+      _hover={style.hover}
     >
-      <Flex
-        alignItems="center"
-        justifyContent="space-between"
-        width="100%"
-        height="100%"
-      >
-        <Text fontSize="xs">{type.name}</Text>
-        <FontAwesomeIcon size="xs" icon={faBars} />
-      </Flex>
+      <Box>
+        <Text fontWeight="bold" fontSize={"sm"} {...style.label}>
+          {type.name}
+        </Text>
+        <Text fontSize="xs" {...style.help}>
+          {type.description}
+        </Text>
+      </Box>
     </Box>
   );
 };

@@ -20,7 +20,7 @@ from ix.task_log.tests.fake import (
     afake_system,
     afake_task,
 )
-from ix.ix_users.tests.fake import afake_user
+from ix.ix_users.tests.fake import afake_user, aget_default_user
 
 CHAT_ID_1 = uuid4()
 CHAT_ID_2 = uuid4()
@@ -506,6 +506,7 @@ def mock_start_agent_loop(mocker):
 class TestChatMessage:
     async def test_send_message(self, anode_types, mock_start_agent_loop):
         chat = await afake_chat()
+        user = await aget_default_user()
         lead = await Agent.objects.aget(id=chat.lead_id)
         text = "Test message"
 
@@ -527,12 +528,14 @@ class TestChatMessage:
 
         mock_start_agent_loop.delay.assert_called_once_with(
             str(chat.task_id),
-            str(lead.chain_id),
+            chain_id=str(lead.chain_id),
+            user_id=str(user.id),
             inputs={"user_input": text, "chat_id": str(chat.id), "artifact_keys": []},
         )
 
     async def test_send_message_with_artifact(self, anode_types, mock_start_agent_loop):
         chat = await afake_chat()
+        user = await aget_default_user()
         lead = await Agent.objects.aget(id=chat.lead_id)
         text = "Test message with {test_artifact}"
 
@@ -552,7 +555,8 @@ class TestChatMessage:
 
         mock_start_agent_loop.delay.assert_called_once_with(
             str(chat.task_id),
-            str(lead.chain_id),
+            chain_id=str(lead.chain_id),
+            user_id=str(user.id),
             inputs={
                 "user_input": text,
                 "chat_id": str(chat.id),
@@ -562,6 +566,7 @@ class TestChatMessage:
 
     async def test_send_message_to_agent(self, anode_types, mock_start_agent_loop):
         chat = await afake_chat()
+        user = await aget_default_user()
         agent = await afake_agent(alias="a_fake_agent")
         await chat.agents.aadd(agent)
         text = "@a_fake_agent Test message to agent"
@@ -584,7 +589,8 @@ class TestChatMessage:
         subtask = await Task.objects.aget(parent_id=chat.task_id)
         mock_start_agent_loop.delay.assert_called_once_with(
             str(subtask.id),
-            str(agent.chain_id),
+            chain_id=str(agent.chain_id),
+            user_id=str(user.id),
             inputs={"user_input": text, "chat_id": str(chat.id), "artifact_keys": []},
         )
 

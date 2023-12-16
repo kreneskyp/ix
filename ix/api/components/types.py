@@ -15,9 +15,11 @@ from typing import (
     get_origin,
     Callable,
     Union,
+    Set,
 )
 from uuid import UUID, uuid4
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, SecretStr
+from pydantic.v1 import SecretStr as SecretStrV1
 from pydantic_core import PydanticUndefined
 
 from ix.utils.pydantic import get_model_fields, create_args_model
@@ -117,6 +119,11 @@ class NodeTypeField(BaseModel):
     default: Optional[Any] = None
     required: bool = False
     choices: Optional[List[Choice]] = None
+
+    init_type: Literal["init", "bind"] = "init"
+    """Method te value received by this connector is initialized on the component instance.
+      - init: kwarg passed to initializer callable, e.g. __init__
+      - bind: bound with Runnable.bind()"""
 
     # form & display properties
     input_type: Optional[str] = None
@@ -312,6 +319,10 @@ class NodeTypeField(BaseModel):
                 field_info["type"] = "str"
                 field_info["choices"] = parse_enum_choices(root_field)
 
+            if root_field in {SecretStr, SecretStrV1, "SecretStr"}:
+                field_info["type"] = "str"
+                field_info["input_type"] = "secret"
+
             if field_info.get("choices", None):
                 field_info["input_type"] = "select"
 
@@ -356,18 +367,25 @@ class NodeTypeField(BaseModel):
 
 NodeTypes = Literal[
     "agent",
+    "branch",
     "chain",
     "chain_list",
+    "data",
     "document_loader",
     "embeddings",
+    "flow",
     "index",
     "llm",
+    "map",
+    "message",
     "memory",
     "memory_backend",
     "output_parser",
     "parser",
     "prompt",
     "retriever",
+    "root",
+    "schema",
     "store",
     "tool",
     "toolkit",
@@ -382,10 +400,11 @@ class Connector(BaseModel):
     """
 
     key: str
+    label: Optional[str] = None
     type: Literal["source", "target"]
     required: bool = False
 
-    # Simplified categorization of LangChain components. Class inheritance
+    # Simplified categorization of AI workflow components. Class inheritance
     # can't be checked in JS so these categories are used for a proxy instead.
     source_type: NodeTypes | List[NodeTypes]
 
@@ -404,9 +423,26 @@ class Connector(BaseModel):
     # Allow more than one connection to this connector
     multiple: bool = False
 
-    # Chains connected to this property will join into an implicit SequentialChain
-    # when auto_sequence is True. Disable for chains to be stored as a list.
-    auto_sequence: bool = True
+    # Way in which the value received by this connector is initialized on
+    # the component instance.
+    #  - init: kwarg passed to initializer callable, e.g. __init__
+    #  - bind: bound with Runnable.bind()
+    init_type: Optional[Literal["init", "bind"]] = "init"
+
+    # Set of acceptable init_mode. If None, all input_modes are accepted.
+    # If any connector is init_mode "input" then the component will be
+    # lazy loaded.
+    #  - init: value is set at init time
+    #  - input: value is set at runtime
+    init_modes: Optional[Literal["init", "input"]] = None
+
+    # List of subfields provided by this connector.
+    fields: Optional[List[str]] = None
+
+    # When set subfield names are parsed from config[from_field]
+    from_field: Optional[str] = None
+
+    collection: Optional[Literal["list", "flow", "map", "map_tuples"]] = None
 
 
 class FieldGroup(BaseModel):
@@ -478,6 +514,63 @@ class NodeType(BaseModel):
         from_attributes = True
 
     @cached_property
+    def field_map(self) -> Dict[str, NodeTypeField]:
+        """Dictionary of fields by key"""
+        return {field.name: field for field in self.fields or []}
+
+    @cached_property
+    def connector_map(self) -> Dict[str, Connector]:
+        """Dictionary of connectors by key"""
+        return {connector.key: connector for connector in self.connectors or []}
+
+    @cached_property
+    def input_connectors(self) -> Dict[str, Connector]:
+        """Dictionary of connectors by key"""
+        return {
+            connector.key: connector
+            for connector in self.connectors or []
+            if connector.type == "target"
+        }
+
+    @cached_property
+    def output_connectors(self) -> Dict[str, Connector]:
+        """Dictionary of connectors by key"""
+        return {
+            connector.key: connector
+            for connector in self.connectors or []
+            if connector.type == "source"
+        }
+
+    @cached_property
+    def init_exclude(self) -> Set[str]:
+        """Set of keys that should be excluded from config"""
+        return self.bind_points
+
+    @property
+    def has_input_fields(self) -> bool:
+        """Does this node have fields that are lazy loaded from input?
+
+        - There are fields that may be lazy loaded
+        - There are connections with init_mode="input"
+        """
+        return any(field.init == "bind" for field in self.fields or [])
+
+    @cached_property
+    def bind_points(self) -> Set[str]:
+        """Set of keys for connectors and fields for this NodeType that are added with
+        Runnable.bind().
+        """
+        bound_connectors = {
+            connector.key
+            for connector in self.connectors or []
+            if connector.init_type == "bind"
+        }
+        bound_fields = {
+            field.name for field in self.fields or [] if field.init_type == "bind"
+        }
+        return bound_connectors | bound_fields
+
+    @cached_property
     def secret_groups(self) -> List[SecretGroup]:
         """Build SecretGroups from raw list of fields"""
         secret_groups = []
@@ -539,7 +632,7 @@ class NodeType(BaseModel):
         items = []
         if field.choices is not None:
             items.extend([{"type": choice.value} for choice in field.choices])
-        return {
+        property = {
             "type": "array",
             "items": [{"type": "string"}],
             # "additionalItems": False,
@@ -547,6 +640,17 @@ class NodeType(BaseModel):
             "maxItems": field.max,
             "uniqueItems": field.type == "set",
         }
+
+        OPTIONAL_PROPERTIES = {
+            "description",
+            "input_type",
+            "style",
+        }
+        for schema_property in OPTIONAL_PROPERTIES:
+            if (field_value := getattr(field, schema_property, None)) is not None:
+                property[schema_property] = field_value
+
+        return property
 
     @staticmethod
     def build_properties(schema, schema_type, field) -> dict:

@@ -9,7 +9,7 @@ import copy from "copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard, faCheck } from "@fortawesome/free-solid-svg-icons";
 
-export const HighlightedCode = ({ text }) => {
+export const HighlightedCode = ({ text, language }) => {
   const { colorMode } = useColorMode();
   const syntaxTheme =
     colorMode === "light" ? stackoverflowLight : stackoverflowDark;
@@ -44,7 +44,7 @@ export const HighlightedCode = ({ text }) => {
   }, [showCopied]);
 
   return (
-    <Box position="relative" mt={2}>
+    <Box position="relative" mt={2} overflow={"hidden"}>
       {/* Button for copy to clipboard */}
       <Box
         {...style}
@@ -55,6 +55,7 @@ export const HighlightedCode = ({ text }) => {
         fontSize={"xs"}
         onClick={copyToClipboard}
         cursor="pointer"
+        overflowX={"hidden"}
       >
         {showCopied ? (
           <Text {...copiedStyle}>
@@ -68,7 +69,7 @@ export const HighlightedCode = ({ text }) => {
       </Box>
 
       {/* Code highlighter */}
-      <SyntaxHighlighter style={syntaxTheme} wrapLines={true}>
+      <SyntaxHighlighter style={syntaxTheme} language={language}>
         {text}
       </SyntaxHighlighter>
     </Box>

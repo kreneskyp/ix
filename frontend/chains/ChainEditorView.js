@@ -1,12 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  HStack,
-  Spinner,
-  useDisclosure,
-  useToast,
-  VStack,
-} from "@chakra-ui/react";
+import { HStack, Spinner, useToast, VStack } from "@chakra-ui/react";
 import { ReactFlowProvider, useReactFlow } from "reactflow";
 
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
@@ -24,6 +18,7 @@ import {
   NodeStateContext,
   NodeEditorContext,
   ChainState,
+  ChainTypes,
 } from "chains/editor/contexts";
 import { EditorRightSidebar } from "chains/editor/EditorRightSidebar";
 import { useNodeState } from "chains/hooks/useNodeState";
@@ -32,6 +27,8 @@ import { NodeTypeSearchButton } from "chains/editor/NodeTypeSearchButton";
 import { AgentCardListButton } from "agents/AgentCardListButton";
 import { EditorAgentCard } from "chains/editor/sidebar/EditorAgentCard";
 import { ChainCardListButton } from "chains/ChainCardListButton";
+import { RunLogProvider } from "chains/editor/run_log/RunLogProvider";
+import { RunLogMenuButton } from "chains/editor/run_log/RunLogMenuButton";
 
 const ChainEditorProvider = ({ graph, onError, children }) => {
   const chainState = useChainState(graph);
@@ -57,17 +54,21 @@ const ChainEditorProvider = ({ graph, onError, children }) => {
   }, [graph?.chain?.id, chainState.chain]);
 
   return (
-    <ChainState.Provider value={chainState}>
-      <NodeStateContext.Provider value={nodeState}>
-        <NodeEditorContext.Provider value={nodeEditor}>
-          <SelectedNodeContext.Provider value={selectedNode}>
-            <ChainEditorAPIContext.Provider value={api}>
-              {children}
-            </ChainEditorAPIContext.Provider>
-          </SelectedNodeContext.Provider>
-        </NodeEditorContext.Provider>
-      </NodeStateContext.Provider>
-    </ChainState.Provider>
+    <ChainTypes.Provider value={graph?.types}>
+      <ChainState.Provider value={chainState}>
+        <NodeStateContext.Provider value={nodeState}>
+          <NodeEditorContext.Provider value={nodeEditor}>
+            <SelectedNodeContext.Provider value={selectedNode}>
+              <ChainEditorAPIContext.Provider value={api}>
+                <RunLogProvider chain_id={graph?.chain?.id}>
+                  {children}
+                </RunLogProvider>
+              </ChainEditorAPIContext.Provider>
+            </SelectedNodeContext.Provider>
+          </NodeEditorContext.Provider>
+        </NodeStateContext.Provider>
+      </ChainState.Provider>
+    </ChainTypes.Provider>
   );
 };
 
@@ -84,8 +85,6 @@ export const ChainEditorView = () => {
   const graph =
     isNew || id !== response?.data?.chain?.id ? null : response?.data;
 
-  const rightSidebarDisclosure = useDisclosure({ defaultIsOpen: true });
-
   const onAPIError = useCallback((err) => {
     toast({
       title: "Error",
@@ -98,21 +97,11 @@ export const ChainEditorView = () => {
 
   let content;
   if (isNew) {
-    content = (
-      <ChainGraphEditor
-        key={idRef}
-        rightSidebarDisclosure={rightSidebarDisclosure}
-      />
-    );
+    content = <ChainGraphEditor key={idRef} />;
   } else if (isLoading || !graph) {
     content = <Spinner />;
   } else {
-    content = (
-      <ChainGraphEditor
-        graph={graph}
-        rightSidebarDisclosure={rightSidebarDisclosure}
-      />
-    );
+    content = <ChainGraphEditor graph={graph} />;
   }
 
   return (
@@ -123,6 +112,7 @@ export const ChainEditorView = () => {
             <AgentCardListButton Card={EditorAgentCard} />
             <ChainCardListButton />
             <NodeTypeSearchButton />
+            <RunLogMenuButton />
           </LayoutLeftPane>
           <LayoutContent>
             <HStack>
@@ -136,7 +126,7 @@ export const ChainEditorView = () => {
               >
                 {content}
               </VStack>
-              <EditorRightSidebar {...rightSidebarDisclosure} />
+              <EditorRightSidebar />
             </HStack>
           </LayoutContent>
         </Layout>

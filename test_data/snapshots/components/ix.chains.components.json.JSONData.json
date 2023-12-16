@@ -1,0 +1,55 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.components.json.JSONData",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "data": {
+                "description": "JSON data",
+                "input_type": "textarea",
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "style": {
+                    "width": "100%"
+                },
+                "type": "array",
+                "uniqueItems": false
+            }
+        },
+        "required": [
+            "data"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Parse a value from inputs using a JSONPath",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": "JSON data",
+            "init_type": "init",
+            "input_type": "textarea",
+            "label": "",
+            "max": null,
+            "min": null,
+            "name": "data",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "list"
+        }
+    ],
+    "name": "JSON Data",
+    "type": "data"
+}

@@ -485,48 +485,86 @@ class TestChainRoot:
         chain = await afake_chain()
         node = await afake_chain_node(chain=chain)
         await ChainNode.objects.filter(chain=chain).aupdate(root=False)
-        data = {"node_id": str(node.id)}
+        data = {"node_ids": [str(node.id)]}
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200
         result = response.json()
-        assert result["root"] == str(node.id)
+        assert result["roots"] == [str(node.id)]
         assert result["old_roots"] == []
         await node.arefresh_from_db()
         assert node.root
 
-    async def test_set_chain_root_exists(self, anode_types):
+    async def test_replace_root(self, anode_types):
         chain = await afake_chain()
         old_root = await afake_chain_node(chain=chain, root=True)
         new_root = await afake_chain_node(chain=chain, root=False)
 
-        data = {"node_id": str(new_root.id), "chain_id": str(chain.id)}
+        data = {"node_ids": [str(new_root.id)]}
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200
         result = response.json()
-        assert result["root"] == str(new_root.id)
+        assert result["roots"] == [str(new_root.id)]
         assert result["old_roots"] == [str(old_root.id)]
         await old_root.arefresh_from_db()
         await new_root.arefresh_from_db()
         assert new_root.root
         assert not old_root.root
 
-    async def test_remove_chain_root(self, anode_types):
+    async def test_add_root(self, anode_types):
+        chain = await afake_chain()
+        root1 = await afake_chain_node(chain=chain, root=True)
+        root2 = await afake_chain_node(chain=chain, root=False)
+
+        data = {"node_ids": [str(root1.id), str(root2.id)]}
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
+
+        assert response.status_code == 200
+        result = response.json()
+        assert result["roots"] == [str(root1.id), str(root2.id)]
+        assert result["old_roots"] == []
+        await root1.arefresh_from_db()
+        await root2.arefresh_from_db()
+        assert root1.root
+        assert root2.root
+
+    async def test_remove_root(self, anode_types):
         chain = await afake_chain()
         root = await afake_chain_node(chain=chain, root=True)
-        data = {"node_id": None, "chain_id": str(chain.id)}
+        data = {"node_ids": []}
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
 
         assert response.status_code == 200, response.content
         result = response.json()
-        assert result["root"] is None
+        assert result["roots"] == []
         assert result["old_roots"] == [str(root.id)]
+        await root.arefresh_from_db()
+        assert not root.root
+
+    async def test_remove_one_root(self, anode_types):
+        chain = await afake_chain()
+        root1 = await afake_chain_node(chain=chain, root=True)
+        root2 = await afake_chain_node(chain=chain, root=True)
+        data = {"node_ids": [str(root2.id)]}
+
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.post(f"/chains/{chain.id}/set_root", json=data)
+
+        assert response.status_code == 200, response.content
+        result = response.json()
+        assert result["roots"] == [str(root2.id)]
+        assert result["old_roots"] == [str(root1.id)]
+        await root1.arefresh_from_db()
+        await root2.arefresh_from_db()
+        assert not root1.root
+        assert root2.root
 
 
 @pytest.mark.django_db
@@ -673,13 +711,15 @@ class TestChainEdge:
         node1 = await afake_chain_node(chain=chain)
         node2 = await afake_chain_node(chain=chain)
         edge_id = str(uuid4())
+        node1_type = await NodeType.objects.aget(id=node1.node_type_id)
 
         # Prepare data for the API request
         data = {
             "id": edge_id,
             "source_id": str(node1.id),
             "target_id": str(node2.id),
-            "key": "Custom Key",
+            "source_key": node1_type.type,
+            "target_key": "Custom Key",
             "chain_id": str(chain.id),
             "relation": "LINK",
             "input_map": {},
@@ -694,7 +734,8 @@ class TestChainEdge:
         assert edge_data["id"] == edge_id
         assert edge_data["source_id"] == str(node1.id)
         assert edge_data["target_id"] == str(node2.id)
-        assert edge_data["key"] == "Custom Key"
+        assert edge_data["source_key"] == node1_type.type
+        assert edge_data["target_key"] == "Custom Key"
         assert edge_data["input_map"] == {}
 
     async def test_update_chain_edge(self, anode_types):
@@ -704,11 +745,14 @@ class TestChainEdge:
         chain = await afake_chain()
         node1 = await afake_chain_node(chain=chain)
         node2 = await afake_chain_node(chain=chain)
+        node1_type = await NodeType.objects.aget(id=node1.node_type_id)
 
         # Prepare data for the API request
         data = {
             "source_id": str(node1.id),
             "target_id": str(node2.id),
+            "target_key": "Custom Key",
+            "source_key": node1_type.type,
         }
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -737,13 +781,15 @@ class TestChainEdge:
         node1 = await afake_chain_node(chain=chain)
         node2 = await afake_chain_node(chain=chain)
         edge_id = str(uuid4())
+        node1_type = await NodeType.objects.aget(id=node1.node_type_id)
 
         non_existent_edge_id = uuid4()
         data = {
             "id": edge_id,
             "source_id": str(node1.id),
             "target_id": str(node2.id),
-            "key": "Custom Key",
+            "source_key": node1_type.type,
+            "target_key": "Custom Key",
             "chain_id": str(chain.id),
             "relation": "LINK",
             "input_map": {},

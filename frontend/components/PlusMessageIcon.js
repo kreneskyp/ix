@@ -2,22 +2,31 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useColorMode } from "@chakra-ui/color-mode";
+import { Box } from "@chakra-ui/layout";
+import { StackableIcon } from "icons/StackableIcon";
 
 const PlusMessageIcon = () => {
   const { colorMode } = useColorMode();
-  const iconColor = colorMode === "light" ? "black" : "black";
+  const iconColor = colorMode === "light" ? "gray.200" : "black";
+
   return (
-    <span className="fa-stack">
-      <FontAwesomeIcon icon={faMessage} className="fa-stack-1x" />
-      <FontAwesomeIcon
-        icon={faPlus}
-        size={"xs"}
-        className="fa-stack-1x"
-        fontWeight={"bold"}
+    <StackableIcon>
+      <FontAwesomeIcon icon={faMessage} />
+      <Box
+        style={{
+          position: "absolute",
+          top: "1px",
+          right: "-1px",
+          transform: "translate(-50%, 0%)",
+        }}
         color={iconColor}
-        style={{ position: "absolute", top: -1.5 }}
-      />
-    </span>
+        fontSize={"xs"}
+        fontWeight={"bold"}
+      >
+        <FontAwesomeIcon icon={faPlus} />
+      </Box>
+    </StackableIcon>
   );
 };
+
 export default PlusMessageIcon;

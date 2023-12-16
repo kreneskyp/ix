@@ -41,22 +41,26 @@
                     "latex",
                     "html",
                     "sol",
-                    "csharp"
+                    "csharp",
+                    "cobol"
                 ],
                 "input_type": "select",
                 "type": "string"
             }
         },
-        "required": [
-            "language"
-        ],
+        "required": [],
         "type": "object"
     },
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "document_loader",
+            "label": null,
             "multiple": false,
             "required": true,
             "source_type": "document_loader",
@@ -144,17 +148,22 @@
                 {
                     "label": "CSHARP",
                     "value": "csharp"
+                },
+                {
+                    "label": "COBOL",
+                    "value": "cobol"
                 }
             ],
             "default": "python",
             "description": null,
+            "init_type": "init",
             "input_type": "select",
             "label": "",
             "max": null,
             "min": null,
             "name": "language",
             "parent": null,
-            "required": true,
+            "required": false,
             "secret_key": null,
             "step": null,
             "style": null,
@@ -164,6 +173,7 @@
             "choices": null,
             "default": 4000,
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Chunk_size",
             "max": null,
@@ -180,6 +190,7 @@
             "choices": null,
             "default": 200,
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Chunk_overlap",
             "max": null,
@@ -196,6 +207,7 @@
             "choices": null,
             "default": false,
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Keep_separator",
             "max": null,
@@ -212,6 +224,7 @@
             "choices": null,
             "default": false,
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Add_start_index",
             "max": null,

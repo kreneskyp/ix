@@ -1,0 +1,191 @@
+{
+    "child_field": null,
+    "class_path": "langchain.memory.chat_message_histories.postgres.PostgresChatMessageHistory",
+    "config_schema": {
+        "display_groups": [
+            {
+                "fields": [
+                    "connection_string",
+                    "table_name"
+                ],
+                "key": "Database",
+                "label": null
+            },
+            {
+                "fields": [
+                    "session_scope",
+                    "session_prefix",
+                    "session_key"
+                ],
+                "key": "Session",
+                "label": null
+            }
+        ],
+        "properties": {
+            "connection_string": {
+                "default": "postgresql://ix:ix@db:5432/ix",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
+            "session_key": {
+                "default": "session_id",
+                "description": "component session will be initialized with this argument.",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
+            "session_prefix": {
+                "default": "",
+                "description": "prefix applied to the session ID. e.g. 'chat' will result in 'chat:session_id'.Chains with the same scope and prefix will share the same session.",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
+            "session_scope": {
+                "enum": [
+                    "chat",
+                    "agent",
+                    "task",
+                    "user"
+                ],
+                "input_type": "select",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            },
+            "table_name": {
+                "default": "message_store",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
+            }
+        },
+        "required": [],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Stores chat history in a Postgres database",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": "postgresql://ix:ix@db:5432/ix",
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Connection String",
+            "max": null,
+            "min": null,
+            "name": "connection_string",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "choices": null,
+            "default": "message_store",
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
+            "name": "table_name",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "choices": [
+                {
+                    "label": "chat",
+                    "value": "chat"
+                },
+                {
+                    "label": "agent",
+                    "value": "agent"
+                },
+                {
+                    "label": "task",
+                    "value": "task"
+                },
+                {
+                    "label": "user",
+                    "value": "user"
+                }
+            ],
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": "select",
+            "label": "Session Scope",
+            "max": null,
+            "min": null,
+            "name": "session_scope",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "choices": null,
+            "default": "",
+            "description": "prefix applied to the session ID. e.g. 'chat' will result in 'chat:session_id'.Chains with the same scope and prefix will share the same session.",
+            "init_type": "init",
+            "input_type": null,
+            "label": "Session Prefix",
+            "max": null,
+            "min": null,
+            "name": "session_prefix",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        },
+        {
+            "choices": null,
+            "default": "session_id",
+            "description": "component session will be initialized with this argument.",
+            "init_type": "init",
+            "input_type": null,
+            "label": "Session Key",
+            "max": null,
+            "min": null,
+            "name": "session_key",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "string"
+        }
+    ],
+    "name": "Postgres Chat History",
+    "type": "memory_backend"
+}

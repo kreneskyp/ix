@@ -7,7 +7,7 @@ def chain_as_tool(chain: Chain, name: str, description: str, **kwargs) -> BaseTo
     return Tool(
         name=name,
         description=description,
-        func=chain.run,
-        coroutine=chain.arun,
+        func=chain.invoke,
+        coroutine=chain.ainvoke,
         **kwargs
     )

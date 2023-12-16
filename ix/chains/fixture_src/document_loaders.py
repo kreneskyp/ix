@@ -10,6 +10,7 @@ from langchain.document_loaders import (
 from langchain.document_loaders.generic import GenericLoader
 
 from ix.api.components.types import NodeTypeField
+from ix.chains.components.document_loaders import StringLoader
 from ix.chains.fixture_src.targets import PARSER_TARGET
 
 
@@ -27,6 +28,22 @@ PATH_FIELD = {
     "required": True,
     "type": "str",
     "style": {"width": "100%"},
+}
+
+
+STRING_LOADER_CLASS_PATH = "ix.chains.components.document_loaders.StringLoader"
+STRING_LOADER = {
+    "class_path": STRING_LOADER_CLASS_PATH,
+    "type": "document_loader",
+    "name": "String Loader",
+    "description": "Load a static string as a document.",
+    "fields": NodeTypeField.get_fields(
+        StringLoader.__init__,
+        include=[
+            "text",
+            "metadata",
+        ],
+    ),
 }
 
 
@@ -52,7 +69,7 @@ CSV_LOADER = {
     "class_path": CSV_LOADER_CLASS_PATH,
     "type": "document_loader",
     "name": "CSV Loader",
-    "description": CSVLoader.__doc__,
+    "description": "Load a CSV file into a list of documents.",
     "fields": NodeTypeField.get_fields(
         CSVLoader.__init__,
         include=[
@@ -88,7 +105,7 @@ JSON_LOADER = {
     "class_path": JSON_LOADER_CLASS_PATH,
     "type": "document_loader",
     "name": "JSON Loader",
-    "description": JSONLoader.__doc__,
+    "description": "Load a JSON file into a document.",
     "fields": NodeTypeField.get_fields(
         JSONLoader.__init__,
         include=[
@@ -115,7 +132,7 @@ PDF_LOADER = {
     "class_path": PDF_LOADER_CLASS_PATH,
     "type": "document_loader",
     "name": "PDF Loader",
-    "description": PyPDFLoader.__doc__,
+    "description": "Load a PDF file into a document.",
     "fields": NodeTypeField.get_fields(
         PyPDFLoader.__init__,
         include=[
@@ -158,7 +175,7 @@ UNSTRUCTURED_HTML_LOADER = {
     "class_path": UNSTRUCTURED_HTML_LOADER_CLASS_PATH,
     "type": "document_loader",
     "name": "Unstructured HTML Loader",
-    "description": UnstructuredHTMLLoader.__doc__,
+    "description": "Load an HTML file into a document with Unstructured.io",
     "fields": NodeTypeField.get_fields(
         UnstructuredHTMLLoader.__init__, include=["file_path" "mode"]
     ),
@@ -172,7 +189,7 @@ UNSTRUCTURED_MARKDOWN_LOADER = {
     "class_path": UNSTRUCTURED_MARKDOWN_LOADER_CLASS_PATH,
     "type": "document_loader",
     "name": "Unstructured Markdown Loader",
-    "description": UnstructuredMarkdownLoader.__doc__,
+    "description": "Load a markdown file into a document with Unstructured.io",
     "fields": NodeTypeField.get_fields(
         UnstructuredMarkdownLoader.__init__, include=["file_path" "mode"]
     ),
@@ -185,6 +202,7 @@ DOCUMENT_LOADERS = [
     GENERIC_LOADER,
     JSON_LOADER,
     PDF_LOADER,
+    STRING_LOADER,
     WEB_BASE_LOADER,
     UNSTRUCTURED_HTML_LOADER,
     UNSTRUCTURED_MARKDOWN_LOADER,

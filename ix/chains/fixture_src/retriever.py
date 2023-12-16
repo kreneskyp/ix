@@ -1,5 +1,4 @@
 from langchain.retrievers import MultiQueryRetriever
-from langchain.vectorstores.base import VectorStoreRetriever
 
 from ix.chains.fixture_src.targets import (
     RETRIEVER_TARGET,
@@ -8,28 +7,16 @@ from ix.chains.fixture_src.targets import (
 )
 from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.targets import VECTORSTORE_TARGET
+from ix.chains.fixture_src.vectorstores import VECTORSTORE_RETRIEVER_FIELDS
 
-VECTORSTORE_RETRIEVER_CLASS_PATH = "langchain.vectorstores.base.VectorStoreRetriever"
+VECTORSTORE_RETRIEVER_CLASS_PATH = "langchain.schema.vectorstore.VectorStoreRetriever"
 VECTORSTORE_RETRIEVER = {
     "class_path": VECTORSTORE_RETRIEVER_CLASS_PATH,
     "type": "retriever",
     "name": "VectorStoreRetriever",
     "description": "Default vector",
     "connectors": [VECTORSTORE_TARGET],
-    "fields": [
-        {
-            "name": "allowed_search_types",
-            "type": "list",
-            "required": True,
-            "default": ["similarity", "similarity_score_threshold", "mmr"],
-        }
-    ]
-    + NodeTypeField.get_fields(
-        VectorStoreRetriever,
-        include=[
-            "search_type",
-        ],
-    ),
+    "fields": VECTORSTORE_RETRIEVER_FIELDS,
 }
 
 

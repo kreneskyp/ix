@@ -52,7 +52,8 @@ class TestArtifactMemory:
         )
 
         # create chain
-        chain = await aload_chain(TASK_WITH_ARTIFACT_MEMORY)
+        ix_node = await aload_chain(TASK_WITH_ARTIFACT_MEMORY)
+        chain = ix_node.child
         assert isinstance(chain, LLMChain)
         assert isinstance(chain.memory, ArtifactMemory)
 
@@ -62,7 +63,9 @@ class TestArtifactMemory:
 
         # run
         artifact1 = await afake_artifact(task=atask, key="test_artifact_1")
-        await chain.arun(name="tester", artifact_keys=["test_artifact_1"])
+        await chain.ainvoke(
+            input=dict(name="tester", artifact_keys=["test_artifact_1"])
+        )
 
         # assert artifact was used in prompt
         mock_openai.acompletion_with_retry.assert_called_once()

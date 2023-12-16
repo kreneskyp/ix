@@ -13,6 +13,9 @@ import { useDisplayGroups } from "chains/hooks/useDisplayGroups";
 import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { APISelect } from "json_form/fields/APISelect";
 import { ChainSelect } from "chains/ChainSelect";
+import { HashList } from "json_form/fields/HashList";
+import { BranchesField } from "chains/editor/fields/BranchesField";
+import { MapField } from "chains/editor/fields/MapField";
 
 // explicit input types
 const INPUTS = {
@@ -26,6 +29,9 @@ const INPUTS = {
   dict: Dict,
   list: List,
   "IX:chain": APISelect.for_select(ChainSelect),
+  hash_list: HashList,
+  node_branch_list: BranchesField,
+  node_map_list: MapField,
 };
 
 // type specific default inputs
@@ -51,6 +57,11 @@ export const AutoField = ({
   // Select component based on explicit input type, field type, or default in that order.
   const input_key =
     global?.input_type || field.input_type || TYPE_INPUTS[field.type];
+
+  // do not render hidden fields
+  if (input_key === "hidden") {
+    return null;
+  }
   const FieldComponent = INPUTS[input_key] || Input;
   const value = config && name in config ? config[name] : field.default;
 

@@ -10,7 +10,7 @@ LANGUAGE = {
     "type": "string",
     "input_type": "select",
     "choices": LANGUAGE_CHOICES,
-    "required": True,
+    "required": False,
     "default": "python",
 }
 
@@ -26,6 +26,7 @@ LANGUAGE_PARSER = {
     + NodeTypeField.get_fields(
         LanguageParser.__init__,
         include=["parser_threshold", "language"],
+        field_options={"language": LANGUAGE},
     ),
 }
 

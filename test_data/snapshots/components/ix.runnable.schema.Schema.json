@@ -1,0 +1,99 @@
+{
+    "child_field": null,
+    "class_path": "ix.runnable.schema.Schema",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "description": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "parameters": {
+                "input_type": "textarea",
+                "type": "object"
+            }
+        },
+        "required": [
+            "name",
+            "description",
+            "parameters"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "out",
+            "label": "Schema",
+            "multiple": false,
+            "required": false,
+            "source_type": "schema",
+            "template": false,
+            "type": "source"
+        }
+    ],
+    "description": "Returns a statically defined JSON schema.",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Name",
+            "max": null,
+            "min": null,
+            "name": "name",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Description",
+            "max": null,
+            "min": null,
+            "name": "description",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": "textarea",
+            "label": "Parameters",
+            "max": null,
+            "min": null,
+            "name": "parameters",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "Any"
+        }
+    ],
+    "name": "JSON Schema",
+    "type": "schema"
+}

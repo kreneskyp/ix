@@ -15,6 +15,17 @@ const HighlightText = ({ content }) => {
   const regexComponentPairs = React.useMemo(
     () => [
       {
+        regex: /```([\w\s]*?)\n([\s\S]*?)(```|$)/g,
+        component: (match, idx, execResult) => {
+          // execResult[1] contains the language
+          const language = execResult[1];
+          // execResult[2] contains the actual code content
+          const codeText = execResult[2].replace(/\s+$/, "");
+
+          return <HighlightedCode language={language} text={codeText} />;
+        },
+      },
+      {
         regex: /`([^`]+)`/g,
         component: (match, idx, execResult) => (
           <Code key={idx}>{execResult[1]}</Code>
@@ -43,20 +54,18 @@ const HighlightText = ({ content }) => {
         ),
       }, // Markdown Bold
       {
+        regex: /!\[([^\]]+)\]\(([^)]+)\)/g,
+        component: (match, idx, execResult) => (
+          <img src={execResult[2]} alt={execResult[1]} key={idx} />
+        ),
+      },
+      {
         regex: /\[([^\]]+)\]\(([^)]+)\)/g,
         component: (match, idx, execResult) => (
           <Link href={execResult[2]} key={idx} isExternal color={"blue.400"}>
             {execResult[1]}
           </Link>
         ),
-      },
-      {
-        regex: /```([\w\s]*?)\n([\s\S]*?)(```|$)/g,
-        component: (match, idx, execResult) => {
-          // execResult[2] contains the actual code content
-          const codeText = execResult[2].replace(/\s+$/, "");
-          return <HighlightedCode text={codeText} />;
-        },
       },
     ],
     [mention, artifact]

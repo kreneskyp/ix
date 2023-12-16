@@ -30,6 +30,10 @@ class Artifact(ArtifactBase):
         from_attributes = True
 
 
+class ArtifactContent(Artifact):
+    data: Any
+
+
 class ArtifactPage(QueryPage[Artifact]):
     # override objects, FastAPI isn't detecting QueryPage type
     objects: List[Artifact]

@@ -1,12 +1,12 @@
-from langchain import LlamaCpp
 from langchain.chat_models import ChatOpenAI
 from langchain.llms.base import BaseLLM
 from langchain.llms import Ollama
 from langchain.llms.fireworks import Fireworks
+from langchain.llms.llamacpp import LlamaCpp
 
 from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
-
+from ix.chains.fixture_src.targets import FLOW_TYPES
 
 BASE_LLM_FIELDS = NodeTypeField.get_fields(
     BaseLLM,
@@ -45,34 +45,48 @@ LLM_METADATA_DISPLAY_GROUP = {
     "fields": ["metadata", "tags"],
 }
 
-OPENAI_LLM_CLASS_PATH = "langchain.chat_models.openai.ChatOpenAI"
-OPENAI_LLM = {
-    "class_path": OPENAI_LLM_CLASS_PATH,
-    "type": "llm",
-    "name": "OpenAI LLM",
-    "description": "OpenAI LLM",
-    "display_groups": [
-        {
-            "key": "Model",
-            "fields": ["model_name", "streaming", "temperature", "max_tokens"],
-        },
-        {
-            "key": "Authentication",
-            "fields": ["OpenAI API", "openai_organization"],
-        },
-        {
-            "key": "Server",
-            "fields": [
-                "request_timeout",
-                "max_retries",
-                "openai_api_base",
-                "openai_proxy",
-            ],
-        },
-        LLM_MISC_DISPLAY_GROUP,
-        LLM_METADATA_DISPLAY_GROUP,
-    ],
+OPENAI_LLM_CLASS_PATH_DEP = "langchain.chat_models.openai.ChatOpenAI"
+OPENAI_LLM_CLASS_PATH = "ix.runnable.llm.IXChatOpenAI"
+OPENAI_CONNECTORS_IO = [
+    {
+        "key": "in",
+        "label": "Prompt",
+        "type": "target",
+        "source_type": FLOW_TYPES,
+    },
+    {"key": "out", "label": "AI Message", "type": "source", "source_type": "data"},
+]
+OPENAI_AUTH_GROUP = {
+    "key": "Authentication",
+    "fields": ["OpenAI API", "openai_organization"],
+}
+OPENAI_MODEL_GROUP = {
+    "key": "Model",
     "fields": [
+        "model_name",
+        "streaming",
+        "temperature",
+        "max_tokens",
+    ],
+}
+OPENAI_SERVER_GROUP = {
+    "key": "Server",
+    "fields": [
+        "request_timeout",
+        "max_retries",
+        "openai_api_base",
+        "openai_proxy",
+    ],
+}
+OPENAI_DISPLAY_GROUPS = [
+    OPENAI_MODEL_GROUP,
+    OPENAI_AUTH_GROUP,
+    OPENAI_SERVER_GROUP,
+    LLM_MISC_DISPLAY_GROUP,
+    LLM_METADATA_DISPLAY_GROUP,
+]
+OPENAI_BASE_FIELDS = (
+    [
         {
             "name": "model_name",
             "label": "Model",
@@ -83,9 +97,18 @@ OPENAI_LLM = {
             "default": "gpt-4-0613",
             "choices": [
                 {"label": "GPT-4", "value": "gpt-4"},
+                {"label": "GPT-4 32K", "value": "gpt-4-32k"},
                 {"label": "GPT-4 (0613)", "value": "gpt-4-0613"},
+                {"label": "GPT-4 32k (0613)", "value": "gpt-4-32k-0613"},
+                {"label": "GPT-4 Turbo (1106-preview)", "value": "gpt-4-1106-preview"},
+                {
+                    "label": "GPT-4 Turbo vision (1106-preview)",
+                    "value": "gpt-4-vision-preview",
+                },
+                {"label": "GPT-3.5 Turbo (1106)", "value": "gpt-3.5-turbo-1106"},
                 {"label": "GPT-3.5 ", "value": "gpt-3.5-turbo"},
                 {"label": "GPT-3.5 16k", "value": "gpt-3.5-turbo-16k-0613"},
+                {"label": "GPT-3.5 Turbo Instruct", "value": "gpt-3.5-turbo-instruct"},
             ],
         },
     ]
@@ -149,8 +172,65 @@ OPENAI_LLM = {
             "step": 0.05,
         },
     ]
-    + BASE_LLM_FIELDS,
+    + BASE_LLM_FIELDS
+)
+
+OPENAI_LLM_DEP = {
+    "class_path": OPENAI_LLM_CLASS_PATH_DEP,
+    "type": "llm",
+    "name": "OpenAI LLM",
+    "description": "OpenAI LLM (legacy).",
+    "connectors": OPENAI_CONNECTORS_IO,
+    "display_groups": OPENAI_DISPLAY_GROUPS,
+    "fields": OPENAI_BASE_FIELDS,
 }
+
+
+OPENAI_LLM = {
+    "class_path": OPENAI_LLM_CLASS_PATH,
+    "type": "llm",
+    "name": "OpenAI LLM",
+    "description": "OpenAI LLM with function calling support.",
+    "connectors": OPENAI_CONNECTORS_IO
+    + [
+        {
+            "key": "functions",
+            "type": "target",
+            "multiple": True,
+            "source_type": FLOW_TYPES,
+            # TODO: possible plan to handle type conversions:
+            # "as_type": "function",
+            "collection": "list",
+            "init_type": "bind",
+            "init_modes": "input",
+        }
+    ],
+    "display_groups": [
+        {
+            "key": "Model",
+            "fields": [
+                "model_name",
+                "streaming",
+                "temperature",
+                "max_tokens",
+                "function_call",
+            ],
+        },
+        OPENAI_AUTH_GROUP,
+        OPENAI_SERVER_GROUP,
+        LLM_MISC_DISPLAY_GROUP,
+        LLM_METADATA_DISPLAY_GROUP,
+    ],
+    "fields": OPENAI_BASE_FIELDS
+    + [
+        {
+            "name": "function_call",
+            "type": "str",
+            "init_type": "bind",
+        },
+    ],
+}
+
 
 GOOGLE_PALM = {
     "class_path": "langchain.chat_models.google_palm.ChatGooglePalm",
@@ -430,6 +510,7 @@ LLMS = [
     GOOGLE_PALM,
     LLAMA_CPP_LLM,
     OLLAMA_LLM,
+    OPENAI_LLM_DEP,
     OPENAI_LLM,
     FIREWORKS_LLM,
     FIREWORKS_CHAT_LLM,

@@ -1,7 +1,7 @@
 import logging
 from copy import deepcopy
-from typing import Dict, Any, List
-from unittest.mock import MagicMock
+from typing import Dict, Any, List, Callable
+from unittest.mock import MagicMock, patch
 
 import pytest
 import pytest_asyncio
@@ -9,6 +9,7 @@ import redis
 from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.core.management import call_command
+from langchain.schema.runnable import Runnable
 
 from ix.agents.models import Agent
 from ix.agents.tests.mock_llm import MockChatOpenAI
@@ -33,6 +34,7 @@ from ix.task_log.tests.fake import (
     fake_chain,
     afake_think,
     afake_task,
+    afake_chain,
 )
 from ix.ix_users.tests.fake import get_default_user, afake_user
 from ix.utils.importlib import import_class, _import_class
@@ -41,6 +43,30 @@ logger = logging.getLogger(__name__)
 
 
 USER_INPUT = {"user_input": "hello agent 1"}
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--openai-api",
+        action="store_true",
+        default=False,
+        help="Run tests marked with '@pytest.mark.openai_api'.",
+    )
+
+
+def pytest_collection_modifyitems(config, items):
+    run_openai_api_tests = config.getoption("--openai-api")
+    for item in items:
+        if "openai_api" in item.keywords:
+            if not run_openai_api_tests:
+                item.add_marker(pytest.mark.skip(reason="Skipping OpenAI API tests."))
+
+
+@pytest.fixture(scope="session", autouse=True)
+def silence_import_langchain():
+    """silence import_langchain command"""
+    patch("ix.chains.management.commands.import_langchain.Command.to_stdout")
+    yield
 
 
 @pytest_asyncio.fixture
@@ -129,7 +155,7 @@ def mock_openai_key(monkeypatch):
 
 
 MOCKABLE_LLM_CLASSES = [
-    "langchain.chat_models.openai.ChatOpenAI",
+    "langchain_community.chat_models.openai.ChatOpenAI",
 ]
 
 
@@ -146,7 +172,9 @@ def mock_openai(mocker, mock_openai_key):
         return content
 
     # async completions are outside the class and need to be mocked separately
-    mock_acomplete = mocker.patch("langchain.chat_models.openai.acompletion_with_retry")
+    mock_acomplete = mocker.patch(
+        "langchain_community.chat_models.openai.acompletion_with_retry"
+    )
     mock_acomplete.side_effect = _mock_acompletion_with_retry
     mock_llm.acompletion_with_retry = mock_acomplete
 
@@ -173,6 +201,7 @@ def mock_openai_streaming(mocker, mock_openai_key):
     # create a mock instance of the class
     mock_llm = MockChatOpenAI()
     mock_llm.return_value = "mock llm response"
+    mock_llm.streaming = True
 
     async def _mock_acompletion_with_retry(*args, **kwargs):
         if mock_llm.raise_exception:
@@ -199,7 +228,9 @@ def mock_openai_streaming(mocker, mock_openai_key):
                 }
 
     # async completions are outside the class and need to be mocked separately
-    mock_acomplete = mocker.patch("langchain.chat_models.openai.acompletion_with_retry")
+    mock_acomplete = mocker.patch(
+        "langchain_community.chat_models.openai.acompletion_with_retry"
+    )
     mock_acomplete.side_effect = _mock_acompletion_with_retry
     mock_llm.acompletion_with_retry = mock_acomplete
 
@@ -242,19 +273,19 @@ def mock_openai_embeddings(mock_import_class, mock_openai_key):
 
 
 @pytest.fixture
-def ix_context(task):
-    return IxContext(agent=task.agent, chain=task.chain, task=task)
+def ix_context(task) -> IxContext:
+    return IxContext.from_task(task=task)
 
 
 @pytest_asyncio.fixture
-async def aix_context(atask):
-    agent = await Agent.objects.aget(id=atask.agent_id)
-    chain = await Chain.objects.aget(id=atask.chain_id)
-    yield IxContext(agent=agent, chain=chain, task=atask)
+async def aix_context(atask) -> IxContext:
+    await Agent.objects.aget(id=atask.agent_id)
+    await Chain.objects.aget(id=atask.chain_id)
+    return await IxContext.afrom_task(task=atask)
 
 
 @pytest.fixture
-def ix_handler(chat):
+def ix_handler(chat) -> IxHandler:
     chat = chat["chat"]
     task = Task.objects.get(id=chat.task_id)
     agent = Agent.objects.get(id=task.agent_id)
@@ -285,7 +316,7 @@ def mock_chain(mocker):
 
 
 @pytest.fixture()
-def load_chain(node_types, task, clean_redis):
+def load_chain(node_types, task, clean_redis) -> Callable[[Dict[str, Any]], Runnable]:
     """
     yields a function for creating a mock chain. Used for generating
     mock functions for other chains and configs. The function takes a
@@ -293,13 +324,11 @@ def load_chain(node_types, task, clean_redis):
     loaded and returned.
     """
 
-    def _mock_chain(config: Dict[str, Any], context: IxContext = None) -> Chain:
+    def _mock_chain(config: Dict[str, Any], context: IxContext = None) -> Runnable:
         chain = fake_chain()
-        chain_node = ChainNode.objects.create_from_config(chain, config, root=True)
+        ChainNode.objects.create_from_config(chain, config, root=True)
 
-        return chain_node.load(
-            context or IxContext(agent=task.agent, task=task, chain=task.chain)
-        )
+        return chain.load_chain(context or IxContext.from_task(task=task))
 
     yield _mock_chain
 
@@ -315,16 +344,14 @@ async def aload_chain(anode_types, achat):
 
     chat = achat["chat"]
     task = await Task.objects.aget(id=chat.task_id)
-    agent = await Agent.objects.aget(id=chat.lead_id)
-    chain = await Chain.objects.aget(id=task.chain_id)
+    chain = await afake_chain()
 
     async def _mock_chain(config: Dict[str, Any], context: IxContext = None) -> Chain:
-        chain_node = await sync_to_async(ChainNode.objects.create_from_config)(
+        await sync_to_async(ChainNode.objects.create_from_config)(
             chain, config, root=True
         )
-        return await sync_to_async(chain_node.load)(
-            context or IxContext(agent=agent, task=task, chain=chain)
-        )
+        context = context or await IxContext.afrom_task(task=task)
+        return await chain.aload_chain(context)
 
     yield _mock_chain
 

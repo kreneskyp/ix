@@ -34,6 +34,8 @@ import { useConnectionValidator } from "chains/hooks/useConnectionValidator";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightLeft } from "@fortawesome/free-solid-svg-icons";
 import { useChainUpdate } from "chains/hooks/useChainUpdate";
+import { useRightSidebarContext } from "site/sidebar/context";
+import { DirectRootNode } from "chains/flow/DirectRootNode";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
@@ -41,6 +43,7 @@ const nodeTypes = {
   node: ConfigNode,
   list: ConfigNode,
   root: RootNode,
+  direct_root: DirectRootNode,
 };
 
 const getExpectedTypes = (connector) => {
@@ -49,7 +52,7 @@ const getExpectedTypes = (connector) => {
     : new Set([connector.source_type]);
 };
 
-const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
+const ChainGraphEditor = ({ graph }) => {
   const reactFlowWrapper = useRef(null);
   const edgeUpdate = useRef(true);
   const { call: loadChain } = useAxios();
@@ -71,6 +74,11 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
+
+  // rebuild edges if colorMode toggles
+  React.useEffect(() => {
+    setEdges(reactFlowGraph.edges);
+  }, [colorMode]);
 
   const onNodeSaved = useCallback(
     (response) => {
@@ -137,16 +145,15 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
           // create flow edge to validate and add to ReactFlow
           const edgeId = uuid4();
           const flowNodeType = nodeType.type;
-          const style = getEdgeStyle(colorMode, flowNodeType);
+          const style = getEdgeStyle(colorMode);
           flowEdge = {
             id: edgeId,
-            type: "default",
             source: isOutput ? node.id : newNodeID,
             target: isOutput ? newNodeID : node.id,
             sourceHandle: key === "in" ? "out" : flowNodeType,
             targetHandle: key,
             data: { id: edgeId },
-            style,
+            ...style[key === "in" || key === "out" ? "LINK" : "PROP"],
           };
 
           // validate flowEdge before creating datum for API
@@ -159,7 +166,8 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
               id: edgeId,
               source_id: flowEdge.source,
               target_id: flowEdge.target,
-              key,
+              target_key: flowEdge.targetHandle,
+              source_key: flowEdge.sourceHandle,
             };
           }
         }
@@ -224,21 +232,38 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
       const flowNodeType =
         source.id === "root" ? "root" : source.data.type.type;
       const style = getEdgeStyle(colorMode, flowNodeType);
-      setEdges((els) => addEdge({ ...params, data: { id }, style }, els));
+
+      // normal LINK and PROP edges
+      const from_root =
+        source.id === "root" || source.data.type.class_path === "__ROOT__";
+      const is_out = params.sourceHandle === "out";
+      const is_in = params.targetHandle === "in";
+      const from_branch = source.data.type.type === "branch";
+      const displayRelation =
+        from_root || is_out || is_in || from_branch ? "LINK" : "PROP";
+      setEdges((els) =>
+        addEdge({ ...params, ...style[displayRelation], data: { id } }, els)
+      );
 
       // save via API
       if (source.id === "root") {
         // link from root node uses setRoot since it's not stored as an edge
-        api.setRoot(chain.id, { node_id: params.target });
+        const root_node_ids = reactFlowInstance
+          .getEdges()
+          .filter((edge) => edge.source === "root")
+          .map((edge) => edge.target);
+        root_node_ids.push(params.target);
+        api.setRoots(chain.id, { node_ids: root_node_ids });
       } else {
-        // normal link and prop edges
+        const relation = from_root || is_out || from_branch ? "LINK" : "PROP";
         const data = {
           id,
           source_id: params.source,
           target_id: params.target,
-          key: params.targetHandle,
+          source_key: params.sourceHandle,
+          target_key: params.targetHandle,
           chain_id: chain?.id,
-          relation: params.sourceHandle === "out" ? "LINK" : "PROP",
+          relation,
         };
         api.addEdge(data);
       }
@@ -264,7 +289,12 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
       setEdges((els) => updateEdge(oldEdge, newConnection, els));
       if (newConnection.source === "root") {
         if (oldEdge.target !== newConnection.target) {
-          api.setRoot({ chain_id: chain.id, node_id: newConnection.target });
+          const root_node_ids = reactFlowInstance
+            .getEdges()
+            .filter((edge) => edge.source === "root" && edge.id !== oldEdge.id)
+            .map((edge) => edge.target);
+          root_node_ids.push(newConnection.target);
+          api.setRoots(chain.id, { node_ids: root_node_ids });
         }
       } else {
         const isSame =
@@ -278,7 +308,7 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
         }
       }
     },
-    [chain?.id, setEdges]
+    [chain?.id, setEdges, reactFlowInstance]
   );
 
   const onEdgeUpdateEnd = useCallback(
@@ -287,14 +317,18 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
       if (!edgeUpdate.toHandle) {
         setEdges((eds) => eds.filter((e) => e.id !== edge.id));
         if (edge.source === "root") {
-          api.setRoot(chain.id, { node_id: null });
+          const root_edges = reactFlowInstance
+            .getEdges()
+            .filter((e) => e.source === "root" && e.id !== edge.id);
+          const root_node_ids = root_edges.map((edge) => edge.target);
+          api.setRoots(chain.id, { node_ids: root_node_ids });
         } else {
           api.deleteEdge(edge.data.id);
         }
       }
       edgeUpdate.edge = null;
     },
-    [chain?.id, setEdges]
+    [chain?.id, setEdges, reactFlowInstance]
   );
 
   const { callback: debouncedChainUpdate } = useDebounce((...args) => {
@@ -341,6 +375,7 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
     }
   }, [graph?.chain?.id]);
 
+  const { toggleSidebar } = useRightSidebarContext();
   return (
     <Box height="93vh">
       <Box display="flex" alignItems="center">
@@ -362,7 +397,7 @@ const ChainGraphEditor = ({ graph, rightSidebarDisclosure }) => {
         <IconButton
           ml="auto"
           icon={<FontAwesomeIcon icon={faRightLeft} />}
-          onClick={rightSidebarDisclosure.onOpen}
+          onClick={toggleSidebar}
           aria-label="Open Sidebar"
           title={"Open Sidebar"}
         />

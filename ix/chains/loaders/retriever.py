@@ -3,12 +3,12 @@ from typing import List
 
 from asgiref.sync import sync_to_async
 from langchain.schema import BaseRetriever
-from langchain.vectorstores import VectorStore
+from langchain.schema.vectorstore import VectorStore
 
 from ix.chains.fixture_src.vectorstores import get_vectorstore_retriever_fieldnames
 from ix.chains.loaders.context import IxContext
 from ix.chains.loaders.core import load_node
-from ix.chains.models import ChainNode
+from ix.chains.models import ChainEdge
 from ix.utils.importlib import import_class
 
 
@@ -24,7 +24,7 @@ setattr(BaseRetriever, "_aget_relevant_documents", async_aget_relevant_documents
 
 
 def load_retriever_property(
-    node_group: List[ChainNode], context: IxContext
+    edge_group: List[ChainEdge], context: IxContext, **kwargs
 ) -> BaseRetriever:
     """Property loader for retriever.
 
@@ -32,9 +32,8 @@ def load_retriever_property(
     a retriever by calling `vectorstore.as_retriever`. This allows for VectorStore
     to determine the exact Retriever subclass (e.g. redis has a custom retriever).
     """
-
-    assert len(node_group) == 1
-    node = node_group[0]
+    assert len(edge_group) == 1
+    node = edge_group[0].source
     component_class = import_class(node.class_path)
 
     if isinstance(component_class, type) and issubclass(component_class, VectorStore):

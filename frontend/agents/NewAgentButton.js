@@ -1,24 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { IconButton } from "@chakra-ui/react";
-import { useColorMode } from "@chakra-ui/color-mode";
+import { Tooltip } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiagramProject } from "@fortawesome/free-solid-svg-icons";
+import { MenuItem } from "site/MenuItem";
 
 export const NewAgentButton = () => {
-  const { colorMode } = useColorMode();
-
   return (
-    <Link to="/chains/new">
-      <IconButton
-        width="100%"
-        border="1px solid"
-        borderColor={colorMode === "light" ? "gray.300" : "whiteAlpha.50"}
-        icon={<FontAwesomeIcon icon={faDiagramProject} />}
-        title={"New Agent or Chain"}
-      >
-        New Agent
-      </IconButton>
-    </Link>
+    <Tooltip label="New Agent" aria-label="New Agent">
+      <Link to="/chains/new">
+        <MenuItem title={"New Agent"}>
+          <FontAwesomeIcon icon={faDiagramProject} />
+        </MenuItem>
+      </Link>
+    </Tooltip>
   );
 };

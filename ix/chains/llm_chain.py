@@ -1,4 +1,3 @@
-import json
 import logging
 from typing import Any, List, Dict, Optional
 
@@ -70,9 +69,7 @@ class LLMChain(LangchainLLMChain):
                     for tool_func in function.get_tools()
                 )
             else:
-                converted = function.copy()
-                converted["parameters"] = json.loads(function["parameters"])
-                converted_functions.append(converted)
+                converted_functions.append(function)
 
         self.llm_kwargs["functions"] = converted_functions
 

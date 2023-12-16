@@ -1,0 +1,258 @@
+[
+  {
+    "model": "agents.agent",
+    "pk": "83e5fdf1-9729-4593-802e-be69649e1645",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Dalle",
+      "alias": "dalle",
+      "purpose": "",
+      "created_at": "2023-11-19T04:38:02.176Z",
+      "model": "",
+      "config": {},
+      "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d",
+      "is_test": false
+    }
+  },
+  {
+    "model": "chains.chain",
+    "pk": "325a010c-1f74-48e6-ae5f-5d8f26c3906d",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Dalle",
+      "description": "",
+      "created_at": "2023-11-19T04:38:02.161Z",
+      "is_agent": true
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "155a4299-0acb-4736-8248-5cbd016ef8c6",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONPath",
+      "node_type": [
+        "ix.chains.components.json.JSONPath"
+      ],
+      "config": {
+        "path": "data[0].url"
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 860.0,
+        "y": 420.0
+      },
+      "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "331cc49f-5c94-4bbd-baea-b7cb7693362d",
+    "fields": {
+      "class_path": "__ROOT__",
+      "node_type": [
+        "__ROOT__"
+      ],
+      "config": {
+        "outputs": [
+          "user_input",
+          "artifact_ids"
+        ],
+        "outputs_hash": [
+          "user_input",
+          "artifact_ids"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": true,
+      "position": {
+        "x": 280.0,
+        "y": 420.0
+      },
+      "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "b6b8f637-671a-4537-9d63-ddba5a1e98a8",
+    "fields": {
+      "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+      "node_type": [
+        "langchain.prompts.chat.ChatPromptTemplate"
+      ],
+      "config": {
+        "messages": [
+          {
+            "role": "system",
+            "template": "format url as markdown image {url}",
+            "input_variables": [
+              "url"
+            ]
+          }
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 570.0,
+        "y": 600.0
+      },
+      "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "d06a05b4-e6f4-4fdc-82f5-147046cb81fb",
+    "fields": {
+      "class_path": "ix.chains.components.lcel.init_parallel",
+      "node_type": [
+        "ix.chains.components.lcel.init_parallel"
+      ],
+      "config": {
+        "steps": [
+          "url"
+        ],
+        "steps_hash": [
+          "1f64c9af-2e07-480b-b97e-b30bf12b8c0b"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 320.0,
+        "y": 600.0
+      },
+      "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "f7e63c44-6cd9-417d-bb73-a2e34b44fa69",
+    "fields": {
+      "class_path": "ix.runnable.dalle.DalleImage",
+      "node_type": [
+        "ix.runnable.dalle.DalleImage"
+      ],
+      "config": {
+        "n": 1,
+        "size": "1024x1024",
+        "model": "dall-e-3",
+        "quality": "standard",
+        "input_key": "user_input",
+        "separator": "\n",
+        "disable_detail_rewrite": false
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 590.0,
+        "y": 420.0
+      },
+      "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "fa0f3ea6-b079-4200-8534-96baefe18964",
+    "fields": {
+      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "node_type": [
+        "langchain.chat_models.openai.ChatOpenAI"
+      ],
+      "config": {
+        "tags": [],
+        "cache": false,
+        "metadata": {},
+        "streaming": true,
+        "max_tokens": 500,
+        "model_name": "gpt-3.5-turbo-1106",
+        "max_retries": 6,
+        "temperature": 0,
+        "openai_proxy": "",
+        "openai_api_base": "",
+        "request_timeout": 60,
+        "openai_organization": ""
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 860.0,
+        "y": 600.0
+      },
+      "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "1cf6a4bf-d5c4-463e-99d8-df7da85b8c85",
+    "fields": {
+      "source": "f7e63c44-6cd9-417d-bb73-a2e34b44fa69",
+      "target": "155a4299-0acb-4736-8248-5cbd016ef8c6",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "9be4e11e-cbbb-483e-98ea-1e4f22b21b07",
+    "fields": {
+      "source": "331cc49f-5c94-4bbd-baea-b7cb7693362d",
+      "target": "f7e63c44-6cd9-417d-bb73-a2e34b44fa69",
+      "source_key": "user_input",
+      "target_key": "in",
+      "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "b5f1b5a9-a3b8-44b5-b8ed-48a22625e735",
+    "fields": {
+      "source": "d06a05b4-e6f4-4fdc-82f5-147046cb81fb",
+      "target": "b6b8f637-671a-4537-9d63-ddba5a1e98a8",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "ce3ef26b-35fd-4941-b660-ddd05d45a72e",
+    "fields": {
+      "source": "155a4299-0acb-4736-8248-5cbd016ef8c6",
+      "target": "d06a05b4-e6f4-4fdc-82f5-147046cb81fb",
+      "source_key": "out",
+      "target_key": "1f64c9af-2e07-480b-b97e-b30bf12b8c0b",
+      "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "f27914de-a755-4958-840c-5b40b1f02596",
+    "fields": {
+      "source": "b6b8f637-671a-4537-9d63-ddba5a1e98a8",
+      "target": "fa0f3ea6-b079-4200-8534-96baefe18964",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  }
+]

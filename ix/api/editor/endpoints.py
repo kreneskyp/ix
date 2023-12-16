@@ -1,10 +1,13 @@
+import asyncio
 import logging
 from uuid import UUID
 
+from django.contrib.auth.models import AbstractUser
 from django.db.models import Q
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 
 from ix.agents.models import Agent
+from ix.api.auth import get_request_user
 from ix.api.chains.endpoints import (
     DeletedItem,
     create_chain_instance,
@@ -39,22 +42,18 @@ router = APIRouter()
 )
 async def set_chain_root(chain_id: UUID, update_root: UpdateRoot):
     # update old roots:
-    old_roots = ChainNode.objects.filter(chain_id=chain_id, root=True)
+    old_roots = ChainNode.objects.filter(chain_id=chain_id, root=True).exclude(
+        id__in=update_root.node_ids
+    )
     old_root_ids = [
         str(node_id) async for node_id in old_roots.values_list("id", flat=True)
     ]
-    await old_roots.aupdate(root=False)
-    node_id = update_root.node_id
-    if node_id:
-        new_root = await ChainNode.objects.aget(id=node_id)
-        new_root.root = True
-        await new_root.asave(update_fields=["root"])
-        new_root_id = str(new_root.id)
-
-    else:
-        new_root_id = None
-
-    return UpdatedRoot(old_roots=old_root_ids, root=new_root_id)
+    remove_roots = old_roots.aupdate(root=False)
+    add_roots = ChainNode.objects.filter(
+        id__in=update_root.node_ids, root=False
+    ).aupdate(root=True)
+    await asyncio.gather(remove_roots, add_roots)
+    return UpdatedRoot(old_roots=old_root_ids, roots=update_root.node_ids)
 
 
 @router.post("/chains/nodes", response_model=NodePydantic, tags=["Chain Editor"])
@@ -81,11 +80,12 @@ async def add_chain_node(node: AddNode):
 
             edge = ChainEdge(
                 id=datum.id,
-                key=datum.key,
+                source_key=datum.source_key,
+                target_key=datum.target_key,
                 source_id=datum.source_id or new_node.id,
                 target_id=datum.target_id or new_node.id,
                 chain_id=node.chain_id,
-                relation="LINK" if datum.key in {"in", "out"} else "PROP",
+                relation="LINK" if datum.target_key in {"in", "out"} else "PROP",
             )
             node_edges.append(edge)
         if node_edges:
@@ -199,15 +199,23 @@ async def get_chain_graph(chain_id: UUID):
     )
 
 
-@router.get(
-    "/chains/{chain_id}/chat", response_model=ChatPydantic, tags=["Chain Editor"]
-)
-async def get_chain_chat(chain_id: UUID):
-    """Return test chat instance for the chain"""
+async def _get_test_chat(chain_id: UUID, user: AbstractUser) -> Chat:
     try:
-        chat = await Chat.objects.aget(lead__chain_id=chain_id, lead__is_test=True)
+        chat = await Chat.filtered_owners(user).aget(
+            lead__chain_id=chain_id, lead__is_test=True
+        )
     except Chat.DoesNotExist:
         chain = await Chain.objects.aget(id=chain_id)
         chat = await create_chain_chat(chain)
+    return chat
 
+
+@router.get(
+    "/chains/{chain_id}/chat", response_model=ChatPydantic, tags=["Chain Editor"]
+)
+async def get_chain_chat(
+    chain_id: UUID, user: AbstractUser = Depends(get_request_user)
+):
+    """Return test chat instance for the chain"""
+    chat = await _get_test_chat(chain_id, user)
     return ChatPydantic.from_orm(chat)

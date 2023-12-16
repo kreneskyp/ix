@@ -23,6 +23,7 @@
             "choices": null,
             "default": "/var/app/workdir/chat_memory.txt",
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,

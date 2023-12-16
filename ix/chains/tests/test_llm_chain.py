@@ -5,8 +5,9 @@ from langchain.prompts import ChatPromptTemplate
 
 from ix.chains.llm_chain import LLMChain, TEMPLATE_CLASSES
 from ix.chains.loaders.prompts import create_message
+from ix.chains.tests.mock_configs import OPENAI_LLM, MOCK_MEMORY
 from ix.chains.tests.mock_memory import MockMemory
-from ix.chains.tests.test_config_loader import OPENAI_LLM, MOCK_MEMORY
+
 
 PROMPT_TEMPLATE = {
     "class_path": "langchain.prompts.chat.ChatPromptTemplate",
@@ -57,7 +58,8 @@ class TestChatPromptTemplate:
 
     def test_from_config(self, load_chain):
         config = deepcopy(PROMPT_TEMPLATE)
-        chain = load_chain(config)
+        ix_node = load_chain(config)
+        chain = ix_node.child
         assert isinstance(chain, ChatPromptTemplate)
         assert len(chain.messages) == 3
         assert isinstance(chain.messages[0], TEMPLATE_CLASSES["system"])
@@ -69,7 +71,8 @@ class TestChatPromptTemplate:
 class TestLLMChain:
     def test_from_config(self, load_chain, mock_openai_key):
         config = deepcopy(EXAMPLE_CONFIG)
-        chain = load_chain(config)
+        ix_node = load_chain(config)
+        chain = ix_node.child
 
         assert isinstance(chain, LLMChain)
         assert (

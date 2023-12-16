@@ -1,0 +1,84 @@
+{
+    "child_field": null,
+    "class_path": "__ROOT__",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "outputs": {
+                "description": "Inputs from the chat API.",
+                "input_type": "hash_list",
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
+            "outputs_hash": {
+                "description": "Input from a chat window.",
+                "input_type": "hidden",
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            }
+        },
+        "required": [],
+        "type": "object"
+    },
+    "connectors": [],
+    "description": "Input from a chat window.",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": [
+                "user_input",
+                "artifact_ids"
+            ],
+            "description": "Inputs from the chat API.",
+            "init_type": "init",
+            "input_type": "hash_list",
+            "label": "Inputs",
+            "max": null,
+            "min": null,
+            "name": "outputs",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": [
+                "user_input",
+                "artifact_ids"
+            ],
+            "description": "Input from a chat window.",
+            "init_type": "init",
+            "input_type": "hidden",
+            "label": "",
+            "max": null,
+            "min": null,
+            "name": "outputs_hash",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        }
+    ],
+    "name": "Chat Input",
+    "type": "root"
+}

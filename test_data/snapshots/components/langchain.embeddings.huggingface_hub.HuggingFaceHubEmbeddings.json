@@ -1,0 +1,100 @@
+{
+    "child_field": null,
+    "class_path": "langchain.embeddings.huggingface_hub.HuggingFaceHubEmbeddings",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "huggingfacehub_api_token": {
+                "input_type": "secret",
+                "type": "string"
+            },
+            "model_kwargs": {
+                "type": "object"
+            },
+            "repo_id": {
+                "type": "string"
+            },
+            "task": {
+                "default": "feature-extraction",
+                "type": "string"
+            }
+        },
+        "required": [],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "HuggingFace Hub Embeddings",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Repo_id",
+            "max": null,
+            "min": null,
+            "name": "repo_id",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": "feature-extraction",
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Task",
+            "max": null,
+            "min": null,
+            "name": "task",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Model_kwargs",
+            "max": null,
+            "min": null,
+            "name": "model_kwargs",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "dict"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": "secret",
+            "label": "Huggingfacehub_api_token",
+            "max": null,
+            "min": null,
+            "name": "huggingfacehub_api_token",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "HuggingFace Hub Embeddings",
+    "type": "embeddings"
+}

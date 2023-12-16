@@ -1,0 +1,110 @@
+{
+    "child_field": null,
+    "class_path": "langchain.schema.vectorstore.VectorStoreRetriever",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "allowed_search_types": {
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
+            "search_kwargs": {
+                "type": "object"
+            },
+            "search_type": {
+                "default": "similarity",
+                "type": "string"
+            }
+        },
+        "required": [
+            "allowed_search_types",
+            "search_kwargs"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "vectorstore",
+            "label": null,
+            "multiple": false,
+            "required": true,
+            "source_type": "vectorstore",
+            "template": false,
+            "type": "target"
+        }
+    ],
+    "description": "Default vector",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": [
+                "similarity",
+                "similarity_score_threshold",
+                "mmr"
+            ],
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
+            "name": "allowed_search_types",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": "similarity",
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Search_type",
+            "max": null,
+            "min": null,
+            "name": "search_type",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Search_kwargs",
+            "max": null,
+            "min": null,
+            "name": "search_kwargs",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "dict"
+        }
+    ],
+    "name": "VectorStoreRetriever",
+    "type": "retriever"
+}

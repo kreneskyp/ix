@@ -12,6 +12,9 @@
                 ],
                 "maxItems": null,
                 "minItems": null,
+                "style": {
+                    "width": "100%"
+                },
                 "type": "array",
                 "uniqueItems": false
             },
@@ -26,8 +29,13 @@
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "memory",
+            "label": null,
             "multiple": true,
             "required": false,
             "source_type": "memory",
@@ -36,8 +44,13 @@
         },
         {
             "as_type": null,
-            "auto_sequence": false,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "chains",
+            "label": null,
             "multiple": false,
             "required": false,
             "source_type": "chain",
@@ -52,6 +65,7 @@
             "choices": null,
             "default": false,
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -68,6 +82,7 @@
             "choices": null,
             "default": [],
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,

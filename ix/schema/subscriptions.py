@@ -8,7 +8,10 @@ from graphene_django import DjangoObjectType
 
 from ix.agents.models import Agent
 from ix.chat.models import Chat
-from ix.task_log.models import TaskLogMessage, Artifact
+from ix.runnable_log.subscription import RunEventSubscription
+
+# from ix.runnable_log.subscription import RunEventSubscription
+from ix.task_log.models import TaskLogMessage, Artifact, Task
 
 logger = logging.getLogger(__name__)
 
@@ -79,10 +82,9 @@ class ChatMessageSubscription(channels_graphql_ws.Subscription):
             return
 
         instance = kwargs["instance"]
-        parent_id = instance.task.parent_id
-        task_id = parent_id if parent_id else instance.task_id
+        root_id = instance.task.root_id if instance.task.root_id else instance.task.id
         cls.broadcast(
-            group=f"task_id_{task_id}",
+            group=f"task_id_{root_id}",
             payload={"instance": instance, "agent": instance.task.agent},
         )
 
@@ -122,12 +124,11 @@ class ChatMessageTokenSubscription(channels_graphql_ws.Subscription):
         )
 
     @classmethod
-    async def on_new_token(cls, task, message_id: UUID, index: int, text: str):
+    async def on_new_token(cls, task: Task, message_id: UUID, index: int, text: str):
         """
         Generic handler for new message tokens.
         """
-        parent_id = task.parent_id
-        task_id = parent_id if parent_id else task.id
+        task_id = task.root_id if task.root_id else task.id
         cls.broadcast(
             group=f"stream_task_id_{task_id}",
             payload={
@@ -172,8 +173,7 @@ class ChatArtifactSubscription(channels_graphql_ws.Subscription):
             return
 
         instance = kwargs["instance"]
-        parent_id = instance.task.parent_id
-        task_id = parent_id if parent_id else instance.task_id
+        task_id = instance.task.root_id if instance.task.root_id else instance.task.id
         cls.broadcast(
             group=f"artifacts_task_id_{task_id}",
             payload={"instance": instance},
@@ -186,3 +186,4 @@ class Subscription(graphene.ObjectType):
     chatMessageSubscription = ChatMessageSubscription.Field()
     chatMessageTokenSubscription = ChatMessageTokenSubscription.Field()
     chatArtifactSubscription = ChatArtifactSubscription.Field()
+    runEventSubscription = RunEventSubscription.Field()

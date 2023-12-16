@@ -5,6 +5,7 @@ from langchain.callbacks.manager import (
     AsyncCallbackManagerForChainRun,
     CallbackManagerForChainRun,
 )
+from langchain.schema.runnable import Runnable, patch_config
 
 from ix.chains.callbacks import IxHandler
 from langchain.chains.base import Chain
@@ -114,7 +115,7 @@ class ChatModerator(Chain):
     Chain that compares user input to a list of agents and chooses the best agent to handle the task
     """
 
-    selection_chain: Chain
+    selection_chain: Runnable
 
     @property
     def _chain_type(self) -> str:
@@ -156,8 +157,9 @@ class ChatModerator(Chain):
         logger.debug(f"Routing user_input={user_input}")
         inputs_mutable = inputs.copy()
         inputs_mutable["agents"] = agent_prompt
-        response = self.selection_chain(
-            inputs=inputs_mutable, callbacks=run_manager.get_child()
+        response = self.selection_chain.invoke(
+            input=inputs_mutable,
+            config=patch_config(config=None, callbacks=run_manager.get_child()),
         )
         delegation_or_text = response["delegation_or_text"]
         logger.debug(f"Moderator returned response={delegation_or_text}")
@@ -184,7 +186,10 @@ class ChatModerator(Chain):
                 f"Delegated to agent={agent.alias} task={subtask.id} input={inputs}"
             )
             start_agent_loop.delay(
-                task_id=str(subtask.id), chain_id=str(agent.chain_id), inputs=inputs
+                task_id=str(subtask.id),
+                chain_id=str(agent.chain_id),
+                inputs=inputs,
+                user_id=subtask.user_id,
             )
             task_id = str(subtask.id)
 
@@ -208,8 +213,9 @@ class ChatModerator(Chain):
         logger.debug(f"Routing user_input={user_input}")
         inputs_mutable = inputs.copy()
         inputs_mutable["agents"] = agent_prompt
-        response = await self.selection_chain.acall(
-            inputs=inputs_mutable, callbacks=run_manager.get_child()
+        response = await self.selection_chain.ainvoke(
+            input=inputs_mutable,
+            config=patch_config(config=None, callbacks=run_manager.get_child()),
         )
         delegation_or_text = response["delegation_or_text"]
         logger.debug(f"Moderator returned response={delegation_or_text}")
@@ -237,8 +243,11 @@ class ChatModerator(Chain):
                 f"Delegated to agent={agent.alias} task={subtask.id} input={inputs}"
             )
             start_agent_loop.delay(
-                task_id=str(subtask.id), chain_id=str(agent.chain_id), inputs=inputs
+                task_id=str(chat.task_id),
+                chain_id=str(agent.chain_id),
+                inputs=inputs,
+                user_id=str(subtask.user_id),
             )
-            task_id = str(subtask.id)
+            task_id = str(chat.task_id)
 
         return {"text": text, "task_id": task_id}

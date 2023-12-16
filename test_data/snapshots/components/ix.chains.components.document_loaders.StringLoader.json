@@ -1,0 +1,60 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.components.document_loaders.StringLoader",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "metadata": {
+                "type": "object"
+            },
+            "text": {
+                "type": "string"
+            }
+        },
+        "required": [
+            "text"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Load a static string as a document.",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Text",
+            "max": null,
+            "min": null,
+            "name": "text",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Metadata",
+            "max": null,
+            "min": null,
+            "name": "metadata",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "dict"
+        }
+    ],
+    "name": "String Loader",
+    "type": "document_loader"
+}

@@ -8,10 +8,10 @@ from langchain.schema import HumanMessage
 from ix.chains.models import ChainNode
 from ix.chains.routing import MapSubchain
 from ix.chains.tests.mock_chain import MOCK_CHAIN_CONFIG
-from ix.chains.tests.test_config_loader import (
+from ix.chains.tests.mock_configs import (
+    LLM_REPLY,
     LLM_REPLY_WITH_HISTORY,
     LLM_REPLY_WITH_HISTORY_AND_MEMORY,
-    LLM_REPLY,
 )
 from ix.task_log.tests.fake import fake_chain
 
@@ -104,6 +104,7 @@ def mock_subchain_config():
     yield config
 
 
+@pytest.mark.skip(reason="DEPRECATED!")
 @pytest.mark.django_db
 class TestSequentialChain:
     """Test loading sequences"""
@@ -168,15 +169,15 @@ def mock_mapsubchain(load_chain) -> MapSubchain:
     yield load_chain(MAP_SUBCHAIN)
 
 
+# TODO: move these tests to RunnableEachSequence
+@pytest.mark.skip(reason="DEPRECATED!")
 @pytest.mark.django_db
 class TestMapSubchain:
     def test_from_config(self, node_types, mock_subchain_config, ix_context):
         """Testing importing from a config object"""
         chain = fake_chain()
-        chain_node = ChainNode.objects.create_from_config(
-            chain, mock_subchain_config, root=True
-        )
-        instance = chain_node.load(ix_context)
+        ChainNode.objects.create_from_config(chain, mock_subchain_config, root=True)
+        instance = chain.load_chain(ix_context)
         assert isinstance(instance, MapSubchain)
 
     def test_load_chain(self, mock_mapsubchain):

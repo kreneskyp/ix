@@ -22,6 +22,7 @@
             "choices": null,
             "default": "/var/app/workdir",
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Root_dir",
             "max": null,

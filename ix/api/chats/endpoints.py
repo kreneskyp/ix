@@ -239,7 +239,7 @@ async def get_messages(
         raise HTTPException(status_code=404, detail="Chat does not exist.")
     task_id = chat.task_id
     query = TaskLogMessage.objects.filter(
-        Q(task_id=task_id) | Q(task__parent_id=task_id)
+        Q(task__root_id=task_id) | Q(task__id=task_id)
     ).order_by("created_at")
 
     # punting on async implementation of pagination until later
@@ -307,7 +307,7 @@ async def send_message(
 
     # Start agent loop. This does NOT check if the loop is already running
     # the agent_runner task is responsible for blocking duplicate runners
-    await start_agent(task_id, agent, inputs)
+    await start_agent(task_id, agent, inputs, user=user)
 
     return ChatMessage.model_validate(message)
 
@@ -321,15 +321,20 @@ async def clear_messages(chat_id: str, user: AbstractUser = Depends(get_request_
     except Agent.DoesNotExist:
         raise HTTPException(status_code=404, detail="Agent does not exist.")
 
-    await TaskLogMessage.objects.filter(task_id=chat.task_id).adelete()
-    await TaskLogMessage.objects.filter(task__parent_id=chat.task_id).adelete()
+    await TaskLogMessage.objects.filter(
+        Q(task__root_id=chat.task_id) | Q(task_id=chat.task_id)
+    ).adelete()
     return DeletedItem(id=chat_id)
 
 
-async def start_agent(task_id: UUID, agent: Agent, inputs: Dict[str, Any]):
+async def start_agent(
+    task_id: UUID, agent: Agent, inputs: Dict[str, Any], user: AbstractUser
+):
     """Shim for start_agent_loop
 
     The async decorator on start_agent_loop sometimes causes issues in tests.
     Moving the function into this shim allows it to work correctly.
     """
-    return start_agent_loop.delay(str(task_id), str(agent.chain_id), inputs=inputs)
+    return start_agent_loop.delay(
+        str(task_id), chain_id=str(agent.chain_id), user_id=str(user.id), inputs=inputs
+    )
