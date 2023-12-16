@@ -11,6 +11,10 @@ NO_EXTRA_DETAIL = """I NEED to test how the tool works with extremely simple pro
     DO NOT add any detail, just use it AS-IS:"""
 
 
+DalleSizes = Literal["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"]
+DefaultDefaultSize = "1024x1024"
+
+
 class DalleImage(RunnableSerializable[Input, List[str]]):
     """
     Generate an image with Dalle API
@@ -21,9 +25,7 @@ class DalleImage(RunnableSerializable[Input, List[str]]):
     model: str = "dall-e-3"
     n: int = 1
     """Number of images to generate"""
-    size: Optional[
-        Literal["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"]
-    ] = "1024x1024"
+    size: Optional[DalleSizes] = DefaultDefaultSize
     """Size of image to generate"""
     quality: Literal["standard", "hd"] = "standard"
     separator: str = "\n"

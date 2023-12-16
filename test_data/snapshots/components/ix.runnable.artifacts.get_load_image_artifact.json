@@ -1,0 +1,16 @@
+{
+    "child_field": null,
+    "class_path": "ix.runnable.artifacts.get_load_image_artifact",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {},
+        "required": [],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Loads an image from an artifact.",
+    "display_type": "node",
+    "fields": null,
+    "name": "Load Image Artifact",
+    "type": "chain"
+}
