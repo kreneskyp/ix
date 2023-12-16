@@ -1,13 +1,21 @@
+import base64
 import json
 import logging
-from typing import Any, Optional, List, Union
+from io import BytesIO
+from typing import Any, Optional, List, Union, AsyncIterator
 from uuid import UUID
+import aiofiles
+from PIL.Image import Image
 
 from langchain.schema.runnable import RunnableSerializable, RunnableConfig, Runnable
+from langchain_core.runnables import RunnableLambda
+from langchain_core.runnables.utils import Input, Output
 from pydantic import BaseModel
 
 from ix.chains.callbacks import IxHandler
-from ix.commands.filesystem import write_to_file, read_file
+from ix.commands.filesystem import write_to_file, get_work_dir
+from ix.runnable.base import StreamableTransform
+from ix.runnable.dalle import DalleSizes
 from ix.task_log.models import Artifact, TaskLogMessage
 from ix.api.artifacts.types import Artifact as ArtifactPydantic, ArtifactContent
 
@@ -49,9 +57,8 @@ class LoadArtifacts(
         output = []
         async for artifact in artifacts:
             # read the file
-            data = read_file(artifact.storage["id"])
             output.append(
-                ArtifactContent(
+                ArtifactPydantic(
                     id=artifact.id,
                     task_id=artifact.task_id,
                     key=artifact.key,
@@ -60,7 +67,6 @@ class LoadArtifacts(
                     artifact_type=artifact.artifact_type,
                     storage=artifact.storage,
                     created_at=artifact.created_at,
-                    data=data,
                 )
             )
 
@@ -78,9 +84,6 @@ class ArtifactMeta(BaseModel):
 
 
 class SaveArtifact(Runnable[ArtifactMeta, ArtifactPydantic], BaseModel):
-    # how to make this available
-    # context: IxContext
-
     type: Optional[str] = None
     key: Optional[str] = None
     name: Optional[str] = None
@@ -178,3 +181,122 @@ class SaveArtifact(Runnable[ArtifactMeta, ArtifactPydantic], BaseModel):
 
         # no new output, pass through all inputs
         return ArtifactPydantic.model_validate(artifact)
+
+
+class LoadFile(StreamableTransform, RunnableSerializable[str, bytes]):
+    """Load a file from the filesystem and stream its contents as bytes using aiofiles."""
+
+    def invoke(
+        self,
+        input: Input,
+        config: Optional[RunnableConfig] = None,
+        **kwargs: Any,
+    ) -> Output:
+        with open(input, "rb") as file:
+            file_contents = file.read()
+        return file_contents
+
+    async def ainvoke(
+        self,
+        input: str,
+        config: Optional[RunnableConfig] = None,
+        **kwargs: Any,
+    ) -> bytes:
+        # Asynchronous file loading using aiofiles
+        async with aiofiles.open(get_work_dir() / input, "rb") as file:
+            file_contents = await file.read()
+        return file_contents
+
+    async def atransform(
+        self,
+        input: AsyncIterator[Input],
+        config: Optional[RunnableConfig] = None,
+        **kwargs: Optional[Any],
+    ) -> AsyncIterator[Output]:
+        async for file_path in input:
+            async with aiofiles.open(get_work_dir() / file_path, "rb") as file:
+                file_contents = await file.read()
+            yield file_contents
+
+
+BASE64_JPG_URI = "data:image/jpeg;base64,"
+
+
+class EncodeImage(StreamableTransform, RunnableSerializable[bytes, str]):
+    """Transform an image into a base64 string."""
+
+    size: Optional[DalleSizes] = None
+
+    def invoke(
+        self,
+        input: bytes,
+        config: Optional[RunnableConfig] = None,
+        **kwargs: Any,
+    ) -> str:
+        return f"{BASE64_JPG_URI}{self.encode_bytes(input)}"
+
+    async def ainvoke(
+        self,
+        input: bytes,
+        config: Optional[RunnableConfig] = None,
+        **kwargs: Any,
+    ) -> str:
+        return f"{BASE64_JPG_URI}{self.encode_bytes(input)}"
+
+    async def atransform(
+        self,
+        input: AsyncIterator[Input],
+        config: Optional[RunnableConfig] = None,
+        **kwargs: Optional[Any],
+    ) -> AsyncIterator[Output]:
+        if self.size:
+            # Aggregate chunks into a single byte string for resizing
+            input_bytes = b"".join([chunk for chunk in input])
+            yield str(BASE64_JPG_URI)
+            yield self.encode_bytes(input_bytes)
+        else:
+            # Stream encode individual chunks
+            yield str(BASE64_JPG_URI)
+            async for chunk in input:
+                encoded_chunk = self.encode_bytes(chunk)
+                yield encoded_chunk
+
+    def resize_image(self, input: bytes) -> bytes:
+        """
+        Resize the image data.
+
+        Args:
+            input (bytes): The input image data in bytes.
+
+        Returns:
+            bytes: The resized image data in bytes.
+        """
+        image = Image.open(BytesIO(input))
+        image = image.resize(self.size, Image.ANTIALIAS)
+        buffered = BytesIO()
+        image.save(buffered, format="JPEG")
+        return buffered.getvalue()
+
+    def encode_bytes(self, input: bytes) -> str:
+        """
+        Encode the image as a base64 string.
+
+        Args:
+            input (bytes): The input image data in bytes.
+
+        Returns:
+            str: The base64-encoded image as a string.
+        """
+        return base64.b64encode(input).decode("utf-8")
+
+
+def get_load_image_artifact() -> Runnable:
+    """
+    Sequence that loads a single artifact and then encodes it as a base64 string.
+    """
+    return (
+        LoadArtifacts()
+        | RunnableLambda(lambda x: x[0].storage["id"])
+        | LoadFile()
+        | EncodeImage()
+    )

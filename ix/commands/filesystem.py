@@ -9,6 +9,11 @@ from asgiref.sync import sync_to_async
 WORKDIR = Path("/var/app/workdir")
 
 
+def get_work_dir() -> Path:
+    """Returns the path to the workdir."""
+    return WORKDIR
+
+
 def create_file_path(file_path):
     """
     Creates the file path if it does not exist.
