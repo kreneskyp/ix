@@ -24,6 +24,7 @@
         "properties": {
             "connection_string": {
                 "default": "postgresql://ix:ix@db:5432/ix",
+                "label": "Connection String",
                 "style": {
                     "width": "100%"
                 },
@@ -32,6 +33,7 @@
             "session_key": {
                 "default": "session_id",
                 "description": "component session will be initialized with this argument.",
+                "label": "Session Key",
                 "style": {
                     "width": "100%"
                 },
@@ -40,6 +42,7 @@
             "session_prefix": {
                 "default": "",
                 "description": "prefix applied to the session ID. e.g. 'chat' will result in 'chat:session_id'.Chains with the same scope and prefix will share the same session.",
+                "label": "Session Prefix",
                 "style": {
                     "width": "100%"
                 },
@@ -53,6 +56,7 @@
                     "user"
                 ],
                 "input_type": "select",
+                "label": "Session Scope",
                 "style": {
                     "width": "100%"
                 },
@@ -60,6 +64,7 @@
             },
             "table_name": {
                 "default": "message_store",
+                "label": "",
                 "style": {
                     "width": "100%"
                 },

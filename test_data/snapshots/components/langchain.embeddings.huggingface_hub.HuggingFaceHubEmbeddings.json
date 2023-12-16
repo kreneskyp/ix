@@ -6,16 +6,20 @@
         "properties": {
             "huggingfacehub_api_token": {
                 "input_type": "secret",
+                "label": "Huggingfacehub_api_token",
                 "type": "string"
             },
             "model_kwargs": {
+                "label": "Model_kwargs",
                 "type": "object"
             },
             "repo_id": {
+                "label": "Repo_id",
                 "type": "string"
             },
             "task": {
                 "default": "feature-extraction",
+                "label": "Task",
                 "type": "string"
             }
         },

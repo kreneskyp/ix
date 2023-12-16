@@ -6,10 +6,12 @@
         "properties": {
             "return_direct": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

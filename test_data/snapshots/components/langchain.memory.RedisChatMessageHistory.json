@@ -7,6 +7,7 @@
             "session_key": {
                 "default": "session_id",
                 "description": "component session will be initialized with this argument.",
+                "label": "Session Key",
                 "style": {
                     "width": "100%"
                 },
@@ -15,6 +16,7 @@
             "session_prefix": {
                 "default": "",
                 "description": "prefix applied to the session ID. e.g. 'chat' will result in 'chat:session_id'.Chains with the same scope and prefix will share the same session.",
+                "label": "Session Prefix",
                 "style": {
                     "width": "100%"
                 },
@@ -28,6 +30,7 @@
                     "user"
                 ],
                 "input_type": "select",
+                "label": "Session Scope",
                 "style": {
                     "width": "100%"
                 },
@@ -35,10 +38,12 @@
             },
             "ttl": {
                 "default": 3600,
+                "label": "",
                 "type": "number"
             },
             "url": {
                 "default": "redis://redis:6379/0",
+                "label": "",
                 "style": {
                     "width": "100%"
                 },

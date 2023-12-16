@@ -6,6 +6,7 @@
         "properties": {
             "root_dir": {
                 "default": "/var/app/workdir",
+                "label": "Root_dir",
                 "type": "string"
             }
         },

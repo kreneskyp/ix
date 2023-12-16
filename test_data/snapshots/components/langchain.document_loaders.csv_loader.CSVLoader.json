@@ -5,12 +5,15 @@
         "display_groups": null,
         "properties": {
             "encoding": {
+                "label": "Encoding",
                 "type": "string"
             },
             "file_path": {
+                "label": "File_path",
                 "type": "string"
             },
             "source_column": {
+                "label": "Source_column",
                 "type": "string"
             }
         },

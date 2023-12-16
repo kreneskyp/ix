@@ -17,6 +17,7 @@
             },
             "output_key": {
                 "default": "delegate_to",
+                "label": "Output_key",
                 "type": "string"
             },
             "tags": {
@@ -34,10 +35,12 @@
                 "uniqueItems": false
             },
             "target_alias": {
+                "label": "Target_alias",
                 "type": "string"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

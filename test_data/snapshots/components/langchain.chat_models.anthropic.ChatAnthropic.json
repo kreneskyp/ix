@@ -6,6 +6,7 @@
         "properties": {
             "anthropic_api_key": {
                 "input_type": "secret",
+                "label": "",
                 "secret_key": "Anthropic API",
                 "style": {
                     "width": "100%"
@@ -15,15 +16,18 @@
             "anthropic_api_url": {
                 "default": "https://api.anthropic.com",
                 "description": "API URL",
+                "label": "",
                 "style": {
                     "width": "100%"
                 },
                 "type": "string"
             },
             "cache": {
+                "label": "Cache",
                 "type": "boolean"
             },
             "metadata": {
+                "label": "Metadata",
                 "type": "object"
             },
             "tags": {
@@ -41,12 +45,14 @@
                 "default": 0,
                 "description": "Temperature",
                 "input_type": "slider",
+                "label": "",
                 "maximum": 2.0,
                 "minimum": 0.0,
                 "multipleOf": 0.05,
                 "type": "number"
             },
             "verbose": {
+                "label": "Verbose",
                 "type": "boolean"
             }
         },

@@ -6,28 +6,34 @@
         "properties": {
             "google_api_key": {
                 "input_type": "secret",
+                "label": "Google_api_key",
                 "secret_key": "Google Search API",
                 "type": "string"
             },
             "google_cse_id": {
                 "input_type": "secret",
+                "label": "Google_cse_id",
                 "secret_key": "Google Search API",
                 "type": "string"
             },
             "k": {
                 "default": 10,
+                "label": "K",
                 "type": "number"
             },
             "return_direct": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             },
             "siterestrict": {
                 "default": false,
+                "label": "Siterestrict",
                 "type": "boolean"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

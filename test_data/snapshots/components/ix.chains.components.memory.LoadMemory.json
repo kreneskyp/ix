@@ -17,6 +17,7 @@
             },
             "output_key": {
                 "default": "memories",
+                "label": "Output_key",
                 "type": "string"
             }
         },

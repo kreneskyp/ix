@@ -5,6 +5,7 @@
         "display_groups": null,
         "properties": {
             "spec": {
+                "label": "OpenAPI URL",
                 "style": {
                     "width": "500px"
                 },
@@ -12,6 +13,7 @@
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

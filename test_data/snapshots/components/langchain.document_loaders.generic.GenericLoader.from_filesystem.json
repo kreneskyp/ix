@@ -6,9 +6,11 @@
         "properties": {
             "glob": {
                 "default": "**/[!.]*",
+                "label": "Glob",
                 "type": "string"
             },
             "path": {
+                "label": "Path",
                 "style": {
                     "width": "100%"
                 },

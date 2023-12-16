@@ -6,14 +6,17 @@
         "properties": {
             "description": {
                 "default": "",
+                "label": "",
                 "type": "string"
             },
             "name": {
                 "default": "",
+                "label": "",
                 "type": "string"
             },
             "parameters": {
                 "default": "",
+                "label": "",
                 "type": "object"
             }
         },

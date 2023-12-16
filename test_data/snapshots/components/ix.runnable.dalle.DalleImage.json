@@ -6,22 +6,27 @@
         "properties": {
             "disable_detail_rewrite": {
                 "default": false,
+                "label": "Disable_detail_rewrite",
                 "type": "boolean"
             },
             "input_key": {
                 "default": "prompt",
+                "label": "Input_key",
                 "type": "string"
             },
             "model": {
                 "default": "dall-e-3",
+                "label": "Model",
                 "type": "string"
             },
             "n": {
                 "default": 1,
+                "label": "N",
                 "type": "number"
             },
             "openai_api_key": {
                 "input_type": "secret",
+                "label": "API Key",
                 "secret_key": "OpenAI API",
                 "style": {
                     "width": "100%"
@@ -35,10 +40,12 @@
                     "hd"
                 ],
                 "input_type": "select",
+                "label": "Quality",
                 "type": "string"
             },
             "separator": {
                 "default": "\n",
+                "label": "Separator",
                 "type": "string"
             },
             "size": {
@@ -51,6 +58,7 @@
                     "1024x1792"
                 ],
                 "input_type": "select",
+                "label": "Size",
                 "type": "object"
             }
         },

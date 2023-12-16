@@ -5,72 +5,91 @@
         "display_groups": null,
         "properties": {
             "cache": {
+                "label": "Cache",
                 "type": "boolean"
             },
             "echo": {
                 "default": false,
+                "label": "Echo",
                 "type": "boolean"
             },
             "f16_kv": {
                 "default": true,
+                "label": "F16_kv",
                 "type": "boolean"
             },
             "last_n_tokens_size": {
                 "default": 64,
+                "label": "Last_n_tokens_size",
                 "type": "number"
             },
             "logits_all": {
                 "default": false,
+                "label": "Logits_all",
                 "type": "boolean"
             },
             "logprobs": {
+                "label": "Logprobs",
                 "type": "number"
             },
             "lora_base": {
+                "label": "Lora_base",
                 "type": "string"
             },
             "max_tokens": {
                 "default": 256,
+                "label": "Max_tokens",
                 "type": "number"
             },
             "metadata": {
+                "label": "Metadata",
                 "type": "object"
             },
             "model_path": {
+                "label": "Model_path",
                 "type": "string"
             },
             "n_batch": {
                 "default": 8,
+                "label": "N_batch",
                 "type": "number"
             },
             "n_ctx": {
                 "default": 512,
+                "label": "N_ctx",
                 "type": "number"
             },
             "n_gpu_layers": {
+                "label": "N_gpu_layers",
                 "type": "number"
             },
             "n_parts": {
                 "default": -1,
+                "label": "N_parts",
                 "type": "number"
             },
             "n_threads": {
+                "label": "N_threads",
                 "type": "number"
             },
             "repeat_penalty": {
                 "default": 1.1,
+                "label": "Repeat_penalty",
                 "type": "number"
             },
             "rope_freq_base": {
                 "default": 10000.0,
+                "label": "Rope_freq_base",
                 "type": "number"
             },
             "rope_freq_scale": {
                 "default": 1.0,
+                "label": "Rope_freq_scale",
                 "type": "number"
             },
             "seed": {
                 "default": -1,
+                "label": "Seed",
                 "type": "number"
             },
             "stop": {
@@ -86,9 +105,11 @@
             },
             "streaming": {
                 "default": true,
+                "label": "Streaming",
                 "type": "boolean"
             },
             "suffix": {
+                "label": "Suffix",
                 "type": "string"
             },
             "tags": {
@@ -104,25 +125,31 @@
             },
             "temperature": {
                 "default": 0.8,
+                "label": "Temperature",
                 "type": "number"
             },
             "top_p": {
                 "default": 0.95,
+                "label": "Top_p",
                 "type": "number"
             },
             "use_mlock": {
                 "default": false,
+                "label": "Use_mlock",
                 "type": "boolean"
             },
             "use_mmap": {
                 "default": true,
+                "label": "Use_mmap",
                 "type": "boolean"
             },
             "verbose": {
+                "label": "Verbose",
                 "type": "boolean"
             },
             "vocab_only": {
                 "default": false,
+                "label": "Vocab_only",
                 "type": "boolean"
             }
         },

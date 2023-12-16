@@ -5,26 +5,32 @@
         "display_groups": null,
         "properties": {
             "max_tokens_limit": {
+                "label": "Max_tokens_limit",
                 "type": "number"
             },
             "output_key": {
                 "default": "answer",
+                "label": "Output_key",
                 "type": "string"
             },
             "rephrase_question": {
                 "default": true,
+                "label": "Rephrase_question",
                 "type": "boolean"
             },
             "return_generated_question": {
                 "default": false,
+                "label": "Return_generated_question",
                 "type": "boolean"
             },
             "return_source_documents": {
                 "default": false,
+                "label": "Return_source_documents",
                 "type": "boolean"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

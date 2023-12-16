@@ -6,18 +6,22 @@
         "properties": {
             "input_key": {
                 "default": "artifact_keys",
+                "label": "",
                 "type": "string"
             },
             "load_artifact": {
                 "default": true,
+                "label": "Load Artifact",
                 "type": "boolean"
             },
             "memory_key": {
                 "default": "related_artifacts",
+                "label": "",
                 "type": "string"
             },
             "save_artifact": {
                 "default": false,
+                "label": "Save Artifact",
                 "type": "boolean"
             }
         },

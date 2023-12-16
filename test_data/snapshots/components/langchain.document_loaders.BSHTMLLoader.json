@@ -5,13 +5,16 @@
         "display_groups": null,
         "properties": {
             "file_path": {
+                "label": "File_path",
                 "type": "string"
             },
             "get_text_separator": {
                 "default": "",
+                "label": "Get_text_separator",
                 "type": "string"
             },
             "open_encoding": {
+                "label": "Open_encoding",
                 "type": "string"
             }
         },

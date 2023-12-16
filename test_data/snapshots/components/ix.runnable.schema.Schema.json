@@ -5,13 +5,16 @@
         "display_groups": null,
         "properties": {
             "description": {
+                "label": "Description",
                 "type": "string"
             },
             "name": {
+                "label": "Name",
                 "type": "string"
             },
             "parameters": {
                 "input_type": "textarea",
+                "label": "Parameters",
                 "type": "object"
             }
         },

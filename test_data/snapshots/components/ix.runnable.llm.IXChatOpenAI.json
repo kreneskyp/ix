@@ -51,15 +51,18 @@
         ],
         "properties": {
             "cache": {
+                "label": "Cache",
                 "type": "boolean"
             },
             "function_call": {
+                "label": "",
                 "type": "string"
             },
             "max_retries": {
                 "default": 6,
                 "description": "Max Retries",
                 "input_type": "slider",
+                "label": "",
                 "maximum": 6.0,
                 "minimum": 0.0,
                 "multipleOf": 1.0,
@@ -67,9 +70,11 @@
             },
             "max_tokens": {
                 "default": 500,
+                "label": "Max_tokens",
                 "type": "string"
             },
             "metadata": {
+                "label": "Metadata",
                 "type": "object"
             },
             "model_name": {
@@ -88,10 +93,12 @@
                     "gpt-3.5-turbo-instruct"
                 ],
                 "input_type": "select",
+                "label": "Model",
                 "type": "string"
             },
             "openai_api_base": {
                 "description": "OpenAI API Base URL",
+                "label": "API Base URL",
                 "style": {
                     "width": "100%"
                 },
@@ -99,6 +106,7 @@
             },
             "openai_api_key": {
                 "input_type": "secret",
+                "label": "API Key",
                 "secret_key": "OpenAI API",
                 "style": {
                     "width": "100%"
@@ -106,6 +114,7 @@
                 "type": "string"
             },
             "openai_organization": {
+                "label": "Organization",
                 "style": {
                     "width": "100%"
                 },
@@ -113,6 +122,7 @@
             },
             "openai_proxy": {
                 "description": "OpenAI Proxy URL",
+                "label": "Proxy URL",
                 "style": {
                     "width": "100%"
                 },
@@ -121,10 +131,12 @@
             "request_timeout": {
                 "default": 60,
                 "description": "Request Timeout",
+                "label": "Timeout (sec)",
                 "type": "number"
             },
             "streaming": {
                 "default": true,
+                "label": "",
                 "type": "boolean"
             },
             "tags": {
@@ -142,12 +154,14 @@
                 "default": 0,
                 "description": "Temperature",
                 "input_type": "slider",
+                "label": "",
                 "maximum": 2.0,
                 "minimum": 0.0,
                 "multipleOf": 0.05,
                 "type": "number"
             },
             "verbose": {
+                "label": "Verbose",
                 "type": "boolean"
             }
         },

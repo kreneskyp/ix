@@ -6,26 +6,32 @@
         "properties": {
             "doc_content_chars_max": {
                 "default": 4000,
+                "label": "Doc_content_chars_max",
                 "type": "number"
             },
             "lang": {
                 "default": "en",
+                "label": "Lang",
                 "type": "string"
             },
             "load_all_available_meta": {
                 "default": false,
+                "label": "Load_all_available_meta",
                 "type": "boolean"
             },
             "return_direct": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             },
             "top_k_results": {
                 "default": 3,
+                "label": "Top_k_results",
                 "type": "number"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

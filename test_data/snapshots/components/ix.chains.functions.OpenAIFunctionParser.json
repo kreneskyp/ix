@@ -6,6 +6,7 @@
         "properties": {
             "parse_json": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

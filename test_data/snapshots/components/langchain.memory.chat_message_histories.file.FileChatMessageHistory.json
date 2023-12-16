@@ -6,6 +6,7 @@
         "properties": {
             "file_path": {
                 "default": "/var/app/workdir/chat_memory.txt",
+                "label": "",
                 "style": {
                     "width": "100%"
                 },

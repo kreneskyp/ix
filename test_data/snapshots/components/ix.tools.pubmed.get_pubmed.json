@@ -6,26 +6,32 @@
         "properties": {
             "doc_content_chars_max": {
                 "default": 2000,
+                "label": "Doc_content_chars_max",
                 "type": "number"
             },
             "email": {
                 "default": "your_email@example.com",
+                "label": "Email",
                 "type": "string"
             },
             "max_retry": {
                 "default": 5,
+                "label": "Max_retry",
                 "type": "number"
             },
             "return_direct": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             },
             "top_k_results": {
                 "default": 3,
+                "label": "Top_k_results",
                 "type": "number"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

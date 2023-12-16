@@ -6,15 +6,18 @@
         "properties": {
             "metaphor_api_key": {
                 "input_type": "secret",
+                "label": "Metaphor API Key",
                 "secret_key": "Metaphor API",
                 "type": "string"
             },
             "return_direct": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

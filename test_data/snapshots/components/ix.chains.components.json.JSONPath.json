@@ -5,10 +5,12 @@
         "display_groups": null,
         "properties": {
             "path": {
+                "label": "Path",
                 "type": "string"
             },
             "return_list": {
                 "default": false,
+                "label": "Return_list",
                 "type": "boolean"
             }
         },

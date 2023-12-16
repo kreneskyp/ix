@@ -5,14 +5,17 @@
         "display_groups": null,
         "properties": {
             "function_call": {
+                "label": "",
                 "type": "string"
             },
             "output_key": {
                 "default": "text",
+                "label": "",
                 "type": "string"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

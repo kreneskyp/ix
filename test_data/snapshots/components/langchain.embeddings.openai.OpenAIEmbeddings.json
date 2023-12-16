@@ -17,6 +17,7 @@
             },
             "chunk_size": {
                 "default": 1000,
+                "label": "",
                 "type": "number"
             },
             "disallowed_special": {
@@ -33,6 +34,7 @@
             "max_retries": {
                 "default": "6",
                 "input_type": "slider",
+                "label": "",
                 "maximum": 6.0,
                 "minimum": 0.0,
                 "multipleOf": 1.0,
@@ -44,6 +46,7 @@
                     "text-embedding-ada-002"
                 ],
                 "input_type": "select",
+                "label": "",
                 "type": "string"
             }
         },

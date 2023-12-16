@@ -5,18 +5,22 @@
         "display_groups": null,
         "properties": {
             "max_execution_time": {
+                "label": "",
                 "type": "number"
             },
             "max_iterations": {
                 "default": 15,
+                "label": "",
                 "type": "number"
             },
             "return_intermediate_steps": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

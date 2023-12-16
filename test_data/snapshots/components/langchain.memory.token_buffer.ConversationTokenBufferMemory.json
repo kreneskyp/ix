@@ -6,30 +6,37 @@
         "properties": {
             "ai_prefix": {
                 "default": "AI",
+                "label": "",
                 "type": "string"
             },
             "human_prefix": {
                 "default": "Human",
+                "label": "",
                 "type": "string"
             },
             "input_key": {
                 "default": "input",
+                "label": "",
                 "type": "string"
             },
             "max_token_limit": {
                 "default": 2000,
+                "label": "",
                 "type": "number"
             },
             "memory_key": {
                 "default": "history",
+                "label": "",
                 "type": "string"
             },
             "output_key": {
                 "default": "output",
+                "label": "",
                 "type": "string"
             },
             "return_messages": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

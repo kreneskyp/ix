@@ -6,26 +6,32 @@
         "properties": {
             "gl": {
                 "default": "us",
+                "label": "Gl",
                 "type": "string"
             },
             "hl": {
                 "default": "en",
+                "label": "Hl",
                 "type": "string"
             },
             "k": {
                 "default": 10,
+                "label": "K",
                 "type": "number"
             },
             "return_direct": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             },
             "serper_api_key": {
                 "input_type": "secret",
+                "label": "Serper_api_key",
                 "secret_key": "Serper API",
                 "type": "string"
             },
             "tbs": {
+                "label": "Tbs",
                 "type": "string"
             },
             "type": {
@@ -37,10 +43,12 @@
                     "images"
                 ],
                 "input_type": "select",
+                "label": "Type",
                 "type": "string"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

@@ -6,48 +6,61 @@
         "properties": {
             "base_url": {
                 "default": "http://localhost:11434",
+                "label": "Base_url",
                 "type": "string"
             },
             "cache": {
+                "label": "Cache",
                 "type": "boolean"
             },
             "metadata": {
+                "label": "Metadata",
                 "type": "object"
             },
             "mirostat": {
+                "label": "Mirostat",
                 "type": "number"
             },
             "mirostat_eta": {
+                "label": "Mirostat_eta",
                 "type": "number"
             },
             "mirostat_tau": {
+                "label": "Mirostat_tau",
                 "type": "number"
             },
             "model": {
                 "default": "llama2",
+                "label": "Model",
                 "type": "string"
             },
             "num_ctx": {
+                "label": "Num_ctx",
                 "type": "number"
             },
             "num_gpu": {
                 "default": 1,
                 "input_type": "slider",
+                "label": "Num_gpu",
                 "maximum": 10.0,
                 "minimum": 0.0,
                 "multipleOf": 1.0,
                 "type": "number"
             },
             "num_thread": {
+                "label": "Num_thread",
                 "type": "number"
             },
             "repeat_last_n": {
+                "label": "Repeat_last_n",
                 "type": "number"
             },
             "repeat_penalty": {
+                "label": "Repeat_penalty",
                 "type": "number"
             },
             "stop": {
+                "label": "Stop",
                 "style": {
                     "width": "100%"
                 },
@@ -67,23 +80,27 @@
             "temperature": {
                 "default": 0.8,
                 "input_type": "slider",
+                "label": "Temperature",
                 "maximum": 1.0,
                 "minimum": 0.0,
                 "multipleOf": 0.05,
                 "type": "number"
             },
             "tfs_z": {
+                "label": "Tfs_z",
                 "type": "number"
             },
             "top_p": {
                 "default": 0.9,
                 "input_type": "slider",
+                "label": "Top_p",
                 "maximum": 1.0,
                 "minimum": 0.0,
                 "multipleOf": 0.05,
                 "type": "number"
             },
             "verbose": {
+                "label": "Verbose",
                 "type": "boolean"
             }
         },

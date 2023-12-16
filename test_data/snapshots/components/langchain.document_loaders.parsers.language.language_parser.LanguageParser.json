@@ -29,10 +29,12 @@
                     "cobol"
                 ],
                 "input_type": "select",
+                "label": "Language",
                 "type": "string"
             },
             "parser_threshold": {
                 "default": 0,
+                "label": "Parser_threshold",
                 "type": "number"
             }
         },
