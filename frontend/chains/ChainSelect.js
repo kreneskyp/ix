@@ -15,19 +15,23 @@ const getOptions = async (inputValue) => {
 };
 
 const getDefaultOptions = async () => {
-  await axios.get(`/api/chains/?is_agent=false&limit=10`).then((response) => {
-    const options = response?.data.objects.map((item) => ({
+  try {
+    const response = await axios.get(`/api/chains/?is_agent=false&limit=10`);
+    const options = response.data.objects.map((item) => ({
       label: item.name,
       value: item.id,
     }));
     return options;
-  });
+  } catch (error) {
+    // Handle error here
+    console.error("Error fetching default options:", error);
+    return [];
+  }
 };
 
 const getDetail = async (id) => {
-  await axios.get(`/api/chains/${id}`).then((response) => {
-    return { label: response.data.name, value: response.data.id };
-  });
+  const response = await axios.get(`/api/chains/${id}`);
+  return { label: response.data.name, value: response.data.id };
 };
 
 export const ChainSelect = ({ onChange, value, ...props }) => {
