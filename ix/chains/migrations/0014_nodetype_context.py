@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("chains", "0012_chain_group_chain_user_nodetype_group_nodetype_user"),
+        ("chains", "0013_chainedge_source_key_chainedge_target_key"),
     ]
 
     operations = [
