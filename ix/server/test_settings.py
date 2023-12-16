@@ -1,6 +1,7 @@
 from ix.server.settings import *  # noqa:F403
 import logging
 
+TESTING = True
 
 LOGGING = LOGGING.copy()  # noqa:F405
 LOGGING["loggers"] = {
