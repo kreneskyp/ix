@@ -18,35 +18,42 @@
             "content_key": {
                 "default": "content",
                 "description": "Key for storing content",
+                "label": "",
                 "type": "string"
             },
             "index_name": {
                 "description": "Name of the index in the Redis",
+                "label": "",
                 "type": "string"
             },
             "metadata_key": {
                 "default": "metadata",
                 "description": "Key for storing metadata",
+                "label": "",
                 "type": "string"
             },
             "redis_url": {
                 "default": "redis://redis:6379/0",
                 "description": "URL of the Redis server",
+                "label": "",
                 "style": {
                     "width": "100%"
                 },
                 "type": "string"
             },
             "search_kwargs": {
+                "label": "Search_kwargs",
                 "type": "object"
             },
             "search_type": {
                 "default": "similarity",
+                "label": "Search_type",
                 "type": "string"
             },
             "vector_key": {
                 "default": "content_vector",
                 "description": "Key for storing vectors",
+                "label": "",
                 "type": "string"
             }
         },

@@ -11,6 +11,8 @@ import { List } from "json_form/fields/List";
 import { SecretSelect } from "json_form/fields/SecretSelect";
 import { useDisplayGroups } from "chains/hooks/useDisplayGroups";
 import { CollapsibleSection } from "chains/flow/CollapsibleSection";
+import { APISelect } from "json_form/fields/APISelect";
+import { ChainSelect } from "chains/ChainSelect";
 import { HashList } from "json_form/fields/HashList";
 import { BranchesField } from "chains/editor/fields/BranchesField";
 import { MapField } from "chains/editor/fields/MapField";
@@ -26,6 +28,7 @@ const INPUTS = {
   textarea: TextArea,
   dict: Dict,
   list: List,
+  "IX:chain": APISelect.for_select(ChainSelect),
   hash_list: HashList,
   node_branch_list: BranchesField,
   node_map_list: MapField,

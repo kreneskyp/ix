@@ -5,10 +5,12 @@
         "display_groups": null,
         "properties": {
             "cache": {
+                "label": "Cache",
                 "type": "boolean"
             },
             "fireworks_api_key": {
                 "input_type": "secret",
+                "label": "Fireworks_api_key",
                 "secret_key": "Fireworks.ai API",
                 "style": {
                     "width": "100%"
@@ -18,16 +20,19 @@
             "max_retries": {
                 "default": 20,
                 "input_type": "slider",
+                "label": "Max_retries",
                 "maximum": 50.0,
                 "minimum": 0.0,
                 "multipleOf": 1.0,
                 "type": "number"
             },
             "metadata": {
+                "label": "Metadata",
                 "type": "object"
             },
             "model": {
                 "default": "accounts/fireworks/models/llama-v2-7b-chat",
+                "label": "Model",
                 "style": {
                     "width": "100%"
                 },
@@ -45,6 +50,7 @@
                 "uniqueItems": false
             },
             "verbose": {
+                "label": "Verbose",
                 "type": "boolean"
             }
         },

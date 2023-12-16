@@ -6,26 +6,32 @@
         "properties": {
             "max_results": {
                 "default": 5,
+                "label": "Max_results",
                 "type": "number"
             },
             "region": {
                 "default": "wt-wt",
+                "label": "Region",
                 "type": "string"
             },
             "return_direct": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             },
             "safesearch": {
                 "default": "moderate",
+                "label": "Safesearch",
                 "type": "string"
             },
             "time": {
                 "default": "y",
+                "label": "Time",
                 "type": "string"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

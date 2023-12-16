@@ -15,7 +15,7 @@ from faker import Faker
 fake = Faker()
 
 
-def fake_chain(**kwargs):
+def fake_chain(**kwargs) -> Chain:
     """
     Create a fake chain with a root ChainNode.
     """
@@ -31,7 +31,7 @@ def fake_chain(**kwargs):
     return chain
 
 
-async def afake_chain(**kwargs):
+async def afake_chain(**kwargs) -> Chain:
     """
     Create a fake chain with a root ChainNode.
     """
@@ -65,6 +65,27 @@ async def afake_chain_node(**kwargs):
     Create a fake chain node.
     """
     return await sync_to_async(fake_chain_node)(**kwargs)
+
+
+def fake_root(**kwargs) -> ChainNode:
+    """
+    Create a fake root chain node.
+    """
+    config = kwargs.get(
+        "config",
+        {
+            "class_path": "__ROOT__",
+            "config": {},
+        },
+    )
+    return fake_chain_node(root=True, config=config, **kwargs)
+
+
+async def afake_root(**kwargs):
+    """
+    Create a fake root chain node.
+    """
+    return await sync_to_async(fake_root)(**kwargs)
 
 
 def fake_runnable(name="default", value=0, **kwargs):

@@ -5,21 +5,27 @@
         "display_groups": null,
         "properties": {
             "description": {
+                "label": "Description",
                 "type": "string"
             },
             "key": {
+                "label": "Key",
                 "type": "string"
             },
             "name": {
+                "label": "Name",
                 "type": "string"
             },
             "storage_backend": {
+                "label": "Storage_backend",
                 "type": "string"
             },
             "storage_id": {
+                "label": "Storage_id",
                 "type": "string"
             },
             "type": {
+                "label": "Type",
                 "type": "string"
             }
         },

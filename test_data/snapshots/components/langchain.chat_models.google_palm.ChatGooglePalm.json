@@ -5,14 +5,17 @@
         "display_groups": null,
         "properties": {
             "cache": {
+                "label": "Cache",
                 "type": "boolean"
             },
             "google_api_key": {
                 "input_type": "secret",
+                "label": "API Key",
                 "secret_key": "Google PaLM",
                 "type": "string"
             },
             "metadata": {
+                "label": "Metadata",
                 "type": "object"
             },
             "model_name": {
@@ -22,12 +25,14 @@
                     "models/chat-bison-001"
                 ],
                 "input_type": "select",
+                "label": "Model",
                 "type": "string"
             },
             "n": {
                 "default": 1,
                 "description": "Number of responses to sample",
                 "input_type": "slider",
+                "label": "Sample N responses",
                 "maximum": 5.0,
                 "minimum": 1.0,
                 "multipleOf": 1.0,
@@ -48,6 +53,7 @@
                 "default": 0,
                 "description": "Temperature",
                 "input_type": "slider",
+                "label": "",
                 "maximum": 2.0,
                 "minimum": 0.0,
                 "multipleOf": 0.05,
@@ -57,6 +63,7 @@
                 "default": 0,
                 "description": "Top P",
                 "input_type": "slider",
+                "label": "",
                 "maximum": 2.0,
                 "minimum": 0.0,
                 "multipleOf": 0.05,
@@ -66,12 +73,14 @@
                 "default": 0,
                 "description": "Top P",
                 "input_type": "slider",
+                "label": "",
                 "maximum": 2.0,
                 "minimum": 0.0,
                 "multipleOf": 0.05,
                 "type": "number"
             },
             "verbose": {
+                "label": "Verbose",
                 "type": "boolean"
             }
         },

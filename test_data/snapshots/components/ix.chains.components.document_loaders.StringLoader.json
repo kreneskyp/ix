@@ -5,9 +5,11 @@
         "display_groups": null,
         "properties": {
             "metadata": {
+                "label": "Metadata",
                 "type": "object"
             },
             "text": {
+                "label": "Text",
                 "type": "string"
             }
         },

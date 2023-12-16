@@ -6,6 +6,7 @@
         "properties": {
             "allow_reset": {
                 "default": false,
+                "label": "Allow_reset",
                 "parent": "client_settings",
                 "type": "boolean"
             },
@@ -22,41 +23,50 @@
             },
             "anonymized_telemetry": {
                 "default": true,
+                "label": "Anonymized_telemetry",
                 "parent": "client_settings",
                 "type": "boolean"
             },
             "chroma_server_grpc_port": {
+                "label": "GRPC Port",
                 "parent": "client_settings",
                 "type": "string"
             },
             "chroma_server_host": {
                 "default": "172.17.42.1",
+                "label": "Server Host",
                 "parent": "client_settings",
                 "type": "string"
             },
             "chroma_server_http_port": {
                 "default": "8020",
+                "label": "HTTP Port",
                 "parent": "client_settings",
                 "type": "string"
             },
             "chroma_server_ssl_enabled": {
                 "default": false,
+                "label": "Chroma_server_ssl_enabled",
                 "parent": "client_settings",
                 "type": "boolean"
             },
             "collection_name": {
                 "default": "langchain",
+                "label": "Collection_name",
                 "type": "string"
             },
             "persist_directory": {
                 "default": "./chroma",
+                "label": "Persist_directory",
                 "type": "string"
             },
             "search_kwargs": {
+                "label": "Search_kwargs",
                 "type": "object"
             },
             "search_type": {
                 "default": "similarity",
+                "label": "Search_type",
                 "type": "string"
             }
         },

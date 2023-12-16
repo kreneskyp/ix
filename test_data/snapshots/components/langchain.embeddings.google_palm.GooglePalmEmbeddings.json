@@ -6,6 +6,7 @@
         "properties": {
             "google_api_key": {
                 "description": "Google PaLM key",
+                "label": "",
                 "type": "string"
             },
             "model_name": {
@@ -14,6 +15,7 @@
                 "enum": [
                     "models/embedding-gecko-001"
                 ],
+                "label": "Model",
                 "type": "string"
             }
         },

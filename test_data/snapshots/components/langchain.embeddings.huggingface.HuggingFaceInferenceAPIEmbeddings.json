@@ -6,10 +6,12 @@
         "properties": {
             "api_key": {
                 "input_type": "secret",
+                "label": "Api_key",
                 "type": "string"
             },
             "model_name": {
                 "default": "sentence-transformers/all-MiniLM-L6-v2",
+                "label": "Model_name",
                 "type": "string"
             }
         },

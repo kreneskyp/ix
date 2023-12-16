@@ -6,10 +6,12 @@
         "properties": {
             "continue_on_failure": {
                 "default": false,
+                "label": "Continue_on_failure",
                 "type": "boolean"
             },
             "verify_ssl": {
                 "default": true,
+                "label": "Verify_ssl",
                 "type": "boolean"
             },
             "web_path": {

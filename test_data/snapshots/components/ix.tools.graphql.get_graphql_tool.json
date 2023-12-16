@@ -5,14 +5,17 @@
         "display_groups": null,
         "properties": {
             "graphql_endpoint": {
+                "label": "Graphql_endpoint",
                 "type": "string"
             },
             "return_direct": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

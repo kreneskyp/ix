@@ -6,14 +6,17 @@
         "properties": {
             "return_direct": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             },
             "wolfram_alpha_app_id": {
                 "input_type": "secret",
+                "label": "Wolfram Alpha App ID",
                 "secret_key": "Wolfram Alpha API",
                 "type": "string"
             }

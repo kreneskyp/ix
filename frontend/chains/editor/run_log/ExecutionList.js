@@ -31,15 +31,16 @@ const ExecutionBrief = ({ nodes, types, execution, onClick }) => {
         >
           {type?.type || "unknown"}
         </Badge>
-        <Text>{ type?.name || node.class_path.split(".").pop()}</Text>
+        <Text>{type?.name || node.class_path.split(".").pop()}</Text>
       </Box>
     </HStack>
   );
 };
 
 export const ExecutionList = ({ log, selectedExecution, setExecution }) => {
-  const executions = log?.executions || [];
   const { nodes } = React.useContext(NodeStateContext);
+  const executions =
+    log?.executions.filter((e) => nodes?.[e.node_id] !== undefined) || [];
   const types = React.useContext(ChainTypes);
 
   const { isLight } = useEditorColorMode();

@@ -16,12 +16,15 @@
                 "uniqueItems": false
             },
             "map_input": {
+                "label": "Map Input",
                 "type": "string"
             },
             "map_input_to": {
+                "label": "Map Input To",
                 "type": "string"
             },
             "output_key": {
+                "label": "",
                 "type": "string"
             }
         },

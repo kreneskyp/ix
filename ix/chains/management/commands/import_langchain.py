@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from ix.api.components.types import NodeType as NodeTypePydantic
@@ -69,7 +70,7 @@ COMPONENTS.extend(DOCUMENT_LOADERS)
 COMPONENTS.extend(VECTORSTORES)
 COMPONENTS.extend(RETRIEVERS)
 
-# IX LCEL integrations & flow
+# IX integrations & flow
 COMPONENTS.extend(LANGCHAIN_RUNNABLES)
 COMPONENTS.extend(JSON)
 COMPONENTS.extend(FLOW)
@@ -82,13 +83,14 @@ COMPONENTS.extend(AGENT_INTERACTION_CHAINS)
 COMPONENTS.extend(ARTIFACTS)
 
 # Testing
-COMPONENTS.extend(
-    [
-        MOCK_MEMORY,
-        MOCK_CHAIN,
-        MOCK_RUNNABLE_CONFIG,
-    ]
-)
+if settings.TESTING:
+    COMPONENTS.extend(
+        [
+            MOCK_MEMORY,
+            MOCK_CHAIN,
+            MOCK_RUNNABLE_CONFIG,
+        ]
+    )
 
 
 class Command(BaseCommand):

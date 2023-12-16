@@ -4,13 +4,14 @@ import qs from "qs";
 
 export function usePaginatedAPI(
   endpoint,
-  { offset = 0, limit = 10, load = true, loadDependencies = [] } = {}
+  { args = {}, offset = 0, limit = 10, load = true, loadDependencies = [] } = {}
 ) {
   const [page, setPage] = useState(null);
   const [isLoading, setIsLoading] = useState(load);
+  const globalArgs = args;
 
   const _load = useCallback(
-    async (args = {}) => {
+    async (args = globalArgs) => {
       setIsLoading(true);
       const params = { limit, offset, ...args };
       try {

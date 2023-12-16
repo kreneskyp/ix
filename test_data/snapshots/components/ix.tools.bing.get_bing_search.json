@@ -5,6 +5,7 @@
         "display_groups": null,
         "properties": {
             "bing_search_url": {
+                "label": "Bing_search_url",
                 "style": {
                     "width": "100%"
                 },
@@ -12,19 +13,23 @@
             },
             "bing_subscription_key": {
                 "input_type": "secret",
+                "label": "Bing_subscription_key",
                 "secret_key": "Bing",
                 "type": "string"
             },
             "k": {
                 "default": 10,
+                "label": "K",
                 "type": "number"
             },
             "return_direct": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

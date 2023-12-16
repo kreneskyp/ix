@@ -165,17 +165,16 @@ class ChainReference(Chain):
     chain: Chain
     output_key: str = "output"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.chain = self.chain_obj.load_chain(context=self.context)
-
     @property
     def _chain_type(self) -> str:
         return "ix.ChainReference"  # pragma: no cover
 
     @property
     def input_keys(self) -> List[str]:
-        return self.chain_obj.input_variables
+        # HAX: hardcoding expected input since all Chains use this as the default
+        #      this should be fixed in the future
+        return ["user_input"]
+        # return self.chain.input_variables
 
     @property
     def output_keys(self) -> List[str]:

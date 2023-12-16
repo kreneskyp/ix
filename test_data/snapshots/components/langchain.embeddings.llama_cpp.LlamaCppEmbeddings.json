@@ -7,15 +7,18 @@
             "f16_kv": {
                 "default": false,
                 "description": "Use half-precision for key/value cache",
+                "label": "",
                 "type": "boolean"
             },
             "logits_all": {
                 "default": false,
                 "description": "Return logits for all tokens, not just the last token",
+                "label": "",
                 "type": "boolean"
             },
             "model_path": {
                 "description": "Path to the Llama model",
+                "label": "",
                 "style": {
                     "width": "100%"
                 },
@@ -24,39 +27,47 @@
             "n_batch": {
                 "default": 8,
                 "description": "Number of tokens to process in parallel",
+                "label": "",
                 "type": "number"
             },
             "n_ctx": {
                 "default": 512,
                 "description": "Token context window",
+                "label": "",
                 "type": "number"
             },
             "n_gpu_layers": {
                 "description": "Number of layers to be loaded into gpu memory",
+                "label": "",
                 "type": "number"
             },
             "n_parts": {
                 "default": -1,
                 "description": "Number of parts to split the model into",
+                "label": "",
                 "type": "number"
             },
             "n_threads": {
                 "description": "Number of threads to use",
+                "label": "",
                 "type": "number"
             },
             "seed": {
                 "default": -1,
                 "description": "Seed. If -1, a random seed is used",
+                "label": "",
                 "type": "number"
             },
             "use_mlock": {
                 "default": false,
                 "description": "Force system to keep model in RAM",
+                "label": "",
                 "type": "boolean"
             },
             "vocab_only": {
                 "default": false,
                 "description": "Only load the vocabulary, no weights",
+                "label": "",
                 "type": "boolean"
             }
         },

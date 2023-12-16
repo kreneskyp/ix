@@ -5,21 +5,26 @@
         "display_groups": null,
         "properties": {
             "content_key": {
+                "label": "Content_key",
                 "type": "string"
             },
             "file_path": {
+                "label": "File_path",
                 "type": "string"
             },
             "jq_schema": {
                 "input_type": "textarea",
+                "label": "Jq_schema",
                 "type": "string"
             },
             "json_lines": {
                 "default": false,
+                "label": "Json_lines",
                 "type": "boolean"
             },
             "text_content": {
                 "default": true,
+                "label": "Text_content",
                 "type": "boolean"
             }
         },

@@ -1,8 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBook,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBook } from "@fortawesome/free-solid-svg-icons";
 
 import { RunLogModal } from "chains/editor/run_log/RunLogModal";
 import { useRunLog } from "chains/editor/run_log/useRunLog";

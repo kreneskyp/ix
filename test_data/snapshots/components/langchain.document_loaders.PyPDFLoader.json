@@ -5,9 +5,11 @@
         "display_groups": null,
         "properties": {
             "file_path": {
+                "label": "File_path",
                 "type": "string"
             },
             "password": {
+                "label": "Password",
                 "type": "string"
             }
         },

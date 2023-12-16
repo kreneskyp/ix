@@ -6,18 +6,22 @@
         "properties": {
             "add_start_index": {
                 "default": false,
+                "label": "Add_start_index",
                 "type": "boolean"
             },
             "chunk_overlap": {
                 "default": 200,
+                "label": "Chunk_overlap",
                 "type": "number"
             },
             "chunk_size": {
                 "default": 4000,
+                "label": "Chunk_size",
                 "type": "number"
             },
             "keep_separator": {
                 "default": false,
+                "label": "Keep_separator",
                 "type": "boolean"
             },
             "language": {
@@ -45,6 +49,7 @@
                     "cobol"
                 ],
                 "input_type": "select",
+                "label": "",
                 "type": "string"
             }
         },

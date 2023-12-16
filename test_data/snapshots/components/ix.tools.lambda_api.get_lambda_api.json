@@ -5,20 +5,25 @@
         "display_groups": null,
         "properties": {
             "awslambda_tool_description": {
+                "label": "Awslambda_tool_description",
                 "type": "string"
             },
             "awslambda_tool_name": {
+                "label": "Awslambda_tool_name",
                 "type": "string"
             },
             "function_name": {
+                "label": "Function_name",
                 "type": "string"
             },
             "return_direct": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             },
             "verbose": {
                 "default": false,
+                "label": "",
                 "type": "boolean"
             }
         },

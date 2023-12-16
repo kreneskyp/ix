@@ -6,35 +6,43 @@
         "properties": {
             "artifact_description": {
                 "description": "Description of the artifact to save",
+                "label": "",
                 "type": "string"
             },
             "artifact_key": {
                 "description": "Key of the artifact to save",
+                "label": "Artifact Key",
                 "type": "string"
             },
             "artifact_name": {
                 "description": "Name of the artifact to save",
+                "label": "",
                 "type": "string"
             },
             "artifact_storage": {
                 "default": "write_to_file",
                 "description": "Storage of the artifact to save",
+                "label": "",
                 "type": "string"
             },
             "artifact_storage_id_key": {
                 "description": "key within the input containing the storage ID",
+                "label": "Storage ID Key",
                 "type": "string"
             },
             "artifact_type": {
                 "description": "Type of the artifact to save",
+                "label": "",
                 "type": "string"
             },
             "content_key": {
                 "description": "Key of the input containing the content to save",
+                "label": "",
                 "type": "string"
             },
             "output_key": {
                 "description": "Key that the artifact will be output to",
+                "label": "",
                 "type": "string"
             }
         },

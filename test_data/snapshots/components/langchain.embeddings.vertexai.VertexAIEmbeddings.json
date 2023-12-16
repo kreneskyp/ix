@@ -11,6 +11,7 @@
                     "textembedding-gecko"
                 ],
                 "input_type": "select",
+                "label": "Model",
                 "type": "string"
             }
         },
