@@ -38,8 +38,9 @@ const ExecutionBrief = ({ nodes, types, execution, onClick }) => {
 };
 
 export const ExecutionList = ({ log, selectedExecution, setExecution }) => {
-  const executions = log?.executions || [];
   const { nodes } = React.useContext(NodeStateContext);
+  const executions =
+    log?.executions.filter((e) => nodes?.[e.node_id] !== undefined) || [];
   const types = React.useContext(ChainTypes);
 
   const { isLight } = useEditorColorMode();
