@@ -1,0 +1,43 @@
+{
+    "child_field": null,
+    "class_path": "ix.runnable.flow.load_chain_id",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "chain_id": {
+                "description": "The chain to embed.",
+                "input_type": "IX:chain",
+                "label": "Chain",
+                "type": "string"
+            }
+        },
+        "required": [
+            "chain_id"
+        ],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Embed a chain in another chain. The chain is called as if it were a component in the local flow.",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": "The chain to embed.",
+            "init_type": "init",
+            "input_type": "IX:chain",
+            "label": "Chain",
+            "max": null,
+            "min": null,
+            "name": "chain_id",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "string"
+        }
+    ],
+    "name": "Chain Reference",
+    "type": "chain"
+}

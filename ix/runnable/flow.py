@@ -1,4 +1,5 @@
 from typing import Any, List, Optional, Dict
+from uuid import UUID
 
 from langchain.callbacks.manager import (
     CallbackManagerForChainRun,
@@ -11,6 +12,23 @@ from langchain.schema.runnable import (
     RunnableParallel,
 )
 from langchain.schema.runnable.utils import Input, Output
+from langchain_core.runnables import Runnable
+
+from ix.chains.loaders.context import IxContext
+from ix.chains.models import Chain as ChainModel
+
+
+def load_chain_id(
+    chain_id: UUID, context: IxContext, **kwargs
+) -> Runnable[Input, Output]:
+    """Load a Runnable from a chain_id.
+
+    This initializer is used by the Reference component to transform
+    the config (chain_id) into the component it refers to. The component's
+    Runnable is returned directly.
+    """
+    chain_obj = ChainModel.objects.get(id=chain_id)
+    return chain_obj.load_chain(context=context)
 
 
 class RunnableEachSequential(RunnableSerializable[List[Input], List[Output]]):

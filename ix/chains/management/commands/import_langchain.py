@@ -19,7 +19,6 @@ from ix.chains.fixture_src.memory import MEMORY
 from ix.chains.fixture_src.openai_functions import OPENAI_FUNCTIONS
 from ix.chains.fixture_src.parsers import PARSERS
 from ix.chains.fixture_src.prompts import CHAT_PROMPT_TEMPLATE
-from ix.chains.fixture_src.references import REFERENCES
 from ix.chains.fixture_src.retriever import RETRIEVERS
 from ix.chains.fixture_src.routing import ROUTING_CHAINS
 from ix.chains.fixture_src.testing import MOCK_MEMORY, MOCK_CHAIN
@@ -70,7 +69,7 @@ COMPONENTS.extend(DOCUMENT_LOADERS)
 COMPONENTS.extend(VECTORSTORES)
 COMPONENTS.extend(RETRIEVERS)
 
-# IX LCEL integrations & flow
+# IX integrations & flow
 COMPONENTS.extend(LANGCHAIN_RUNNABLES)
 COMPONENTS.extend(JSON)
 COMPONENTS.extend(FLOW)
@@ -78,9 +77,6 @@ COMPONENTS.extend(FLOW)
 # IX Misc
 COMPONENTS.extend([CHAT_MODERATOR_TYPE])
 COMPONENTS.extend(AGENT_INTERACTION_CHAINS)
-
-# IX references
-COMPONENTS.extend(REFERENCES)
 
 # IX Artifacts
 COMPONENTS.extend(ARTIFACTS)

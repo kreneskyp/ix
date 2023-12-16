@@ -31,7 +31,7 @@ def fake_chain(**kwargs):
     return chain
 
 
-async def afake_chain(**kwargs):
+async def afake_chain(**kwargs) -> Chain:
     """
     Create a fake chain with a root ChainNode.
     """

@@ -35,5 +35,23 @@ ROOT_NODE = {
     ],
 }
 
+CHAIN_REF_CLASS_PATH = "ix.runnable.flow.load_chain_id"
+CHAIN_REF = {
+    "class_path": CHAIN_REF_CLASS_PATH,
+    "name": "Chain Reference",
+    "description": "Embed a chain in another chain. The chain is called as if it were a component in the local flow.",
+    "type": "chain",
+    "context": "context",
+    "fields": [
+        {
+            "name": "chain_id",
+            "label": "Chain",
+            "type": "string",
+            "input_type": "IX:chain",
+            "required": True,
+            "description": "The chain to embed.",
+        }
+    ],
+}
 
-FLOW = [ROOT_NODE]
+FLOW = [ROOT_NODE, CHAIN_REF]
