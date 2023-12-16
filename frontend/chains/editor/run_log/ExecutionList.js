@@ -31,7 +31,7 @@ const ExecutionBrief = ({ nodes, types, execution, onClick }) => {
         >
           {type?.type || "unknown"}
         </Badge>
-        <Text>{ type?.name || node.class_path.split(".").pop()}</Text>
+        <Text>{type?.name || node.class_path.split(".").pop()}</Text>
       </Box>
     </HStack>
   );
