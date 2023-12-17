@@ -20,6 +20,10 @@ import { ChainNode } from "chains/flow/ChainNode";
 import { BranchNode } from "chains/flow/BranchNode";
 import { MapNode } from "chains/flow/MapNode";
 import { RootNode } from "chains/flow/RootNode";
+import { LoopIcon } from "icons/LoopIcon";
+import { SplitIcon } from "icons/SplitIcon";
+import { MergeIcon } from "icons/MergeIcon";
+import { EmbeddedFlowIcon } from "icons/EmbeddedFlowIcon";
 
 export const NODE_STYLES = {
   llm: {
@@ -35,7 +39,9 @@ export const NODE_STYLES = {
     component: ChainNode,
   },
   flow: {
-    icon: faList,
+    icon: {
+      component: LoopIcon,
+    },
     component: ChainNode,
   },
   memory: {
@@ -92,11 +98,15 @@ export const NODE_STYLES = {
     icon: faBrain,
   },
   branch: {
-    icon: faArrowRightFromBracket,
+    icon: {
+      component: SplitIcon,
+    },
     component: BranchNode,
   },
   map: {
-    icon: faArrowRightToBracket,
+    icon: {
+      component: MergeIcon,
+    },
     component: MapNode,
   },
   root: {

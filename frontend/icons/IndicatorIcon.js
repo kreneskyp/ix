@@ -11,8 +11,8 @@ export const IndicatorIcon = ({ children, color, indicatorSize }) => {
     bottom: 0,
     right: 0,
     transform: "translate(40%, 0%)",
-    width: indicatorSize + 2 + "px", // Adjust size as needed
-    height: indicatorSize + 2 + "px", // Adjust size as needed
+    width: (indicatorSize || 11) + 2 + "px", // Adjust size as needed
+    height: (indicatorSize || 11) + 2 + "px", // Adjust size as needed
     borderRadius: "50%",
     display: "flex",
     justifyContent: "center",

@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { SecretsMenuItem } from "secrets/SecretsMenuItem";
 import { MenuItem } from "site/MenuItem";
+import ChatHistoryIcon from "icons/ChatHistoryIcon";
 
 function Navigation() {
   const { colorMode } = useColorMode();
@@ -25,7 +26,7 @@ function Navigation() {
       <Stack spacing={3}>
         <Link ml={3} to="/chats">
           <MenuItem title="Chat History">
-            <FontAwesomeIcon icon={faMessage} />
+            <ChatHistoryIcon />
           </MenuItem>
         </Link>
         {false && (
