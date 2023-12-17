@@ -87,7 +87,7 @@ class IxNode(RunnableSerializable[Input, Output]):
         runnable = self.build_runnable(input)
 
         # unpack input if it's a dict
-        if "in" in input:
+        if isinstance(input, dict) and "in" in input:
             input = input["in"]
 
         try:
@@ -112,10 +112,15 @@ class IxNode(RunnableSerializable[Input, Output]):
         config: Optional[RunnableConfig] = None,
         **kwargs: Any,
     ) -> AsyncIterator[Other]:
+        listener = self.context.get_listener(self.node_id)
+        listener.on_start(input=input)
         runnable = self.build_runnable(input)
 
-        async def input_aiter() -> AsyncIterator[Other]:
-            yield input
-
-        async for chunk in runnable.astream(input_aiter(), config, **kwargs):
+        buffer = ""
+        async for chunk in runnable.astream(input, config, **kwargs):
+            buffer += str(chunk)
             yield chunk
+
+        await listener.aon_end(
+            output=buffer,
+        )
