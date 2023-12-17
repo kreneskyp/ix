@@ -1,10 +1,20 @@
 import pytest
-from langchain.text_splitter import CharacterTextSplitter
+from langchain.text_splitter import (
+    CharacterTextSplitter,
+)
 from langchain_core.documents import Document
 
-from ix.chains.fixture_src.text_splitter import RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH
+from ix.chains.fixture_src.text_splitter import (
+    CHARACTER_SPLITTER_CLASS_PATH,
+)
 from ix.chains.loaders.context import IxContext
-from ix.chains.tests.fake import afake_chain_node, afake_chain
+from ix.chains.tests.fake import (
+    afake_chain_node,
+    afake_chain,
+    afake_root,
+    afake_root_edge,
+)
+from ix.runnable.ix import IxNode
 from ix.runnable.transformer import RunTransformer
 
 
@@ -31,23 +41,26 @@ class TestRunTransformer:
         content = """A\n\ntest\n\ndocument"""
         documents = [Document(page_content=content, metadata={"test": 123})]
 
+        # build chain
         chain = await afake_chain()
-        node = afake_chain_node(
+        root = await afake_root(chain=chain)
+        node = await afake_chain_node(
             chain=chain,
             config={
-                "class_path": RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH,
-                "config": ""
+                "class_path": CHARACTER_SPLITTER_CLASS_PATH,
+                "config": dict(chunk_size=1, chunk_overlap=0),
             },
-            root=True,
         )
+        await afake_root_edge(chain=chain, root=root, target=node)
 
-
+        # assert runnable
         runnable = await chain.aload_chain(context=aix_context)
+        assert isinstance(runnable, IxNode)
+        assert isinstance(runnable.child, RunTransformer)
+        assert isinstance(runnable.child.transformer, CharacterTextSplitter)
 
-        assert isinstance(runnable, RunTransformer)
-
+        # assert output
         result = await runnable.ainvoke(input=documents)
-
         assert result == [
             Document(page_content="A", metadata={"test": 123}),
             Document(page_content="test", metadata={"test": 123}),
