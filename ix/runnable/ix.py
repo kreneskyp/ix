@@ -87,7 +87,7 @@ class IxNode(RunnableSerializable[Input, Output]):
         runnable = self.build_runnable(input)
 
         # unpack input if it's a dict
-        if "in" in input:
+        if isinstance(input, dict) and "in" in input:
             input = input["in"]
 
         try:
