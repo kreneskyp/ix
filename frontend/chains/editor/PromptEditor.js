@@ -10,7 +10,7 @@ import {
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { PromptMessageInput } from "chains/editor/PromptMessageInput";
 
-const ROLE_OPTIONS = ["user", "assistant"];
+const ROLE_OPTIONS = ["system", "user", "assistant"];
 
 const DEFAULT_MESSAGE = {
   role: "user",
@@ -102,26 +102,22 @@ const PromptEditor = ({ data, onChange }) => {
             width="100%"
             height="100%"
           >
-            {index === 0 ? (
-              <Text fontWeight="bold">System</Text>
-            ) : (
-              <Select
-                {...input}
-                size={"sm"}
-                borderRadius={5}
-                width={125}
-                value={message.role}
-                onChange={(e) =>
-                  handleMessageChange(index, "role", e.target.value)
-                }
-              >
-                {ROLE_OPTIONS.map((role) => (
-                  <option key={role} value={role}>
-                    {role}
-                  </option>
-                ))}
-              </Select>
-            )}
+            <Select
+              {...input}
+              size={"sm"}
+              borderRadius={5}
+              width={125}
+              value={message.role}
+              onChange={(e) =>
+                handleMessageChange(index, "role", e.target.value)
+              }
+            >
+              {ROLE_OPTIONS.map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+            </Select>
             <HStack spacing={5}>
               {index > 1 && (
                 <FontAwesomeIcon
@@ -137,13 +133,11 @@ const PromptEditor = ({ data, onChange }) => {
                   onClick={() => moveMessage(index, 1)}
                 />
               )}
-              {index > 0 && (
-                <FontAwesomeIcon
-                  icon={faTrashAlt}
-                  cursor="pointer"
-                  onClick={() => deleteMessage(index)}
-                />
-              )}
+              <FontAwesomeIcon
+                icon={faTrashAlt}
+                cursor="pointer"
+                onClick={() => deleteMessage(index)}
+              />
             </HStack>
           </Flex>
 
