@@ -4,7 +4,7 @@ import { getLabel } from "json_form/utils";
 export const Slider = ({ name, field, value, onChange }) => {
   const handleChange = React.useCallback(
     (newValue) => {
-      onChange({ [name]: event.target.value });
+      onChange({ [name]: newValue });
     },
     [field, onChange]
   );
