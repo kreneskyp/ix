@@ -73,11 +73,12 @@ def get_node_initializer(node_type: str) -> Callable:
     Fetches a custom initializer to be used instead of the class initializer.
     Used to add shims around specific types of nodes.
     """
-    from ix.chains.loaders.text_splitter import initialize_text_splitter
     from ix.chains.loaders.vectorstore import initialize_vectorstore
+    from ix.runnable.transformer import RunTransformer
 
     return {
-        "text_splitter": initialize_text_splitter,
+        "text_splitter": RunTransformer.from_config,
+        "transformer": RunTransformer.from_config,
         "vectorstore": initialize_vectorstore,
     }.get(node_type, None)
 
