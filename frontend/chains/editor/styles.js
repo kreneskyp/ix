@@ -23,7 +23,6 @@ import { RootNode } from "chains/flow/RootNode";
 import { LoopIcon } from "icons/LoopIcon";
 import { SplitIcon } from "icons/SplitIcon";
 import { MergeIcon } from "icons/MergeIcon";
-import { EmbeddedFlowIcon } from "icons/EmbeddedFlowIcon";
 
 export const NODE_STYLES = {
   llm: {
