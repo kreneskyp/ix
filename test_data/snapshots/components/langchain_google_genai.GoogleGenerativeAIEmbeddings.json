@@ -1,0 +1,63 @@
+{
+    "child_field": null,
+    "class_path": "langchain_google_genai.GoogleGenerativeAIEmbeddings",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "google_api_key": {
+                "input_type": "secret",
+                "label": "API Key",
+                "secret_key": "Google GEN AI",
+                "type": "string"
+            },
+            "model": {
+                "description": "The name of the embedding model to use. ",
+                "label": "",
+                "type": "string"
+            }
+        },
+        "required": [],
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Google Gen AI Embeddings",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": "secret",
+            "label": "API Key",
+            "max": null,
+            "min": null,
+            "name": "google_api_key",
+            "parent": null,
+            "required": false,
+            "secret_key": "Google GEN AI",
+            "step": null,
+            "style": null,
+            "type": "string"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": "The name of the embedding model to use. ",
+            "init_type": "init",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
+            "name": "model",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "string"
+        }
+    ],
+    "name": "Google Gen AI Embeddings",
+    "type": "embeddings"
+}
