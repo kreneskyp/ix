@@ -109,7 +109,8 @@ class Command(BaseCommand):
     help = "Imports LangChain components from python fixtures."
 
     def to_stdout(self, msg):
-        self.stdout.write(msg)
+        if not settings.TESTING:
+            self.stdout.write(msg)
 
     def handle(self, *args, **options):
         for component in COMPONENTS:
