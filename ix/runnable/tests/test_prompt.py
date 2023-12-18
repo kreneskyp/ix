@@ -58,10 +58,6 @@ class TestMultiModalChatPrompt:
 
         from pprint import pprint
 
-        print()
-        print("2::::::")
-        pprint(response)
-
         assert response == ChatPromptValue(
             messages=[
                 SystemMessage(content="You are a test construct"),
@@ -69,8 +65,6 @@ class TestMultiModalChatPrompt:
                 HumanMessage(content="Hello, world"),
             ]
         )
-        print("----------------------------")
-        print()
 
         # test with images
         response2 = await template.ainvoke(
@@ -79,9 +73,6 @@ class TestMultiModalChatPrompt:
                 "images": ["https://0.0.0.0:8000/icon.jpeg"],
             }
         )
-        print()
-        print("3::::::")
-        pprint(response2)
         assert response2 == ChatPromptValue(
             messages=[
                 SystemMessage(content="You are a test construct"),
@@ -122,7 +113,7 @@ class TestMultiModalChatPrompt:
 class TestVisionAgent:
     @pytest_asyncio.fixture()
     async def vision_runnable(
-        self, anode_types, aix_context: IxContext, mock_filesystem
+        self, anode_types, aix_context: IxContext, mock_filesystem, mock_openai_key
     ):
         await aload_fixture("agent/vision")
         chain = await Chain.objects.aget(agent__alias="vision")
