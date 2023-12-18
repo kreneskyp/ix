@@ -22,7 +22,6 @@ class Command(BaseCommand):
             "agent/metaphor",
             "agent/ingest",
             "agent/knowledge",
-            "agent/knowledge2",
             "agent/vision",
         ]:
             print(f"Loading fixture: {fixture}")
