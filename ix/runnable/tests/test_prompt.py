@@ -56,8 +56,6 @@ class TestMultiModalChatPrompt:
         )
         response = await template.ainvoke(input={"user_input": "Hello, world"})
 
-        from pprint import pprint
-
         assert response == ChatPromptValue(
             messages=[
                 SystemMessage(content="You are a test construct"),
