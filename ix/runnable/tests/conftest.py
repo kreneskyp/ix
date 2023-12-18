@@ -18,8 +18,12 @@ def mock_filesystem(mocker, tmp_path):
     """Mock filesystem backend"""
 
     def write_file(path, data):
-        with open(tmp_path / path, "w") as f:
-            f.write(data)
+        if isinstance(data, bytes):
+            with open(tmp_path / path, "wb") as f:
+                f.write(data)
+        else:
+            with open(tmp_path / path, "w") as f:
+                f.write(data)
 
     def read_file(path):
         with open(tmp_path / path) as f:
