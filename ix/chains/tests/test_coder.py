@@ -10,7 +10,7 @@ class TestFlowCoder:
     async def test_create_flow_coder(self, anode_types, aix_context, aix_handler):
         """Sanity check that fixture can be loaded and initialized"""
         await aload_fixture("agent/code2")
-        chain = await Chain.objects.aget(agent__alias="code2")
+        chain = await Chain.objects.aget(agent__alias="code")
 
         # init flow
         await chain.aload_chain(context=aix_context)
@@ -19,7 +19,7 @@ class TestFlowCoder:
     async def test_invoke_flow_coder(self, anode_types, aix_context, aix_handler):
         """Test running coder flow"""
         await aload_fixture("agent/code2")
-        chain = await Chain.objects.aget(agent__alias="code2")
+        chain = await Chain.objects.aget(agent__alias="code")
 
         # init flow
         runnable = await chain.aload_chain(context=aix_context)

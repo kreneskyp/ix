@@ -7,6 +7,7 @@ import json
 
 from ix import chains
 from ix.agents.models import Agent
+from ix.chains.models import Chain
 
 
 class Command(BaseCommand):
