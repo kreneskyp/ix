@@ -14,6 +14,7 @@ class Command(BaseCommand):
             "agent/ix",
             "agent/readme",
             "agent/code",
+            "agent/gemini",
             "agent/owl",
             "agent/pirate",
             "agent/wikipedia",

@@ -1,0 +1,143 @@
+[
+  {
+    "model": "agents.agent",
+    "pk": "0bcb6f23-072a-4eae-b8df-a5263f9a3cb8",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Gemini",
+      "alias": "gemini",
+      "purpose": "Basic agent using Google Gemini  LLM to respond to user requests.",
+      "created_at": "2023-12-17T01:05:22.502Z",
+      "model": "",
+      "config": {},
+      "chain": "d4759bfe-422b-46ea-95df-e6f3c984e081",
+      "is_test": false
+    }
+  },
+  {
+    "model": "chains.chain",
+    "pk": "d4759bfe-422b-46ea-95df-e6f3c984e081",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Gemini",
+      "description": "Basic agent using Google Gemini  LLM to respond to user requests.",
+      "created_at": "2023-12-17T01:05:22.489Z",
+      "is_agent": true
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "2d8f0cc8-e7fc-40b3-947f-3488b6259ae8",
+    "fields": {
+      "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+      "node_type": [
+        "langchain.prompts.chat.ChatPromptTemplate"
+      ],
+      "config": {
+        "messages": [
+          {
+            "role": "user",
+            "template": "{user_input}\n\n",
+            "input_variables": [
+              "user_input"
+            ],
+            "partial_variables": {}
+          }
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 450.0,
+        "y": 460.0
+      },
+      "chain": "d4759bfe-422b-46ea-95df-e6f3c984e081"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "c9a9cae4-4b42-455e-8868-7ceefed9a063",
+    "fields": {
+      "class_path": "langchain_google_genai.ChatGoogleGenerativeAI",
+      "node_type": [
+        "langchain_google_genai.ChatGoogleGenerativeAI"
+      ],
+      "config": {
+        "n": 1,
+        "tags": [],
+        "cache": false,
+        "model": "gemini-pro",
+        "top_k": 4,
+        "top_p": 0.5,
+        "metadata": {},
+        "temperature": 0,
+        "google_api_key": ""
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 760.0,
+        "y": 460.0
+      },
+      "chain": "d4759bfe-422b-46ea-95df-e6f3c984e081"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "e96db301-4280-4c51-accb-498d7cc0d9db",
+    "fields": {
+      "class_path": "__ROOT__",
+      "node_type": [
+        "__ROOT__"
+      ],
+      "config": {
+        "outputs": [
+          "user_input",
+          "artifact_ids"
+        ],
+        "outputs_hash": [
+          "user_input",
+          "artifact_ids"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": true,
+      "position": {
+        "x": 160.0,
+        "y": 460.0
+      },
+      "chain": "d4759bfe-422b-46ea-95df-e6f3c984e081"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "0c1b26cd-602c-44ca-8433-e6a726a91246",
+    "fields": {
+      "source": "2d8f0cc8-e7fc-40b3-947f-3488b6259ae8",
+      "target": "c9a9cae4-4b42-455e-8868-7ceefed9a063",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "d4759bfe-422b-46ea-95df-e6f3c984e081",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "1adccf3e-31c0-441a-a5d8-56d026de2cea",
+    "fields": {
+      "source": "e96db301-4280-4c51-accb-498d7cc0d9db",
+      "target": "2d8f0cc8-e7fc-40b3-947f-3488b6259ae8",
+      "source_key": "user_input",
+      "target_key": "in",
+      "chain": "d4759bfe-422b-46ea-95df-e6f3c984e081",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  }
+]
