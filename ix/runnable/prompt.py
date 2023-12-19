@@ -15,6 +15,7 @@ class MultiModalChatPrompt(ChatPromptTemplate):
         messages = super().format_messages(**kwargs)
 
         if images:
+            images = images if isinstance(images, list) else [images]
             messages = messages + [
                 HumanMessage(
                     content=[
