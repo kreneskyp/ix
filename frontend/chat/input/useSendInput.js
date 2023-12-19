@@ -11,7 +11,10 @@ export const useSendInput = (chat, editor, highlights) => {
       serializers[highlight.type] = highlight.serialize;
     });
 
-    const {text: input, artifact_ids} = serialize(editor.children, serializers);
+    const { text: input, artifact_ids } = serialize(
+      editor.children,
+      serializers
+    );
     if (input === "") {
       return;
     }
@@ -39,7 +42,7 @@ const serialize = (paragraphs, serializers) => {
           // format nodes based on type
           const serializeFunc = serializers[child.type] || default_serializer;
           if (child.type === "artifact") {
-            artifact_ids.push(child.object.id)
+            artifact_ids.push(child.object.id);
           }
           return serializeFunc(child);
         })
@@ -49,6 +52,6 @@ const serialize = (paragraphs, serializers) => {
     .join("\n");
   return {
     text: serialized,
-    artifact_ids
+    artifact_ids,
   };
 };
