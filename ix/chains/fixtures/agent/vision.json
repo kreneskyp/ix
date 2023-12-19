@@ -75,8 +75,8 @@
       "description": "",
       "root": false,
       "position": {
-        "x": -50.0,
-        "y": 690.0
+        "x": -150.0,
+        "y": 660.0
       },
       "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2"
     }
@@ -103,7 +103,7 @@
       "description": "",
       "root": false,
       "position": {
-        "x": 360.0,
+        "x": 330.0,
         "y": 410.0
       },
       "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2"
@@ -125,8 +125,8 @@
       "description": "",
       "root": false,
       "position": {
-        "x": 160.0,
-        "y": 440.0
+        "x": -60.0,
+        "y": 400.0
       },
       "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2"
     }
@@ -143,9 +143,17 @@
         "images": [],
         "messages": [
           {
-            "role": "user",
-            "template": "What is contained in the image\n",
+            "role": "system",
+            "template": "You are an expert analyst. Respond to the user's question, which may include an image.\n\nIf the user does not ask a question, describe the contents of the image they provide.\n\nIf the user provides neither a question nor image, ask them to.\n",
             "input_variables": []
+          },
+          {
+            "role": "user",
+            "template": "question={user_input}\n",
+            "input_variables": [
+              "user_input"
+            ],
+            "partial_variables": {}
           }
         ]
       },
@@ -153,7 +161,7 @@
       "description": "",
       "root": false,
       "position": {
-        "x": 630.0,
+        "x": 560.0,
         "y": 410.0
       },
       "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2"
@@ -181,7 +189,7 @@
       "description": "",
       "root": true,
       "position": {
-        "x": -440.0,
+        "x": -430.0,
         "y": 430.0
       },
       "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2"
