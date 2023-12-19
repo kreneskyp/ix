@@ -279,7 +279,8 @@ agents: cluster components
 	@echo restoring agents from fixtures
 	$(LOAD_FIXTURE) agent/ix
 	$(LOAD_FIXTURE) agent/readme
-	$(LOAD_FIXTURE) agent/code
+	$(LOAD_FIXTURE) agent/code2
+	$(LOAD_FIXTURE) agent/dalle
 	$(LOAD_FIXTURE) agent/gemini
 	$(LOAD_FIXTURE) agent/owl
 	$(LOAD_FIXTURE) agent/pirate
