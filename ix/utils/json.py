@@ -15,19 +15,22 @@ def to_json_serializable(obj: dict | BaseModel | BaseModelV1) -> dict:
     elif isinstance(obj, BaseModel):
         obj = obj.model_dump()
     elif is_dataclass(obj):
-        obj = asdict(obj)
+        obj = to_json_serializable(asdict(obj))
     elif isinstance(obj, (dict, list, str, int, float, bool, type(None))):
         pass
     else:
         obj = str(obj)
 
+    # truncate strings that are too long
+    if isinstance(obj, str) and len(obj) > 256:
+        obj = f"{obj[:256]} ... ({len(obj) - 256} chars)"
+
     # now recursively check to make sure there are no nested objects
     # that aren't json serializable
     if isinstance(obj, dict):
-        for key, value in obj.items():
-            obj[key] = to_json_serializable(value)
+        new_obj = {key: to_json_serializable(value) for key, value in obj.items()}
+        obj = new_obj
     elif isinstance(obj, list):
-        for i, value in enumerate(obj):
-            obj[i] = to_json_serializable(value)
+        obj = [to_json_serializable(value) for value in obj]
 
     return obj
