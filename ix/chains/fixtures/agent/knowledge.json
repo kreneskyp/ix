@@ -5,8 +5,8 @@
     "fields": {
       "user": null,
       "group": null,
-      "name": "knowledge (LCEL)",
-      "alias": "knowledge2",
+      "name": "knowledge",
+      "alias": "knowledge",
       "purpose": "Implementation of a (RAG) retrieval agent that reads from a vectorstore to answer user questions.",
       "created_at": "2023-11-18T19:49:39.026Z",
       "model": "",
@@ -200,7 +200,7 @@
         "allow_reset": false,
         "search_type": "similarity",
         "search_kwargs": {},
-        "collection_name": "knowledge2",
+        "collection_name": "knowledge",
         "persist_directory": "./chroma",
         "chroma_server_host": "172.17.42.1",
         "allowed_search_types": [
