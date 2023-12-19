@@ -257,6 +257,7 @@ async def send_message(
     except Chat.DoesNotExist:
         raise HTTPException(status_code=404, detail="Chat does not exist.")
     text = chat_input.text
+    artifact_ids = [str(pk) for pk in chat_input.artifact_ids or []]
 
     # save to persistent storage
     message = await TaskLogMessage.objects.acreate(
@@ -302,7 +303,7 @@ async def send_message(
     inputs = {
         "user_input": text,
         "chat_id": str(chat.id),
-        "artifact_keys": get_artifacts(user_input) or [],
+        "artifact_ids": artifact_ids,
     }
 
     # Start agent loop. This does NOT check if the loop is already running
