@@ -1,4 +1,5 @@
 from unittest.mock import MagicMock
+from uuid import uuid4
 
 import pytest
 
@@ -63,9 +64,7 @@ class TestArtifactMemory:
 
         # run
         artifact1 = await afake_artifact(task=atask, key="test_artifact_1")
-        await chain.ainvoke(
-            input=dict(name="tester", artifact_keys=["test_artifact_1"])
-        )
+        await chain.ainvoke(input=dict(name="tester", artifact_ids=[str(artifact1.id)]))
 
         # assert artifact was used in prompt
         mock_openai.acompletion_with_retry.assert_called_once()
@@ -88,24 +87,26 @@ class TestArtifactMemory:
         instance = await aload_chain(ARTIFACT_MEMORY)
         artifact1 = await afake_artifact(task=atask, key="test_artifact_1")
         artifact2 = await afake_artifact(task=atask, key="test_artifact_2")
+        id_1 = str(artifact1.id)
+        id_2 = str(artifact2.id)
 
         # test no artifact_keys
         result1 = instance.load_memory_variables(dict())
         assert result1 == {"related_artifacts": ""}
 
         # test empty artifact_keys
-        result1 = instance.load_memory_variables(dict(artifact_keys=[]))
+        result1 = instance.load_memory_variables(dict(artifact_ids=[]))
         assert result1 == {"related_artifacts": ""}
 
         # test one artifact_key
-        inputs = dict(artifact_keys=["test_artifact_1"])
+        inputs = dict(artifact_ids=[id_1])
         result2 = instance.load_memory_variables(inputs=inputs)
         assert "REFERENCED ARTIFACTS:" in result2["related_artifacts"]
         assert artifact1.as_memory_text() in result2["related_artifacts"]
         assert artifact2.as_memory_text() not in result2["related_artifacts"]
 
         # test one artifact_key
-        inputs = dict(artifact_keys=["test_artifact_1", "test_artifact_2"])
+        inputs = dict(artifact_ids=[id_1, id_2])
         result3 = instance.load_memory_variables(inputs=inputs)
         assert "REFERENCED ARTIFACTS:" in result3["related_artifacts"]
         assert artifact1.as_memory_text() in result3["related_artifacts"]
@@ -114,7 +115,7 @@ class TestArtifactMemory:
         # test unknown artifact_key
         # hax: this won't raise an error of any kind now, but it's worth considering
         #      how to handle this better in the future.
-        inputs = dict(artifact_keys=["test_artifact_does_not_exist"])
+        inputs = dict(artifact_ids=[str(uuid4())])
         result4 = instance.load_memory_variables(inputs=inputs)
         assert result4 == {"related_artifacts": ""}
 
@@ -125,10 +126,10 @@ class TestArtifactMemory:
     async def test_scope(self, aclean_artifacts, atask, aload_chain):
         # artifact from another chat
         unrelated_task = await afake_task()
-        await afake_artifact(task=unrelated_task, key="test_artifact_3")
+        artifact = await afake_artifact(task=unrelated_task, key="test_artifact_3")
 
         # none of the excluded artifacts should be included in the memory
         instance = await aload_chain(ARTIFACT_MEMORY)
-        inputs = dict(artifact_keys=["test_artifact_3"])
+        inputs = dict(artifact_ids=[str(artifact.id)])
         result1 = instance.load_memory_variables(inputs=inputs)
         assert result1 == {"related_artifacts": ""}

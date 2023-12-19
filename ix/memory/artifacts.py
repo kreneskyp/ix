@@ -1,7 +1,6 @@
 import logging
 import concurrent.futures
 from typing import Dict, Any, List
-from uuid import UUID
 
 from django.db.models import Q
 from langchain.schema import BaseMemory
@@ -21,7 +20,7 @@ class ArtifactMemory(BaseMemory):
     load_artifact: bool = False
 
     # read
-    input_key: str = "artifact_keys"
+    input_key: str = "artifact_ids"
     memory_key: str = "related_artifacts"
 
     session_id: str
@@ -43,17 +42,9 @@ class ArtifactMemory(BaseMemory):
 
         # search for artifacts
         text = ""
-        artifact_keys = inputs.get(self.input_key, None)
-        if artifact_keys:
-            id_clauses = Q(key__in=artifact_keys) | Q(name__in=artifact_keys)
-            try:
-                id_clauses |= Q(
-                    pk__in=[UUID(artifact_key) for artifact_key in artifact_keys]
-                )
-            except ValueError:
-                # ignore if not UUIDs
-                pass
-
+        artifact_ids = inputs.get(self.input_key, None)
+        if artifact_ids:
+            id_clauses = Q(pk__in=artifact_ids)
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 future = executor.submit(
                     run_coroutine_in_new_loop, self.get_artifacts(chat_id, id_clauses)

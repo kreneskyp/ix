@@ -11,13 +11,13 @@ export const useSendInput = (chat, editor, highlights) => {
       serializers[highlight.type] = highlight.serialize;
     });
 
-    const input = serialize(editor.children, serializers);
+    const {text: input, artifact_ids} = serialize(editor.children, serializers);
     if (input === "") {
       return;
     }
 
     // send input and then clear the input
-    await apiSendInput(input);
+    await apiSendInput(input, artifact_ids);
     clear_editor(editor);
   }, [editor, sendInput]);
 
@@ -30,6 +30,7 @@ const default_serializer = (child) => {
 
 const serialize = (paragraphs, serializers) => {
   // serialize editor content to string.
+  const artifact_ids = [];
   const serialized = paragraphs
     // Return the string content of each paragraph in the value's children.
     .map((paragraph) =>
@@ -37,11 +38,17 @@ const serialize = (paragraphs, serializers) => {
         .map((child) => {
           // format nodes based on type
           const serializeFunc = serializers[child.type] || default_serializer;
+          if (child.type === "artifact") {
+            artifact_ids.push(child.object.id)
+          }
           return serializeFunc(child);
         })
         .join("")
     )
     // Join them all with line breaks denoting paragraphs.
     .join("\n");
-  return serialized;
+  return {
+    text: serialized,
+    artifact_ids
+  };
 };
