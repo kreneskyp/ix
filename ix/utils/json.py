@@ -18,6 +18,8 @@ def to_json_serializable(obj: dict | BaseModel | BaseModelV1) -> dict:
         obj = to_json_serializable(asdict(obj))
     elif isinstance(obj, (dict, list, str, int, float, bool, type(None))):
         pass
+    elif isinstance(obj, bytes):
+        obj = f"[{len(obj)} bytes]"
     else:
         obj = str(obj)
 
