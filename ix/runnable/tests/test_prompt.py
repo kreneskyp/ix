@@ -121,8 +121,21 @@ class TestVisionAgent:
         runnable = await chain.aload_chain(aix_context)
         yield runnable
 
-    async def test_load(self, vision_runnable, mock_openai_key):
-        assert isinstance(vision_runnable, RunnableSequence)
+    @pytest_asyncio.fixture()
+    async def vision_runnable_mocked(
+        self,
+        anode_types,
+        aix_context: IxContext,
+        mock_filesystem,
+        mock_openai_key,
+    ):
+        await aload_fixture("agent/vision")
+        chain = await Chain.objects.aget(agent__alias="vision")
+        runnable = await chain.aload_chain(aix_context)
+        yield runnable
+
+    async def test_load(self, vision_runnable_mocked):
+        assert isinstance(vision_runnable_mocked, RunnableSequence)
 
     @pytest.mark.openai_api
     async def test_invoke(
