@@ -111,7 +111,10 @@ class TestMultiModalChatPrompt:
 class TestVisionAgent:
     @pytest_asyncio.fixture()
     async def vision_runnable(
-        self, anode_types, aix_context: IxContext, mock_filesystem, mock_openai_key
+        self,
+        anode_types,
+        aix_context: IxContext,
+        mock_filesystem,
     ):
         await aload_fixture("agent/vision")
         chain = await Chain.objects.aget(agent__alias="vision")
@@ -148,5 +151,5 @@ class TestVisionAgent:
                 "artifact_ids": [str(artifact.id)],
             }
         )
-        # TODO: implement assertion
-        assert response == {}
+
+        assert isinstance(response, AIMessage)
