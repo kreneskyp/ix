@@ -288,6 +288,7 @@ agents: cluster components
 	$(LOAD_FIXTURE) agent/metaphor
 	$(LOAD_FIXTURE) agent/ingest
 	$(LOAD_FIXTURE) agent/knowledge
+	$(LOAD_FIXTURE) agent/vision
 
 
 # Load components into database

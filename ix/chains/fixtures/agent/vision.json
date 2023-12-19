@@ -1,0 +1,308 @@
+[
+  {
+    "model": "agents.agent",
+    "pk": "855e8d17-d53f-4c6d-afdc-9760859e876e",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Vision",
+      "alias": "vision",
+      "purpose": "Example using GPT vision model in prompt.\n\nImages are added to the prompt using artifact references.",
+      "created_at": "2023-12-18T01:58:45.217Z",
+      "model": "",
+      "config": {},
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2",
+      "is_test": false
+    }
+  },
+  {
+    "model": "chains.chain",
+    "pk": "e131c787-9a0e-4fe7-95dc-2b558198d7e2",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Vision",
+      "description": "Example using GPT vision model in prompt.\n\nImages are added to the prompt using artifact references.",
+      "created_at": "2023-12-18T01:58:45.200Z",
+      "is_agent": true
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "130e067a-a138-4751-8311-2e78d4ca9e19",
+    "fields": {
+      "class_path": "ix.runnable.llm.IXChatOpenAI",
+      "node_type": [
+        "ix.runnable.llm.IXChatOpenAI"
+      ],
+      "config": {
+        "tags": [],
+        "cache": false,
+        "metadata": {},
+        "streaming": true,
+        "max_tokens": 500,
+        "model_name": "gpt-4-vision-preview",
+        "max_retries": 6,
+        "temperature": 0,
+        "openai_proxy": "",
+        "openai_api_base": "",
+        "request_timeout": 60,
+        "openai_organization": ""
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 940.0,
+        "y": 410.0
+      },
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "294228be-6c48-4fb2-8416-1a6d71728962",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONPath",
+      "node_type": [
+        "ix.chains.components.json.JSONPath"
+      ],
+      "config": {
+        "path": "$.artifact_ids",
+        "return_list": false
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": -150.0,
+        "y": 660.0
+      },
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "2a77cac0-2cd0-46ae-9dcf-3dd8ad95a0fc",
+    "fields": {
+      "class_path": "ix.chains.components.lcel.init_parallel",
+      "node_type": [
+        "ix.chains.components.lcel.init_parallel"
+      ],
+      "config": {
+        "steps": [
+          "user_input",
+          "images"
+        ],
+        "steps_hash": [
+          "41575629-5019-4105-82b9-5d5dc3ba17cb",
+          "3cb5f645-311f-4d4f-926b-dcd4ee8e5cec"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 330.0,
+        "y": 410.0
+      },
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "65a7f46c-fd37-4f16-b1ba-7d4688a9c2e3",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONPath",
+      "node_type": [
+        "ix.chains.components.json.JSONPath"
+      ],
+      "config": {
+        "path": "$",
+        "return_list": false
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": -60.0,
+        "y": 400.0
+      },
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "6afc96b1-bfbf-447a-8b76-3a2f430f8562",
+    "fields": {
+      "class_path": "ix.runnable.prompt.MultiModalChatPrompt",
+      "node_type": [
+        "ix.runnable.prompt.MultiModalChatPrompt"
+      ],
+      "config": {
+        "images": [],
+        "messages": [
+          {
+            "role": "system",
+            "template": "You are an expert analyst. Respond to the user's question, which may include an image.\n\nIf the user does not ask a question, describe the contents of the image they provide.\n\nIf the user provides neither a question nor image, ask them to.\n",
+            "input_variables": []
+          },
+          {
+            "role": "user",
+            "template": "question={user_input}\n",
+            "input_variables": [
+              "user_input"
+            ],
+            "partial_variables": {}
+          }
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 560.0,
+        "y": 410.0
+      },
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "79341d4b-2d82-427d-bc53-61737a09478f",
+    "fields": {
+      "class_path": "__ROOT__",
+      "node_type": [
+        "__ROOT__"
+      ],
+      "config": {
+        "outputs": [
+          "user_input",
+          "artifact_ids"
+        ],
+        "outputs_hash": [
+          "user_input",
+          "artifact_ids"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": true,
+      "position": {
+        "x": -430.0,
+        "y": 430.0
+      },
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "807d47e9-5652-4ff9-b037-c13c85161411",
+    "fields": {
+      "class_path": "ix.runnable.artifacts.get_load_image_artifact",
+      "node_type": [
+        "ix.runnable.artifacts.get_load_image_artifact"
+      ],
+      "config": {},
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 50.0,
+        "y": 510.0
+      },
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "0c367466-2cca-4c2e-821b-a0303c852f61",
+    "fields": {
+      "source": "79341d4b-2d82-427d-bc53-61737a09478f",
+      "target": "294228be-6c48-4fb2-8416-1a6d71728962",
+      "source_key": "artifact_ids",
+      "target_key": "in",
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "0eadf7be-51f8-4bf8-a9ab-a06f6008cbce",
+    "fields": {
+      "source": "6afc96b1-bfbf-447a-8b76-3a2f430f8562",
+      "target": "130e067a-a138-4751-8311-2e78d4ca9e19",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "4ef17d69-382c-4ff2-87e5-baa62a2d9e70",
+    "fields": {
+      "source": "2a77cac0-2cd0-46ae-9dcf-3dd8ad95a0fc",
+      "target": "6afc96b1-bfbf-447a-8b76-3a2f430f8562",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "572aa4ce-78f2-45ae-98e7-c41ece309d86",
+    "fields": {
+      "source": "79341d4b-2d82-427d-bc53-61737a09478f",
+      "target": "65a7f46c-fd37-4f16-b1ba-7d4688a9c2e3",
+      "source_key": "user_input",
+      "target_key": "in",
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "8a83c3d8-1b24-4524-8a65-9755c61fb5e9",
+    "fields": {
+      "source": "65a7f46c-fd37-4f16-b1ba-7d4688a9c2e3",
+      "target": "2a77cac0-2cd0-46ae-9dcf-3dd8ad95a0fc",
+      "source_key": "out",
+      "target_key": "41575629-5019-4105-82b9-5d5dc3ba17cb",
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "8f2131a2-61a9-4a57-89e2-58f070583f81",
+    "fields": {
+      "source": "294228be-6c48-4fb2-8416-1a6d71728962",
+      "target": "807d47e9-5652-4ff9-b037-c13c85161411",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "f1b6ddc4-9086-42c5-ab76-0c9df6d1ee2e",
+    "fields": {
+      "source": "807d47e9-5652-4ff9-b037-c13c85161411",
+      "target": "2a77cac0-2cd0-46ae-9dcf-3dd8ad95a0fc",
+      "source_key": "out",
+      "target_key": "3cb5f645-311f-4d4f-926b-dcd4ee8e5cec",
+      "chain": "e131c787-9a0e-4fe7-95dc-2b558198d7e2",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  }
+]

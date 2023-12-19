@@ -3,7 +3,9 @@ from pydantic import BaseModel
 from pydantic.v1 import BaseModel as BaseModelV1
 
 
-def to_json_serializable(obj: dict | BaseModel | BaseModelV1) -> dict:
+def to_json_serializable(
+    obj: dict | BaseModel | BaseModelV1, truncate: bool = True
+) -> dict:
     """Serialize object to json to log.
 
     Prefer vanilla pydantic serialization for now because LC serialization
@@ -15,7 +17,7 @@ def to_json_serializable(obj: dict | BaseModel | BaseModelV1) -> dict:
     elif isinstance(obj, BaseModel):
         obj = obj.model_dump()
     elif is_dataclass(obj):
-        obj = to_json_serializable(asdict(obj))
+        obj = asdict(obj)
     elif isinstance(obj, (dict, list, str, int, float, bool, type(None))):
         pass
     elif isinstance(obj, bytes):
@@ -24,15 +26,17 @@ def to_json_serializable(obj: dict | BaseModel | BaseModelV1) -> dict:
         obj = str(obj)
 
     # truncate strings that are too long
-    if isinstance(obj, str) and len(obj) > 256:
+    if truncate and isinstance(obj, str) and len(obj) > 256:
         obj = f"{obj[:256]} ... ({len(obj) - 256} chars)"
 
     # now recursively check to make sure there are no nested objects
     # that aren't json serializable
     if isinstance(obj, dict):
-        new_obj = {key: to_json_serializable(value) for key, value in obj.items()}
+        new_obj = {
+            key: to_json_serializable(value, truncate) for key, value in obj.items()
+        }
         obj = new_obj
     elif isinstance(obj, list):
-        obj = [to_json_serializable(value) for value in obj]
+        obj = [to_json_serializable(value, truncate) for value in obj]
 
     return obj

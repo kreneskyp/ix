@@ -28,6 +28,7 @@ def load_prompt(node: ChainNode, context: IxContext) -> Dict[str, Any]:
     """
     loader = {
         "langchain.prompts.chat.ChatPromptTemplate": load_chat_prompt,
+        "ix.runnable.prompt.MultiModalChatPrompt": load_chat_prompt,
     }[node.class_path]
     return loader(node)
 
