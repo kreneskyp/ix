@@ -556,6 +556,7 @@ class TestChatMessage:
         assert message.agent_id is None
         assert message.content["type"] == "FEEDBACK"
         assert message.content["feedback"] == text
+        assert message.content["artifact_ids"] == [str(artifact.id)]
 
         mock_start_agent_loop.delay.assert_called_once_with(
             str(chat.task_id),

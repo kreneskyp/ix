@@ -266,6 +266,7 @@ async def send_message(
         content=UserFeedback(
             type="FEEDBACK",
             feedback=text,
+            artifact_ids=artifact_ids,
         ),
     )
 
