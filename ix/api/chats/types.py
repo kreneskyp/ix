@@ -104,6 +104,7 @@ class ChatInput(BaseModel):
     """An input to a chat."""
 
     text: str
+    artifact_ids: Optional[List[UUID]] = None
 
 
 class ChatMessage(BaseModel):

@@ -1,6 +1,6 @@
 import json
 import uuid
-from typing import TypedDict, Optional
+from typing import TypedDict, Optional, List
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -73,6 +73,7 @@ class Task(models.Model):
 class UserFeedback(TypedDict):
     type: str
     feedback: Optional[str]
+    artifact_ids: List[str | uuid.UUID]
     message_id: Optional[str]
 
 
