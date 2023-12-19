@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "ordering": ["task", "-started_at"],
+                "ordering": ["task", "started_at"],
             },
         ),
     ]
