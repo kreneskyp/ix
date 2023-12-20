@@ -60,17 +60,23 @@ class TestAgentProcessStart:
         return_value = await agent_process.start(USER_INPUT)
         assert return_value is True
 
+        # expect think, assistant (placeholder), and thought messages
         count = await query.acount()
-        assert count == 2
+        assert count == 3
         messages = [msg async for msg in query]
         think_msg = messages[0]
-        thought_msg = messages[1]
+        ai_msg = messages[1]
+        thought_msg = messages[2]
+
         assert think_msg.content["type"] == "THINK"
         assert think_msg.content["input"] == {
             "input": "hello agent 1",
             "user_input": "hello agent 1",
             "question": "hello agent 1",
         }
+        assert ai_msg.content["type"] == "ASSISTANT"
+        assert ai_msg.content["text"] == ""
+        assert ai_msg.content["stream"] is False
         assert thought_msg.content["type"] == "THOUGHT"
         assert isinstance(thought_msg.content["runtime"], float)
 
@@ -102,17 +108,23 @@ class TestAgentProcessStart:
         return_value = await agent_process.start(inputs)
         assert return_value is True
 
+        # expect think, assistant (placeholder), and thought messages
         count = await query.acount()
-        assert count == 2
+        assert count == 3
         messages = [msg async for msg in query]
         think_msg = messages[0]
-        thought_msg = messages[1]
+        ai_msg = messages[1]
+        thought_msg = messages[2]
+
         assert think_msg.content["type"] == "THINK"
         assert think_msg.content["input"] == {
             "input": "hello agent 1",
             "user_input": "hello agent 1",
             "question": "hello agent 1",
         }
+        assert ai_msg.content["type"] == "ASSISTANT"
+        assert ai_msg.content["text"] == ""
+        assert ai_msg.content["stream"] is False
         assert thought_msg.content["type"] == "THOUGHT"
         assert isinstance(thought_msg.content["runtime"], float)
 

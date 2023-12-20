@@ -13,7 +13,9 @@ class Command(BaseCommand):
             "fake_user",
             "agent/ix",
             "agent/readme",
-            "agent/code",
+            "agent/code2",
+            "agent/dalle",
+            "agent/gemini",
             "agent/owl",
             "agent/pirate",
             "agent/wikipedia",
@@ -22,7 +24,7 @@ class Command(BaseCommand):
             "agent/metaphor",
             "agent/ingest",
             "agent/knowledge",
-            "agent/knowledge2",
+            "agent/vision",
         ]:
             print(f"Loading fixture: {fixture}")
             call_command("loaddata", fixture)

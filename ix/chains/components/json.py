@@ -29,7 +29,7 @@ class JSONPath(RunnableSerializable[Input, Output | List[Output]]):
         **kwargs: Any,
     ) -> Output | List[Output]:
         jsonpath_expr = jsonpath_parse(self.path)
-        formatted_input = to_json_serializable(input)
+        formatted_input = to_json_serializable(input, truncate=False)
         json_matches = jsonpath_expr.find(formatted_input)
 
         if len(json_matches) > 1 or self.return_list:
@@ -46,7 +46,7 @@ class JSONPath(RunnableSerializable[Input, Output | List[Output]]):
         **kwargs: Any,
     ) -> Output:
         jsonpath_expr = jsonpath_parse(self.path)
-        formatted_input = to_json_serializable(input)
+        formatted_input = to_json_serializable(input, truncate=False)
         json_matches = jsonpath_expr.find(formatted_input)
 
         if len(json_matches) > 1 or self.return_list:

@@ -187,6 +187,7 @@ const insertHighlight = (type, editor, object) => {
     type,
     display: type === "mention" ? object.alias : object.key,
     children: [{ text: "" }],
+    object,
   };
   Transforms.insertNodes(editor, highlight);
   Transforms.move(editor);

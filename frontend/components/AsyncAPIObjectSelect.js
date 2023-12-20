@@ -32,7 +32,8 @@ export const AsyncAPIObjectSelect = ({
   React.useEffect(() => {
     const callback = async () => {
       if (selected === null && value) {
-        setSelected(getDetail(value));
+        const selectedValue = await getDetail(value);
+        setSelected(selectedValue);
       }
     };
     callback();

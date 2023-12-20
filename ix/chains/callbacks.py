@@ -159,8 +159,7 @@ class IxHandler(AsyncCallbackHandler):
             context.is_streaming = params.get("stream", False)
 
         # Send a placeholder message when starting a stream.
-        if context.is_streaming:
-            context.message = await self.send_agent_msg(stream=True)
+        context.message = await self.send_agent_msg(stream=True)
 
     async def on_llm_start(
         self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any
@@ -225,6 +224,11 @@ class IxHandler(AsyncCallbackHandler):
             )
             self.parent_think_msg = think_msg
 
+    async def finalize_stream(self, run_id):
+        # finalize stream if necessary
+        context = self.contexts[run_id]
+        await context.finalize_stream()
+
     @log_error
     async def on_chain_end(
         self,
@@ -234,10 +238,7 @@ class IxHandler(AsyncCallbackHandler):
         parent_run_id: Optional[UUID] = None,
         **kwargs: Any,
     ) -> Any:
-        # finalize stream if necessary
-        context = self.contexts[run_id]
-        if context.is_streaming:
-            await context.finalize_stream()
+        await self.finalize_stream(run_id)
 
         # only record the final thought for now
         if not parent_run_id:

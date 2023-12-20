@@ -5,8 +5,8 @@
     "fields": {
       "user": null,
       "group": null,
-      "name": "Coder (flow)",
-      "alias": "code2",
+      "name": "Coder",
+      "alias": "code",
       "purpose": "Testing function schema by generating a plan to code a solution to the user's request.",
       "created_at": "2023-11-23T21:43:56.571Z",
       "model": "",

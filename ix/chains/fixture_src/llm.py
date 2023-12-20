@@ -231,7 +231,56 @@ OPENAI_LLM = {
     ],
 }
 
-
+GOOGLE_API_KEY = {
+    "name": "google_api_key",
+    "label": "API Key",
+    "type": "string",
+    "input_type": "secret",
+    "secret_key": "Google GEN AI",
+}
+GOOGLE_LLM_FIELDS = [
+    {
+        "name": "temperature",
+        "type": "number",
+        "input_type": "slider",
+        "description": "Temperature",
+        "default": 0,
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+    },
+    {
+        "name": "top_p",
+        "type": "number",
+        "input_type": "slider",
+        "description": "Top P",
+        "default": 1,
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+    },
+    {
+        "name": "top_k",
+        "type": "number",
+        "input_type": "slider",
+        "description": "Top P",
+        "default": 1,
+        "min": 0,
+        "max": 20,
+        "step": 1,
+    },
+    {
+        "name": "n",
+        "label": "Sample N responses",
+        "type": "number",
+        "input_type": "slider",
+        "description": "Number of responses to sample",
+        "default": 1,
+        "min": 1,
+        "max": 5,
+        "step": 1,
+    },
+]
 GOOGLE_PALM = {
     "class_path": "langchain.chat_models.google_palm.ChatGooglePalm",
     "type": "llm",
@@ -250,56 +299,43 @@ GOOGLE_PALM = {
                 {"label": "Bison-001", "value": "models/chat-bison-001"},
             ],
         },
+        GOOGLE_API_KEY,
+    ]
+    + GOOGLE_LLM_FIELDS
+    + BASE_LLM_FIELDS,
+}
+
+GOOGLE_GEN_AI_CLASS_PATH = "langchain_google_genai.ChatGoogleGenerativeAI"
+GOOGLE_GEN_AI = {
+    "class_path": GOOGLE_GEN_AI_CLASS_PATH,
+    "type": "llm",
+    "name": "Google Generative AI",
+    "description": "Google Generative AI",
+    "fields": [
+        GOOGLE_API_KEY,
         {
-            "name": "google_api_key",
-            "label": "API Key",
+            "name": "model",
+            "label": "Model",
             "type": "string",
-            "input_type": "secret",
-            "secret_key": "Google PaLM",
-        },
-        {
-            "name": "temperature",
-            "type": "number",
-            "input_type": "slider",
-            "description": "Temperature",
-            "default": 0,
-            "min": 0,
-            "max": 2,
-            "step": 0.05,
-        },
-        {
-            "name": "top_p",
-            "type": "number",
-            "input_type": "slider",
-            "description": "Top P",
-            "default": 0,
-            "min": 0,
-            "max": 2,
-            "step": 0.05,
-        },
-        {
-            "name": "top_k",
-            "type": "number",
-            "input_type": "slider",
-            "description": "Top P",
-            "default": 0,
-            "min": 0,
-            "max": 2,
-            "step": 0.05,
-        },
-        {
-            "name": "n",
-            "label": "Sample N responses",
-            "type": "number",
-            "input_type": "slider",
-            "description": "Number of responses to sample",
-            "default": 1,
-            "min": 1,
-            "max": 5,
-            "step": 1,
+            "input_type": "select",
+            "required": True,
+            "default": "gemini-pro",
+            "choices": [
+                {"label": "gemini-pro-vision", "value": "gemini-pro-vision"},
+                {"label": "gemini-pro", "value": "gemini-pro"},
+            ],
         },
     ]
+    + GOOGLE_LLM_FIELDS
     + BASE_LLM_FIELDS,
+    "display_groups": [
+        {
+            "key": "Authentication",
+            "fields": ["Google GEN AI"],
+        },
+        LLM_MISC_DISPLAY_GROUP,
+        LLM_METADATA_DISPLAY_GROUP,
+    ],
 }
 
 ANTHROPIC_LLM = {
@@ -507,6 +543,7 @@ FIREWORKS_CHAT_LLM = {
 
 LLMS = [
     ANTHROPIC_LLM,
+    GOOGLE_GEN_AI,
     GOOGLE_PALM,
     LLAMA_CPP_LLM,
     OLLAMA_LLM,

@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo } from "react";
-import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
+import { Box, Flex, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import { Handle, useEdges, useReactFlow } from "reactflow";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -232,10 +232,12 @@ export const ConfigNode = ({ id, data, selected }) => {
           className="drag-handle"
         >
           <Flex alignItems="center" justifyContent="space-between" width="100%">
-            <Box pr={5}>
+            <HStack pr={5} h={"16px"}>
               <StyledIcon style={styles?.icon} />{" "}
-              {node.name || type?.name || node.class_path.split(".").pop()}
-            </Box>
+              <Text>
+                {node.name || type?.name || node.class_path.split(".").pop()}
+              </Text>
+            </HStack>
             <DeleteIcon node={node} />
           </Flex>
         </Heading>

@@ -1,8 +1,32 @@
 {
     "child_field": null,
-    "class_path": "langchain.chat_models.google_palm.ChatGooglePalm",
+    "class_path": "langchain_google_genai.ChatGoogleGenerativeAI",
     "config_schema": {
-        "display_groups": null,
+        "display_groups": [
+            {
+                "fields": [
+                    "Google GEN AI"
+                ],
+                "key": "Authentication",
+                "label": null
+            },
+            {
+                "fields": [
+                    "verbose",
+                    "cache"
+                ],
+                "key": "Misc",
+                "label": null
+            },
+            {
+                "fields": [
+                    "metadata",
+                    "tags"
+                ],
+                "key": "Metadata",
+                "label": null
+            }
+        ],
         "properties": {
             "cache": {
                 "label": "Cache",
@@ -18,11 +42,11 @@
                 "label": "Metadata",
                 "type": "object"
             },
-            "model_name": {
-                "default": "gpt-4",
-                "description": "OpenAI model",
+            "model": {
+                "default": "gemini-pro",
                 "enum": [
-                    "models/chat-bison-001"
+                    "gemini-pro-vision",
+                    "gemini-pro"
                 ],
                 "input_type": "select",
                 "label": "Model",
@@ -85,7 +109,7 @@
             }
         },
         "required": [
-            "model_name",
+            "model",
             "cache",
             "verbose",
             "tags",
@@ -94,31 +118,9 @@
         "type": "object"
     },
     "connectors": null,
-    "description": "Google PaLM",
+    "description": "Google Generative AI",
     "display_type": "node",
     "fields": [
-        {
-            "choices": [
-                {
-                    "label": "Bison-001",
-                    "value": "models/chat-bison-001"
-                }
-            ],
-            "default": "gpt-4",
-            "description": "OpenAI model",
-            "init_type": "init",
-            "input_type": "select",
-            "label": "Model",
-            "max": null,
-            "min": null,
-            "name": "model_name",
-            "parent": null,
-            "required": true,
-            "secret_key": null,
-            "step": null,
-            "style": null,
-            "type": "string"
-        },
         {
             "choices": null,
             "default": null,
@@ -132,6 +134,32 @@
             "parent": null,
             "required": false,
             "secret_key": "Google GEN AI",
+            "step": null,
+            "style": null,
+            "type": "string"
+        },
+        {
+            "choices": [
+                {
+                    "label": "gemini-pro-vision",
+                    "value": "gemini-pro-vision"
+                },
+                {
+                    "label": "gemini-pro",
+                    "value": "gemini-pro"
+                }
+            ],
+            "default": "gemini-pro",
+            "description": null,
+            "init_type": "init",
+            "input_type": "select",
+            "label": "Model",
+            "max": null,
+            "min": null,
+            "name": "model",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
             "step": null,
             "style": null,
             "type": "string"
@@ -273,6 +301,6 @@
             "type": "dict"
         }
     ],
-    "name": "Google PaLM",
+    "name": "Google Generative AI",
     "type": "llm"
 }

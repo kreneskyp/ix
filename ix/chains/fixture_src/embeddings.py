@@ -7,6 +7,7 @@ from langchain.embeddings import (
 )
 
 from ix.api.components.types import NodeTypeField
+from ix.chains.fixture_src.llm import GOOGLE_API_KEY
 
 OPENAI_EMBEDDINGS_CLASS_PATH = "langchain.embeddings.openai.OpenAIEmbeddings"
 OPENAI_EMBEDDINGS = {
@@ -73,6 +74,20 @@ GOOGLE_PALM_EMBEDDINGS = {
                     "value": "models/embedding-gecko-001",
                 },
             ],
+        },
+    ],
+}
+GOOGLE_GEN_AI_EMBEDDINGS = {
+    "class_path": "langchain_google_genai.GoogleGenerativeAIEmbeddings",
+    "type": "embeddings",
+    "name": "Google Gen AI Embeddings",
+    "description": "Google Gen AI Embeddings",
+    "fields": [
+        GOOGLE_API_KEY,
+        {
+            "name": "model",
+            "type": "string",
+            "description": "The name of the embedding model to use. ",
         },
     ],
 }
@@ -314,6 +329,7 @@ MOSAICML_INSTRUCTOR_EMBEDDINGS = {
 
 EMBEDDINGS = [
     OPENAI_EMBEDDINGS,
+    GOOGLE_GEN_AI_EMBEDDINGS,
     GOOGLE_PALM_EMBEDDINGS,
     LLAMA_CPP_EMBEDDINGS,
     VERTEXAI_EMBEDDINGS,

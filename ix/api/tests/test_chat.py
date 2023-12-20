@@ -530,7 +530,7 @@ class TestChatMessage:
             str(chat.task_id),
             chain_id=str(lead.chain_id),
             user_id=str(user.id),
-            inputs={"user_input": text, "chat_id": str(chat.id), "artifact_keys": []},
+            inputs={"user_input": text, "chat_id": str(chat.id), "artifact_ids": []},
         )
 
     async def test_send_message_with_artifact(self, anode_types, mock_start_agent_loop):
@@ -538,9 +538,13 @@ class TestChatMessage:
         user = await aget_default_user()
         lead = await Agent.objects.aget(id=chat.lead_id)
         text = "Test message with {test_artifact}"
+        artifact = await afake_artifact(task_id=chat.task_id, key="test_artifact")
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post(f"/chats/{chat.id}/messages", json={"text": text})
+            response = await ac.post(
+                f"/chats/{chat.id}/messages",
+                json={"text": text, "artifact_ids": [str(artifact.id)]},
+            )
 
         assert response.status_code == 200, response.content
         result = response.json()
@@ -552,6 +556,7 @@ class TestChatMessage:
         assert message.agent_id is None
         assert message.content["type"] == "FEEDBACK"
         assert message.content["feedback"] == text
+        assert message.content["artifact_ids"] == [str(artifact.id)]
 
         mock_start_agent_loop.delay.assert_called_once_with(
             str(chat.task_id),
@@ -560,7 +565,7 @@ class TestChatMessage:
             inputs={
                 "user_input": text,
                 "chat_id": str(chat.id),
-                "artifact_keys": ["test_artifact"],
+                "artifact_ids": [str(artifact.id)],
             },
         )
 
@@ -591,7 +596,7 @@ class TestChatMessage:
             str(subtask.id),
             chain_id=str(agent.chain_id),
             user_id=str(user.id),
-            inputs={"user_input": text, "chat_id": str(chat.id), "artifact_keys": []},
+            inputs={"user_input": text, "chat_id": str(chat.id), "artifact_ids": []},
         )
 
 

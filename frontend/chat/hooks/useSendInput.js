@@ -7,10 +7,11 @@ export const useSendInput = (chat_id) => {
   const url = `/api/chats/${chat_id}/messages`;
 
   const sendInput = useCallback(
-    async (text) => {
+    async (text, artifact_ids) => {
       const data = {
         chat_id: chat_id,
         text: text,
+        artifact_ids: artifact_ids || [],
       };
 
       setIsLoading(true);
