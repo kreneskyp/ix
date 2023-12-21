@@ -3,6 +3,7 @@ from langchain.llms.base import BaseLLM
 from langchain.llms import Ollama
 from langchain.llms.fireworks import Fireworks
 from langchain.llms.llamacpp import LlamaCpp
+from langchain_mistralai import ChatMistralAI
 
 from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
@@ -23,6 +24,13 @@ BASE_LLM_FIELDS = NodeTypeField.get_fields(
         },
     },
 )
+
+LLM_OUTPUT = {
+    "key": "out",
+    "label": "AI Message",
+    "type": "source",
+    "source_type": "data",
+}
 
 REQUEST_TIMEOUT = {
     "name": "request_timeout",
@@ -54,7 +62,7 @@ OPENAI_CONNECTORS_IO = [
         "type": "target",
         "source_type": FLOW_TYPES,
     },
-    {"key": "out", "label": "AI Message", "type": "source", "source_type": "data"},
+    LLM_OUTPUT,
 ]
 OPENAI_AUTH_GROUP = {
     "key": "Authentication",
@@ -541,11 +549,87 @@ FIREWORKS_CHAT_LLM = {
     "fields": FIREWORKS_FIELDS + BASE_LLM_FIELDS,
 }
 
+MISTRAL_LLM_CLASS_PATH = "langchain_mistralai.chat_models.ChatMistralAI"
+MISTRAL_LLM = {
+    "class_path": MISTRAL_LLM_CLASS_PATH,
+    "type": "llm",
+    "name": "Mistral AI",
+    "description": "Mistral AI llms",
+    "connectors": [LLM_OUTPUT],
+    "fields": [
+        {
+            "name": "max_retries",
+            "type": "number",
+            "input_type": "slider",
+            "description": "Max Retries",
+            "default": 6,
+            "min": 0,
+            "max": 6,
+            "step": 1,
+        },
+        {
+            "name": "temperature",
+            "type": "number",
+            "input_type": "slider",
+            "description": "Temperature",
+            "default": 0,
+            "min": 0,
+            "max": 1,
+            "step": 0.05,
+        },
+    ]
+    + NodeTypeField.get_fields(
+        ChatMistralAI,
+        include=[
+            "mistral_api_key",
+            "endpoint",
+            "timeout",
+            "max_concurrent_requests",
+            "model",
+            "max_tokens",
+            "top_p",
+            "random_seed",
+            "safe_mode",
+        ],
+        field_options={
+            "mistral_api_key": {
+                "input_type": "secret",
+            },
+        },
+    )
+    + BASE_LLM_FIELDS,
+    "display_groups": [
+        {
+            "key": "Model",
+            "fields": [
+                "model",
+                "temperature",
+                "max_tokens",
+                "top_p",
+                "random_seed",
+                "safe_mode",
+            ],
+        },
+        {
+            "key": "Server",
+            "fields": [
+                "mistral_api_key",
+                "endpoint",
+                "max_retries",
+                "timeout",
+                "random_seed",
+                "max_concurrent_requests",
+            ],
+        },
+    ],
+}
+
 LLMS = [
     ANTHROPIC_LLM,
     GOOGLE_GEN_AI,
     GOOGLE_PALM,
     LLAMA_CPP_LLM,
+    MISTRAL_LLM,
     OLLAMA_LLM,
     OPENAI_LLM_DEP,
     OPENAI_LLM,

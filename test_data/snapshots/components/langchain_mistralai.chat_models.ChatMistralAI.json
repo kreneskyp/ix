@@ -1,0 +1,408 @@
+{
+    "child_field": null,
+    "class_path": "langchain_mistralai.chat_models.ChatMistralAI",
+    "config_schema": {
+        "display_groups": [
+            {
+                "fields": [
+                    "model",
+                    "temperature",
+                    "max_tokens",
+                    "top_p",
+                    "random_seed",
+                    "safe_mode"
+                ],
+                "key": "Model",
+                "label": null
+            },
+            {
+                "fields": [
+                    "mistral_api_key",
+                    "endpoint",
+                    "max_retries",
+                    "timeout",
+                    "random_seed",
+                    "max_concurrent_requests"
+                ],
+                "key": "Server",
+                "label": null
+            }
+        ],
+        "properties": {
+            "cache": {
+                "label": "Cache",
+                "type": "boolean"
+            },
+            "endpoint": {
+                "default": "https://api.mistral.ai",
+                "label": "Endpoint",
+                "type": "string"
+            },
+            "max_concurrent_requests": {
+                "default": 64,
+                "label": "Max_concurrent_requests",
+                "type": "number"
+            },
+            "max_retries": {
+                "default": 6,
+                "description": "Max Retries",
+                "input_type": "slider",
+                "label": "",
+                "maximum": 6.0,
+                "minimum": 0.0,
+                "multipleOf": 1.0,
+                "type": "number"
+            },
+            "max_tokens": {
+                "label": "Max_tokens",
+                "type": "number"
+            },
+            "metadata": {
+                "label": "Metadata",
+                "type": "object"
+            },
+            "mistral_api_key": {
+                "input_type": "secret",
+                "label": "Mistral_api_key",
+                "type": "string"
+            },
+            "model": {
+                "default": "mistral-small",
+                "label": "Model",
+                "type": "string"
+            },
+            "random_seed": {
+                "label": "Random_seed",
+                "type": "number"
+            },
+            "safe_mode": {
+                "default": false,
+                "label": "Safe_mode",
+                "type": "boolean"
+            },
+            "tags": {
+                "items": [
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
+            "temperature": {
+                "default": 0,
+                "description": "Temperature",
+                "input_type": "slider",
+                "label": "",
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "multipleOf": 0.05,
+                "type": "number"
+            },
+            "timeout": {
+                "default": 120,
+                "label": "Timeout",
+                "type": "number"
+            },
+            "top_p": {
+                "default": 1,
+                "label": "Top_p",
+                "type": "number"
+            },
+            "verbose": {
+                "label": "Verbose",
+                "type": "boolean"
+            }
+        },
+        "required": [
+            "mistral_api_key",
+            "max_tokens",
+            "random_seed",
+            "cache",
+            "verbose",
+            "tags",
+            "metadata"
+        ],
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "out",
+            "label": "AI Message",
+            "multiple": false,
+            "required": false,
+            "source_type": "data",
+            "template": false,
+            "type": "source"
+        }
+    ],
+    "description": "Mistral AI llms",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": 6,
+            "description": "Max Retries",
+            "init_type": "init",
+            "input_type": "slider",
+            "label": "",
+            "max": 6.0,
+            "min": 0.0,
+            "name": "max_retries",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": 1.0,
+            "style": null,
+            "type": "number"
+        },
+        {
+            "choices": null,
+            "default": 0,
+            "description": "Temperature",
+            "init_type": "init",
+            "input_type": "slider",
+            "label": "",
+            "max": 1.0,
+            "min": 0.0,
+            "name": "temperature",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": 0.05,
+            "style": null,
+            "type": "number"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": "secret",
+            "label": "Mistral_api_key",
+            "max": null,
+            "min": null,
+            "name": "mistral_api_key",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": "https://api.mistral.ai",
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Endpoint",
+            "max": null,
+            "min": null,
+            "name": "endpoint",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": 120,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Timeout",
+            "max": null,
+            "min": null,
+            "name": "timeout",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": 64,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Max_concurrent_requests",
+            "max": null,
+            "min": null,
+            "name": "max_concurrent_requests",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": "mistral-small",
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Model",
+            "max": null,
+            "min": null,
+            "name": "model",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Max_tokens",
+            "max": null,
+            "min": null,
+            "name": "max_tokens",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": 1,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Top_p",
+            "max": null,
+            "min": null,
+            "name": "top_p",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "float"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Random_seed",
+            "max": null,
+            "min": null,
+            "name": "random_seed",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Safe_mode",
+            "max": null,
+            "min": null,
+            "name": "safe_mode",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Cache",
+            "max": null,
+            "min": null,
+            "name": "cache",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Verbose",
+            "max": null,
+            "min": null,
+            "name": "verbose",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Tags",
+            "max": null,
+            "min": null,
+            "name": "tags",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Metadata",
+            "max": null,
+            "min": null,
+            "name": "metadata",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "dict"
+        }
+    ],
+    "name": "Mistral AI",
+    "type": "llm"
+}
