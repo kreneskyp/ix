@@ -48,7 +48,7 @@ services:
   # Agent worker: celery, django
   worker:
     image: ghcr.io/kreneskyp/ix/sandbox:latest
-    command: celery.sh
+    command: celery -A ix worker --loglevel=info --pool=solo --concurrency=1
     links:
       - db
       - redis
@@ -64,7 +64,8 @@ services:
       #- .vault/.client.env
     environment:
       VAULT_BASE_PATH: "ix"
-      DJANGO_SETTINGS_MODULE: "ix.server.settings"
+      DJANGO_SETTINGS_MODULE: "ix.server.celery_settings"
+
 
   # nodejs / frontend builder
   nodejs:
