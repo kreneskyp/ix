@@ -48,6 +48,21 @@
             "source_type": "parser",
             "template": false,
             "type": "target"
+        },
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "out",
+            "label": "Documents",
+            "multiple": false,
+            "required": false,
+            "source_type": "data",
+            "template": false,
+            "type": "source"
         }
     ],
     "description": "Load documents from the web and parse them with BeautifulSoup.",

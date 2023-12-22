@@ -28,7 +28,51 @@
         "required": [],
         "type": "object"
     },
-    "connectors": null,
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "in",
+            "label": "Documents",
+            "multiple": false,
+            "required": false,
+            "source_type": [
+                "agent",
+                "branch",
+                "chain",
+                "document_loader",
+                "flow",
+                "llm",
+                "map",
+                "prompt",
+                "retriever",
+                "root",
+                "text_splitter",
+                "tool"
+            ],
+            "template": false,
+            "type": "target"
+        },
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "out",
+            "label": "Documents",
+            "multiple": false,
+            "required": false,
+            "source_type": "data",
+            "template": false,
+            "type": "source"
+        }
+    ],
     "description": "Splitting text that looks at characters.",
     "display_type": "node",
     "fields": [

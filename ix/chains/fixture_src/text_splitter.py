@@ -5,8 +5,13 @@ from langchain.text_splitter import (
 )
 
 from ix.api.components.types import NodeTypeField
+from ix.chains.fixture_src.document_loaders import DOCUMENTS_OUTPUT, DOCUMENTS_INPUT
 from ix.chains.fixture_src.parsers import LANGUAGE
-from ix.chains.fixture_src.targets import DOCUMENT_LOADER_TARGET
+
+DOCUMENT_TRANSFORMER_CONNECTORS = [
+    DOCUMENTS_INPUT,
+    DOCUMENTS_OUTPUT,
+]
 
 
 CHARACTER_SPLITTER_CLASS_PATH = "langchain.text_splitter.CharacterTextSplitter"
@@ -15,6 +20,7 @@ CHARACTER_SPLITTER = {
     "type": "text_splitter",
     "name": "CharacterTextSplitter",
     "description": CharacterTextSplitter.__doc__,
+    "connectors": DOCUMENT_TRANSFORMER_CONNECTORS,
     "fields": NodeTypeField.get_fields(
         TextSplitter.__init__,
         include=[
@@ -37,6 +43,7 @@ RECURSIVE_CHARACTER_SPLITTER = {
     "type": "text_splitter",
     "name": "RecursiveCharacterTextSplitter",
     "description": RecursiveCharacterTextSplitter.__doc__,
+    "connectors": DOCUMENT_TRANSFORMER_CONNECTORS,
     "fields": [LANGUAGE]
     + NodeTypeField.get_fields(
         TextSplitter.__init__,
@@ -47,7 +54,6 @@ RECURSIVE_CHARACTER_SPLITTER = {
             "add_start_index",
         ],
     ),
-    "connectors": [DOCUMENT_LOADER_TARGET],
 }
 
 TEXT_SPLITTERS = [RECURSIVE_CHARACTER_SPLITTER, CHARACTER_SPLITTER]

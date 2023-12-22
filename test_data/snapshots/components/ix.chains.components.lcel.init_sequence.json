@@ -22,9 +22,11 @@
             "source_type": [
                 "agent",
                 "chain",
+                "document_loader",
                 "llm",
                 "prompt",
                 "retriever",
+                "text_splitter",
                 "tool"
             ],
             "template": false,
