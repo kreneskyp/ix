@@ -74,9 +74,10 @@ def get_node_initializer(node_type: str) -> Callable:
     Used to add shims around specific types of nodes.
     """
     from ix.chains.loaders.vectorstore import initialize_vectorstore
-    from ix.runnable.transformer import RunTransformer
+    from ix.runnable.documents import RunLoader, RunTransformer
 
     return {
+        "document_loader": RunLoader.from_config,
         "text_splitter": RunTransformer.from_config,
         "transformer": RunTransformer.from_config,
         "vectorstore": initialize_vectorstore,
