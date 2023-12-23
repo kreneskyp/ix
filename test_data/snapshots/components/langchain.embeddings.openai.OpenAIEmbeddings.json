@@ -5,11 +5,7 @@
         "display_groups": null,
         "properties": {
             "allowed_special": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
@@ -21,11 +17,7 @@
                 "type": "number"
             },
             "disallowed_special": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",

@@ -63,11 +63,7 @@
                 "type": "number"
             },
             "tags": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",

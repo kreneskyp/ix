@@ -7,11 +7,7 @@
             "branches": {
                 "description": "input variables corresponding to branches in the order they will be considered. The first branch whose input variable is True will be executed. If none are True, the default branch will be executed.",
                 "input_type": "node_branch_list",
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
@@ -20,11 +16,7 @@
             "branches_hash": {
                 "description": "Hashes for branches in order they should be displayed. These hashes are used for connector identifiers. The step names may change without requiring edges to update unless the step is removed. Must be same length as branches.",
                 "input_type": "hidden",
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
