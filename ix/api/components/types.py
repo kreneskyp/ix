@@ -342,13 +342,21 @@ class NodeTypeField(BaseModel):
         exclude: Optional[List[str]] = None,
         field_options: Optional[Dict[str, Dict[str, Any]]] = None,
         parent: Optional[str] = None,
+        **kwargs,
     ) -> List[Dict[str, Any]]:
+        # Setup field kwargs from legacy field_options and kwargs
+        field_kwargs = field_options or {}
+        field_kwargs.update(kwargs)
+
+        if field_kwargs:
+            include = set(include or []) | set(field_kwargs.keys())
+
         if isinstance(obj, type) and issubclass(obj, BaseModel | ABC):
             fields = cls.get_fields_from_model(
                 obj,
                 include=include,
                 exclude=exclude,
-                field_options=field_options,
+                field_options=field_kwargs,
                 parent=parent,
             )
         elif isinstance(obj, Callable):
@@ -356,7 +364,7 @@ class NodeTypeField(BaseModel):
                 obj,
                 include=include,
                 exclude=exclude,
-                field_options=field_options,
+                field_options=field_kwargs,
                 parent=parent,
             )
         else:

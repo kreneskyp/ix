@@ -86,6 +86,16 @@
                 "label": "Tfs_z",
                 "type": "number"
             },
+            "top_k": {
+                "default": 40,
+                "description": "Top K",
+                "input_type": "slider",
+                "label": "Top_k",
+                "maximum": 100.0,
+                "minimum": 1.0,
+                "multipleOf": 1.0,
+                "type": "number"
+            },
             "top_p": {
                 "default": 0.9,
                 "input_type": "slider",
@@ -351,6 +361,23 @@
             "step": null,
             "style": null,
             "type": "float"
+        },
+        {
+            "choices": null,
+            "default": 40,
+            "description": "Top K",
+            "init_type": "init",
+            "input_type": "slider",
+            "label": "Top_k",
+            "max": 100.0,
+            "min": 1.0,
+            "name": "top_k",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": 1.0,
+            "style": null,
+            "type": "int"
         },
         {
             "choices": null,
