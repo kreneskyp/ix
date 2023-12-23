@@ -5,22 +5,14 @@
         "display_groups": null,
         "properties": {
             "images": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
                 "uniqueItems": false
             },
             "messages": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",

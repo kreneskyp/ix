@@ -5,11 +5,7 @@
         "display_groups": null,
         "properties": {
             "messages": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",

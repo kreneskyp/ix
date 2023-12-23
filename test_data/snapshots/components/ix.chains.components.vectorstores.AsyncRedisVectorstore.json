@@ -5,11 +5,7 @@
         "display_groups": null,
         "properties": {
             "allowed_search_types": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",

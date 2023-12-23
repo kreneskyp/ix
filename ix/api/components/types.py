@@ -636,7 +636,7 @@ class NodeType(BaseModel):
             items.extend([{"type": choice.value} for choice in field.choices])
         property = {
             "type": "array",
-            "items": [{"type": "string"}],
+            "items": {},
             # "additionalItems": False,
             "minItems": field.min,
             "maxItems": field.max,

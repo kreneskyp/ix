@@ -7,11 +7,7 @@
             "steps": {
                 "description": "Input variables mapped from the output of the branch connected to it.",
                 "input_type": "node_map_list",
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
@@ -20,11 +16,7 @@
             "steps_hash": {
                 "description": "Input variables hashes in order they should be displayed. These hashes are used for connector identifiers. The step names may change without requiring edges to update unless the step is removed. Must be same length as steps. ",
                 "input_type": "hidden",
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",

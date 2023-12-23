@@ -5,11 +5,7 @@
         "display_groups": null,
         "properties": {
             "input_variables": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "style": {

@@ -14,8 +14,7 @@
             },
             "parameters": {
                 "input_type": "textarea",
-                "label": "Parameters",
-                "type": "object"
+                "label": "Parameters"
             }
         },
         "required": [
