@@ -16,6 +16,7 @@
         "required": [
             "file_path"
         ],
+        "title": "PyPDFLoader",
         "type": "object"
     },
     "connectors": null,

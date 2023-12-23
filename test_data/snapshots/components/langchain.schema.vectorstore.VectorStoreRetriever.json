@@ -25,6 +25,7 @@
             "allowed_search_types",
             "search_kwargs"
         ],
+        "title": "VectorStoreRetriever",
         "type": "object"
     },
     "connectors": [

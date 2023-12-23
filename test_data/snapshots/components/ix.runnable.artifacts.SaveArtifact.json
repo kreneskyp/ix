@@ -30,6 +30,7 @@
             }
         },
         "required": [],
+        "title": "SaveArtifact",
         "type": "object"
     },
     "connectors": [

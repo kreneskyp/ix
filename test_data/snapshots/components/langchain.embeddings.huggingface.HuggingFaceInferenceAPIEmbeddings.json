@@ -18,6 +18,7 @@
         "required": [
             "api_key"
         ],
+        "title": "HuggingFaceInferenceAPIEmbeddings",
         "type": "object"
     },
     "connectors": null,

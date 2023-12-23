@@ -116,6 +116,7 @@
             "tags",
             "metadata"
         ],
+        "title": "Ollama",
         "type": "object"
     },
     "connectors": null,

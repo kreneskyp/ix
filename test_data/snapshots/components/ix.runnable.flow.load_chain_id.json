@@ -14,6 +14,7 @@
         "required": [
             "chain_id"
         ],
+        "title": "load_chain_id",
         "type": "object"
     },
     "connectors": null,

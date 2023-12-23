@@ -157,6 +157,7 @@
             "tags",
             "metadata"
         ],
+        "title": "LlamaCpp",
         "type": "object"
     },
     "connectors": null,

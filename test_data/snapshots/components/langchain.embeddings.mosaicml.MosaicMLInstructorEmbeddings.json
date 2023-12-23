@@ -42,6 +42,7 @@
             }
         },
         "required": [],
+        "title": "MosaicMLInstructorEmbeddings",
         "type": "object"
     },
     "connectors": null,

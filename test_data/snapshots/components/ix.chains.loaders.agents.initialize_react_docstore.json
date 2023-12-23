@@ -25,6 +25,7 @@
             }
         },
         "required": [],
+        "title": "initialize_react_docstore",
         "type": "object"
     },
     "connectors": [

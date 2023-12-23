@@ -53,6 +53,7 @@
             }
         },
         "required": [],
+        "title": "get_google_serper",
         "type": "object"
     },
     "connectors": null,

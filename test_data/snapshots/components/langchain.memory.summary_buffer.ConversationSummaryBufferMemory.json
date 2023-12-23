@@ -41,6 +41,7 @@
             }
         },
         "required": [],
+        "title": "ConversationSummaryBufferMemory",
         "type": "object"
     },
     "connectors": [

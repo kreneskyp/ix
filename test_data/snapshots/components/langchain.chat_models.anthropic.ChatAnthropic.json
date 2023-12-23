@@ -58,6 +58,7 @@
             "tags",
             "metadata"
         ],
+        "title": "ChatAnthropic",
         "type": "object"
     },
     "connectors": null,

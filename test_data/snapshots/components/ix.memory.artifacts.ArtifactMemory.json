@@ -26,6 +26,7 @@
             }
         },
         "required": [],
+        "title": "ArtifactMemory",
         "type": "object"
     },
     "connectors": null,

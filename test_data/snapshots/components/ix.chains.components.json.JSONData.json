@@ -20,6 +20,7 @@
         "required": [
             "data"
         ],
+        "title": "JSONData",
         "type": "object"
     },
     "connectors": null,

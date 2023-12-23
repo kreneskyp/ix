@@ -33,6 +33,7 @@
             }
         },
         "required": [],
+        "title": "chain_as_tool",
         "type": "object"
     },
     "connectors": [

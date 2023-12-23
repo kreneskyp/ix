@@ -16,6 +16,7 @@
         "required": [
             "text"
         ],
+        "title": "StringLoader",
         "type": "object"
     },
     "connectors": null,

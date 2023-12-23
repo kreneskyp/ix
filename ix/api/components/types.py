@@ -602,14 +602,15 @@ class NodeType(BaseModel):
 
     def get_config_schema(self) -> dict:
         """JSON schema for the config"""
-        schema = self.generate_config_schema(self.fields or [])
+        title = self.class_path.split(".")[-1]
+        schema = self.generate_config_schema(title=title, fields=self.fields or [])
         schema.update(**self.model_dump(include="display_groups"))
         return schema
 
     @staticmethod
-    def generate_config_schema(fields: List[NodeTypeField]) -> dict:
+    def generate_config_schema(title: str, fields: List[NodeTypeField]) -> dict:
         """Generates a JSON schema from a list of NodeTypeField objects."""
-        schema = {"type": "object", "properties": {}, "required": []}
+        schema = {"title": title, "type": "object", "properties": {}, "required": []}
         for field in fields:
             # Determine the type of the field for the JSON schema
             if field.type in {"str", "string"}:

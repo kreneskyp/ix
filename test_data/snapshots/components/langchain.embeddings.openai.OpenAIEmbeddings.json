@@ -43,6 +43,7 @@
             }
         },
         "required": [],
+        "title": "OpenAIEmbeddings",
         "type": "object"
     },
     "connectors": null,

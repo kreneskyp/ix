@@ -87,6 +87,7 @@
             "tags",
             "metadata"
         ],
+        "title": "ChatGooglePalm",
         "type": "object"
     },
     "connectors": null,

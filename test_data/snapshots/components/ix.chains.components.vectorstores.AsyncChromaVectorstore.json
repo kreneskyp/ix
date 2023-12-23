@@ -70,6 +70,7 @@
             "allowed_search_types",
             "search_kwargs"
         ],
+        "title": "AsyncChromaVectorstore",
         "type": "object"
     },
     "connectors": [

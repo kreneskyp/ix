@@ -5,6 +5,7 @@
         "display_groups": null,
         "properties": {},
         "required": [],
+        "title": "UnstructuredHTMLLoader",
         "type": "object"
     },
     "connectors": null,

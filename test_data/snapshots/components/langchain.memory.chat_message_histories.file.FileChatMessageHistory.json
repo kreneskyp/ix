@@ -14,6 +14,7 @@
             }
         },
         "required": [],
+        "title": "FileChatMessageHistory",
         "type": "object"
     },
     "connectors": null,

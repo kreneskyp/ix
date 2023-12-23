@@ -24,6 +24,7 @@
             }
         },
         "required": [],
+        "title": "__ROOT__",
         "type": "object"
     },
     "connectors": [],
