@@ -612,6 +612,8 @@ class NodeType(BaseModel):
                 schema_type = "boolean"
             elif field.type in {"list", "set"}:
                 schema_type = "array"
+            elif field.type in {"Any"}:
+                schema_type = None
             else:
                 schema_type = "object"
 
@@ -674,7 +676,9 @@ class NodeType(BaseModel):
             "secret_key",
         }
 
-        property = {"type": schema_type}
+        property = {}
+        if schema_type:
+            property["type"] = schema_type
 
         for schema_property in OPTIONAL_PROPERTIES:
             field_name = COMPAT_FIELDS.get(schema_property, schema_property)
