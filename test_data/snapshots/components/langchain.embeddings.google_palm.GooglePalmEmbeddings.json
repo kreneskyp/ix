@@ -20,6 +20,7 @@
             }
         },
         "required": [],
+        "title": "GooglePalmEmbeddings",
         "type": "object"
     },
     "connectors": null,

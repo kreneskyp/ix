@@ -32,6 +32,7 @@
             "file_path",
             "jq_schema"
         ],
+        "title": "JSONLoader",
         "type": "object"
     },
     "connectors": [

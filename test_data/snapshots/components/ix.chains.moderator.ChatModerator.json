@@ -5,6 +5,7 @@
         "display_groups": null,
         "properties": {},
         "required": [],
+        "title": "ChatModerator",
         "type": "object"
     },
     "connectors": [

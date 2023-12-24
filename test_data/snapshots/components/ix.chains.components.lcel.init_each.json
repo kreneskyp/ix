@@ -5,6 +5,7 @@
         "display_groups": null,
         "properties": {},
         "required": [],
+        "title": "init_each",
         "type": "object"
     },
     "connectors": [

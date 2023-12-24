@@ -41,6 +41,7 @@
             }
         },
         "required": [],
+        "title": "ConversationBufferWindowMemory",
         "type": "object"
     },
     "connectors": [

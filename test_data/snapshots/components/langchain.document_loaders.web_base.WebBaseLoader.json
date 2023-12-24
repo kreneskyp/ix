@@ -16,11 +16,7 @@
             },
             "web_path": {
                 "description": "URL(s) of the web page",
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "style": {
@@ -31,6 +27,7 @@
             }
         },
         "required": [],
+        "title": "WebBaseLoader",
         "type": "object"
     },
     "connectors": [

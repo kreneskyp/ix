@@ -5,11 +5,7 @@
         "display_groups": null,
         "properties": {
             "delegate_inputs": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
@@ -21,11 +17,7 @@
                 "type": "string"
             },
             "tags": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "style": {
@@ -48,6 +40,7 @@
             "target_alias",
             "delegate_inputs"
         ],
+        "title": "DelegateToAgentChain",
         "type": "object"
     },
     "connectors": [

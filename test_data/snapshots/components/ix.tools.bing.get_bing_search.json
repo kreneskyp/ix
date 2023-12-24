@@ -37,6 +37,7 @@
             "bing_subscription_key",
             "bing_search_url"
         ],
+        "title": "get_bing_search",
         "type": "object"
     },
     "connectors": null,

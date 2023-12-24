@@ -3,8 +3,31 @@
     "class_path": "langchain.document_loaders.UnstructuredMarkdownLoader",
     "config_schema": {
         "display_groups": null,
-        "properties": {},
-        "required": [],
+        "properties": {
+            "file_path": {
+                "description": "List of file paths",
+                "items": {},
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
+            "mode": {
+                "default": "single",
+                "enum": [
+                    "single",
+                    "elements",
+                    "page"
+                ],
+                "input_type": "select",
+                "label": "Mode",
+                "type": "string"
+            }
+        },
+        "required": [
+            "file_path"
+        ],
+        "title": "UnstructuredMarkdownLoader",
         "type": "object"
     },
     "connectors": [
@@ -26,7 +49,55 @@
     ],
     "description": "Load a markdown file into a document with Unstructured.io",
     "display_type": "node",
-    "fields": [],
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": "List of file paths",
+            "init_type": "init",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
+            "name": "file_path",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        },
+        {
+            "choices": [
+                {
+                    "label": "single",
+                    "value": "single"
+                },
+                {
+                    "label": "elements",
+                    "value": "elements"
+                },
+                {
+                    "label": "page",
+                    "value": "page"
+                }
+            ],
+            "default": "single",
+            "description": null,
+            "init_type": "init",
+            "input_type": "select",
+            "label": "Mode",
+            "max": null,
+            "min": null,
+            "name": "mode",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
     "name": "Unstructured Markdown Loader",
     "type": "document_loader"
 }

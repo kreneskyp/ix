@@ -5,6 +5,7 @@
         "display_groups": null,
         "properties": {},
         "required": [],
+        "title": "from_llm",
         "type": "object"
     },
     "connectors": [

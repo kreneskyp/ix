@@ -21,6 +21,7 @@
             }
         },
         "required": [],
+        "title": "FunctionSchema",
         "type": "object"
     },
     "connectors": null,

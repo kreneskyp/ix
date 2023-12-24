@@ -93,11 +93,7 @@
                 "type": "number"
             },
             "stop": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
@@ -113,11 +109,7 @@
                 "type": "string"
             },
             "tags": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
@@ -165,6 +157,7 @@
             "tags",
             "metadata"
         ],
+        "title": "LlamaCpp",
         "type": "object"
     },
     "connectors": null,

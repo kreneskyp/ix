@@ -37,6 +37,7 @@
         "required": [
             "max_tokens_limit"
         ],
+        "title": "from_llm",
         "type": "object"
     },
     "connectors": [

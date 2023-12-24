@@ -38,6 +38,7 @@
             }
         },
         "required": [],
+        "title": "get_google_search",
         "type": "object"
     },
     "connectors": null,

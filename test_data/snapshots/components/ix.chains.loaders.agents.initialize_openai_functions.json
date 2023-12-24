@@ -25,6 +25,7 @@
             }
         },
         "required": [],
+        "title": "initialize_openai_functions",
         "type": "object"
     },
     "connectors": [

@@ -11,6 +11,7 @@
             }
         },
         "required": [],
+        "title": "LLMReply",
         "type": "object"
     },
     "connectors": [

@@ -28,6 +28,7 @@ from ix.runnable.ix import IxNode
 from ix.secrets.models import Secret
 from ix.utils.config import format_config
 from ix.utils.importlib import import_class
+from jsonschema_pydantic import jsonschema_to_pydantic
 
 import_node_class = import_class
 
@@ -167,7 +168,14 @@ def load_node(
     start_time = time.time()
     node_type: NodeType = node.node_type
     node_type_pydantic = NodeTypePydantic.model_validate(node_type)
-    config = node.config.copy() if node.config else {}
+
+    # HAX: validate configs for component types that aren't implemented as pydantic
+    # models. This is a temporary solution until configs are validated at the API
+    # endpoints.
+    config = node.config or {}
+    if node_type.type in {"transform", "document_loader", "text_splitter"}:
+        node_type_model = jsonschema_to_pydantic(node_type.config_schema)
+        config = node_type_model(**config).model_dump()
 
     # TODO: implement resolve secrets from vault and settings from vocabulary
     #       neither of these subsystems are implemented yet. For now load all

@@ -22,6 +22,7 @@
         "required": [
             "graphql_endpoint"
         ],
+        "title": "get_graphql_tool",
         "type": "object"
     },
     "connectors": null,

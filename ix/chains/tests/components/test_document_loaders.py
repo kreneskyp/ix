@@ -81,14 +81,14 @@ PDF_LOADER = {
 UNSTRUCTURED_HTML_LOADER = {
     "class_path": UNSTRUCTURED_HTML_LOADER_CLASS_PATH,
     "config": {
-        "file_path": TEST_HTML_FILE_PATH,
+        "file_path": [TEST_HTML_FILE_PATH],
     },
 }
 
 UNSTRUCTURED_MARKDOWN_LOADER = {
     "class_path": UNSTRUCTURED_MARKDOWN_LOADER_CLASS_PATH,
     "config": {
-        "file_path": TEST_MARKDOWN_FILE_PATH,
+        "file_path": [TEST_MARKDOWN_FILE_PATH],
     },
 }
 
