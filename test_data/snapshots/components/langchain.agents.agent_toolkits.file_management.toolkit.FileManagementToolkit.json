@@ -13,6 +13,7 @@
         "required": [
             "root_dir"
         ],
+        "title": "FileManagementToolkit",
         "type": "object"
     },
     "connectors": null,

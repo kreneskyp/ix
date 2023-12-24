@@ -16,6 +16,7 @@
             }
         },
         "required": [],
+        "title": "IngestionTool",
         "type": "object"
     },
     "connectors": [

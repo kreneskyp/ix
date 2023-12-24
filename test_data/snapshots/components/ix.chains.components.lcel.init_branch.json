@@ -27,6 +27,7 @@
             "branches",
             "branches_hash"
         ],
+        "title": "init_branch",
         "type": "object"
     },
     "connectors": null,

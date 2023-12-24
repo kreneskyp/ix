@@ -40,6 +40,7 @@
             "target_alias",
             "delegate_inputs"
         ],
+        "title": "DelegateToAgentChain",
         "type": "object"
     },
     "connectors": [

@@ -25,6 +25,7 @@
             }
         },
         "required": [],
+        "title": "MapSubchain",
         "type": "object"
     },
     "connectors": [

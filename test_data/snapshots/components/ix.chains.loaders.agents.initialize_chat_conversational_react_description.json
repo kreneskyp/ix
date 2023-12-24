@@ -25,6 +25,7 @@
             }
         },
         "required": [],
+        "title": "initialize_chat_conversational_react_description",
         "type": "object"
     },
     "connectors": [

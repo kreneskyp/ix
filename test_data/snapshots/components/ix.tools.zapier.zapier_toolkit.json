@@ -29,6 +29,7 @@
             "zapier_nla_api_key",
             "zapier_nla_oauth_access_token"
         ],
+        "title": "zapier_toolkit",
         "type": "object"
     },
     "connectors": null,

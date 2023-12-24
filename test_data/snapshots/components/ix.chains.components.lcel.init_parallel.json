@@ -27,6 +27,7 @@
             "steps",
             "steps_hash"
         ],
+        "title": "init_parallel",
         "type": "object"
     },
     "connectors": null,

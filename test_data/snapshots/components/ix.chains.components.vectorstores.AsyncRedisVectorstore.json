@@ -57,6 +57,7 @@
             "allowed_search_types",
             "search_kwargs"
         ],
+        "title": "AsyncRedisVectorstore",
         "type": "object"
     },
     "connectors": [

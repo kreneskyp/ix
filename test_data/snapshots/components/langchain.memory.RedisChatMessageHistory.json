@@ -51,6 +51,7 @@
             }
         },
         "required": [],
+        "title": "RedisChatMessageHistory",
         "type": "object"
     },
     "connectors": null,

@@ -41,6 +41,7 @@
             }
         },
         "required": [],
+        "title": "get_arxiv",
         "type": "object"
     },
     "connectors": null,

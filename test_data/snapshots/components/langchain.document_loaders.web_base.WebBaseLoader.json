@@ -27,6 +27,7 @@
             }
         },
         "required": [],
+        "title": "WebBaseLoader",
         "type": "object"
     },
     "connectors": [

@@ -54,6 +54,7 @@
             }
         },
         "required": [],
+        "title": "from_language",
         "type": "object"
     },
     "connectors": [

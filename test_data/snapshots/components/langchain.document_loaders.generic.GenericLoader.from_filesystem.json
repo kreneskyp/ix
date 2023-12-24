@@ -27,6 +27,7 @@
         "required": [
             "path"
         ],
+        "title": "from_filesystem",
         "type": "object"
     },
     "connectors": [

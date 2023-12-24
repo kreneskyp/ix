@@ -342,13 +342,21 @@ class NodeTypeField(BaseModel):
         exclude: Optional[List[str]] = None,
         field_options: Optional[Dict[str, Dict[str, Any]]] = None,
         parent: Optional[str] = None,
+        **kwargs,
     ) -> List[Dict[str, Any]]:
+        # Setup field kwargs from legacy field_options and kwargs
+        field_kwargs = field_options or {}
+        field_kwargs.update(kwargs)
+
+        if field_kwargs:
+            include = set(include or []) | set(field_kwargs.keys())
+
         if isinstance(obj, type) and issubclass(obj, BaseModel | ABC):
             fields = cls.get_fields_from_model(
                 obj,
                 include=include,
                 exclude=exclude,
-                field_options=field_options,
+                field_options=field_kwargs,
                 parent=parent,
             )
         elif isinstance(obj, Callable):
@@ -356,7 +364,7 @@ class NodeTypeField(BaseModel):
                 obj,
                 include=include,
                 exclude=exclude,
-                field_options=field_options,
+                field_options=field_kwargs,
                 parent=parent,
             )
         else:
@@ -594,14 +602,15 @@ class NodeType(BaseModel):
 
     def get_config_schema(self) -> dict:
         """JSON schema for the config"""
-        schema = self.generate_config_schema(self.fields or [])
+        title = self.class_path.split(".")[-1]
+        schema = self.generate_config_schema(title=title, fields=self.fields or [])
         schema.update(**self.model_dump(include="display_groups"))
         return schema
 
     @staticmethod
-    def generate_config_schema(fields: List[NodeTypeField]) -> dict:
+    def generate_config_schema(title: str, fields: List[NodeTypeField]) -> dict:
         """Generates a JSON schema from a list of NodeTypeField objects."""
-        schema = {"type": "object", "properties": {}, "required": []}
+        schema = {"title": title, "type": "object", "properties": {}, "required": []}
         for field in fields:
             # Determine the type of the field for the JSON schema
             if field.type in {"str", "string"}:

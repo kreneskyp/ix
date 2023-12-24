@@ -173,6 +173,7 @@
             "tags",
             "metadata"
         ],
+        "title": "IXChatOpenAI",
         "type": "object"
     },
     "connectors": [

@@ -20,6 +20,7 @@
         "required": [
             "memory_inputs"
         ],
+        "title": "LoadMemory",
         "type": "object"
     },
     "connectors": [
