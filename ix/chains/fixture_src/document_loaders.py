@@ -1,13 +1,15 @@
 from langchain.document_loaders import (
     WebBaseLoader,
     PyPDFLoader,
-    UnstructuredMarkdownLoader,
     CSVLoader,
-    UnstructuredHTMLLoader,
     BSHTMLLoader,
     JSONLoader,
 )
 from langchain.document_loaders.generic import GenericLoader
+from langchain_community.document_loaders import (
+    UnstructuredHTMLLoader,
+    UnstructuredMarkdownLoader,
+)
 
 from ix.api.components.types import NodeTypeField
 from ix.chains.components.document_loaders import StringLoader
@@ -168,6 +170,21 @@ WEB_BASE_LOADER = {
 }
 
 
+FILE_PATH_LIST = NodeTypeField(
+    name="file_path",
+    type="list",
+    required=True,
+    description="List of file paths",
+)
+UNSTRUCTURED_IO_MODE_OPTIONS = {
+    "input_type": "select",
+    "choices": [
+        {"label": "single", "value": "single"},
+        {"label": "elements", "value": "elements"},
+        {"label": "page", "value": "page"},
+    ],
+}
+
 UNSTRUCTURED_HTML_LOADER_CLASS_PATH = (
     "langchain.document_loaders.UnstructuredHTMLLoader"
 )
@@ -176,8 +193,10 @@ UNSTRUCTURED_HTML_LOADER = {
     "type": "document_loader",
     "name": "Unstructured HTML Loader",
     "description": "Load an HTML file into a document with Unstructured.io",
-    "fields": NodeTypeField.get_fields(
-        UnstructuredHTMLLoader.__init__, include=["file_path" "mode"]
+    "fields": [FILE_PATH_LIST]
+    + NodeTypeField.get_fields(
+        UnstructuredHTMLLoader.__init__,
+        mode=UNSTRUCTURED_IO_MODE_OPTIONS,
     ),
 }
 
@@ -190,8 +209,10 @@ UNSTRUCTURED_MARKDOWN_LOADER = {
     "type": "document_loader",
     "name": "Unstructured Markdown Loader",
     "description": "Load a markdown file into a document with Unstructured.io",
-    "fields": NodeTypeField.get_fields(
-        UnstructuredMarkdownLoader.__init__, include=["file_path" "mode"]
+    "fields": [FILE_PATH_LIST]
+    + NodeTypeField.get_fields(
+        UnstructuredMarkdownLoader.__init__,
+        mode=UNSTRUCTURED_IO_MODE_OPTIONS,
     ),
 }
 
