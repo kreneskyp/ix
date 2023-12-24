@@ -1,6 +1,6 @@
 {
     "child_field": null,
-    "class_path": "langchain.document_loaders.UnstructuredMarkdownLoader",
+    "class_path": "langchain_community.document_loaders.image.UnstructuredImageLoader",
     "config_schema": {
         "display_groups": null,
         "properties": {
@@ -13,41 +13,25 @@
                 "uniqueItems": false
             },
             "mode": {
-                "default": "single",
                 "enum": [
                     "single",
                     "elements",
                     "page"
                 ],
                 "input_type": "select",
-                "label": "Mode",
+                "label": "",
                 "type": "string"
             }
         },
         "required": [
-            "file_path"
+            "file_path",
+            "mode"
         ],
-        "title": "UnstructuredMarkdownLoader",
+        "title": "UnstructuredImageLoader",
         "type": "object"
     },
-    "connectors": [
-        {
-            "as_type": null,
-            "collection": null,
-            "fields": null,
-            "from_field": null,
-            "init_modes": null,
-            "init_type": "init",
-            "key": "out",
-            "label": "Documents",
-            "multiple": false,
-            "required": false,
-            "source_type": "data",
-            "template": false,
-            "type": "source"
-        }
-    ],
-    "description": "Load a markdown file into a document with Unstructured.io",
+    "connectors": null,
+    "description": "Load an image file into a document with Unstructured.io",
     "display_type": "node",
     "fields": [
         {
@@ -82,22 +66,22 @@
                     "value": "page"
                 }
             ],
-            "default": "single",
+            "default": null,
             "description": null,
             "init_type": "init",
             "input_type": "select",
-            "label": "Mode",
+            "label": "",
             "max": null,
             "min": null,
             "name": "mode",
             "parent": null,
-            "required": false,
+            "required": true,
             "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
         }
     ],
-    "name": "Unstructured Markdown Loader",
+    "name": "Unstructured Image Loader",
     "type": "document_loader"
 }

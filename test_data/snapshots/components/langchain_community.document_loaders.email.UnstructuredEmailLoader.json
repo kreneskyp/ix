@@ -1,0 +1,87 @@
+{
+    "child_field": null,
+    "class_path": "langchain_community.document_loaders.email.UnstructuredEmailLoader",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "file_path": {
+                "description": "List of file paths",
+                "items": {},
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
+            "mode": {
+                "enum": [
+                    "single",
+                    "elements",
+                    "page"
+                ],
+                "input_type": "select",
+                "label": "",
+                "type": "string"
+            }
+        },
+        "required": [
+            "file_path",
+            "mode"
+        ],
+        "title": "UnstructuredEmailLoader",
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Load an email file into a document with Unstructured.io",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": "List of file paths",
+            "init_type": "init",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
+            "name": "file_path",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        },
+        {
+            "choices": [
+                {
+                    "label": "single",
+                    "value": "single"
+                },
+                {
+                    "label": "elements",
+                    "value": "elements"
+                },
+                {
+                    "label": "page",
+                    "value": "page"
+                }
+            ],
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": "select",
+            "label": "",
+            "max": null,
+            "min": null,
+            "name": "mode",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "Unstructured Email Loader",
+    "type": "document_loader"
+}
