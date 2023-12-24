@@ -6,10 +6,6 @@ from langchain.document_loaders import (
     JSONLoader,
 )
 from langchain.document_loaders.generic import GenericLoader
-from langchain_community.document_loaders import (
-    UnstructuredHTMLLoader,
-    UnstructuredMarkdownLoader,
-)
 
 from ix.api.components.types import NodeTypeField
 from ix.chains.components.document_loaders import StringLoader
@@ -170,53 +166,6 @@ WEB_BASE_LOADER = {
 }
 
 
-FILE_PATH_LIST = NodeTypeField(
-    name="file_path",
-    type="list",
-    required=True,
-    description="List of file paths",
-)
-UNSTRUCTURED_IO_MODE_OPTIONS = {
-    "input_type": "select",
-    "choices": [
-        {"label": "single", "value": "single"},
-        {"label": "elements", "value": "elements"},
-        {"label": "page", "value": "page"},
-    ],
-}
-
-UNSTRUCTURED_HTML_LOADER_CLASS_PATH = (
-    "langchain.document_loaders.UnstructuredHTMLLoader"
-)
-UNSTRUCTURED_HTML_LOADER = {
-    "class_path": UNSTRUCTURED_HTML_LOADER_CLASS_PATH,
-    "type": "document_loader",
-    "name": "Unstructured HTML Loader",
-    "description": "Load an HTML file into a document with Unstructured.io",
-    "fields": [FILE_PATH_LIST]
-    + NodeTypeField.get_fields(
-        UnstructuredHTMLLoader.__init__,
-        mode=UNSTRUCTURED_IO_MODE_OPTIONS,
-    ),
-}
-
-
-UNSTRUCTURED_MARKDOWN_LOADER_CLASS_PATH = (
-    "langchain.document_loaders.UnstructuredMarkdownLoader"
-)
-UNSTRUCTURED_MARKDOWN_LOADER = {
-    "class_path": UNSTRUCTURED_MARKDOWN_LOADER_CLASS_PATH,
-    "type": "document_loader",
-    "name": "Unstructured Markdown Loader",
-    "description": "Load a markdown file into a document with Unstructured.io",
-    "fields": [FILE_PATH_LIST]
-    + NodeTypeField.get_fields(
-        UnstructuredMarkdownLoader.__init__,
-        mode=UNSTRUCTURED_IO_MODE_OPTIONS,
-    ),
-}
-
-
 DOCUMENT_LOADERS = [
     BEAUTIFUL_SOUP_LOADER,
     CSV_LOADER,
@@ -225,8 +174,6 @@ DOCUMENT_LOADERS = [
     PDF_LOADER,
     STRING_LOADER,
     WEB_BASE_LOADER,
-    UNSTRUCTURED_HTML_LOADER,
-    UNSTRUCTURED_MARKDOWN_LOADER,
 ]
 
 __all__ = [
@@ -237,8 +184,6 @@ __all__ = [
     "JSON_LOADER_CLASS_PATH",
     "PDF_LOADER_CLASS_PATH",
     "WEB_BASE_LOADER_CLASS_PATH",
-    "UNSTRUCTURED_HTML_LOADER_CLASS_PATH",
-    "UNSTRUCTURED_MARKDOWN_LOADER_CLASS_PATH",
     "BEAUTIFUL_SOUP_LOADER_CLASS_PATH",
     "GENERIC_LOADER_CLASS_PATH",
 ]
