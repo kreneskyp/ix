@@ -53,6 +53,7 @@ from ix.chains.loaders.core import (
     ImplicitJoin,
 )
 from ix.chains.loaders.memory import get_memory_session
+from ix.chains.loaders.text_splitter import TextSplitterShim
 from ix.chains.loaders.tools import extract_tool_kwargs, get_runnable_tool
 from ix.chains.models import Chain
 from ix.chains.tests.mock_configs import (
