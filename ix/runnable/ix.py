@@ -25,6 +25,8 @@ class IxNode(RunnableSerializable[Input, Output]):
 
     # TODO: does this need to be Runnable or RunnableSerializable?
     # Runnable fixes some tests
+    name: Optional[str] = None
+    description: Optional[str] = None
     node_id: UUID
     child: Runnable
     bind_points: List[str]

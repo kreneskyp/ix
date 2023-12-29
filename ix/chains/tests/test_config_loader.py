@@ -54,7 +54,7 @@ from ix.chains.loaders.core import (
 )
 from ix.chains.loaders.memory import get_memory_session
 from ix.chains.loaders.text_splitter import TextSplitterShim
-from ix.chains.loaders.tools import extract_tool_kwargs
+from ix.chains.loaders.tools import extract_tool_kwargs, get_runnable_tool
 from ix.chains.models import Chain
 from ix.chains.tests.mock_configs import (
     CONVERSATIONAL_RETRIEVAL_CHAIN,
@@ -487,6 +487,37 @@ class TestLoadAgents:
         with pytest.raises(ValueError) as excinfo:
             await aload_chain(config)
             assert "Agents require return_messages=True" in str(excinfo.value)
+
+
+@pytest.mark.django_db
+class TestLoadTools:
+    def test_get_runnable_tool(self):
+        runnable = MockRunnable()
+        tool = get_runnable_tool(
+            name="test", description="this is a test", runnable=runnable
+        )
+        assert isinstance(tool, BaseTool)
+        assert tool.name == "test"
+        assert tool.description == "this is a test"
+        assert tool.args_schema.schema() == {
+            "properties": {
+                "value": {"default": "input", "title": "Value", "type": "string"}
+            },
+            "title": "MockRunnableInput",
+            "type": "object",
+        }
+
+        response = tool(dict(value=1))
+        assert response == {"default": "output", "value": "1"}
+
+    async def test_aget_runnable_tool(self):
+        runnable = MockRunnable()
+        tool = get_runnable_tool(
+            name="test", description="this is a test", runnable=runnable
+        )
+        assert isinstance(tool, BaseTool)
+        response = await tool.ainvoke(dict(value=1))
+        assert response == {"default": "output", "value": "1"}
 
 
 @pytest.mark.django_db
