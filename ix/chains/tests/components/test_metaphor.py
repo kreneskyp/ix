@@ -6,7 +6,7 @@ from ix.chains.fixture_src.tools import (
     METAPHOR_CONTENTS_CLASS_PATH,
     METAPHOR_FIND_SIMILAR_CLASS_PATH,
 )
-
+from ix.chains.tests.test_config_loader import unpack_chain_flow
 
 METAPHOR_SEARCH = {
     "class_path": METAPHOR_SEARCH_CLASS_PATH,
@@ -34,21 +34,21 @@ METAPHOR_SIMILAR = {
 class TestMetaphorTools:
     async def test_load_search(self, aload_chain, mock_config_secrets):
         config = await mock_config_secrets(METAPHOR_SEARCH, ["metaphor_api_key"])
-        ix_node = await aload_chain(config)
-        component = ix_node.child
+        flow = await aload_chain(config)
+        component = unpack_chain_flow(flow)
         assert isinstance(component, Tool)
         assert component.name == "metaphor_search"
 
     async def test_load_contents(self, aload_chain, mock_config_secrets):
         config = await mock_config_secrets(METAPHOR_CONTENTS, ["metaphor_api_key"])
-        ix_node = await aload_chain(config)
-        component = ix_node.child
+        flow = await aload_chain(config)
+        component = unpack_chain_flow(flow)
         assert isinstance(component, Tool)
         assert component.name == "metaphor_get_contents"
 
     async def test_load_similar(self, aload_chain, mock_config_secrets):
         config = await mock_config_secrets(METAPHOR_SIMILAR, ["metaphor_api_key"])
-        ix_node = await aload_chain(config)
-        component = ix_node.child
+        flow = await aload_chain(config)
+        component = unpack_chain_flow(flow)
         assert isinstance(component, Tool)
         assert component.name == "metaphor_find_similar"

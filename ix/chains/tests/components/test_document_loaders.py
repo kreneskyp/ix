@@ -18,7 +18,7 @@ from ix.chains.fixture_src.document_loaders import (
     UNSTRUCTURED_MARKDOWN_LOADER_CLASS_PATH,
     JSON_LOADER_CLASS_PATH,
 )
-
+from ix.chains.tests.test_config_loader import unpack_chain_flow
 
 TEST_HTML_FILE_PATH = "/var/app/test_data/documents/test.html"
 TEST_CSV_FILE_PATH = "/var/app/test_data/documents/test.csv"
@@ -97,6 +97,7 @@ UNSTRUCTURED_MARKDOWN_LOADER = {
 class TestBeautifulSoupLoader:
     async def test_load(self, aload_chain):
         component = await aload_chain(BEAUTIFUL_SOUP_LOADER)
+        component = unpack_chain_flow(component)
         assert isinstance(component, BSHTMLLoader)
 
 
@@ -104,6 +105,7 @@ class TestBeautifulSoupLoader:
 class TestCSVLoader:
     async def test_load(self, aload_chain):
         component = await aload_chain(CSV_LOADER)
+        component = unpack_chain_flow(component)
         assert isinstance(component, CSVLoader)
 
 
@@ -111,6 +113,7 @@ class TestCSVLoader:
 class TestJSONLoader:
     async def test_load(self, aload_chain):
         component = await aload_chain(JSON_LOADER)
+        component = unpack_chain_flow(component)
         assert isinstance(component, JSONLoader)
 
 
@@ -118,6 +121,7 @@ class TestJSONLoader:
 class TestPDFLoader:
     async def test_load(self, aload_chain):
         component = await aload_chain(PDF_LOADER)
+        component = unpack_chain_flow(component)
         assert isinstance(component, PyPDFLoader)
 
 
@@ -125,6 +129,7 @@ class TestPDFLoader:
 class TestUnstructuredHTMLLoader:
     async def test_load(self, aload_chain):
         component = await aload_chain(UNSTRUCTURED_HTML_LOADER)
+        component = unpack_chain_flow(component)
         assert isinstance(component, UnstructuredHTMLLoader)
 
 
@@ -132,4 +137,5 @@ class TestUnstructuredHTMLLoader:
 class TestUnstructuredMarkdownLoader:
     async def test_load(self, aload_chain):
         component = await aload_chain(UNSTRUCTURED_MARKDOWN_LOADER)
+        component = unpack_chain_flow(component)
         assert isinstance(component, UnstructuredMarkdownLoader)
