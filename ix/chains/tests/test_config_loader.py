@@ -18,7 +18,7 @@ from langchain.schema.runnable import (
     RunnableLambda,
 )
 from langchain.schema.runnable.base import RunnableEach
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.text_splitter import TextSplitter
 from langchain.vectorstores import Redis
 from langchain_core.runnables import RunnablePassthrough, Runnable
 
@@ -94,7 +94,9 @@ def unpack_chain_flow(runnable: RunnableSequence) -> Runnable:
     and then the actual flow. This helper asserts and unpacks the structure since
     most tests care about the first node unique to the flow.
     """
-    if isinstance(runnable, RunnableSequence):
+    if isinstance(runnable, RunnableSequence) and isinstance(
+        runnable.steps[0], RunnablePassthrough
+    ):
         type_mask = runnable.steps[0]
         runnable = reduce(or_, runnable.steps[1:])
         assert isinstance(type_mask, RunnablePassthrough)
