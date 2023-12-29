@@ -2,7 +2,7 @@ import pytest
 from langchain.chains import SequentialChain
 
 from ix.chains.fixture_src.openai_functions import OPENAPI_CHAIN_CLASS_PATH
-from ix.chains.tests.test_config_loader import OPENAI_LLM
+from ix.chains.tests.test_config_loader import OPENAI_LLM, unpack_chain_flow
 
 OPENAPI_CHAIN = {
     "class_path": OPENAPI_CHAIN_CLASS_PATH,
@@ -16,6 +16,6 @@ OPENAPI_CHAIN = {
 @pytest.mark.django_db
 class TestOpenAPIChain:
     async def test_load(self, aload_chain):
-        ix_node = await aload_chain(OPENAPI_CHAIN)
-        component = ix_node.child
+        flow = await aload_chain(OPENAPI_CHAIN)
+        component = unpack_chain_flow(flow)
         assert isinstance(component, SequentialChain)

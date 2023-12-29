@@ -5,7 +5,7 @@ from langchain.agents.agent_toolkits import FileManagementToolkit
 from ix.chains.fixture_src.toolkit import FILE_MANAGEMENT_TOOLKIT_CLASS_PATH
 from ix.chains.llm_chain import LLMChain
 from ix.chains.tests.mock_configs import PROMPT_CHAT
-from ix.chains.tests.test_config_loader import OPENAI_LLM
+from ix.chains.tests.test_config_loader import OPENAI_LLM, unpack_chain_flow
 
 FILESYSTEM_TOOLKIT = {
     "class_path": FILE_MANAGEMENT_TOOLKIT_CLASS_PATH,
@@ -39,8 +39,8 @@ class TestFileManagementToolkit:
 @pytest.mark.django_db
 class TestToolkitIntegrations:
     async def test_load_chain_functions(self, aload_chain):
-        ix_node = await aload_chain(LLM_CHAIN)
-        component = ix_node.child
+        flow = await aload_chain(LLM_CHAIN)
+        component = unpack_chain_flow(flow)
         assert isinstance(component, LLMChain)
 
         # chain doesn't unpack tools until load_functions is called
@@ -49,7 +49,7 @@ class TestToolkitIntegrations:
         assert len(component.llm_kwargs.get("functions", [])) == 7
 
     async def test_load_agent_toolkit(self, aload_chain):
-        ix_node = await aload_chain(AGENT_WITH_TOOLKIT)
-        component = ix_node.child
+        flow = await aload_chain(AGENT_WITH_TOOLKIT)
+        component = unpack_chain_flow(flow)
         assert isinstance(component, AgentExecutor)
         assert len(component.tools) == 7

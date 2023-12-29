@@ -1,5 +1,7 @@
 import uuid
 from copy import deepcopy
+from functools import reduce
+from operator import or_
 
 import pytest
 from unittest.mock import MagicMock
@@ -16,8 +18,9 @@ from langchain.schema.runnable import (
     RunnableLambda,
 )
 from langchain.schema.runnable.base import RunnableEach
-from langchain.text_splitter import TextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Redis
+from langchain_core.runnables import RunnablePassthrough, Runnable
 
 from ix.chains.fixture_src.agents import OPENAI_FUNCTIONS_AGENT_CLASS_PATH
 from ix.chains.fixture_src.lcel import (
@@ -83,8 +86,25 @@ from ix.task_log.tests.fake import afake_chain_node, afake_chain, afake_chain_ed
 from ix.utils.importlib import import_class
 
 
-class TestLoadLLM:
-    pass
+def unpack_chain_flow(runnable: RunnableSequence) -> Runnable:
+    """Helper to unpack the default sequence to get to the first node
+    added by the flow.
+
+    All chain flows are wrapped in a default sequence that includes a passthrough
+    and then the actual flow. This helper asserts and unpacks the structure since
+    most tests care about the first node unique to the flow.
+    """
+    if isinstance(runnable, RunnableSequence):
+        type_mask = runnable.steps[0]
+        runnable = reduce(or_, runnable.steps[1:])
+        assert isinstance(type_mask, RunnablePassthrough)
+
+    if isinstance(runnable, RunnableSequence):
+        return runnable
+    elif isinstance(runnable, IxNode):
+        assert isinstance(runnable, IxNode)
+        return runnable.child
+    return runnable
 
 
 @pytest.mark.django_db
@@ -100,8 +120,8 @@ class TestLoadMemory:
 
         LLM_CONFIG = deepcopy(LLM_REPLY_WITH_HISTORY)
         LLM_CONFIG["config"]["memory"] = [MEMORY, MEMORY2]
-        ix_node = load_chain(LLM_CONFIG)
-        chain = ix_node.child
+        flow = load_chain(LLM_CONFIG)
+        chain = unpack_chain_flow(flow)
         instance = chain.memory
         assert isinstance(instance, CombinedMemory)
         assert len(instance.memories) == 2
@@ -364,9 +384,9 @@ class TestGoogleTools:
             "config": {},
         }
 
-        instance = await aload_chain(config)
-        assert isinstance(instance, IxNode)
-        assert isinstance(instance.child, BaseTool)
+        flow = await aload_chain(config)
+        instance = unpack_chain_flow(flow)
+        assert isinstance(instance, BaseTool)
 
 
 @pytest.mark.django_db
@@ -415,8 +435,8 @@ class TestLoadAgents:
             "config": {"tools": [GOOGLE_SEARCH_CONFIG], "llm": OPENAI_LLM},
         }
 
-        ix_node = await aload_chain(config)
-        instance = ix_node.child
+        sequence = await aload_chain(config)
+        instance = unpack_chain_flow(sequence)
         assert isinstance(instance, AgentExecutor)
 
     async def test_agent_memory(self, mock_openai, aload_chain, mock_google_api_key):
@@ -430,8 +450,8 @@ class TestLoadAgents:
                 "memory": AGENT_MEMORY,
             },
         }
-        ix_node = await aload_chain(config)
-        executor = ix_node.child
+        flow = await aload_chain(config)
+        executor = unpack_chain_flow(flow)
         assert isinstance(executor, AgentExecutor)  # sanity check
 
         # 1. test that prompt includes placeholders
@@ -522,9 +542,9 @@ class TestLoadRetrieval:
         self, clean_redis, aload_chain, mock_openai_embeddings
     ):
         """Test loading a fully configured conversational chain."""
-        ix_node = await aload_chain(CONVERSATIONAL_RETRIEVAL_CHAIN)
-        component = ix_node.child
-        assert isinstance(component, ConversationalRetrievalChain)
+        flow = await aload_chain(CONVERSATIONAL_RETRIEVAL_CHAIN)
+        instance = unpack_chain_flow(flow)
+        assert isinstance(instance, ConversationalRetrievalChain)
 
 
 @pytest.mark.django_db
@@ -556,7 +576,8 @@ class TestFlowComponents:
         llm = await afake_chain_node(chain=chain, config=OPENAI_LLM, root=False)
         await afake_chain_edge(chain=chain, source=prompt, target=llm, relation="LINK")
 
-        runnable = await chain.aload_chain(context=aix_context)
+        flow = await chain.aload_chain(context=aix_context)
+        runnable = unpack_chain_flow(flow)
         await self.assert_basic_sequence(runnable)
 
     async def test_parallel(self, aix_context, mock_openai):
@@ -596,7 +617,8 @@ class TestFlowComponents:
         )
 
         # test loaded runnable
-        runnable = await chain.aload_chain(context=aix_context)
+        flow = await chain.aload_chain(context=aix_context)
+        runnable = unpack_chain_flow(flow)
         assert isinstance(runnable, RunnableMap)
         assert len(runnable.steps) == 2
         assert isinstance(
@@ -657,7 +679,9 @@ class TestFlowComponents:
             target_key="in",
         )
 
-        runnable = await chain.aload_chain(context=aix_context)
+        flow = await chain.aload_chain(context=aix_context)
+        runnable = unpack_chain_flow(flow)
+
         assert isinstance(runnable, RunnableBranch)
         assert len(runnable.branches) == 2
         assert isinstance(runnable.default, IxNode)
@@ -690,7 +714,9 @@ class TestFlowComponents:
     async def test_each(self, aix_context, mock_openai, lcel_flow_each_in_sequence):
         """Test RunnableEach"""
         chain = lcel_flow_each_in_sequence["chain"]
-        runnable = await chain.aload_chain(context=aix_context)
+        flow = await chain.aload_chain(context=aix_context)
+        runnable = unpack_chain_flow(flow)
+
         assert isinstance(runnable, RunnableSequence)
         assert len(runnable.steps) == 2
         assert isinstance(runnable.steps[0], IxNode)
@@ -1699,13 +1725,13 @@ class TestFlow:
         """
         fixture = lcel_flow_each
         chain = fixture["chain"]
-        runnable = await ainit_chain_flow(chain, context=aix_context)
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        runnable = unpack_chain_flow(flow)
 
         # validate loaded instance
-        assert isinstance(runnable, IxNode)
-        assert isinstance(runnable.child, RunnableEach)
-        assert isinstance(runnable.child.bound, IxNode)
-        assert isinstance(runnable.child.bound.child, MockRunnable)
+        assert isinstance(runnable, RunnableEach)
+        assert isinstance(runnable.bound, IxNode)
+        assert isinstance(runnable.bound.child, MockRunnable)
 
         # validate output
         result = await runnable.ainvoke(input=["value1", "value2", "value3"])
@@ -1721,16 +1747,15 @@ class TestFlow:
         """Sequence in the RunnableEach's workflow"""
         fixture = lcel_flow_each_sequence
         chain = fixture["chain"]
-        runnable = await ainit_chain_flow(chain, context=aix_context)
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        runnable_each = unpack_chain_flow(flow)
 
         # validate loaded instance
-        assert isinstance(runnable, IxNode)
-        runnable_each = runnable.child
         assert isinstance(runnable_each, RunnableEach)
         assert isinstance(runnable_each.bound, RunnableSequence)
 
         # validate output
-        result = await runnable.ainvoke(input=["value1", "value2", "value3"])
+        result = await flow.ainvoke(input=["value1", "value2", "value3"])
         assert result == [
             {"input": "value1", "node1": 0, "node2": 0},
             {"input": "value2", "node1": 0, "node2": 0},
@@ -1743,7 +1768,8 @@ class TestFlow:
         """A RunnableEach in sequence with other nodes."""
         fixture = lcel_flow_each_in_sequence
         chain = fixture["chain"]
-        runnable = await ainit_chain_flow(chain, context=aix_context)
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        runnable = unpack_chain_flow(flow)
 
         # validate loaded instance
         assert isinstance(runnable, RunnableSequence)
@@ -1753,7 +1779,7 @@ class TestFlow:
         assert isinstance(runnable_each.child.bound.child, MockRunnable)
 
         # validate output
-        result = await runnable.ainvoke(input=["value1", "value2", "value3"])
+        result = await flow.ainvoke(input=["value1", "value2", "value3"])
         assert result == {
             "input": [
                 {"input": "value1", "node1": 0},

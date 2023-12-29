@@ -4,7 +4,7 @@ import json
 import pytest
 
 from ix.chains.artifacts import SaveArtifact
-from ix.runnable.ix import IxNode
+from ix.chains.tests.test_config_loader import unpack_chain_flow
 from ix.task_log.models import Artifact, TaskLogMessage
 from ix.task_log.tests.fake import afake_task
 
@@ -49,8 +49,8 @@ class TestAsyncSaveArtifact:
         self, aclean_artifacts, aload_chain, aix_handler
     ):
         chain = await aload_chain(ARTIFACT_FROM_ARTIFACT)
-        assert isinstance(chain, IxNode)
-        assert isinstance(chain.child, SaveArtifact)
+        component = unpack_chain_flow(chain)
+        assert isinstance(component, SaveArtifact)
 
         result = await chain.ainvoke(
             input=dict(
@@ -71,8 +71,8 @@ class TestAsyncSaveArtifact:
         self, aclean_artifacts, aload_chain, aix_handler
     ):
         chain = await aload_chain(STATIC_ARTIFACT)
-        assert isinstance(chain, IxNode)
-        assert isinstance(chain.child, SaveArtifact)
+        component = unpack_chain_flow(chain)
+        assert isinstance(component, SaveArtifact)
 
         result = await chain.ainvoke(
             input=dict(
