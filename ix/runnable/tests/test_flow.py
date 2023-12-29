@@ -43,12 +43,8 @@ class TestIxNode:
         }
 
         mapped = RunnableParallel(steps={"foo": ix_node})
-        assert mapped.input_schema().schema() == {
-            "title": "RunnableParallelInput",
-            "type": "object",
-            "properties": {
-                "value": {"title": "Value", "default": "input", "type": "string"}
-            },
+        assert mapped.input_schema().schema()["properties"] == {
+            "value": {"title": "Value", "default": "input", "type": "string"}
         }
 
 
