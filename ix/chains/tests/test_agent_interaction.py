@@ -1,7 +1,7 @@
 import pytest
 
 from ix.chains.agent_interaction import DelegateToAgentChain
-from ix.runnable.ix import IxNode
+from ix.chains.tests.test_config_loader import unpack_chain_flow
 from ix.task_log.models import Task
 
 DELEGATE_TO_AGENT_CHAIN = {
@@ -60,8 +60,8 @@ class TestDelegateToAgentChain:
         chat = achat["chat"]
         task = await Task.objects.aget(id=chat.task_id)
         chain = await aload_chain(DELEGATE_TO_AGENT_CHAIN)
-        assert isinstance(chain, IxNode)
-        assert isinstance(chain.child, DelegateToAgentChain)
+        component = unpack_chain_flow(chain)
+        assert isinstance(component, DelegateToAgentChain)
 
         result = await chain.ainvoke(
             dict(
@@ -87,8 +87,8 @@ class TestDelegateToAgentChain:
         """Verify that the chain will delegate to the agent"""
         chat = achat["chat"]
         chain = await aload_chain(DELEGATE_TO_AGENT_CHAIN)
-        assert isinstance(chain, IxNode)
-        assert isinstance(chain.child, DelegateToAgentChain)
+        component = unpack_chain_flow(chain)
+        assert isinstance(component, DelegateToAgentChain)
 
         # remove agents
         await chat.agents.all().adelete()
@@ -110,8 +110,8 @@ class TestDelegateToAgentChain:
         """Verify that the chain will delegate to the agent"""
         chat = achat["chat"]
         chain = await aload_chain(DELEGATE_TO_AGENT_CHAIN_FILTER_INPUTS)
-        assert isinstance(chain, IxNode)
-        assert isinstance(chain.child, DelegateToAgentChain)
+        component = unpack_chain_flow(chain)
+        assert isinstance(component, DelegateToAgentChain)
 
         result = await chain.ainvoke(
             dict(

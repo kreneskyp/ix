@@ -71,7 +71,7 @@ def fake_root(**kwargs) -> ChainNode:
     """
     Create a fake root chain node.
     """
-    config = kwargs.get(
+    config = kwargs.pop(
         "config",
         {
             "class_path": "__ROOT__",

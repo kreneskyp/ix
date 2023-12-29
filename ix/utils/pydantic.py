@@ -3,6 +3,8 @@ from typing import Any, Type, Callable, get_type_hints, List
 
 import pydantic
 from pydantic import BaseModel, create_model
+from pydantic.v1 import create_model as create_model_v1
+
 
 PYDANTIC_VERSION = pydantic.__version__.split(".")
 PYDANTIC_MAJOR_VERSION = int(PYDANTIC_VERSION[0])
@@ -28,8 +30,16 @@ def create_args_model(variables, name="DynamicModel") -> Type[BaseModel]:
     """
     Dynamically create a Pydantic model class with fields for each variable
     """
-    field_definitions = {field: (str, ...) for field in variables}
+    field_definitions = {field: (Any, ...) for field in variables}
     return create_model(name, **field_definitions)
+
+
+def create_args_model_v1(variables, name="DynamicModel") -> Type[BaseModel]:
+    """
+    Dynamically create a Pydantic model class with fields for each variable
+    """
+    field_definitions = {field: (Any, ...) for field in variables}
+    return create_model_v1(name, **field_definitions)
 
 
 def fields_from_signature(func: Callable) -> dict[str, tuple[type, Any]]:
