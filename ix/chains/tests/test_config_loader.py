@@ -777,7 +777,7 @@ class TestLoadFlow:
     async def test_sequence(self, lcel_sequence, aix_context):
         fixture = lcel_sequence
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
 
         assert flow == [
             fixture["nodes"][0],
@@ -797,7 +797,7 @@ class TestLoadFlow:
             "b": fixture["node2"],
         }
         # assert flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["map"]
 
     async def test_map_with_one_branch(self, lcel_map_with_one_branch, aix_context):
@@ -810,14 +810,14 @@ class TestLoadFlow:
             "a": fixture["node1"],
         }
         # assert flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["map"]
 
     async def test_sequence_in_map_start(self, lcel_sequence_in_map_start, aix_context):
         """Test a map with a nested sequence. First node in chain is the map."""
         fixture = lcel_sequence_in_map_start
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["map"]
 
     async def test_sequence_in_map_in_sequence(
@@ -829,7 +829,7 @@ class TestLoadFlow:
         """
         fixture = lcel_sequence_in_map_in_sequence
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["node1"],
             fixture["map"],
@@ -845,7 +845,7 @@ class TestLoadFlow:
         """
         fixture = lcel_sequence_in_map_in_sequence_n2
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["node1"],
             fixture["map"],
@@ -857,7 +857,7 @@ class TestLoadFlow:
         """Test a sequence starting with a map. First node in chain is a map"""
         fixture = lcel_map_in_sequence_start
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["map"],
             fixture["node2"],
@@ -869,7 +869,7 @@ class TestLoadFlow:
         """Test a sequence starting with a map. First node in chain is a map"""
         fixture = lcel_map_in_sequence_start_n2
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["map"],
             fixture["node2"],
@@ -880,7 +880,7 @@ class TestLoadFlow:
         """Test a sequence with a nested map. First node in chain is the first node of sequence."""
         fixture = lcel_map_in_sequence
         chain = lcel_map_in_sequence["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["node1"],
             fixture["map"],
@@ -891,7 +891,7 @@ class TestLoadFlow:
         """Test a sequence with a nested map. First node in chain is the first node of sequence."""
         fixture = lcel_map_in_sequence_n2
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["node1"],
             fixture["map"],
@@ -903,7 +903,7 @@ class TestLoadFlow:
         """Test a map with a nested map"""
         fixture = lcel_map_in_map
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["map"]
 
     async def test_map_in_map_in_sequence_start(
@@ -912,7 +912,7 @@ class TestLoadFlow:
         """Test a map with a nested map"""
         fixture = lcel_map_in_map_in_sequence_start
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["map"],
             fixture["node3"],
@@ -924,7 +924,7 @@ class TestLoadFlow:
         """Test a map with a nested map"""
         fixture = lcel_map_in_map_in_sequence_start_n2
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["map"],
             fixture["node3"],
@@ -937,7 +937,7 @@ class TestLoadFlow:
         """Test a map with a nested map"""
         fixture = lcel_map_in_map_in_sequence
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["node1"],
             fixture["map"],
@@ -949,7 +949,7 @@ class TestLoadFlow:
         """Test a map with a nested map"""
         fixture = lcel_map_in_map_in_sequence_n2
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["node1"],
             fixture["map"],
@@ -970,7 +970,7 @@ class TestLoadFlow:
         ]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
     async def test_branch_in_branch(self, lcel_branch_in_branch, aix_context):
@@ -987,7 +987,7 @@ class TestLoadFlow:
         ]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
     async def test_branch_in_default_branch(
@@ -1002,7 +1002,7 @@ class TestLoadFlow:
         assert fixture["branch"].default == fixture["inner_branch"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
     async def test_sequence_in_branch(self, lcel_sequence_in_branch, aix_context):
@@ -1018,7 +1018,7 @@ class TestLoadFlow:
         ]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
     async def test_sequence_in_default_branch(
@@ -1033,7 +1033,7 @@ class TestLoadFlow:
         assert fixture["branch"].default == fixture["inner_sequence"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
     async def test_map_in_branch(self, lcel_map_in_branch, aix_context):
@@ -1042,7 +1042,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
     async def test_map_in_default_branch(self, lcel_map_in_default_branch, aix_context):
@@ -1051,7 +1051,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
     async def test_branch_in_sequence(self, lcel_branch_in_sequence, aix_context):
@@ -1064,7 +1064,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
 
         # Verify the class of the flow using isinstance
         assert isinstance(flow, SequencePlaceholder)
@@ -1124,7 +1124,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["sequence"]
 
     @pytest.mark.skip(reason="not supported yet")
@@ -1133,7 +1133,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["map"]
 
     async def test_join_after_branch(self, lcel_join_after_branch, aix_context):
@@ -1162,7 +1162,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
 
         # root is a branch
         assert isinstance(flow, BranchPlaceholder)
@@ -1226,7 +1226,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["each"]
 
     async def test_sequence_in_each(self, lcel_flow_each_sequence):
@@ -1234,7 +1234,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["each"]
 
 
@@ -1656,7 +1656,7 @@ class TestFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {}
 
