@@ -3,10 +3,11 @@ from langchain.vectorstores import Chroma
 from langchain.vectorstores.base import VectorStoreRetriever
 from langchain.vectorstores.redis.base import RedisVectorStoreRetriever
 
-from ix.api.components.types import NodeTypeField
+from ix.api.components.types import NodeTypeField, NodeType, Connector
 from ix.chains.fixture_src.targets import (
     EMBEDDINGS_TARGET,
     DOCUMENTS_TARGET,
+    VECTORSTORE_TARGET,
 )
 from django.conf import settings
 
@@ -86,7 +87,10 @@ CHROMA = {
     "type": "vectorstore",
     "name": "Chroma",
     "description": "Chroma vector database",
-    "connectors": VECTORSTORE_CONNECTORS,
+    "connectors": [
+        Connector(key="embedding_function", type="target", source_type="embeddings"),
+        DOCUMENTS_TARGET,
+    ],
     "fields": NodeTypeField.get_fields(
         Chroma.__init__,
         include=[
@@ -140,5 +144,50 @@ def get_vectorstore_retriever_fieldnames(class_path: str):
     return [field["name"] for field in fields]
 
 
-VECTORSTORES = [REDIS_VECTORSTORE, CHROMA]
+ADD_TEXTS_CLASS_PATH = "ix.runnable.vectorstore.AddTexts"
+ADD_DOCUMENTS_CLASS_PATH = "ix.runnable.vectorstore.AddDocuments"
+ADD_IMAGES_CLASS_PATH = "ix.runnable.vectorstore.AddImages"
+DELETE_VECTORS_CLASS_PATH = "ix.runnable.vectorstore.DeleteVectors"
+
+ADD_TEXTS = NodeType(
+    class_path=ADD_TEXTS_CLASS_PATH,
+    type="chain",
+    name="Add Texts",
+    description="Add texts with metadata to a vectorstore",
+    connectors=[VECTORSTORE_TARGET],
+)
+
+ADD_DOCUMENTS = NodeType(
+    class_path=ADD_DOCUMENTS_CLASS_PATH,
+    type="chain",
+    name="Add Documents",
+    description="Add documents to a vectorstore",
+    connectors=[VECTORSTORE_TARGET],
+)
+
+ADD_IMAGES = NodeType(
+    class_path=ADD_IMAGES_CLASS_PATH,
+    type="chain",
+    name="Add Images",
+    description="Add images to a vectorstore",
+    connectors=[VECTORSTORE_TARGET],
+)
+
+DELETE_VECTORS = NodeType(
+    class_path=DELETE_VECTORS_CLASS_PATH,
+    type="chain",
+    name="Delete Vectors",
+    description="Delete vectors from a vectorstore",
+    connectors=[VECTORSTORE_TARGET],
+)
+
+RUNNABLES = [
+    ADD_TEXTS,
+    ADD_DOCUMENTS,
+    ADD_IMAGES,
+    DELETE_VECTORS,
+]
+
+
+VECTORSTORES = RUNNABLES + [REDIS_VECTORSTORE, CHROMA]
 __all__ = ["VECTORSTORES"]
