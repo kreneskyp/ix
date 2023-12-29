@@ -3,6 +3,7 @@ from typing import List
 from langchain.agents.agent_toolkits.base import BaseToolkit
 from langchain.schema.runnable import Runnable
 from langchain.tools import BaseTool, Tool
+from langchain_core.tools import StructuredTool
 
 from ix.chains.fixture_src.tools import TOOL_BASE_FIELDS
 from ix.chains.loaders.context import IxContext
@@ -36,6 +37,30 @@ def load_flow_property(
     return flows
 
 
+def get_runnable_tool(
+    name: str, description: str, runnable: Runnable
+) -> StructuredTool:
+    """Create a StructuredTool from a Runnable.
+
+    Requires a Runnable that has an input_schema matching the args required to
+    run the Runnable.
+    """
+
+    def invoke_shim(*args, **kwargs):
+        return runnable.invoke(input=kwargs)
+
+    async def ainvoke_shim(*args, **kwargs):
+        return await runnable.ainvoke(input=kwargs)
+
+    return StructuredTool(
+        name=name,
+        description=description,
+        func=invoke_shim,
+        coroutine=ainvoke_shim,
+        args_schema=runnable.input_schema,
+    )
+
+
 def load_tool_property(
     edge_group: List[ChainEdge], context: IxContext, **kwargs
 ) -> BaseTool:
@@ -56,6 +81,13 @@ def load_tool_property(
                 continue
             elif isinstance(child, BaseToolkit):
                 tools.extend(child.get_tools())
+                continue
+            elif isinstance(child, Runnable):
+                tools.append(
+                    get_runnable_tool(
+                        name=root.name, description=root.description, runnable=child
+                    )
+                )
                 continue
             else:
                 raise ValueError(f"Unsupported tool child type {child.__class__}")
