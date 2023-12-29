@@ -26,7 +26,13 @@ class TestRunnableReference:
 
         # parent chain
         chain = await afake_chain()
-        root = await afake_root(chain=chain)
+        root = await afake_root(
+            chain=chain,
+            config={
+                "class_path": "__ROOT__",
+                "config": {"outputs": ["ref_input"]},
+            },
+        )
         chain_ref = await afake_chain_node(
             chain=chain,
             config={
@@ -47,6 +53,14 @@ class TestRunnableReference:
         # load the chain
         runnable = await chain.aload_chain(aix_context)
 
+        # reference
+        assert runnable.input_schema.schema() == {
+            "title": "ChainInput",
+            "type": "object",
+            "properties": {"ref_input": {"title": "Ref Input"}},
+            "required": ["ref_input"],
+        }
+
         # run the chain
         result = await runnable.ainvoke(
             {
@@ -66,5 +80,6 @@ class TestRunnableReference:
 
         # Chain ref should be wrapped in an IxNode that captures the embedded
         # chain as a single runnable.
-        assert isinstance(runnable, IxNode)
-        assert runnable.node_id == chain_ref.id
+        ix_node = runnable.steps[1]
+        assert isinstance(ix_node, IxNode)
+        assert ix_node.node_id == chain_ref.id
