@@ -27,5 +27,5 @@ def create_args_model(variables, name="DynamicModel") -> Type[BaseModel]:
     """
     Dynamically create a Pydantic model class with fields for each variable
     """
-    field_definitions = {field: (str, ...) for field in variables}
+    field_definitions = {field: (Any, ...) for field in variables}
     return create_model(name, **field_definitions)

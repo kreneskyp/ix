@@ -64,8 +64,8 @@ class TestIngestionTool:
         # validate args_schema works as expected
         expected = {
             "properties": {
-                "COLLECTION_NAME": {"title": "Collection Name", "type": "string"},
-                "PATH": {"title": "Path", "type": "string"},
+                "COLLECTION_NAME": {"title": "Collection Name"},
+                "PATH": {"title": "Path"},
             },
             "required": ["COLLECTION_NAME", "PATH"],
             "title": "NodeTemplateSchema",

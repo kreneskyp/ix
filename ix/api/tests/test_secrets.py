@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 import pytest_asyncio
 
@@ -177,8 +179,8 @@ class TestSecrets:
     async def test_create_with_new_type(self, auser, asecret_type):
         class DynamicModel(BaseModel):
             # all fields will be inferred as strings
-            one: str
-            second: str
+            one: Any
+            second: Any
 
         data = {
             "type_key": "New Type",

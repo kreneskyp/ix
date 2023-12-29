@@ -72,10 +72,10 @@ from ix.chains.tests.mock_configs import (
     PROMPT_CHAT_0,
     PROMPT_CHAT_1,
     PROMPT_CHAT_2,
+    TEXT_SPLITTER,
 )
 from ix.chains.tests.mock_memory import MockMemory
 from ix.chains.tests.mock_runnable import MockRunnable
-from ix.chains.tests.test_templates import TEXT_SPLITTER
 from ix.conftest import aload_fixture
 from ix.memory.artifacts import ArtifactMemory
 from ix.runnable.ix import IxNode
