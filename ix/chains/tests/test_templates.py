@@ -113,10 +113,10 @@ class TestNodeTemplate:
         assert issubclass(model, BaseModel)
         assert "PATH" in model.__fields__
         assert model.schema() == {
+            "properties": {"PATH": {"title": "Path"}},
+            "required": ["PATH"],
             "title": "NodeTemplateSchema",
             "type": "object",
-            "properties": {"PATH": {"title": "Path", "type": "string"}},
-            "required": ["PATH"],
         }
         assert model(PATH=str(TEST_DOCUMENTS)).dict() == {"PATH": str(TEST_DOCUMENTS)}
 
