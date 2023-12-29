@@ -856,6 +856,8 @@ def init_flow_node(
 
         if isinstance(instance, Runnable):
             instance = IxNode(
+                name=root.name,
+                description=root.description,
                 node_id=root.id,
                 child=instance,
                 context=context,
