@@ -240,7 +240,6 @@ class TestEncodeImage:
         file_bytes = await load_file.ainvoke(input=path)
         result = ""
         async for chunk in encode_image.astream(input=file_bytes):
-            print("CHUNK: ", type(chunk), chunk)
             result += chunk
         expected_bytes = b"this is mock content"
         encoded_bytes = base64.b64encode(expected_bytes).decode("utf-8")
