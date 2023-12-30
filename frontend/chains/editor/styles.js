@@ -62,9 +62,11 @@ export const NODE_STYLES = {
   },
   document_loader: {
     icon: faFileImport,
+    component: ChainNode,
   },
   document_transformer: {
     icon: faFileWaveform,
+    component: ChainNode,
   },
   output_parser: {
     icon: faFileWaveform,
@@ -85,6 +87,7 @@ export const NODE_STYLES = {
   },
   text_splitter: {
     icon: faFileImport,
+    component: ChainNode,
   },
   tool: {
     icon: faTools,

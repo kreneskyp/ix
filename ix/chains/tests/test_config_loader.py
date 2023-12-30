@@ -18,7 +18,7 @@ from langchain.schema.runnable import (
     RunnableLambda,
 )
 from langchain.schema.runnable.base import RunnableEach
-from langchain.text_splitter import TextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Redis
 from langchain_core.runnables import RunnablePassthrough, Runnable
 
@@ -53,7 +53,6 @@ from ix.chains.loaders.core import (
     ImplicitJoin,
 )
 from ix.chains.loaders.memory import get_memory_session
-from ix.chains.loaders.text_splitter import TextSplitterShim
 from ix.chains.loaders.tools import extract_tool_kwargs, get_runnable_tool
 from ix.chains.models import Chain
 from ix.chains.tests.mock_configs import (
@@ -61,7 +60,6 @@ from ix.chains.tests.mock_configs import (
     EMBEDDINGS,
     LANGUAGE_PARSER,
     DOCUMENT_LOADER,
-    TEST_DOCUMENTS,
     GOOGLE_SEARCH_CONFIG,
     MEMORY,
     LLM_REPLY_WITH_HISTORY,
@@ -81,6 +79,7 @@ from ix.chains.tests.mock_memory import MockMemory
 from ix.chains.tests.mock_runnable import MockRunnable
 from ix.conftest import aload_fixture
 from ix.memory.artifacts import ArtifactMemory
+from ix.runnable.documents import RunLoader, RunTransformer
 from ix.runnable.ix import IxNode
 from ix.task_log.tests.fake import afake_chain_node, afake_chain, afake_chain_edge
 from ix.utils.importlib import import_class
@@ -535,31 +534,16 @@ class TestLoadRetrieval:
         assert component.language == "python"
 
     async def test_load_document_loader(self, aload_chain):
-        component = await aload_chain(DOCUMENT_LOADER)
-        assert isinstance(component, GenericLoader)
-        assert isinstance(component.blob_parser, LanguageParser)
-
-        # non-exhaustive test of document loading
-        documents = component.load()
-        sources = {doc.metadata["source"] for doc in documents}
-        expected_sources = {
-            str(TEST_DOCUMENTS / "foo.py"),
-            str(TEST_DOCUMENTS / "bar.py"),
-        }
-        assert sources == expected_sources
+        flow = await aload_chain(DOCUMENT_LOADER)
+        instance = unpack_chain_flow(flow)
+        assert isinstance(instance, RunLoader)
+        assert instance.initializer == GenericLoader.from_filesystem
 
     async def test_load_text_splitter(self, aload_chain):
-        component = await aload_chain(TEXT_SPLITTER)
-        assert isinstance(component, TextSplitterShim)
-        assert isinstance(component.document_loader, GenericLoader)
-        assert isinstance(component.text_splitter, TextSplitter)
-
-        # sanity check that the splitter splits text
-        # does not test the actual splitting algorithm
-        with open(TEST_DOCUMENTS / "foo.py", "r") as foo_file:
-            foo_content = foo_file.read()
-        split_texts = component.text_splitter.split_text(foo_content)
-        assert len(split_texts) >= 1
+        flow = await aload_chain(TEXT_SPLITTER)
+        instance = unpack_chain_flow(flow)
+        assert isinstance(instance, RunTransformer)
+        assert isinstance(instance.transformer, RecursiveCharacterTextSplitter)
 
     async def test_load_embeddings(self, aload_chain):
         component = await aload_chain(EMBEDDINGS)

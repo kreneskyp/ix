@@ -1,33 +1,25 @@
-import pytest
-from langchain.schema.vectorstore import VectorStore
-from langchain.vectorstores import Chroma
+from typing import List
 
-from ix.chains.fixture_src.document_loaders import GENERIC_LOADER_CLASS_PATH
-from ix.chains.fixture_src.text_splitter import RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH
+import pytest
+from asgiref.sync import sync_to_async
+from langchain.schema.vectorstore import VectorStore
+from langchain_community.vectorstores.chroma import Chroma
+from langchain_core.documents import Document
+
 from ix.chains.fixture_src.vectorstores import (
     CHROMA_CLASS_PATH,
 )
 from ix.chains.tests.test_config_loader import (
     EMBEDDINGS,
-    TEXT_SPLITTER,
-    LANGUAGE_PARSER,
 )
-
-
-DOCUMENT_LOADER_EMPTY = {
-    "class_path": GENERIC_LOADER_CLASS_PATH,
-    "config": {
-        "parser": LANGUAGE_PARSER,
-        "path": "/var/doesnotexist",
-        "suffixes": [".does.not.exist"],
-        "glob": "doesnotexist",
-    },
-}
-
-TEXT_SPLITTER_EMPTY = {
-    "class_path": RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH,
-    "config": {"language": "python", "document_loader": DOCUMENT_LOADER_EMPTY},
-}
+from ix.conftest import aload_chain
+from ix.runnable.vectorstore import (
+    AddTexts,
+    AddTextsInput,
+    AddDocuments,
+    DeleteVectors,
+    AddImages,
+)
 
 TEST_TEXTS = [
     "def foo1():\n    print('hello world foo1')",
@@ -44,6 +36,11 @@ TEXT_KWARGS = {
 }
 
 
+TEST_DOCUMENTS = [
+    Document(page_content=text, metadata={"foo": 1}) for text in TEST_TEXTS
+]
+
+
 class VectorStoreTestMixin:
     """Test loading retrieval components.
 
@@ -54,75 +51,58 @@ class VectorStoreTestMixin:
 
     CLASS = None
     CONFIG = None
-    CONFIG_WITH_DOCUMENTS = None
-    CONFIG_WITH_EMPTY_DOCUMENTS = None
+
+    async def cleanup_vectorstore(self, vectorstore: VectorStore, ids: List[str]):
+        if ids:
+            if type(vectorstore).adelete != VectorStore.adelete:
+                await vectorstore.adelete(ids)
+            else:
+                await sync_to_async(vectorstore.delete)(ids)
+        vectorstore.delete_collection()
 
     async def test_load_vectorstore(self, aload_chain, mock_openai_embeddings):
         vectorstore: VectorStore = await aload_chain(self.CONFIG)
         assert isinstance(vectorstore, self.CLASS)
 
         ids = await vectorstore.aadd_texts(**TEXT_KWARGS)
-        results = await vectorstore.asearch("foo", "similarity")
-        assert len(results) == 4
-        assert results[0].metadata["foo"] == "bar"
+        try:
+            results = await vectorstore.asearch("foo", "similarity")
+            assert len(results) == 4
+            assert results[0].metadata["foo"] == "bar"
+        finally:
+            await self.cleanup_vectorstore(vectorstore, ids)
 
-        vectorstore.delete(ids)
-        vectorstore.delete_collection()
+    async def test_add_text(self, aload_chain, mock_openai_embeddings):
+        vectorstore: VectorStore = await aload_chain(self.CONFIG)
+        runnable = AddTexts(vectorstore=vectorstore)
+        ids = await runnable.ainvoke(input=AddTextsInput(texts=TEST_TEXTS))
 
-    async def test_load_vectorstore_with_document_source(
-        self, mock_import_class, aload_chain, mock_openai_embeddings
-    ):
-        vectorstore: VectorStore = await aload_chain(self.CONFIG_WITH_DOCUMENTS)
-        assert isinstance(vectorstore, self.CLASS)
+        await self.cleanup_vectorstore(vectorstore, ids)
+        assert len(ids) == len(TEST_TEXTS)
 
-        ids = await vectorstore.aadd_texts(**TEXT_KWARGS)
-
-        results = await vectorstore.asearch("foo", "similarity")
-        assert len(results) == 4
-
-        vectorstore.delete(ids)
-        vectorstore.delete_collection()
-
-    async def test_load_vectorstore_with_empty_document_source(
-        self, aload_chain, mock_openai_embeddings
-    ):
-        vectorstore: VectorStore = await aload_chain(self.CONFIG_WITH_EMPTY_DOCUMENTS)
-        assert isinstance(vectorstore, self.CLASS)
-
-        ids = await vectorstore.aadd_texts(**TEXT_KWARGS)
-        results = await vectorstore.asearch("foo", "similarity")
-        assert len(results) == 4
-        assert results[0].metadata["foo"] == "bar"
-
-        vectorstore.delete(ids)
-        vectorstore.delete_collection()
+    async def test_add_delete_documents(self, aload_chain, mock_openai_embeddings):
+        vectorstore: VectorStore = await aload_chain(self.CONFIG)
+        runnable = AddDocuments(vectorstore=vectorstore)
+        ids = await runnable.ainvoke(input=TEST_DOCUMENTS)
+        try:
+            assert len(ids) == len(TEST_TEXTS)
+            delete_runnable = DeleteVectors(vectorstore=vectorstore)
+            await delete_runnable.ainvoke(input=ids)
+        finally:
+            await self.cleanup_vectorstore(vectorstore, ids)
 
 
-CHROMA_VECTORSTORE_WITH_EMPTY_DOCUMENTS = {
-    "class_path": CHROMA_CLASS_PATH,
-    "config": {
-        "embedding": EMBEDDINGS,
-        "documents": TEXT_SPLITTER_EMPTY,
-        "collection_name": "tests",
-    },
-}
-
-CHROMA_VECTORSTORE_WITH_DOCUMENTS = {
-    "class_path": CHROMA_CLASS_PATH,
-    "config": {
-        "embedding": EMBEDDINGS,
-        "documents": TEXT_SPLITTER,
-        "collection_name": "tests",
-    },
-}
-
-CHROMA_VECTORSTORE = {
-    "class_path": CHROMA_CLASS_PATH,
-    "config": {
-        "embedding": EMBEDDINGS,
-        "collection_name": "tests",
-    },
-}
+class AddImagesMixin:
+    async def test_add_images(self):
+        vectorstore: VectorStore = await aload_chain(self.CONFIG)
+        runnable = AddImages(vectorstore=vectorstore)
+        ids = await runnable.ainvoke(input=TEST_DOCUMENTS)
+        try:
+            assert len(ids) == len(TEST_TEXTS)
+            delete_runnable = DeleteVectors(vectorstore=vectorstore)
+            await delete_runnable.ainvoke(input=ids)
+        finally:
+            await self.cleanup_vectorstore(vectorstore, ids)
 
 
 @pytest.mark.django_db
@@ -130,6 +110,10 @@ class TestChroma(VectorStoreTestMixin):
     """Test Chroma vectorstore component."""
 
     CLASS = Chroma
-    CONFIG = CHROMA_VECTORSTORE
-    CONFIG_WITH_DOCUMENTS = CHROMA_VECTORSTORE_WITH_DOCUMENTS
-    CONFIG_WITH_EMPTY_DOCUMENTS = CHROMA_VECTORSTORE_WITH_EMPTY_DOCUMENTS
+    CONFIG = {
+        "class_path": CHROMA_CLASS_PATH,
+        "config": {
+            "embedding_function": EMBEDDINGS,
+            "collection_name": "tests",
+        },
+    }

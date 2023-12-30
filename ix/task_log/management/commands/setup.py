@@ -22,6 +22,7 @@ class Command(BaseCommand):
             "agent/klarna",
             "agent/smithy",
             "agent/metaphor",
+            "agent/ingest_url",
             "agent/ingest",
             "agent/knowledge",
             "agent/vision",

@@ -1,0 +1,229 @@
+[
+  {
+    "model": "chains.chain",
+    "pk": "488b62fd-4481-44f2-90f7-13a86d08aad7",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Ingest URL",
+      "description": "Loads, chunks, embeds and stores URL(s) in the \"knowledge\" collection in Chroma vector database.\n\nThis chain is used to load data for the knowledge agent. Use it directly to add URLs or combine it with other chains that\nretrieve URLs.\n\nThis chain demonstrates components including a document loader, text splitter transform, and a vector store command.\n",
+      "created_at": "2023-12-28T01:00:05.864Z",
+      "is_agent": false
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "0301b3c9-1de7-48f9-962c-9df6e16e811d",
+    "fields": {
+      "class_path": "ix.runnable.vectorstore.AddDocuments",
+      "node_type": [
+        "ix.runnable.vectorstore.AddDocuments"
+      ],
+      "config": {},
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 910.0,
+        "y": 430.0
+      },
+      "chain": "488b62fd-4481-44f2-90f7-13a86d08aad7"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "4ffe2018-e108-4135-b012-40ecb3fe4a5a",
+    "fields": {
+      "class_path": "langchain.text_splitter.RecursiveCharacterTextSplitter.from_language",
+      "node_type": [
+        "langchain.text_splitter.RecursiveCharacterTextSplitter.from_language"
+      ],
+      "config": {
+        "language": "python",
+        "chunk_size": "500",
+        "chunk_overlap": "50"
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 550.0,
+        "y": 430.0
+      },
+      "chain": "488b62fd-4481-44f2-90f7-13a86d08aad7"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "93ed955c-4bb3-4065-b111-1b7331b59747",
+    "fields": {
+      "class_path": "__ROOT__",
+      "node_type": [
+        "__ROOT__"
+      ],
+      "config": {
+        "outputs": [
+          "web_path"
+        ],
+        "outputs_hash": [
+          "user_input"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": true,
+      "position": {
+        "x": 20.0,
+        "y": 430.0
+      },
+      "chain": "488b62fd-4481-44f2-90f7-13a86d08aad7"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "c39bf74a-3429-4e88-ba1b-b9f42d787c9c",
+    "fields": {
+      "class_path": "ix.chains.components.vectorstores.AsyncChromaVectorstore",
+      "node_type": [
+        "ix.chains.components.vectorstores.AsyncChromaVectorstore"
+      ],
+      "config": {
+        "allow_reset": false,
+        "search_type": "similarity",
+        "search_kwargs": {},
+        "collection_name": "knowledge",
+        "persist_directory": "./chroma",
+        "chroma_server_host": "172.17.42.1",
+        "allowed_search_types": [
+          "similarity",
+          "similarity_score_threshold",
+          "mmr"
+        ],
+        "anonymized_telemetry": true,
+        "chroma_server_http_port": "8020",
+        "chroma_server_ssl_enabled": false
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 660.0,
+        "y": 570.0
+      },
+      "chain": "488b62fd-4481-44f2-90f7-13a86d08aad7"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "cc33be6b-0a8c-4c4a-a2e8-95d11f3ca159",
+    "fields": {
+      "class_path": "langchain.document_loaders.web_base.WebBaseLoader",
+      "node_type": [
+        "langchain.document_loaders.web_base.WebBaseLoader"
+      ],
+      "config": {
+        "web_path": [],
+        "verify_ssl": true,
+        "continue_on_failure": false
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 280.0,
+        "y": 430.0
+      },
+      "chain": "488b62fd-4481-44f2-90f7-13a86d08aad7"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "fb2f386a-2968-4454-aafa-e1911c712c7b",
+    "fields": {
+      "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
+      "node_type": [
+        "langchain.embeddings.openai.OpenAIEmbeddings"
+      ],
+      "config": {
+        "model": "text-embedding-ada-002",
+        "chunk_size": 1000,
+        "max_retries": "6",
+        "allowed_special": [],
+        "disallowed_special": []
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 360.0,
+        "y": 570.0
+      },
+      "chain": "488b62fd-4481-44f2-90f7-13a86d08aad7"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "1cd9327e-6ec9-4828-95ee-e6b62bcfe406",
+    "fields": {
+      "source": "4ffe2018-e108-4135-b012-40ecb3fe4a5a",
+      "target": "0301b3c9-1de7-48f9-962c-9df6e16e811d",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "488b62fd-4481-44f2-90f7-13a86d08aad7",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "b8112edf-7916-4e00-9d53-c9c49aee5d34",
+    "fields": {
+      "source": "fb2f386a-2968-4454-aafa-e1911c712c7b",
+      "target": "c39bf74a-3429-4e88-ba1b-b9f42d787c9c",
+      "source_key": "embeddings",
+      "target_key": "embedding_function",
+      "chain": "488b62fd-4481-44f2-90f7-13a86d08aad7",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "d9c8d053-87bd-4e52-bb43-4bca3ce01ffa",
+    "fields": {
+      "source": "cc33be6b-0a8c-4c4a-a2e8-95d11f3ca159",
+      "target": "4ffe2018-e108-4135-b012-40ecb3fe4a5a",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "488b62fd-4481-44f2-90f7-13a86d08aad7",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "ecd0c670-992c-4e3b-bf67-cfad76708877",
+    "fields": {
+      "source": "c39bf74a-3429-4e88-ba1b-b9f42d787c9c",
+      "target": "0301b3c9-1de7-48f9-962c-9df6e16e811d",
+      "source_key": "vectorstore",
+      "target_key": "vectorstore",
+      "chain": "488b62fd-4481-44f2-90f7-13a86d08aad7",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "f4111b6f-b68f-447e-b760-7cd0704a9644",
+    "fields": {
+      "source": "93ed955c-4bb3-4065-b111-1b7331b59747",
+      "target": "cc33be6b-0a8c-4c4a-a2e8-95d11f3ca159",
+      "source_key": "user_input",
+      "target_key": "in",
+      "chain": "488b62fd-4481-44f2-90f7-13a86d08aad7",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  }
+]

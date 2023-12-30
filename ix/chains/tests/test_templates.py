@@ -3,38 +3,33 @@ from typing import get_type_hints
 import pytest
 import pytest_asyncio
 from asgiref.sync import sync_to_async
-from langchain.document_loaders.base import BaseLoader
 from langchain.schema import BaseRetriever
-from langchain.text_splitter import TextSplitter
 from pydantic import BaseModel
 
-from ix.chains.fixture_src.document_loaders import GENERIC_LOADER_CLASS_PATH
-from ix.chains.fixture_src.text_splitter import RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH
+from ix.chains.components.vectorstores import AsyncChromaVectorstore
+from ix.chains.fixture_src.vectorstores import CHROMA_CLASS_PATH
 from ix.chains.loaders.templates import NodeTemplate
-from ix.chains.loaders.text_splitter import TextSplitterShim
 from ix.chains.models import ChainNode
-from ix.chains.tests.test_config_loader import TEST_DOCUMENTS, LANGUAGE_PARSER
+from ix.chains.tests.mock_configs import EMBEDDINGS
 from ix.task_log.tests.fake import afake_chain, fake_chain
 
-DOCUMENT_LOADER = {
-    "class_path": GENERIC_LOADER_CLASS_PATH,
-    "config": {"path": "{PATH}", "suffixes": [".py"], "parser": LANGUAGE_PARSER},
+
+CHROMA_TEMPLATE = {
+    "class_path": CHROMA_CLASS_PATH,
+    "config": {
+        "embedding_function": EMBEDDINGS,
+        "collection_name": "{COLLECTION_NAME}",
+    },
 }
 
-
-TEXT_SPLITTER = {
-    "class_path": RECURSIVE_CHARACTER_SPLITTER_CLASS_PATH,
-    "config": {"language": "python", "document_loader": DOCUMENT_LOADER},
-}
-
-LOADER_TEMPLATE = TEXT_SPLITTER
+NODE_TEMPLATE = CHROMA_TEMPLATE
 
 
 @pytest_asyncio.fixture
 async def aloader_template(anode_types, aix_context) -> NodeTemplate:
     chain = await afake_chain()
     chain_node = await sync_to_async(ChainNode.objects.create_from_config)(
-        chain, TEXT_SPLITTER
+        chain, NODE_TEMPLATE
     )
     assert isinstance(chain_node, ChainNode)
     template = NodeTemplate(node=chain_node, context=aix_context)
@@ -44,7 +39,7 @@ async def aloader_template(anode_types, aix_context) -> NodeTemplate:
 @pytest.fixture()
 def loader_template(node_types, ix_context) -> NodeTemplate:
     chain = fake_chain()
-    chain_node = ChainNode.objects.create_from_config(chain, TEXT_SPLITTER)
+    chain_node = ChainNode.objects.create_from_config(chain, NODE_TEMPLATE)
     assert isinstance(chain_node, ChainNode)
     template = NodeTemplate(node=chain_node, context=ix_context)
     return template
@@ -66,43 +61,23 @@ class TestNodeTemplate:
         assert aloader_template is not None
         assert isinstance(aloader_template, NodeTemplate)
 
-    def test_format(self, loader_template):
+    def test_format(self, loader_template, mock_openai_key):
         """Test loading the component with aformat"""
-        component = loader_template.format({"PATH": str(TEST_DOCUMENTS)})
-        assert isinstance(component, TextSplitterShim)
-        assert isinstance(component.document_loader, BaseLoader)
-        assert isinstance(component.text_splitter, TextSplitter)
+        component = loader_template.format({"COLLECTION_NAME": "test_collection"})
+        assert isinstance(component, AsyncChromaVectorstore)
 
-        # assert path property is correctly set
-        assert str(component.document_loader.blob_loader.path) == str(TEST_DOCUMENTS)
+        # assert property is correctly set
+        assert str(component._collection.name) == "test_collection"
 
-        # non-exhaustive test of document loading to show component is usable
-        documents = component.document_loader.load()
-        sources = {doc.metadata["source"] for doc in documents}
-        expected_sources = {
-            str(TEST_DOCUMENTS / "foo.py"),
-            str(TEST_DOCUMENTS / "bar.py"),
-        }
-        assert sources == expected_sources
-
-    async def test_aformat(self, aloader_template):
+    async def test_aformat(self, aloader_template, mock_openai_key):
         """Test loading the component with aformat"""
-        component = await aloader_template.aformat({"PATH": str(TEST_DOCUMENTS)})
-        assert isinstance(component, TextSplitterShim)
-        assert isinstance(component.document_loader, BaseLoader)
-        assert isinstance(component.text_splitter, TextSplitter)
+        component = await aloader_template.aformat(
+            {"COLLECTION_NAME": "test_collection"}
+        )
+        assert isinstance(component, AsyncChromaVectorstore)
 
-        # assert path property is correctly set
-        assert str(component.document_loader.blob_loader.path) == str(TEST_DOCUMENTS)
-
-        # non-exhaustive test of document loading to show component is usable
-        documents = component.document_loader.load()
-        sources = {doc.metadata["source"] for doc in documents}
-        expected_sources = {
-            str(TEST_DOCUMENTS / "foo.py"),
-            str(TEST_DOCUMENTS / "bar.py"),
-        }
-        assert sources == expected_sources
+        # assert property is correctly set
+        assert str(component._collection.name) == "test_collection"
 
     def test_get_variables(self, loader_template):
         variables = loader_template.get_variables()
@@ -111,14 +86,16 @@ class TestNodeTemplate:
     def test_args_schema(self, loader_template):
         model = loader_template.get_args_schema()
         assert issubclass(model, BaseModel)
-        assert "PATH" in model.__fields__
-        assert model.schema() == {
-            "properties": {"PATH": {"title": "Path"}},
-            "required": ["PATH"],
+        assert "COLLECTION_NAME" in model.__fields__
+        assert model.model_json_schema() == {
             "title": "NodeTemplateSchema",
             "type": "object",
+            "properties": {"COLLECTION_NAME": {"title": "Collection Name"}},
+            "required": ["COLLECTION_NAME"],
         }
-        assert model(PATH=str(TEST_DOCUMENTS)).dict() == {"PATH": str(TEST_DOCUMENTS)}
+        assert model(COLLECTION_NAME="test_collection").model_dump() == {
+            "COLLECTION_NAME": "test_collection"
+        }
 
     def test_type_hint(self):
         def function_with_type_hint(arg: NodeTemplate[BaseRetriever]) -> None:
