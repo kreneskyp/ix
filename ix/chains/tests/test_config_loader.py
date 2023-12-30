@@ -18,7 +18,7 @@ from langchain.schema.runnable import (
     RunnableLambda,
 )
 from langchain.schema.runnable.base import RunnableEach
-from langchain.text_splitter import TextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Redis
 from langchain_core.runnables import RunnablePassthrough, Runnable
 
@@ -53,7 +53,6 @@ from ix.chains.loaders.core import (
     ImplicitJoin,
 )
 from ix.chains.loaders.memory import get_memory_session
-from ix.chains.loaders.text_splitter import TextSplitterShim
 from ix.chains.loaders.tools import extract_tool_kwargs, get_runnable_tool
 from ix.chains.models import Chain
 from ix.chains.tests.mock_configs import (
@@ -61,7 +60,6 @@ from ix.chains.tests.mock_configs import (
     EMBEDDINGS,
     LANGUAGE_PARSER,
     DOCUMENT_LOADER,
-    TEST_DOCUMENTS,
     GOOGLE_SEARCH_CONFIG,
     MEMORY,
     LLM_REPLY_WITH_HISTORY,
@@ -81,6 +79,7 @@ from ix.chains.tests.mock_memory import MockMemory
 from ix.chains.tests.mock_runnable import MockRunnable
 from ix.conftest import aload_fixture
 from ix.memory.artifacts import ArtifactMemory
+from ix.runnable.documents import RunLoader, RunTransformer
 from ix.runnable.ix import IxNode
 from ix.task_log.tests.fake import afake_chain_node, afake_chain, afake_chain_edge
 from ix.utils.importlib import import_class
