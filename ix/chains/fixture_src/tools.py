@@ -149,31 +149,6 @@ GRAPHQL_TOOL = {
     + NodeTypeField.get_fields(GraphQLAPIWrapper, include=["graphql_endpoint"]),
 }
 
-INGESTION_TOOL_CLASS_PATH = "ix.chains.components.tools.IngestionTool"
-INGESTION_TOOL = {
-    "class_path": INGESTION_TOOL_CLASS_PATH,
-    "type": "tool",
-    "name": "Ingestion Tool",
-    "description": "Tool used to import files into a vectorstore.",
-    "connectors": [
-        {
-            "key": "loader_template",
-            "type": "target",
-            "source_type": "text_splitter",
-            "required": True,
-            "template": True,
-        },
-        {
-            "key": "vectorstore",
-            "type": "target",
-            "source_type": "vectorstore",
-            "required": True,
-            "template": True,
-        },
-    ],
-    "fields": TOOL_BASE_FIELDS,
-}
-
 LAMBDA_API = {
     "class_path": "ix.tools.lambda_api.get_lambda_api",
     "type": "tool",
@@ -314,7 +289,6 @@ TOOLS = [
     GOOGLE_SEARCH,
     GOOGLE_SERPER,
     GRAPHQL_TOOL,
-    INGESTION_TOOL,
     LAMBDA_API,
     PUB_MED,
     WIKIPEDIA,
