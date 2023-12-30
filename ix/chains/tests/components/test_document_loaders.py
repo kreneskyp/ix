@@ -18,7 +18,8 @@ from ix.chains.fixture_src.document_loaders import (
     UNSTRUCTURED_MARKDOWN_LOADER_CLASS_PATH,
     JSON_LOADER_CLASS_PATH,
 )
-
+from ix.chains.tests.test_config_loader import unpack_chain_flow
+from ix.runnable.documents import RunLoader
 
 TEST_HTML_FILE_PATH = "/var/app/test_data/documents/test.html"
 TEST_CSV_FILE_PATH = "/var/app/test_data/documents/test.csv"
@@ -97,39 +98,51 @@ UNSTRUCTURED_MARKDOWN_LOADER = {
 class TestBeautifulSoupLoader:
     async def test_load(self, aload_chain):
         component = await aload_chain(BEAUTIFUL_SOUP_LOADER)
-        assert isinstance(component, BSHTMLLoader)
+        component = unpack_chain_flow(component)
+        assert isinstance(component, RunLoader)
+        assert component.initializer is BSHTMLLoader
 
 
 @pytest.mark.django_db
 class TestCSVLoader:
     async def test_load(self, aload_chain):
         component = await aload_chain(CSV_LOADER)
-        assert isinstance(component, CSVLoader)
+        component = unpack_chain_flow(component)
+        assert isinstance(component, RunLoader)
+        assert component.initializer is CSVLoader
 
 
 @pytest.mark.django_db
 class TestJSONLoader:
     async def test_load(self, aload_chain):
         component = await aload_chain(JSON_LOADER)
-        assert isinstance(component, JSONLoader)
+        component = unpack_chain_flow(component)
+        assert isinstance(component, RunLoader)
+        assert component.initializer is JSONLoader
 
 
 @pytest.mark.django_db
 class TestPDFLoader:
     async def test_load(self, aload_chain):
         component = await aload_chain(PDF_LOADER)
-        assert isinstance(component, PyPDFLoader)
+        component = unpack_chain_flow(component)
+        assert isinstance(component, RunLoader)
+        assert component.initializer is PyPDFLoader
 
 
 @pytest.mark.django_db
 class TestUnstructuredHTMLLoader:
     async def test_load(self, aload_chain):
         component = await aload_chain(UNSTRUCTURED_HTML_LOADER)
-        assert isinstance(component, UnstructuredHTMLLoader)
+        component = unpack_chain_flow(component)
+        assert isinstance(component, RunLoader)
+        assert component.initializer is UnstructuredHTMLLoader
 
 
 @pytest.mark.django_db
 class TestUnstructuredMarkdownLoader:
     async def test_load(self, aload_chain):
         component = await aload_chain(UNSTRUCTURED_MARKDOWN_LOADER)
-        assert isinstance(component, UnstructuredMarkdownLoader)
+        component = unpack_chain_flow(component)
+        assert isinstance(component, RunLoader)
+        assert component.initializer is UnstructuredMarkdownLoader

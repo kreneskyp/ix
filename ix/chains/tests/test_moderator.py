@@ -1,13 +1,15 @@
 import pytest
 
+from ix.chains.tests.test_config_loader import unpack_chain_flow
+
 
 @pytest.mark.django_db
 class TestChatModerator:
     def test_agent_prompt(self, chat):
         """Test that the agent prompt is formatted correctly"""
 
-        ix_node = chat["instance"]
-        chat_moderator = ix_node.child
+        flow = chat["instance"]
+        chat_moderator = unpack_chain_flow(flow)
         agent_prompt = chat_moderator.agent_prompt(chat["chat"])
 
         assert (
@@ -23,8 +25,8 @@ class TestChatModerator:
             name="delegate_to_agent", arguments={"agent_id": 1}
         )
 
-        ix_node = achat["instance"]
-        chat_moderator = ix_node.child
+        flow = achat["instance"]
+        chat_moderator = unpack_chain_flow(flow)
 
         result = await chat_moderator.acall(
             {"user_input": "say hello to agent 1", "chat_id": str(achat["chat"].id)},

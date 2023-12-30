@@ -113,13 +113,16 @@ class Command(BaseCommand):
             # validate by converting to pydantic model instance
             # TODO: COMPONENTS should be converted to pydantic models but for now
             #       expect that they are dicts and validated here.
-            node_type_pydantic = NodeTypePydantic(**component)
+            if isinstance(component, dict):
+                node_type_pydantic = NodeTypePydantic(**component)
+            else:
+                node_type_pydantic = component
             config_schema = node_type_pydantic.get_config_schema()
             validated_options = node_type_pydantic.model_dump(
                 exclude={"id", "display_groups", "config_schema"}
             )
 
-            class_path = component.get("class_path")
+            class_path = node_type_pydantic.class_path
             if NodeType.objects.filter(class_path=class_path).exists():
                 # updating existing node type
                 self.to_stdout(f"Updating component: {class_path}")

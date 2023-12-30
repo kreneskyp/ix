@@ -30,8 +30,24 @@
         "title": "UnstructuredEPubLoader",
         "type": "object"
     },
-    "connectors": null,
     "description": "Load an EPub file into a document with Unstructured.io",
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "out",
+            "label": "Documents",
+            "multiple": false,
+            "required": false,
+            "source_type": "data",
+            "template": false,
+            "type": "source"
+        }
+    ],
     "display_type": "node",
     "fields": [
         {

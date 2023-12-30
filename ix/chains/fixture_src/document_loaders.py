@@ -7,9 +7,26 @@ from langchain.document_loaders import (
 )
 from langchain.document_loaders.generic import GenericLoader
 
-from ix.api.components.types import NodeTypeField
+from ix.api.components.types import NodeTypeField, Connector
 from ix.chains.components.document_loaders import StringLoader
-from ix.chains.fixture_src.targets import PARSER_TARGET
+from ix.chains.fixture_src.targets import PARSER_TARGET, FLOW_TYPES
+
+DOCUMENTS_INPUT = Connector(
+    key="in",
+    type="target",
+    source_type=FLOW_TYPES,
+    label="Documents",
+)
+
+
+DOCUMENTS_OUTPUT = Connector(
+    key="out",
+    type="source",
+    label="Documents",
+    source_type="data",
+)
+
+LOADER_CONNECTORS = [DOCUMENTS_OUTPUT]
 
 
 FILE_SUFFIXES_FIELD = {
@@ -35,6 +52,7 @@ STRING_LOADER = {
     "type": "document_loader",
     "name": "String Loader",
     "description": "Load a static string as a document.",
+    "connectors": LOADER_CONNECTORS,
     "fields": NodeTypeField.get_fields(
         StringLoader.__init__,
         include=[
@@ -51,6 +69,7 @@ BEAUTIFUL_SOUP_LOADER = {
     "type": "document_loader",
     "name": "Beautiful Soup HTML Loader",
     "description": BSHTMLLoader.__doc__,
+    "connectors": LOADER_CONNECTORS,
     "fields": NodeTypeField.get_fields(
         BSHTMLLoader.__init__,
         include=[
@@ -68,6 +87,7 @@ CSV_LOADER = {
     "type": "document_loader",
     "name": "CSV Loader",
     "description": "Load a CSV file into a list of documents.",
+    "connectors": LOADER_CONNECTORS,
     "fields": NodeTypeField.get_fields(
         CSVLoader.__init__,
         include=[
@@ -87,6 +107,7 @@ GENERIC_LOADER = {
     "type": "document_loader",
     "name": "Filesystem Loader",
     "description": "Load documents from the filesystem.",
+    "connectors": [PARSER_TARGET] + LOADER_CONNECTORS,
     "fields": [PATH_FIELD, FILE_SUFFIXES_FIELD]
     + NodeTypeField.get_fields(
         GenericLoader.from_filesystem,
@@ -94,7 +115,6 @@ GENERIC_LOADER = {
             "glob",
         ],
     ),
-    "connectors": [PARSER_TARGET],
 }
 
 
@@ -104,6 +124,7 @@ JSON_LOADER = {
     "type": "document_loader",
     "name": "JSON Loader",
     "description": "Load a JSON file into a document.",
+    "connectors": LOADER_CONNECTORS,
     "fields": NodeTypeField.get_fields(
         JSONLoader.__init__,
         include=[
@@ -131,6 +152,7 @@ PDF_LOADER = {
     "type": "document_loader",
     "name": "PDF Loader",
     "description": "Load a PDF file into a document.",
+    "connectors": LOADER_CONNECTORS,
     "fields": NodeTypeField.get_fields(
         PyPDFLoader.__init__,
         include=[
@@ -147,7 +169,7 @@ WEB_BASE_LOADER = {
     "type": "document_loader",
     "name": "Web Loader",
     "description": "Load documents from the web and parse them with BeautifulSoup.",
-    "connectors": [PARSER_TARGET],
+    "connectors": [PARSER_TARGET] + LOADER_CONNECTORS,
     "fields": [
         {
             "name": "web_path",

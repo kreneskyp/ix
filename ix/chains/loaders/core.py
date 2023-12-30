@@ -3,7 +3,7 @@ import itertools
 import logging
 import time
 from collections import defaultdict
-from typing import Callable, Any, List, Tuple, Dict, Set, Union
+from typing import Callable, Any, List, Tuple, Dict, Set, Union, Type
 from uuid import UUID
 
 from asgiref.sync import sync_to_async
@@ -13,6 +13,8 @@ from langchain.schema.runnable import (
     Runnable,
 )
 from langchain.schema.runnable.utils import Input, Output
+from langchain_core.runnables import RunnablePassthrough
+from pydantic import BaseModel
 
 from ix.api.components.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic, InputConfig
@@ -28,6 +30,7 @@ from ix.runnable.ix import IxNode
 from ix.secrets.models import Secret
 from ix.utils.config import format_config
 from ix.utils.importlib import import_class
+from ix.utils.pydantic import create_args_model_v1
 from jsonschema_pydantic import jsonschema_to_pydantic
 
 import_node_class = import_class
@@ -74,11 +77,13 @@ def get_node_initializer(node_type: str) -> Callable:
     Fetches a custom initializer to be used instead of the class initializer.
     Used to add shims around specific types of nodes.
     """
-    from ix.chains.loaders.text_splitter import initialize_text_splitter
     from ix.chains.loaders.vectorstore import initialize_vectorstore
+    from ix.runnable.documents import RunLoader, RunTransformer
 
     return {
-        "text_splitter": initialize_text_splitter,
+        "document_loader": RunLoader.from_config,
+        "text_splitter": RunTransformer.from_config,
+        "transformer": RunTransformer.from_config,
         "vectorstore": initialize_vectorstore,
     }.get(node_type, None)
 
@@ -467,9 +472,16 @@ def init_chain_flow(
     """
     Initialize a flow from a chain.
     """
-    flow_root = load_chain_flow(chain=chain)
+    input_type, flow_root = load_chain_flow(chain=chain)
     logger.debug(f"init_chain_flow chain={chain.id} flow_root={flow_root}")
-    return init_flow_node(flow_root, context=context, variables=variables)
+    flow = init_flow_node(flow_root, context=context, variables=variables)
+
+    # Add the root's schema as the outward facing input_type using a passthrough.
+    if isinstance(flow, Runnable):
+        type_mask = RunnablePassthrough(input_type=input_type)
+        flow = type_mask | flow
+
+    return flow
 
 
 async def ainit_chain_flow(
@@ -506,21 +518,27 @@ async def ainit_flow(
     return await sync_to_async(init_flow)(nodes, context, variables, seen)
 
 
-def load_chain_flow(chain: Chain) -> FlowPlaceholder:
+def load_chain_flow(chain: Chain) -> Tuple[Type[BaseModel], FlowPlaceholder]:
     try:
         root = chain.nodes.get(root=True, class_path=ROOT_CLASS_PATH)
         nodes = chain.nodes.filter(incoming_edges__source=root)
         logger.debug(f"Loading chain flow with roots: {root}")
+        input_type = create_args_model_v1(
+            root.config.get("outputs", []), name="ChainInput"
+        )
     except ChainNode.DoesNotExist:
         # fallback to old style roots:
         # TODO: remove this fallback after all chains have been migrated
         nodes = chain.nodes.filter(root=True)
         logger.debug(f"Loading chain flow with roots: {nodes}")
+        input_type = create_args_model_v1(
+            ["user_input", "artifact_ids"], name="ChainInput"
+        )
 
-    return load_flow_node(nodes)
+    return input_type, load_flow_node(nodes)
 
 
-async def aload_chain_flow(chain: Chain) -> FlowPlaceholder:
+async def aload_chain_flow(chain: Chain) -> Tuple[Type[BaseModel], FlowPlaceholder]:
     return await sync_to_async(load_chain_flow)(chain)
 
 
@@ -840,6 +858,8 @@ def init_flow_node(
 
         if isinstance(instance, Runnable):
             instance = IxNode(
+                name=root.name,
+                description=root.description,
                 node_id=root.id,
                 child=instance,
                 context=context,

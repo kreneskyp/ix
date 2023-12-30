@@ -1,0 +1,33 @@
+{
+    "child_field": null,
+    "class_path": "ix.runnable.vectorstore.DeleteVectors",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {},
+        "required": [],
+        "title": "DeleteVectors",
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "vectorstore",
+            "label": null,
+            "multiple": false,
+            "required": true,
+            "source_type": "vectorstore",
+            "template": false,
+            "type": "target"
+        }
+    ],
+    "description": "Delete vectors from a vectorstore",
+    "display_type": "node",
+    "fields": null,
+    "name": "Delete Vectors",
+    "type": "chain"
+}

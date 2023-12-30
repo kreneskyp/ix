@@ -1,33 +1,32 @@
 {
     "child_field": null,
-    "class_path": "langchain.document_loaders.web_base.WebBaseLoader",
+    "class_path": "langchain.text_splitter.CharacterTextSplitter",
     "config_schema": {
         "display_groups": null,
         "properties": {
-            "continue_on_failure": {
+            "add_start_index": {
                 "default": false,
-                "label": "Continue_on_failure",
+                "label": "Add_start_index",
                 "type": "boolean"
             },
-            "verify_ssl": {
-                "default": true,
-                "label": "Verify_ssl",
-                "type": "boolean"
+            "chunk_overlap": {
+                "default": 200,
+                "label": "Chunk_overlap",
+                "type": "number"
             },
-            "web_path": {
-                "description": "URL(s) of the web page",
-                "items": {},
-                "maxItems": null,
-                "minItems": null,
-                "style": {
-                    "width": "100%"
-                },
-                "type": "array",
-                "uniqueItems": false
+            "chunk_size": {
+                "default": 4000,
+                "label": "Chunk_size",
+                "type": "number"
+            },
+            "keep_separator": {
+                "default": false,
+                "label": "Keep_separator",
+                "type": "boolean"
             }
         },
         "required": [],
-        "title": "WebBaseLoader",
+        "title": "CharacterTextSplitter",
         "type": "object"
     },
     "connectors": [
@@ -38,11 +37,24 @@
             "from_field": null,
             "init_modes": null,
             "init_type": "init",
-            "key": "parser",
-            "label": null,
+            "key": "in",
+            "label": "Documents",
             "multiple": false,
             "required": false,
-            "source_type": "parser",
+            "source_type": [
+                "agent",
+                "branch",
+                "chain",
+                "document_loader",
+                "flow",
+                "llm",
+                "map",
+                "prompt",
+                "retriever",
+                "root",
+                "text_splitter",
+                "tool"
+            ],
             "template": false,
             "type": "target"
         },
@@ -62,44 +74,42 @@
             "type": "source"
         }
     ],
-    "description": "Load documents from the web and parse them with BeautifulSoup.",
+    "description": "Splitting text that looks at characters.",
     "display_type": "node",
     "fields": [
         {
             "choices": null,
-            "default": null,
-            "description": "URL(s) of the web page",
-            "init_type": "init",
-            "input_type": null,
-            "label": "",
-            "max": null,
-            "min": null,
-            "name": "web_path",
-            "parent": null,
-            "required": false,
-            "secret_key": null,
-            "step": null,
-            "style": {
-                "width": "100%"
-            },
-            "type": "list"
-        },
-        {
-            "choices": null,
-            "default": true,
+            "default": 4000,
             "description": null,
             "init_type": "init",
             "input_type": null,
-            "label": "Verify_ssl",
+            "label": "Chunk_size",
             "max": null,
             "min": null,
-            "name": "verify_ssl",
+            "name": "chunk_size",
             "parent": null,
             "required": false,
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "boolean"
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": 200,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Chunk_overlap",
+            "max": null,
+            "min": null,
+            "name": "chunk_overlap",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "int"
         },
         {
             "choices": null,
@@ -107,18 +117,35 @@
             "description": null,
             "init_type": "init",
             "input_type": null,
-            "label": "Continue_on_failure",
+            "label": "Keep_separator",
             "max": null,
             "min": null,
-            "name": "continue_on_failure",
+            "name": "keep_separator",
             "parent": null,
             "required": false,
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "boolean"
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Add_start_index",
+            "max": null,
+            "min": null,
+            "name": "add_start_index",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "bool"
         }
     ],
-    "name": "Web Loader",
-    "type": "document_loader"
+    "name": "CharacterTextSplitter",
+    "type": "text_splitter"
 }

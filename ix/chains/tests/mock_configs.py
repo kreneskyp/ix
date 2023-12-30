@@ -257,7 +257,6 @@ REDIS_VECTORSTORE = {
     "class_path": REDIS_VECTORSTORE_CLASS_PATH,
     "config": {
         "embedding": EMBEDDINGS,
-        "documents": TEXT_SPLITTER,
         "redis_url": "redis://redis:6379/0",
         "index_name": "tests",
     },

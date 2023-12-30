@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from ix.agents.models import Agent
 from ix.chains.callbacks import IxHandler
 from ix.chains.models import Chain
+from ix.chains.tests.test_config_loader import unpack_chain_flow
 from ix.schema.subscriptions import ChatMessageTokenSubscription
 from ix.task_log.models import Task, TaskLogMessage
 
@@ -55,8 +56,8 @@ class TestIxHandler:
         agent = await Agent.objects.aget(id=task.agent_id)
 
         handler = IxHandler(agent=agent, chain=chain, task=task)
-        ix_node = await aload_chain(CHAIN_WITH_LLM)
-        langchain_chain = ix_node.child
+        flow = await aload_chain(CHAIN_WITH_LLM)
+        langchain_chain = unpack_chain_flow(flow)
         langchain_chain.llm.streaming = True
         assert langchain_chain.llm.streaming is True
 
