@@ -26,6 +26,7 @@
             }
         },
         "required": [],
+        "title": "CharacterTextSplitter",
         "type": "object"
     },
     "connectors": [
