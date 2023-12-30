@@ -20,7 +20,6 @@ from ix.chains.tests.fake import (
     afake_root_edge,
 )
 from ix.chains.tests.test_config_loader import unpack_chain_flow
-from ix.runnable.ix import IxNode
 from ix.runnable.documents import RunTransformer, RunLoader
 
 
