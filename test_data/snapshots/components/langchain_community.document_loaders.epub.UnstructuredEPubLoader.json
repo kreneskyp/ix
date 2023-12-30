@@ -31,7 +31,6 @@
         "title": "UnstructuredEPubLoader",
         "type": "object"
     },
-    "description": "Load an EPub file into a document with Unstructured.io",
     "connectors": [
         {
             "as_type": null,
@@ -49,6 +48,7 @@
             "type": "source"
         }
     ],
+    "description": "Load an EPub file into a document with Unstructured.io",
     "display_type": "node",
     "fields": [
         {

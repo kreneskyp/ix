@@ -31,7 +31,6 @@
         "title": "UnstructuredWordDocumentLoader",
         "type": "object"
     },
-    "description": "Load a Word document into a document with Unstructured.io",
     "connectors": [
         {
             "as_type": null,
@@ -49,6 +48,7 @@
             "type": "source"
         }
     ],
+    "description": "Load a Word document into a document with Unstructured.io",
     "display_type": "node",
     "fields": [
         {

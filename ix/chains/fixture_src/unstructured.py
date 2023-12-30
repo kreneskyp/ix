@@ -5,6 +5,7 @@ from langchain_community.document_loaders import (
 )
 
 from ix.api.components.types import NodeTypeField, NodeType
+from ix.chains.fixture_src.document_loaders import LOADER_CONNECTORS
 
 FILE_PATH_LIST = NodeTypeField(
     name="file_path",
@@ -34,6 +35,7 @@ UNSTRUCTURED_FILE_IO_LOADER = NodeType(
     type="document_loader",
     name="Unstructured File IO Loader",
     description="Load a file from an IO stream into a document with Unstructured.io.",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 
@@ -45,6 +47,7 @@ UNSTRUCTURED_API_FILE_IO_LOADER = NodeType(
     type="document_loader",
     name="Unstructured API File Loader",
     description="Load files using `Unstructured` API.",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS
     + NodeTypeField.get_fields(
         UnstructuredFileIOLoader,
@@ -63,6 +66,7 @@ UNSTRUCTURED_API_FILE_LOADER = NodeType(
     type="document_loader",
     name="Unstructured API File Loader",
     description="Load files using `Unstructured` API.",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS
     + NodeTypeField.get_fields(
         UnstructuredAPIFileLoader,
@@ -81,6 +85,7 @@ UNSTRUCTURED_WORD_DOCUMENT_LOADER = NodeType(
     type="document_loader",
     name="Unstructured Word Document Loader",
     description="Load a Word document into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 UNSTRUCTURED_ODT_LOADER_CLASS_PATH = (
@@ -91,6 +96,7 @@ UNSTRUCTURED_ODT_LOADER = NodeType(
     type="document_loader",
     name="Unstructured ODT Loader",
     description="Load an ODT file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 UNSTRUCTURED_PDF_LOADER_CLASS_PATH = (
@@ -101,6 +107,7 @@ UNSTRUCTURED_PDF_LOADER = NodeType(
     type="document_loader",
     name="Unstructured PDF Loader",
     description="Load a PDF file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 
@@ -111,7 +118,8 @@ UNSTRUCTURED_HTML_LOADER = NodeType(
     class_path=UNSTRUCTURED_HTML_LOADER_CLASS_PATH,
     type="document_loader",
     name="Unstructured HTML Loader",
-    description=UnstructuredHTMLLoader.__doc__,
+    description="Load an HTML file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=NodeTypeField.get_fields(
         UnstructuredHTMLLoader.__init__, include=["file_path" "mode"]
     ),
@@ -125,6 +133,7 @@ UNSTRUCTURED_CSV_LOADER = NodeType(
     type="document_loader",
     name="Unstructured CSV Loader",
     description="Load a CSV file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 
@@ -136,6 +145,7 @@ UNSTRUCTURED_MARKDOWN_LOADER = NodeType(
     type="document_loader",
     name="Unstructured Markdown Loader",
     description="Load a Markdown file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 
@@ -147,6 +157,7 @@ UNSTRUCTURED_RST_LOADER = NodeType(
     type="document_loader",
     name="Unstructured RST Loader",
     description="Load an RST file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 UNSTRUCTURED_EPUB_LOADER_CLASS_PATH = (
@@ -157,6 +168,7 @@ UNSTRUCTURED_EPUB_LOADER = NodeType(
     type="document_loader",
     name="Unstructured EPub Loader",
     description="Load an EPub file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 UNSTRUCTURED_XML_LOADER_CLASS_PATH = (
@@ -167,6 +179,7 @@ UNSTRUCTURED_XML_LOADER = NodeType(
     type="document_loader",
     name="Unstructured XML Loader",
     description="Load an XML file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 UNSTRUCTURED_IMAGE_LOADER_CLASS_PATH = (
@@ -177,6 +190,7 @@ UNSTRUCTURED_IMAGE_LOADER = NodeType(
     type="document_loader",
     name="Unstructured Image Loader",
     description="Load an image file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 UNSTRUCTURED_EMAIL_LOADER_CLASS_PATH = (
@@ -187,6 +201,7 @@ UNSTRUCTURED_EMAIL_LOADER = NodeType(
     type="document_loader",
     name="Unstructured Email Loader",
     description="Load an email file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 UNSTRUCTURED_RTF_LOADER_CLASS_PATH = (
@@ -197,6 +212,7 @@ UNSTRUCTURED_RTF_LOADER = NodeType(
     type="document_loader",
     name="Unstructured RTF Loader",
     description="Load an RTF file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 UNSTRUCTURED_ORG_MODE_LOADER_CLASS_PATH = (
@@ -207,6 +223,7 @@ UNSTRUCTURED_ORG_MODE_LOADER = NodeType(
     type="document_loader",
     name="Unstructured Org Mode Loader",
     description="Load an Org Mode file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 UNSTRUCTURED_POWERPOINT_LOADER_CLASS_PATH = (
@@ -217,6 +234,7 @@ UNSTRUCTURED_POWERPOINT_LOADER = NodeType(
     type="document_loader",
     name="Unstructured PowerPoint Loader",
     description="Load a PowerPoint file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 UNSTRUCTURED_EXCEL_LOADER_CLASS_PATH = (
@@ -227,6 +245,7 @@ UNSTRUCTURED_EXCEL_LOADER = NodeType(
     type="document_loader",
     name="Unstructured Excel Loader",
     description="Load an Excel file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 UNSTRUCTURED_TSV_LOADER_CLASS_PATH = (
@@ -237,6 +256,7 @@ UNSTRUCTURED_TSV_LOADER = NodeType(
     type="document_loader",
     name="Unstructured TSV Loader",
     description="Load a TSV file into a document with Unstructured.io",
+    connectors=LOADER_CONNECTORS,
     fields=UNSTRUCTURED_IO_FIELDS,
 )
 
