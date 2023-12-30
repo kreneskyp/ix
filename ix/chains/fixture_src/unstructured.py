@@ -17,6 +17,7 @@ UNSTRUCTURED_IO_MODE = NodeTypeField(
     type="str",
     required=True,
     input_type="select",
+    default="single",
     choices=[
         {"label": "single", "value": "single"},
         {"label": "elements", "value": "elements"},

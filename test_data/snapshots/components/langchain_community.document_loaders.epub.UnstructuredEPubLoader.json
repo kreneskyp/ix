@@ -13,6 +13,7 @@
                 "uniqueItems": false
             },
             "mode": {
+                "default": "single",
                 "enum": [
                     "single",
                     "elements",
@@ -82,7 +83,7 @@
                     "value": "page"
                 }
             ],
-            "default": null,
+            "default": "single",
             "description": null,
             "init_type": "init",
             "input_type": "select",
