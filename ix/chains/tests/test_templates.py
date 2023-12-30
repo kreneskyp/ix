@@ -61,7 +61,7 @@ class TestNodeTemplate:
         assert aloader_template is not None
         assert isinstance(aloader_template, NodeTemplate)
 
-    def test_format(self, loader_template):
+    def test_format(self, loader_template, mock_openai_key):
         """Test loading the component with aformat"""
         component = loader_template.format({"COLLECTION_NAME": "test_collection"})
         assert isinstance(component, AsyncChromaVectorstore)
@@ -69,7 +69,7 @@ class TestNodeTemplate:
         # assert property is correctly set
         assert str(component._collection.name) == "test_collection"
 
-    async def test_aformat(self, aloader_template):
+    async def test_aformat(self, aloader_template, mock_openai_key):
         """Test loading the component with aformat"""
         component = await aloader_template.aformat(
             {"COLLECTION_NAME": "test_collection"}
