@@ -19,6 +19,7 @@ from ix.chains.tests.fake import (
     afake_root,
     afake_root_edge,
 )
+from ix.chains.tests.test_config_loader import unpack_chain_flow
 from ix.runnable.ix import IxNode
 from ix.runnable.documents import RunTransformer, RunLoader
 
@@ -60,9 +61,9 @@ class TestRunTransformer:
 
         # assert runnable
         runnable = await chain.aload_chain(context=aix_context)
-        assert isinstance(runnable, IxNode)
-        assert isinstance(runnable.child, RunTransformer)
-        assert isinstance(runnable.child.transformer, CharacterTextSplitter)
+        component = unpack_chain_flow(runnable)
+        assert isinstance(component, RunTransformer)
+        assert isinstance(component.transformer, CharacterTextSplitter)
 
         # assert output
         result = await runnable.ainvoke(input=documents)
@@ -157,11 +158,11 @@ class TestRunLoader:
 
         # assert runnable
         runnable = await chain.aload_chain(context=aix_context)
-        assert isinstance(runnable, IxNode)
-        assert isinstance(runnable.child, RunLoader)
-        assert isinstance(runnable.child.initializer, Callable)
-        assert runnable.child.config == dict(
-            path=str(mock_filesystem.workdir), glob="*.txt"
+        component = unpack_chain_flow(runnable)
+        assert isinstance(component, RunLoader)
+        assert isinstance(component.initializer, Callable)
+        assert component.config == dict(
+            path=str(mock_filesystem.workdir), glob="*.txt", suffixes=None
         )
 
         # assert output
