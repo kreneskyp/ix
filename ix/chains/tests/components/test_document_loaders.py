@@ -2,8 +2,6 @@ import json
 
 import pytest
 from langchain.document_loaders import (
-    UnstructuredMarkdownLoader,
-    UnstructuredHTMLLoader,
     PyPDFLoader,
     JSONLoader,
     CSVLoader,
@@ -14,8 +12,6 @@ from ix.chains.fixture_src.document_loaders import (
     BEAUTIFUL_SOUP_LOADER_CLASS_PATH,
     CSV_LOADER_CLASS_PATH,
     PDF_LOADER_CLASS_PATH,
-    UNSTRUCTURED_HTML_LOADER_CLASS_PATH,
-    UNSTRUCTURED_MARKDOWN_LOADER_CLASS_PATH,
     JSON_LOADER_CLASS_PATH,
 )
 from ix.chains.tests.test_config_loader import unpack_chain_flow
@@ -79,20 +75,6 @@ PDF_LOADER = {
     },
 }
 
-UNSTRUCTURED_HTML_LOADER = {
-    "class_path": UNSTRUCTURED_HTML_LOADER_CLASS_PATH,
-    "config": {
-        "file_path": [TEST_HTML_FILE_PATH],
-    },
-}
-
-UNSTRUCTURED_MARKDOWN_LOADER = {
-    "class_path": UNSTRUCTURED_MARKDOWN_LOADER_CLASS_PATH,
-    "config": {
-        "file_path": [TEST_MARKDOWN_FILE_PATH],
-    },
-}
-
 
 @pytest.mark.django_db
 class TestBeautifulSoupLoader:
@@ -128,21 +110,3 @@ class TestPDFLoader:
         component = unpack_chain_flow(component)
         assert isinstance(component, RunLoader)
         assert component.initializer is PyPDFLoader
-
-
-@pytest.mark.django_db
-class TestUnstructuredHTMLLoader:
-    async def test_load(self, aload_chain):
-        component = await aload_chain(UNSTRUCTURED_HTML_LOADER)
-        component = unpack_chain_flow(component)
-        assert isinstance(component, RunLoader)
-        assert component.initializer is UnstructuredHTMLLoader
-
-
-@pytest.mark.django_db
-class TestUnstructuredMarkdownLoader:
-    async def test_load(self, aload_chain):
-        component = await aload_chain(UNSTRUCTURED_MARKDOWN_LOADER)
-        component = unpack_chain_flow(component)
-        assert isinstance(component, RunLoader)
-        assert component.initializer is UnstructuredMarkdownLoader

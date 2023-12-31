@@ -26,6 +26,7 @@ from ix.chains.fixture_src.testing import MOCK_MEMORY, MOCK_CHAIN
 from ix.chains.fixture_src.text_splitter import TEXT_SPLITTERS
 from ix.chains.fixture_src.toolkit import TOOLKITS
 from ix.chains.fixture_src.tools import TOOLS
+from ix.chains.fixture_src.unstructured import UNSTRUCTURED_IO
 from ix.chains.fixture_src.vectorstores import VECTORSTORES
 from ix.chains.models import NodeType
 from ix.chains.tests.mock_runnable import MOCK_RUNNABLE_CONFIG
@@ -61,6 +62,7 @@ COMPONENTS.extend(MEMORY_BACKEND)
 COMPONENTS.extend(PARSERS)
 COMPONENTS.extend(TEXT_SPLITTERS)
 COMPONENTS.extend(DOCUMENT_LOADERS)
+COMPONENTS.extend(UNSTRUCTURED_IO)
 COMPONENTS.extend(VECTORSTORES)
 COMPONENTS.extend(RETRIEVERS)
 

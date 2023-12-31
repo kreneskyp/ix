@@ -1,6 +1,6 @@
 {
     "child_field": null,
-    "class_path": "langchain.document_loaders.UnstructuredMarkdownLoader",
+    "class_path": "langchain_community.document_loaders.powerpoint.UnstructuredPowerPointLoader",
     "config_schema": {
         "display_groups": null,
         "properties": {
@@ -28,7 +28,7 @@
             "file_path",
             "mode"
         ],
-        "title": "UnstructuredMarkdownLoader",
+        "title": "UnstructuredPowerPointLoader",
         "type": "object"
     },
     "connectors": [
@@ -48,7 +48,7 @@
             "type": "source"
         }
     ],
-    "description": "Load a Markdown file into a document with Unstructured.io",
+    "description": "Load a PowerPoint file into a document with Unstructured.io",
     "display_type": "node",
     "fields": [
         {
@@ -99,6 +99,6 @@
             "type": "str"
         }
     ],
-    "name": "Unstructured Markdown Loader",
+    "name": "Unstructured PowerPoint Loader",
     "type": "document_loader"
 }
