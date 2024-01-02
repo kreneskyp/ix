@@ -1,0 +1,151 @@
+{
+    "child_field": null,
+    "class_path": "langchain.text_splitter.CharacterTextSplitter",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "add_start_index": {
+                "default": false,
+                "label": "Add_start_index",
+                "type": "boolean"
+            },
+            "chunk_overlap": {
+                "default": 200,
+                "label": "Chunk_overlap",
+                "type": "number"
+            },
+            "chunk_size": {
+                "default": 4000,
+                "label": "Chunk_size",
+                "type": "number"
+            },
+            "keep_separator": {
+                "default": false,
+                "label": "Keep_separator",
+                "type": "boolean"
+            }
+        },
+        "required": [],
+        "title": "CharacterTextSplitter",
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "in",
+            "label": "Documents",
+            "multiple": false,
+            "required": false,
+            "source_type": [
+                "agent",
+                "branch",
+                "chain",
+                "document_loader",
+                "flow",
+                "llm",
+                "map",
+                "prompt",
+                "retriever",
+                "root",
+                "text_splitter",
+                "tool"
+            ],
+            "template": false,
+            "type": "target"
+        },
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "out",
+            "label": "Documents",
+            "multiple": false,
+            "required": false,
+            "source_type": "data",
+            "template": false,
+            "type": "source"
+        }
+    ],
+    "description": "Splitting text that looks at characters.",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": 4000,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Chunk_size",
+            "max": null,
+            "min": null,
+            "name": "chunk_size",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": 200,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Chunk_overlap",
+            "max": null,
+            "min": null,
+            "name": "chunk_overlap",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "int"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Keep_separator",
+            "max": null,
+            "min": null,
+            "name": "keep_separator",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Add_start_index",
+            "max": null,
+            "min": null,
+            "name": "add_start_index",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "bool"
+        }
+    ],
+    "name": "CharacterTextSplitter",
+    "type": "text_splitter"
+}

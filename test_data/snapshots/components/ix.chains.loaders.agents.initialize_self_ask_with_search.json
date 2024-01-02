@@ -25,6 +25,7 @@
             }
         },
         "required": [],
+        "title": "initialize_self_ask_with_search",
         "type": "object"
     },
     "connectors": [

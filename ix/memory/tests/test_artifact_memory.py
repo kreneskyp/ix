@@ -4,6 +4,7 @@ from uuid import uuid4
 import pytest
 
 from ix.chains.llm_chain import LLMChain
+from ix.chains.tests.test_config_loader import unpack_chain_flow
 from ix.memory.artifacts import ArtifactMemory
 from ix.task_log.tests.fake import afake_artifact, afake_task
 
@@ -53,8 +54,8 @@ class TestArtifactMemory:
         )
 
         # create chain
-        ix_node = await aload_chain(TASK_WITH_ARTIFACT_MEMORY)
-        chain = ix_node.child
+        flow = await aload_chain(TASK_WITH_ARTIFACT_MEMORY)
+        chain = unpack_chain_flow(flow)
         assert isinstance(chain, LLMChain)
         assert isinstance(chain.memory, ArtifactMemory)
 

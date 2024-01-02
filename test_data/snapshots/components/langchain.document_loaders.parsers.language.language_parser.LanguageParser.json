@@ -39,6 +39,7 @@
             }
         },
         "required": [],
+        "title": "LanguageParser",
         "type": "object"
     },
     "connectors": null,

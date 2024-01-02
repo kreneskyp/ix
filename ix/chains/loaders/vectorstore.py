@@ -55,9 +55,6 @@ def initialize_vectorstore(class_path: str, config: Dict[str, Any]) -> VectorSto
     # Initialize vectorstore without ingesting documents. The vectorstore will
     # only have access to documents that are already in the database.
     if not vectorstore:
-        embedding_function = config.pop("embedding", None)
-        if embedding_function:
-            config["embedding_function"] = embedding_function
         vectorstore = vectorstore_class(**config)
 
     return vectorstore

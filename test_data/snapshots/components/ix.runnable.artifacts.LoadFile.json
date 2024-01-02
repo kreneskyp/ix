@@ -5,6 +5,7 @@
         "display_groups": null,
         "properties": {},
         "required": [],
+        "title": "LoadFile",
         "type": "object"
     },
     "connectors": null,

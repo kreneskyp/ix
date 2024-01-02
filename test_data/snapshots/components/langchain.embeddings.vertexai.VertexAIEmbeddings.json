@@ -16,6 +16,7 @@
             }
         },
         "required": [],
+        "title": "VertexAIEmbeddings",
         "type": "object"
     },
     "connectors": null,

@@ -5,6 +5,7 @@
         "display_groups": null,
         "properties": {},
         "required": [],
+        "title": "MockRunnable",
         "type": "object"
     },
     "connectors": null,

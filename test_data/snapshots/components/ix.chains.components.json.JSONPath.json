@@ -17,6 +17,7 @@
         "required": [
             "path"
         ],
+        "title": "JSONPath",
         "type": "object"
     },
     "connectors": null,

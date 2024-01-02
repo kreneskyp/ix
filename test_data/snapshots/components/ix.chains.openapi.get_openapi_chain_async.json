@@ -18,6 +18,7 @@
             }
         },
         "required": [],
+        "title": "get_openapi_chain_async",
         "type": "object"
     },
     "connectors": [
