@@ -98,7 +98,7 @@ async def create_chain_chat(chain: Chain) -> Chat:
 async def create_chain_instance(**kwargs) -> Chain:
     """Create a chain. Includes creating a test agent, task, and chat."""
 
-    alias = kwargs.pop("alias", None)
+    alias = kwargs.pop("alias", "")
     chain = Chain(**kwargs)
     await chain.asave()
 
