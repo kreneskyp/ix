@@ -107,6 +107,7 @@ export const useEditorTabs = (initial) => {
     selection: useSelectedNode(tabState),
     addChain,
     openChain,
+    selectOrOpenChain,
     closeChain,
   };
 };
