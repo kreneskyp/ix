@@ -165,7 +165,8 @@ export const ConfigNode = ({ id, data, selected }) => {
   const { border, color, highlight, highlightColor, bg, selectionShadow } =
     useEditorColorMode();
   const position = CONNECTOR_CONFIG[type.type]?.source_position || "right";
-  const { nodes } = useContext(NodeStateContext);
+  const nodeState = useContext(NodeStateContext);
+  const { nodes } = nodeState;
   const node = nodes[data.node.id];
 
   // run log when available

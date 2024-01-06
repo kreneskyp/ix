@@ -1,11 +1,6 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useMemo } from "react";
 import { useOnSelectionChange } from "reactflow";
+import { useTabDataField } from "chains/hooks/useTabDataField";
 
 /**
  * Hook for a node editor's state. Loads from selected nodes.
@@ -16,58 +11,65 @@ export const useNodeEditorState = (selectedNode, nodes, setNode) => {
   const { type } = data;
   const node = nodes && nodes[selectedNode?.id];
 
-  const onUpdateNode = useCallback(
-    (data) => {
-      setNode(data);
-    },
-    [selectedNode, setNode]
-  );
-
   return useMemo(
     () => ({
       type,
       node,
-      setNode: onUpdateNode,
+      setNode,
     }),
-    [type, node, onUpdateNode]
+    [type, node, setNode]
   );
 };
 
-export const useSelectedNode = () => {
-  const [data, setData] = useState({
-    selectedNode: null,
-    selectedConnector: null,
-  });
+const INITIAL_SELECTION = {
+  node: null,
+  connector: null,
+};
+
+export const useSelectedNode = (tabState) => {
+  const [selection, setSelection] = useTabDataField(
+    tabState.active,
+    tabState.setActive,
+    "selection",
+    {
+      node: null,
+      connector: null,
+    }
+  );
 
   const setSelectedNode = useCallback(
     (node) => {
-      setData((prev) => ({ ...prev, selectedNode: node }));
+      setSelection((prev) => ({ ...(prev || INITIAL_SELECTION), node: node }));
     },
-    [setData]
+    [setSelection]
   );
 
   const setSelectedConnector = useCallback(
     (connector) => {
-      setData((prev) => ({ ...prev, selectedConnector: connector }));
+      setSelection((prev) => ({
+        ...(prev || INITIAL_SELECTION),
+        connector: connector,
+      }));
     },
-    [setData]
+    [setSelection]
   );
 
   useOnSelectionChange({
     onChange: ({ nodes }) => {
-      setData((prev) => ({
-        ...prev,
-        selectedNode: nodes[0] || null,
+      setSelection((prev) => ({
+        ...(prev || INITIAL_SELECTION),
+        node: nodes[0] || null,
       }));
     },
   });
 
   return useMemo(
     () => ({
-      ...data,
+      selectedNode: selection.node,
+      selectedConnector: selection.connector,
       setSelectedNode,
       setSelectedConnector,
     }),
-    [data, setSelectedNode, setSelectedConnector]
+    [selection, setSelectedNode, setSelectedConnector]
   );
 };
