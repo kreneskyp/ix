@@ -178,6 +178,7 @@ const ChainGraphEditor = ({ graph }) => {
         id: newNodeID,
         chain_id: chain?.id || null,
         class_path: nodeType.class_path,
+        node_type_id: nodeType.id,
         name: "",
         description: "",
         position: position,
