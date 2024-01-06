@@ -28,6 +28,7 @@ jsonpath-ng==1.6.0
 jsonschema==4.19.1
 jsonschema-pydantic==0.3.0
 langchain==0.0.350
+langchain-community==0.0.6
 langchain-google-genai[images]==0.0.4
 langchain-experimental==0.0.47
 llama-cpp-python==0.2.23
