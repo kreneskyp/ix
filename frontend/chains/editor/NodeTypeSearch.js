@@ -28,6 +28,7 @@ import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 import { SelectedNodeContext } from "chains/editor/contexts";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { ComponentTypeMultiSelect } from "chains/editor/ComponentTypeMultiSelect";
+import { StyledIcon } from "components/StyledIcon";
 
 const NodeSelectorHeader = ({ label, icon }) => {
   const { color, isLight } = useSideBarColorMode();
@@ -44,7 +45,7 @@ const NodeSelectorHeader = ({ label, icon }) => {
       pt={1}
       {...style.label}
     >
-      <FontAwesomeIcon icon={icon} />
+      <StyledIcon style={icon} />
       <Text>{label}</Text>
     </HStack>
   );

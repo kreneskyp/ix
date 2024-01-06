@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import {FormLabel } from "@chakra-ui/react";
+import { FormLabel } from "@chakra-ui/react";
 import { withReact } from "slate-react";
 import { withHistory } from "slate-history";
 import { createEditor } from "slate";
