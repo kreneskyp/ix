@@ -36,6 +36,7 @@ import { faRightLeft } from "@fortawesome/free-solid-svg-icons";
 import { useChainUpdate } from "chains/hooks/useChainUpdate";
 import { useRightSidebarContext } from "site/sidebar/context";
 import { DirectRootNode } from "chains/flow/DirectRootNode";
+import { FlowEdge } from "components/flow/FlowEdge";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
@@ -44,6 +45,10 @@ const nodeTypes = {
   list: ConfigNode,
   root: RootNode,
   direct_root: DirectRootNode,
+};
+
+const edgeTypes = {
+  flow: FlowEdge,
 };
 
 const getExpectedTypes = (connector) => {
@@ -417,6 +422,7 @@ const ChainGraphEditor = ({ graph }) => {
           onEdgeUpdateStart={onEdgeUpdateStart}
           onEdgeUpdateEnd={onEdgeUpdateEnd}
           onSelectionChange={onSelectionChange}
+          edgeTypes={edgeTypes}
           nodeTypes={nodeTypes}
           onConnect={onConnect}
           {...displayProps}
