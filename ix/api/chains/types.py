@@ -29,7 +29,7 @@ class Chain(BaseModel):
 class CreateChain(BaseModel):
     name: str
     description: Optional[str]
-    is_agent: bool = True
+    is_agent: bool = False
 
     # agent pass through properties
     alias: Optional[str] = None
