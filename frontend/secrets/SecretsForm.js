@@ -75,8 +75,8 @@ export const SecretsForm = ({ forType, secret, onSuccess }) => {
       Object.entries(data.value || {}).filter(([key, value]) => value !== "")
     );
 
-    save({ ...data, value }).then(() => {
-      onSuccess();
+    save({ ...data, value }).then((response) => {
+      onSuccess(response);
       onClose();
     });
   }, [data, save]);
