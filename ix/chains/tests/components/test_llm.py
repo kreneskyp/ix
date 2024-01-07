@@ -73,6 +73,6 @@ class TestMistralChat:
 
     async def test_aload(self, aload_chain, mock_config_secrets):
         config = await mock_config_secrets(self.CONFIG, ["mistral_api_key"])
-        ix_node = await aload_chain(config)
-        component = ix_node.child
+        flow = await aload_chain(config)
+        component = unpack_chain_flow(flow)
         assert isinstance(component, ChatMistralAI)
