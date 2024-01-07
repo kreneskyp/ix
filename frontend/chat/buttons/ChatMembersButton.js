@@ -14,7 +14,7 @@ export const ChatMembersButton = ({ graph, onUpdateAgents, agentPage }) => {
   return (
     <LeftMenuPopover>
       <LeftSidebarPopupIcon>
-        <MenuItem title="Secrets">
+        <MenuItem title="Chat Members">
           <FontAwesomeIcon icon={faUsers} />
         </MenuItem>
       </LeftSidebarPopupIcon>

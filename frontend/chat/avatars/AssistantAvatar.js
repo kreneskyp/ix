@@ -33,7 +33,7 @@ AssistantAvatar.propTypes = {
 
 AssistantAvatar.defaultProps = {
   size: "lg",
-  color: "gray.300",
+  color: "gray.400",
 };
 
 export default AssistantAvatar;

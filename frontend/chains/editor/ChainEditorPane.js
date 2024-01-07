@@ -42,7 +42,7 @@ const AgentExplanation = () => {
 
 const SaveModeChooser = ({ chain, onChange }) => {
   const { isLight, highlight } = useEditorColorMode();
-  const color = isLight
+  const bg = isLight
     ? { onColor: "#38A169", offColor: "gray.600" }
     : { onColor: "#38A169", offColor: "gray.600" };
 
@@ -69,8 +69,9 @@ const SaveModeChooser = ({ chain, onChange }) => {
             onClick={() => {
               handleChange(true);
             }}
-            bg={isAgent ? highlight.agent : color.offColor}
-            _hover={{ bg: highlight.agent }}
+            color={isAgent ? "white" : "gray.400"}
+            bg={isAgent ? highlight.agent : bg.offColor}
+            _hover={{ bg: highlight.agent, color: "white" }}
           >
             <FontAwesomeIcon icon={faRobot} />
             <Text as={"span"} ml={1}>
@@ -84,8 +85,9 @@ const SaveModeChooser = ({ chain, onChange }) => {
             onClick={() => {
               handleChange(false);
             }}
-            bg={isAgent === false ? highlight.chain : color.offColor}
-            _hover={{ bg: highlight.chain }}
+            color={isAgent === false ? "white" : "gray.400"}
+            bg={isAgent === false ? highlight.chain : bg.offColor}
+            _hover={{ bg: highlight.chain, color: "white" }}
           >
             <FontAwesomeIcon icon={faChain} />{" "}
             <Text as={"span"} ml={1}>
