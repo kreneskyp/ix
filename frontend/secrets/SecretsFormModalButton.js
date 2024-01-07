@@ -16,6 +16,7 @@ export const SecretsFormModalButton = ({
       showClose={false}
       size="xl"
       title="Edit Secret"
+      closeOnBlur={false}
     >
       {children}
       <ModalTriggerContent>
