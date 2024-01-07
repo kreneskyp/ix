@@ -9,7 +9,7 @@ export const NewChainButton = () => {
   const { colorMode } = useColorMode();
 
   return (
-    <Link to="/chains/new">
+    <Link to="/chains">
       <Button
         width="100%"
         border="1px solid"

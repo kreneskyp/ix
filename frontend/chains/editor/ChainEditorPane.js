@@ -3,11 +3,9 @@ import {
   Box,
   Button,
   HStack,
-  useDisclosure,
   Text,
   FormControl,
   FormLabel,
-  Textarea,
   VStack,
   Input,
   FormHelperText,
@@ -17,13 +15,10 @@ import { faChain, faRobot } from "@fortawesome/free-solid-svg-icons";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { ChainState } from "chains/editor/contexts";
 import { ChainEditorAPIContext } from "chains/editor/ChainEditorAPIContext";
-import { useDebounce } from "utils/hooks/useDebounce";
-import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { NameField } from "chains/editor/fields/NameField";
 import { DescriptionField } from "chains/editor/fields/DescriptionField";
 import { RequiredAsterisk } from "components/RequiredAsterisk";
 import { useChainUpdate } from "chains/hooks/useChainUpdate";
-import { getLabel } from "json_form/utils";
 
 const ChainExplanation = () => {
   return (
@@ -158,7 +153,7 @@ export const AliasField = ({ object, onChange }) => {
 };
 
 export const ChainEditorPane = () => {
-  const { chain, setChain } = useContext(ChainState);
+  const [chain, setChain] = useContext(ChainState);
   const api = useContext(ChainEditorAPIContext);
   const onChainUpdate = useChainUpdate(chain, setChain, api);
   const { scrollbar } = useEditorColorMode();

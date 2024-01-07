@@ -14,12 +14,10 @@ const useNestedCallback = (func, callback) => {
 };
 
 export const useChainEditorAPI = ({
-  chain,
   onCompleted,
   onError,
   reactFlowInstance,
 }) => {
-  const chainId = chain?.id;
   const { setNodes, setEdges } = reactFlowInstance || {};
   const onSuccess = onCompleted;
 
@@ -32,12 +30,20 @@ export const useChainEditorAPI = ({
     }
   );
 
-  const { call: updateChain, isLoading: updateChainLoading } = useUpdateAPI(
-    `/api/chains/${chainId}`,
+  const { call: axiosUpdateChain, isLoading: updateChainLoading } = useAxios(
     {
       onSuccess,
       onError,
-    }
+      method: "put",
+    },
+    []
+  );
+
+  const updateChain = useCallback(
+    (chainId, data) => {
+      return axiosUpdateChain(`/api/chains/${chainId}`, { data });
+    },
+    [axiosUpdateNode]
   );
 
   const { call: axiosSetRoot, isLoading: setRootLoading } = useAxios(
@@ -198,5 +204,5 @@ export const useChainEditorAPI = ({
       updateEdge,
       deleteEdge,
     };
-  }, [chain?.id, onCompleted, onError, reactFlowInstance]);
+  }, [onCompleted, onError, reactFlowInstance]);
 };
