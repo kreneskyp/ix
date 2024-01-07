@@ -158,6 +158,8 @@ export const ChainEditorControl = () => {
   React.useEffect(() => {
     if (id) {
       editorTabs.openChain(id);
+    } else {
+      editorTabs.addChain();
     }
   }, [id]);
 
