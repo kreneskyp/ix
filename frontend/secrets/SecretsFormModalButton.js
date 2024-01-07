@@ -4,6 +4,7 @@ import { ModalTrigger, ModalTriggerContent } from "components/Modal";
 import { Box } from "@chakra-ui/react";
 
 export const SecretsFormModalButton = ({
+  forType,
   secret,
   onOpen,
   onSuccess,
@@ -15,11 +16,16 @@ export const SecretsFormModalButton = ({
       showClose={false}
       size="xl"
       title="Edit Secret"
+      closeOnBlur={false}
     >
       {children}
       <ModalTriggerContent>
         <Box p={4}>
-          <SecretsForm secret={secret} onSuccess={onSuccess} />
+          <SecretsForm
+            forType={forType}
+            secret={secret}
+            onSuccess={onSuccess}
+          />
         </Box>
       </ModalTriggerContent>
     </ModalTrigger>

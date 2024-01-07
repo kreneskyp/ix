@@ -57,6 +57,7 @@ async def get_secret_types(
     offset: int = 0,
     user: User = Depends(get_request_user),
     search: Optional[str] = None,
+    key: Optional[str] = None,
 ):
     """
     List SecretTypes available to the user.
@@ -64,6 +65,8 @@ async def get_secret_types(
     query = SecretType.filtered_owners(user).all()
     if search:
         query = query.filter(name__icontains=search)
+    if key:
+        query = query.filter(name=key)
 
     # Handling pagination manually for this example
     query = query[offset : offset + limit]
