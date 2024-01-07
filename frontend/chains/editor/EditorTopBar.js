@@ -9,6 +9,14 @@ import { TabState } from "chains/hooks/useTabState";
 
 const EditorTab = ({ tab, isActive, index, setIndex, removeTab, ...props }) => {
   const { colorMode } = useColorMode();
+  const ref = React.useRef();
+
+  // grab focus when tab is active for the first time.
+  React.useEffect(() => {
+    if (isActive && ref.current) {
+      ref.current.focus();
+    }
+  }, [ref, isActive]);
 
   const tabStyle = {
     light: {
@@ -54,6 +62,12 @@ const EditorTab = ({ tab, isActive, index, setIndex, removeTab, ...props }) => {
       {...tabGroupStyle}
       role="group"
       onClick={() => setIndex(index)}
+      tabIndex={0}
+      ref={ref}
+      _focus={{
+        outline: "none",
+        boxShadow: "none",
+      }}
     >
       <Text fontSize={"xs"} mr={2}>
         {tab?.chain?.name || "unnamed"}{" "}
