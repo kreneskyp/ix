@@ -5,7 +5,7 @@ export function AgentNewRedirect() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate(`/chains/new`);
+    navigate(`/chains`);
   }, [navigate]);
 
   return null;

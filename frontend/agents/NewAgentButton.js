@@ -7,9 +7,9 @@ import { MenuItem } from "site/MenuItem";
 
 export const NewAgentButton = () => {
   return (
-    <Tooltip label="New Agent" aria-label="New Agent">
-      <Link to="/chains/new">
-        <MenuItem title={"New Agent"}>
+    <Tooltip label="Flow Editor" aria-label="Flow Editor">
+      <Link to="/chains">
+        <MenuItem title={"Flow Editor"}>
           <FontAwesomeIcon icon={faDiagramProject} />
         </MenuItem>
       </Link>
