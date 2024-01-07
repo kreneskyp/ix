@@ -28,6 +28,7 @@
             }
         },
         "required": [],
+        "title": "get_lambda_api",
         "type": "object"
     },
     "connectors": null,

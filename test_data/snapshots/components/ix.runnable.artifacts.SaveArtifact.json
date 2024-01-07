@@ -30,6 +30,7 @@
             }
         },
         "required": [],
+        "title": "SaveArtifact",
         "type": "object"
     },
     "connectors": [
@@ -48,12 +49,14 @@
                 "agent",
                 "branch",
                 "chain",
+                "document_loader",
                 "flow",
                 "llm",
                 "map",
                 "prompt",
                 "retriever",
                 "root",
+                "text_splitter",
                 "tool"
             ],
             "template": false,

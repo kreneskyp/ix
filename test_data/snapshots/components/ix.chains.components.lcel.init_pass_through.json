@@ -5,6 +5,7 @@
         "display_groups": null,
         "properties": {},
         "required": [],
+        "title": "init_pass_through",
         "type": "object"
     },
     "connectors": null,

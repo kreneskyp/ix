@@ -41,6 +41,7 @@
             }
         },
         "required": [],
+        "title": "ConversationTokenBufferMemory",
         "type": "object"
     },
     "connectors": [

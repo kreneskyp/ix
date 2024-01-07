@@ -108,6 +108,15 @@ class GetFieldsBase:
 
     field_source = None
 
+    def test_field_kwargs(self, field_overrides):
+        """field options may be passed as kwargs."""
+        fields = NodeTypeField.get_fields(
+            self.field_source,
+            **field_overrides,
+        )
+        field = fields[0]
+        assert field["name"] == "field1"
+
     def test_field_with_default(self, field_overrides):
         fields = NodeTypeField.get_fields(
             self.field_source,
@@ -115,7 +124,8 @@ class GetFieldsBase:
             field_options=field_overrides,
         )
 
-        assert fields[0]["default"] == "default"
+        field = fields[0] if fields[0]["name"] == "field_with_default" else fields[1]
+        assert field["default"] == "default"
 
     def test_get_literal_field(self, field_overrides):
         fields = NodeTypeField.get_fields(
@@ -124,7 +134,8 @@ class GetFieldsBase:
             field_options=field_overrides,
         )
 
-        assert fields[0]["choices"] == [
+        field = fields[0] if fields[0]["name"] == "literal" else fields[1]
+        assert field["choices"] == [
             {"value": "foo", "label": "Foo"},
             {"value": "bar", "label": "Bar"},
         ]

@@ -22,6 +22,7 @@
             }
         },
         "required": [],
+        "title": "get_wolfram_alpha",
         "type": "object"
     },
     "connectors": null,

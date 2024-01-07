@@ -20,6 +20,7 @@
             }
         },
         "required": [],
+        "title": "LLMChain",
         "type": "object"
     },
     "connectors": [

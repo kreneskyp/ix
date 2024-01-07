@@ -1,0 +1,33 @@
+{
+    "child_field": null,
+    "class_path": "ix.runnable.vectorstore.AddImages",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {},
+        "required": [],
+        "title": "AddImages",
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "vectorstore",
+            "label": null,
+            "multiple": false,
+            "required": true,
+            "source_type": "vectorstore",
+            "template": false,
+            "type": "target"
+        }
+    ],
+    "description": "Add images to a vectorstore",
+    "display_type": "node",
+    "fields": null,
+    "name": "Add Images",
+    "type": "chain"
+}

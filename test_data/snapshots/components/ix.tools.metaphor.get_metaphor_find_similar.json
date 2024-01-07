@@ -24,6 +24,7 @@
         "required": [
             "metaphor_api_key"
         ],
+        "title": "get_metaphor_find_similar",
         "type": "object"
     },
     "connectors": null,

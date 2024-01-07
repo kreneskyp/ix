@@ -3,9 +3,11 @@
     "model": "agents.agent",
     "pk": "a6357f6a-0183-418c-946e-a2152a42ee3f",
     "fields": {
+      "user": null,
+      "group": null,
       "name": "Ingestion",
       "alias": "ingest",
-      "purpose": "Example ingestion agent.\n\nThis agent accepts requests to import data from wikipedia into a Chroma vectorstore. \n\nSample Prompt:\n\"Search for artificial intelligence and add the URLs to the knowledge collection\"\n\nTo ask questions prompt the @knowledge agent, which is configured for the collection.\n\nThis agent uses the IngestionTool which uses a templated loader and vectorstore to enable both the URL and COLLECTION_NAME to be set by function call args. Both properties are configured as variables in the WebLoader and Chroma nodes respectively.\n\nThe loader, vectorstore, and agent tools are interchangeable.",
+      "purpose": "Example ingestion agent.\n\nThis agent accepts requests to import data from wikipedia into a Chroma vectorstore. \n\nSample Prompt:\n\"Search for artificial intelligence and add the URLs to the knowledge collection\"\n\nTo ask questions prompt the @knowledge agent, which is configured for the collection.",
       "created_at": "2023-09-30T03:50:35.866Z",
       "model": "",
       "config": {},
@@ -17,33 +19,12 @@
     "model": "chains.chain",
     "pk": "cf51a56e-e65f-4610-9a73-81ccda68e6c1",
     "fields": {
+      "user": null,
+      "group": null,
       "name": "Ingestion",
-      "description": "Example ingestion agent.\n\nThis agent accepts requests to import data from wikipedia into a Chroma vectorstore. \n\nSample Prompt:\n\"Search for artificial intelligence and add the URLs to the knowledge collection\"\n\nTo ask questions prompt the @knowledge agent, which is configured for the collection.\n\nThis agent uses the IngestionTool which uses a templated loader and vectorstore to enable both the URL and COLLECTION_NAME to be set by function call args. Both properties are configured as variables in the WebLoader and Chroma nodes respectively.\n\nThe loader, vectorstore, and agent tools are interchangeable.",
+      "description": "Example ingestion agent.\n\nThis agent accepts requests to import data from wikipedia into a Chroma vectorstore. \n\nSample Prompt:\n\"Search for artificial intelligence and add the URLs to the knowledge collection\"\n\nTo ask questions prompt the @knowledge agent, which is configured for the collection.",
       "created_at": "2023-09-30T03:50:35.850Z",
       "is_agent": true
-    }
-  },
-  {
-    "model": "chains.chainnode",
-    "pk": "0da91581-50c3-41ba-93ee-0d5ff45c3402",
-    "fields": {
-      "class_path": "langchain.document_loaders.web_base.WebBaseLoader",
-      "node_type": [
-        "langchain.document_loaders.web_base.WebBaseLoader"
-      ],
-      "config": {
-        "web_path": ["{URL}"],
-        "verify_ssl": true,
-        "continue_on_failure": false
-      },
-      "name": "Web Loader (template)",
-      "description": null,
-      "root": false,
-      "position": {
-        "x": 320.0,
-        "y": 610.0
-      },
-      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
     }
   },
   {
@@ -75,39 +56,6 @@
   },
   {
     "model": "chains.chainnode",
-    "pk": "278cdfeb-4faf-4e70-a7b7-7f49124f2004",
-    "fields": {
-      "class_path": "ix.chains.components.vectorstores.AsyncChromaVectorstore",
-      "node_type": [
-        "ix.chains.components.vectorstores.AsyncChromaVectorstore"
-      ],
-      "config": {
-        "allow_reset": false,
-        "search_type": "similarity",
-        "collection_name": "{COLLECTION_NAME}",
-        "persist_directory": "./chroma",
-        "chroma_server_host": "172.17.42.1",
-        "allowed_search_types": [
-          "similarity",
-          "similarity_score_threshold",
-          "mmr"
-        ],
-        "anonymized_telemetry": true,
-        "chroma_server_http_port": "8020",
-        "chroma_server_ssl_enabled": false
-      },
-      "name": "Chroma (template)",
-      "description": null,
-      "root": false,
-      "position": {
-        "x": 620.0,
-        "y": 690.0
-      },
-      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
-    }
-  },
-  {
-    "model": "chains.chainnode",
     "pk": "320e3eb8-dca6-4098-93b8-69810853aedb",
     "fields": {
       "class_path": "ix.tools.wikipedia.get_wikipedia",
@@ -126,8 +74,8 @@
       "description": null,
       "root": false,
       "position": {
-        "x": 940.0,
-        "y": 450.0
+        "x": 200.0,
+        "y": 480.0
       },
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
     }
@@ -151,55 +99,36 @@
       "description": null,
       "root": false,
       "position": {
-        "x": -120.0,
-        "y": 440.0
+        "x": -20.0,
+        "y": 720.0
       },
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
     }
   },
   {
     "model": "chains.chainnode",
-    "pk": "66c5fbca-a313-4f65-a9fb-e66865498ff2",
+    "pk": "5759b13b-e67a-4b8c-a5a8-94a3959f7a7e",
     "fields": {
-      "class_path": "ix.chains.components.tools.IngestionTool",
+      "class_path": "__ROOT__",
       "node_type": [
-        "ix.chains.components.tools.IngestionTool"
+        "__ROOT__"
       ],
       "config": {
-        "verbose": false,
-        "return_direct": false
+        "outputs": [
+          "user_input",
+          "artifact_ids"
+        ],
+        "outputs_hash": [
+          "user_input",
+          "artifact_ids"
+        ]
       },
-      "name": null,
-      "description": null,
-      "root": false,
+      "name": "",
+      "description": "",
+      "root": true,
       "position": {
-        "x": 940.0,
-        "y": 540.0
-      },
-      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
-    }
-  },
-  {
-    "model": "chains.chainnode",
-    "pk": "6ea6ab09-c635-44b3-86d6-61e247be7d93",
-    "fields": {
-      "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
-      "node_type": [
-        "langchain.embeddings.openai.OpenAIEmbeddings"
-      ],
-      "config": {
-        "model": "text-embedding-ada-002",
-        "chunk_size": 1000,
-        "max_retries": "6",
-        "allowed_special": [],
-        "disallowed_special": []
-      },
-      "name": null,
-      "description": null,
-      "root": false,
-      "position": {
-        "x": 320.0,
-        "y": 700.0
+        "x": 60.0,
+        "y": 240.0
       },
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
     }
@@ -213,16 +142,37 @@
         "ix.chains.loaders.agents.initialize_openai_functions"
       ],
       "config": {
-        "verbose": false,
+        "verbose": true,
         "max_iterations": 15,
         "return_intermediate_steps": false
       },
       "name": null,
       "description": null,
-      "root": true,
+      "root": false,
       "position": {
-        "x": 470.0,
-        "y": 280.0
+        "x": 530.0,
+        "y": 240.0
+      },
+      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "97aba019-e27b-4d47-a981-4742fefb4634",
+    "fields": {
+      "class_path": "ix.runnable.flow.load_chain_id",
+      "node_type": [
+        "ix.runnable.flow.load_chain_id"
+      ],
+      "config": {
+        "chain_id": "488b62fd-4481-44f2-90f7-13a86d08aad7"
+      },
+      "name": "ingest_url",
+      "description": "Ingests a URL",
+      "root": false,
+      "position": {
+        "x": 200.0,
+        "y": 570.0
       },
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
     }
@@ -247,57 +197,10 @@
       "description": null,
       "root": false,
       "position": {
-        "x": 160.0,
-        "y": 440.0
+        "x": 270.0,
+        "y": 720.0
       },
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
-    }
-  },
-  {
-    "model": "chains.chainnode",
-    "pk": "ce07b21e-fc35-4a42-b62a-1d9940384783",
-    "fields": {
-      "class_path": "langchain.text_splitter.RecursiveCharacterTextSplitter.from_language",
-      "node_type": [
-        "langchain.text_splitter.RecursiveCharacterTextSplitter.from_language"
-      ],
-      "config": {
-        "language": "python",
-        "chunk_size": 4000,
-        "chunk_overlap": 200
-      },
-      "name": null,
-      "description": null,
-      "root": false,
-      "position": {
-        "x": 600.0,
-        "y": 600.0
-      },
-      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1"
-    }
-  },
-  {
-    "model": "chains.chainedge",
-    "pk": "050cfe29-d976-4adb-9366-15045da1af69",
-    "fields": {
-      "source": "ce07b21e-fc35-4a42-b62a-1d9940384783",
-      "target": "66c5fbca-a313-4f65-a9fb-e66865498ff2",
-      "target_key": "loader_template",
-      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1",
-      "input_map": null,
-      "relation": "PROP"
-    }
-  },
-  {
-    "model": "chains.chainedge",
-    "pk": "07a06c2b-d673-4e5c-810c-bb96b6fa94cf",
-    "fields": {
-      "source": "6ea6ab09-c635-44b3-86d6-61e247be7d93",
-      "target": "278cdfeb-4faf-4e70-a7b7-7f49124f2004",
-      "target_key": "embedding",
-      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1",
-      "input_map": null,
-      "relation": "PROP"
     }
   },
   {
@@ -306,6 +209,7 @@
     "fields": {
       "source": "320e3eb8-dca6-4098-93b8-69810853aedb",
       "target": "7c5bd2c0-ff9b-400f-b134-b996f447caa6",
+      "source_key": null,
       "target_key": "tools",
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1",
       "input_map": null,
@@ -318,19 +222,8 @@
     "fields": {
       "source": "9a29b917-afd0-4344-a970-a56f01aa6572",
       "target": "7c5bd2c0-ff9b-400f-b134-b996f447caa6",
+      "source_key": null,
       "target_key": "memory",
-      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1",
-      "input_map": null,
-      "relation": "PROP"
-    }
-  },
-  {
-    "model": "chains.chainedge",
-    "pk": "32a1b5ac-d870-4b61-9175-c0af0a1df7f7",
-    "fields": {
-      "source": "278cdfeb-4faf-4e70-a7b7-7f49124f2004",
-      "target": "66c5fbca-a313-4f65-a9fb-e66865498ff2",
-      "target_key": "vectorstore",
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1",
       "input_map": null,
       "relation": "PROP"
@@ -342,6 +235,7 @@
     "fields": {
       "source": "2258798f-e165-4ec7-8d12-336cdc80e74b",
       "target": "7c5bd2c0-ff9b-400f-b134-b996f447caa6",
+      "source_key": null,
       "target_key": "llm",
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1",
       "input_map": null,
@@ -350,23 +244,12 @@
   },
   {
     "model": "chains.chainedge",
-    "pk": "4c3595de-7635-4cd2-93ab-b77743b5e673",
+    "pk": "6565867c-0fd0-41cf-b9e3-1b3c7ad4a979",
     "fields": {
-      "source": "66c5fbca-a313-4f65-a9fb-e66865498ff2",
+      "source": "97aba019-e27b-4d47-a981-4742fefb4634",
       "target": "7c5bd2c0-ff9b-400f-b134-b996f447caa6",
+      "source_key": "chain",
       "target_key": "tools",
-      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1",
-      "input_map": null,
-      "relation": "PROP"
-    }
-  },
-  {
-    "model": "chains.chainedge",
-    "pk": "69a1a32f-c1ba-4cd3-ab97-a7e6c1a40afc",
-    "fields": {
-      "source": "0da91581-50c3-41ba-93ee-0d5ff45c3402",
-      "target": "ce07b21e-fc35-4a42-b62a-1d9940384783",
-      "target_key": "document_loader",
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1",
       "input_map": null,
       "relation": "PROP"
@@ -378,10 +261,24 @@
     "fields": {
       "source": "4336be58-6e54-442e-932b-e368a734f5dd",
       "target": "9a29b917-afd0-4344-a970-a56f01aa6572",
+      "source_key": null,
       "target_key": "chat_memory",
       "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1",
       "input_map": null,
       "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "9441c8e1-6e43-4f19-bc66-d133f5a2dc43",
+    "fields": {
+      "source": "5759b13b-e67a-4b8c-a5a8-94a3959f7a7e",
+      "target": "7c5bd2c0-ff9b-400f-b134-b996f447caa6",
+      "source_key": "user_input",
+      "target_key": "in",
+      "chain": "cf51a56e-e65f-4610-9a73-81ccda68e6c1",
+      "input_map": null,
+      "relation": "LINK"
     }
   }
 ]

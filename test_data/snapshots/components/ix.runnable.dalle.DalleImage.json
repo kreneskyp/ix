@@ -63,6 +63,7 @@
             }
         },
         "required": [],
+        "title": "DalleImage",
         "type": "object"
     },
     "connectors": null,

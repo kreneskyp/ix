@@ -16,9 +16,26 @@
         "required": [
             "text"
         ],
+        "title": "StringLoader",
         "type": "object"
     },
-    "connectors": null,
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "out",
+            "label": "Documents",
+            "multiple": false,
+            "required": false,
+            "source_type": "data",
+            "template": false,
+            "type": "source"
+        }
+    ],
     "description": "Load a static string as a document.",
     "display_type": "node",
     "fields": [

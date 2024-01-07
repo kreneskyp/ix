@@ -5,6 +5,7 @@
         "display_groups": null,
         "properties": {},
         "required": [],
+        "title": "get_load_image_artifact",
         "type": "object"
     },
     "connectors": null,

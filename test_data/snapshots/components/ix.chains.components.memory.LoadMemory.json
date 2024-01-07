@@ -5,11 +5,7 @@
         "display_groups": null,
         "properties": {
             "memory_inputs": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
@@ -24,6 +20,7 @@
         "required": [
             "memory_inputs"
         ],
+        "title": "LoadMemory",
         "type": "object"
     },
     "connectors": [

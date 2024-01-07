@@ -3,11 +3,9 @@ import {
   Box,
   Button,
   HStack,
-  useDisclosure,
   Text,
   FormControl,
   FormLabel,
-  Textarea,
   VStack,
   Input,
   FormHelperText,
@@ -17,13 +15,10 @@ import { faChain, faRobot } from "@fortawesome/free-solid-svg-icons";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { ChainState } from "chains/editor/contexts";
 import { ChainEditorAPIContext } from "chains/editor/ChainEditorAPIContext";
-import { useDebounce } from "utils/hooks/useDebounce";
-import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { NameField } from "chains/editor/fields/NameField";
 import { DescriptionField } from "chains/editor/fields/DescriptionField";
 import { RequiredAsterisk } from "components/RequiredAsterisk";
 import { useChainUpdate } from "chains/hooks/useChainUpdate";
-import { getLabel } from "json_form/utils";
 
 const ChainExplanation = () => {
   return (
@@ -47,7 +42,7 @@ const AgentExplanation = () => {
 
 const SaveModeChooser = ({ chain, onChange }) => {
   const { isLight, highlight } = useEditorColorMode();
-  const color = isLight
+  const bg = isLight
     ? { onColor: "#38A169", offColor: "gray.600" }
     : { onColor: "#38A169", offColor: "gray.600" };
 
@@ -74,8 +69,9 @@ const SaveModeChooser = ({ chain, onChange }) => {
             onClick={() => {
               handleChange(true);
             }}
-            bg={isAgent ? highlight.agent : color.offColor}
-            _hover={{ bg: highlight.agent }}
+            color={isAgent ? "white" : "gray.400"}
+            bg={isAgent ? highlight.agent : bg.offColor}
+            _hover={{ bg: highlight.agent, color: "white" }}
           >
             <FontAwesomeIcon icon={faRobot} />
             <Text as={"span"} ml={1}>
@@ -89,8 +85,9 @@ const SaveModeChooser = ({ chain, onChange }) => {
             onClick={() => {
               handleChange(false);
             }}
-            bg={isAgent === false ? highlight.chain : color.offColor}
-            _hover={{ bg: highlight.chain }}
+            color={isAgent === false ? "white" : "gray.400"}
+            bg={isAgent === false ? highlight.chain : bg.offColor}
+            _hover={{ bg: highlight.chain, color: "white" }}
           >
             <FontAwesomeIcon icon={faChain} />{" "}
             <Text as={"span"} ml={1}>
@@ -158,7 +155,7 @@ export const AliasField = ({ object, onChange }) => {
 };
 
 export const ChainEditorPane = () => {
-  const { chain, setChain } = useContext(ChainState);
+  const [chain, setChain] = useContext(ChainState);
   const api = useContext(ChainEditorAPIContext);
   const onChainUpdate = useChainUpdate(chain, setChain, api);
   const { scrollbar } = useEditorColorMode();

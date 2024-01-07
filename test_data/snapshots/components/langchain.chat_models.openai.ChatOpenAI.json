@@ -135,11 +135,7 @@
                 "type": "boolean"
             },
             "tags": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
@@ -172,6 +168,7 @@
             "tags",
             "metadata"
         ],
+        "title": "ChatOpenAI",
         "type": "object"
     },
     "connectors": [
@@ -190,12 +187,14 @@
                 "agent",
                 "branch",
                 "chain",
+                "document_loader",
                 "flow",
                 "llm",
                 "map",
                 "prompt",
                 "retriever",
                 "root",
+                "text_splitter",
                 "tool"
             ],
             "template": false,

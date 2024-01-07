@@ -3,8 +3,8 @@ from copy import deepcopy
 from typing import Optional, Any
 
 from langchain.schema.runnable import Runnable, RunnableConfig
-from langchain.schema.runnable.utils import Output, Input
-from pydantic import BaseModel
+from langchain.schema.runnable.utils import Output
+from pydantic.v1 import BaseModel as BaseModelV1
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,11 @@ MOCK_RUNNABLE_CONFIG = {
 }
 
 
-class MockRunnable(Runnable[Input, Output], BaseModel):
+class MockRunnableInput(BaseModelV1):
+    value: str = "input"
+
+
+class MockRunnable(Runnable[MockRunnableInput, Output], BaseModelV1):
     """Mock runnable that returns a default value"""
 
     name: str = "default"
@@ -27,7 +31,7 @@ class MockRunnable(Runnable[Input, Output], BaseModel):
 
     def invoke(
         self,
-        input: Input,
+        input: MockRunnableInput,
         config: Optional[RunnableConfig] = None,
     ) -> dict:
         if isinstance(input, dict):

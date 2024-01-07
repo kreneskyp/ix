@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useContext } from "react";
 import { v4 as uuid4 } from "uuid";
-import { Box, IconButton, Input } from "@chakra-ui/react";
+import { Box, IconButton } from "@chakra-ui/react";
 import ReactFlow, {
   addEdge,
   updateEdge,
@@ -10,7 +10,6 @@ import ReactFlow, {
   useEdgesState,
 } from "reactflow";
 import ConfigNode from "chains/flow/ConfigNode";
-import { useNavigate } from "react-router-dom";
 
 import "reactflow/dist/style.css";
 import "./styles.css";
@@ -27,15 +26,16 @@ import { useDebounce } from "utils/hooks/useDebounce";
 import { useAxios } from "utils/hooks/useAxios";
 import {
   ChainState,
+  ChainTypes,
   NodeStateContext,
   SelectedNodeContext,
 } from "chains/editor/contexts";
 import { useConnectionValidator } from "chains/hooks/useConnectionValidator";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightLeft } from "@fortawesome/free-solid-svg-icons";
-import { useChainUpdate } from "chains/hooks/useChainUpdate";
 import { useRightSidebarContext } from "site/sidebar/context";
 import { DirectRootNode } from "chains/flow/DirectRootNode";
+import { TabState } from "chains/hooks/useTabState";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
@@ -52,22 +52,42 @@ const getExpectedTypes = (connector) => {
     : new Set([connector.source_type]);
 };
 
-const ChainGraphEditor = ({ graph }) => {
-  const reactFlowWrapper = useRef(null);
-  const edgeUpdate = useRef(true);
-  const { call: loadChain } = useAxios();
-  const { chain, setChain } = useContext(ChainState);
+const addType = (type, setTypes) => {
+  setTypes((prev) => {
+    if (!prev.some((t) => t.id === type.id)) {
+      return [...prev, type];
+    }
+    return prev;
+  });
+};
 
-  const reactFlowGraph = useGraphForReactFlow(graph);
-  const [nodes, setNodes, onNodesChange] = useNodesState(reactFlowGraph.nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(reactFlowGraph.edges);
-  const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const { colorMode } = useColorMode();
-  const navigate = useNavigate();
+const ChainGraphEditor = ({ graph }) => {
+  // editor contexts
+  const [chain, setChain] = useContext(ChainState);
+  const [types, setTypes] = useContext(ChainTypes);
   const nodeState = useContext(NodeStateContext);
+  const tabState = useContext(TabState);
   const api = useContext(ChainEditorAPIContext);
   const { selectedNode, selectedConnector, setSelectedConnector } =
     useContext(SelectedNodeContext);
+
+  const reactFlowWrapper = useRef(null);
+  const edgeUpdate = useRef(true);
+  const { call: loadChain } = useAxios();
+
+  const reactFlowGraph = useGraphForReactFlow(graph, types);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const { colorMode } = useColorMode();
+
+  // if active chain changes, then reload nodes and edges
+  React.useEffect(() => {
+    if (reactFlowGraph?.chain !== undefined) {
+      setNodes(reactFlowGraph.nodes);
+      setEdges(reactFlowGraph.edges);
+    }
+  }, [reactFlowGraph]);
 
   // handle dragging a node onto the graph
   const onDragOver = useCallback((event) => {
@@ -82,13 +102,15 @@ const ChainGraphEditor = ({ graph }) => {
 
   const onNodeSaved = useCallback(
     (response) => {
-      // first node creates the new chain
-      // redirect to the correct URL
+      // first node creates the new chain which must be loaded
       if (chain?.id === undefined) {
-        navigate(`/chains/${response.data.chain_id}`, { replace: true });
         loadChain(`/api/chains/${response.data.chain_id}`, {
           onSuccess: (response) => {
-            setChain(response.data);
+            tabState.setActive((prev) => ({
+              ...prev,
+              chain_id: response.data.chain_id,
+              chain: response.data,
+            }));
           },
         });
       }
@@ -178,6 +200,7 @@ const ChainGraphEditor = ({ graph }) => {
         id: newNodeID,
         chain_id: chain?.id || null,
         class_path: nodeType.class_path,
+        node_type_id: nodeType.id,
         name: "",
         description: "",
         position: position,
@@ -186,12 +209,11 @@ const ChainGraphEditor = ({ graph }) => {
       if (edge) {
         data.edges = [edge];
       }
+
+      // add to API, local state, and ReactFlow
       nodeState.setNode(data);
-
-      // create ReactFlow node
+      addType(nodeType, setTypes);
       const flowNode = toReactFlowNode(data, nodeType);
-
-      // add to API and ReactFlow
       api.addNode(data, { onSuccess: onNodeSaved });
       setNodes((nds) => nds.concat(flowNode));
 
@@ -221,6 +243,7 @@ const ChainGraphEditor = ({ graph }) => {
 
     // update node with new position
     api.updateNodePosition(node.id, node.position);
+    nodeState.setNode({ ...node.data.node, position: node.position });
   }, []);
 
   // new edges
@@ -339,14 +362,6 @@ const ChainGraphEditor = ({ graph }) => {
     api.createChain(...args);
   }, 800);
 
-  const onChainUpdate = useChainUpdate(chain, setChain, api);
-  const onTitleChange = useCallback(
-    (event) => {
-      onChainUpdate({ ...chain, name: event.target.value });
-    },
-    [chain, onChainUpdate]
-  );
-
   const onSelectionChange = useCallback((selection) => {
     if (selection?.nodes?.length === 0) {
       setSelectedConnector(null);
@@ -378,22 +393,7 @@ const ChainGraphEditor = ({ graph }) => {
   const { toggleSidebar } = useRightSidebarContext();
   return (
     <Box height="93vh">
-      <Box display="flex" alignItems="center">
-        <Box pb={1}>
-          <Input
-            size="sm"
-            placeholder={"Unnamed Chain"}
-            value={chain?.name || ""}
-            width={300}
-            borderColor="transparent"
-            _hover={{
-              border: "1px solid",
-              borderColor: "gray.500",
-            }}
-            onChange={onTitleChange}
-          />
-        </Box>
-
+      <Box position="absolute" right={7} display="flex" alignItems="center">
         <IconButton
           ml="auto"
           icon={<FontAwesomeIcon icon={faRightLeft} />}

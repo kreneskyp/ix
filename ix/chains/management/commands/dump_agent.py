@@ -46,7 +46,7 @@ class Command(BaseCommand):
 
         to_dump = []
         if agent is not None:
-            to_dump.append(agent)
+            to_dump.append(("agents.Agent", agent.id))
         to_dump.extend(
             [
                 ("chains.Chain", chain.id),

@@ -1,12 +1,15 @@
 RUNNABLE_TYPES = [
     "agent",
     "chain",
+    "document_loader",
     "llm",
     "prompt",
     "retriever",
+    "text_splitter",
     "tool",
 ]
-FLOW_TYPES = sorted(RUNNABLE_TYPES + ["root", "branch", "map", "flow"])
+FLOW_CONTROL_TYPES = ["root", "branch", "map", "flow"]
+FLOW_TYPES = sorted(RUNNABLE_TYPES + FLOW_CONTROL_TYPES)
 
 
 EMBEDDINGS_TARGET = {

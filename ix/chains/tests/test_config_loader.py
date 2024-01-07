@@ -1,5 +1,7 @@
 import uuid
 from copy import deepcopy
+from functools import reduce
+from operator import or_
 
 import pytest
 from unittest.mock import MagicMock
@@ -16,8 +18,9 @@ from langchain.schema.runnable import (
     RunnableLambda,
 )
 from langchain.schema.runnable.base import RunnableEach
-from langchain.text_splitter import TextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Redis
+from langchain_core.runnables import RunnablePassthrough, Runnable
 
 from ix.chains.fixture_src.agents import OPENAI_FUNCTIONS_AGENT_CLASS_PATH
 from ix.chains.fixture_src.lcel import (
@@ -50,15 +53,13 @@ from ix.chains.loaders.core import (
     ImplicitJoin,
 )
 from ix.chains.loaders.memory import get_memory_session
-from ix.chains.loaders.text_splitter import TextSplitterShim
-from ix.chains.loaders.tools import extract_tool_kwargs
+from ix.chains.loaders.tools import extract_tool_kwargs, get_runnable_tool
 from ix.chains.models import Chain
 from ix.chains.tests.mock_configs import (
     CONVERSATIONAL_RETRIEVAL_CHAIN,
     EMBEDDINGS,
     LANGUAGE_PARSER,
     DOCUMENT_LOADER,
-    TEST_DOCUMENTS,
     GOOGLE_SEARCH_CONFIG,
     MEMORY,
     LLM_REPLY_WITH_HISTORY,
@@ -72,19 +73,39 @@ from ix.chains.tests.mock_configs import (
     PROMPT_CHAT_0,
     PROMPT_CHAT_1,
     PROMPT_CHAT_2,
+    TEXT_SPLITTER,
 )
 from ix.chains.tests.mock_memory import MockMemory
 from ix.chains.tests.mock_runnable import MockRunnable
-from ix.chains.tests.test_templates import TEXT_SPLITTER
 from ix.conftest import aload_fixture
 from ix.memory.artifacts import ArtifactMemory
+from ix.runnable.documents import RunLoader, RunTransformer
 from ix.runnable.ix import IxNode
 from ix.task_log.tests.fake import afake_chain_node, afake_chain, afake_chain_edge
 from ix.utils.importlib import import_class
 
 
-class TestLoadLLM:
-    pass
+def unpack_chain_flow(runnable: RunnableSequence) -> Runnable:
+    """Helper to unpack the default sequence to get to the first node
+    added by the flow.
+
+    All chain flows are wrapped in a default sequence that includes a passthrough
+    and then the actual flow. This helper asserts and unpacks the structure since
+    most tests care about the first node unique to the flow.
+    """
+    if isinstance(runnable, RunnableSequence) and isinstance(
+        runnable.steps[0], RunnablePassthrough
+    ):
+        type_mask = runnable.steps[0]
+        runnable = reduce(or_, runnable.steps[1:])
+        assert isinstance(type_mask, RunnablePassthrough)
+
+    if isinstance(runnable, RunnableSequence):
+        return runnable
+    elif isinstance(runnable, IxNode):
+        assert isinstance(runnable, IxNode)
+        return runnable.child
+    return runnable
 
 
 @pytest.mark.django_db
@@ -100,8 +121,8 @@ class TestLoadMemory:
 
         LLM_CONFIG = deepcopy(LLM_REPLY_WITH_HISTORY)
         LLM_CONFIG["config"]["memory"] = [MEMORY, MEMORY2]
-        ix_node = load_chain(LLM_CONFIG)
-        chain = ix_node.child
+        flow = load_chain(LLM_CONFIG)
+        chain = unpack_chain_flow(flow)
         instance = chain.memory
         assert isinstance(instance, CombinedMemory)
         assert len(instance.memories) == 2
@@ -364,9 +385,9 @@ class TestGoogleTools:
             "config": {},
         }
 
-        instance = await aload_chain(config)
-        assert isinstance(instance, IxNode)
-        assert isinstance(instance.child, BaseTool)
+        flow = await aload_chain(config)
+        instance = unpack_chain_flow(flow)
+        assert isinstance(instance, BaseTool)
 
 
 @pytest.mark.django_db
@@ -415,8 +436,8 @@ class TestLoadAgents:
             "config": {"tools": [GOOGLE_SEARCH_CONFIG], "llm": OPENAI_LLM},
         }
 
-        ix_node = await aload_chain(config)
-        instance = ix_node.child
+        sequence = await aload_chain(config)
+        instance = unpack_chain_flow(sequence)
         assert isinstance(instance, AgentExecutor)
 
     async def test_agent_memory(self, mock_openai, aload_chain, mock_google_api_key):
@@ -430,8 +451,8 @@ class TestLoadAgents:
                 "memory": AGENT_MEMORY,
             },
         }
-        ix_node = await aload_chain(config)
-        executor = ix_node.child
+        flow = await aload_chain(config)
+        executor = unpack_chain_flow(flow)
         assert isinstance(executor, AgentExecutor)  # sanity check
 
         # 1. test that prompt includes placeholders
@@ -468,6 +489,37 @@ class TestLoadAgents:
 
 
 @pytest.mark.django_db
+class TestLoadTools:
+    def test_get_runnable_tool(self):
+        runnable = MockRunnable()
+        tool = get_runnable_tool(
+            name="test", description="this is a test", runnable=runnable
+        )
+        assert isinstance(tool, BaseTool)
+        assert tool.name == "test"
+        assert tool.description == "this is a test"
+        assert tool.args_schema.schema() == {
+            "properties": {
+                "value": {"default": "input", "title": "Value", "type": "string"}
+            },
+            "title": "MockRunnableInput",
+            "type": "object",
+        }
+
+        response = tool(dict(value=1))
+        assert response == {"default": "output", "value": "1"}
+
+    async def test_aget_runnable_tool(self):
+        runnable = MockRunnable()
+        tool = get_runnable_tool(
+            name="test", description="this is a test", runnable=runnable
+        )
+        assert isinstance(tool, BaseTool)
+        response = await tool.ainvoke(dict(value=1))
+        assert response == {"default": "output", "value": "1"}
+
+
+@pytest.mark.django_db
 class TestLoadRetrieval:
     """Test loading retrieval components.
 
@@ -482,31 +534,16 @@ class TestLoadRetrieval:
         assert component.language == "python"
 
     async def test_load_document_loader(self, aload_chain):
-        component = await aload_chain(DOCUMENT_LOADER)
-        assert isinstance(component, GenericLoader)
-        assert isinstance(component.blob_parser, LanguageParser)
-
-        # non-exhaustive test of document loading
-        documents = component.load()
-        sources = {doc.metadata["source"] for doc in documents}
-        expected_sources = {
-            str(TEST_DOCUMENTS / "foo.py"),
-            str(TEST_DOCUMENTS / "bar.py"),
-        }
-        assert sources == expected_sources
+        flow = await aload_chain(DOCUMENT_LOADER)
+        instance = unpack_chain_flow(flow)
+        assert isinstance(instance, RunLoader)
+        assert instance.initializer == GenericLoader.from_filesystem
 
     async def test_load_text_splitter(self, aload_chain):
-        component = await aload_chain(TEXT_SPLITTER)
-        assert isinstance(component, TextSplitterShim)
-        assert isinstance(component.document_loader, GenericLoader)
-        assert isinstance(component.text_splitter, TextSplitter)
-
-        # sanity check that the splitter splits text
-        # does not test the actual splitting algorithm
-        with open(TEST_DOCUMENTS / "foo.py", "r") as foo_file:
-            foo_content = foo_file.read()
-        split_texts = component.text_splitter.split_text(foo_content)
-        assert len(split_texts) >= 1
+        flow = await aload_chain(TEXT_SPLITTER)
+        instance = unpack_chain_flow(flow)
+        assert isinstance(instance, RunTransformer)
+        assert isinstance(instance.transformer, RecursiveCharacterTextSplitter)
 
     async def test_load_embeddings(self, aload_chain):
         component = await aload_chain(EMBEDDINGS)
@@ -522,9 +559,9 @@ class TestLoadRetrieval:
         self, clean_redis, aload_chain, mock_openai_embeddings
     ):
         """Test loading a fully configured conversational chain."""
-        ix_node = await aload_chain(CONVERSATIONAL_RETRIEVAL_CHAIN)
-        component = ix_node.child
-        assert isinstance(component, ConversationalRetrievalChain)
+        flow = await aload_chain(CONVERSATIONAL_RETRIEVAL_CHAIN)
+        instance = unpack_chain_flow(flow)
+        assert isinstance(instance, ConversationalRetrievalChain)
 
 
 @pytest.mark.django_db
@@ -556,7 +593,8 @@ class TestFlowComponents:
         llm = await afake_chain_node(chain=chain, config=OPENAI_LLM, root=False)
         await afake_chain_edge(chain=chain, source=prompt, target=llm, relation="LINK")
 
-        runnable = await chain.aload_chain(context=aix_context)
+        flow = await chain.aload_chain(context=aix_context)
+        runnable = unpack_chain_flow(flow)
         await self.assert_basic_sequence(runnable)
 
     async def test_parallel(self, aix_context, mock_openai):
@@ -596,7 +634,8 @@ class TestFlowComponents:
         )
 
         # test loaded runnable
-        runnable = await chain.aload_chain(context=aix_context)
+        flow = await chain.aload_chain(context=aix_context)
+        runnable = unpack_chain_flow(flow)
         assert isinstance(runnable, RunnableMap)
         assert len(runnable.steps) == 2
         assert isinstance(
@@ -657,7 +696,9 @@ class TestFlowComponents:
             target_key="in",
         )
 
-        runnable = await chain.aload_chain(context=aix_context)
+        flow = await chain.aload_chain(context=aix_context)
+        runnable = unpack_chain_flow(flow)
+
         assert isinstance(runnable, RunnableBranch)
         assert len(runnable.branches) == 2
         assert isinstance(runnable.default, IxNode)
@@ -690,7 +731,9 @@ class TestFlowComponents:
     async def test_each(self, aix_context, mock_openai, lcel_flow_each_in_sequence):
         """Test RunnableEach"""
         chain = lcel_flow_each_in_sequence["chain"]
-        runnable = await chain.aload_chain(context=aix_context)
+        flow = await chain.aload_chain(context=aix_context)
+        runnable = unpack_chain_flow(flow)
+
         assert isinstance(runnable, RunnableSequence)
         assert len(runnable.steps) == 2
         assert isinstance(runnable.steps[0], IxNode)
@@ -749,7 +792,7 @@ class TestLoadFlow:
     async def test_sequence(self, lcel_sequence, aix_context):
         fixture = lcel_sequence
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
 
         assert flow == [
             fixture["nodes"][0],
@@ -769,7 +812,7 @@ class TestLoadFlow:
             "b": fixture["node2"],
         }
         # assert flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["map"]
 
     async def test_map_with_one_branch(self, lcel_map_with_one_branch, aix_context):
@@ -782,14 +825,14 @@ class TestLoadFlow:
             "a": fixture["node1"],
         }
         # assert flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["map"]
 
     async def test_sequence_in_map_start(self, lcel_sequence_in_map_start, aix_context):
         """Test a map with a nested sequence. First node in chain is the map."""
         fixture = lcel_sequence_in_map_start
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["map"]
 
     async def test_sequence_in_map_in_sequence(
@@ -801,7 +844,7 @@ class TestLoadFlow:
         """
         fixture = lcel_sequence_in_map_in_sequence
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["node1"],
             fixture["map"],
@@ -817,7 +860,7 @@ class TestLoadFlow:
         """
         fixture = lcel_sequence_in_map_in_sequence_n2
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["node1"],
             fixture["map"],
@@ -829,7 +872,7 @@ class TestLoadFlow:
         """Test a sequence starting with a map. First node in chain is a map"""
         fixture = lcel_map_in_sequence_start
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["map"],
             fixture["node2"],
@@ -841,7 +884,7 @@ class TestLoadFlow:
         """Test a sequence starting with a map. First node in chain is a map"""
         fixture = lcel_map_in_sequence_start_n2
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["map"],
             fixture["node2"],
@@ -852,7 +895,7 @@ class TestLoadFlow:
         """Test a sequence with a nested map. First node in chain is the first node of sequence."""
         fixture = lcel_map_in_sequence
         chain = lcel_map_in_sequence["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["node1"],
             fixture["map"],
@@ -863,7 +906,7 @@ class TestLoadFlow:
         """Test a sequence with a nested map. First node in chain is the first node of sequence."""
         fixture = lcel_map_in_sequence_n2
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["node1"],
             fixture["map"],
@@ -875,7 +918,7 @@ class TestLoadFlow:
         """Test a map with a nested map"""
         fixture = lcel_map_in_map
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["map"]
 
     async def test_map_in_map_in_sequence_start(
@@ -884,7 +927,7 @@ class TestLoadFlow:
         """Test a map with a nested map"""
         fixture = lcel_map_in_map_in_sequence_start
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["map"],
             fixture["node3"],
@@ -896,7 +939,7 @@ class TestLoadFlow:
         """Test a map with a nested map"""
         fixture = lcel_map_in_map_in_sequence_start_n2
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["map"],
             fixture["node3"],
@@ -909,7 +952,7 @@ class TestLoadFlow:
         """Test a map with a nested map"""
         fixture = lcel_map_in_map_in_sequence
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["node1"],
             fixture["map"],
@@ -921,7 +964,7 @@ class TestLoadFlow:
         """Test a map with a nested map"""
         fixture = lcel_map_in_map_in_sequence_n2
         chain = fixture["chain"]
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == [
             fixture["node1"],
             fixture["map"],
@@ -942,7 +985,7 @@ class TestLoadFlow:
         ]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
     async def test_branch_in_branch(self, lcel_branch_in_branch, aix_context):
@@ -959,7 +1002,7 @@ class TestLoadFlow:
         ]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
     async def test_branch_in_default_branch(
@@ -974,7 +1017,7 @@ class TestLoadFlow:
         assert fixture["branch"].default == fixture["inner_branch"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
     async def test_sequence_in_branch(self, lcel_sequence_in_branch, aix_context):
@@ -990,7 +1033,7 @@ class TestLoadFlow:
         ]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
     async def test_sequence_in_default_branch(
@@ -1005,7 +1048,7 @@ class TestLoadFlow:
         assert fixture["branch"].default == fixture["inner_sequence"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
     async def test_map_in_branch(self, lcel_map_in_branch, aix_context):
@@ -1014,7 +1057,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
     async def test_map_in_default_branch(self, lcel_map_in_default_branch, aix_context):
@@ -1023,7 +1066,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["branch"]
 
     async def test_branch_in_sequence(self, lcel_branch_in_sequence, aix_context):
@@ -1036,7 +1079,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
 
         # Verify the class of the flow using isinstance
         assert isinstance(flow, SequencePlaceholder)
@@ -1096,7 +1139,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["sequence"]
 
     @pytest.mark.skip(reason="not supported yet")
@@ -1105,7 +1148,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["map"]
 
     async def test_join_after_branch(self, lcel_join_after_branch, aix_context):
@@ -1134,7 +1177,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
 
         # root is a branch
         assert isinstance(flow, BranchPlaceholder)
@@ -1198,7 +1241,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["each"]
 
     async def test_sequence_in_each(self, lcel_flow_each_sequence):
@@ -1206,7 +1249,7 @@ class TestLoadFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         assert flow == fixture["each"]
 
 
@@ -1628,7 +1671,7 @@ class TestFlow:
         chain = fixture["chain"]
 
         # test loaded flow
-        flow = await aload_chain_flow(chain)
+        _, flow = await aload_chain_flow(chain)
         output = await flow.ainvoke(input={"input": "test"})
         assert output == {}
 
@@ -1699,13 +1742,13 @@ class TestFlow:
         """
         fixture = lcel_flow_each
         chain = fixture["chain"]
-        runnable = await ainit_chain_flow(chain, context=aix_context)
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        runnable = unpack_chain_flow(flow)
 
         # validate loaded instance
-        assert isinstance(runnable, IxNode)
-        assert isinstance(runnable.child, RunnableEach)
-        assert isinstance(runnable.child.bound, IxNode)
-        assert isinstance(runnable.child.bound.child, MockRunnable)
+        assert isinstance(runnable, RunnableEach)
+        assert isinstance(runnable.bound, IxNode)
+        assert isinstance(runnable.bound.child, MockRunnable)
 
         # validate output
         result = await runnable.ainvoke(input=["value1", "value2", "value3"])
@@ -1721,16 +1764,15 @@ class TestFlow:
         """Sequence in the RunnableEach's workflow"""
         fixture = lcel_flow_each_sequence
         chain = fixture["chain"]
-        runnable = await ainit_chain_flow(chain, context=aix_context)
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        runnable_each = unpack_chain_flow(flow)
 
         # validate loaded instance
-        assert isinstance(runnable, IxNode)
-        runnable_each = runnable.child
         assert isinstance(runnable_each, RunnableEach)
         assert isinstance(runnable_each.bound, RunnableSequence)
 
         # validate output
-        result = await runnable.ainvoke(input=["value1", "value2", "value3"])
+        result = await flow.ainvoke(input=["value1", "value2", "value3"])
         assert result == [
             {"input": "value1", "node1": 0, "node2": 0},
             {"input": "value2", "node1": 0, "node2": 0},
@@ -1743,7 +1785,8 @@ class TestFlow:
         """A RunnableEach in sequence with other nodes."""
         fixture = lcel_flow_each_in_sequence
         chain = fixture["chain"]
-        runnable = await ainit_chain_flow(chain, context=aix_context)
+        flow = await ainit_chain_flow(chain, context=aix_context)
+        runnable = unpack_chain_flow(flow)
 
         # validate loaded instance
         assert isinstance(runnable, RunnableSequence)
@@ -1753,7 +1796,7 @@ class TestFlow:
         assert isinstance(runnable_each.child.bound.child, MockRunnable)
 
         # validate output
-        result = await runnable.ainvoke(input=["value1", "value2", "value3"])
+        result = await flow.ainvoke(input=["value1", "value2", "value3"])
         assert result == {
             "input": [
                 {"input": "value1", "node1": 0},

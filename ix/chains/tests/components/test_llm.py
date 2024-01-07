@@ -10,6 +10,7 @@ from ix.chains.fixture_src.llm import (
     OLLAMA_LLM_CLASS_PATH,
     MISTRAL_LLM_CLASS_PATH,
 )
+from ix.chains.tests.test_config_loader import unpack_chain_flow
 
 OLLAMA_LLM = {
     "class_path": OLLAMA_LLM_CLASS_PATH,
@@ -20,8 +21,8 @@ OLLAMA_LLM = {
 @pytest.mark.django_db
 class TestOllama:
     async def test_aload(self, aload_chain):
-        ix_node = await aload_chain(OLLAMA_LLM)
-        component = ix_node.child
+        flow = await aload_chain(OLLAMA_LLM)
+        component = unpack_chain_flow(flow)
         assert isinstance(component, Ollama)
 
 
@@ -46,8 +47,8 @@ FIREWORKS_CHAT_LLM = {
 class TestFireworks:
     async def test_aload(self, aload_chain, mock_config_secrets):
         config = await mock_config_secrets(FIREWORKS_LLM, ["fireworks_api_key"])
-        ix_node = await aload_chain(config)
-        component = ix_node.child
+        flow = await aload_chain(config)
+        component = unpack_chain_flow(flow)
         assert isinstance(component, Fireworks)
 
 
@@ -55,8 +56,8 @@ class TestFireworks:
 class TestFireworksChat:
     async def test_aload(self, aload_chain, mock_config_secrets):
         config = await mock_config_secrets(FIREWORKS_CHAT_LLM, ["fireworks_api_key"])
-        ix_node = await aload_chain(config)
-        component = ix_node.child
+        flow = await aload_chain(config)
+        component = unpack_chain_flow(flow)
         assert isinstance(component, ChatFireworks)
 
 

@@ -26,6 +26,7 @@ from ix.chains.fixture_src.testing import MOCK_MEMORY, MOCK_CHAIN
 from ix.chains.fixture_src.text_splitter import TEXT_SPLITTERS
 from ix.chains.fixture_src.toolkit import TOOLKITS
 from ix.chains.fixture_src.tools import TOOLS
+from ix.chains.fixture_src.unstructured import UNSTRUCTURED_IO
 from ix.chains.fixture_src.vectorstores import VECTORSTORES
 from ix.chains.models import NodeType
 from ix.chains.tests.mock_runnable import MOCK_RUNNABLE_CONFIG
@@ -61,6 +62,7 @@ COMPONENTS.extend(MEMORY_BACKEND)
 COMPONENTS.extend(PARSERS)
 COMPONENTS.extend(TEXT_SPLITTERS)
 COMPONENTS.extend(DOCUMENT_LOADERS)
+COMPONENTS.extend(UNSTRUCTURED_IO)
 COMPONENTS.extend(VECTORSTORES)
 COMPONENTS.extend(RETRIEVERS)
 
@@ -111,13 +113,16 @@ class Command(BaseCommand):
             # validate by converting to pydantic model instance
             # TODO: COMPONENTS should be converted to pydantic models but for now
             #       expect that they are dicts and validated here.
-            node_type_pydantic = NodeTypePydantic(**component)
+            if isinstance(component, dict):
+                node_type_pydantic = NodeTypePydantic(**component)
+            else:
+                node_type_pydantic = component
             config_schema = node_type_pydantic.get_config_schema()
             validated_options = node_type_pydantic.model_dump(
                 exclude={"id", "display_groups", "config_schema"}
             )
 
-            class_path = component.get("class_path")
+            class_path = node_type_pydantic.class_path
             if NodeType.objects.filter(class_path=class_path).exists():
                 # updating existing node type
                 self.to_stdout(f"Updating component: {class_path}")

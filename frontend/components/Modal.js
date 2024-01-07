@@ -22,10 +22,32 @@ export const GenericModal = ({
   children,
   size,
 }) => {
+  const modalRef = React.useRef();
+
+  const handleFocus = (event) => {
+    if (modalRef.current && !modalRef.current.contains(event.target)) {
+      onClose();
+    }
+  };
+
+  React.useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("focus", handleFocus, true);
+    }
+    return () => {
+      document.removeEventListener("focus", handleFocus, true);
+    };
+  }, [isOpen, onClose]);
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size={size}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size={size}
+      finalFocusRef={modalRef}
+    >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent ref={modalRef}>
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
         <ModalBody p={0}>{children}</ModalBody>

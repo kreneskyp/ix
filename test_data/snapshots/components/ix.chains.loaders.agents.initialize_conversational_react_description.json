@@ -25,6 +25,7 @@
             }
         },
         "required": [],
+        "title": "initialize_conversational_react_description",
         "type": "object"
     },
     "connectors": [

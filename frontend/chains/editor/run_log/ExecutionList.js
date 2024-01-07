@@ -41,7 +41,7 @@ export const ExecutionList = ({ log, selectedExecution, setExecution }) => {
   const { nodes } = React.useContext(NodeStateContext);
   const executions =
     log?.executions.filter((e) => nodes?.[e.node_id] !== undefined) || [];
-  const types = React.useContext(ChainTypes);
+  const [types, setTypes] = React.useContext(ChainTypes);
 
   const { isLight } = useEditorColorMode();
   const itemStyle = isLight

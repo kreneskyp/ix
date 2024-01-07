@@ -5,7 +5,7 @@ import { useTestChat } from "chains/hooks/useTestChat";
 import { Center, Spinner, Text } from "@chakra-ui/react";
 
 export const TestChatPane = () => {
-  const { chain } = React.useContext(ChainState);
+  const [chain, _] = React.useContext(ChainState);
   const { chat } = useTestChat(chain?.id);
 
   if (!chain) {

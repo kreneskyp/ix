@@ -43,28 +43,25 @@ export const toReactFlowNode = (node, nodeType) => {
  * Convert the graphql graph to a react flow graph objects.
  * Including adding static root node.
  */
-export const useGraphForReactFlow = (graph) => {
+export const useGraphForReactFlow = (graph, types) => {
   const { colorMode } = useColorMode();
 
   const nodeTypes = useMemo(() => {
     const nodeTypes = {};
-    graph?.types?.forEach((type) => {
+    types?.forEach((type) => {
       nodeTypes[type.id] = type;
     });
     return nodeTypes;
-  }, [graph]);
+  }, [graph, types]);
 
   return useMemo(() => {
-    const nodeMap = {};
-    graph?.nodes?.forEach((node) => {
-      nodeMap[node.id] = node;
-    });
+    const nodeMap = graph?.nodes;
+    const nodeList = Object.values(nodeMap || {});
 
-    const roots = graph?.nodes?.filter((node) => node.root);
-    const nodes =
-      graph?.nodes?.map((node) => {
-        return toReactFlowNode(node, nodeTypes[node.node_type_id]);
-      }) || [];
+    const roots = nodeList.filter((node) => node.root);
+    const nodes = nodeList.map((node) => {
+      return toReactFlowNode(node, nodeTypes[node.node_type_id]);
+    });
 
     const edgeStyle = getEdgeStyle(colorMode, "chain");
     const defaultEdgeStyle = edgeStyle.LINK;

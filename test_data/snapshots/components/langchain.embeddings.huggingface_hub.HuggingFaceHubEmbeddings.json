@@ -24,6 +24,7 @@
             }
         },
         "required": [],
+        "title": "HuggingFaceHubEmbeddings",
         "type": "object"
     },
     "connectors": null,

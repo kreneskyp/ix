@@ -11,11 +11,7 @@
                 "type": "boolean"
             },
             "allowed_search_types": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
@@ -74,6 +70,7 @@
             "allowed_search_types",
             "search_kwargs"
         ],
+        "title": "AsyncChromaVectorstore",
         "type": "object"
     },
     "connectors": [
@@ -84,7 +81,7 @@
             "from_field": null,
             "init_modes": null,
             "init_type": "init",
-            "key": "embedding",
+            "key": "embedding_function",
             "label": null,
             "multiple": false,
             "required": false,

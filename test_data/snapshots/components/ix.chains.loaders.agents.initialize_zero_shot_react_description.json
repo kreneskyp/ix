@@ -25,6 +25,7 @@
             }
         },
         "required": [],
+        "title": "initialize_zero_shot_react_description",
         "type": "object"
     },
     "connectors": [

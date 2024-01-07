@@ -7,11 +7,7 @@
             "data": {
                 "description": "JSON data",
                 "input_type": "textarea",
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "style": {
@@ -24,6 +20,7 @@
         "required": [
             "data"
         ],
+        "title": "JSONData",
         "type": "object"
     },
     "connectors": null,

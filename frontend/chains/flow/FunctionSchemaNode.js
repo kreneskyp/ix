@@ -1,11 +1,9 @@
 import React, { useCallback, useMemo } from "react";
-import { Box, FormLabel, Input, Textarea } from "@chakra-ui/react";
-import { Editable, Slate, withReact } from "slate-react";
+import { FormLabel } from "@chakra-ui/react";
+import { withReact } from "slate-react";
 import { withHistory } from "slate-history";
 import { createEditor } from "slate";
-import { INITIAL_EDITOR_CONTENT } from "utils/slate";
 import { useEditorColorMode } from "chains/editor/useColorMode";
-import { SCROLLBAR_CSS } from "site/css";
 import AutoResizingTextarea from "components/AutoResizingTextArea";
 
 export const FunctionSchemaNode = ({ node, onChange }) => {

@@ -7,11 +7,7 @@
             "outputs": {
                 "description": "Inputs from the chat API.",
                 "input_type": "hash_list",
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
@@ -20,11 +16,7 @@
             "outputs_hash": {
                 "description": "Input from a chat window.",
                 "input_type": "hidden",
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
@@ -32,6 +24,7 @@
             }
         },
         "required": [],
+        "title": "__ROOT__",
         "type": "object"
     },
     "connectors": [],

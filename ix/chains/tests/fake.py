@@ -71,7 +71,7 @@ def fake_root(**kwargs) -> ChainNode:
     """
     Create a fake root chain node.
     """
-    config = kwargs.get(
+    config = kwargs.pop(
         "config",
         {
             "class_path": "__ROOT__",
@@ -86,6 +86,20 @@ async def afake_root(**kwargs):
     Create a fake root chain node.
     """
     return await sync_to_async(fake_root)(**kwargs)
+
+
+def fake_root_edge(chain: Chain, root: ChainNode, target: ChainNode) -> ChainEdge:
+    return fake_chain_edge(
+        chain=chain,
+        source=root,
+        target=target,
+        source_key="inputs",
+        target_key="in",
+    )
+
+
+async def afake_root_edge(**kwargs):
+    return await sync_to_async(fake_root_edge)(**kwargs)
 
 
 def fake_runnable(name="default", value=0, **kwargs):

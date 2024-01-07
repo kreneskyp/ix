@@ -67,11 +67,7 @@
                 "type": "object"
             },
             "tags": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
@@ -88,6 +84,16 @@
             },
             "tfs_z": {
                 "label": "Tfs_z",
+                "type": "number"
+            },
+            "top_k": {
+                "default": 40,
+                "description": "Top K",
+                "input_type": "slider",
+                "label": "Top_k",
+                "maximum": 100.0,
+                "minimum": 1.0,
+                "multipleOf": 1.0,
                 "type": "number"
             },
             "top_p": {
@@ -110,6 +116,7 @@
             "tags",
             "metadata"
         ],
+        "title": "Ollama",
         "type": "object"
     },
     "connectors": null,
@@ -355,6 +362,23 @@
             "step": null,
             "style": null,
             "type": "float"
+        },
+        {
+            "choices": null,
+            "default": 40,
+            "description": "Top K",
+            "init_type": "init",
+            "input_type": "slider",
+            "label": "Top_k",
+            "max": 100.0,
+            "min": 1.0,
+            "name": "top_k",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": 1.0,
+            "style": null,
+            "type": "int"
         },
         {
             "choices": null,
