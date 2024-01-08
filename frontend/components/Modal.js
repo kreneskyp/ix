@@ -21,6 +21,7 @@ export const GenericModal = ({
   showClose,
   children,
   size,
+  closeOnBlur,
 }) => {
   const modalRef = React.useRef();
 
@@ -31,12 +32,14 @@ export const GenericModal = ({
   };
 
   React.useEffect(() => {
-    if (isOpen) {
-      document.addEventListener("focus", handleFocus, true);
+    if (closeOnBlur) {
+      if (isOpen) {
+        document.addEventListener("focus", handleFocus, true);
+      }
+      return () => {
+        document.removeEventListener("focus", handleFocus, true);
+      };
     }
-    return () => {
-      document.removeEventListener("focus", handleFocus, true);
-    };
   }, [isOpen, onClose]);
 
   return (
@@ -66,6 +69,7 @@ export const GenericModal = ({
 GenericModal.defaultProps = {
   showClose: true,
   size: "6xl",
+  closeOnBlur: true,
 };
 
 export const ModalTriggerContent = ({ children }) => {
