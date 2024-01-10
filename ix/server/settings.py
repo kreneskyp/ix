@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "ix.chains",
     "ix.agents",
     "ix.chat",
+    "ix.data",
     "ix.datasources",
     "ix.secrets",
     "ix.runnable_log",
