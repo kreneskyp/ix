@@ -6,12 +6,10 @@ import { Box, HStack, Text } from "@chakra-ui/react";
 
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { NODE_STYLES } from "chains/editor/styles";
-import {
-  COMPONENT_TYPE_OPTIONS,
-  MenuList,
-  useSelectStyles,
-} from "chains/editor/ComponentTypeSelect";
+import { COMPONENT_TYPE_OPTIONS } from "chains/editor/ComponentTypeSelect";
 import { getOptionStyle } from "chains/editor/NodeSelector";
+import { useSelectStyles } from "components/select/useSelectStyles";
+import { MenuList } from "components/select/MenuList";
 
 export const ComponentTypeMultiSelect = ({ onChange, value, ...props }) => {
   const { input: styles, highlight } = useEditorColorMode();
