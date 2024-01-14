@@ -6,6 +6,8 @@ import { Box, HStack, Text, useTheme } from "@chakra-ui/react";
 
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { NODE_STYLES } from "chains/editor/styles";
+import { MenuList } from "components/select/MenuList";
+import { useSelectStyles } from "components/select/useSelectStyles";
 
 const AGENT_HELP_TEXT =
   "Agents may be summoned to chat sessions for conversational interactions.";
@@ -109,47 +111,6 @@ export const findOption = (value) => {
   return COMPONENT_TYPE_OPTIONS.find((option) => option.value === value);
 };
 
-export const MenuList = ({ children }) => {
-  const { isLight } = useEditorColorMode();
-  const theme = useTheme();
-  const style = isLight
-    ? {
-        bg: "white",
-        border: "1px solid",
-        borderColor: "gray.200",
-        boxShadow: "0 0 10px rgba(0,0,0,0.5)",
-      }
-    : {
-        bg: "gray.700",
-        border: "1px solid",
-        borderColor: "gray.600",
-        boxShadow: "0 0 10px rgba(0,0,0,0.5)",
-      };
-
-  const scrollbar_css = {
-    "&::-webkit-scrollbar": {
-      width: "5px",
-      padding: "2px",
-    },
-    "&::-webkit-scrollbar-track": {
-      background: "transparent",
-    },
-    "&::-webkit-scrollbar-thumb": {
-      background: theme.colors.gray[300],
-      borderRadius: "2px",
-    },
-    "&::-webkit-scrollbar-thumb:hover": {
-      background: theme.colors.gray[300],
-    },
-  };
-
-  return (
-    <Box height={500} overflowY={"auto"} sx={scrollbar_css} {...style} mx={1}>
-      {children}
-    </Box>
-  );
-};
-
 const ValueContainer = ({ children, ...props }) => {
   const { getValue } = props;
   const value = getValue()[0];
@@ -180,15 +141,6 @@ const ValueContainer = ({ children, ...props }) => {
       </HStack>
     </components.ValueContainer>
   );
-};
-
-export const useSelectStyles = () => {
-  const { input: styles } = useEditorColorMode();
-  return {
-    menuPortal: (base) => ({ ...base, zIndex: 99999 }),
-    valueContainer: (base) => ({ ...base, padding: 0 }),
-    input: (base) => ({ ...base, ...styles }),
-  };
 };
 
 export const ComponentTypeSelect = ({ chain, onChange, value, ...props }) => {
