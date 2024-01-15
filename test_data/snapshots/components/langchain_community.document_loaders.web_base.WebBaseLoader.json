@@ -1,33 +1,33 @@
 {
     "child_field": null,
-    "class_path": "langchain.document_loaders.generic.GenericLoader.from_filesystem",
+    "class_path": "langchain_community.document_loaders.web_base.WebBaseLoader",
     "config_schema": {
         "display_groups": null,
         "properties": {
-            "glob": {
-                "default": "**/[!.]*",
-                "label": "Glob",
-                "type": "string"
+            "continue_on_failure": {
+                "default": false,
+                "label": "Continue_on_failure",
+                "type": "boolean"
             },
-            "path": {
-                "label": "Path",
-                "style": {
-                    "width": "100%"
-                },
-                "type": "string"
+            "verify_ssl": {
+                "default": true,
+                "label": "Verify_ssl",
+                "type": "boolean"
             },
-            "suffixes": {
+            "web_path": {
+                "description": "URL(s) of the web page",
                 "items": {},
                 "maxItems": null,
                 "minItems": null,
+                "style": {
+                    "width": "100%"
+                },
                 "type": "array",
                 "uniqueItems": false
             }
         },
-        "required": [
-            "path"
-        ],
-        "title": "from_filesystem",
+        "required": [],
+        "title": "WebBaseLoader",
         "type": "object"
     },
     "connectors": [
@@ -62,63 +62,63 @@
             "type": "source"
         }
     ],
-    "description": "Load documents from the filesystem.",
+    "description": "Load documents from the web and parse them with BeautifulSoup.",
     "display_type": "node",
     "fields": [
         {
             "choices": null,
             "default": null,
-            "description": null,
+            "description": "URL(s) of the web page",
             "init_type": "init",
             "input_type": null,
-            "label": "Path",
+            "label": "",
             "max": null,
             "min": null,
-            "name": "path",
+            "name": "web_path",
             "parent": null,
-            "required": true,
+            "required": false,
             "secret_key": null,
             "step": null,
             "style": {
                 "width": "100%"
             },
-            "type": "str"
-        },
-        {
-            "choices": null,
-            "default": null,
-            "description": null,
-            "init_type": "init",
-            "input_type": null,
-            "label": "Suffixes",
-            "max": null,
-            "min": null,
-            "name": "suffixes",
-            "parent": null,
-            "required": false,
-            "secret_key": null,
-            "step": null,
-            "style": null,
             "type": "list"
         },
         {
             "choices": null,
-            "default": "**/[!.]*",
+            "default": true,
             "description": null,
             "init_type": "init",
             "input_type": null,
-            "label": "Glob",
+            "label": "Verify_ssl",
             "max": null,
             "min": null,
-            "name": "glob",
+            "name": "verify_ssl",
             "parent": null,
             "required": false,
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "str"
+            "type": "boolean"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Continue_on_failure",
+            "max": null,
+            "min": null,
+            "name": "continue_on_failure",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "boolean"
         }
     ],
-    "name": "Filesystem Loader",
+    "name": "Web Loader",
     "type": "document_loader"
 }

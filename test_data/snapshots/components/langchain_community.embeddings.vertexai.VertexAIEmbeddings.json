@@ -1,6 +1,6 @@
 {
     "child_field": null,
-    "class_path": "langchain.embeddings.vertexai.VertexAIEmbeddings",
+    "class_path": "langchain_community.embeddings.vertexai.VertexAIEmbeddings",
     "config_schema": {
         "display_groups": null,
         "properties": {

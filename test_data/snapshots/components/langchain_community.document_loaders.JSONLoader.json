@@ -1,6 +1,6 @@
 {
     "child_field": null,
-    "class_path": "langchain.document_loaders.JSONLoader",
+    "class_path": "langchain_community.document_loaders.JSONLoader",
     "config_schema": {
         "display_groups": null,
         "properties": {

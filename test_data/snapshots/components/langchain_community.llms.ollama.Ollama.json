@@ -1,6 +1,6 @@
 {
     "child_field": null,
-    "class_path": "langchain.llms.ollama.Ollama",
+    "class_path": "langchain_community.llms.ollama.Ollama",
     "config_schema": {
         "display_groups": null,
         "properties": {
