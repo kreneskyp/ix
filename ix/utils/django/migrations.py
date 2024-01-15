@@ -24,4 +24,3 @@ class UpdateComponentClassPath(migrations.RunPython):
             else:
                 NodeType.objects.filter(class_path=existing).update(class_path=new)
             print(f"Migrated {existing} to {new}")
-
