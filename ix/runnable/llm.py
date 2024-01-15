@@ -1,8 +1,8 @@
 from typing import Any
 
-from langchain.chat_models import ChatOpenAI
 from langchain.schema.runnable import Runnable
 from langchain.schema.runnable.utils import Input, Output
+from langchain_community.chat_models import ChatOpenAI
 
 
 class IXChatOpenAI(ChatOpenAI):

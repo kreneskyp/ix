@@ -1,7 +1,7 @@
 from copy import deepcopy
 from typing import Dict, Any
 
-from langchain.document_loaders.base import BaseLoader
+from langchain_community.document_loaders.base import BaseLoader
 from langchain.text_splitter import TextSplitter
 from pydantic import BaseModel
 

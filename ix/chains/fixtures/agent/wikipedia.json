@@ -29,9 +29,9 @@
     "model": "chains.chainnode",
     "pk": "275daea3-429e-4f7e-8ad2-e9a881f31886",
     "fields": {
-      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "class_path": "langchain_community.chat_models.ChatOpenAI",
       "node_type": [
-        "langchain.chat_models.openai.ChatOpenAI"
+        "langchain_community.chat_models.ChatOpenAI"
       ],
       "config": {
         "verbose": false,

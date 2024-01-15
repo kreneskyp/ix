@@ -1,6 +1,6 @@
 {
     "child_field": null,
-    "class_path": "langchain.agents.agent_toolkits.file_management.toolkit.FileManagementToolkit",
+    "class_path": "langchain_community.agent_toolkits.FileManagementToolkit",
     "config_schema": {
         "display_groups": null,
         "properties": {

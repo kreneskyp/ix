@@ -1,6 +1,6 @@
 {
     "child_field": null,
-    "class_path": "langchain.embeddings.google_palm.GooglePalmEmbeddings",
+    "class_path": "langchain_community.embeddings.google_palm.GooglePalmEmbeddings",
     "config_schema": {
         "display_groups": null,
         "properties": {

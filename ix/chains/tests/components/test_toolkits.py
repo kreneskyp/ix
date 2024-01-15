@@ -1,6 +1,6 @@
 import pytest
 from langchain.agents import AgentExecutor
-from langchain.agents.agent_toolkits import FileManagementToolkit
+from langchain_community.agent_toolkits import FileManagementToolkit
 
 from ix.chains.fixture_src.toolkit import FILE_MANAGEMENT_TOOLKIT_CLASS_PATH
 from ix.chains.llm_chain import LLMChain

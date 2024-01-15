@@ -1,26 +1,22 @@
 {
     "child_field": null,
-    "class_path": "langchain.document_loaders.csv_loader.CSVLoader",
+    "class_path": "langchain_community.document_loaders.PyPDFLoader",
     "config_schema": {
         "display_groups": null,
         "properties": {
-            "encoding": {
-                "label": "Encoding",
-                "type": "string"
-            },
             "file_path": {
                 "label": "File_path",
                 "type": "string"
             },
-            "source_column": {
-                "label": "Source_column",
+            "password": {
+                "label": "Password",
                 "type": "string"
             }
         },
         "required": [
             "file_path"
         ],
-        "title": "CSVLoader",
+        "title": "PyPDFLoader",
         "type": "object"
     },
     "connectors": [
@@ -40,7 +36,7 @@
             "type": "source"
         }
     ],
-    "description": "Load a CSV file into a list of documents.",
+    "description": "Load a PDF file into a document.",
     "display_type": "node",
     "fields": [
         {
@@ -66,27 +62,10 @@
             "description": null,
             "init_type": "init",
             "input_type": null,
-            "label": "Source_column",
+            "label": "Password",
             "max": null,
             "min": null,
-            "name": "source_column",
-            "parent": null,
-            "required": false,
-            "secret_key": null,
-            "step": null,
-            "style": null,
-            "type": "str"
-        },
-        {
-            "choices": null,
-            "default": null,
-            "description": null,
-            "init_type": "init",
-            "input_type": null,
-            "label": "Encoding",
-            "max": null,
-            "min": null,
-            "name": "encoding",
+            "name": "password",
             "parent": null,
             "required": false,
             "secret_key": null,
@@ -95,6 +74,6 @@
             "type": "str"
         }
     ],
-    "name": "CSV Loader",
+    "name": "PDF Loader",
     "type": "document_loader"
 }

@@ -1,6 +1,6 @@
 {
     "child_field": null,
-    "class_path": "langchain.embeddings.huggingface.HuggingFaceInstructEmbeddings",
+    "class_path": "langchain_community.embeddings.huggingface.HuggingFaceEmbeddings",
     "config_schema": {
         "display_groups": null,
         "properties": {
@@ -8,39 +8,39 @@
                 "label": "Cache_folder",
                 "type": "string"
             },
-            "embed_instruction": {
-                "default": "Represent the document for retrieval: ",
-                "label": "Embed_instruction",
-                "type": "string"
-            },
             "encode_kwargs": {
                 "label": "Encode_kwargs",
                 "type": "object"
             },
+            "model_kwargs": {
+                "label": "Model_kwargs",
+                "type": "object"
+            },
             "model_name": {
-                "default": "hkunlp/instructor-large",
+                "default": "sentence-transformers/all-mpnet-base-v2",
                 "label": "Model_name",
                 "type": "string"
             },
-            "query_instruction": {
-                "default": "Represent the question for retrieving supporting documents: ",
-                "label": "Query_instruction",
-                "type": "string"
+            "multi_process": {
+                "default": false,
+                "label": "Multi_process",
+                "type": "boolean"
             }
         },
         "required": [
+            "model_kwargs",
             "encode_kwargs"
         ],
-        "title": "HuggingFaceInstructEmbeddings",
+        "title": "HuggingFaceEmbeddings",
         "type": "object"
     },
     "connectors": null,
-    "description": "HuggingFace Instruct Embeddings",
+    "description": "HuggingFace Embeddings",
     "display_type": "node",
     "fields": [
         {
             "choices": null,
-            "default": "hkunlp/instructor-large",
+            "default": "sentence-transformers/all-mpnet-base-v2",
             "description": null,
             "init_type": "init",
             "input_type": null,
@@ -78,6 +78,23 @@
             "description": null,
             "init_type": "init",
             "input_type": null,
+            "label": "Model_kwargs",
+            "max": null,
+            "min": null,
+            "name": "model_kwargs",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "Dict"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
             "label": "Encode_kwargs",
             "max": null,
             "min": null,
@@ -91,39 +108,22 @@
         },
         {
             "choices": null,
-            "default": "Represent the document for retrieval: ",
+            "default": false,
             "description": null,
             "init_type": "init",
             "input_type": null,
-            "label": "Embed_instruction",
+            "label": "Multi_process",
             "max": null,
             "min": null,
-            "name": "embed_instruction",
+            "name": "multi_process",
             "parent": null,
             "required": false,
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "str"
-        },
-        {
-            "choices": null,
-            "default": "Represent the question for retrieving supporting documents: ",
-            "description": null,
-            "init_type": "init",
-            "input_type": null,
-            "label": "Query_instruction",
-            "max": null,
-            "min": null,
-            "name": "query_instruction",
-            "parent": null,
-            "required": false,
-            "secret_key": null,
-            "step": null,
-            "style": null,
-            "type": "str"
+            "type": "boolean"
         }
     ],
-    "name": "HuggingFace Instruct Embeddings",
+    "name": "HuggingFace Embeddings",
     "type": "embeddings"
 }

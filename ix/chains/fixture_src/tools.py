@@ -1,18 +1,18 @@
+from langchain_community.utilities.arxiv import ArxivAPIWrapper
+from langchain_community.utilities.awslambda import LambdaWrapper
+from langchain_community.utilities.bing_search import BingSearchAPIWrapper
+from langchain_community.utilities.duckduckgo_search import DuckDuckGoSearchAPIWrapper
+from langchain_community.utilities.google_search import GoogleSearchAPIWrapper
+from langchain_community.utilities.google_serper import GoogleSerperAPIWrapper
+from langchain_community.utilities.graphql import GraphQLAPIWrapper
+from langchain_community.utilities.pubmed import PubMedAPIWrapper
+from langchain_community.utilities.wikipedia import WikipediaAPIWrapper
+from langchain_community.utilities.zapier import ZapierNLAWrapper
+
 from ix.chains.fixture_src.targets import (
     CHAIN_TARGET,
 )
-from langchain.utilities import (
-    ArxivAPIWrapper,
-    BingSearchAPIWrapper,
-    DuckDuckGoSearchAPIWrapper,
-    GoogleSearchAPIWrapper,
-    GoogleSerperAPIWrapper,
-    GraphQLAPIWrapper,
-    LambdaWrapper,
-    PubMedAPIWrapper,
-    WikipediaAPIWrapper,
-    ZapierNLAWrapper,
-)
+
 
 from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE

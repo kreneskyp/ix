@@ -13,7 +13,7 @@ DAD_JOKESTER = {
     "class_path": "ix.chains.llm_chain.LLMReply",
     "config": {
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
             "config": {"streaming": True},
         },
         "messages": [

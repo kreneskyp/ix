@@ -1,27 +1,34 @@
 {
     "child_field": null,
-    "class_path": "langchain.document_loaders.BSHTMLLoader",
+    "class_path": "langchain_community.document_loaders.UnstructuredMarkdownLoader",
     "config_schema": {
         "display_groups": null,
         "properties": {
             "file_path": {
-                "label": "File_path",
-                "type": "string"
+                "description": "List of file paths",
+                "items": {},
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
             },
-            "get_text_separator": {
-                "default": "",
-                "label": "Get_text_separator",
-                "type": "string"
-            },
-            "open_encoding": {
-                "label": "Open_encoding",
+            "mode": {
+                "default": "single",
+                "enum": [
+                    "single",
+                    "elements",
+                    "page"
+                ],
+                "input_type": "select",
+                "label": "",
                 "type": "string"
             }
         },
         "required": [
-            "file_path"
+            "file_path",
+            "mode"
         ],
-        "title": "BSHTMLLoader",
+        "title": "UnstructuredMarkdownLoader",
         "type": "object"
     },
     "connectors": [
@@ -41,16 +48,16 @@
             "type": "source"
         }
     ],
-    "description": "Load `HTML` files and parse them with `beautiful soup`.",
+    "description": "Load a Markdown file into a document with Unstructured.io",
     "display_type": "node",
     "fields": [
         {
             "choices": null,
             "default": null,
-            "description": null,
+            "description": "List of file paths",
             "init_type": "init",
             "input_type": null,
-            "label": "File_path",
+            "label": "",
             "max": null,
             "min": null,
             "name": "file_path",
@@ -59,43 +66,39 @@
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "str"
+            "type": "list"
         },
         {
-            "choices": null,
-            "default": null,
+            "choices": [
+                {
+                    "label": "single",
+                    "value": "single"
+                },
+                {
+                    "label": "elements",
+                    "value": "elements"
+                },
+                {
+                    "label": "page",
+                    "value": "page"
+                }
+            ],
+            "default": "single",
             "description": null,
             "init_type": "init",
-            "input_type": null,
-            "label": "Open_encoding",
+            "input_type": "select",
+            "label": "",
             "max": null,
             "min": null,
-            "name": "open_encoding",
+            "name": "mode",
             "parent": null,
-            "required": false,
-            "secret_key": null,
-            "step": null,
-            "style": null,
-            "type": "str"
-        },
-        {
-            "choices": null,
-            "default": "",
-            "description": null,
-            "init_type": "init",
-            "input_type": null,
-            "label": "Get_text_separator",
-            "max": null,
-            "min": null,
-            "name": "get_text_separator",
-            "parent": null,
-            "required": false,
+            "required": true,
             "secret_key": null,
             "step": null,
             "style": null,
             "type": "str"
         }
     ],
-    "name": "Beautiful Soup HTML Loader",
+    "name": "Unstructured Markdown Loader",
     "type": "document_loader"
 }

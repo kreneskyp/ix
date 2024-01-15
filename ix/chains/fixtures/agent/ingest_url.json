@@ -117,9 +117,9 @@
     "model": "chains.chainnode",
     "pk": "cc33be6b-0a8c-4c4a-a2e8-95d11f3ca159",
     "fields": {
-      "class_path": "langchain.document_loaders.web_base.WebBaseLoader",
+      "class_path": "langchain_community.document_loaders.web_base.WebBaseLoader",
       "node_type": [
-        "langchain.document_loaders.web_base.WebBaseLoader"
+        "langchain_community.document_loaders.web_base.WebBaseLoader"
       ],
       "config": {
         "web_path": [],
@@ -140,9 +140,9 @@
     "model": "chains.chainnode",
     "pk": "fb2f386a-2968-4454-aafa-e1911c712c7b",
     "fields": {
-      "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
+      "class_path": "langchain_community.embeddings.openai.OpenAIEmbeddings",
       "node_type": [
-        "langchain.embeddings.openai.OpenAIEmbeddings"
+        "langchain_community.embeddings.openai.OpenAIEmbeddings"
       ],
       "config": {
         "model": "text-embedding-ada-002",

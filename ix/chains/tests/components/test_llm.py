@@ -1,7 +1,7 @@
 from langchain.chat_models.fireworks import ChatFireworks
 from langchain.llms.fireworks import Fireworks
 import pytest
-from langchain.llms import Ollama
+from langchain_community.llms.ollama import Ollama
 from langchain_mistralai import ChatMistralAI
 
 from ix.chains.fixture_src.llm import (

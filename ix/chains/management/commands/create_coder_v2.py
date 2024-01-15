@@ -76,7 +76,7 @@ CREATE_CODE_ARTIFACTS = {
         "verbose": True,
         "output_key": "file_list",
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
             "config": {
                 "model_name": "gpt-4-0613",
                 "request_timeout": 240,
@@ -156,7 +156,7 @@ GENERATE_FILE = {
         "verbose": True,
         "output_key": "file",
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
             "config": {
                 "model_name": "gpt-4-0613",
                 "request_timeout": 240,

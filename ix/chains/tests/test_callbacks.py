@@ -13,7 +13,7 @@ CHAIN_WITH_LLM = {
     "class_path": "ix.chains.llm_chain.LLMChain",
     "config": {
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
             "config": {"streaming": True},
         },
         "prompt": {

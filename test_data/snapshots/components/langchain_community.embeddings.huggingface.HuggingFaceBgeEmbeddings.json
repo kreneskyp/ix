@@ -1,46 +1,53 @@
 {
     "child_field": null,
-    "class_path": "langchain.embeddings.huggingface_hub.HuggingFaceHubEmbeddings",
+    "class_path": "langchain_community.embeddings.huggingface.HuggingFaceBgeEmbeddings",
     "config_schema": {
         "display_groups": null,
         "properties": {
-            "huggingfacehub_api_token": {
-                "input_type": "secret",
-                "label": "Huggingfacehub_api_token",
+            "cache_folder": {
+                "label": "Cache_folder",
                 "type": "string"
+            },
+            "encode_kwargs": {
+                "label": "Encode_kwargs",
+                "type": "object"
             },
             "model_kwargs": {
                 "label": "Model_kwargs",
                 "type": "object"
             },
-            "repo_id": {
-                "label": "Repo_id",
+            "model_name": {
+                "default": "BAAI/bge-large-en",
+                "label": "Model_name",
                 "type": "string"
             },
-            "task": {
-                "default": "feature-extraction",
-                "label": "Task",
+            "query_instruction": {
+                "default": "Represent this question for searching relevant passages: ",
+                "label": "Query_instruction",
                 "type": "string"
             }
         },
-        "required": [],
-        "title": "HuggingFaceHubEmbeddings",
+        "required": [
+            "model_kwargs",
+            "encode_kwargs"
+        ],
+        "title": "HuggingFaceBgeEmbeddings",
         "type": "object"
     },
     "connectors": null,
-    "description": "HuggingFace Hub Embeddings",
+    "description": "HuggingFace BGE Embeddings",
     "display_type": "node",
     "fields": [
         {
             "choices": null,
-            "default": null,
+            "default": "BAAI/bge-large-en",
             "description": null,
             "init_type": "init",
             "input_type": null,
-            "label": "Repo_id",
+            "label": "Model_name",
             "max": null,
             "min": null,
-            "name": "repo_id",
+            "name": "model_name",
             "parent": null,
             "required": false,
             "secret_key": null,
@@ -50,14 +57,14 @@
         },
         {
             "choices": null,
-            "default": "feature-extraction",
+            "default": null,
             "description": null,
             "init_type": "init",
             "input_type": null,
-            "label": "Task",
+            "label": "Cache_folder",
             "max": null,
             "min": null,
-            "name": "task",
+            "name": "cache_folder",
             "parent": null,
             "required": false,
             "secret_key": null,
@@ -76,22 +83,39 @@
             "min": null,
             "name": "model_kwargs",
             "parent": null,
-            "required": false,
+            "required": true,
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "dict"
+            "type": "Dict"
         },
         {
             "choices": null,
             "default": null,
             "description": null,
             "init_type": "init",
-            "input_type": "secret",
-            "label": "Huggingfacehub_api_token",
+            "input_type": null,
+            "label": "Encode_kwargs",
             "max": null,
             "min": null,
-            "name": "huggingfacehub_api_token",
+            "name": "encode_kwargs",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "Dict"
+        },
+        {
+            "choices": null,
+            "default": "Represent this question for searching relevant passages: ",
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Query_instruction",
+            "max": null,
+            "min": null,
+            "name": "query_instruction",
             "parent": null,
             "required": false,
             "secret_key": null,
@@ -100,6 +124,6 @@
             "type": "str"
         }
     ],
-    "name": "HuggingFace Hub Embeddings",
+    "name": "HuggingFace BGE Embeddings",
     "type": "embeddings"
 }

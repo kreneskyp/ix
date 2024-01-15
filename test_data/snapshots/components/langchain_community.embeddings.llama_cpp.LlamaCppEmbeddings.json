@@ -1,6 +1,6 @@
 {
     "child_field": null,
-    "class_path": "langchain.embeddings.llama_cpp.LlamaCppEmbeddings",
+    "class_path": "langchain_community.embeddings.llama_cpp.LlamaCppEmbeddings",
     "config_schema": {
         "display_groups": null,
         "properties": {

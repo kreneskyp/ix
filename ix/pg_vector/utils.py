@@ -1,4 +1,4 @@
-from langchain.chat_models import openai
+from langchain_community.chat_models import openai
 
 
 def get_embedding(text, model="text-embedding-ada-002"):
