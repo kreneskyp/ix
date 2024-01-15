@@ -27,9 +27,9 @@
     "model": "chains.chainnode",
     "pk": "1777422a-0c5d-4551-ba0b-a456cac229b7",
     "fields": {
-      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "class_path": "langchain_community.chat_models.ChatOpenAI",
       "node_type": [
-        "langchain.chat_models.openai.ChatOpenAI"
+        "langchain_community.chat_models.ChatOpenAI"
       ],
       "config": {
         "verbose": false,
@@ -75,9 +75,9 @@
     "model": "chains.chainnode",
     "pk": "6ac9ea62-614c-47b1-bbec-cd19a534a9c8",
     "fields": {
-      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "class_path": "langchain_community.chat_models.ChatOpenAI",
       "node_type": [
-        "langchain.chat_models.openai.ChatOpenAI"
+        "langchain_community.chat_models.ChatOpenAI"
       ],
       "config": {
         "verbose": false,

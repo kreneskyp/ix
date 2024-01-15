@@ -1,5 +1,5 @@
 import pytest
-from langchain.embeddings import (
+from langchain_community.embeddings import (
     HuggingFaceEmbeddings,
     HuggingFaceBgeEmbeddings,
     HuggingFaceInstructEmbeddings,

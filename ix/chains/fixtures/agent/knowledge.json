@@ -31,9 +31,9 @@
     "model": "chains.chainnode",
     "pk": "0d49c55f-896e-4dc8-9bf6-36e8057adfeb",
     "fields": {
-      "class_path": "langchain.schema.vectorstore.VectorStoreRetriever",
+      "class_path": "langchain_core.vectorstores.VectorStoreRetriever",
       "node_type": [
-        "langchain.schema.vectorstore.VectorStoreRetriever"
+        "langchain_core.vectorstores.VectorStoreRetriever"
       ],
       "config": {
         "search_type": "similarity",
@@ -135,9 +135,9 @@
     "model": "chains.chainnode",
     "pk": "74abbc5e-bd81-4b9c-a29f-561850995f67",
     "fields": {
-      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "class_path": "langchain_community.chat_models.ChatOpenAI",
       "node_type": [
-        "langchain.chat_models.openai.ChatOpenAI"
+        "langchain_community.chat_models.ChatOpenAI"
       ],
       "config": {
         "tags": [],
@@ -167,9 +167,9 @@
     "model": "chains.chainnode",
     "pk": "a3274983-debb-4e34-b1eb-ff758b22a547",
     "fields": {
-      "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
+      "class_path": "langchain_community.embeddings.openai.OpenAIEmbeddings",
       "node_type": [
-        "langchain.embeddings.openai.OpenAIEmbeddings"
+        "langchain_community.embeddings.openai.OpenAIEmbeddings"
       ],
       "config": {
         "model": "text-embedding-ada-002",

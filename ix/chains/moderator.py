@@ -72,7 +72,7 @@ LLM_CHOOSE_AGENT_CONFIG = {
         "verbose": True,
         "output_key": "delegation_or_text",
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
             "config": {
                 "model": "gpt-4-0613",
                 "request_timeout": 240,

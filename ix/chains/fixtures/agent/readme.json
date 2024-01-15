@@ -27,9 +27,9 @@
     "model": "chains.chainnode",
     "pk": "0ac2d539-4cbd-4c7c-8196-83d51d610c1c",
     "fields": {
-      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "class_path": "langchain_community.chat_models.ChatOpenAI",
       "node_type": [
-        "langchain.chat_models.openai.ChatOpenAI"
+        "langchain_community.chat_models.ChatOpenAI"
       ],
       "config": {
         "verbose": false,
@@ -129,9 +129,9 @@
     "model": "chains.chainnode",
     "pk": "4565d9d9-6531-48d6-8ac2-28e16aa3b36e",
     "fields": {
-      "class_path": "langchain.document_loaders.web_base.WebBaseLoader",
+      "class_path": "langchain_community.document_loaders.web_base.WebBaseLoader",
       "node_type": [
-        "langchain.document_loaders.web_base.WebBaseLoader"
+        "langchain_community.document_loaders.web_base.WebBaseLoader"
       ],
       "config": {
         "web_path": ["https://raw.githubusercontent.com/kreneskyp/ix/master/README.md"],
@@ -195,9 +195,9 @@
     "model": "chains.chainnode",
     "pk": "902318cb-0944-4aea-b466-a4982e2a25ed",
     "fields": {
-      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "class_path": "langchain_community.chat_models.ChatOpenAI",
       "node_type": [
-        "langchain.chat_models.openai.ChatOpenAI"
+        "langchain_community.chat_models.ChatOpenAI"
       ],
       "config": {
         "verbose": false,
@@ -222,9 +222,9 @@
     "model": "chains.chainnode",
     "pk": "b25c086c-2558-46e4-87ac-a34ffdf91a01",
     "fields": {
-      "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
+      "class_path": "langchain_community.embeddings.openai.OpenAIEmbeddings",
       "node_type": [
-        "langchain.embeddings.openai.OpenAIEmbeddings"
+        "langchain_community.embeddings.openai.OpenAIEmbeddings"
       ],
       "config": {
         "model": "text-embedding-ada-002",

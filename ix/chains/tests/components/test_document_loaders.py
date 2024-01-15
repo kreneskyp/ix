@@ -1,11 +1,11 @@
 import json
 
 import pytest
-from langchain.document_loaders import (
-    PyPDFLoader,
-    JSONLoader,
-    CSVLoader,
+from langchain_community.document_loaders import (
     BSHTMLLoader,
+    CSVLoader,
+    JSONLoader,
+    PyPDFLoader,
 )
 
 from ix.chains.fixture_src.document_loaders import (

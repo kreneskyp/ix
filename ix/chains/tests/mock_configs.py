@@ -15,7 +15,7 @@ from ix.chains.fixture_src.vectorstores import (
 from ix.chains.fixture_src.tools import GOOGLE_SEARCH
 
 OPENAI_LLM = {
-    "class_path": "langchain.chat_models.openai.ChatOpenAI",
+    "class_path": "langchain_community.chat_models.ChatOpenAI",
     "config": {"verbose": True},
 }
 
@@ -77,7 +77,7 @@ MEMORY_WITH_LLM = {
         "input_key": "user_input",
         "memory_key": "chat_summary",
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
         },
     },
 }
@@ -181,7 +181,7 @@ LLM_CHAIN = {
     "config": {
         "prompt": PROMPT_CHAT,
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
         },
     },
 }
@@ -191,7 +191,7 @@ LLM_REPLY = {
     "config": {
         "prompt": PROMPT_CHAT,
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
         },
     },
 }
@@ -201,7 +201,7 @@ LLM_REPLY_WITH_HISTORY = {
     "config": {
         "prompt": PROMPT_WITH_CHAT_HISTORY,
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
         },
     },
 }
@@ -212,7 +212,7 @@ LLM_REPLY_WITH_HISTORY_AND_MEMORY = {
         "prompt": PROMPT_WITH_CHAT_HISTORY,
         "memory": MEMORY,
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
         },
     },
 }

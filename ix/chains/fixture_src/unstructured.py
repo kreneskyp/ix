@@ -112,7 +112,7 @@ UNSTRUCTURED_PDF_LOADER = NodeType(
 )
 
 UNSTRUCTURED_HTML_LOADER_CLASS_PATH = (
-    "langchain.document_loaders.UnstructuredHTMLLoader"
+    "langchain_community.document_loaders.UnstructuredHTMLLoader"
 )
 UNSTRUCTURED_HTML_LOADER = NodeType(
     class_path=UNSTRUCTURED_HTML_LOADER_CLASS_PATH,
@@ -138,7 +138,7 @@ UNSTRUCTURED_CSV_LOADER = NodeType(
 )
 
 UNSTRUCTURED_MARKDOWN_LOADER_CLASS_PATH = (
-    "langchain.document_loaders.UnstructuredMarkdownLoader"
+    "langchain_community.document_loaders.UnstructuredMarkdownLoader"
 )
 UNSTRUCTURED_MARKDOWN_LOADER = NodeType(
     class_path=UNSTRUCTURED_MARKDOWN_LOADER_CLASS_PATH,

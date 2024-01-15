@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, Any, Type
 
-from langchain.document_loaders.base import BaseLoader
+from langchain_community.document_loaders.base import BaseLoader
 from langchain.schema.vectorstore import VectorStore
 
 from ix.chains.fixture_src.vectorstores import get_vectorstore_retriever_fieldnames

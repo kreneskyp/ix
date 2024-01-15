@@ -58,7 +58,7 @@ PLAN_FLOW_CHOOSER = {
     "node_type": "map",
     "config": {
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
             "config": {"temperature": 0},
         },
     },
@@ -80,7 +80,7 @@ CREATE_PLAN = {
     "class_path": "ix.chains.tool_chain.LLMToolChain",
     "config": {
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
             "config": {"request_timeout": 240, "temperature": 0.2, "verbose": True},
         },
         "messages": [
@@ -130,7 +130,7 @@ EXECUTE_RUN = {
     "class_path": "ix.chains.planning.RunPlan",
     "config": {
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
             "config": {"request_timeout": 60, "temperature": 0.2, "verbose": True},
         },
         "tools": [

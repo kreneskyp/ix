@@ -92,7 +92,7 @@
                   "temperature": 0.2,
                   "request_timeout": 240
                 },
-                "class_path": "langchain.chat_models.openai.ChatOpenAI"
+                "class_path": "langchain_community.chat_models.ChatOpenAI"
               },
               "memory": {
                 "config": {
@@ -237,7 +237,7 @@
                   "temperature": 0.2,
                   "request_timeout": 240
                 },
-                "class_path": "langchain.chat_models.openai.ChatOpenAI"
+                "class_path": "langchain_community.chat_models.ChatOpenAI"
               },
               "prompt": {
                 "config": {
@@ -307,7 +307,7 @@
                         "temperature": 0.2,
                         "request_timeout": 240
                       },
-                      "class_path": "langchain.chat_models.openai.ChatOpenAI"
+                      "class_path": "langchain_community.chat_models.ChatOpenAI"
                     },
                     "memory": {
                       "config": {
@@ -447,7 +447,7 @@
             "temperature": 0.2,
             "request_timeout": 240
           },
-          "class_path": "langchain.chat_models.openai.ChatOpenAI"
+          "class_path": "langchain_community.chat_models.ChatOpenAI"
         },
         "prompt": {
           "config": {
@@ -547,9 +547,9 @@
     "model": "chains.chainnode",
     "pk": "8ff340ad-556e-4a60-8080-2b3f9674ada4",
     "fields": {
-      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "class_path": "langchain_community.chat_models.ChatOpenAI",
       "node_type": [
-        "langchain.chat_models.openai.ChatOpenAI"
+        "langchain_community.chat_models.ChatOpenAI"
       ],
       "config": {
         "model": "gpt-4-0613",
@@ -608,9 +608,9 @@
     "model": "chains.chainnode",
     "pk": "b5889267-252e-43bd-98d0-bdca0d997c21",
     "fields": {
-      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "class_path": "langchain_community.chat_models.ChatOpenAI",
       "node_type": [
-        "langchain.chat_models.openai.ChatOpenAI"
+        "langchain_community.chat_models.ChatOpenAI"
       ],
       "config": {
         "model": "gpt-4-0613",
@@ -646,7 +646,7 @@
             "temperature": 0.2,
             "request_timeout": 240
           },
-          "class_path": "langchain.chat_models.openai.ChatOpenAI"
+          "class_path": "langchain_community.chat_models.ChatOpenAI"
         },
         "memory": {
           "config": {

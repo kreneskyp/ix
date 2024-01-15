@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
 
 
 class MockChatOpenAI(ChatOpenAI):

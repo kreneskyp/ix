@@ -1,7 +1,7 @@
 import chromadb
-from langchain.vectorstores import Chroma
-from langchain.vectorstores.base import VectorStoreRetriever
-from langchain.vectorstores.redis.base import RedisVectorStoreRetriever
+from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores.redis.base import RedisVectorStoreRetriever
+from langchain_core.vectorstores import VectorStoreRetriever
 
 from ix.api.components.types import NodeTypeField, NodeType, Connector
 from ix.chains.fixture_src.targets import (

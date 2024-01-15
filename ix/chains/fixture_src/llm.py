@@ -1,8 +1,8 @@
-from langchain.chat_models import ChatOpenAI
 from langchain.llms.base import BaseLLM
-from langchain.llms import Ollama
 from langchain.llms.fireworks import Fireworks
 from langchain.llms.llamacpp import LlamaCpp
+from langchain_community.chat_models import ChatOpenAI
+from langchain_community.llms.ollama import Ollama
 from langchain_mistralai import ChatMistralAI
 
 from ix.api.components.types import NodeTypeField
@@ -53,7 +53,7 @@ LLM_METADATA_DISPLAY_GROUP = {
     "fields": ["metadata", "tags"],
 }
 
-OPENAI_LLM_CLASS_PATH_DEP = "langchain.chat_models.openai.ChatOpenAI"
+OPENAI_LLM_CLASS_PATH_DEP = "langchain_community.chat_models.ChatOpenAI"
 OPENAI_LLM_CLASS_PATH = "ix.runnable.llm.IXChatOpenAI"
 OPENAI_CONNECTORS_IO = [
     {
@@ -421,7 +421,7 @@ LLAMA_CPP_LLM = {
     + BASE_LLM_FIELDS,
 }
 
-OLLAMA_LLM_CLASS_PATH = "langchain.llms.ollama.Ollama"
+OLLAMA_LLM_CLASS_PATH = "langchain_community.llms.ollama.Ollama"
 OLLAMA_LLM = {
     "class_path": OLLAMA_LLM_CLASS_PATH,
     "type": "llm",
