@@ -1,35 +1,43 @@
 {
     "child_field": null,
-    "class_path": "langchain.vectorstores.base.VectorStoreRetriever",
+    "class_path": "langchain_core.vectorstores.VectorStoreRetriever",
     "config_schema": {
         "display_groups": null,
         "properties": {
             "allowed_search_types": {
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
+                "items": {},
                 "maxItems": null,
                 "minItems": null,
                 "type": "array",
                 "uniqueItems": false
             },
+            "search_kwargs": {
+                "label": "Search_kwargs",
+                "type": "object"
+            },
             "search_type": {
                 "default": "similarity",
+                "label": "Search_type",
                 "type": "string"
             }
         },
         "required": [
-            "allowed_search_types"
+            "allowed_search_types",
+            "search_kwargs"
         ],
+        "title": "VectorStoreRetriever",
         "type": "object"
     },
     "connectors": [
         {
             "as_type": null,
-            "auto_sequence": true,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
             "key": "vectorstore",
+            "label": null,
             "multiple": false,
             "required": true,
             "source_type": "vectorstore",
@@ -48,6 +56,7 @@
                 "mmr"
             ],
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "",
             "max": null,
@@ -64,6 +73,7 @@
             "choices": null,
             "default": "similarity",
             "description": null,
+            "init_type": "init",
             "input_type": null,
             "label": "Search_type",
             "max": null,
@@ -75,6 +85,23 @@
             "step": null,
             "style": null,
             "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Search_kwargs",
+            "max": null,
+            "min": null,
+            "name": "search_kwargs",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "dict"
         }
     ],
     "name": "VectorStoreRetriever",

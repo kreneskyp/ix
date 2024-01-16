@@ -19,7 +19,7 @@ PIRATE = {
     "class_path": "ix.chains.llm_chain.LLMReply",
     "config": {
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
         },
         "memory": [
             {"class_path": "ix.memory.artifacts.ArtifactMemory"},
@@ -30,7 +30,7 @@ PIRATE = {
                     "memory_key": "chat_summary",
                     "max_token_limit": 1500,
                     "llm": {
-                        "class_path": "langchain.chat_models.openai.ChatOpenAI",
+                        "class_path": "langchain_community.chat_models.ChatOpenAI",
                         "config": {
                             "verbose": True,
                             "streaming": True,

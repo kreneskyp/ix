@@ -6,7 +6,7 @@ from langchain.callbacks.manager import AsyncCallbackManagerForChainRun
 from ix.chains.callbacks import IxHandler
 from langchain import LLMChain as LangchainLLMChain
 from langchain.agents.agent_toolkits.base import BaseToolkit
-from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,

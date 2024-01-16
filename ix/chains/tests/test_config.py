@@ -8,10 +8,10 @@ from langchain.chains.conversational_retrieval.base import (
 from langchain.chat_models.base import BaseChatModel
 from langchain.llms.fireworks import Fireworks
 from langchain.llms.llamacpp import LlamaCpp
-from langchain.vectorstores.base import VectorStoreRetriever
 
 import pytest
-from langchain.vectorstores.chroma import Chroma
+from langchain_community.vectorstores.chroma import Chroma
+from langchain_core.vectorstores import VectorStoreRetriever
 from pydantic import BaseModel, SecretStr
 from ix.api.components.types import NodeTypeField, InputType
 

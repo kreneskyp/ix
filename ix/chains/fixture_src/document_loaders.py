@@ -1,11 +1,11 @@
-from langchain.document_loaders import (
+from langchain_community.document_loaders import (
     WebBaseLoader,
     PyPDFLoader,
     CSVLoader,
     BSHTMLLoader,
     JSONLoader,
 )
-from langchain.document_loaders.generic import GenericLoader
+from langchain_community.document_loaders.generic import GenericLoader
 
 from ix.api.components.types import NodeTypeField, Connector
 from ix.chains.components.document_loaders import StringLoader
@@ -63,7 +63,7 @@ STRING_LOADER = {
 }
 
 
-BEAUTIFUL_SOUP_LOADER_CLASS_PATH = "langchain.document_loaders.BSHTMLLoader"
+BEAUTIFUL_SOUP_LOADER_CLASS_PATH = "langchain_community.document_loaders.BSHTMLLoader"
 BEAUTIFUL_SOUP_LOADER = {
     "class_path": BEAUTIFUL_SOUP_LOADER_CLASS_PATH,
     "type": "document_loader",
@@ -81,7 +81,7 @@ BEAUTIFUL_SOUP_LOADER = {
 }
 
 
-CSV_LOADER_CLASS_PATH = "langchain.document_loaders.csv_loader.CSVLoader"
+CSV_LOADER_CLASS_PATH = "langchain_community.document_loaders.csv_loader.CSVLoader"
 CSV_LOADER = {
     "class_path": CSV_LOADER_CLASS_PATH,
     "type": "document_loader",
@@ -100,7 +100,7 @@ CSV_LOADER = {
 
 
 GENERIC_LOADER_CLASS_PATH = (
-    "langchain.document_loaders.generic.GenericLoader.from_filesystem"
+    "langchain_community.document_loaders.generic.GenericLoader.from_filesystem"
 )
 GENERIC_LOADER = {
     "class_path": GENERIC_LOADER_CLASS_PATH,
@@ -118,7 +118,7 @@ GENERIC_LOADER = {
 }
 
 
-JSON_LOADER_CLASS_PATH = "langchain.document_loaders.JSONLoader"
+JSON_LOADER_CLASS_PATH = "langchain_community.document_loaders.JSONLoader"
 JSON_LOADER = {
     "class_path": JSON_LOADER_CLASS_PATH,
     "type": "document_loader",
@@ -146,7 +146,7 @@ JSON_LOADER = {
 }
 
 
-PDF_LOADER_CLASS_PATH = "langchain.document_loaders.PyPDFLoader"
+PDF_LOADER_CLASS_PATH = "langchain_community.document_loaders.PyPDFLoader"
 PDF_LOADER = {
     "class_path": PDF_LOADER_CLASS_PATH,
     "type": "document_loader",
@@ -163,7 +163,9 @@ PDF_LOADER = {
 }
 
 
-WEB_BASE_LOADER_CLASS_PATH = "langchain.document_loaders.web_base.WebBaseLoader"
+WEB_BASE_LOADER_CLASS_PATH = (
+    "langchain_community.document_loaders.web_base.WebBaseLoader"
+)
 WEB_BASE_LOADER = {
     "class_path": WEB_BASE_LOADER_CLASS_PATH,
     "type": "document_loader",

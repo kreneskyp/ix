@@ -1,42 +1,28 @@
 {
     "child_field": null,
-    "class_path": "langchain.document_loaders.PyPDFLoader",
+    "class_path": "langchain_community.embeddings.huggingface.HuggingFaceInferenceAPIEmbeddings",
     "config_schema": {
         "display_groups": null,
         "properties": {
-            "file_path": {
-                "label": "File_path",
+            "api_key": {
+                "input_type": "secret",
+                "label": "Api_key",
                 "type": "string"
             },
-            "password": {
-                "label": "Password",
+            "model_name": {
+                "default": "sentence-transformers/all-MiniLM-L6-v2",
+                "label": "Model_name",
                 "type": "string"
             }
         },
         "required": [
-            "file_path"
+            "api_key"
         ],
-        "title": "PyPDFLoader",
+        "title": "HuggingFaceInferenceAPIEmbeddings",
         "type": "object"
     },
-    "connectors": [
-        {
-            "as_type": null,
-            "collection": null,
-            "fields": null,
-            "from_field": null,
-            "init_modes": null,
-            "init_type": "init",
-            "key": "out",
-            "label": "Documents",
-            "multiple": false,
-            "required": false,
-            "source_type": "data",
-            "template": false,
-            "type": "source"
-        }
-    ],
-    "description": "Load a PDF file into a document.",
+    "connectors": null,
+    "description": "HuggingFace Inference API Embeddings",
     "display_type": "node",
     "fields": [
         {
@@ -44,11 +30,11 @@
             "default": null,
             "description": null,
             "init_type": "init",
-            "input_type": null,
-            "label": "File_path",
+            "input_type": "secret",
+            "label": "Api_key",
             "max": null,
             "min": null,
-            "name": "file_path",
+            "name": "api_key",
             "parent": null,
             "required": true,
             "secret_key": null,
@@ -58,14 +44,14 @@
         },
         {
             "choices": null,
-            "default": null,
+            "default": "sentence-transformers/all-MiniLM-L6-v2",
             "description": null,
             "init_type": "init",
             "input_type": null,
-            "label": "Password",
+            "label": "Model_name",
             "max": null,
             "min": null,
-            "name": "password",
+            "name": "model_name",
             "parent": null,
             "required": false,
             "secret_key": null,
@@ -74,6 +60,6 @@
             "type": "str"
         }
     ],
-    "name": "PDF Loader",
-    "type": "document_loader"
+    "name": "HuggingFace Inference API Embeddings",
+    "type": "embeddings"
 }

@@ -1,5 +1,4 @@
 from langchain.retrievers import MultiQueryRetriever
-
 from ix.chains.fixture_src.targets import (
     RETRIEVER_TARGET,
     LLM_TARGET,
@@ -9,7 +8,7 @@ from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.targets import VECTORSTORE_TARGET
 from ix.chains.fixture_src.vectorstores import VECTORSTORE_RETRIEVER_FIELDS
 
-VECTORSTORE_RETRIEVER_CLASS_PATH = "langchain.schema.vectorstore.VectorStoreRetriever"
+VECTORSTORE_RETRIEVER_CLASS_PATH = "langchain_core.vectorstores.VectorStoreRetriever"
 VECTORSTORE_RETRIEVER = {
     "class_path": VECTORSTORE_RETRIEVER_CLASS_PATH,
     "type": "retriever",

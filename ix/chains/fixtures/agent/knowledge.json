@@ -31,9 +31,9 @@
     "model": "chains.chainnode",
     "pk": "0d49c55f-896e-4dc8-9bf6-36e8057adfeb",
     "fields": {
-      "class_path": "langchain.schema.vectorstore.VectorStoreRetriever",
+      "class_path": "langchain_core.vectorstores.VectorStoreRetriever",
       "node_type": [
-        "langchain.schema.vectorstore.VectorStoreRetriever"
+        "langchain_core.vectorstores.VectorStoreRetriever"
       ],
       "config": {
         "search_type": "similarity",
@@ -76,8 +76,8 @@
       "description": "",
       "root": true,
       "position": {
-        "x": 150.0,
-        "y": 700.0
+        "x": -140.0,
+        "y": 680.0
       },
       "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8"
     }
@@ -119,7 +119,8 @@
         "ix.chains.components.json.JSONPath"
       ],
       "config": {
-        "path": "output"
+        "path": "output",
+        "return_list": true
       },
       "name": "",
       "description": "",
@@ -135,9 +136,9 @@
     "model": "chains.chainnode",
     "pk": "74abbc5e-bd81-4b9c-a29f-561850995f67",
     "fields": {
-      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "class_path": "langchain_community.chat_models.ChatOpenAI",
       "node_type": [
-        "langchain.chat_models.openai.ChatOpenAI"
+        "langchain_community.chat_models.ChatOpenAI"
       ],
       "config": {
         "tags": [],
@@ -167,9 +168,9 @@
     "model": "chains.chainnode",
     "pk": "a3274983-debb-4e34-b1eb-ff758b22a547",
     "fields": {
-      "class_path": "langchain.embeddings.openai.OpenAIEmbeddings",
+      "class_path": "langchain_community.embeddings.openai.OpenAIEmbeddings",
       "node_type": [
-        "langchain.embeddings.openai.OpenAIEmbeddings"
+        "langchain_community.embeddings.openai.OpenAIEmbeddings"
       ],
       "config": {
         "model": "text-embedding-ada-002",
@@ -224,6 +225,28 @@
   },
   {
     "model": "chains.chainnode",
+    "pk": "eef41348-4017-4bcd-bcbb-f81e4b277eef",
+    "fields": {
+      "class_path": "ix.chains.components.json.JSONPath",
+      "node_type": [
+        "ix.chains.components.json.JSONPath"
+      ],
+      "config": {
+        "path": "$.user_input",
+        "return_list": false
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 210.0,
+        "y": 760.0
+      },
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8"
+    }
+  },
+  {
+    "model": "chains.chainnode",
     "pk": "fbd0e538-59c3-4b1d-bd5f-95e3d536b08d",
     "fields": {
       "class_path": "ix.chains.components.json.JSONPath",
@@ -237,7 +260,7 @@
       "description": "",
       "root": false,
       "position": {
-        "x": 470.0,
+        "x": 210.0,
         "y": 640.0
       },
       "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8"
@@ -282,12 +305,25 @@
   },
   {
     "model": "chains.chainedge",
+    "pk": "01cde37e-9e9e-4f78-8712-10b41f660ac8",
+    "fields": {
+      "source": "eef41348-4017-4bcd-bcbb-f81e4b277eef",
+      "target": "0d49c55f-896e-4dc8-9bf6-36e8057adfeb",
+      "source_key": "out",
+      "target_key": "in",
+      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
     "pk": "06c25dac-3972-4cbe-a798-748095ccda89",
     "fields": {
       "source": "a3274983-debb-4e34-b1eb-ff758b22a547",
       "target": "e4bca73a-e160-4182-9984-a9594cf2149a",
       "source_key": "embeddings",
-      "target_key": "embedding",
+      "target_key": "embedding_function",
       "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
       "input_map": null,
       "relation": "PROP"
@@ -347,19 +383,6 @@
   },
   {
     "model": "chains.chainedge",
-    "pk": "9b3d1155-17ba-4440-a104-8fd6281eb58a",
-    "fields": {
-      "source": "43e1d43e-4117-41c8-bbee-26efbff67ea3",
-      "target": "0d49c55f-896e-4dc8-9bf6-36e8057adfeb",
-      "source_key": "chat_input",
-      "target_key": "in",
-      "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
-      "input_map": null,
-      "relation": "LINK"
-    }
-  },
-  {
-    "model": "chains.chainedge",
     "pk": "bd960a30-7632-456e-a050-626f3abdfd45",
     "fields": {
       "source": "fc537461-26f6-45da-931d-a8c8e37f0b34",
@@ -399,11 +422,11 @@
   },
   {
     "model": "chains.chainedge",
-    "pk": "caa53c20-976d-4547-b2cc-c0a81dff34c8",
+    "pk": "e7a43957-99b1-4b4b-bdb1-3f7680c1b2ad",
     "fields": {
-      "source": "fbd0e538-59c3-4b1d-bd5f-95e3d536b08d",
-      "target": "4e15524b-1cb1-4960-8fea-e29f765ba751",
-      "source_key": "out",
+      "source": "43e1d43e-4117-41c8-bbee-26efbff67ea3",
+      "target": "eef41348-4017-4bcd-bcbb-f81e4b277eef",
+      "source_key": "chat_input",
       "target_key": "in",
       "chain": "1a427ad9-e764-4f99-be8e-bf55bea1d9e8",
       "input_map": null,

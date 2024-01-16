@@ -1,6 +1,6 @@
 {
     "child_field": null,
-    "class_path": "langchain.embeddings.mosaicml.MosaicMLInstructorEmbeddings",
+    "class_path": "langchain_community.embeddings.mosaicml.MosaicMLInstructorEmbeddings",
     "config_schema": {
         "display_groups": null,
         "properties": {

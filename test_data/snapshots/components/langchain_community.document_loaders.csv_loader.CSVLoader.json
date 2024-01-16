@@ -1,31 +1,26 @@
 {
     "child_field": null,
-    "class_path": "langchain.schema.vectorstore.VectorStoreRetriever",
+    "class_path": "langchain_community.document_loaders.csv_loader.CSVLoader",
     "config_schema": {
         "display_groups": null,
         "properties": {
-            "allowed_search_types": {
-                "items": {},
-                "maxItems": null,
-                "minItems": null,
-                "type": "array",
-                "uniqueItems": false
+            "encoding": {
+                "label": "Encoding",
+                "type": "string"
             },
-            "search_kwargs": {
-                "label": "Search_kwargs",
-                "type": "object"
+            "file_path": {
+                "label": "File_path",
+                "type": "string"
             },
-            "search_type": {
-                "default": "similarity",
-                "label": "Search_type",
+            "source_column": {
+                "label": "Source_column",
                 "type": "string"
             }
         },
         "required": [
-            "allowed_search_types",
-            "search_kwargs"
+            "file_path"
         ],
-        "title": "VectorStoreRetriever",
+        "title": "CSVLoader",
         "type": "object"
     },
     "connectors": [
@@ -36,49 +31,45 @@
             "from_field": null,
             "init_modes": null,
             "init_type": "init",
-            "key": "vectorstore",
-            "label": null,
+            "key": "out",
+            "label": "Documents",
             "multiple": false,
-            "required": true,
-            "source_type": "vectorstore",
+            "required": false,
+            "source_type": "data",
             "template": false,
-            "type": "target"
+            "type": "source"
         }
     ],
-    "description": "Default vector",
+    "description": "Load a CSV file into a list of documents.",
     "display_type": "node",
     "fields": [
         {
             "choices": null,
-            "default": [
-                "similarity",
-                "similarity_score_threshold",
-                "mmr"
-            ],
+            "default": null,
             "description": null,
             "init_type": "init",
             "input_type": null,
-            "label": "",
+            "label": "File_path",
             "max": null,
             "min": null,
-            "name": "allowed_search_types",
+            "name": "file_path",
             "parent": null,
             "required": true,
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "list"
+            "type": "str"
         },
         {
             "choices": null,
-            "default": "similarity",
+            "default": null,
             "description": null,
             "init_type": "init",
             "input_type": null,
-            "label": "Search_type",
+            "label": "Source_column",
             "max": null,
             "min": null,
-            "name": "search_type",
+            "name": "source_column",
             "parent": null,
             "required": false,
             "secret_key": null,
@@ -92,18 +83,18 @@
             "description": null,
             "init_type": "init",
             "input_type": null,
-            "label": "Search_kwargs",
+            "label": "Encoding",
             "max": null,
             "min": null,
-            "name": "search_kwargs",
+            "name": "encoding",
             "parent": null,
-            "required": true,
+            "required": false,
             "secret_key": null,
             "step": null,
             "style": null,
-            "type": "dict"
+            "type": "str"
         }
     ],
-    "name": "VectorStoreRetriever",
-    "type": "retriever"
+    "name": "CSV Loader",
+    "type": "document_loader"
 }

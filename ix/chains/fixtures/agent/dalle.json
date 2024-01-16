@@ -162,9 +162,9 @@
     "model": "chains.chainnode",
     "pk": "fa0f3ea6-b079-4200-8534-96baefe18964",
     "fields": {
-      "class_path": "langchain.chat_models.openai.ChatOpenAI",
+      "class_path": "langchain_community.chat_models.ChatOpenAI",
       "node_type": [
-        "langchain.chat_models.openai.ChatOpenAI"
+        "langchain_community.chat_models.ChatOpenAI"
       ],
       "config": {
         "tags": [],

@@ -1,4 +1,4 @@
-from langchain.document_loaders.parsers import LanguageParser
+from langchain_community.document_loaders.parsers import LanguageParser
 from langchain.text_splitter import Language
 
 from ix.api.components.types import NodeTypeField, parse_enum_choices
@@ -14,9 +14,7 @@ LANGUAGE = {
     "default": "python",
 }
 
-LANGUAGE_PARSER_CLASS_PATH = (
-    "langchain.document_loaders.parsers.language.language_parser.LanguageParser"
-)
+LANGUAGE_PARSER_CLASS_PATH = "langchain_community.document_loaders.parsers.language.language_parser.LanguageParser"
 LANGUAGE_PARSER = {
     "class_path": LANGUAGE_PARSER_CLASS_PATH,
     "type": "parser",

@@ -1,4 +1,4 @@
-from langchain.embeddings import (
+from langchain_community.embeddings import (
     HuggingFaceInstructEmbeddings,
     HuggingFaceEmbeddings,
     HuggingFaceInferenceAPIEmbeddings,
@@ -9,7 +9,7 @@ from langchain.embeddings import (
 from ix.api.components.types import NodeTypeField
 from ix.chains.fixture_src.llm import GOOGLE_API_KEY
 
-OPENAI_EMBEDDINGS_CLASS_PATH = "langchain.embeddings.openai.OpenAIEmbeddings"
+OPENAI_EMBEDDINGS_CLASS_PATH = "langchain_community.embeddings.openai.OpenAIEmbeddings"
 OPENAI_EMBEDDINGS = {
     "name": "OpenAI Embeddings",
     "description": "Embeddings from OpenAI's API.",
@@ -52,7 +52,7 @@ OPENAI_EMBEDDINGS = {
 }
 
 GOOGLE_PALM_EMBEDDINGS = {
-    "class_path": "langchain.embeddings.google_palm.GooglePalmEmbeddings",
+    "class_path": "langchain_community.embeddings.google_palm.GooglePalmEmbeddings",
     "type": "embeddings",
     "name": "Google PaLM Embeddings",
     "description": "Google PaLM Embeddings",
@@ -93,7 +93,7 @@ GOOGLE_GEN_AI_EMBEDDINGS = {
 }
 
 LLAMA_CPP_EMBEDDINGS = {
-    "class_path": "langchain.embeddings.llama_cpp.LlamaCppEmbeddings",
+    "class_path": "langchain_community.embeddings.llama_cpp.LlamaCppEmbeddings",
     "type": "embeddings",
     "name": "LlamaCpp Embeddings",
     "description": "LlamaCpp Embeddings",
@@ -166,7 +166,7 @@ LLAMA_CPP_EMBEDDINGS = {
 }
 
 VERTEXAI_EMBEDDINGS = {
-    "class_path": "langchain.embeddings.vertexai.VertexAIEmbeddings",
+    "class_path": "langchain_community.embeddings.vertexai.VertexAIEmbeddings",
     "type": "embeddings",
     "name": "VertexAI Embeddings",
     "description": "VertexAI Embeddings",
@@ -186,7 +186,7 @@ VERTEXAI_EMBEDDINGS = {
 }
 
 HUGGINGFACE_EMBEDDINGS_CLASS_PATH = (
-    "langchain.embeddings.huggingface.HuggingFaceEmbeddings"
+    "langchain_community.embeddings.huggingface.HuggingFaceEmbeddings"
 )
 HUGGINGFACE_EMBEDDINGS = {
     "class_path": HUGGINGFACE_EMBEDDINGS_CLASS_PATH,
@@ -206,7 +206,7 @@ HUGGINGFACE_EMBEDDINGS = {
 }
 
 HUGGINGFACE_INSTRUCT_EMBEDDINGS_CLASS_PATH = (
-    "langchain.embeddings.huggingface.HuggingFaceInstructEmbeddings"
+    "langchain_community.embeddings.huggingface.HuggingFaceInstructEmbeddings"
 )
 HUGGINGFACE_INSTRUCT_EMBEDDINGS = {
     "class_path": HUGGINGFACE_INSTRUCT_EMBEDDINGS_CLASS_PATH,
@@ -226,7 +226,7 @@ HUGGINGFACE_INSTRUCT_EMBEDDINGS = {
 }
 
 HUGGINGFACE_BGE_EMBEDDINGS_CLASS_PATH = (
-    "langchain.embeddings.huggingface.HuggingFaceBgeEmbeddings"
+    "langchain_community.embeddings.huggingface.HuggingFaceBgeEmbeddings"
 )
 HUGGINGFACE_BGE_EMBEDDINGS = {
     "class_path": HUGGINGFACE_BGE_EMBEDDINGS_CLASS_PATH,
@@ -247,7 +247,7 @@ HUGGINGFACE_BGE_EMBEDDINGS = {
 
 
 HUGGINGFACE_INFERENCE_API_EMBEDDINGS_CLASS_PATH = (
-    "langchain.embeddings.huggingface.HuggingFaceInferenceAPIEmbeddings"
+    "langchain_community.embeddings.huggingface.HuggingFaceInferenceAPIEmbeddings"
 )
 HUGGINGFACE_INFERENCE_API_EMBEDDINGS = {
     "class_path": HUGGINGFACE_INFERENCE_API_EMBEDDINGS_CLASS_PATH,
@@ -267,7 +267,7 @@ HUGGINGFACE_INFERENCE_API_EMBEDDINGS = {
 
 
 HUGGINGFACE_HUB_EMBEDDINGS_CLASS_PATH = (
-    "langchain.embeddings.huggingface_hub.HuggingFaceHubEmbeddings"
+    "langchain_community.embeddings.huggingface_hub.HuggingFaceHubEmbeddings"
 )
 HUGGINGFACE_HUB_EMBEDDINGS = {
     "class_path": HUGGINGFACE_HUB_EMBEDDINGS_CLASS_PATH,
@@ -287,7 +287,7 @@ HUGGINGFACE_HUB_EMBEDDINGS = {
 
 
 MOSAICML_INSTRUCTOR_EMBEDDINGS = {
-    "class_path": "langchain.embeddings.mosaicml.MosaicMLInstructorEmbeddings",
+    "class_path": "langchain_community.embeddings.mosaicml.MosaicMLInstructorEmbeddings",
     "type": "embeddings",
     "name": "MosaicML Instructor Embeddings",
     "description": "MosaicML Instructor Embeddings",

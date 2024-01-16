@@ -7,9 +7,9 @@ import pytest
 from unittest.mock import MagicMock
 
 from langchain.chains import ConversationalRetrievalChain
-from langchain.document_loaders.generic import GenericLoader
-from langchain.document_loaders.parsers import LanguageParser
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_community.document_loaders.generic import GenericLoader
+from langchain_community.document_loaders.parsers import LanguageParser
+from langchain_community.embeddings import OpenAIEmbeddings
 from langchain.prompts.chat import ChatPromptValue
 from langchain.schema.runnable import (
     RunnableSequence,
@@ -19,7 +19,7 @@ from langchain.schema.runnable import (
 )
 from langchain.schema.runnable.base import RunnableEach
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Redis
+from langchain_community.vectorstores import Redis
 from langchain_core.runnables import RunnablePassthrough, Runnable
 
 from ix.chains.fixture_src.agents import OPENAI_FUNCTIONS_AGENT_CLASS_PATH

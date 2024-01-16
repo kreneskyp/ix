@@ -86,7 +86,7 @@ CREATE_CODE_ARTIFACTS = {
     "class_path": "ix.chains.llm_chain.LLMChain",
     "config": {
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
             "config": {
                 "model": "gpt-4",
                 "request_timeout": 240,
@@ -145,7 +145,7 @@ GENERATE_FILE = {
     "class_path": "ix.chains.llm_chain.LLMChain",
     "config": {
         "llm": {
-            "class_path": "langchain.chat_models.openai.ChatOpenAI",
+            "class_path": "langchain_community.chat_models.ChatOpenAI",
             "config": {
                 "model": "gpt-4",
                 "request_timeout": 240,

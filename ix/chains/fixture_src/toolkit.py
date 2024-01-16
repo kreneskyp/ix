@@ -3,7 +3,7 @@ from ix.api.components.types import NodeTypeField
 
 
 FILE_MANAGEMENT_TOOLKIT_CLASS_PATH = (
-    "langchain.agents.agent_toolkits.file_management.toolkit.FileManagementToolkit"
+    "langchain_community.agent_toolkits.FileManagementToolkit"
 )
 FILE_MANAGEMENT_TOOLKIT = {
     "class_path": FILE_MANAGEMENT_TOOLKIT_CLASS_PATH,
