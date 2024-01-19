@@ -18,7 +18,16 @@ export const useNodeState = (tabState) => {
 
   const setNode = React.useCallback(
     (node) => {
-      setNodes((prev) => ({ ...prev, [node.id]: node }));
+      setNodes((prev) => {
+        // HAX: reject updates from other tabs. This protects against hooks that
+        // aren't updating correctly when switching tabs. This only treats the
+        // symptom, not the cause. But it prevents data corruption of nodes
+        // leaking to other tabs.
+        if (node.chain_id !== tabState.active.chain_id) {
+          return prev;
+        }
+        return { ...prev, [node.id]: node };
+      });
     },
     [setNodes]
   );

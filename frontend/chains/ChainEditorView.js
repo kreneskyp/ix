@@ -148,7 +148,6 @@ const ChainEditorProvider = ({ onError, children }) => {
   );
 };
 
-// TODO: can this be collapsed into ChainEditorView?
 export const ChainEditorControl = () => {
   const { id } = useParams();
   const toast = useToast();
