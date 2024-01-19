@@ -1,0 +1,189 @@
+{
+    "child_field": null,
+    "class_path": "ix.runnable.openapi.RunOpenAPIRequest",
+    "config_schema": {
+        "display_groups": [
+            {
+                "fields": [
+                    "schema_id",
+                    "server",
+                    "path",
+                    "method"
+                ],
+                "key": "Config",
+                "label": "Config"
+            },
+            {
+                "fields": [
+                    "headers"
+                ],
+                "key": "Auth",
+                "label": "Authentication"
+            }
+        ],
+        "properties": {
+            "headers": {
+                "label": "Headers",
+                "type": "object"
+            },
+            "method": {
+                "enum": [
+                    "get",
+                    "post",
+                    "put",
+                    "patch",
+                    "delete",
+                    "options",
+                    "head"
+                ],
+                "input_type": "hidden",
+                "label": "Method",
+                "type": "string"
+            },
+            "path": {
+                "input_type": "IX:openapi_action",
+                "label": "Action",
+                "type": "string"
+            },
+            "schema_id": {
+                "input_type": "IX:openapi_schema",
+                "label": "Schema",
+                "type": "object"
+            },
+            "server": {
+                "input_type": "IX:openapi_server",
+                "label": "Server",
+                "type": "string"
+            }
+        },
+        "required": [
+            "schema_id",
+            "server",
+            "path",
+            "method"
+        ],
+        "title": "RunOpenAPIRequest",
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Send a request to an OpenAPI server",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": "IX:openapi_schema",
+            "label": "Schema",
+            "max": null,
+            "min": null,
+            "name": "schema_id",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "UUID"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": "IX:openapi_server",
+            "label": "Server",
+            "max": null,
+            "min": null,
+            "name": "server",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": "IX:openapi_action",
+            "label": "Action",
+            "max": null,
+            "min": null,
+            "name": "path",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": [
+                {
+                    "label": "Get",
+                    "value": "get"
+                },
+                {
+                    "label": "Post",
+                    "value": "post"
+                },
+                {
+                    "label": "Put",
+                    "value": "put"
+                },
+                {
+                    "label": "Patch",
+                    "value": "patch"
+                },
+                {
+                    "label": "Delete",
+                    "value": "delete"
+                },
+                {
+                    "label": "Options",
+                    "value": "options"
+                },
+                {
+                    "label": "Head",
+                    "value": "head"
+                }
+            ],
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": "hidden",
+            "label": "Method",
+            "max": null,
+            "min": null,
+            "name": "method",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Headers",
+            "max": null,
+            "min": null,
+            "name": "headers",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "dict"
+        }
+    ],
+    "name": "OpenAPI Request",
+    "type": "chain"
+}

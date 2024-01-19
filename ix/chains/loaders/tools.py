@@ -1,9 +1,11 @@
-from typing import List
+from typing import List, Type
 
 from langchain.agents.agent_toolkits.base import BaseToolkit
 from langchain.schema.runnable import Runnable
 from langchain.tools import BaseTool, Tool
 from langchain_core.tools import StructuredTool
+from pydantic import BaseModel, Field
+from pydantic.v1 import BaseModel as BaseModelV1
 
 from ix.chains.fixture_src.tools import TOOL_BASE_FIELDS
 from ix.chains.loaders.context import IxContext
@@ -37,6 +39,16 @@ def load_flow_property(
     return flows
 
 
+class StructuredToolV2(StructuredTool):
+    """Extension of StructuredTool that supports Pydantic v2 schemas.
+
+    The LangChain version requires v1 models but the dynamic models are v2 models.
+    Fix this whenever upstream is updated to use v2.
+    """
+
+    args_schema: Type[BaseModel] = Field(..., description="The tool schema.")
+
+
 def get_runnable_tool(
     name: str, description: str, runnable: Runnable
 ) -> StructuredTool:
@@ -52,7 +64,17 @@ def get_runnable_tool(
     async def ainvoke_shim(*args, **kwargs):
         return await runnable.ainvoke(input=kwargs)
 
-    return StructuredTool(
+    # Support Runnable that use Pydantic v1 & v2 to define schemas
+    if issubclass(runnable.input_schema, BaseModel):
+        tool_class = StructuredToolV2
+    elif issubclass(runnable.input_schema, BaseModelV1):
+        tool_class = StructuredTool
+    else:
+        raise ValueError(
+            f"Unsupported input schema type {runnable.input_schema.__class__}"
+        )
+
+    return tool_class(
         name=name,
         description=description,
         func=invoke_shim,

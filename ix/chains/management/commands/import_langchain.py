@@ -18,6 +18,7 @@ from ix.chains.fixture_src.lcel import LANGCHAIN_RUNNABLES
 from ix.chains.fixture_src.llm import LLMS
 from ix.chains.fixture_src.memory import MEMORY
 from ix.chains.fixture_src.openai_functions import OPENAI_FUNCTIONS
+from ix.chains.fixture_src.openapi import OPEN_API
 from ix.chains.fixture_src.parsers import PARSERS
 from ix.chains.fixture_src.prompts import PROMPTS
 from ix.chains.fixture_src.retriever import RETRIEVERS
@@ -66,6 +67,9 @@ COMPONENTS.extend(DOCUMENT_LOADERS)
 COMPONENTS.extend(UNSTRUCTURED_IO)
 COMPONENTS.extend(VECTORSTORES)
 COMPONENTS.extend(RETRIEVERS)
+
+# Misc components
+COMPONENTS.extend(OPEN_API)
 
 # IX integrations & flow
 COMPONENTS.extend(LANGCHAIN_RUNNABLES)
