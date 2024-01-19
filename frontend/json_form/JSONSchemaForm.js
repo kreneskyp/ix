@@ -16,6 +16,11 @@ import { ChainSelect } from "chains/ChainSelect";
 import { HashList } from "json_form/fields/HashList";
 import { BranchesField } from "chains/editor/fields/BranchesField";
 import { MapField } from "chains/editor/fields/MapField";
+import { SchemaSelect } from "schemas/SchemaSelect";
+import { SchemaActionSelect } from "schemas/openapi/SchemaActionSelect";
+import { SchemaServerSelect } from "schemas/openapi/SchemaServerSelect";
+import { JSONSchemaSelect } from "schemas/json/JSONSchemaSelect";
+import { OpenAPISchemaSelect } from "schemas/openapi/OpenAPISchemaSelect";
 
 // explicit input types
 const INPUTS = {
@@ -29,6 +34,10 @@ const INPUTS = {
   dict: Dict,
   list: List,
   "IX:chain": APISelect.for_select(ChainSelect),
+  "IX:json_schema": APISelect.for_select(JSONSchemaSelect),
+  "IX:openapi_schema": APISelect.for_select(OpenAPISchemaSelect),
+  "IX:openapi_action": APISelect.for_select(SchemaActionSelect),
+  "IX:openapi_server": APISelect.for_select(SchemaServerSelect),
   hash_list: HashList,
   node_branch_list: BranchesField,
   node_map_list: MapField,

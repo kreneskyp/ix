@@ -28,6 +28,7 @@ export const APISelect = ({
         {getLabel(field.label || name)}
       </FormLabel>
       <Component
+        onConfigChange={onChange}
         onChange={handleChange}
         config={config}
         value={value}
