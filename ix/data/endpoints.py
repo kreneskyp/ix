@@ -1,4 +1,5 @@
 import logging
+from typing import Literal, Optional
 from uuid import UUID
 
 from asgiref.sync import sync_to_async
@@ -14,6 +15,7 @@ from ix.data.types import (
 )
 from ix.ix_users.models import User
 from ix.api.auth import get_request_user
+from ix.utils.openapi import get_input_schema
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -73,6 +75,18 @@ async def delete_schema(schema_id: UUID, user: User = Depends(get_request_user))
 
     await schema.adelete()
     return DeletedItem(id=str(schema_id))
+
+
+@router.get("/schemas/{schema_id}/action", tags=["Schemas"])
+async def get_schema_action(
+    schema_id: UUID, path: str, method: str, user: User = Depends(get_request_user)
+):
+    try:
+        schema = await Schema.filtered_owners(user).aget(pk=schema_id)
+    except Schema.DoesNotExist:
+        raise HTTPException(status_code=404, detail="Schema not found")
+
+    return get_input_schema(schema.value, path, method)
 
 
 # Data Endpoints
