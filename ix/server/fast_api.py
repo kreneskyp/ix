@@ -14,6 +14,8 @@ from ix.api.chats.endpoints import router as chats_router
 from ix.api.datasources.endpoints import router as datasources_router
 from ix.api.secrets.endpoints import router as secrets_router
 from ix.api.workspace.endpoints import router as workspace_router
+from ix.data.endpoints import router as data_router
+
 
 from ix.runnable_log.endpoints import router as runnable_log_router
 
@@ -27,6 +29,7 @@ app.include_router(agents_router)
 app.include_router(chats_router)
 app.include_router(artifacts_router)
 app.include_router(editor_router)
+app.include_router(data_router)
 app.include_router(datasources_router)
 app.include_router(secrets_router)
 app.include_router(workspace_router)
