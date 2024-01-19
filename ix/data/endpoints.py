@@ -41,9 +41,12 @@ async def get_schema(schema_id: UUID, user: User = Depends(get_request_user)):
 async def get_schemas(
     limit: int = 10,
     offset: int = 0,
+    type: Optional[Literal["openapi", "json"]] = None,
     user: User = Depends(get_request_user),
 ):
     query = Schema.filtered_owners(user)
+    if type:
+        query = query.filter(type=type)
 
     # punting on async implementation of pagination until later
     return await sync_to_async(SchemaPage.paginate)(
