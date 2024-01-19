@@ -15,7 +15,7 @@ class SchemaOutput(BaseModel):
     parameters: Any
 
 
-class Schema(RunnableSerializable[Input, Output]):
+class FunctionSchema(RunnableSerializable[Input, Output]):
     """Returns a schema defined by configuration when invoked.
 
     This is a simple way to pass in a configuration in a consistent

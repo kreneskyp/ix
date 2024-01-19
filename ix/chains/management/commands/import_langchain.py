@@ -22,6 +22,7 @@ from ix.chains.fixture_src.parsers import PARSERS
 from ix.chains.fixture_src.prompts import PROMPTS
 from ix.chains.fixture_src.retriever import RETRIEVERS
 from ix.chains.fixture_src.routing import ROUTING_CHAINS
+from ix.chains.fixture_src.schemas import SCHEMAS
 from ix.chains.fixture_src.testing import MOCK_MEMORY, MOCK_CHAIN
 from ix.chains.fixture_src.text_splitter import TEXT_SPLITTERS
 from ix.chains.fixture_src.toolkit import TOOLKITS
@@ -75,8 +76,10 @@ COMPONENTS.extend(FLOW)
 COMPONENTS.extend([CHAT_MODERATOR_TYPE])
 COMPONENTS.extend(AGENT_INTERACTION_CHAINS)
 
-# IX Artifacts
+# IX Services
 COMPONENTS.extend(ARTIFACTS)
+COMPONENTS.extend(SCHEMAS)
+
 
 # Testing
 if settings.TESTING:
