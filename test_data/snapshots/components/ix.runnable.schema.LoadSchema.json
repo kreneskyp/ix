@@ -1,0 +1,60 @@
+{
+    "child_field": null,
+    "class_path": "ix.runnable.schema.LoadSchema",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "schema_id": {
+                "description": "Schema to load from the registry.",
+                "input_type": "IX:json_schema",
+                "label": "Schema",
+                "type": "string"
+            }
+        },
+        "required": [
+            "schema_id"
+        ],
+        "title": "LoadSchema",
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "out",
+            "label": "Schema",
+            "multiple": false,
+            "required": false,
+            "source_type": "schema",
+            "template": false,
+            "type": "source"
+        }
+    ],
+    "description": "Get a schema from the schema registry",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": "Schema to load from the registry.",
+            "init_type": "init",
+            "input_type": "IX:json_schema",
+            "label": "Schema",
+            "max": null,
+            "min": null,
+            "name": "schema_id",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "Load Schema",
+    "type": "chain"
+}
