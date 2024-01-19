@@ -1,0 +1,42 @@
+{
+    "child_field": null,
+    "class_path": "ix.runnable.schema.SaveSchema",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "name": {
+                "label": "Name",
+                "type": "string"
+            }
+        },
+        "required": [
+            "name"
+        ],
+        "title": "SaveSchema",
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Save a schema to the schema registry",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": null,
+            "init_type": "init",
+            "input_type": null,
+            "label": "Name",
+            "max": null,
+            "min": null,
+            "name": "name",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        }
+    ],
+    "name": "Save Schema",
+    "type": "chain"
+}

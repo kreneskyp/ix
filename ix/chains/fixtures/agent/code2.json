@@ -50,9 +50,9 @@
     "model": "chains.chainnode",
     "pk": "24d0a73b-b072-410f-bb3d-68afff186b9a",
     "fields": {
-      "class_path": "ix.runnable.schema.Schema",
+      "class_path": "ix.runnable.schema.FunctionSchema",
       "node_type": [
-        "ix.runnable.schema.Schema"
+        "ix.runnable.schema.FunctionSchema"
       ],
       "config": {
         "parameters": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"files\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"filename\": {\n                        \"type\": \"string\"\n                    },\n                    \"description\": {\n                        \"type\": \"string\"\n                    }\n                },\n                \"required\": [\n                    \"filename\",\n                    \"description\"\n                ]\n            }\n        }\n    }\n}"
@@ -180,9 +180,9 @@
     "model": "chains.chainnode",
     "pk": "593a8fe1-83ae-4878-94be-9f050c096e4d",
     "fields": {
-      "class_path": "ix.runnable.schema.Schema",
+      "class_path": "ix.runnable.schema.FunctionSchema",
       "node_type": [
-        "ix.runnable.schema.Schema"
+        "ix.runnable.schema.FunctionSchema"
       ],
       "config": {
         "parameters": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"storage_id\": {\n            \"type\": \"string\"\n        },\n        \"key\": {\n            \"type\": \"string\"\n        },\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"description\": {\n            \"type\": \"string\"\n        },\n        \"data\": {\n            \"type\": \"string\"\n        }\n    },\n    \"required\": [\n        \"name\",\n        \"key\",\n        \"storage_id\",\n        \"description\",\n        \"data\"\n    ]\n}"

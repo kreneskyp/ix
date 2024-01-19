@@ -1,6 +1,6 @@
 {
     "child_field": null,
-    "class_path": "ix.runnable.schema.Schema",
+    "class_path": "ix.runnable.schema.FunctionSchema",
     "config_schema": {
         "display_groups": null,
         "properties": {
@@ -22,7 +22,7 @@
             "description",
             "parameters"
         ],
-        "title": "Schema",
+        "title": "FunctionSchema",
         "type": "object"
     },
     "connectors": [
@@ -42,7 +42,7 @@
             "type": "source"
         }
     ],
-    "description": "Returns a statically defined JSON schema.",
+    "description": "Returns a statically defined Open AI function schema.",
     "display_type": "node",
     "fields": [
         {
@@ -97,6 +97,6 @@
             "type": "Any"
         }
     ],
-    "name": "JSON Schema",
+    "name": "Function Schema",
     "type": "schema"
 }
