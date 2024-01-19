@@ -39,7 +39,7 @@ const usePropertyTargets = (node, type) => {
   const edges = useEdges();
 
   return useMemo(() => {
-    const connectors = type.connectors;
+    const connectors = type?.connectors || [];
     return connectors?.map((connector) => {
       const edge = edges?.find(
         (edge) =>
@@ -161,10 +161,10 @@ const DeleteIcon = ({ node }) => {
 
 export const ConfigNode = ({ id, data, selected }) => {
   const { type } = data;
-  const styles = NODE_STYLES[type.type] || DEFAULT_NODE_STYLE;
+  const styles = NODE_STYLES[type?.type] || DEFAULT_NODE_STYLE;
   const { border, color, highlight, highlightColor, bg, selectionShadow } =
     useEditorColorMode();
-  const position = CONNECTOR_CONFIG[type.type]?.source_position || "right";
+  const position = CONNECTOR_CONFIG[type?.type]?.source_position || "right";
   const nodeState = useContext(NodeStateContext);
   const { nodes } = nodeState;
   const node = nodes[data.node.id];
@@ -212,7 +212,7 @@ export const ConfigNode = ({ id, data, selected }) => {
         {...nodeStyle}
       >
         <Handle
-          id={type.type}
+          id={type?.type}
           type="source"
           position={position}
           style={{
@@ -227,7 +227,7 @@ export const ConfigNode = ({ id, data, selected }) => {
           color={highlightColor}
           borderTopLeftRadius={7}
           borderTopRightRadius={7}
-          bg={highlight[type.type] || highlight.default}
+          bg={highlight[type?.type] || highlight.default}
           px={1}
           py={2}
           className="drag-handle"

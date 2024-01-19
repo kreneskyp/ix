@@ -30,7 +30,7 @@ export const getEdgeStyle = (colorMode) => {
 export const toReactFlowNode = (node, nodeType) => {
   return {
     id: node.id,
-    type: nodeType.display_type,
+    type: nodeType?.display_type || "node",
     position: node.position,
     data: {
       type: nodeType,
