@@ -12,6 +12,7 @@ from ix.data.types import (
     Data as DataPydantic,
     SchemaPage,
     DataPage,
+    NewSchema,
 )
 from ix.ix_users.models import User
 from ix.api.auth import get_request_user
@@ -23,7 +24,7 @@ router = APIRouter()
 
 # Schema Endpoints
 @router.post("/schemas/", response_model=SchemaPydantic, tags=["Schemas"])
-async def create_schema(schema: SchemaPydantic, user: User = Depends(get_request_user)):
+async def create_schema(schema: NewSchema, user: User = Depends(get_request_user)):
     schema_obj = await Schema.objects.acreate(user_id=user.id, **schema.model_dump())
     return SchemaPydantic.model_validate(schema_obj)
 
