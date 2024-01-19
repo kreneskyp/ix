@@ -9,6 +9,7 @@ import Navigation from "site/Navigation";
 import SidebarProvider, { useLeftSidebarContext } from "site/sidebar/context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { SchemasMenuItem } from "schemas/SchemaMenuItem";
 
 export const LayoutLeftPane = ({ children }) => {
   return children;
@@ -69,6 +70,8 @@ const LeftSidebar = ({ children }) => {
         borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
       />
       {children}
+      <Divider />
+      <SchemasMenuItem />
       <Spacer />
       <Divider
         borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
