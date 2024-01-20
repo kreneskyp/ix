@@ -138,6 +138,15 @@ export const useEditorColorMode = () => {
           color: "gray.100",
           borderColor: "gray.600",
         },
+    help: isLight
+      ? {
+          color: "gray.500",
+          fontSize: "xs",
+        }
+      : {
+          color: "gray.400",
+          fontSize: "xs",
+        },
   };
 };
 

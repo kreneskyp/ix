@@ -1,5 +1,4 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Flex, Text, Spinner } from "@chakra-ui/react";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 
@@ -12,10 +11,13 @@ import {
 import { SchemaTable } from "schemas/SchemaTable";
 import { SchemaFormModalButton } from "schemas/SchemaFormModalButton";
 import { MenuItem } from "site/MenuItem";
-import SchemaIcon from "icons/SchemaIcon";
+import { JSONSchemaIcon } from "icons/JSONSchemaIcon";
+import { useEditorColorMode } from "chains/editor/useColorMode";
 
-export const SchemasMenuItem = ({ editor }) => {
+export const JSONSchemaMenuItem = ({ editor }) => {
+  const style = useEditorColorMode();
   const { page, isLoading, load } = usePaginatedAPI("/api/schemas/", {
+    args: { type: "json" },
     loadDependencies: [location],
     limit: 90000,
     load: false,
@@ -25,23 +27,26 @@ export const SchemasMenuItem = ({ editor }) => {
     <LeftMenuPopover onOpen={load}>
       <LeftSidebarPopupIcon>
         <MenuItem title="Schemas">
-          <SchemaIcon />
+          <JSONSchemaIcon />
         </MenuItem>
       </LeftSidebarPopupIcon>
       <LeftSidebarPopupHeader>
         <Flex width={"100%"} justifyContent={"space-between"}>
           <Text>Schemas</Text>
-          <SchemaFormModalButton onSuccess={load}>
+          <SchemaFormModalButton onSuccess={load} type={"json"}>
             <Button colorScheme="green" size={"xs"}>
-              Add Schemas
+              Add Schema
             </Button>
           </SchemaFormModalButton>
         </Flex>
+        <Text {...style.help}>
+          JSON Schemas defining data types for data extraction & generation.
+        </Text>
       </LeftSidebarPopupHeader>
       <LeftSidebarPopupContent width={800}>
         {isLoading ? (
           <Box
-            height={"calc(100vh - 400px)"}
+            height={"200px"}
             width={500}
             display="flex"
             alignItems="center"
@@ -51,7 +56,7 @@ export const SchemasMenuItem = ({ editor }) => {
           </Box>
         ) : (
           <Box width={500}>
-            <SchemaTable page={page} load={load} />
+            <SchemaTable page={page} load={load} type={"json"} />
           </Box>
         )}
       </LeftSidebarPopupContent>
@@ -59,6 +64,6 @@ export const SchemasMenuItem = ({ editor }) => {
   );
 };
 
-SchemasMenuItem.defaultProps = {
+JSONSchemaMenuItem.defaultProps = {
   editor: false,
 };
