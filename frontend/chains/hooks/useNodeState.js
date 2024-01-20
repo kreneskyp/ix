@@ -29,7 +29,7 @@ export const useNodeState = (tabState) => {
         return { ...prev, [node.id]: node };
       });
     },
-    [setNodes]
+    [tabState?.active?.chain_id, setNodes]
   );
 
   return React.useMemo(
