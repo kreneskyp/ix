@@ -59,18 +59,27 @@ export const PromptMessageInput = ({ initialValue, onChange, ...props }) => {
     () => withHistory(withReact(createEditor())),
     []
   );
+
   const [value, setValue] = React.useState([
     {
       children: [{ text: initialValue }],
     },
   ]);
 
+  const previousPlainText = React.useRef(extractPlainText(value));
+
   const handleChange = React.useCallback(
     (newValue) => {
-      if (onChange !== undefined) {
-        const plainText = extractPlainText(newValue);
-        onChange(plainText);
+      const newPlainText = extractPlainText(newValue);
+
+      // Only call onChange if the text has actually changed
+      if (newPlainText !== previousPlainText.current) {
+        if (onChange !== undefined) {
+          onChange(newPlainText);
+        }
+        previousPlainText.current = newPlainText;
       }
+
       setValue(newValue);
     },
     [onChange]

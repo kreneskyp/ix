@@ -32,15 +32,18 @@ export const DictForm = ({ label, dict, key_props, value_props, onChange }) => {
   };
 
   // This effect will update the parent component when entries change
+  const isMounted = React.useRef(false);
   useEffect(() => {
-    if (entries) {
+    if (isMounted.current) {
       const filteredEntries = entries.filter(([key]) => key !== "");
       onChange(Object.fromEntries(filteredEntries));
-    }
 
-    // Check if the last entry is empty before adding a new one
-    if (entries[entries.length - 1].some((entry) => entry !== "")) {
-      setEntries([...entries, ["", ""]]); // Adds a new entry line immediately
+      // Check if the last entry is empty before adding a new one
+      if (entries[entries.length - 1].some((entry) => entry !== "")) {
+        setEntries([...entries, ["", ""]]); // Adds a new entry line immediately
+      }
+    } else {
+      isMounted.current = true;
     }
   }, [entries]);
 
