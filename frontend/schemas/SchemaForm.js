@@ -1,28 +1,16 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  VStack,
-  HStack,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Button, HStack, useToast } from "@chakra-ui/react";
 
 import { useCreateUpdateAPI } from "utils/hooks/useCreateUpdateAPI";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { ModalClose } from "components/Modal";
 import { SchemaDeleteButton } from "schemas/SchemaDeleteButton";
-import {
-  SCHEMA_TYPE_OPTIONS,
-  SchemaTypeSelect,
-} from "schemas/SchemaTypeSelect";
 import OpenAPISchemaForm from "schemas/openapi/OpenAPISchemaForm";
 import { OpenAPIFormRightPanel } from "schemas/openapi/OpenAPIFormRightPanel";
 import { JSONSchemaFormRightPanel } from "schemas/json/JSONSchemaFormRightPanel";
 import JSONSchemaForm from "schemas/json/JSONSchemaForm";
+import { JSONSchemaIcon } from "icons/JSONSchemaIcon";
+import { OpenAPIIcon } from "icons/OpenAPIIcon";
 
 const TYPE_CONFIG = {
   json: {
@@ -35,14 +23,32 @@ const TYPE_CONFIG = {
   },
 };
 
-export const SchemaForm = ({ forType, schema, onSuccess }) => {
+const JSON_HELP_TEXT = "Schema for data generation, extraction, and validation";
+const OPENAPI_HELP_TEXT = "Schema for API access";
+
+export const SCHEMA_TYPE_OPTIONS = [
+  {
+    value: "json",
+    label: "JSON",
+    helpText: JSON_HELP_TEXT,
+    icon: { component: JSONSchemaIcon },
+  },
+  {
+    value: "openapi",
+    label: "OpenAPI",
+    helpText: OPENAPI_HELP_TEXT,
+    icon: { component: OpenAPIIcon },
+  },
+];
+
+export const SchemaForm = ({ type, schema, onSuccess }) => {
   const toast = useToast();
   const [isEdit, setIsEdit] = React.useState(schema?.id !== undefined);
   const [data, setData] = React.useState(
     schema || {
       name: "",
       description: "",
-      type: "openapi",
+      type: type,
     }
   );
   const [valid, setValid] = React.useState(true);
@@ -80,40 +86,14 @@ export const SchemaForm = ({ forType, schema, onSuccess }) => {
     (option) => option.value === data.type
   );
 
-  const type_select =
-    forType === undefined ? (
-      <SchemaTypeSelect
-        value={data.type}
-        onChange={onDataChange}
-        disabled={isEdit}
-      />
-    ) : (
-      <Text
-        color="gray.400"
-        border={"1px solid"}
-        borderRadius={5}
-        {...style.input}
-        ml={6}
-        pl={3}
-        py={2}
-      >
-        {forType}
-      </Text>
-    );
-
   return (
     <Box>
-      <HStack display={"flex"} alignItems={"start"}>
-        <VStack spacing={8} px={3}>
-          <FormControl>
-            <FormLabel>Type</FormLabel>
-            {type_select}
-            <FormHelperText fontSize={"xs"}>
-              {schema_option.helpText}
-            </FormHelperText>
-          </FormControl>
-          {Form && <Form schema={data} onChange={onDataChange} />}
-        </VStack>
+      <HStack display={"flex"} alignItems={"start"} pr={3}>
+        <Box pl={2} width={500}>
+          {Form && (
+            <Form width={500} pr={5} schema={data} onChange={onDataChange} />
+          )}
+        </Box>
         {Panel && <Panel schema={data} onChange={onDataChange} />}
       </HStack>
       <HStack display="flex" justifyContent="flex-end" mt={4} mr={7}>
