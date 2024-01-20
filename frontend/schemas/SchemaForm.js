@@ -69,7 +69,7 @@ export const SchemaForm = ({ type, schema, onSuccess }) => {
         isClosable: true,
         position: "bottom-right",
       });
-      onSuccess();
+      onSuccess(response);
       onClose();
     });
   }, [data, save]);
