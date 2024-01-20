@@ -7,7 +7,7 @@ import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { ModalTriggerButton } from "components/Modal";
 import SchemaFormModalButton from "schemas/SchemaFormModalButton";
 
-export const SchemaSelect = ({ schemaKey, type, value, onChange }) => {
+export const SchemaSelect = ({ type, value, onChange }) => {
   const style = useEditorColorMode();
   const { page, load, isLoading } = usePaginatedAPI("/api/schemas/", {
     type: type,
@@ -16,19 +16,15 @@ export const SchemaSelect = ({ schemaKey, type, value, onChange }) => {
   });
 
   React.useEffect(() => {
-    load({ schema_type: schemaKey, type: type || "json" }).catch((err) => {
+    load({ type: type || "json" }).catch((err) => {
       console.error("failed to load schemas", err);
     });
-  }, [schemaKey]);
+  }, [type]);
 
   // New Schema callback: refresh schemas and select the new schema
   const loadAndSelect = (response) => {
-    load({ schema_type: schemaKey, type: type || "json" }).then(() => {
-      onChange({
-        target: {
-          value: response.id,
-        },
-      });
+    load({ type: type || "json" }).then(() => {
+      onChange(response.id);
     });
   };
 
