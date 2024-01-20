@@ -34,7 +34,7 @@ export const SchemaSelect = ({ type, value, onChange }) => {
 
   return (
     <HStack>
-      <SchemaFormModalButton forType={schemaKey} onSuccess={loadAndSelect}>
+      <SchemaFormModalButton type={type} onSuccess={loadAndSelect}>
         <ModalTriggerButton>
           <Tooltip label="Add Schema">
             <Box
