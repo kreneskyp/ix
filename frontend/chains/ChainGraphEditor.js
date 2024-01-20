@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useContext } from "react";
 import { v4 as uuid4 } from "uuid";
-import { Box, IconButton } from "@chakra-ui/react";
+import { Box, IconButton, useToast } from "@chakra-ui/react";
 import ReactFlow, {
   addEdge,
   updateEdge,
@@ -36,6 +36,7 @@ import { faRightLeft } from "@fortawesome/free-solid-svg-icons";
 import { useRightSidebarContext } from "site/sidebar/context";
 import { DirectRootNode } from "chains/flow/DirectRootNode";
 import { TabState } from "chains/hooks/useTabState";
+import { NOTIFY_SAVED } from "chains/editor/constants";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
@@ -81,6 +82,8 @@ const ChainGraphEditor = ({ graph }) => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const { colorMode } = useColorMode();
 
+  const toast = useToast();
+
   // if active chain changes, then reload nodes and edges
   React.useEffect(() => {
     if (reactFlowGraph?.chain !== undefined) {
@@ -111,6 +114,7 @@ const ChainGraphEditor = ({ graph }) => {
               chain_id: response.data.chain_id,
               chain: response.data,
             }));
+            toast({ ...NOTIFY_SAVED, description: "Saved Chain" });
           },
         });
       }
@@ -220,6 +224,7 @@ const ChainGraphEditor = ({ graph }) => {
       if (edge) {
         setEdges((els) => addEdge(flowEdge, els));
       }
+      toast({ ...NOTIFY_SAVED, description: "Saved Node" });
     },
     [reactFlowInstance, chain?.id, selectedNode, colorMode, selectedConnector]
   );
@@ -290,6 +295,7 @@ const ChainGraphEditor = ({ graph }) => {
         };
         api.addEdge(data);
       }
+      toast({ ...NOTIFY_SAVED, description: "Saved Edge" });
     },
     [chain, reactFlowInstance, colorMode]
   );
@@ -324,6 +330,7 @@ const ChainGraphEditor = ({ graph }) => {
           oldEdge.source === newConnection.source &&
           oldEdge.target === newConnection.target;
         if (!isSame) {
+          toast({ ...NOTIFY_SAVED, description: "Saved Edge" });
           api.updateEdge(oldEdge.data.id, {
             source_id: newConnection.source,
             target_id: newConnection.target,
