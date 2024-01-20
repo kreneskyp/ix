@@ -53,7 +53,6 @@ export const SchemaForm = ({ type, schema, onSuccess }) => {
   );
   const [valid, setValid] = React.useState(true);
   const onClose = React.useContext(ModalClose);
-  const style = useEditorColorMode();
 
   const { save } = useCreateUpdateAPI(
     "/api/schemas/",
@@ -70,7 +69,7 @@ export const SchemaForm = ({ type, schema, onSuccess }) => {
         isClosable: true,
         position: "bottom-right",
       });
-      onSuccess();
+      onSuccess(response);
       onClose();
     });
   }, [data, save]);
@@ -81,10 +80,6 @@ export const SchemaForm = ({ type, schema, onSuccess }) => {
   };
 
   const { Form, Panel } = TYPE_CONFIG[data.type] || {};
-
-  const schema_option = SCHEMA_TYPE_OPTIONS.find(
-    (option) => option.value === data.type
-  );
 
   return (
     <Box>
