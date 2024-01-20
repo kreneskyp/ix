@@ -21,6 +21,7 @@ export const DescriptionField = ({ object, onChange, ...props }) => {
         placeholder="Enter description"
         value={object?.description || ""}
         onChange={handleDescriptionChange}
+        css={colorMode.scrollbar}
         {...colorMode.input}
         {...props}
       />
