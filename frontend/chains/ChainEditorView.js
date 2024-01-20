@@ -29,6 +29,7 @@ import { EditorTopBar } from "chains/editor/EditorTopBar";
 import { useNodeState } from "chains/hooks/useNodeState";
 import { useTabState, TabState } from "chains/hooks/useTabState";
 import { useTabDataField } from "chains/hooks/useTabDataField";
+import { useChainState } from "chains/hooks/useChainState";
 export const EditorViewState = React.createContext(null);
 
 /**
@@ -102,7 +103,7 @@ export const useEditorTabs = (initial) => {
   return {
     tabState,
     typeState: useTabDataField(tabState.active, tabState.setActive, "types"),
-    chainState: useTabDataField(tabState.active, tabState.setActive, "chain"),
+    chainState: useChainState(tabState),
     nodeState: useNodeState(tabState),
     selection: useSelectedNode(tabState),
     addChain,
