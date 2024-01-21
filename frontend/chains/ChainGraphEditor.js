@@ -152,9 +152,10 @@ const ChainGraphEditor = ({ graph }) => {
         return;
       }
 
+      // target middle-ish of header
       const position = reactFlowInstance.project({
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top,
+        x: event.clientX - reactFlowBounds.left - 120,
+        y: event.clientY - reactFlowBounds.top - 50,
       });
 
       const newNodeID = uuid4();
@@ -215,7 +216,7 @@ const ChainGraphEditor = ({ graph }) => {
         }
       }
 
-      // create data object instead of waiting for graphql
+      // create data object instead of waiting for API
       const data = {
         id: newNodeID,
         chain_id: chain?.id || null,
