@@ -111,7 +111,7 @@ const ChainGraphEditor = ({ graph }) => {
           onSuccess: (response) => {
             tabState.setActive((prev) => ({
               ...prev,
-              chain_id: response.data.chain_id,
+              chain_id: response.data.id,
               chain: response.data,
             }));
             toast({ ...NOTIFY_SAVED, description: "Saved Chain" });
