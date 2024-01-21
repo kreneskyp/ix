@@ -13,6 +13,7 @@ import { SchemaFormModalButton } from "schemas/SchemaFormModalButton";
 import { MenuItem } from "site/MenuItem";
 import { JSONSchemaIcon } from "icons/JSONSchemaIcon";
 import { useEditorColorMode } from "chains/editor/useColorMode";
+import { JSONSchemaDraggable } from "schemas/json/JSONSchemaDraggable";
 
 export const JSONSchemaMenuItem = ({ editor }) => {
   const style = useEditorColorMode();
@@ -56,7 +57,12 @@ export const JSONSchemaMenuItem = ({ editor }) => {
           </Box>
         ) : (
           <Box width={500}>
-            <SchemaTable page={page} load={load} type={"json"} />
+            <SchemaTable
+              page={page}
+              load={load}
+              type={"json"}
+              Draggable={JSONSchemaDraggable}
+            />
           </Box>
         )}
       </LeftSidebarPopupContent>

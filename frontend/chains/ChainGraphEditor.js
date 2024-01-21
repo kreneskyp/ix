@@ -123,13 +123,29 @@ const ChainGraphEditor = ({ graph }) => {
   );
 
   const onDrop = useCallback(
-    (event) => {
+    async (event) => {
       event.preventDefault();
 
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-      const nodeType = JSON.parse(
+      const incomingData = JSON.parse(
         event.dataTransfer.getData("application/reactflow")
       );
+
+      // data should include either a type or class_path
+      // fallback to API if type is not in local state
+      let nodeType;
+      if (incomingData.type) {
+        nodeType = incomingData.type;
+      } else if (incomingData.class_path) {
+        const { class_path } = incomingData;
+        nodeType = types.find((type) => type.class_path === class_path);
+        if (!nodeType) {
+          const response = await fetch(
+            `/api/node_types/?class_path=${class_path}`
+          ).then((res) => res.json());
+          nodeType = response?.objects?.[0];
+        }
+      }
 
       // check if the dropped element is valid
       if (typeof nodeType.type === "undefined" || !nodeType.type) {
@@ -205,10 +221,10 @@ const ChainGraphEditor = ({ graph }) => {
         chain_id: chain?.id || null,
         class_path: nodeType.class_path,
         node_type_id: nodeType.id,
-        name: "",
-        description: "",
+        name: incomingData.name || "",
+        description: incomingData.description || "",
         position: position,
-        config: getDefaults(nodeType),
+        config: { ...getDefaults(nodeType), ...incomingData.config },
       };
       if (edge) {
         data.edges = [edge];
@@ -226,7 +242,14 @@ const ChainGraphEditor = ({ graph }) => {
       }
       toast({ ...NOTIFY_SAVED, description: "Saved Node" });
     },
-    [reactFlowInstance, chain?.id, selectedNode, colorMode, selectedConnector]
+    [
+      types,
+      reactFlowInstance,
+      chain?.id,
+      selectedNode,
+      colorMode,
+      selectedConnector,
+    ]
   );
 
   const onFilteredNodesChange = useCallback(

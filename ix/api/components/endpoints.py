@@ -19,6 +19,7 @@ router = APIRouter()
 @router.get("/node_types/", response_model=NodeTypePage, tags=["Components"])
 async def get_node_types(
     search: Optional[str] = None,
+    class_path: Optional[str] = None,
     types: Optional[List[str]] = Query(None, alias="types"),
     limit: int = 50,
     offset: int = 0,
@@ -33,6 +34,8 @@ async def get_node_types(
             | Q(type__icontains=search)
             | Q(class_path__icontains=search)
         )
+    if class_path:
+        query = query.filter(class_path=class_path)
 
     if types:
         query = query.filter(type__in=types)
