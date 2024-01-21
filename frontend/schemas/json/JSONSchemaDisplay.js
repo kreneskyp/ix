@@ -7,8 +7,8 @@ const resolveRef = (ref, schema) => {
   for (const path of refPath) {
     definition =
       definition[path] ||
-      definition.$defs[path] ||
-      definition.definitions[path];
+      definition.$defs?.[path] ||
+      definition.definitions?.[path];
     if (!definition) break;
   }
   return definition;
