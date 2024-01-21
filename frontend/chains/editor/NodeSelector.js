@@ -52,7 +52,10 @@ export const NodeSelector = ({ type }) => {
   const style = getOptionStyle(isLight);
 
   const handleStart = (event, data) => {
-    event.dataTransfer.setData("application/reactflow", JSON.stringify(type));
+    event.dataTransfer.setData(
+      "application/reactflow",
+      JSON.stringify({ type })
+    );
     event.dataTransfer.effectAllowed = "move";
   };
 
