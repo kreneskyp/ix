@@ -13,6 +13,7 @@ import { SchemaFormModalButton } from "schemas/SchemaFormModalButton";
 import { MenuItem } from "site/MenuItem";
 import { OpenAPIIcon } from "icons/OpenAPIIcon";
 import { useEditorColorMode } from "chains/editor/useColorMode";
+import { OpenAPIDraggable } from "schemas/openapi/OpenAPIDraggable";
 
 export const OpenAPISchemaMenuItem = ({ editor }) => {
   const { page, isLoading, load } = usePaginatedAPI("/api/schemas/", {
@@ -56,7 +57,12 @@ export const OpenAPISchemaMenuItem = ({ editor }) => {
           </Box>
         ) : (
           <Box width={500}>
-            <SchemaTable page={page} load={load} type={"openapi"} />
+            <SchemaTable
+              page={page}
+              load={load}
+              type={"openapi"}
+              Draggable={OpenAPIDraggable}
+            />
           </Box>
         )}
       </LeftSidebarPopupContent>

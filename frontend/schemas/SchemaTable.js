@@ -4,7 +4,7 @@ import { ModalTrigger } from "components/Modal";
 import { SchemaFormModalButton } from "schemas/SchemaFormModalButton";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 
-export const SchemaTable = ({ type, title, page, load }) => {
+export const SchemaTable = ({ type, page, Draggable, load }) => {
   const style = useEditorColorMode();
 
   return (
@@ -29,6 +29,7 @@ export const SchemaTable = ({ type, title, page, load }) => {
               </ModalTrigger.Button>
             </SchemaFormModalButton>
           </Box>
+          {Draggable && <Draggable schema={schema} />}
         </HStack>
       ))}
     </VStack>
