@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { HStack, Spinner, useToast, VStack } from "@chakra-ui/react";
+import { Divider, HStack, Spinner, useToast, VStack } from "@chakra-ui/react";
+import { useColorMode } from "@chakra-ui/color-mode";
 import { ReactFlowProvider, useReactFlow } from "reactflow";
 
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
@@ -30,6 +31,8 @@ import { useNodeState } from "chains/hooks/useNodeState";
 import { useTabState, TabState } from "chains/hooks/useTabState";
 import { useTabDataField } from "chains/hooks/useTabDataField";
 import { useChainState } from "chains/hooks/useChainState";
+import { OpenAPISchemaMenuItem } from "schemas/openapi/OpenAPISchemaMenuItem";
+import { JSONSchemaMenuItem } from "schemas/json/JSONSchemaMenuItem";
 export const EditorViewState = React.createContext(null);
 
 /**
@@ -192,6 +195,7 @@ export const ChainEditorView = () => {
 
 export const ChainEditorTab = ({ onError }) => {
   const { active } = React.useContext(TabState);
+  const { colorMode } = useColorMode();
   const isLoading = false;
 
   let content;
@@ -212,6 +216,11 @@ export const ChainEditorTab = ({ onError }) => {
           <ChainCardListButton />
           <NodeTypeSearchButton />
           <RunLogMenuButton />
+          <Divider
+            borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
+          />
+          <OpenAPISchemaMenuItem />
+          <JSONSchemaMenuItem />
         </LayoutLeftPane>
         <LayoutContent>
           <HStack>

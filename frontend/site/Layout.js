@@ -71,9 +71,9 @@ const LeftSidebar = ({ children }) => {
         borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
       />
       {children}
-      <Divider />
-      <OpenAPISchemaMenuItem />
-      <JSONSchemaMenuItem />
+      <Divider
+        borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
+      />
       <Spacer />
       <Divider
         borderColor={colorMode === "light" ? "gray.400" : "whiteAlpha.400"}
