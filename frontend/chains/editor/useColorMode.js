@@ -147,6 +147,7 @@ export const useEditorColorMode = () => {
           color: "gray.400",
           fontSize: "xs",
         },
+    modal_hover: isLight ? { bg: "blackAlpha.100" } : { bg: "blackAlpha.300" },
   };
 };
 
