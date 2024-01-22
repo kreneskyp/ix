@@ -1,9 +1,8 @@
 import React from "react";
-import { Box, HStack, Badge, Text } from "@chakra-ui/react";
+import { Box, HStack, Badge, Text, Tooltip } from "@chakra-ui/react";
 import { CollapsibleSection } from "chains/flow/CollapsibleSection";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { DraggableNode } from "chains/editor/DraggableNode";
-import { labelify } from "json_form/utils";
 import { DRAGGABLE_CONFIG } from "schemas/openapi/OpenAPIDraggable";
 
 export const METHOD_COLORS = {
@@ -18,19 +17,19 @@ export const METHOD_COLORS = {
 };
 
 const SchemaPath = ({ schema_id, server, path, method, methodInfo }) => {
-  const { isLight } = useEditorColorMode();
+  const { isLight, modal_hover } = useEditorColorMode();
   const descriptionStyle = isLight
     ? { color: "gray.700" }
     : { color: "gray.500" };
 
   return (
-    <HStack key={path}>
-      <DraggableNode
-        name={`${methodInfo.operationId}`}
-        description={methodInfo.summary}
-        config={{ schema_id, server, path, method }}
-        class_path={DRAGGABLE_CONFIG.class_path}
-      >
+    <DraggableNode
+      name={`${methodInfo.operationId}`}
+      description={methodInfo.summary}
+      config={{ schema_id, server, path, method }}
+      class_path={DRAGGABLE_CONFIG.class_path}
+    >
+      <HStack key={path} _hover={modal_hover} p={1} borderRadius={3}>
         <Badge
           bg={METHOD_COLORS[method]}
           color={"white"}
@@ -40,12 +39,12 @@ const SchemaPath = ({ schema_id, server, path, method, methodInfo }) => {
         >
           {method}
         </Badge>
-      </DraggableNode>
-      <Text>{path}</Text>
-      <Text fontSize={"xs"} {...descriptionStyle}>
-        {methodInfo.summary}
-      </Text>
-    </HStack>
+        <Text>{path}</Text>
+        <Text fontSize={"xs"} {...descriptionStyle}>
+          {methodInfo.summary}
+        </Text>
+      </HStack>
+    </DraggableNode>
   );
 };
 
