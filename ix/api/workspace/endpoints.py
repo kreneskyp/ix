@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-@router.post("/upload/", response_model=ArtifactPydantic)
+@router.post("/upload/", operation_id="upload_file", response_model=ArtifactPydantic)
 async def upload_file(file: UploadFile = File(...), task_id: str = Form(None)):
     file_location = Path(settings.WORKSPACE_DIR) / file.filename
     with file_location.open("wb+") as buffer:

@@ -30,7 +30,12 @@ class DeletedItem(BaseModel):
     id: UUID
 
 
-@router.get("/chains/", response_model=ChainQueryPage, tags=["Chains"])
+@router.get(
+    "/chains/",
+    operation_id="get_chains",
+    response_model=ChainQueryPage,
+    tags=["Chains"],
+)
 async def get_chains(
     search: Optional[str] = None,
     limit: int = 10,
@@ -112,7 +117,12 @@ async def create_chain_instance(**kwargs) -> Chain:
     return chain
 
 
-@router.post("/chains/", response_model=ChainPydantic, tags=["Chains"])
+@router.post(
+    "/chains/",
+    operation_id="create_chain",
+    response_model=ChainPydantic,
+    tags=["Chains"],
+)
 async def create_chain(
     chain: CreateChain, user: AbstractUser = Depends(get_request_user)
 ):
@@ -120,7 +130,12 @@ async def create_chain(
     return ChainPydantic.model_validate(new_chain)
 
 
-@router.get("/chains/{chain_id}", response_model=ChainPydantic, tags=["Chains"])
+@router.get(
+    "/chains/{chain_id}",
+    operation_id="get_chain",
+    response_model=ChainPydantic,
+    tags=["Chains"],
+)
 async def get_chain_detail(
     chain_id: UUID, user: AbstractUser = Depends(get_request_user)
 ):
@@ -161,7 +176,12 @@ async def sync_chain_agent(chain: Chain, alias: str) -> None:
             await Agent.objects.filter(chain=chain, is_test=False).adelete()
 
 
-@router.put("/chains/{chain_id}", response_model=ChainPydantic, tags=["Chains"])
+@router.put(
+    "/chains/{chain_id}",
+    operation_id="update_chain",
+    response_model=ChainPydantic,
+    tags=["Chains"],
+)
 async def update_chain(
     chain_id: UUID, chain: UpdateChain, user: AbstractUser = Depends(get_request_user)
 ):
@@ -189,7 +209,12 @@ async def update_chain(
     return response
 
 
-@router.delete("/chains/{chain_id}", response_model=DeletedItem, tags=["Chains"])
+@router.delete(
+    "/chains/{chain_id}",
+    operation_id="delete_chain",
+    response_model=DeletedItem,
+    tags=["Chains"],
+)
 async def delete_chain(chain_id: UUID, user: AbstractUser = Depends(get_request_user)):
     query = Chain.filtered_owners(user)
     try:

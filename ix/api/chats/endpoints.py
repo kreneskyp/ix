@@ -41,7 +41,9 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-@router.post("/chats/", response_model=ChatPydantic, tags=["Chats"])
+@router.post(
+    "/chats/", operation_id="create_chat", response_model=ChatPydantic, tags=["Chats"]
+)
 async def create_chat(chat: ChatNew, user: AbstractUser = Depends(get_request_user)):
     # Check if user is authenticated
     if user.is_anonymous:
@@ -82,7 +84,12 @@ async def create_chat(chat: ChatNew, user: AbstractUser = Depends(get_request_us
     return ChatPydantic.model_validate(chat_obj)
 
 
-@router.get("/chats/{chat_id}", response_model=ChatPydantic, tags=["Chats"])
+@router.get(
+    "/chats/{chat_id}",
+    operation_id="get_chat",
+    response_model=ChatPydantic,
+    tags=["Chats"],
+)
 async def get_chat(chat_id: UUID, user: AbstractUser = Depends(get_request_user)):
     query = Chat.filtered_owners(user)
     try:
@@ -92,7 +99,9 @@ async def get_chat(chat_id: UUID, user: AbstractUser = Depends(get_request_user)
     return ChatPydantic.model_validate(chat)
 
 
-@router.get("/chats/", response_model=ChatQueryPage, tags=["Chats"])
+@router.get(
+    "/chats/", operation_id="get_chats", response_model=ChatQueryPage, tags=["Chats"]
+)
 async def get_chats(
     user: AbstractUser = Depends(get_request_user),
     search: Optional[str] = None,
@@ -110,7 +119,12 @@ async def get_chats(
     )
 
 
-@router.put("/chats/{chat_id}", response_model=ChatPydantic, tags=["Chats"])
+@router.put(
+    "/chats/{chat_id}",
+    operation_id="update_chat",
+    response_model=ChatPydantic,
+    tags=["Chats"],
+)
 async def update_chat(
     chat_id: UUID, chat: ChatUpdate, user: AbstractUser = Depends(get_request_user)
 ):
@@ -127,7 +141,12 @@ async def update_chat(
     return ChatPydantic.model_validate(chat_obj)
 
 
-@router.delete("/chats/{chat_id}", response_model=DeletedItem, tags=["Chats"])
+@router.delete(
+    "/chats/{chat_id}",
+    operation_id="delete_chat",
+    response_model=DeletedItem,
+    tags=["Chats"],
+)
 async def delete_chat(chat_id: UUID, user: AbstractUser = Depends(get_request_user)):
     query = Chat.filtered_owners(user)
     try:
@@ -139,7 +158,10 @@ async def delete_chat(chat_id: UUID, user: AbstractUser = Depends(get_request_us
 
 
 @router.delete(
-    "/chats/{chat_id}/agents/{agent_id}", response_model=ChatAgentAction, tags=["Chats"]
+    "/chats/{chat_id}/agents/{agent_id}",
+    operation_id="remove_agent",
+    response_model=ChatAgentAction,
+    tags=["Chats"],
 )
 async def remove_agent(
     chat_id: UUID, agent_id: UUID, user: AbstractUser = Depends(get_request_user)
@@ -156,7 +178,10 @@ async def remove_agent(
 
 
 @router.put(
-    "/chats/{chat_id}/agents/{agent_id}", response_model=ChatAgentAction, tags=["Chats"]
+    "/chats/{chat_id}/agents/{agent_id}",
+    operation_id="add_agent",
+    response_model=ChatAgentAction,
+    tags=["Chats"],
 )
 async def add_agent(
     chat_id: UUID, agent_id: UUID, user: AbstractUser = Depends(get_request_user)
@@ -178,7 +203,12 @@ async def add_agent(
         raise HTTPException(status_code=404, detail="Agent does not exist.")
 
 
-@router.get("/chats/{chat_id}/graph", response_model=ChatGraph, tags=["Chats"])
+@router.get(
+    "/chats/{chat_id}/graph",
+    operation_id="get_chat_graph",
+    response_model=ChatGraph,
+    tags=["Chats"],
+)
 async def get_chat_graph(chat_id: str, user: AbstractUser = Depends(get_request_user)):
     """Chat and related objects
 
@@ -225,7 +255,10 @@ def get_artifacts(user_input):
 
 
 @router.get(
-    "/chats/{chat_id}/messages", response_model=ChatMessageQueryPage, tags=["Chats"]
+    "/chats/{chat_id}/messages",
+    operation_id="get_messages",
+    response_model=ChatMessageQueryPage,
+    tags=["Chats"],
 )
 async def get_messages(
     chat_id,
@@ -248,7 +281,12 @@ async def get_messages(
     )
 
 
-@router.post("/chats/{chat_id}/messages", response_model=ChatMessage, tags=["Chats"])
+@router.post(
+    "/chats/{chat_id}/messages",
+    operation_id="send_message",
+    response_model=ChatMessage,
+    tags=["Chats"],
+)
 async def send_message(
     chat_id: str, chat_input: ChatInput, user: AbstractUser = Depends(get_request_user)
 ):
@@ -314,7 +352,9 @@ async def send_message(
     return ChatMessage.model_validate(message)
 
 
-@router.post("/chats/{chat_id}/messages/clear", tags=["Chats"])
+@router.post(
+    "/chats/{chat_id}/messages/clear", operation_id="clear_messages", tags=["Chats"]
+)
 async def clear_messages(chat_id: str, user: AbstractUser = Depends(get_request_user)):
     try:
         chat = await Chat.filtered_owners(user).aget(pk=chat_id)
