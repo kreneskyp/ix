@@ -3,6 +3,7 @@ import { Box } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChain } from "@fortawesome/free-solid-svg-icons";
 import { useEditorColorMode } from "chains/editor/useColorMode";
+import { getOptionStyle } from "chains/editor/NodeSelector";
 
 /**
  * An expanding node for use in menu popover lists. When hovered, the node
@@ -11,26 +12,27 @@ import { useEditorColorMode } from "chains/editor/useColorMode";
  * This is normally combined with DraggableNode to create a node
  * that can be dragged into the graph.
  */
-export const ListItemNode = ({ label, icon }) => {
-  const style = useEditorColorMode();
+export const ListItemNode = ({ label, icon, expanded }) => {
+  const { isLight, highlight } = useEditorColorMode();
+  const style = getOptionStyle(isLight);
 
   return (
     <Box
       h={"100%"}
       w={10}
-      bg={"blackAlpha.300"}
+      bg={style.modal_hover}
       p={3}
-      color={"gray.400"}
+      {...style.label}
       display={"flex"}
       alignItems={"center"}
       justifyContent={"center"}
       _hover={{
-        bg: style.highlight.chain,
-        color: "white",
-        width: "130px",
-        ".hover-text": { visibility: "visible", maxWidth: "120px" },
+        borderLeft: "6px solid",
+        borderLeftColor: highlight.chain,
+        width: expanded,
+        ".hover-text": { visibility: "visible", maxWidth: expanded - 10 },
       }}
-      transition="background-color 0.2s ease-in, color 0.2s ease-in, width 0.2s ease-in"
+      transition="background-color 0.2s ease-in, all 0.2s ease-in, width 0.2s ease-in"
       borderRadius={5}
       fontSize={"xs"}
       cursor={"grab"}
@@ -50,4 +52,8 @@ export const ListItemNode = ({ label, icon }) => {
       </Box>
     </Box>
   );
+};
+
+ListItemNode.defaultProps = {
+  expanded: 130,
 };
