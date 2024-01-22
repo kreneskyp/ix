@@ -25,7 +25,12 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-@router.post("/secret_types/", response_model=SecretTypePydantic, tags=["Secrets"])
+@router.post(
+    "/secret_types/",
+    operation_id="create_secret_type",
+    response_model=SecretTypePydantic,
+    tags=["Secrets"],
+)
 async def create_secret_type(
     secret_type: SecretTypeEdit,
     user: User = Depends(get_request_user),
@@ -40,6 +45,7 @@ async def create_secret_type(
 
 @router.get(
     "/secret_types/{secret_type_id}",
+    operation_id="get_secret_type",
     response_model=SecretTypePydantic,
     tags=["Secrets"],
 )
@@ -51,7 +57,12 @@ async def get_secret_type(secret_type_id: UUID, user: User = Depends(get_request
     return SecretTypePydantic.model_validate(secret_type)
 
 
-@router.get("/secret_types/", response_model=SecretTypePage, tags=["Secrets"])
+@router.get(
+    "/secret_types/",
+    operation_id="get_secret_types",
+    response_model=SecretTypePage,
+    tags=["Secrets"],
+)
 async def get_secret_types(
     limit: int = 10,
     offset: int = 0,
@@ -79,6 +90,7 @@ async def get_secret_types(
 
 @router.put(
     "/secret_types/{secret_type_id}",
+    operation_id="update_secret_type",
     response_model=SecretTypePydantic,
     tags=["Secrets"],
 )
@@ -100,7 +112,11 @@ async def update_secret_type(
     return SecretTypePydantic.model_validate(secret_type_obj)
 
 
-@router.delete("/secret_types/{secret_type_id}", tags=["Secrets"])
+@router.delete(
+    "/secret_types/{secret_type_id}",
+    operation_id="delete_secret_type",
+    tags=["Secrets"],
+)
 async def delete_secret_type(
     secret_type_id: UUID,
     user: User = Depends(get_request_user),
@@ -148,7 +164,12 @@ async def validate_secret_type(secret: CreateSecret, user: AbstractUser) -> Secr
             raise HTTPException(status_code=422, detail="Invalid secret type")
 
 
-@router.post("/secrets/", response_model=SecretPydantic, tags=["Secrets"])
+@router.post(
+    "/secrets/",
+    operation_id="create_secret",
+    response_model=SecretPydantic,
+    tags=["Secrets"],
+)
 async def create_secret(secret: CreateSecret, user: User = Depends(get_request_user)):
     secret_type = await validate_secret_type(secret, user)
 
@@ -175,6 +196,7 @@ async def create_secret(secret: CreateSecret, user: User = Depends(get_request_u
 
 @router.get(
     "/secrets/{secret_id}",
+    operation_id="get_secret",
     response_model=SecretPydantic,
     tags=["Secrets"],
 )
@@ -192,6 +214,7 @@ async def get_secret(secret_id: UUID, user: User = Depends(get_request_user)):
 
 @router.put(
     "/secrets/{secret_id}",
+    operation_id="update_secret",
     response_model=SecretPydantic,
     tags=["Secrets"],
 )
@@ -246,7 +269,9 @@ async def update_secret(
     return SecretPydantic.model_validate(secret_obj)
 
 
-@router.get("/secrets/", response_model=SecretPage, tags=["Secrets"])
+@router.get(
+    "/secrets/", operation_id="get_secrets", response_model=SecretPage, tags=["Secrets"]
+)
 async def get_secrets(
     secret_type: Optional[str] = None,
     limit: int = 10,
@@ -273,7 +298,12 @@ async def get_secrets(
     )
 
 
-@router.delete("/secrets/{secret_id}", response_model=DeletedItem, tags=["Secrets"])
+@router.delete(
+    "/secrets/{secret_id}",
+    operation_id="delete_secret",
+    response_model=DeletedItem,
+    tags=["Secrets"],
+)
 async def delete_secret(secret_id: UUID, user: User = Depends(get_request_user)):
     try:
         secret = await Secret.filtered_owners(user).aget(pk=secret_id)

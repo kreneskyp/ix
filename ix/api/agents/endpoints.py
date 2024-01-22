@@ -25,7 +25,12 @@ class AgentCreateUpdate(BaseModel):
     config: dict = {}
 
 
-@router.post("/agents/", response_model=AgentPydantic, tags=["Agents"])
+@router.post(
+    "/agents/",
+    operation_id="create_agent",
+    response_model=AgentPydantic,
+    tags=["Agents"],
+)
 async def create_agent(
     agent: AgentCreateUpdate, user: AbstractUser = Depends(get_request_user)
 ):
@@ -34,7 +39,12 @@ async def create_agent(
     return AgentPydantic.model_validate(agent_obj)
 
 
-@router.get("/agents/{agent_id}", response_model=AgentPydantic, tags=["Agents"])
+@router.get(
+    "/agents/{agent_id}",
+    operation_id="get_agent",
+    response_model=AgentPydantic,
+    tags=["Agents"],
+)
 async def get_agent(agent_id: str, user: AbstractUser = Depends(get_request_user)):
     try:
         query = Agent.objects.filter(pk=agent_id)
@@ -44,7 +54,9 @@ async def get_agent(agent_id: str, user: AbstractUser = Depends(get_request_user
     return AgentPydantic.model_validate(agent)
 
 
-@router.get("/agents/", response_model=AgentPage, tags=["Agents"])
+@router.get(
+    "/agents/", operation_id="get_agents", response_model=AgentPage, tags=["Agents"]
+)
 async def get_agents(
     search: Optional[str] = None,
     chat_id: Optional[UUID] = None,
@@ -65,7 +77,12 @@ async def get_agents(
     )
 
 
-@router.put("/agents/{agent_id}", response_model=AgentPydantic, tags=["Agents"])
+@router.put(
+    "/agents/{agent_id}",
+    operation_id="update_agent",
+    response_model=AgentPydantic,
+    tags=["Agents"],
+)
 async def update_agent(
     agent_id: str,
     agent: AgentCreateUpdate,
@@ -82,7 +99,12 @@ async def update_agent(
     return agent_obj
 
 
-@router.delete("/agents/{agent_id}", response_model=DeletedItem, tags=["Agents"])
+@router.delete(
+    "/agents/{agent_id}",
+    operation_id="delete_agent",
+    response_model=DeletedItem,
+    tags=["Agents"],
+)
 async def delete_agent(agent_id: str, user: AbstractUser = Depends(get_request_user)):
     try:
         query = Agent.objects.filter(pk=agent_id)

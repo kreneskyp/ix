@@ -22,7 +22,12 @@ class DataSourceCreateUpdate(BaseModel):
     retrieval_chain: UUID
 
 
-@router.post("/datasources/", response_model=DataSourcePydantic, tags=["DataSources"])
+@router.post(
+    "/datasources/",
+    operation_id="create_datasource",
+    response_model=DataSourcePydantic,
+    tags=["DataSources"],
+)
 async def create_datasource(
     datasource: DataSourceCreateUpdate,
     current_user: AbstractUser = Depends(get_request_user),
@@ -38,6 +43,7 @@ async def create_datasource(
 
 @router.get(
     "/datasources/{datasource_id}",
+    operation_id="get_datasource",
     response_model=DataSourcePydantic,
     tags=["DataSources"],
 )
@@ -54,7 +60,12 @@ async def get_datasource(
     return DataSourcePydantic.from_orm(datasource)
 
 
-@router.get("/datasources/", response_model=DataSourcePage, tags=["DataSources"])
+@router.get(
+    "/datasources/",
+    operation_id="get_datasources",
+    response_model=DataSourcePage,
+    tags=["DataSources"],
+)
 async def get_datasources(
     search: Optional[str] = None,
     limit: int = 10,
@@ -75,6 +86,7 @@ async def get_datasources(
 
 @router.put(
     "/datasources/{datasource_id}",
+    operation_id="update_datasource",
     response_model=DataSourcePydantic,
     tags=["DataSources"],
 )
@@ -98,7 +110,10 @@ async def update_datasource(
 
 
 @router.delete(
-    "/datasources/{datasource_id}", response_model=DeletedItem, tags=["DataSources"]
+    "/datasources/{datasource_id}",
+    operation_id="delete_datasource",
+    response_model=DeletedItem,
+    tags=["DataSources"],
 )
 async def delete_datasource(
     datasource_id: UUID,

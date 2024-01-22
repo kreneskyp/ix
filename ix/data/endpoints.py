@@ -23,13 +23,23 @@ router = APIRouter()
 
 
 # Schema Endpoints
-@router.post("/schemas/", response_model=SchemaPydantic, tags=["Schemas"])
+@router.post(
+    "/schemas/",
+    operation_id="create_schema",
+    response_model=SchemaPydantic,
+    tags=["Schemas"],
+)
 async def create_schema(schema: NewSchema, user: User = Depends(get_request_user)):
     schema_obj = await Schema.objects.acreate(user_id=user.id, **schema.model_dump())
     return SchemaPydantic.model_validate(schema_obj)
 
 
-@router.get("/schemas/{schema_id}", response_model=SchemaPydantic, tags=["Schemas"])
+@router.get(
+    "/schemas/{schema_id}",
+    operation_id="get_schema",
+    response_model=SchemaPydantic,
+    tags=["Schemas"],
+)
 async def get_schema(schema_id: UUID, user: User = Depends(get_request_user)):
     try:
         schema = await Schema.filtered_owners(user).aget(pk=schema_id)
@@ -38,7 +48,9 @@ async def get_schema(schema_id: UUID, user: User = Depends(get_request_user)):
     return SchemaPydantic.model_validate(schema)
 
 
-@router.get("/schemas/", response_model=SchemaPage, tags=["Schemas"])
+@router.get(
+    "/schemas/", operation_id="get_schemas", response_model=SchemaPage, tags=["Schemas"]
+)
 async def get_schemas(
     limit: int = 10,
     offset: int = 0,
@@ -55,7 +67,12 @@ async def get_schemas(
     )
 
 
-@router.put("/schemas/{schema_id}", response_model=SchemaPydantic, tags=["Schemas"])
+@router.put(
+    "/schemas/{schema_id}",
+    operation_id="update_schema",
+    response_model=SchemaPydantic,
+    tags=["Schemas"],
+)
 async def update_schema(
     schema_id: UUID, schema_data: SchemaPydantic, user: User = Depends(get_request_user)
 ):
@@ -70,7 +87,7 @@ async def update_schema(
     return SchemaPydantic.model_validate(schema_obj)
 
 
-@router.delete("/schemas/{schema_id}", tags=["Schemas"])
+@router.delete("/schemas/{schema_id}", operation_id="delete_schema", tags=["Schemas"])
 async def delete_schema(schema_id: UUID, user: User = Depends(get_request_user)):
     try:
         schema = await Schema.filtered_owners(user).aget(pk=schema_id)
@@ -81,7 +98,9 @@ async def delete_schema(schema_id: UUID, user: User = Depends(get_request_user))
     return DeletedItem(id=str(schema_id))
 
 
-@router.get("/schemas/{schema_id}/action", tags=["Schemas"])
+@router.get(
+    "/schemas/{schema_id}/action", operation_id="get_schema_action", tags=["Schemas"]
+)
 async def get_schema_action(
     schema_id: UUID, path: str, method: str, user: User = Depends(get_request_user)
 ):
@@ -94,13 +113,15 @@ async def get_schema_action(
 
 
 # Data Endpoints
-@router.post("/data/", response_model=DataPydantic, tags=["Data"])
+@router.post(
+    "/data/", response_model=DataPydantic, operation_id="create_data", tags=["Data"]
+)
 async def create_data(data: DataPydantic, user: User = Depends(get_request_user)):
     data_obj = await Data.objects.acreate(user_id=user.id, **data.model_dump())
     return DataPydantic.model_validate(data_obj)
 
 
-@router.get("/data/", response_model=DataPage, tags=["Data"])
+@router.get("/data/", response_model=DataPage, operation_id="get_datas", tags=["Data"])
 async def get_datas(
     limit: int = 10,
     offset: int = 0,
@@ -114,7 +135,12 @@ async def get_datas(
     )
 
 
-@router.get("/data/{data_id}", response_model=DataPydantic, tags=["Data"])
+@router.get(
+    "/data/{data_id}",
+    operation_id="get_data",
+    response_model=DataPydantic,
+    tags=["Data"],
+)
 async def get_data(data_id: UUID, user: User = Depends(get_request_user)):
     try:
         data = await Data.filtered_owners(user).aget(pk=data_id)
@@ -123,7 +149,12 @@ async def get_data(data_id: UUID, user: User = Depends(get_request_user)):
     return DataPydantic.model_validate(data)
 
 
-@router.put("/data/{data_id}", response_model=DataPydantic, tags=["Data"])
+@router.put(
+    "/data/{data_id}",
+    operation_id="update_data",
+    response_model=DataPydantic,
+    tags=["Data"],
+)
 async def update_data(
     data_id: UUID, data_data: DataPydantic, user: User = Depends(get_request_user)
 ):
@@ -138,7 +169,7 @@ async def update_data(
     return DataPydantic.model_validate(data_obj)
 
 
-@router.delete("/data/{data_id}", tags=["Data"])
+@router.delete("/data/{data_id}", operation_id="delete_data", tags=["Data"])
 async def delete_data(data_id: UUID, user: User = Depends(get_request_user)):
     try:
         data = await Data.filtered_owners(user).aget(pk=data_id)
