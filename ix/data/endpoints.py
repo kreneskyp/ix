@@ -1,5 +1,5 @@
 import logging
-from typing import Literal, Optional
+from typing import Literal
 from uuid import UUID
 
 from asgiref.sync import sync_to_async
