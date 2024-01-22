@@ -7,6 +7,7 @@ import { useColorMode } from "@chakra-ui/color-mode";
 import { SecretsMenuItem } from "secrets/SecretsMenuItem";
 import { MenuItem } from "site/MenuItem";
 import ChatHistoryIcon from "icons/ChatHistoryIcon";
+import { useEditorColorMode } from "chains/editor/useColorMode";
 
 function Navigation() {
   const { colorMode } = useColorMode();
@@ -22,7 +23,7 @@ function Navigation() {
         };
 
   return (
-    <Box as="nav" color={colorMode === "light" ? "gray.900" : "gray.200"}>
+    <Box as="nav">
       <Stack spacing={3}>
         <Link ml={3} to="/chats">
           <MenuItem title="Chat History">

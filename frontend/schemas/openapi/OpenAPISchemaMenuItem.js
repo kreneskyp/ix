@@ -28,7 +28,7 @@ export const OpenAPISchemaMenuItem = ({ editor }) => {
     <LeftMenuPopover onOpen={load}>
       <LeftSidebarPopupIcon>
         <MenuItem title="API Specs">
-          <OpenAPIIcon />
+          <OpenAPIIcon {...style.menu_icon} />
         </MenuItem>
       </LeftSidebarPopupIcon>
       <LeftSidebarPopupHeader>

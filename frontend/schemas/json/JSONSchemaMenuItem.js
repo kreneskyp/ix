@@ -28,7 +28,7 @@ export const JSONSchemaMenuItem = ({ editor }) => {
     <LeftMenuPopover onOpen={load}>
       <LeftSidebarPopupIcon>
         <MenuItem title="Schemas">
-          <JSONSchemaIcon />
+          <JSONSchemaIcon {...style.menu_icon} />
         </MenuItem>
       </LeftSidebarPopupIcon>
       <LeftSidebarPopupHeader>
