@@ -147,6 +147,19 @@ export const useEditorColorMode = () => {
           color: "gray.400",
           fontSize: "xs",
         },
+    menu_icon: isLight
+      ? {
+          color: "gray.700",
+          _hover: {
+            color: "gray.500",
+          },
+        }
+      : {
+          color: "gray.200",
+          _hover: {
+            color: "gray.500",
+          },
+        },
   };
 };
 
