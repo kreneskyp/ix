@@ -16,15 +16,22 @@ def build_httpx_kwargs(path: str, input: Input, **kwargs) -> dict[str, Any]:
     formatted_path = path.format(**input.get("path", {}))
     headers = kwargs.get("headers", {})
     headers.update(input.get("headers", {}))
+    params = {}
+    if "query" in input:
+        query = input["query"]
+        params = query.model_dump() if isinstance(query, BaseModel) else query
     request_kwargs = {
         "url": formatted_path,
-        "params": input.get("query"),
+        "params": params,
         "headers": headers,
     }
 
     body = input.get("body", None)
     if body:
-        request_kwargs["json"] = body
+        if isinstance(body, BaseModel):
+            request_kwargs["json"] = body.model_dump()
+        else:
+            request_kwargs["json"] = body
 
     return request_kwargs
 
