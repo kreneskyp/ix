@@ -19,7 +19,12 @@ router = APIRouter()
 __all__ = ["router"]
 
 
-@router.post("/artifacts/", response_model=ArtifactPydantic, tags=["Artifacts"])
+@router.post(
+    "/artifacts/",
+    operation_id="create_artifact",
+    response_model=ArtifactPydantic,
+    tags=["Artifacts"],
+)
 async def create_artifact(data: ArtifactCreate, user=Depends(get_request_user)):
     instance = Artifact(user=user, **data.model_dump())
     await instance.asave()
@@ -27,7 +32,10 @@ async def create_artifact(data: ArtifactCreate, user=Depends(get_request_user)):
 
 
 @router.get(
-    "/artifacts/{artifact_id}", response_model=ArtifactPydantic, tags=["Artifacts"]
+    "/artifacts/{artifact_id}",
+    operation_id="get_artifact",
+    response_model=ArtifactPydantic,
+    tags=["Artifacts"],
 )
 async def get_artifact(artifact_id: str, user=Depends(get_request_user)):
     try:
@@ -38,7 +46,12 @@ async def get_artifact(artifact_id: str, user=Depends(get_request_user)):
     return ArtifactPydantic.model_validate(artifact)
 
 
-@router.get("/artifacts/", response_model=ArtifactPage, tags=["Artifacts"])
+@router.get(
+    "/artifacts/",
+    operation_id="get_artifacts",
+    response_model=ArtifactPage,
+    tags=["Artifacts"],
+)
 async def get_artifacts(
     chat_id: Optional[UUID] = None,
     search: Optional[str] = None,
@@ -62,7 +75,10 @@ async def get_artifacts(
 
 
 @router.put(
-    "/artifacts/{artifact_id}", response_model=ArtifactPydantic, tags=["Artifacts"]
+    "/artifacts/{artifact_id}",
+    operation_id="update_artifact",
+    response_model=ArtifactPydantic,
+    tags=["Artifacts"],
 )
 async def update_artifact(
     artifact_id: str, data: ArtifactUpdate, user=Depends(get_request_user)
@@ -80,6 +96,7 @@ async def update_artifact(
 
 @router.get(
     "/artifacts/{artifact_id}/download",
+    operation_id="download_artifact",
     tags=["Artifacts"],
     responses={
         200: {

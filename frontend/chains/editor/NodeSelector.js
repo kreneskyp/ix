@@ -15,12 +15,15 @@ export const getOptionStyle = (isLight) => {
         },
         label: {
           color: "gray.600",
+          fontWeight: "bold",
+          fontSize: "sm",
         },
         container: {
           color: "gray.700",
         },
         help: {
           color: "gray.500",
+          fontSize: "xs",
         },
         icon: {
           color: "gray.600",
@@ -32,9 +35,12 @@ export const getOptionStyle = (isLight) => {
         },
         label: {
           color: "gray.300",
+          fontWeight: "bold",
+          fontSize: "sm",
         },
         help: {
           color: "gray.500",
+          fontSize: "xs",
         },
         icon: {
           color: "gray.300",

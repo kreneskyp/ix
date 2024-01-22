@@ -16,7 +16,12 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-@router.get("/node_types/", response_model=NodeTypePage, tags=["Components"])
+@router.get(
+    "/node_types/",
+    operation_id="get_node_types",
+    response_model=NodeTypePage,
+    tags=["Components"],
+)
 async def get_node_types(
     search: Optional[str] = None,
     class_path: Optional[str] = None,
@@ -51,7 +56,10 @@ class NodeTypeDetail(NodeTypePydantic):
 
 
 @router.get(
-    "/node_types/{node_type_id}", response_model=NodeTypeDetail, tags=["Components"]
+    "/node_types/{node_type_id}",
+    operation_id="get_node_type",
+    response_model=NodeTypeDetail,
+    tags=["Components"],
 )
 async def get_node_type_detail(
     node_type_id: UUID, user: AbstractUser = Depends(get_request_user)
@@ -65,7 +73,12 @@ async def get_node_type_detail(
     return NodeTypeDetail.from_orm(node_type)
 
 
-@router.post("/node_types/", response_model=NodeTypePydantic, tags=["Components"])
+@router.post(
+    "/node_types/",
+    operation_id="create_node_type",
+    response_model=NodeTypePydantic,
+    tags=["Components"],
+)
 async def create_node_type(
     node_type: NodeTypePydantic, user: AbstractUser = Depends(get_request_user)
 ):
@@ -77,7 +90,10 @@ async def create_node_type(
 
 
 @router.put(
-    "/node_types/{node_type_id}", response_model=NodeTypePydantic, tags=["Components"]
+    "/node_types/{node_type_id}",
+    operation_id="update_node_type",
+    response_model=NodeTypePydantic,
+    tags=["Components"],
 )
 async def update_node_type(
     node_type_id: UUID,
@@ -98,7 +114,10 @@ async def update_node_type(
 
 
 @router.delete(
-    "/node_types/{node_type_id}", response_model=DeletedItem, tags=["Components"]
+    "/node_types/{node_type_id}",
+    operation_id="delete_node_type",
+    response_model=DeletedItem,
+    tags=["Components"],
 )
 async def delete_node_type(
     node_type_id: UUID, user: AbstractUser = Depends(get_request_user)

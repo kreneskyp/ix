@@ -18,7 +18,7 @@ export const OpenAPIDraggable = ({ schema }) => {
       config={{ schema_id: schema.id }}
       height={"100%"}
     >
-      <ListItemNode label={"OpenAPI Request"} />
+      <ListItemNode label={"OpenAPI Request"} expanded={150} />
     </DraggableNode>
   );
 };

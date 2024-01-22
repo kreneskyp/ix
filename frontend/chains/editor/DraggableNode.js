@@ -1,5 +1,6 @@
 import React from "react";
 import { Box } from "@chakra-ui/react";
+import { ModalClose } from "components/Modal";
 
 /**
  * Generic wrapper component that make a react component drag-n-droppable into the graph.
@@ -19,7 +20,10 @@ export const DraggableNode = ({
   onDrag,
   ...props
 }) => {
+  const close = React.useContext(ModalClose);
+
   const handleStart = (event) => {
+    // build payload
     const payload = {
       name,
       description,
@@ -31,6 +35,11 @@ export const DraggableNode = ({
       JSON.stringify(payload)
     );
     event.dataTransfer.effectAllowed = "move";
+
+    if (close) {
+      // Need a slight delay to prevent the modal from closing before drag is started.
+      setTimeout(close, 15);
+    }
 
     if (onDrag) {
       onDrag(payload);

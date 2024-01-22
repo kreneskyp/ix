@@ -37,7 +37,10 @@ export const OpenAPIFormRightPanel = ({ schema }) => {
             >
               {schema?.value?.paths && (
                 <Box width={"100%"}>
-                  <SchemaPathsList schema={schema.value} />
+                  <SchemaPathsList
+                    schema={schema.value}
+                    schema_id={schema.id}
+                  />
                 </Box>
               )}
             </Box>
