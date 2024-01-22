@@ -10,6 +10,7 @@ import {
 import { useColorMode } from "@chakra-ui/color-mode";
 import { ChainEditButton } from "chains/ChainEditButton";
 import { ModalClose } from "components/Modal";
+import { ChainDraggable } from "chains/ChainDraggable";
 
 const ChainCard = ({ chain, children, ...props }) => {
   const close = React.useContext(ModalClose);
@@ -55,6 +56,7 @@ const ChainCard = ({ chain, children, ...props }) => {
           </Text>
         </VStack>
         <HStack spacing={2} pt={4} display="flex" justifyContent="flex-end">
+          <ChainDraggable chain={chain} />
           <ChainEditButton chain={chain} onClick={close} />
         </HStack>
       </CardBody>
