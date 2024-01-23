@@ -264,16 +264,20 @@ const ChainGraphEditor = ({ graph }) => {
     [onNodesChange]
   );
 
-  const onNodeDragStop = useCallback((event, node) => {
-    // ignore position updates for root
-    if (node.id === "root") {
-      return;
-    }
+  const onNodeDragStop = useCallback(
+    (event, node) => {
+      // ignore position updates for root
+      if (node.id === "root") {
+        return;
+      }
 
-    // update node with new position
-    api.updateNodePosition(node.id, node.position);
-    nodeState.setNode({ ...node.data.node, position: node.position });
-  }, []);
+      // update node with new position
+      api.updateNodePosition(node.id, node.position);
+      const prevNode = nodeState.nodes[node.id];
+      nodeState.setNode({ ...prevNode, position: node.position });
+    },
+    [nodeState.nodes]
+  );
 
   // new edges
   const onConnect = useCallback(
