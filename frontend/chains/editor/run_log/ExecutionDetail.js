@@ -26,31 +26,43 @@ export const ExecutionDetail = ({ execution }) => {
       ? execution?.outputs
       : JSON.stringify(execution?.outputs, null, 4);
 
+  const syntaxStyle = {
+    fontSize: "12px",
+    maxWidth: "900px",
+    margniRight: "5px",
+  };
+
   return (
     <Box pl={4} pt={1} height={"100%"}>
       <VStack alignItems={"start"} spacing={3}>
-        <Box>
+        <Box width={"100%"}>
           <Heading size={"sm"} mb={1}>
             Input
           </Heading>
-          <Box width={600}>
-            <SyntaxHighlighter style={syntaxTheme} wrapLines={true}>
-              {formattedInputs}
-            </SyntaxHighlighter>
-          </Box>
+          <SyntaxHighlighter
+            customStyle={syntaxStyle}
+            language="json"
+            style={syntaxTheme}
+            wrapLines={true}
+          >
+            {formattedInputs}
+          </SyntaxHighlighter>
         </Box>
-        <Box>
+        <Box width={"100%"}>
           <Heading size={"sm"} mb={1}>
             Output
           </Heading>
-          <Box width={600}>
-            <SyntaxHighlighter style={syntaxTheme} wrapLines={true}>
-              {formattedOutputs}
-            </SyntaxHighlighter>
-          </Box>
+          <SyntaxHighlighter
+            customStyle={syntaxStyle}
+            language="json"
+            style={syntaxTheme}
+            wrapLines={true}
+          >
+            {formattedOutputs}
+          </SyntaxHighlighter>
         </Box>
         {execution?.message && (
-          <Box width={500}>
+          <Box width={"100%"}>
             <Heading size={"sm"} mb={1}>
               Message
             </Heading>
