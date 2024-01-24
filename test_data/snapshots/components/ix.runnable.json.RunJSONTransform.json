@@ -1,0 +1,57 @@
+{
+    "child_field": null,
+    "class_path": "ix.runnable.json.RunJSONTransform",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "base": {
+                "description": "Type of object to be returned by the transform",
+                "label": "",
+                "type": "number"
+            }
+        },
+        "required": [],
+        "title": "RunJSONTransform",
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "out",
+            "label": "JSON",
+            "multiple": false,
+            "required": false,
+            "source_type": "flow",
+            "template": false,
+            "type": "source"
+        }
+    ],
+    "description": "Transform a JSON object using JSONPath(s) into a single value, list, or object",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": "Type of object to be returned by the transform",
+            "init_type": "init",
+            "input_type": null,
+            "label": "",
+            "max": null,
+            "min": null,
+            "name": "base",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "number"
+        }
+    ],
+    "name": "JSON Transform",
+    "type": "chain"
+}

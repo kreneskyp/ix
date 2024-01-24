@@ -9,12 +9,14 @@ import { useNodeEditorAPI } from "chains/hooks/useNodeEditorAPI";
 import { NameField } from "chains/editor/fields/NameField";
 import { DescriptionField } from "chains/editor/fields/DescriptionField";
 import { JSONSchemaForm } from "json_form/JSONSchemaForm";
+import { JSONTransformNode } from "chains/flow/JSONTransformNode";
 
 const CONFIG_FORM_COMPONENTS = {
   "langchain.prompts.chat.ChatPromptTemplate": PromptNode,
   "ix.runnable.prompt.MultiModalChatPrompt": PromptNode,
   "ix.chains.functions.FunctionSchema": FunctionSchemaNode,
   "ix.runnable.schema.Schema": FunctionSchemaNode,
+  "ix.runnable.json.RunJSONTransform": JSONTransformNode,
 };
 
 const DefaultForm = ({ type, node, onChange }) => {
