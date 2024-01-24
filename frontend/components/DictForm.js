@@ -21,7 +21,7 @@ export const DictForm = ({
     } else {
       // Move entries with empty keys to the end
       entries.sort(([keyA], [keyB]) =>
-        keyA === "" ? 1 : keyB === "" ? -1 : 0
+        keyA === "" ? 1 : keyB === _defaultValue ? -1 : 0
       );
     }
     return entries;
@@ -48,7 +48,9 @@ export const DictForm = ({
       onChange(Object.fromEntries(filteredEntries));
 
       // Check if the last entry is empty before adding a new one
-      if (entries[entries.length - 1].some((entry) => entry !== "")) {
+      if (
+        entries[entries.length - 1]?.some((entry) => entry !== _defaultValue)
+      ) {
         setEntries([...entries, ["", _defaultValue]]); // Adds a new entry line immediately
       }
     } else {
