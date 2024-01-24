@@ -1,4 +1,4 @@
-from ix.api.components.types import NodeTypeField
+from ix.api.components.types import NodeTypeField, NodeType, Connector
 from ix.chains.components.json import JSONPath
 
 
@@ -35,4 +35,27 @@ JSON_DATA = {
     ],
 }
 
-JSON = [JSON_PATH, JSON_DATA]
+JSON_TRANSFORM_CLASS_PATH = "ix.runnable.json.RunJSONTransform"
+JSON_TRANSFORM = NodeType(
+    class_path=JSON_TRANSFORM_CLASS_PATH,
+    name="JSON Transform",
+    description="Transform a JSON object using JSONPath(s) into a single value, list, or object",
+    type="chain",
+    connectors=[
+        Connector(
+            key="out",
+            label="JSON",
+            type="source",
+            source_type="flow",
+        )
+    ],
+    fields=[
+        NodeTypeField(
+            name="base",
+            type="number",
+            description="Type of object to be returned by the transform",
+        ),
+    ],
+)
+
+JSON = [JSON_PATH, JSON_DATA, JSON_TRANSFORM]

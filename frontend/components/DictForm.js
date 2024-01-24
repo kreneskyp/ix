@@ -5,20 +5,29 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { useDebounce } from "utils/hooks/useDebounce";
 
-export const DictForm = ({ label, dict, key_props, value_props, onChange }) => {
+export const DictForm = ({
+  label,
+  dict,
+  key_props,
+  value_props,
+  onChange,
+  component,
+  defaultValue,
+}) => {
   const [entries, setEntries] = useState(() => {
     let entries = Object.entries(dict);
     if (entries.length === 0) {
-      entries = [["", ""]];
+      entries = [["", _defaultValue]];
     } else {
       // Move entries with empty keys to the end
       entries.sort(([keyA], [keyB]) =>
-        keyA === "" ? 1 : keyB === "" ? -1 : 0
+        keyA === "" ? 1 : keyB === _defaultValue ? -1 : 0
       );
     }
     return entries;
   });
   const colorMode = useEditorColorMode();
+  const _defaultValue = defaultValue || "";
 
   const handleInputChange = (e, index, isKey) => {
     const { value } = e.target;
@@ -39,8 +48,10 @@ export const DictForm = ({ label, dict, key_props, value_props, onChange }) => {
       onChange(Object.fromEntries(filteredEntries));
 
       // Check if the last entry is empty before adding a new one
-      if (entries[entries.length - 1].some((entry) => entry !== "")) {
-        setEntries([...entries, ["", ""]]); // Adds a new entry line immediately
+      if (
+        entries[entries.length - 1]?.some((entry) => entry !== _defaultValue)
+      ) {
+        setEntries([...entries, ["", _defaultValue]]); // Adds a new entry line immediately
       }
     } else {
       isMounted.current = true;
@@ -52,6 +63,8 @@ export const DictForm = ({ label, dict, key_props, value_props, onChange }) => {
     updatedEntries.splice(index, 1);
     setEntries(updatedEntries);
   };
+
+  const InputComponent = component || Input;
 
   return (
     <Box width="100%">
@@ -71,7 +84,7 @@ export const DictForm = ({ label, dict, key_props, value_props, onChange }) => {
               {...colorMode.input}
               {...(key_props || {})}
             />
-            <Input
+            <InputComponent
               value={value}
               onChange={(e) => handleInputChange(e, index, false)}
               placeholder="Value"

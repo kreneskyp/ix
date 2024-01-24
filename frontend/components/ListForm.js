@@ -21,15 +21,22 @@ import { useEditorColorMode } from "chains/editor/useColorMode";
  * @param {Array} list - The list to be edited.
  * @param {function} onChange - The callback function that is called when the list is changed.
  */
-export const ListForm = ({ label, list, onChange }) => {
-  const [items, setItems] = useState(list || [""]);
+export const ListForm = ({
+  label,
+  list,
+  onChange,
+  defaultValue,
+  component,
+}) => {
+  const _default = defaultValue || "";
+  const [items, setItems] = useState(list || [_default]);
   const colorMode = useEditorColorMode();
 
   // This useEffect hook ensures that there is always an empty string at the end of the items array.
   // This is necessary for the user to be able to add new items to the list.
   useEffect(() => {
-    if (items[items.length - 1] !== "") {
-      setItems([...items, ""]);
+    if (items[items.length - 1] !== _default) {
+      setItems([...items, _default]);
     }
   }, [items]);
 
@@ -38,14 +45,16 @@ export const ListForm = ({ label, list, onChange }) => {
     const updatedItems = [...items];
     updatedItems[index] = value;
     setItems(updatedItems);
-    onChange(updatedItems.filter((item) => item !== ""));
+    onChange(updatedItems.filter((item) => item !== _default));
   };
 
   const handleRemoveClick = (index) => {
     const updatedItems = items.filter((item, i) => i !== index);
     setItems(updatedItems);
-    onChange(updatedItems.filter((item) => item !== ""));
+    onChange(updatedItems.filter((item) => item !== _default));
   };
+
+  const InputComponent = component || Input;
 
   return (
     <Box width="100%">
@@ -58,7 +67,7 @@ export const ListForm = ({ label, list, onChange }) => {
       <VStack align="stretch">
         {items?.map((value, index) => (
           <HStack key={index}>
-            <Input
+            <InputComponent
               value={value}
               onChange={(e) => handleInputChange(e, index)}
               placeholder={`Item ${index + 1}`}
