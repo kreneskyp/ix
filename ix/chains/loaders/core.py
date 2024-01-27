@@ -522,7 +522,6 @@ def load_chain_flow(chain: Chain) -> Tuple[Type[BaseModel], FlowPlaceholder]:
     try:
         root = chain.nodes.get(root=True, class_path=ROOT_CLASS_PATH)
         nodes = chain.nodes.filter(incoming_edges__source=root)
-        logger.debug(f"Loading chain flow with roots: {root}")
         input_type = create_args_model_v1(
             root.config.get("outputs", []), name="ChainInput"
         )
