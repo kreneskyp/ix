@@ -66,6 +66,8 @@ class UpdateNode(BaseModel):
 class UpdateEdge(BaseModel):
     source_id: UUID
     target_id: UUID
+    target_key: str
+    source_key: str
 
 
 class GraphModel(BaseModel):

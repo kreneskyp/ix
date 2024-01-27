@@ -762,6 +762,10 @@ class TestChainEdge:
         assert response.status_code == 200, response.json()
         edge_data = response.json()
         assert edge_data["id"] == str(edge.id)
+        assert edge_data["source_id"] == str(node1.id)
+        assert edge_data["target_id"] == str(node2.id)
+        assert edge_data["source_key"] == node1_type.type
+        assert edge_data["target_key"] == "Custom Key"
 
     async def test_delete_chain_edge(self, anode_types):
         # Create a chain edge to delete
