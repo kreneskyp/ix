@@ -357,16 +357,22 @@ const ChainGraphEditor = ({ graph }) => {
       } else {
         const isSame =
           oldEdge.source === newConnection.source &&
-          oldEdge.target === newConnection.target;
+          oldEdge.target === newConnection.target &&
+          oldEdge.sourceHandle === newConnection.sourceHandle &&
+          oldEdge.targetHandle === newConnection.targetHandle;
         if (!isSame) {
           toast({ ...NOTIFY_SAVED, description: "Saved Edge" });
           api.updateEdge(oldEdge.data.id, {
             source_id: newConnection.source,
             target_id: newConnection.target,
+            source_key: newConnection.sourceHandle,
+            target_key: newConnection.targetHandle,
           });
           edgeState.updateEdge(oldEdge.data.id, {
             source_id: newConnection.source,
             target_id: newConnection.target,
+            source_key: newConnection.sourceHandle,
+            target_key: newConnection.targetHandle,
           });
         }
       }
