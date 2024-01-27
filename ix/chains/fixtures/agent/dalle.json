@@ -29,27 +29,6 @@
   },
   {
     "model": "chains.chainnode",
-    "pk": "155a4299-0acb-4736-8248-5cbd016ef8c6",
-    "fields": {
-      "class_path": "ix.chains.components.json.JSONPath",
-      "node_type": [
-        "ix.chains.components.json.JSONPath"
-      ],
-      "config": {
-        "path": "data[0].url"
-      },
-      "name": "",
-      "description": "",
-      "root": false,
-      "position": {
-        "x": 860.0,
-        "y": 420.0
-      },
-      "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d"
-    }
-  },
-  {
-    "model": "chains.chainnode",
     "pk": "331cc49f-5c94-4bbd-baea-b7cb7693362d",
     "fields": {
       "class_path": "__ROOT__",
@@ -107,26 +86,27 @@
   },
   {
     "model": "chains.chainnode",
-    "pk": "d06a05b4-e6f4-4fdc-82f5-147046cb81fb",
+    "pk": "f583b827-0647-4123-94bb-3c9824dc17b8",
     "fields": {
-      "class_path": "ix.chains.components.lcel.init_parallel",
+      "class_path": "ix.runnable.json.RunJSONTransform",
       "node_type": [
-        "ix.chains.components.lcel.init_parallel"
+        "ix.runnable.json.RunJSONTransform"
       ],
       "config": {
-        "steps": [
-          "url"
-        ],
-        "steps_hash": [
-          "1f64c9af-2e07-480b-b97e-b30bf12b8c0b"
-        ]
+        "base": 3,
+        "json_path": {
+          "url": {
+            "path": "data[0].url",
+            "is_list": false
+          }
+        }
       },
       "name": "",
       "description": "",
       "root": false,
       "position": {
-        "x": 320.0,
-        "y": 600.0
+        "x": 860.0,
+        "y": 420.0
       },
       "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d"
     }
@@ -167,7 +147,10 @@
         "langchain_community.chat_models.ChatOpenAI"
       ],
       "config": {
-        "tags": [],
+        "tags": [
+          "fff",
+          "fff"
+        ],
         "cache": false,
         "metadata": {},
         "streaming": true,
@@ -192,10 +175,10 @@
   },
   {
     "model": "chains.chainedge",
-    "pk": "1cf6a4bf-d5c4-463e-99d8-df7da85b8c85",
+    "pk": "7ae339c6-bdd4-4b6f-85b0-7c7783860dd3",
     "fields": {
       "source": "f7e63c44-6cd9-417d-bb73-a2e34b44fa69",
-      "target": "155a4299-0acb-4736-8248-5cbd016ef8c6",
+      "target": "f583b827-0647-4123-94bb-3c9824dc17b8",
       "source_key": "out",
       "target_key": "in",
       "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d",
@@ -218,23 +201,10 @@
   },
   {
     "model": "chains.chainedge",
-    "pk": "b5f1b5a9-a3b8-44b5-b8ed-48a22625e735",
+    "pk": "df047511-0574-4281-b4d5-06958730700a",
     "fields": {
-      "source": "d06a05b4-e6f4-4fdc-82f5-147046cb81fb",
+      "source": "f583b827-0647-4123-94bb-3c9824dc17b8",
       "target": "b6b8f637-671a-4537-9d63-ddba5a1e98a8",
-      "source_key": "out",
-      "target_key": "in",
-      "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d",
-      "input_map": null,
-      "relation": "LINK"
-    }
-  },
-  {
-    "model": "chains.chainedge",
-    "pk": "ce3ef26b-35fd-4941-b660-ddd05d45a72e",
-    "fields": {
-      "source": "155a4299-0acb-4736-8248-5cbd016ef8c6",
-      "target": "d06a05b4-e6f4-4fdc-82f5-147046cb81fb",
       "source_key": "out",
       "target_key": "1f64c9af-2e07-480b-b97e-b30bf12b8c0b",
       "chain": "325a010c-1f74-48e6-ae5f-5d8f26c3906d",
