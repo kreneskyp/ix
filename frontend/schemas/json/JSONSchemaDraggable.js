@@ -3,7 +3,7 @@ import { DraggableNode } from "chains/editor/DraggableNode";
 import { ListItemNode } from "components/ListItemNode";
 
 const DRAGGABLE_CONFIG = {
-  class_path: "ix.runnable.schemas.LoadSchema",
+  class_path: "ix.runnable.schema.LoadSchema",
   label: "Load Schema",
 };
 
