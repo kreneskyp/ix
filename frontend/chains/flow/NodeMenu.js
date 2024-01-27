@@ -14,7 +14,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { EditorViewState } from "chains/editor/contexts";
+import { EditorViewState, NodeStateContext } from "chains/editor/contexts";
 import { ChainEditorAPIContext } from "chains/editor/ChainEditorAPIContext";
 import { useEditorColorMode } from "chains/editor/useColorMode";
 import { Overlay } from "components/Overlay";
@@ -24,11 +24,13 @@ const CHAIN_REFERENCE = "ix.runnable.flow.load_chain_id";
 
 const DeleteItem = ({ node }) => {
   const api = React.useContext(ChainEditorAPIContext);
+  const nodeState = React.useContext(NodeStateContext);
   const style = useEditorColorMode();
 
   const onClick = React.useCallback(
     (event) => {
       api.deleteNode(node.id);
+      nodeState.deleteNode(node.id);
     },
     [node.id, api]
   );
