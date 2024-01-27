@@ -1,6 +1,7 @@
 import React from "react";
 import { AsyncSelect } from "chakra-react-select";
-import { useEditorColorMode } from "chains/editor/useColorMode";
+import { useChakraStyles } from "components/select/useChakraStyles";
+import { useSelectStyles } from "components/select/useSelectStyles";
 
 /**
  * An extension of chakra-react-select that encapsulates the logic for loading
@@ -25,8 +26,7 @@ export const AsyncAPIObjectSelect = ({
   ...props
 }) => {
   const [selected, setSelected] = React.useState(null);
-  const [options, setOptions] = React.useState([]);
-  const { input: styles } = useEditorColorMode();
+  const chakraStyles = useChakraStyles();
 
   // load value on initial render
   React.useEffect(() => {
@@ -39,22 +39,11 @@ export const AsyncAPIObjectSelect = ({
     callback();
   }, [value]);
 
-  // load defaults on initial render
-  React.useEffect(() => {
-    setOptions(getDefaultOptions());
-  }, []);
-
-  const chakraStyles = {
-    control: (base) => ({ ...base, ...styles }),
-    dropdownIndicator: (base) => ({ ...base, ...styles }),
-  };
-
   const promiseOptions = (inputValue) =>
     new Promise((resolve) => {
       setTimeout(() => {
         getOptions(inputValue)
           .then((options) => {
-            setOptions(options);
             resolve(options);
           })
           .catch((error) => {
@@ -73,13 +62,12 @@ export const AsyncAPIObjectSelect = ({
       onChange={handleChange}
       loadOptions={promiseOptions}
       value={selected}
-      defaultOptions={options}
+      defaultOptions={true}
       cacheOptions
-      styles={{
-        menuPortal: (base) => ({ ...base, zIndex: 99999 }),
-      }}
+      styles={useSelectStyles()}
       menuPortalTarget={document.body}
       chakraStyles={chakraStyles}
+      {...props}
     />
   );
 };
