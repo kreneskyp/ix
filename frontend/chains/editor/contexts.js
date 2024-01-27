@@ -1,5 +1,6 @@
 import React, { createContext } from "react";
 
+export const EditorViewState = createContext(null);
 export const ChainTypes = createContext(null);
 export const ChainState = createContext(null);
 export const NodeStateContext = createContext(null);

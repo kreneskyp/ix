@@ -19,6 +19,7 @@ import {
   ChainState,
   ChainTypes,
   EdgeState,
+  EditorViewState,
 } from "chains/editor/contexts";
 import { EditorRightSidebar } from "chains/editor/EditorRightSidebar";
 import { NodeTypeSearchButton } from "chains/editor/NodeTypeSearchButton";
@@ -35,7 +36,6 @@ import { useChainState } from "chains/hooks/useChainState";
 import { OpenAPISchemaMenuItem } from "schemas/openapi/OpenAPISchemaMenuItem";
 import { JSONSchemaMenuItem } from "schemas/json/JSONSchemaMenuItem";
 import { useEdgeState } from "chains/hooks/useEdgeState";
-export const EditorViewState = React.createContext(null);
 
 /**
  * Init state for the editor and it's tabs. This is the top level state that manages

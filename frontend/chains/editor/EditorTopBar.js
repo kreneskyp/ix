@@ -4,7 +4,7 @@ import { Box, HStack, Text } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/color-mode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
-import { EditorViewState } from "chains/ChainEditorView";
+import { EditorViewState } from "chains/editor/contexts";
 import { TabState } from "chains/hooks/useTabState";
 
 const EditorTab = ({ tab, isActive, index, setIndex, removeTab, ...props }) => {
