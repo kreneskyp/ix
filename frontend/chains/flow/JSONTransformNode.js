@@ -173,8 +173,6 @@ export const JSONTransformNode = ({ node, onChange }) => {
     [onChange.field]
   );
 
-  console.log("node: ", node);
-
   const handleBaseChange = (e) => {
     const newBase = parseInt(e.target.value);
     onChange.config({

@@ -70,8 +70,6 @@ export const SchemaPathsList = ({ schema, schema_id }) => {
     return byTag;
   }, [schema]);
 
-  console.log("::Schema: ", schema);
-
   return (
     <Box>
       {Object.keys(pathsByTag).map((tag) => (
