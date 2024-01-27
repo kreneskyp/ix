@@ -1,17 +1,21 @@
 import React from "react";
-import { Box, Flex, Text, VStack } from "@chakra-ui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
-import {
-  useEditorColorMode,
-  useSideBarColorMode,
-} from "chains/editor/useColorMode";
+import { Box, Text } from "@chakra-ui/react";
+import { useEditorColorMode } from "chains/editor/useColorMode";
 
 export const getOptionStyle = (isLight) => {
   return isLight
     ? {
+        default: {
+          color: "gray.800",
+          bg: "transparent",
+        },
+        disabled: {
+          color: "gray.500",
+          bg: "transparent",
+        },
         hover: {
           bg: "blackAlpha.100",
+          color: "gray.800",
         },
         label: {
           color: "gray.600",
@@ -28,10 +32,23 @@ export const getOptionStyle = (isLight) => {
         icon: {
           color: "gray.600",
         },
+        selected: {
+          bg: "blackAlpha.100",
+          color: "gray.800",
+        },
       }
     : {
+        default: {
+          color: "white",
+          bg: "transparent",
+        },
+        disabled: {
+          bg: "transparent",
+          color: "gray.500",
+        },
         hover: {
           bg: "blackAlpha.300",
+          color: "white",
         },
         label: {
           color: "gray.300",
@@ -44,6 +61,10 @@ export const getOptionStyle = (isLight) => {
         },
         icon: {
           color: "gray.300",
+        },
+        selected: {
+          bg: "whiteAlpha.100",
+          color: "gray.200",
         },
       };
 };
