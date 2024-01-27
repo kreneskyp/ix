@@ -161,6 +161,14 @@ export const useEditorColorMode = () => {
           },
         },
     modal_hover: isLight ? { bg: "blackAlpha.100" } : { bg: "blackAlpha.300" },
+    node_menu: isLight
+      ? {
+          color: "gray.700",
+          _hover: {
+            color: "gray.700",
+          },
+        }
+      : {},
   };
 };
 

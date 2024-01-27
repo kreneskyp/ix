@@ -15,6 +15,7 @@ import {
 } from "chains/editor/contexts";
 import { StyledIcon } from "components/StyledIcon";
 import { NodeExecutionIcon } from "chains/editor/run_log/NodeExecutionIcon";
+import NodeMenu from "chains/flow/NodeMenu";
 
 const CONNECTOR_CONFIG = {
   agent: {
@@ -141,24 +142,6 @@ export const DefaultNodeContent = ({ type, node }) => {
   );
 };
 
-const DeleteIcon = ({ node }) => {
-  const api = useContext(ChainEditorAPIContext);
-  const { setNodes, setEdges } = useReactFlow();
-
-  const onClick = useCallback(
-    (event) => {
-      api.deleteNode(node.id);
-    },
-    [node.id, api]
-  );
-
-  return (
-    <Box mr={3} cursor="pointer" onClick={onClick}>
-      <FontAwesomeIcon icon={faTrash} />
-    </Box>
-  );
-};
-
 export const ConfigNode = ({ id, data, selected }) => {
   const { type } = data;
   const styles = NODE_STYLES[type?.type] || DEFAULT_NODE_STYLE;
@@ -239,7 +222,7 @@ export const ConfigNode = ({ id, data, selected }) => {
                 {node.name || type?.name || node.class_path.split(".").pop()}
               </Text>
             </HStack>
-            <DeleteIcon node={node} />
+            <NodeMenu node={node} />
           </Flex>
         </Heading>
         <Box position={"absolute"} top={5} right={0}>
