@@ -1,0 +1,6634 @@
+[
+{
+  "model": "data.schema",
+  "pk": "0d60a3ca-f5b6-48c7-8944-726053b0dba7",
+  "fields": {
+    "user": 1,
+    "group": null,
+    "type": "json",
+    "name": "CatMemeSchema",
+    "description": "JSON schema for cat memes",
+    "value": {
+      "type": "object",
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "required": [
+        "id",
+        "image_url",
+        "caption"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the meme"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of tags associated with the meme"
+        },
+        "caption": {
+          "type": "string",
+          "description": "Caption for the cat meme"
+        },
+        "image_url": {
+          "type": "string",
+          "description": "URL of the cat meme image"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time when the meme was created"
+        }
+      }
+    },
+    "meta": {}
+  }
+},
+{
+  "model": "data.schema",
+  "pk": "4000023d-0f44-48b4-93a2-78ad95a3693c",
+  "fields": {
+    "user": 1,
+    "group": null,
+    "type": "json",
+    "name": "test",
+    "description": "testing schemas",
+    "value": {},
+    "meta": {}
+  }
+},
+{
+  "model": "data.schema",
+  "pk": "55290ca3-ea37-4000-bdcf-bea6933ad3d9",
+  "fields": {
+    "user": 1,
+    "group": null,
+    "type": "openapi",
+    "name": "IX agent editor API",
+    "description": "API for editing Agents, Chains, and node_type components",
+    "value": {
+      "info": {
+        "title": "IX agent editor API",
+        "version": "0.1.0",
+        "description": "API for editing Agents, Chains, and node_type components"
+      },
+      "paths": {
+        "/data/": {
+          "get": {
+            "tags": [
+              "Data"
+            ],
+            "summary": "Get Datas",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/DataPage"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "query",
+                "name": "limit",
+                "schema": {
+                  "type": "integer",
+                  "title": "Limit",
+                  "default": 10
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "offset",
+                "schema": {
+                  "type": "integer",
+                  "title": "Offset",
+                  "default": 0
+                },
+                "required": false
+              }
+            ],
+            "operationId": "get_datas"
+          },
+          "post": {
+            "tags": [
+              "Data"
+            ],
+            "summary": "Create Data",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Data"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "operationId": "create_data",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Data"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/chats/": {
+          "get": {
+            "tags": [
+              "Chats"
+            ],
+            "summary": "Get Chats",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/ChatQueryPage"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "query",
+                "name": "search",
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Search"
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "limit",
+                "schema": {
+                  "type": "integer",
+                  "title": "Limit",
+                  "default": 10
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "offset",
+                "schema": {
+                  "type": "integer",
+                  "title": "Offset",
+                  "default": 0
+                },
+                "required": false
+              }
+            ],
+            "operationId": "get_chats"
+          },
+          "post": {
+            "tags": [
+              "Chats"
+            ],
+            "summary": "Create Chat",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Chat"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "operationId": "create_chat",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ChatNew"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/agents/": {
+          "get": {
+            "tags": [
+              "Agents"
+            ],
+            "summary": "Get Agents",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/AgentPage"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "query",
+                "name": "search",
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Search"
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "chat_id",
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Chat Id"
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "limit",
+                "schema": {
+                  "type": "integer",
+                  "title": "Limit",
+                  "default": 10
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "offset",
+                "schema": {
+                  "type": "integer",
+                  "title": "Offset",
+                  "default": 0
+                },
+                "required": false
+              }
+            ],
+            "operationId": "get_agents"
+          },
+          "post": {
+            "tags": [
+              "Agents"
+            ],
+            "summary": "Create Agent",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Agent"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "operationId": "create_agent",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AgentCreateUpdate"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/chains/": {
+          "get": {
+            "tags": [
+              "Chains"
+            ],
+            "summary": "Get Chains",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/ChainQueryPage"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "query",
+                "name": "search",
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Search"
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "limit",
+                "schema": {
+                  "type": "integer",
+                  "title": "Limit",
+                  "default": 10
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "offset",
+                "schema": {
+                  "type": "integer",
+                  "title": "Offset",
+                  "default": 0
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "is_agent",
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Is Agent"
+                },
+                "required": false
+              }
+            ],
+            "operationId": "get_chains"
+          },
+          "post": {
+            "tags": [
+              "Chains"
+            ],
+            "summary": "Create Chain",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Chain"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "operationId": "create_chain",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CreateChain"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/upload/": {
+          "post": {
+            "summary": "Upload File",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Artifact"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "operationId": "upload_file",
+            "requestBody": {
+              "content": {
+                "multipart/form-data": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Body_upload_file"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/schemas/": {
+          "get": {
+            "tags": [
+              "Schemas"
+            ],
+            "summary": "Get Schemas",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/SchemaPage"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "query",
+                "name": "limit",
+                "schema": {
+                  "type": "integer",
+                  "title": "Limit",
+                  "default": 10
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "offset",
+                "schema": {
+                  "type": "integer",
+                  "title": "Offset",
+                  "default": 0
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "type",
+                "schema": {
+                  "enum": [
+                    "openapi",
+                    "json"
+                  ],
+                  "type": "string",
+                  "title": "Type",
+                  "default": "json"
+                },
+                "required": false
+              }
+            ],
+            "operationId": "get_schemas"
+          },
+          "post": {
+            "tags": [
+              "Schemas"
+            ],
+            "summary": "Create Schema",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Schema"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "operationId": "create_schema",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/NewSchema"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/secrets/": {
+          "get": {
+            "tags": [
+              "Secrets"
+            ],
+            "summary": "Get Secrets",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/SecretPage"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "query",
+                "name": "secret_type",
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Secret Type"
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "limit",
+                "schema": {
+                  "type": "integer",
+                  "title": "Limit",
+                  "default": 10
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "offset",
+                "schema": {
+                  "type": "integer",
+                  "title": "Offset",
+                  "default": 0
+                },
+                "required": false
+              }
+            ],
+            "description": "List endpoint used to retrieve secret metadata from the database.\n\nSecret values must be fetched from vault. This endpoint fetches secrets for\nuse rendering choices in the UX. (e.g. to show a list of choices)",
+            "operationId": "get_secrets"
+          },
+          "post": {
+            "tags": [
+              "Secrets"
+            ],
+            "summary": "Create Secret",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Secret"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "operationId": "create_secret",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CreateSecret"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/artifacts/": {
+          "get": {
+            "tags": [
+              "Artifacts"
+            ],
+            "summary": "Get Artifacts",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/ArtifactPage"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "query",
+                "name": "chat_id",
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Chat Id"
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "search",
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Search"
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "limit",
+                "schema": {
+                  "type": "integer",
+                  "title": "Limit",
+                  "default": 10
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "offset",
+                "schema": {
+                  "type": "integer",
+                  "title": "Offset",
+                  "default": 0
+                },
+                "required": false
+              }
+            ],
+            "operationId": "get_artifacts"
+          },
+          "post": {
+            "tags": [
+              "Artifacts"
+            ],
+            "summary": "Create Artifact",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Artifact"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "operationId": "create_artifact",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ArtifactCreate"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/node_types/": {
+          "get": {
+            "tags": [
+              "Components"
+            ],
+            "summary": "Get Node Types",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/NodeTypePage"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "query",
+                "name": "search",
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Search"
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "class_path",
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Class Path"
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "types",
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Types"
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "limit",
+                "schema": {
+                  "type": "integer",
+                  "title": "Limit",
+                  "default": 50
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "offset",
+                "schema": {
+                  "type": "integer",
+                  "title": "Offset",
+                  "default": 0
+                },
+                "required": false
+              }
+            ],
+            "operationId": "get_node_types"
+          },
+          "post": {
+            "tags": [
+              "Components"
+            ],
+            "summary": "Create Node Type",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/NodeType-Output"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "operationId": "create_node_type",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/NodeType-Input"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/chains/edges": {
+          "post": {
+            "tags": [
+              "Chain Editor"
+            ],
+            "summary": "Add Chain Edge",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Edge"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "operationId": "add_edge",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Edge"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/chains/nodes": {
+          "post": {
+            "tags": [
+              "Chain Editor"
+            ],
+            "summary": "Add Chain Node",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Node"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "operationId": "add_node",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AddNode"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/datasources/": {
+          "get": {
+            "tags": [
+              "DataSources"
+            ],
+            "summary": "Get Datasources",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/DataSourcePage"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "query",
+                "name": "search",
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Search"
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "limit",
+                "schema": {
+                  "type": "integer",
+                  "title": "Limit",
+                  "default": 10
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "offset",
+                "schema": {
+                  "type": "integer",
+                  "title": "Offset",
+                  "default": 0
+                },
+                "required": false
+              }
+            ],
+            "operationId": "get_datasources"
+          },
+          "post": {
+            "tags": [
+              "DataSources"
+            ],
+            "summary": "Create Datasource",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/DataSource"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "operationId": "create_datasource",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DataSourceCreateUpdate"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/secret_types/": {
+          "get": {
+            "tags": [
+              "Secrets"
+            ],
+            "summary": "Get Secret Types",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/SecretTypePage"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "query",
+                "name": "limit",
+                "schema": {
+                  "type": "integer",
+                  "title": "Limit",
+                  "default": 10
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "offset",
+                "schema": {
+                  "type": "integer",
+                  "title": "Offset",
+                  "default": 0
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "search",
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Search"
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "key",
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Key"
+                },
+                "required": false
+              }
+            ],
+            "description": "List SecretTypes available to the user.",
+            "operationId": "get_secret_types"
+          },
+          "post": {
+            "tags": [
+              "Secrets"
+            ],
+            "summary": "Create Secret Type",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/SecretType"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "operationId": "create_secret_type",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SecretTypeEdit"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/data/{data_id}": {
+          "get": {
+            "tags": [
+              "Data"
+            ],
+            "summary": "Get Data",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Data"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "data_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Data Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "get_data"
+          },
+          "put": {
+            "tags": [
+              "Data"
+            ],
+            "summary": "Update Data",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Data"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "data_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Data Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "update_data",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Data"
+                  }
+                }
+              },
+              "required": true
+            }
+          },
+          "delete": {
+            "tags": [
+              "Data"
+            ],
+            "summary": "Delete Data",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {}
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "data_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Data Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "delete_data"
+          }
+        },
+        "/chats/{chat_id}": {
+          "get": {
+            "tags": [
+              "Chats"
+            ],
+            "summary": "Get Chat",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Chat"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chat_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chat Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "get_chat"
+          },
+          "put": {
+            "tags": [
+              "Chats"
+            ],
+            "summary": "Update Chat",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Chat"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chat_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chat Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "update_chat",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ChatUpdate"
+                  }
+                }
+              },
+              "required": true
+            }
+          },
+          "delete": {
+            "tags": [
+              "Chats"
+            ],
+            "summary": "Delete Chat",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/DeletedItem"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chat_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chat Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "delete_chat"
+          }
+        },
+        "/agents/{agent_id}": {
+          "get": {
+            "tags": [
+              "Agents"
+            ],
+            "summary": "Get Agent",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Agent"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "agent_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Agent Id"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "get_agent"
+          },
+          "put": {
+            "tags": [
+              "Agents"
+            ],
+            "summary": "Update Agent",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Agent"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "agent_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Agent Id"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "update_agent",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AgentCreateUpdate"
+                  }
+                }
+              },
+              "required": true
+            }
+          },
+          "delete": {
+            "tags": [
+              "Agents"
+            ],
+            "summary": "Delete Agent",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/DeletedItem"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "agent_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Agent Id"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "delete_agent"
+          }
+        },
+        "/chains/{chain_id}": {
+          "get": {
+            "tags": [
+              "Chains"
+            ],
+            "summary": "Get Chain Detail",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Chain"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chain_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chain Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "get_chain"
+          },
+          "put": {
+            "tags": [
+              "Chains"
+            ],
+            "summary": "Update Chain",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Chain"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chain_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chain Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "update_chain",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UpdateChain"
+                  }
+                }
+              },
+              "required": true
+            }
+          },
+          "delete": {
+            "tags": [
+              "Chains"
+            ],
+            "summary": "Delete Chain",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/DeletedItem"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chain_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chain Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "delete_chain"
+          }
+        },
+        "/schemas/{schema_id}": {
+          "get": {
+            "tags": [
+              "Schemas"
+            ],
+            "summary": "Get Schema",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Schema"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "schema_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Schema Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "get_schema"
+          },
+          "put": {
+            "tags": [
+              "Schemas"
+            ],
+            "summary": "Update Schema",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Schema"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "schema_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Schema Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "update_schema",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Schema"
+                  }
+                }
+              },
+              "required": true
+            }
+          },
+          "delete": {
+            "tags": [
+              "Schemas"
+            ],
+            "summary": "Delete Schema",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {}
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "schema_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Schema Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "delete_schema"
+          }
+        },
+        "/secrets/{secret_id}": {
+          "get": {
+            "tags": [
+              "Secrets"
+            ],
+            "summary": "Get Secret",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Secret"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "secret_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Secret Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "get_secret"
+          },
+          "put": {
+            "tags": [
+              "Secrets"
+            ],
+            "summary": "Update Secret",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Secret"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "secret_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Secret Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "update_secret",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UpdateSecret"
+                  }
+                }
+              },
+              "required": true
+            }
+          },
+          "delete": {
+            "tags": [
+              "Secrets"
+            ],
+            "summary": "Delete Secret",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/DeletedItem"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "secret_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Secret Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "delete_secret"
+          }
+        },
+        "/chats/{chat_id}/graph": {
+          "get": {
+            "tags": [
+              "Chats"
+            ],
+            "summary": "Get Chat Graph",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/ChatGraph"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chat_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chat Id"
+                },
+                "required": true
+              }
+            ],
+            "description": "Chat and related objects\n\nSingle object containing objects needed to render the chat view.\n\nTODO: this should be broken apart into smaller queries so the UI can\n      load this incrementally.",
+            "operationId": "get_chat_graph"
+          }
+        },
+        "/chains/edges/{edge_id}": {
+          "put": {
+            "tags": [
+              "Chain Editor"
+            ],
+            "summary": "Update Chain Edge",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Edge"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "edge_id",
+                "schema": {
+                  "title": "Edge Id"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "update_edge",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UpdateEdge"
+                  }
+                }
+              },
+              "required": true
+            }
+          },
+          "delete": {
+            "tags": [
+              "Chain Editor"
+            ],
+            "summary": "Delete Chain Edge",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/DeletedItem"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "edge_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Edge Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "delete_edge"
+          }
+        },
+        "/chains/nodes/{node_id}": {
+          "put": {
+            "tags": [
+              "Chain Editor"
+            ],
+            "summary": "Update Chain Node",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Node"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "node_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Node Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "update_node",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UpdateNode"
+                  }
+                }
+              },
+              "required": true
+            }
+          },
+          "delete": {
+            "tags": [
+              "Chain Editor"
+            ],
+            "summary": "Delete Chain Node",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/DeletedItem"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "node_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Node Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "delete_node"
+          }
+        },
+        "/chains/{chain_id}/chat": {
+          "get": {
+            "tags": [
+              "Chain Editor"
+            ],
+            "summary": "Get Chain Chat",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Chat"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chain_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chain Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "description": "Return test chat instance for the chain",
+            "operationId": "get_test_chat"
+          }
+        },
+        "/artifacts/{artifact_id}": {
+          "get": {
+            "tags": [
+              "Artifacts"
+            ],
+            "summary": "Get Artifact",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Artifact"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "artifact_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Artifact Id"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "get_artifact"
+          },
+          "put": {
+            "tags": [
+              "Artifacts"
+            ],
+            "summary": "Update Artifact",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Artifact"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "artifact_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Artifact Id"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "update_artifact",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ArtifactUpdate"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/chains/{chain_id}/graph": {
+          "get": {
+            "tags": [
+              "Chain Editor"
+            ],
+            "summary": "Get Chain Graph",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/GraphModel"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chain_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chain Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "description": "Return chain and all it's nodes and edges.",
+            "operationId": "get_chain_graph"
+          }
+        },
+        "/chats/{chat_id}/messages": {
+          "get": {
+            "tags": [
+              "Chats"
+            ],
+            "summary": "Get Messages",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/ChatMessageQueryPage"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chat_id",
+                "schema": {
+                  "title": "Chat Id"
+                },
+                "required": true
+              },
+              {
+                "in": "query",
+                "name": "limit",
+                "schema": {
+                  "type": "integer",
+                  "title": "Limit",
+                  "default": 10
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "offset",
+                "schema": {
+                  "type": "integer",
+                  "title": "Offset",
+                  "default": 0
+                },
+                "required": false
+              }
+            ],
+            "operationId": "get_messages"
+          },
+          "post": {
+            "tags": [
+              "Chats"
+            ],
+            "summary": "Send Message",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/ChatMessage"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chat_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chat Id"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "send_message",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ChatInput"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/node_types/{node_type_id}": {
+          "get": {
+            "tags": [
+              "Components"
+            ],
+            "summary": "Get Node Type Detail",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/NodeTypeDetail"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "node_type_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Node Type Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "get_node_type"
+          },
+          "put": {
+            "tags": [
+              "Components"
+            ],
+            "summary": "Update Node Type",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/NodeType-Output"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "node_type_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Node Type Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "update_node_type",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/NodeType-Input"
+                  }
+                }
+              },
+              "required": true
+            }
+          },
+          "delete": {
+            "tags": [
+              "Components"
+            ],
+            "summary": "Delete Node Type",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/DeletedItem"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "node_type_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Node Type Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "delete_node_type"
+          }
+        },
+        "/chains/{chain_id}/set_root": {
+          "post": {
+            "tags": [
+              "Chain Editor"
+            ],
+            "summary": "Set Chain Root",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/UpdatedRoot"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chain_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chain Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "set_root",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UpdateRoot"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/runs/{chain_id}/latest/log": {
+          "get": {
+            "tags": [
+              "runs"
+            ],
+            "summary": "Get Latest Execution Log",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/ExecutionGroup"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chain_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chain Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "get_latest_execution_log_runs__chain_id__latest_log_get"
+          }
+        },
+        "/schemas/{schema_id}/action": {
+          "get": {
+            "tags": [
+              "Schemas"
+            ],
+            "summary": "Get Schema Action",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {}
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "schema_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Schema Id",
+                  "format": "uuid"
+                },
+                "required": true
+              },
+              {
+                "in": "query",
+                "name": "path",
+                "schema": {
+                  "type": "string",
+                  "title": "Path"
+                },
+                "required": true
+              },
+              {
+                "in": "query",
+                "name": "method",
+                "schema": {
+                  "type": "string",
+                  "title": "Method"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "get_schema_action"
+          }
+        },
+        "/datasources/{datasource_id}": {
+          "get": {
+            "tags": [
+              "DataSources"
+            ],
+            "summary": "Get Datasource",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/DataSource"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "datasource_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Datasource Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "get_datasource"
+          },
+          "put": {
+            "tags": [
+              "DataSources"
+            ],
+            "summary": "Update Datasource",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/DataSource"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "datasource_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Datasource Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "update_datasource",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DataSourceCreateUpdate"
+                  }
+                }
+              },
+              "required": true
+            }
+          },
+          "delete": {
+            "tags": [
+              "DataSources"
+            ],
+            "summary": "Delete Datasource",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/DeletedItem"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "datasource_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Datasource Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "delete_datasource"
+          }
+        },
+        "/runs/{chain_id}/{task_id}/log": {
+          "get": {
+            "tags": [
+              "runs"
+            ],
+            "summary": "Get Task Execution Log",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/ExecutionGroup"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "task_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Task Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "get_task_execution_log_runs__chain_id___task_id__log_get"
+          }
+        },
+        "/secret_types/{secret_type_id}": {
+          "get": {
+            "tags": [
+              "Secrets"
+            ],
+            "summary": "Get Secret Type",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/SecretType"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "secret_type_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Secret Type Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "get_secret_type"
+          },
+          "put": {
+            "tags": [
+              "Secrets"
+            ],
+            "summary": "Update Secret Type",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/SecretType"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "secret_type_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Secret Type Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "update_secret_type",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SecretTypeEdit"
+                  }
+                }
+              },
+              "required": true
+            }
+          },
+          "delete": {
+            "tags": [
+              "Secrets"
+            ],
+            "summary": "Delete Secret Type",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {}
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "secret_type_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Secret Type Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "delete_secret_type"
+          }
+        },
+        "/chats/{chat_id}/messages/clear": {
+          "post": {
+            "tags": [
+              "Chats"
+            ],
+            "summary": "Clear Messages",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {}
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chat_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chat Id"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "clear_messages"
+          }
+        },
+        "/chains/nodes/{node_id}/position": {
+          "post": {
+            "tags": [
+              "Chain Editor"
+            ],
+            "summary": "Update Chain Node Position",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Node"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "node_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Node Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "move_node",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PositionUpdate"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
+        "/artifacts/{artifact_id}/download": {
+          "get": {
+            "tags": [
+              "Artifacts"
+            ],
+            "summary": "Download Artifact",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {}
+                  },
+                  "application/octet-stream": {}
+                },
+                "description": "Download the artifact"
+              },
+              "404": {
+                "description": "Artifact not found"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "artifact_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Artifact Id"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "download_artifact"
+          }
+        },
+        "/chats/{chat_id}/agents/{agent_id}": {
+          "put": {
+            "tags": [
+              "Chats"
+            ],
+            "summary": "Add Agent",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/ChatAgentAction"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chat_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chat Id",
+                  "format": "uuid"
+                },
+                "required": true
+              },
+              {
+                "in": "path",
+                "name": "agent_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Agent Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "add_agent"
+          },
+          "delete": {
+            "tags": [
+              "Chats"
+            ],
+            "summary": "Remove Agent",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/ChatAgentAction"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "chat_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Chat Id",
+                  "format": "uuid"
+                },
+                "required": true
+              },
+              {
+                "in": "path",
+                "name": "agent_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Agent Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "remove_agent"
+          }
+        }
+      },
+      "openapi": "3.1.0",
+      "servers": [
+        {
+          "url": "http://172.17.0.1:8000/api",
+          "description": "Development server"
+        }
+      ],
+      "components": {
+        "schemas": {
+          "Chat": {
+            "type": "object",
+            "title": "Chat",
+            "required": [
+              "id",
+              "name",
+              "created_at",
+              "lead_id",
+              "task_id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "lead_id": {
+                "type": "string",
+                "title": "Lead Id",
+                "format": "uuid"
+              },
+              "task_id": {
+                "type": "string",
+                "title": "Task Id",
+                "format": "uuid"
+              },
+              "autonomous": {
+                "type": "boolean",
+                "title": "Autonomous",
+                "default": false
+              },
+              "created_at": {
+                "type": "string",
+                "title": "Created At",
+                "format": "date-time"
+              }
+            }
+          },
+          "Data": {
+            "type": "object",
+            "title": "Data",
+            "required": [
+              "name",
+              "description"
+            ],
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid4"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Id"
+              },
+              "meta": {
+                "type": "object",
+                "title": "Meta",
+                "description": "metadata as a dict"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name",
+                "maxLength": 128
+              },
+              "value": {
+                "type": "object",
+                "title": "Value",
+                "description": "value as a dict"
+              },
+              "schema_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid4"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Schema Id"
+              },
+              "description": {
+                "type": "string",
+                "title": "Description"
+              }
+            },
+            "description": "Data object matching a schema definition"
+          },
+          "Edge": {
+            "type": "object",
+            "title": "Edge",
+            "required": [
+              "source_id",
+              "target_id",
+              "chain_id",
+              "relation"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid"
+              },
+              "chain_id": {
+                "type": "string",
+                "title": "Chain Id",
+                "format": "uuid"
+              },
+              "relation": {
+                "enum": [
+                  "LINK",
+                  "PROP"
+                ],
+                "type": "string",
+                "title": "Relation"
+              },
+              "input_map": {
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Input Map"
+              },
+              "source_id": {
+                "type": "string",
+                "title": "Source Id",
+                "format": "uuid"
+              },
+              "target_id": {
+                "type": "string",
+                "title": "Target Id",
+                "format": "uuid"
+              },
+              "source_key": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Source Key"
+              },
+              "target_key": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Target Key"
+              }
+            }
+          },
+          "Node": {
+            "type": "object",
+            "title": "Node",
+            "required": [
+              "chain_id",
+              "class_path",
+              "node_type_id",
+              "name",
+              "description"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Name"
+              },
+              "root": {
+                "type": "boolean",
+                "title": "Root",
+                "default": false
+              },
+              "config": {
+                "type": "object",
+                "title": "Config"
+              },
+              "chain_id": {
+                "type": "string",
+                "title": "Chain Id",
+                "format": "uuid"
+              },
+              "position": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Position"
+                  }
+                ],
+                "default": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              "class_path": {
+                "type": "string",
+                "title": "The path to the class"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Description"
+              },
+              "node_type_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Node Type Id"
+              }
+            }
+          },
+          "Plan": {
+            "type": "object",
+            "title": "Plan",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid"
+              }
+            }
+          },
+          "Task": {
+            "type": "object",
+            "title": "Task",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid"
+              }
+            }
+          },
+          "Agent": {
+            "type": "object",
+            "title": "Agent",
+            "required": [
+              "id",
+              "name",
+              "alias",
+              "purpose",
+              "chain_id",
+              "model",
+              "created_at"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "alias": {
+                "type": "string",
+                "title": "Alias"
+              },
+              "model": {
+                "type": "string",
+                "title": "Model"
+              },
+              "config": {
+                "type": "object",
+                "title": "Config"
+              },
+              "purpose": {
+                "type": "string",
+                "title": "Purpose"
+              },
+              "chain_id": {
+                "type": "string",
+                "title": "Chain Id",
+                "format": "uuid"
+              },
+              "created_at": {
+                "type": "string",
+                "title": "Created At",
+                "format": "date-time"
+              }
+            }
+          },
+          "Chain": {
+            "type": "object",
+            "title": "Chain",
+            "required": [
+              "id",
+              "name",
+              "description",
+              "created_at"
+            ],
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Id"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "alias": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Alias"
+              },
+              "is_agent": {
+                "type": "boolean",
+                "title": "Is Agent",
+                "default": true
+              },
+              "created_at": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Created At"
+              },
+              "description": {
+                "type": "string",
+                "title": "Description"
+              }
+            }
+          },
+          "Choice": {
+            "type": "object",
+            "title": "Choice",
+            "required": [
+              "label",
+              "value"
+            ],
+            "properties": {
+              "label": {
+                "type": "string",
+                "title": "Label"
+              },
+              "value": {
+                "title": "Value"
+              }
+            }
+          },
+          "Schema": {
+            "type": "object",
+            "title": "Schema",
+            "required": [
+              "type",
+              "name",
+              "description"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid4",
+                "description": "ID. Do not set when creating or updating"
+              },
+              "meta": {
+                "type": "object",
+                "title": "Meta",
+                "description": "schema metadata as a dict"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name",
+                "maxLength": 128
+              },
+              "type": {
+                "enum": [
+                  "json",
+                  "openapi"
+                ],
+                "type": "string",
+                "title": "Type"
+              },
+              "value": {
+                "type": "object",
+                "title": "Value",
+                "description": "schema as a dict"
+              },
+              "description": {
+                "type": "string",
+                "title": "Description"
+              }
+            },
+            "description": "JSON and OpenAPI schemas"
+          },
+          "Secret": {
+            "type": "object",
+            "title": "Secret",
+            "required": [
+              "id",
+              "type_id",
+              "path",
+              "type"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid4"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name",
+                "default": "default"
+              },
+              "path": {
+                "type": "string",
+                "title": "Path"
+              },
+              "type": {
+                "$ref": "#/components/schemas/SecretType"
+              },
+              "type_id": {
+                "type": "string",
+                "title": "Type Id",
+                "format": "uuid"
+              },
+              "user_id": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "User Id"
+              },
+              "group_id": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Group Id"
+              }
+            }
+          },
+          "AddNode": {
+            "type": "object",
+            "title": "AddNode",
+            "required": [
+              "class_path"
+            ],
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Id"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Name"
+              },
+              "root": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Root",
+                "default": false
+              },
+              "edges": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/NewNodeEdge"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Edges"
+              },
+              "config": {
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Config"
+              },
+              "chain_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Chain Id"
+              },
+              "position": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/Position"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "class_path": {
+                "type": "string",
+                "title": "Class Path"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Description"
+              }
+            }
+          },
+          "ChatNew": {
+            "type": "object",
+            "title": "ChatNew",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Name"
+              },
+              "lead_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Lead Id"
+              },
+              "autonomous": {
+                "type": "boolean",
+                "title": "Autonomous",
+                "default": false
+              }
+            }
+          },
+          "Artifact": {
+            "type": "object",
+            "title": "Artifact",
+            "required": [
+              "task_id",
+              "key",
+              "name",
+              "description",
+              "storage",
+              "id",
+              "created_at"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid4"
+              },
+              "key": {
+                "type": "string",
+                "title": "Key"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "storage": {
+                "type": "object",
+                "title": "Storage"
+              },
+              "task_id": {
+                "type": "string",
+                "title": "Task Id",
+                "format": "uuid4"
+              },
+              "created_at": {
+                "type": "string",
+                "title": "Created At",
+                "format": "date-time"
+              },
+              "description": {
+                "type": "string",
+                "title": "Description"
+              },
+              "artifact_type": {
+                "type": "string",
+                "title": "Artifact Type",
+                "default": "file"
+              }
+            }
+          },
+          "DataPage": {
+            "type": "object",
+            "title": "DataPage",
+            "required": [
+              "page_number",
+              "pages",
+              "count",
+              "has_next",
+              "has_previous",
+              "objects"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "title": "Count"
+              },
+              "pages": {
+                "type": "integer",
+                "title": "Pages"
+              },
+              "objects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Data"
+                },
+                "title": "Objects"
+              },
+              "has_next": {
+                "type": "boolean",
+                "title": "Has Next"
+              },
+              "page_number": {
+                "type": "integer",
+                "title": "Page Number"
+              },
+              "has_previous": {
+                "type": "boolean",
+                "title": "Has Previous"
+              }
+            }
+          },
+          "Position": {
+            "type": "object",
+            "title": "Position",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "x": {
+                "type": "number",
+                "title": "X"
+              },
+              "y": {
+                "type": "number",
+                "title": "Y"
+              }
+            }
+          },
+          "AgentPage": {
+            "type": "object",
+            "title": "AgentPage",
+            "required": [
+              "page_number",
+              "pages",
+              "count",
+              "has_next",
+              "has_previous",
+              "objects"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "title": "Count"
+              },
+              "pages": {
+                "type": "integer",
+                "title": "Pages"
+              },
+              "objects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Agent"
+                },
+                "title": "Objects"
+              },
+              "has_next": {
+                "type": "boolean",
+                "title": "Has Next"
+              },
+              "page_number": {
+                "type": "integer",
+                "title": "Page Number"
+              },
+              "has_previous": {
+                "type": "boolean",
+                "title": "Has Previous"
+              }
+            }
+          },
+          "ChatGraph": {
+            "type": "object",
+            "title": "ChatGraph",
+            "required": [
+              "chat",
+              "lead",
+              "agents",
+              "task",
+              "plans",
+              "artifacts"
+            ],
+            "properties": {
+              "chat": {
+                "$ref": "#/components/schemas/Chat"
+              },
+              "lead": {
+                "$ref": "#/components/schemas/Agent"
+              },
+              "task": {
+                "$ref": "#/components/schemas/Task"
+              },
+              "plans": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Plan"
+                },
+                "title": "Plans"
+              },
+              "agents": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Agent"
+                },
+                "title": "Agents"
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Artifact"
+                },
+                "title": "Artifacts"
+              }
+            }
+          },
+          "ChatInput": {
+            "type": "object",
+            "title": "ChatInput",
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "type": "string",
+                "title": "Text"
+              },
+              "artifact_ids": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Artifact Ids"
+              }
+            },
+            "description": "An input to a chat."
+          },
+          "Connector": {
+            "type": "object",
+            "title": "Connector",
+            "required": [
+              "key",
+              "type",
+              "source_type"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "title": "Key"
+              },
+              "type": {
+                "enum": [
+                  "source",
+                  "target"
+                ],
+                "type": "string",
+                "title": "Type"
+              },
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Label"
+              },
+              "fields": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Fields"
+              },
+              "as_type": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "agent",
+                      "branch",
+                      "chain",
+                      "chain_list",
+                      "data",
+                      "document_loader",
+                      "embeddings",
+                      "flow",
+                      "index",
+                      "llm",
+                      "map",
+                      "message",
+                      "memory",
+                      "memory_backend",
+                      "output_parser",
+                      "parser",
+                      "prompt",
+                      "retriever",
+                      "root",
+                      "schema",
+                      "store",
+                      "tool",
+                      "toolkit",
+                      "text_splitter",
+                      "vectorstore"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "As Type"
+              },
+              "multiple": {
+                "type": "boolean",
+                "title": "Multiple",
+                "default": false
+              },
+              "required": {
+                "type": "boolean",
+                "title": "Required",
+                "default": false
+              },
+              "template": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Template",
+                "default": false
+              },
+              "init_type": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "init",
+                      "bind"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Init Type",
+                "default": "init"
+              },
+              "collection": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "list",
+                      "flow",
+                      "map",
+                      "map_tuples"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Collection"
+              },
+              "from_field": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "From Field"
+              },
+              "init_modes": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "init",
+                      "input"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Init Modes"
+              },
+              "source_type": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "agent",
+                      "branch",
+                      "chain",
+                      "chain_list",
+                      "data",
+                      "document_loader",
+                      "embeddings",
+                      "flow",
+                      "index",
+                      "llm",
+                      "map",
+                      "message",
+                      "memory",
+                      "memory_backend",
+                      "output_parser",
+                      "parser",
+                      "prompt",
+                      "retriever",
+                      "root",
+                      "schema",
+                      "store",
+                      "tool",
+                      "toolkit",
+                      "text_splitter",
+                      "vectorstore"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "agent",
+                        "branch",
+                        "chain",
+                        "chain_list",
+                        "data",
+                        "document_loader",
+                        "embeddings",
+                        "flow",
+                        "index",
+                        "llm",
+                        "map",
+                        "message",
+                        "memory",
+                        "memory_backend",
+                        "output_parser",
+                        "parser",
+                        "prompt",
+                        "retriever",
+                        "root",
+                        "schema",
+                        "store",
+                        "tool",
+                        "toolkit",
+                        "text_splitter",
+                        "vectorstore"
+                      ],
+                      "type": "string"
+                    }
+                  }
+                ],
+                "title": "Source Type"
+              }
+            },
+            "description": "A connection point for a property on a node."
+          },
+          "NewSchema": {
+            "type": "object",
+            "title": "NewSchema",
+            "required": [
+              "type",
+              "name",
+              "description"
+            ],
+            "properties": {
+              "meta": {
+                "type": "object",
+                "title": "Meta",
+                "description": "schema metadata as a dict"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name",
+                "maxLength": 128
+              },
+              "type": {
+                "enum": [
+                  "json",
+                  "openapi"
+                ],
+                "type": "string",
+                "title": "Type"
+              },
+              "value": {
+                "type": "object",
+                "title": "Value",
+                "description": "schema as a dict"
+              },
+              "description": {
+                "type": "string",
+                "title": "Description"
+              }
+            },
+            "description": "New schema definition"
+          },
+          "ChatUpdate": {
+            "type": "object",
+            "title": "ChatUpdate",
+            "required": [
+              "name",
+              "lead_id",
+              "autonomous"
+            ],
+            "properties": {
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Name"
+              },
+              "lead_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Lead Id"
+              },
+              "autonomous": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Autonomous"
+              }
+            }
+          },
+          "DataSource": {
+            "type": "object",
+            "title": "DataSource",
+            "required": [
+              "name",
+              "description",
+              "config",
+              "retrieval_chain",
+              "user_id",
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "config": {
+                "type": "object",
+                "title": "Config"
+              },
+              "user_id": {
+                "type": "string",
+                "title": "User Id",
+                "format": "uuid"
+              },
+              "description": {
+                "type": "string",
+                "title": "Description"
+              },
+              "retrieval_chain": {
+                "type": "string",
+                "title": "Retrieval Chain",
+                "format": "uuid"
+              }
+            }
+          },
+          "FieldGroup": {
+            "type": "object",
+            "title": "FieldGroup",
+            "properties": {
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Label"
+              },
+              "class_path": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Class Path"
+              }
+            },
+            "description": "A group of fields"
+          },
+          "GraphModel": {
+            "type": "object",
+            "title": "GraphModel",
+            "required": [
+              "chain",
+              "nodes",
+              "edges",
+              "types"
+            ],
+            "properties": {
+              "chain": {
+                "$ref": "#/components/schemas/Chain"
+              },
+              "edges": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Edge"
+                },
+                "title": "Edges"
+              },
+              "nodes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Node"
+                },
+                "title": "Nodes"
+              },
+              "types": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/NodeType-Output"
+                },
+                "title": "Types"
+              }
+            }
+          },
+          "RoleChoice": {
+            "enum": [
+              "SYSTEM",
+              "ASSISTANT",
+              "USER"
+            ],
+            "type": "string",
+            "title": "RoleChoice"
+          },
+          "SchemaPage": {
+            "type": "object",
+            "title": "SchemaPage",
+            "required": [
+              "page_number",
+              "pages",
+              "count",
+              "has_next",
+              "has_previous",
+              "objects"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "title": "Count"
+              },
+              "pages": {
+                "type": "integer",
+                "title": "Pages"
+              },
+              "objects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Schema"
+                },
+                "title": "Objects"
+              },
+              "has_next": {
+                "type": "boolean",
+                "title": "Has Next"
+              },
+              "page_number": {
+                "type": "integer",
+                "title": "Page Number"
+              },
+              "has_previous": {
+                "type": "boolean",
+                "title": "Has Previous"
+              }
+            }
+          },
+          "SecretPage": {
+            "type": "object",
+            "title": "SecretPage",
+            "required": [
+              "page_number",
+              "pages",
+              "count",
+              "has_next",
+              "has_previous",
+              "objects"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "title": "Count"
+              },
+              "pages": {
+                "type": "integer",
+                "title": "Pages"
+              },
+              "objects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Secret"
+                },
+                "title": "Objects"
+              },
+              "has_next": {
+                "type": "boolean",
+                "title": "Has Next"
+              },
+              "page_number": {
+                "type": "integer",
+                "title": "Page Number"
+              },
+              "has_previous": {
+                "type": "boolean",
+                "title": "Has Previous"
+              }
+            }
+          },
+          "SecretType": {
+            "type": "object",
+            "title": "SecretType",
+            "required": [
+              "name",
+              "fields_schema",
+              "id",
+              "user_id",
+              "group_id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "user_id": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "User Id"
+              },
+              "group_id": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Group Id"
+              },
+              "fields_schema": {
+                "type": "object",
+                "title": "Fields Schema"
+              }
+            }
+          },
+          "UpdateEdge": {
+            "type": "object",
+            "title": "UpdateEdge",
+            "required": [
+              "source_id",
+              "target_id"
+            ],
+            "properties": {
+              "source_id": {
+                "type": "string",
+                "title": "Source Id",
+                "format": "uuid"
+              },
+              "target_id": {
+                "type": "string",
+                "title": "Target Id",
+                "format": "uuid"
+              }
+            }
+          },
+          "UpdateNode": {
+            "type": "object",
+            "title": "UpdateNode",
+            "required": [
+              "config",
+              "name",
+              "description",
+              "position"
+            ],
+            "properties": {
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Name"
+              },
+              "config": {
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Config"
+              },
+              "position": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/Position"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Description"
+              }
+            }
+          },
+          "UpdateRoot": {
+            "type": "object",
+            "title": "UpdateRoot",
+            "required": [
+              "node_ids"
+            ],
+            "properties": {
+              "node_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "title": "Node Ids"
+              }
+            }
+          },
+          "ChatMessage": {
+            "type": "object",
+            "title": "ChatMessage",
+            "required": [
+              "id",
+              "agent_id",
+              "created_at",
+              "parent_id",
+              "role",
+              "content"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid"
+              },
+              "role": {
+                "$ref": "#/components/schemas/RoleChoice"
+              },
+              "content": {
+                "type": "object",
+                "title": "Content"
+              },
+              "agent_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Agent Id"
+              },
+              "parent_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Parent Id"
+              },
+              "created_at": {
+                "type": "string",
+                "title": "Created At",
+                "format": "date-time"
+              }
+            },
+            "description": "A message in a chat."
+          },
+          "CreateChain": {
+            "type": "object",
+            "title": "CreateChain",
+            "required": [
+              "name",
+              "description"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "alias": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Alias"
+              },
+              "is_agent": {
+                "type": "boolean",
+                "title": "Is Agent",
+                "default": false
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Description"
+              }
+            }
+          },
+          "DeletedItem": {
+            "type": "object",
+            "title": "DeletedItem",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid"
+              }
+            }
+          },
+          "NewNodeEdge": {
+            "type": "object",
+            "title": "NewNodeEdge",
+            "required": [
+              "source_id",
+              "target_id",
+              "source_key",
+              "target_key"
+            ],
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Id"
+              },
+              "source_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "const": "root"
+                  }
+                ],
+                "title": "Source Id"
+              },
+              "target_id": {
+                "type": "string",
+                "title": "Target Id",
+                "format": "uuid"
+              },
+              "source_key": {
+                "type": "string",
+                "title": "Source Key"
+              },
+              "target_key": {
+                "type": "string",
+                "title": "Target Key"
+              }
+            },
+            "description": "A new edge to be created with a node"
+          },
+          "UpdateChain": {
+            "type": "object",
+            "title": "UpdateChain",
+            "required": [
+              "name",
+              "description"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "alias": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Alias"
+              },
+              "is_agent": {
+                "type": "boolean",
+                "title": "Is Agent",
+                "default": false
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Description"
+              }
+            }
+          },
+          "UpdatedRoot": {
+            "type": "object",
+            "title": "UpdatedRoot",
+            "required": [
+              "roots",
+              "old_roots"
+            ],
+            "properties": {
+              "roots": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "title": "Roots"
+              },
+              "old_roots": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "title": "Old Roots"
+              }
+            }
+          },
+          "ArtifactPage": {
+            "type": "object",
+            "title": "ArtifactPage",
+            "required": [
+              "page_number",
+              "pages",
+              "count",
+              "has_next",
+              "has_previous",
+              "objects"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "title": "Count"
+              },
+              "pages": {
+                "type": "integer",
+                "title": "Pages"
+              },
+              "objects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Artifact"
+                },
+                "title": "Objects"
+              },
+              "has_next": {
+                "type": "boolean",
+                "title": "Has Next"
+              },
+              "page_number": {
+                "type": "integer",
+                "title": "Page Number"
+              },
+              "has_previous": {
+                "type": "boolean",
+                "title": "Has Previous"
+              }
+            }
+          },
+          "CreateSecret": {
+            "type": "object",
+            "title": "CreateSecret",
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Name",
+                "default": "default"
+              },
+              "value": {
+                "type": "object",
+                "title": "Value"
+              },
+              "type_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Type Id"
+              },
+              "type_key": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Type Key"
+              }
+            }
+          },
+          "DisplayGroup": {
+            "type": "object",
+            "title": "DisplayGroup",
+            "required": [
+              "key",
+              "fields"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "title": "Key"
+              },
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Label"
+              },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Fields"
+              }
+            },
+            "description": "A group of fields that are displayed together"
+          },
+          "NodeTypePage": {
+            "type": "object",
+            "title": "NodeTypePage",
+            "required": [
+              "page_number",
+              "pages",
+              "count",
+              "has_next",
+              "has_previous",
+              "objects"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "title": "Count"
+              },
+              "pages": {
+                "type": "integer",
+                "title": "Pages"
+              },
+              "objects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/NodeType-Output"
+                },
+                "title": "Objects"
+              },
+              "has_next": {
+                "type": "boolean",
+                "title": "Has Next"
+              },
+              "page_number": {
+                "type": "integer",
+                "title": "Page Number"
+              },
+              "has_previous": {
+                "type": "boolean",
+                "title": "Has Previous"
+              }
+            }
+          },
+          "UpdateSecret": {
+            "type": "object",
+            "title": "UpdateSecret",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name",
+                "default": "default"
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Value"
+              }
+            }
+          },
+          "ChatQueryPage": {
+            "type": "object",
+            "title": "ChatQueryPage",
+            "required": [
+              "page_number",
+              "pages",
+              "count",
+              "has_next",
+              "has_previous",
+              "objects"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "title": "Count"
+              },
+              "pages": {
+                "type": "integer",
+                "title": "Pages"
+              },
+              "objects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Chat"
+                },
+                "title": "Objects"
+              },
+              "has_next": {
+                "type": "boolean",
+                "title": "Has Next"
+              },
+              "page_number": {
+                "type": "integer",
+                "title": "Page Number"
+              },
+              "has_previous": {
+                "type": "boolean",
+                "title": "Has Previous"
+              }
+            }
+          },
+          "NodeTypeField": {
+            "type": "object",
+            "title": "NodeTypeField",
+            "required": [
+              "name",
+              "type"
+            ],
+            "properties": {
+              "max": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Max"
+              },
+              "min": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Min"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "step": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Step"
+              },
+              "type": {
+                "type": "string",
+                "title": "Type"
+              },
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Label",
+                "default": ""
+              },
+              "style": {
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Style"
+              },
+              "parent": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Parent"
+              },
+              "choices": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Choice"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Choices"
+              },
+              "default": {
+                "anyOf": [
+                  {},
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Default"
+              },
+              "required": {
+                "type": "boolean",
+                "title": "Required",
+                "default": false
+              },
+              "init_type": {
+                "enum": [
+                  "init",
+                  "bind"
+                ],
+                "type": "string",
+                "title": "Init Type",
+                "default": "init"
+              },
+              "input_type": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Input Type"
+              },
+              "secret_key": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Secret Key"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Description"
+              }
+            },
+            "description": "Represents a field in a component that can be configured. This includes both\ntyping information and UX information.\n\nThis class includes `get_fields` helpers for auto-importing fields from Pydantic\nmodel and python methods.\n\nSet `parent` to indicate a field is a member of a nested object at property\nwith the name `parent`. Use `parent` to convert flat configs back into nested\nobjects.\n\nArgs:\n    name (str): The name of the field. Used to set and retrieve the value on the object.\n    parent (str): This field is a member of the property with this name.\n    label (str): The label for the field. Displayed in the user interface (UX).\n    type (str): The type of the field. Used for validation and formatting.\n    default (Any): The default value for the field when creating a new object.\n    required (bool, optional): Indicates if the field is required. Defaults to True.\n    input_type (InputType, optional): Selects the UX component for the field. Defaults to InputType.TEXT.\n    min (float, optional): The minimum value for the field (required for InputType.SLIDER). Defaults to None.\n    max (float, optional): The maximum value for the field (required for InputType.SLIDER). Defaults to None.\n    choices (List[Choice], optional): The choices for the field (required for InputType.SELECT). Defaults to None.\n    step (float, optional): The step value for the field (required for InputType.SLIDER). Defaults to None.\n    style (Dict[str, Any], optional): The Chakra UI style properties applied to the UX component. Defaults to None."
+          },
+          "ArtifactCreate": {
+            "type": "object",
+            "title": "ArtifactCreate",
+            "required": [
+              "task_id",
+              "key",
+              "name",
+              "description",
+              "storage"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "title": "Key"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "storage": {
+                "type": "object",
+                "title": "Storage"
+              },
+              "task_id": {
+                "type": "string",
+                "title": "Task Id",
+                "format": "uuid4"
+              },
+              "description": {
+                "type": "string",
+                "title": "Description"
+              },
+              "artifact_type": {
+                "type": "string",
+                "title": "Artifact Type",
+                "default": "file"
+              }
+            }
+          },
+          "ArtifactUpdate": {
+            "type": "object",
+            "title": "ArtifactUpdate",
+            "required": [
+              "task_id",
+              "key",
+              "name",
+              "description",
+              "storage"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "title": "Key"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "storage": {
+                "type": "object",
+                "title": "Storage"
+              },
+              "task_id": {
+                "type": "string",
+                "title": "Task Id",
+                "format": "uuid4"
+              },
+              "description": {
+                "type": "string",
+                "title": "Description"
+              },
+              "artifact_type": {
+                "type": "string",
+                "title": "Artifact Type",
+                "default": "file"
+              }
+            }
+          },
+          "ChainQueryPage": {
+            "type": "object",
+            "title": "ChainQueryPage",
+            "required": [
+              "page_number",
+              "pages",
+              "count",
+              "has_next",
+              "has_previous",
+              "objects"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "title": "Count"
+              },
+              "pages": {
+                "type": "integer",
+                "title": "Pages"
+              },
+              "objects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Chain"
+                },
+                "title": "Objects"
+              },
+              "has_next": {
+                "type": "boolean",
+                "title": "Has Next"
+              },
+              "page_number": {
+                "type": "integer",
+                "title": "Page Number"
+              },
+              "has_previous": {
+                "type": "boolean",
+                "title": "Has Previous"
+              }
+            }
+          },
+          "DataSourcePage": {
+            "type": "object",
+            "title": "DataSourcePage",
+            "required": [
+              "page_number",
+              "pages",
+              "count",
+              "has_next",
+              "has_previous",
+              "objects"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "title": "Count"
+              },
+              "pages": {
+                "type": "integer",
+                "title": "Pages"
+              },
+              "objects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DataSource"
+                },
+                "title": "Objects"
+              },
+              "has_next": {
+                "type": "boolean",
+                "title": "Has Next"
+              },
+              "page_number": {
+                "type": "integer",
+                "title": "Page Number"
+              },
+              "has_previous": {
+                "type": "boolean",
+                "title": "Has Previous"
+              }
+            }
+          },
+          "ExecutionGroup": {
+            "type": "object",
+            "title": "ExecutionGroup",
+            "required": [
+              "task_id",
+              "executions"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "title": "Task Id",
+                "format": "uuid"
+              },
+              "executions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RunnableExecution"
+                },
+                "title": "Executions"
+              }
+            }
+          },
+          "NodeType-Input": {
+            "type": "object",
+            "title": "NodeType",
+            "required": [
+              "class_path",
+              "type"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 255
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Name"
+              },
+              "type": {
+                "type": "string",
+                "title": "Type",
+                "maxLength": 255
+              },
+              "fields": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/NodeTypeField"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Fields"
+              },
+              "context": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Context"
+              },
+              "class_path": {
+                "type": "string",
+                "title": "Class Path",
+                "maxLength": 255
+              },
+              "connectors": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Connector"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Connectors"
+              },
+              "child_field": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 32
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Child Field"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Description"
+              },
+              "display_type": {
+                "type": "string",
+                "title": "Display Type",
+                "default": "node",
+                "maxLength": 10
+              },
+              "field_groups": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/components/schemas/FieldGroup"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Field Groups"
+              },
+              "config_schema": {
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Config Schema"
+              },
+              "display_groups": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/DisplayGroup"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Display Groups"
+              }
+            },
+            "description": "A configuration object that maps a component into the IX platform. These config\nobjects are used to generate config forms for the UI, validate config input,\ninitialize components at runtime. They describe how to load, configure, connected,\nand display components in the UI.\n\nComponents are primarily from LangChain, but may include custom components and those\nfrom other libraries. The structure maps to any callable that returns an object,\nincluding classes, functions, and [class|static] methods."
+          },
+          "NodeTypeDetail": {
+            "type": "object",
+            "title": "NodeTypeDetail",
+            "required": [
+              "class_path",
+              "type"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 255
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Name"
+              },
+              "type": {
+                "type": "string",
+                "title": "Type",
+                "maxLength": 255
+              },
+              "fields": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/NodeTypeField"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Fields"
+              },
+              "context": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Context"
+              },
+              "class_path": {
+                "type": "string",
+                "title": "Class Path",
+                "maxLength": 255
+              },
+              "connectors": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Connector"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Connectors"
+              },
+              "child_field": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 32
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Child Field"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Description"
+              },
+              "display_type": {
+                "type": "string",
+                "title": "Display Type",
+                "default": "node",
+                "maxLength": 10
+              },
+              "field_groups": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/components/schemas/FieldGroup"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Field Groups"
+              },
+              "config_schema": {
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Config Schema"
+              },
+              "display_groups": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/DisplayGroup"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Display Groups"
+              }
+            }
+          },
+          "PositionUpdate": {
+            "type": "object",
+            "title": "PositionUpdate",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "x": {
+                "type": "number",
+                "title": "X"
+              },
+              "y": {
+                "type": "number",
+                "title": "Y"
+              }
+            }
+          },
+          "SecretTypeEdit": {
+            "type": "object",
+            "title": "SecretTypeEdit",
+            "required": [
+              "name",
+              "fields_schema"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "fields_schema": {
+                "type": "object",
+                "title": "Fields Schema"
+              }
+            }
+          },
+          "SecretTypePage": {
+            "type": "object",
+            "title": "SecretTypePage",
+            "required": [
+              "page_number",
+              "pages",
+              "count",
+              "has_next",
+              "has_previous",
+              "objects"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "title": "Count"
+              },
+              "pages": {
+                "type": "integer",
+                "title": "Pages"
+              },
+              "objects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SecretType"
+                },
+                "title": "Objects"
+              },
+              "has_next": {
+                "type": "boolean",
+                "title": "Has Next"
+              },
+              "page_number": {
+                "type": "integer",
+                "title": "Page Number"
+              },
+              "has_previous": {
+                "type": "boolean",
+                "title": "Has Previous"
+              }
+            }
+          },
+          "ChatAgentAction": {
+            "type": "object",
+            "title": "ChatAgentAction",
+            "required": [
+              "chat_id"
+            ],
+            "properties": {
+              "chat_id": {
+                "type": "string",
+                "title": "Chat Id",
+                "format": "uuid"
+              },
+              "agent_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Agent Id"
+              }
+            }
+          },
+          "NodeType-Output": {
+            "type": "object",
+            "title": "NodeType",
+            "required": [
+              "class_path",
+              "type"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 255
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Name"
+              },
+              "type": {
+                "type": "string",
+                "title": "Type",
+                "maxLength": 255
+              },
+              "fields": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/NodeTypeField"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Fields"
+              },
+              "context": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Context"
+              },
+              "class_path": {
+                "type": "string",
+                "title": "Class Path",
+                "maxLength": 255
+              },
+              "connectors": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Connector"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Connectors"
+              },
+              "child_field": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 32
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Child Field"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Description"
+              },
+              "display_type": {
+                "type": "string",
+                "title": "Display Type",
+                "default": "node",
+                "maxLength": 10
+              },
+              "field_groups": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/components/schemas/FieldGroup"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Field Groups"
+              },
+              "config_schema": {
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Config Schema"
+              },
+              "display_groups": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/DisplayGroup"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Display Groups"
+              }
+            },
+            "description": "A configuration object that maps a component into the IX platform. These config\nobjects are used to generate config forms for the UI, validate config input,\ninitialize components at runtime. They describe how to load, configure, connected,\nand display components in the UI.\n\nComponents are primarily from LangChain, but may include custom components and those\nfrom other libraries. The structure maps to any callable that returns an object,\nincluding classes, functions, and [class|static] methods."
+          },
+          "ValidationError": {
+            "type": "object",
+            "title": "ValidationError",
+            "required": [
+              "loc",
+              "msg",
+              "type"
+            ],
+            "properties": {
+              "loc": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ]
+                },
+                "title": "Location"
+              },
+              "msg": {
+                "type": "string",
+                "title": "Message"
+              },
+              "type": {
+                "type": "string",
+                "title": "Error Type"
+              }
+            }
+          },
+          "Body_upload_file": {
+            "type": "object",
+            "title": "Body_upload_file",
+            "required": [
+              "file"
+            ],
+            "properties": {
+              "file": {
+                "type": "string",
+                "title": "File",
+                "format": "binary"
+              },
+              "task_id": {
+                "type": "string",
+                "title": "Task Id"
+              }
+            }
+          },
+          "AgentCreateUpdate": {
+            "type": "object",
+            "title": "AgentCreateUpdate",
+            "required": [
+              "name",
+              "alias",
+              "purpose",
+              "chain_id"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "alias": {
+                "type": "string",
+                "title": "Alias"
+              },
+              "model": {
+                "type": "string",
+                "title": "Model",
+                "default": "gpt-4"
+              },
+              "config": {
+                "type": "object",
+                "title": "Config",
+                "default": {}
+              },
+              "purpose": {
+                "type": "string",
+                "title": "Purpose"
+              },
+              "chain_id": {
+                "type": "string",
+                "title": "Chain Id",
+                "format": "uuid"
+              }
+            }
+          },
+          "RunnableExecution": {
+            "type": "object",
+            "title": "RunnableExecution",
+            "required": [
+              "id",
+              "node_id",
+              "started_at",
+              "finished_at"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid"
+              },
+              "inputs": {
+                "title": "Inputs",
+                "default": {}
+              },
+              "message": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Message"
+              },
+              "node_id": {
+                "type": "string",
+                "title": "Node Id",
+                "format": "uuid"
+              },
+              "outputs": {
+                "title": "Outputs",
+                "default": {}
+              },
+              "completed": {
+                "type": "boolean",
+                "title": "Completed",
+                "default": false
+              },
+              "started_at": {
+                "type": "string",
+                "title": "Started At",
+                "format": "date-time"
+              },
+              "finished_at": {
+                "type": "string",
+                "title": "Finished At",
+                "format": "date-time"
+              }
+            }
+          },
+          "HTTPValidationError": {
+            "type": "object",
+            "title": "HTTPValidationError",
+            "properties": {
+              "detail": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ValidationError"
+                },
+                "title": "Detail"
+              }
+            }
+          },
+          "ChatMessageQueryPage": {
+            "type": "object",
+            "title": "ChatMessageQueryPage",
+            "required": [
+              "page_number",
+              "pages",
+              "count",
+              "has_next",
+              "has_previous",
+              "objects"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "title": "Count"
+              },
+              "pages": {
+                "type": "integer",
+                "title": "Pages"
+              },
+              "objects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ChatMessage"
+                },
+                "title": "Objects"
+              },
+              "has_next": {
+                "type": "boolean",
+                "title": "Has Next"
+              },
+              "page_number": {
+                "type": "integer",
+                "title": "Page Number"
+              },
+              "has_previous": {
+                "type": "boolean",
+                "title": "Has Previous"
+              }
+            }
+          },
+          "DataSourceCreateUpdate": {
+            "type": "object",
+            "title": "DataSourceCreateUpdate",
+            "required": [
+              "name",
+              "description",
+              "config",
+              "retrieval_chain"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "config": {
+                "type": "object",
+                "title": "Config"
+              },
+              "description": {
+                "type": "string",
+                "title": "Description"
+              },
+              "retrieval_chain": {
+                "type": "string",
+                "title": "Retrieval Chain",
+                "format": "uuid"
+              }
+            }
+          }
+        }
+      }
+    },
+    "meta": {
+      "url": "http://localhost:8000/api/openapi.json"
+    }
+  }
+}
+]

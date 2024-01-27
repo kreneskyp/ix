@@ -270,6 +270,7 @@ LOAD_FIXTURE = docker-compose exec -T web ./manage.py loaddata
 .PHONY: dev_fixtures
 dev_fixtures: cluster components agents
 	$(LOAD_FIXTURE) fake_user
+	$(LOAD_FIXTURE) ix_api
 
 
 .PHONY: agents
