@@ -18,6 +18,7 @@ import {
   NodeEditorContext,
   ChainState,
   ChainTypes,
+  EdgeState,
 } from "chains/editor/contexts";
 import { EditorRightSidebar } from "chains/editor/EditorRightSidebar";
 import { NodeTypeSearchButton } from "chains/editor/NodeTypeSearchButton";
@@ -33,6 +34,7 @@ import { useTabDataField } from "chains/hooks/useTabDataField";
 import { useChainState } from "chains/hooks/useChainState";
 import { OpenAPISchemaMenuItem } from "schemas/openapi/OpenAPISchemaMenuItem";
 import { JSONSchemaMenuItem } from "schemas/json/JSONSchemaMenuItem";
+import { useEdgeState } from "chains/hooks/useEdgeState";
 export const EditorViewState = React.createContext(null);
 
 /**
@@ -108,6 +110,7 @@ export const useEditorTabs = (initial) => {
     typeState: useTabDataField(tabState.active, tabState.setActive, "types"),
     chainState: useChainState(tabState),
     nodeState: useNodeState(tabState),
+    edgeState: useEdgeState(tabState),
     selection: useSelectedNode(tabState),
     addChain,
     openChain,
@@ -117,7 +120,7 @@ export const useEditorTabs = (initial) => {
 };
 
 const ChainEditorProvider = ({ onError, children }) => {
-  const { chainState, typeState, nodeState, selection } =
+  const { chainState, typeState, nodeState, edgeState, selection } =
     React.useContext(EditorViewState);
 
   const nodeEditor = useNodeEditorState(
@@ -137,15 +140,17 @@ const ChainEditorProvider = ({ onError, children }) => {
     <ChainTypes.Provider value={typeState}>
       <ChainState.Provider value={chainState}>
         <NodeStateContext.Provider value={nodeState}>
-          <NodeEditorContext.Provider value={nodeEditor}>
-            <SelectedNodeContext.Provider value={selection}>
-              <ChainEditorAPIContext.Provider value={api}>
-                <RunLogProvider chain_id={chainState?.[0]?.id}>
-                  {children}
-                </RunLogProvider>
-              </ChainEditorAPIContext.Provider>
-            </SelectedNodeContext.Provider>
-          </NodeEditorContext.Provider>
+          <EdgeState.Provider value={edgeState}>
+            <NodeEditorContext.Provider value={nodeEditor}>
+              <SelectedNodeContext.Provider value={selection}>
+                <ChainEditorAPIContext.Provider value={api}>
+                  <RunLogProvider chain_id={chainState?.[0]?.id}>
+                    {children}
+                  </RunLogProvider>
+                </ChainEditorAPIContext.Provider>
+              </SelectedNodeContext.Provider>
+            </NodeEditorContext.Provider>
+          </EdgeState.Provider>
         </NodeStateContext.Provider>
       </ChainState.Provider>
     </ChainTypes.Provider>

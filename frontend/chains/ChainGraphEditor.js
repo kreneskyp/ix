@@ -27,6 +27,7 @@ import { useAxios } from "utils/hooks/useAxios";
 import {
   ChainState,
   ChainTypes,
+  EdgeState,
   NodeStateContext,
   SelectedNodeContext,
 } from "chains/editor/contexts";
@@ -67,6 +68,7 @@ const ChainGraphEditor = ({ graph }) => {
   const [chain, setChain] = useContext(ChainState);
   const [types, setTypes] = useContext(ChainTypes);
   const nodeState = useContext(NodeStateContext);
+  const edgeState = useContext(EdgeState);
   const tabState = useContext(TabState);
   const api = useContext(ChainEditorAPIContext);
   const { selectedNode, selectedConnector, setSelectedConnector } =
@@ -227,9 +229,6 @@ const ChainGraphEditor = ({ graph }) => {
         position: position,
         config: { ...getDefaults(nodeType), ...incomingData.config },
       };
-      if (edge) {
-        data.edges = [edge];
-      }
 
       // add to API, local state, and ReactFlow
       nodeState.setNode(data);
@@ -237,9 +236,10 @@ const ChainGraphEditor = ({ graph }) => {
       const flowNode = toReactFlowNode(data, nodeType);
       api.addNode(data, { onSuccess: onNodeSaved });
       setNodes((nds) => nds.concat(flowNode));
-
       if (edge) {
+        data.edges = [edge];
         setEdges((els) => addEdge(flowEdge, els));
+        edgeState.setEdge(edge);
       }
       toast({ ...NOTIFY_SAVED, description: "Saved Node" });
     },
@@ -322,6 +322,7 @@ const ChainGraphEditor = ({ graph }) => {
           relation,
         };
         api.addEdge(data);
+        edgeState.setEdge(data);
       }
       toast({ ...NOTIFY_SAVED, description: "Saved Edge" });
     },
@@ -363,6 +364,10 @@ const ChainGraphEditor = ({ graph }) => {
             source_id: newConnection.source,
             target_id: newConnection.target,
           });
+          edgeState.updateEdge(oldEdge.data.id, {
+            source_id: newConnection.source,
+            target_id: newConnection.target,
+          });
         }
       }
     },
@@ -374,6 +379,7 @@ const ChainGraphEditor = ({ graph }) => {
       // delete edge if dropped on graph
       if (!edgeUpdate.toHandle) {
         setEdges((eds) => eds.filter((e) => e.id !== edge.id));
+        edgeState.deleteEdge(edge.data.id);
         if (edge.source === "root") {
           const root_edges = reactFlowInstance
             .getEdges()
