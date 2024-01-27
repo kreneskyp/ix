@@ -18,6 +18,7 @@ import {
   NodeEditorContext,
   ChainState,
   ChainTypes,
+  EditorViewState,
 } from "chains/editor/contexts";
 import { EditorRightSidebar } from "chains/editor/EditorRightSidebar";
 import { NodeTypeSearchButton } from "chains/editor/NodeTypeSearchButton";
@@ -33,7 +34,6 @@ import { useTabDataField } from "chains/hooks/useTabDataField";
 import { useChainState } from "chains/hooks/useChainState";
 import { OpenAPISchemaMenuItem } from "schemas/openapi/OpenAPISchemaMenuItem";
 import { JSONSchemaMenuItem } from "schemas/json/JSONSchemaMenuItem";
-export const EditorViewState = React.createContext(null);
 
 /**
  * Init state for the editor and it's tabs. This is the top level state that manages
