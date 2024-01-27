@@ -26,6 +26,7 @@ class Command(BaseCommand):
             "agent/ingest",
             "agent/knowledge",
             "agent/vision",
+            "ix_api",
         ]:
             print(f"Loading fixture: {fixture}")
             call_command("loaddata", fixture)
