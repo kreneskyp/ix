@@ -1,48 +1,50 @@
 import React from "react";
 import axios from "axios";
+
 import { AsyncAPIObjectSelect } from "components/AsyncAPIObjectSelect";
+import { MenuList } from "components/select/MenuList";
+import { SingleValue } from "components/select/SingleValue";
+import { Option } from "components/select/Option";
 
-const getOptions = async (inputValue) => {
-  const response = await axios.get(
-    `/api/chains/?is_agent=false&limit=20&search=${inputValue}`
-  );
-  const data = response.data;
-  const options = data?.objects.map((item) => ({
-    label: item.name,
-    value: item.id,
-  }));
-  return options;
-};
+const toOption = (chain) => ({
+  label: chain.name,
+  value: chain.id,
+  help: chain.description,
+});
 
-const getDefaultOptions = async () => {
+const fetchOptions = async (url, inputValue) => {
   try {
-    const response = await axios.get(`/api/chains/?is_agent=false&limit=10`);
-    const options = response.data.objects.map((item) => ({
-      label: item.name,
-      value: item.id,
-    }));
+    const fullUrl = inputValue ? `${url}&search=${inputValue}` : url;
+    const response = await axios.get(fullUrl);
+    const options = response.data.objects.map(toOption);
     return options;
   } catch (error) {
-    // Handle error here
-    console.error("Error fetching default options:", error);
+    console.error("Error fetching options:", error);
     return [];
   }
 };
 
+const getOptions = async (inputValue) => {
+  return fetchOptions(`/api/chains/?is_agent=false&limit=20`, inputValue);
+};
+
 const getDetail = async (id) => {
   const response = await axios.get(`/api/chains/${id}`);
-  return { label: response.data.name, value: response.data.id };
+  return toOption(response.data);
 };
 
 export const ChainSelect = ({ onChange, value, ...props }) => {
   return (
     <AsyncAPIObjectSelect
       getOptions={getOptions}
-      getDefaultOptions={getDefaultOptions}
       getDetail={getDetail}
       onChange={onChange}
       value={value}
-      {...props}
+      components={{
+        MenuList,
+        Option,
+        SingleValue,
+      }}
     />
   );
 };
