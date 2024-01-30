@@ -2,22 +2,25 @@ import pytest
 
 from ix.skills.utils import parse_skill, MissingTypeHintError, AmbiguousFuncName
 
-FUNC_WITH_VARS_SCRIPT = """
+FUNC_WITH_VARS_SCRIPT = '''
 def test_func(a: int, b: int) -> None:
+    """this is a test."""
     pass
-"""
+'''
 
-FUNC_WITH_COMPOUND_TYPE_SCRIPT = """
+FUNC_WITH_COMPOUND_TYPE_SCRIPT = '''
 from typing import List
 
 def test_func(arg: List[str]) -> None:
+    """this is a test."""
     pass
-"""
+'''
 
-FUNC_RETURNS_VALUE_SCRIPT = """
+FUNC_RETURNS_VALUE_SCRIPT = '''
 def test_func() -> int:
+    """this is a test."""
     return 42
-"""
+'''
 
 FUNC_WITH_DOCSTRING_SCRIPT = '''
 def test_func():
@@ -26,26 +29,31 @@ def test_func():
 '''
 
 
-SCRIPT_WITH_MULTIPLE_FUNCS_SCRIPT = """
+SCRIPT_WITH_MULTIPLE_FUNCS_SCRIPT = '''
 def func1():
+    """this is a test."""
     pass
 
 def run():
+    """this is a test."""
     pass
-"""
+'''
 
-SCRIPT_WITH_MULTIPLE_FUNCS_NO_RUN_SCRIPT = """
+SCRIPT_WITH_MULTIPLE_FUNCS_NO_RUN_SCRIPT = '''
 def func1():
+    """this is a test."""
     pass
 
 def func2():
+    """this is a test."""
     pass
-"""
+'''
 
-FUNC_WITHOUT_TYPE_HINTS_SCRIPT = """
+FUNC_WITHOUT_TYPE_HINTS_SCRIPT = '''
 def test_func(a, b):
+    """this is a test."""
     pass
-"""
+'''
 
 
 expected_schemas = {

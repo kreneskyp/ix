@@ -1,4 +1,9 @@
-from pydantic import BaseModel, UUID4, Field, root_validator, model_validator
+from pydantic import (
+    BaseModel,
+    UUID4,
+    Field,
+    model_validator,
+)
 from typing import List, Any, Type, Optional
 
 from ix.skills.utils import parse_skill
@@ -20,11 +25,6 @@ class SkillBase(BaseModel):
         return jsonschema_to_pydantic(self.input_schema)
 
 
-def run(a: int) -> int:
-    """Describe your skill here."""
-    return a + 1
-
-
 class EditSkill(SkillBase):
     """New or updated skill definition"""
 
@@ -33,17 +33,29 @@ class EditSkill(SkillBase):
 
     @model_validator(mode="before")
     def parse_code_and_set_fields(cls, values):
-        code = values["code"]
+        code = values.get("code", None)
 
         if code:
-            func_name, input_schema, description = parse_skill(
-                code, values.get("func_name", None), values.get("input_schema", None)
-            )
+            try:
+                # Attempt to parse the code
+                func_name, input_schema, description = parse_skill(
+                    code,
+                    values.get("func_name", None),
+                    values.get("input_schema", None),
+                )
 
-            # Update values with extracted data
-            values["func_name"] = func_name
-            values["input_schema"] = input_schema
-            values["description"] = values.get("description", description)
+                # Update values with extracted data
+                values["func_name"] = func_name
+                values["input_schema"] = input_schema
+                values["description"] = values.get("description", description)
+
+            except Exception as e:
+                # Reraise all exceptions as ValueErrors, so they will be processed as
+                # a pydantic ValidationError.
+                raise ValueError(e)
+
+        if not values["description"]:
+            raise ValueError("skill requires a docstring describing it's purpose.")
 
         return values
 
