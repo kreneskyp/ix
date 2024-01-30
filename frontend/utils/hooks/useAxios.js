@@ -33,7 +33,7 @@ export const useAxios = (
       if (onError) {
         onError(err);
       }
-      throw error;
+      throw err;
     } finally {
       setIsLoading(false);
     }
