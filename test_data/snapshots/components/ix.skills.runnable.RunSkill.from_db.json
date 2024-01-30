@@ -1,0 +1,42 @@
+{
+    "child_field": null,
+    "class_path": "ix.skills.runnable.RunSkill.from_db",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "skill_id": {
+                "description": "Skill to run",
+                "input_type": "IX:skill",
+                "label": "Skill",
+                "type": "string"
+            }
+        },
+        "required": [],
+        "title": "from_db",
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Run a skill",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": "Skill to run",
+            "init_type": "init",
+            "input_type": "IX:skill",
+            "label": "Skill",
+            "max": null,
+            "min": null,
+            "name": "skill_id",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "string"
+        }
+    ],
+    "name": "Run Skill",
+    "type": "chain"
+}

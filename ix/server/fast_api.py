@@ -12,6 +12,7 @@ from ix.api.chains.endpoints import router as chains_router
 from ix.api.editor.endpoints import router as editor_router
 from ix.api.chats.endpoints import router as chats_router
 from ix.api.datasources.endpoints import router as datasources_router
+from ix.skills.endpoints import router as skills_router
 from ix.api.secrets.endpoints import router as secrets_router
 from ix.api.workspace.endpoints import router as workspace_router
 from ix.data.endpoints import router as data_router
@@ -32,6 +33,7 @@ app.include_router(editor_router)
 app.include_router(data_router)
 app.include_router(datasources_router)
 app.include_router(secrets_router)
+app.include_router(skills_router)
 app.include_router(workspace_router)
 app.include_router(runnable_log_router)
 

@@ -8,8 +8,16 @@ import useUpdateAPI from "utils/hooks/useUpdateAPI";
  * @returns {{isLoading: boolean, save: ((function(*): Promise<any|undefined>)|*)}}
  */
 export const useCreateUpdateAPI = (createURL, updateURL) => {
-  const { create, isLoading: isCreateLoading } = useCreateAPI(createURL);
-  const { call: update, isLoading: isUpdateLoading } = useUpdateAPI(updateURL);
+  const {
+    create,
+    isLoading: isCreateLoading,
+    error: createError,
+  } = useCreateAPI(createURL);
+  const {
+    call: update,
+    isLoading: isUpdateLoading,
+    error: updateError,
+  } = useUpdateAPI(updateURL);
 
   const save = async (data) => {
     if (data.id) {
@@ -21,6 +29,7 @@ export const useCreateUpdateAPI = (createURL, updateURL) => {
 
   return {
     save,
+    error: createError?.response || updateError?.response || undefined,
     isLoading: isCreateLoading || isUpdateLoading,
   };
 };

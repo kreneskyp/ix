@@ -1,0 +1,58 @@
+{
+    "child_field": null,
+    "class_path": "ix.skills.runnable.LoadSkill",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {
+            "skill_id": {
+                "description": "Skill to load",
+                "input_type": "IX:skill",
+                "label": "Skill",
+                "type": "string"
+            }
+        },
+        "required": [],
+        "title": "LoadSkill",
+        "type": "object"
+    },
+    "connectors": [
+        {
+            "as_type": null,
+            "collection": null,
+            "fields": null,
+            "from_field": null,
+            "init_modes": null,
+            "init_type": "init",
+            "key": "out",
+            "label": "Skill",
+            "multiple": false,
+            "required": false,
+            "source_type": "flow",
+            "template": false,
+            "type": "source"
+        }
+    ],
+    "description": "Get a skill from the IX skill registry",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": "Skill to load",
+            "init_type": "init",
+            "input_type": "IX:skill",
+            "label": "Skill",
+            "max": null,
+            "min": null,
+            "name": "skill_id",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "string"
+        }
+    ],
+    "name": "Load Skill",
+    "type": "chain"
+}

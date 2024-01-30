@@ -33,6 +33,7 @@ from ix.chains.fixture_src.vectorstores import VECTORSTORES
 from ix.chains.models import NodeType
 from ix.chains.tests.mock_runnable import MOCK_RUNNABLE_CONFIG
 from ix.secrets.models import SecretType
+from ix.skills.components import SKILLS
 
 COMPONENTS = []
 
@@ -75,6 +76,7 @@ COMPONENTS.extend(OPEN_API)
 COMPONENTS.extend(LANGCHAIN_RUNNABLES)
 COMPONENTS.extend(JSON)
 COMPONENTS.extend(FLOW)
+COMPONENTS.extend(SKILLS)
 
 # IX Misc
 COMPONENTS.extend([CHAT_MODERATOR_TYPE])

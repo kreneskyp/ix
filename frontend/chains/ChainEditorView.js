@@ -36,6 +36,7 @@ import { useChainState } from "chains/hooks/useChainState";
 import { OpenAPISchemaMenuItem } from "schemas/openapi/OpenAPISchemaMenuItem";
 import { JSONSchemaMenuItem } from "schemas/json/JSONSchemaMenuItem";
 import { useEdgeState } from "chains/hooks/useEdgeState";
+import { SkillMenuItem } from "skills/SkillMenuItem";
 
 /**
  * Init state for the editor and it's tabs. This is the top level state that manages
@@ -226,6 +227,7 @@ export const ChainEditorTab = ({ onError }) => {
           />
           <OpenAPISchemaMenuItem />
           <JSONSchemaMenuItem />
+          <SkillMenuItem />
         </LayoutLeftPane>
         <LayoutContent>
           <HStack>

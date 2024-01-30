@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "ix.data",
     "ix.datasources",
     "ix.secrets",
+    "ix.skills",
     "ix.runnable_log",
 ]
 
