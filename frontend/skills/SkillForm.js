@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, HStack, useToast } from "@chakra-ui/react";
+import { Box, Button, HStack, Text, useToast } from "@chakra-ui/react";
 
 import { useCreateUpdateAPI } from "utils/hooks/useCreateUpdateAPI";
 import { ModalClose } from "components/Modal";
@@ -38,7 +38,7 @@ export const SkillForm = ({ skill, onSuccess }) => {
   const [valid, setValid] = React.useState(true);
   const onClose = React.useContext(ModalClose);
 
-  const { save } = useCreateUpdateAPI(
+  const { save, error } = useCreateUpdateAPI(
     "/api/skills/",
     `/api/skills/${skill?.id}`
   );
@@ -79,6 +79,12 @@ export const SkillForm = ({ skill, onSuccess }) => {
         help={CODE_HELP}
         required={true}
       />
+      <Box color={"red.400"} fontSize={"xs"} mt={4}>
+        {error &&
+          error.data?.detail?.map((err_datum) => {
+            return <Text>{err_datum.msg}</Text>;
+          })}
+      </Box>
       <HStack display="flex" justifyContent="flex-end" mt={4} mr={7}>
         {skill?.id && <SkillDeleteButton skill={skill} onSuccess={onSuccess} />}
         <Button colorScheme="blue" onClick={onSave} isDisabled={!valid}>
