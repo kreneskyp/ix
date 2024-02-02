@@ -44,6 +44,7 @@ const CodeEditor = ({
         height={400}
         width={"100%"}
         {...props}
+        spellCheck={false}
       />
       {help && <FormHelperText>{help}</FormHelperText>}
       {error && <FormErrorMessage>{error}</FormErrorMessage>}
