@@ -5,7 +5,7 @@ import { useCreateUpdateAPI } from "utils/hooks/useCreateUpdateAPI";
 import { ModalClose } from "components/Modal";
 import { SkillDeleteButton } from "skills/SkillDeleteButton";
 import { NameField } from "chains/editor/fields/NameField";
-import CodeEditor from "components/CodeEditor";
+import CodeEditor from "components/code_editor/CodeEditor";
 
 // Example python class with typehints and description. docstring should
 const CODE_PLACEHOLDER =
@@ -78,6 +78,7 @@ export const SkillForm = ({ skill, onSuccess }) => {
         placeholder={CODE_PLACEHOLDER}
         help={CODE_HELP}
         required={true}
+        language={"python"}
       />
       <Box color={"red.400"} fontSize={"xs"} mt={4}>
         {error &&
