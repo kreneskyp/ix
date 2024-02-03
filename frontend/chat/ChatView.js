@@ -71,11 +71,7 @@ export const ChatView = () => {
   const { response, call: loadGraph, isLoading } = useChatGraph(id);
   const graph = response?.data;
   const rightSidebarDisclosure = useDisclosure({ defaultIsOpen: true });
-  const {
-    updateScroll,
-    targetRef: scrollBoxRef,
-    sourceRef: drawerRef,
-  } = useLinkedScroll();
+  const { targetRef: scrollBoxRef, sourceRef: drawerRef } = useLinkedScroll();
 
   useEffect(() => {
     loadGraph();
