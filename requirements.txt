@@ -39,7 +39,7 @@ openapi-pydantic==0.3.2
 pinecone-client==2.2.4
 psycopg==3.1.10
 pydantic==2.5.2
-pypdf==3.15.2
+pypdf==3.17.0
 pytest==7.4.2
 pytest_asyncio==0.21.1
 pytest-cov==4.1.0
