@@ -111,11 +111,23 @@ const ChainGraphEditor = ({ graph }) => {
       if (chain?.id === undefined) {
         loadChain(`/api/chains/${response.data.chain_id}`, {
           onSuccess: (response) => {
-            tabState.setActive((prev) => ({
-              ...prev,
-              chain_id: response.data.id,
-              chain: response.data,
-            }));
+            tabState.setActive((prev) => {
+              // update any initial nodes that are missing chain_id
+              const nodes = { ...prev.nodes };
+              for (const id in nodes) {
+                const node = nodes[id];
+                if (node.chain_id === null) {
+                  nodes[id] = { ...node, chain_id: response.data.id };
+                }
+              }
+
+              return {
+                ...prev,
+                chain_id: response.data.id,
+                chain: response.data,
+                nodes,
+              };
+            });
             toast({ ...NOTIFY_SAVED, description: "Saved Chain" });
           },
         });
