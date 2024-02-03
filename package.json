@@ -18,7 +18,7 @@
     "got": ">=11.8.5",
     "gry": ">=6.0.0",
     "package.json": "^2.0.1",
-    "parse-url": "^9.0.1",
+    "parse-url": "^8.1.0",
     "qs": "^6.11.2",
     "react-syntax-highlighter": "^15.5.0",
     "reactflow": "^11.8.3",
