@@ -166,6 +166,22 @@ jobs:
         with:
           command: make flake8
 
+  prettier:
+    needs: nodejs_build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run flake8
+        uses: ./.github/actions/run-docker
+        with:
+          command: make prettier-check
+
 # Disabling until a later date
 #
 #  pyright:
