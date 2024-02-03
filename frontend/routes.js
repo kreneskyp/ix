@@ -1,6 +1,5 @@
 import React from "react";
 
-import { TasksListView } from "tasks/TasksListView";
 import { ChatView } from "chat/ChatView";
 import { ChainEditorView } from "chains/ChainEditorView";
 import { NewChatRedirect } from "chat/NewChatRedirect";
@@ -11,7 +10,6 @@ import { AgentNewRedirect } from "agents/AgentNewRedirect";
 //import { AdminSettingsView } from 'admin/AdminSettingsView';
 
 export const routes = [
-  { path: "/tasks", element: <TasksListView /> },
   { path: "/chats/new", element: <NewChatRedirect /> },
   {
     path: "/chat/:id",

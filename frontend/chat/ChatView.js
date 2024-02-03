@@ -5,26 +5,16 @@ import {
   Box,
   HStack,
   useDisclosure,
-  Tab,
-  Tooltip,
-  TabPanel,
-  TabPanels,
   IconButton,
 } from "@chakra-ui/react";
 
 import { Layout, LayoutContent, LayoutLeftPane } from "site/Layout";
 import { RightSidebar } from "site/RightSidebar";
-import SideBarPlanList from "chat/sidebar/SideBarPlanList";
 import SideBarArtifactList from "chat/sidebar/SideBarArtifactList";
 import { ChatInterface } from "chat/ChatInterface";
 import { useChatGraph } from "chat/hooks/useChatGraph";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBox,
-  faClipboardCheck,
-  faRightLeft,
-} from "@fortawesome/free-solid-svg-icons";
-import { SidebarTabList, SidebarTabs } from "site/SidebarTabs";
+import { faRightLeft } from "@fortawesome/free-solid-svg-icons";
 import { ChatMembersButton } from "chat/buttons/ChatMembersButton";
 import { usePaginatedAPI } from "utils/hooks/usePaginatedAPI";
 import { useLinkedScroll } from "hooks/useLinkedScroll";
@@ -65,31 +55,9 @@ export const ChatLeftPaneShim = ({ graph }) => {
 export const ChatRightSidebar = ({ graph, disclosure, drawerRef }) => {
   return (
     <RightSidebar {...disclosure} drawerRef={drawerRef}>
-      <SidebarTabs>
-        <SidebarTabList>
-          <Tooltip label="Tasks" aria-label="Tasks">
-            <Tab>
-              <FontAwesomeIcon icon={faClipboardCheck} />
-            </Tab>
-          </Tooltip>
-          <Tooltip label="Artifacts" aria-label="Artifacts">
-            <Tab>
-              <FontAwesomeIcon icon={faBox} />
-            </Tab>
-          </Tooltip>
-        </SidebarTabList>
-        <TabPanels p={0} m={0} display="flex" flex="1" flexDirection="column">
-          <TabPanel>
-            <SideBarPlanList plans={graph.plans} />
-          </TabPanel>
-          <TabPanel>
-            <SideBarArtifactList
-              chat={graph.chat}
-              artifacts={graph.artifacts}
-            />
-          </TabPanel>
-        </TabPanels>
-      </SidebarTabs>
+      <Box p={5} m={0} display="flex" flex="1" flexDirection="column">
+        <SideBarArtifactList chat={graph.chat} artifacts={graph.artifacts} />
+      </Box>
     </RightSidebar>
   );
 };
