@@ -313,7 +313,7 @@ snapshots: compose
 test: compose pytest
 
 .PHONY: lint
-lint: compose flake8 black-check
+lint: compose flake8 black-check prettier-check
 
 .PHONY: format
 format: black isort
@@ -345,6 +345,12 @@ pyright: compose
 .PHONY: prettier
 prettier: nodejs
 	${DOCKER_COMPOSE_RUN_NODEJS} prettier -w frontend
+
+
+.PHONY: prettier-check
+prettier-check: nodejs
+	${DOCKER_COMPOSE_RUN_NODEJS} prettier --check frontend
+
 
 # =========================================================
 # Cleanup

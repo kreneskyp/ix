@@ -166,6 +166,43 @@ jobs:
         with:
           command: make flake8
 
+  prettier:
+    needs: nodejs_build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Load image url
+        id: load_image_url
+        shell: bash
+        run: |
+          IMAGE_URL_NODEJS=`make image-url-nodejs`
+          echo "image-url-nodejs=$IMAGE_URL_NODEJS" >> "$GITHUB_OUTPUT"
+      - name: setup
+        shell: bash
+        run: |
+          echo "Loading cached image: ${{ steps.load_image_url.outputs.image-url-nodejs }}"
+      - name: Restore Nodejs Image Cache
+        uses: actions/cache@v3
+        id: restore_cache_nodejs
+        with:
+          path: image-nodejs.tar
+          key: ${{ steps.load_image_url.outputs.image-url-nodejs }}
+      - name: load nodejs image
+        shell: bash
+        run: |
+          docker load --input image-nodejs.tar
+          docker tag ${{ steps.load_image_url.outputs.image-url-nodejs }} ghcr.io/kreneskyp/ix/nodejs:latest
+      - name: Run Prettier
+        uses: ./.github/actions/run-docker
+        with:
+          command: make prettier-check
+
 # Disabling until a later date
 #
 #  pyright:
