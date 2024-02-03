@@ -1,11 +1,22 @@
 import React from "react";
-import { Box, Button, HStack, Text, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  HStack,
+  Text,
+  FormControl,
+  FormLabel,
+  FormHelperText,
+  FormErrorMessage,
+  useToast,
+} from "@chakra-ui/react";
 
 import { useCreateUpdateAPI } from "utils/hooks/useCreateUpdateAPI";
 import { ModalClose } from "components/Modal";
 import { SkillDeleteButton } from "skills/SkillDeleteButton";
 import { NameField } from "chains/editor/fields/NameField";
 import CodeEditor from "components/code_editor/CodeEditor";
+import { RequiredAsterisk } from "components/RequiredAsterisk";
 
 // Example python class with typehints and description. docstring should
 const CODE_PLACEHOLDER =
@@ -13,10 +24,7 @@ const CODE_PLACEHOLDER =
   '    """Describe your skill here."""\n' +
   "    return a + 1";
 
-const CODE_HELP =
-  "Python code that will be run when this skill is called. The " +
-  "function must be named 'run'. The return value of the function " +
-  "will be the output of the skill.";
+const CODE_HELP = "Typed python function that implements this skill.";
 
 export const SkillForm = ({ skill, onSuccess }) => {
   const toast = useToast();
@@ -71,21 +79,23 @@ export const SkillForm = ({ skill, onSuccess }) => {
   return (
     <Box>
       <NameField onChange={onDataChange} value={data.name} mb={4} />
-      <CodeEditor
-        label="Function"
-        onChange={handleCodeChange}
-        value={data.code}
-        placeholder={CODE_PLACEHOLDER}
-        help={CODE_HELP}
-        required={true}
-        language={"python"}
-      />
-      <Box color={"red.400"} fontSize={"xs"} mt={4}>
-        {error &&
-          error.data?.detail?.map((err_datum) => {
-            return <Text>{err_datum.msg}</Text>;
-          })}
-      </Box>
+      <FormControl name="code" isInvalid={error !== undefined}>
+        <FormLabel justify="start">
+          Function <RequiredAsterisk />
+        </FormLabel>
+        <CodeEditor
+          value={data.code}
+          language="python"
+          onChange={handleCodeChange}
+          placeholder={CODE_PLACEHOLDER}
+        />
+        {!error && <FormHelperText>{CODE_HELP}</FormHelperText>}
+        <FormErrorMessage>
+          {error?.data?.detail?.map((err_datum) => (
+            <Text>{err_datum.msg}</Text>
+          ))}
+        </FormErrorMessage>
+      </FormControl>
       <HStack display="flex" justifyContent="flex-end" mt={4} mr={7}>
         {skill?.id && <SkillDeleteButton skill={skill} onSuccess={onSuccess} />}
         <Button colorScheme="blue" onClick={onSave} isDisabled={!valid}>

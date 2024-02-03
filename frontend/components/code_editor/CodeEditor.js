@@ -41,6 +41,7 @@ function extractPlainText(nodes) {
 export const CodeEditor = ({ value, language, onChange }) => {
   const style = useEditorColorMode();
   const [editor] = useState(() => withHistory(withReact(createEditor())));
+  const _value = value || "";
 
   const decorate = useDecorate(editor);
   const onKeyDown = useOnKeydown(editor);
@@ -51,23 +52,23 @@ export const CodeEditor = ({ value, language, onChange }) => {
     borderRadius: 5,
   };
 
-  // Value is encoded to a single code block element. This is to ensure that
-  // There is always exactly one eternal codeblock
+  // Value is encoded to a single code block element to ensure that
+  // there is exactly one eternal CodeBlockType element in the editor.
   const encodedValue = React.useMemo(
     () => [
       {
         type: CodeBlockType,
         language: language,
-        children: toCodeLines(value),
+        children: toCodeLines(_value),
       },
     ],
-    [value]
+    [_value]
   );
 
   const handleChange = React.useCallback(
     (newValue) => {
       const newPlainText = extractPlainText(newValue);
-      if (newPlainText !== value) {
+      if (newPlainText !== _value) {
         if (onChange !== undefined) {
           onChange(newPlainText);
         }

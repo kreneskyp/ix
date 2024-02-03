@@ -9,6 +9,7 @@ export const LineNumbers = () => {
   const lines = element.children || [];
   const { colorMode } = useColorMode();
   const bg = colorMode === "light" ? "blackAlpha.100" : "blackAlpha.300";
+  const color = colorMode === "light" ? "blackAlpha.500" : "whiteAlpha.400";
 
   return (
     <Box
@@ -21,6 +22,7 @@ export const LineNumbers = () => {
       py={2}
       fontSize="xs"
       fontFamily="monospace"
+      color={color}
     >
       {lines.map((_, index) => (
         <Box
