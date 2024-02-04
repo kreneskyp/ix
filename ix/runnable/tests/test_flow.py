@@ -36,9 +36,15 @@ class TestIxNode:
 
         assert ix_node.input_schema().schema() == {
             "properties": {
-                "value": {"default": "input", "title": "Value", "type": "string"}
+                "value": {
+                    "default": "input",
+                    "title": "Value",
+                    "type": "string",
+                    "description": "this is a mock value",
+                }
             },
             "title": "MockRunnableInput",
+            "description": "Mock input for the mock runnable",
             "type": "object",
         }
 
