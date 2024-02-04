@@ -6,7 +6,8 @@
         "properties": {
             "api_key": {
                 "input_type": "secret",
-                "label": "Api_key",
+                "label": "API Key",
+                "secret_key": "HuggingFace API",
                 "type": "string"
             },
             "model_name": {
@@ -31,13 +32,13 @@
             "description": null,
             "init_type": "init",
             "input_type": "secret",
-            "label": "Api_key",
+            "label": "API Key",
             "max": null,
             "min": null,
             "name": "api_key",
             "parent": null,
             "required": true,
-            "secret_key": null,
+            "secret_key": "HuggingFace API",
             "step": null,
             "style": null,
             "type": "str"

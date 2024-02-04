@@ -7,8 +7,7 @@ export const getEdgeStyle = (colorMode) => {
 
   return {
     LINK: {
-      type: "smoothstep",
-      markerEnd: { type: "arrowclosed", color: linkColor },
+      type: "LINK",
       style: {
         stroke: linkColor,
         strokeWidth: 2,
@@ -16,8 +15,7 @@ export const getEdgeStyle = (colorMode) => {
       },
     },
     PROP: {
-      type: "smoothstep",
-      markerEnd: { type: "arrowclosed", color: propColor },
+      type: "PROP",
       style: {
         stroke: propColor,
         strokeWidth: 2,

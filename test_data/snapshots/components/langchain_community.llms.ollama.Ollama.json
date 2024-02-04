@@ -395,7 +395,7 @@
             "secret_key": null,
             "step": 0.05,
             "style": null,
-            "type": "int"
+            "type": "float"
         },
         {
             "choices": null,
