@@ -13,7 +13,7 @@ export const PropEdge = (props) => {
         <circle
           cx={circlePosition.cx - 3}
           cy={circlePosition.cy}
-          r={4.8} // Radius of the circle
+          r={4} // Radius of the circle
           fill={props.style.stroke}
         />
       }
