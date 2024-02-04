@@ -21,6 +21,7 @@ from langchain.schema.runnable.base import RunnableEach
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Redis
 from langchain_core.runnables import RunnablePassthrough, Runnable
+from langchain_core.utils.function_calling import convert_to_openai_function
 
 from ix.chains.fixture_src.agents import OPENAI_FUNCTIONS_AGENT_CLASS_PATH
 from ix.chains.fixture_src.lcel import (
@@ -499,8 +500,14 @@ class TestLoadTools:
         assert tool.name == "test"
         assert tool.description == "this is a test"
         assert tool.args_schema.schema() == {
+            "description": "Mock input for the mock runnable",
             "properties": {
-                "value": {"default": "input", "title": "Value", "type": "string"}
+                "value": {
+                    "default": "input",
+                    "title": "Value",
+                    "type": "string",
+                    "description": "this is a mock value",
+                },
             },
             "title": "MockRunnableInput",
             "type": "object",
@@ -508,6 +515,23 @@ class TestLoadTools:
 
         response = tool(dict(value=1))
         assert response == {"default": "output", "value": "1"}
+
+        # verify it converts correctly to openai function
+        fn = convert_to_openai_function(tool)
+        assert fn == {
+            "description": "this is a test",
+            "name": "test",
+            "parameters": {
+                "properties": {
+                    "value": {
+                        "default": "input",
+                        "type": "string",
+                        "description": "this is a mock value",
+                    },
+                },
+                "type": "object",
+            },
+        }
 
     async def test_aget_runnable_tool(self):
         runnable = MockRunnable()

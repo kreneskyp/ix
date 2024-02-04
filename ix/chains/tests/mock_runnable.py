@@ -4,7 +4,7 @@ from typing import Optional, Any
 
 from langchain.schema.runnable import Runnable, RunnableConfig
 from langchain.schema.runnable.utils import Output
-from pydantic.v1 import BaseModel as BaseModelV1
+from pydantic.v1 import BaseModel as BaseModelV1, Field
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,9 @@ MOCK_RUNNABLE_CONFIG = {
 
 
 class MockRunnableInput(BaseModelV1):
-    value: str = "input"
+    """Mock input for the mock runnable"""
+
+    value: str = Field(description="this is a mock value", default="input")
 
 
 class MockRunnable(Runnable[MockRunnableInput, Output], BaseModelV1):

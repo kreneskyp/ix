@@ -9,9 +9,13 @@ from ix.data.types import Schema
 
 def to_openai_fn(obj: Any) -> dict:
     if isinstance(obj, Schema):
+        # HAX: include the schema description in the function description to ensure
+        # it's available to the LLM to use the function.
+        schema_description = obj.value.get("description", "")
+
         return {
             "name": obj.name,
-            "description": obj.description,
+            "description": f"{obj.description}\n\n{schema_description}",
             "parameters": obj.value,
         }
     else:
