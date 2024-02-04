@@ -26,7 +26,7 @@ isort==5.12.0
 jq==1.4.1
 jsonpath-ng==1.6.0
 jsonschema==4.19.1
-jsonschema-pydantic==0.5.0
+jsonschema-pydantic==0.6.0
 langchain==0.1.0
 langchain-community==0.0.12
 langchain-google-genai[images]==0.0.6
