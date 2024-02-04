@@ -182,6 +182,10 @@ export const JSONSchemaForm = ({
       <>
         {Object.keys(groupSchemas).map((groupKey, i) => {
           const groupSchema = groupSchemas[groupKey];
+          if (!Object.keys(groupSchema.properties).length) {
+            return null;
+          }
+
           return (
             <CollapsibleFormSection
               key={groupKey}
