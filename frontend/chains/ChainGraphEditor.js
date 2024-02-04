@@ -39,7 +39,7 @@ import { DirectRootNode } from "chains/flow/DirectRootNode";
 import { TabState } from "chains/hooks/useTabState";
 import { NOTIFY_SAVED } from "chains/editor/constants";
 import { PropEdge } from "chains/PropEdge";
-import { LinkEdge } from "LinkEdge";
+import { LinkEdge } from "chains/LinkEdge";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
