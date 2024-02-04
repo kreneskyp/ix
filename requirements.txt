@@ -13,13 +13,13 @@ django-channels-graphql-ws==1.0.0rc6
 django_extensions==3.2.3
 django-redis==5.3.0
 Faker==19.6.2
-fireworks-ai==0.4.4
+fireworks-ai==0.11.2
 flake8==6.1.0
 fastapi==0.103.2
 graphene-django==3.1.5
 google-api-python-client==2.100.0
 googlesearch-python==1.2.3
-httpx==0.25.0
+httpx==0.25.2
 hvac==1.2.1
 ipython==8.15.0
 isort==5.12.0
@@ -53,5 +53,5 @@ requests==2.31.0
 tiktoken==0.5.1
 wikipedia==1.4.0
 wolframalpha==5.0.0
-unstructured==0.10.5
+unstructured==0.12.3
 uvicorn[standard]==0.23.2
