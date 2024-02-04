@@ -498,7 +498,10 @@ class TestLoadTools:
         )
         assert isinstance(tool, BaseTool)
         assert tool.name == "test"
-        assert tool.description == "this is a test"
+        assert (
+            tool.description
+            == "this is a test\n\nInput docs:\nMock input for the mock runnable"
+        )
         assert tool.args_schema.schema() == {
             "description": "Mock input for the mock runnable",
             "properties": {
@@ -519,7 +522,7 @@ class TestLoadTools:
         # verify it converts correctly to openai function
         fn = convert_to_openai_function(tool)
         assert fn == {
-            "description": "this is a test",
+            "description": "this is a test\n\nInput docs:\nMock input for the mock runnable",
             "name": "test",
             "parameters": {
                 "properties": {
