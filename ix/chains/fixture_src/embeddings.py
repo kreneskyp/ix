@@ -263,7 +263,8 @@ HUGGINGFACE_INFERENCE_API_EMBEDDINGS = {
             label="API Key",
             required=True,
         )
-    ] + NodeTypeField.get_fields(
+    ]
+    + NodeTypeField.get_fields(
         HuggingFaceInferenceAPIEmbeddings,
         include=["model_name"],
     ),
