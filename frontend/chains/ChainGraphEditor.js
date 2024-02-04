@@ -38,6 +38,8 @@ import { useRightSidebarContext } from "site/sidebar/context";
 import { DirectRootNode } from "chains/flow/DirectRootNode";
 import { TabState } from "chains/hooks/useTabState";
 import { NOTIFY_SAVED } from "chains/editor/constants";
+import { PropEdge } from "chains/PropEdge";
+import { LinkEdge } from "LinkEdge";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
@@ -46,6 +48,11 @@ const nodeTypes = {
   list: ConfigNode,
   root: RootNode,
   direct_root: DirectRootNode,
+};
+
+const edgeTypes = {
+  PROP: PropEdge,
+  LINK: LinkEdge,
 };
 
 const getExpectedTypes = (connector) => {
@@ -477,6 +484,7 @@ const ChainGraphEditor = ({ graph }) => {
           onEdgeUpdateEnd={onEdgeUpdateEnd}
           onSelectionChange={onSelectionChange}
           nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
           onConnect={onConnect}
           {...displayProps}
           snapToGrid={true}
