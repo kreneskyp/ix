@@ -15,6 +15,13 @@
             },
             {
                 "fields": [
+                    "instructions"
+                ],
+                "key": "Instructions",
+                "label": "Instructions"
+            },
+            {
+                "fields": [
                     "headers"
                 ],
                 "key": "Auth",
@@ -25,6 +32,16 @@
             "headers": {
                 "label": "Headers",
                 "type": "object"
+            },
+            "instructions": {
+                "default": "",
+                "description": "Extra instructions added to input schema",
+                "input_type": "textarea",
+                "label": "Instructions",
+                "style": {
+                    "width": "100%"
+                },
+                "type": "string"
             },
             "method": {
                 "enum": [
@@ -182,6 +199,25 @@
             "step": null,
             "style": null,
             "type": "dict"
+        },
+        {
+            "choices": null,
+            "default": "",
+            "description": "Extra instructions added to input schema",
+            "init_type": "init",
+            "input_type": "textarea",
+            "label": "Instructions",
+            "max": null,
+            "min": null,
+            "name": "instructions",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": {
+                "width": "100%"
+            },
+            "type": "str"
         }
     ],
     "name": "OpenAPI Request",
