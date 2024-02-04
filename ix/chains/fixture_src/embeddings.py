@@ -254,14 +254,18 @@ HUGGINGFACE_INFERENCE_API_EMBEDDINGS = {
     "type": "embeddings",
     "name": "HuggingFace Inference API Embeddings",
     "description": "HuggingFace Inference API Embeddings",
-    "fields": NodeTypeField.get_fields(
+    "fields": [
+        NodeTypeField(
+            name="api_key",
+            type="str",
+            input_type="secret",
+            secret_key="HuggingFace API",
+            label="API Key",
+            required=True,
+        )
+    ] + NodeTypeField.get_fields(
         HuggingFaceInferenceAPIEmbeddings,
-        include=["api_key", "model_name"],
-        field_options={
-            "api_key": {
-                "input_type": "secret",
-            }
-        },
+        include=["model_name"],
     ),
 }
 
