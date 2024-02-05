@@ -1,0 +1,412 @@
+[
+  {
+    "model": "agents.agent",
+    "pk": "e1ef2083-e622-42f4-ac2f-323e745e4c8a",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Skill Forge",
+      "alias": "skills",
+      "purpose": "An assistant integrated with the Agent IX skills API.\n\nThis agent uses OpenAPI Request components configured to use the IX OpenAPI spec.\n\nExample queries:\n- list skills\n- create a random number skill\n- search for skill generate random\n- add a better docstring to generate random\n\nThis agent is still a prototype. It may require verbose prompt instructions to overcome API errors.",
+      "created_at": "2024-01-29T03:00:25.269Z",
+      "model": "",
+      "config": {},
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7",
+      "is_test": false
+    }
+  },
+  {
+    "model": "chains.chain",
+    "pk": "b810b8be-0044-4828-b760-7f07a0627bd7",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "Skill Forge",
+      "description": "An assistant integrated with the Agent IX skills API.\n\nThis agent uses OpenAPI Request components configured to use the IX OpenAPI spec.\n\nExample queries:\n- list skills\n- create a random number skill\n- search for skill generate random\n- add a better docstring to generate random\n\nThis agent is still a prototype. It may require verbose prompt instructions to overcome API errors.",
+      "created_at": "2024-01-29T03:00:25.254Z",
+      "is_agent": true
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "1ca8d2ed-cabc-4a26-bba5-81b8a71a83ab",
+    "fields": {
+      "class_path": "ix.runnable.llm.IXChatOpenAI",
+      "node_type": [
+        "ix.runnable.llm.IXChatOpenAI"
+      ],
+      "config": {
+        "tags": [],
+        "cache": false,
+        "metadata": {},
+        "streaming": true,
+        "max_tokens": 500,
+        "model_name": "gpt-4-0613",
+        "max_retries": 6,
+        "temperature": 0,
+        "openai_proxy": "",
+        "openai_api_base": "",
+        "request_timeout": 60,
+        "openai_organization": ""
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 70.0,
+        "y": 580.0
+      },
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "259a0fbe-83d1-40fe-9426-91690c6b9c56",
+    "fields": {
+      "class_path": "ix.runnable.openapi.RunOpenAPIRequest",
+      "node_type": [
+        "ix.runnable.openapi.RunOpenAPIRequest"
+      ],
+      "config": {
+        "path": "/skills/{skill_id}",
+        "method": "put",
+        "server": "http://172.17.0.1:8000/api",
+        "headers": {},
+        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d",
+        "instructions": "- Search for skill before trying to fetch it. \n- copy all field values in update data except: \"id\"\n\n- code is python with type hinting\n- code must include at least one function\n- code function args must have type hints\n- code function must have a docstring\n- input_schema is null\n- func_name is null\n- tags must be a list. [] if no values.\n\nShow your work after."
+      },
+      "name": "update_skill",
+      "description": "Update Skill",
+      "root": false,
+      "position": {
+        "x": 110.0,
+        "y": 1100.0
+      },
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "30d15fec-9afd-4617-84c1-d6847f8f3ed0",
+    "fields": {
+      "class_path": "ix.runnable.openapi.RunOpenAPIRequest",
+      "node_type": [
+        "ix.runnable.openapi.RunOpenAPIRequest"
+      ],
+      "config": {
+        "path": "/skills/",
+        "method": "get",
+        "prompt": "Create a new skill:\n- input_schema is null\n- func_name is null\n- skill.code is the code for a single python function\n- function must have type hints\n- function must have a docstring",
+        "server": "http://172.17.0.1:8000/api",
+        "headers": {},
+        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d"
+      },
+      "name": "get_skills",
+      "description": "Get Skills",
+      "root": false,
+      "position": {
+        "x": 110.0,
+        "y": 810.0
+      },
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "6f9f78a5-dc73-4773-9583-6c68d768ac36",
+    "fields": {
+      "class_path": "ix.runnable.openapi.RunOpenAPIRequest",
+      "node_type": [
+        "ix.runnable.openapi.RunOpenAPIRequest"
+      ],
+      "config": {
+        "path": "/skills/{skill_id}",
+        "method": "get",
+        "server": "http://172.17.0.1:8000/api",
+        "headers": {},
+        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d",
+        "instructions": "- Search for skill before trying to fetch it. \n- skill_id is required"
+      },
+      "name": "get_skill",
+      "description": "Get Skill",
+      "root": false,
+      "position": {
+        "x": 110.0,
+        "y": 1000.0
+      },
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "b5c16060-2deb-4782-b739-29de4790b0db",
+    "fields": {
+      "class_path": "ix.runnable.openapi.RunOpenAPIRequest",
+      "node_type": [
+        "ix.runnable.openapi.RunOpenAPIRequest"
+      ],
+      "config": {
+        "path": "/skills/{skill_id}",
+        "method": "delete",
+        "server": "http://172.17.0.1:8000/api",
+        "headers": {},
+        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d"
+      },
+      "name": "delete_skill",
+      "description": "Delete Skill",
+      "root": false,
+      "position": {
+        "x": 110.0,
+        "y": 910.0
+      },
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "b892bdf7-9b46-4e86-9a80-c0a1ddaf11da",
+    "fields": {
+      "class_path": "__ROOT__",
+      "node_type": [
+        "__ROOT__"
+      ],
+      "config": {
+        "outputs": [
+          "user_input",
+          "artifact_ids"
+        ],
+        "outputs_hash": [
+          "user_input",
+          "artifact_ids"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": true,
+      "position": {
+        "x": 70.0,
+        "y": 460.0
+      },
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "caa285a8-c888-4170-9a8f-e934df89530d",
+    "fields": {
+      "class_path": "langchain.memory.buffer_window.ConversationBufferWindowMemory",
+      "node_type": [
+        "langchain.memory.buffer_window.ConversationBufferWindowMemory"
+      ],
+      "config": {
+        "k": 5,
+        "ai_prefix": "AI",
+        "input_key": "input",
+        "memory_key": "history",
+        "output_key": "output",
+        "human_prefix": "Human",
+        "return_messages": true
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 740.0,
+        "y": 660.0
+      },
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "d5007393-8489-42ca-8abd-69e65600dcf6",
+    "fields": {
+      "class_path": "ix.chains.loaders.agents.initialize_openai_functions",
+      "node_type": [
+        "ix.chains.loaders.agents.initialize_openai_functions"
+      ],
+      "config": {
+        "verbose": true,
+        "max_iterations": 15,
+        "return_intermediate_steps": true
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 450.0,
+        "y": 460.0
+      },
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "dbab4521-efa0-4001-93ad-e603f1108d6a",
+    "fields": {
+      "class_path": "ix.runnable.openapi.RunOpenAPIRequest",
+      "node_type": [
+        "ix.runnable.openapi.RunOpenAPIRequest"
+      ],
+      "config": {
+        "path": "/skills/",
+        "method": "post",
+        "prompt": "Create a new skill:\n- code is python with type hinting\n- input_schema is null\n- func_name is null\n- code must include at least one function\n- code function args must have type hints\n- code function must have a docstring",
+        "server": "http://172.17.0.1:8000/api",
+        "headers": {},
+        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d",
+        "instructions": "Create a new skill:\n- code is python with type hinting\n- code must include at least one function\n- code function args must have type hints\n- code function must have a docstring\n- input_schema is null\n- func_name is null\n\nShow your work after."
+      },
+      "name": "create_skill",
+      "description": "Create Skill",
+      "root": false,
+      "position": {
+        "x": 110.0,
+        "y": 720.0
+      },
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "dd586ea4-1e5b-4f11-8fe7-8f6832df58a8",
+    "fields": {
+      "class_path": "langchain.memory.RedisChatMessageHistory",
+      "node_type": [
+        "langchain.memory.RedisChatMessageHistory"
+      ],
+      "config": {
+        "ttl": 3600,
+        "url": "redis://redis:6379/0",
+        "session_key": "session_id",
+        "session_scope": "",
+        "session_prefix": "skills"
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 460.0,
+        "y": 660.0
+      },
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "3114b536-3cc7-456f-8708-44e279dca09f",
+    "fields": {
+      "source": "30d15fec-9afd-4617-84c1-d6847f8f3ed0",
+      "target": "d5007393-8489-42ca-8abd-69e65600dcf6",
+      "source_key": "chain",
+      "target_key": "tools",
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "4d160af5-d6d6-4197-a42f-ffe1146b3d16",
+    "fields": {
+      "source": "dd586ea4-1e5b-4f11-8fe7-8f6832df58a8",
+      "target": "caa285a8-c888-4170-9a8f-e934df89530d",
+      "source_key": "memory_backend",
+      "target_key": "chat_memory",
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "5f504cad-acce-467b-a8fd-77a0f551a8f0",
+    "fields": {
+      "source": "1ca8d2ed-cabc-4a26-bba5-81b8a71a83ab",
+      "target": "d5007393-8489-42ca-8abd-69e65600dcf6",
+      "source_key": "llm",
+      "target_key": "llm",
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "68d9260a-96d7-40c8-877f-81050d214889",
+    "fields": {
+      "source": "6f9f78a5-dc73-4773-9583-6c68d768ac36",
+      "target": "d5007393-8489-42ca-8abd-69e65600dcf6",
+      "source_key": "chain",
+      "target_key": "tools",
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "aadb2345-325e-4564-a839-21722ad31557",
+    "fields": {
+      "source": "b892bdf7-9b46-4e86-9a80-c0a1ddaf11da",
+      "target": "d5007393-8489-42ca-8abd-69e65600dcf6",
+      "source_key": "user_input",
+      "target_key": "in",
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "b7c8efec-732c-4fc6-bef7-52cffbf42b40",
+    "fields": {
+      "source": "b5c16060-2deb-4782-b739-29de4790b0db",
+      "target": "d5007393-8489-42ca-8abd-69e65600dcf6",
+      "source_key": "chain",
+      "target_key": "tools",
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "db39d116-9dc8-4136-b6c8-53e28adb8c18",
+    "fields": {
+      "source": "caa285a8-c888-4170-9a8f-e934df89530d",
+      "target": "d5007393-8489-42ca-8abd-69e65600dcf6",
+      "source_key": "memory",
+      "target_key": "memory",
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "e036a139-72bf-4b85-94e7-d173b2fe1b6c",
+    "fields": {
+      "source": "259a0fbe-83d1-40fe-9426-91690c6b9c56",
+      "target": "d5007393-8489-42ca-8abd-69e65600dcf6",
+      "source_key": "chain",
+      "target_key": "tools",
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "f7eac044-dd3d-448d-a2f4-7e27e2c95137",
+    "fields": {
+      "source": "dbab4521-efa0-4001-93ad-e603f1108d6a",
+      "target": "d5007393-8489-42ca-8abd-69e65600dcf6",
+      "source_key": "chain",
+      "target_key": "tools",
+      "chain": "b810b8be-0044-4828-b760-7f07a0627bd7",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  }
+]

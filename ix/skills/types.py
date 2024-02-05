@@ -17,7 +17,7 @@ class SkillBase(BaseModel):
     code: str
     tags: List[str] = Field(default_factory=list)
     func_name: Optional[str] = None
-    input_schema: Optional[dict[str, Any]]
+    input_schema: Optional[dict[str, Any]] = None
 
     @property
     def input_type(self) -> Type[BaseModel]:
@@ -30,6 +30,12 @@ class EditSkill(SkillBase):
 
     class Config:
         from_attributes = True
+
+    @model_validator(mode="before")
+    def default_tags(cls, values):
+        if not values["tags"]:
+            values["tags"] = []
+        return values
 
     @model_validator(mode="before")
     def parse_code_and_set_fields(cls, values):
