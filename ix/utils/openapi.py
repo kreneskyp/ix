@@ -10,7 +10,7 @@ def get_input_schema(
 ) -> Dict[str, Any]:
     """
     Extracts the JSON schema for the input of a specified HTTP method, converts it to a valid JSON schema,
-    and uses references for nested objects named 'query', 'args', and 'body' (using the schema title if available).
+    and uses references for nested objects named 'query', 'path', and 'body' (using the schema title if available).
     """
 
     def resolve_reference(schema, ref):
@@ -72,7 +72,7 @@ def get_input_schema(
     )
 
     if path_properties:
-        result["properties"]["args"] = extract_nested_objects(
+        result["properties"]["path"] = extract_nested_objects(
             {
                 "type": "object",
                 "properties": path_properties,
