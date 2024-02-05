@@ -431,7 +431,7 @@ POST_LIST_SCHEMA = {
 
 GET_DETAIL_SCHEMA = {
     "definitions": {
-        "Args": {
+        "Path": {
             "properties": {
                 "chain_id": {"format": "uuid", "title": "Chain Id", "type": "string"}
             },
@@ -439,7 +439,7 @@ GET_DETAIL_SCHEMA = {
             "type": "object",
         }
     },
-    "properties": {"args": {"$ref": "#/definitions/Args"}},
+    "properties": {"path": {"$ref": "#/definitions/Path"}},
     "required": ["path"],
     "type": "object",
 }

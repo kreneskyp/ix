@@ -65,7 +65,7 @@ def get_input_schema(
     method_item = path_item.get(method.lower(), {})
 
     path_properties, path_required = convert_to_json_schema(
-        method_item.get("parameters", []), "path", result["definitions"], "Args"
+        method_item.get("parameters", []), "path", result["definitions"], "Path"
     )
     query_properties, query_required = convert_to_json_schema(
         method_item.get("parameters", []), "query", result["definitions"], "Query"
@@ -79,7 +79,7 @@ def get_input_schema(
                 "required": path_required,
             },
             result["definitions"],
-            "Args",
+            "Path",
         )
 
     if query_properties:
