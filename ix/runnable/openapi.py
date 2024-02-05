@@ -13,7 +13,11 @@ from jsonschema_pydantic import jsonschema_to_pydantic
 
 def build_httpx_kwargs(path: str, input: Input, **kwargs) -> dict[str, Any]:
     """Build kwargs for OpenAPI request with httpx"""
-    formatted_path = path.format(**input.get("path", {}))
+    path_args = input.get("path", {})
+    path_args = (
+        path_args.model_dump() if isinstance(path_args, BaseModel) else path_args
+    )
+    formatted_path = path.format(**path_args)
     headers = kwargs.get("headers", {})
     headers.update(input.get("headers", {}))
     params = {}

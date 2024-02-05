@@ -107,12 +107,8 @@ class TestRunOpenAPIRequest:
                     "type": "object",
                 }
             },
-            "properties": {
-                "args": {
-                    "anyOf": [{"$ref": "#/$defs/DynamicModel"}, {"type": "null"}],
-                    "default": None,
-                }
-            },
+            "properties": {"path": {"$ref": "#/$defs/DynamicModel"}},
+            "required": ["path"],
             "title": "DynamicModel",
             "type": "object",
         }
