@@ -44,6 +44,7 @@ class RunOpenAPIRequest(RunnableSerializable[Input, Output]):
     path: str
     method: HTTP_METHODS
     headers: Optional[dict] = None
+    instructions: str = ""
 
     class Config:
         arbitrary_types_allowed = True
@@ -61,6 +62,15 @@ class RunOpenAPIRequest(RunnableSerializable[Input, Output]):
 
         action_schema = get_action_schema(schema.value, self.path, self.method)
         input_schema = get_input_schema(action_schema, self.path, self.method)
+
+        # bake in prompt on top of any existing description
+        instructions = self.instructions or ""
+        description = input_schema.get("description", "")
+        input_schema["description"] = (
+            f"{description}\n\nInstructions:\n{instructions}"
+            if description
+            else instructions
+        )
         return input_schema
 
     def get_input_schema(

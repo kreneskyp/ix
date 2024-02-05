@@ -74,6 +74,11 @@ def get_runnable_tool(
             f"Unsupported input schema type {runnable.input_schema.__class__}"
         )
 
+    # Add the input schema's docstring to the tool description. OpenAI ignores the
+    # parameter schema's description. It needs to be moved into the description.
+    if runnable.input_schema.__doc__:
+        description = f"{description}\n\nInput docs:\n{runnable.input_schema.__doc__}"
+
     return tool_class(
         name=name,
         description=description,

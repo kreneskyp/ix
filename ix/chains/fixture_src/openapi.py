@@ -15,12 +15,20 @@ RUN_OPEN_API_REQUEST = NodeType(
             "path",
             "method",
             "headers",
+            "instructions",
         ],
         field_options={
             "schema_id": {"label": "Schema", "input_type": "IX:openapi_schema"},
             "server": {"input_type": "IX:openapi_server"},
             "path": {"label": "Action", "input_type": "IX:openapi_action"},
             "method": {"input_type": "hidden"},
+            "instructions": {
+                "type": "str",
+                "input_type": "textarea",
+                "style": {"width": "100%"},
+                "label": "Instructions",
+                "description": "Extra instructions added to input schema",
+            },
         },
     ),
     display_groups=[
@@ -29,6 +37,7 @@ RUN_OPEN_API_REQUEST = NodeType(
             label="Config",
             fields=["schema_id", "server", "path", "method"],
         ),
+        DisplayGroup(key="Instructions", label="Instructions", fields=["instructions"]),
         DisplayGroup(key="Auth", label="Authentication", fields=["headers"]),
     ],
 )

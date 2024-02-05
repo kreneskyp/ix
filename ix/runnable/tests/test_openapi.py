@@ -156,6 +156,56 @@ class TestRunOpenAPIRequest:
             "type": "object",
         }
 
+    def test_instructions(self, schema):
+        """Test that custom instructions are added to the input_schema's docstring and schema description"""
+        runnable = RunOpenAPIRequest(
+            schema_id=schema.id,
+            path=LIST_PATH,
+            method="get",
+            server=SERVER,
+            instructions="extra instructions",
+        )
+        assert issubclass(runnable.get_input_schema(), (BaseModel, BaseModelV1))
+        assert runnable.get_input_schema().model_json_schema() == {
+            "$defs": {
+                "DynamicModel": {
+                    "properties": {
+                        "search": {
+                            "anyOf": [{"type": "string"}, {"type": "null"}],
+                            "default": None,
+                            "title": "Search",
+                        },
+                        "limit": {
+                            "anyOf": [{"type": "integer"}, {"type": "null"}],
+                            "default": 10,
+                            "title": "Limit",
+                        },
+                        "offset": {
+                            "anyOf": [{"type": "integer"}, {"type": "null"}],
+                            "default": 0,
+                            "title": "Offset",
+                        },
+                        "is_agent": {
+                            "anyOf": [{"type": "boolean"}, {"type": "null"}],
+                            "default": None,
+                            "title": "Is Agent",
+                        },
+                    },
+                    "title": "DynamicModel",
+                    "type": "object",
+                }
+            },
+            "description": "extra instructions",
+            "properties": {
+                "query": {
+                    "anyOf": [{"$ref": "#/$defs/DynamicModel"}, {"type": "null"}],
+                    "default": None,
+                }
+            },
+            "title": "DynamicModel",
+            "type": "object",
+        }
+
     async def test_ainvoke_get_list(self, auser, aschema, mock_httpx):
         await afake_chain()
         runnable = RunOpenAPIRequest(
