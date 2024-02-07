@@ -113,7 +113,4 @@ class RunOpenAPIRequest(RunnableSerializable[Input, Output]):
             client_method = getattr(client, self.method)
             response = await client_method(**request_kwargs)
 
-        if response.status_code != 200:
-            raise Exception(f"Failed to get schema: {response.content}")
-
         return response.json()
