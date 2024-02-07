@@ -7,7 +7,7 @@
       "group": null,
       "name": "Skill Forge",
       "alias": "skills",
-      "purpose": "An assistant integrated with the Agent IX skills API.\n\nThis agent uses OpenAPI Request components configured to use the IX OpenAPI spec.\n\nExample queries:\n- list skills\n- create a random number skill\n- search for skill generate random\n- add a better docstring to generate random\n\nThis agent is still a prototype. It may require verbose prompt instructions to overcome API errors.",
+      "purpose": "An assistant integrated with the Agent IX skills API.\n\nThis agent uses OpenAPI Request components configured for the IX OpenAPI spec. It can respond to queries to search for, create, and update skills.\n\nExample queries:\n- list skills\n- create a random number skill\n- search for skill generate random\n- add a better docstring to generate random\n\nThis agent is still a prototype. It may require verbose prompt instructions to overcome API errors.",
       "created_at": "2024-01-29T03:00:25.269Z",
       "model": "",
       "config": {},
@@ -22,7 +22,7 @@
       "user": null,
       "group": null,
       "name": "Skill Forge",
-      "description": "An assistant integrated with the Agent IX skills API.\n\nThis agent uses OpenAPI Request components configured to use the IX OpenAPI spec.\n\nExample queries:\n- list skills\n- create a random number skill\n- search for skill generate random\n- add a better docstring to generate random\n\nThis agent is still a prototype. It may require verbose prompt instructions to overcome API errors.",
+      "description": "An assistant integrated with the Agent IX skills API.\n\nThis agent uses OpenAPI Request components configured for the IX OpenAPI spec. It can respond to queries to search for, create, and update skills.\n\nExample queries:\n- list skills\n- create a random number skill\n- search for skill generate random\n- add a better docstring to generate random\n\nThis agent is still a prototype. It may require verbose prompt instructions to overcome API errors.",
       "created_at": "2024-01-29T03:00:25.254Z",
       "is_agent": true
     }
@@ -54,7 +54,7 @@
       "root": false,
       "position": {
         "x": 70.0,
-        "y": 580.0
+        "y": 570.0
       },
       "chain": "b810b8be-0044-4828-b760-7f07a0627bd7"
     }
@@ -255,10 +255,10 @@
         "server": "http://172.17.0.1:8000/api",
         "headers": {},
         "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d",
-        "instructions": "Create a new skill:\n- code is python with type hinting\n- code must include at least one function\n- code function args must have type hints\n- code function must have a docstring\n- input_schema is null\n- func_name is null\n\nShow your work after."
+        "instructions": "Create a new skill:\n-write only python with type hinting\n- code must include at least one function\n- code function args must have type hints\n- code function must have a docstring\n- input_schema is null\n- func_name is null\n\nShow your work after."
       },
       "name": "create_skill",
-      "description": "Create Skill",
+      "description": "Create a python skill. Tell the user about the skill I create including the code you wrote.",
       "root": false,
       "position": {
         "x": 110.0,
