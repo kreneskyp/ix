@@ -4,6 +4,12 @@
     "config_schema": {
         "display_groups": null,
         "properties": {
+            "handle_parsing_errors": {
+                "default": true,
+                "description": "Send parsing errors back to the agent to resolve.",
+                "label": "Handle Parsing Errors",
+                "type": "boolean"
+            },
             "max_execution_time": {
                 "label": "",
                 "type": "number"
@@ -116,6 +122,23 @@
             "step": null,
             "style": null,
             "type": "float"
+        },
+        {
+            "choices": null,
+            "default": true,
+            "description": "Send parsing errors back to the agent to resolve.",
+            "init_type": "init",
+            "input_type": null,
+            "label": "Handle Parsing Errors",
+            "max": null,
+            "min": null,
+            "name": "handle_parsing_errors",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "boolean"
         },
         {
             "choices": null,
