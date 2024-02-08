@@ -20,6 +20,7 @@ class Command(BaseCommand):
             "agent/pirate",
             "agent/wikipedia",
             "agent/klarna",
+            "agent/schemas",
             "agent/skills",
             "agent/smithy",
             "agent/metaphor",
