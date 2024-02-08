@@ -12,7 +12,7 @@ from ix.data.types import (
     Data as DataPydantic,
     SchemaPage,
     DataPage,
-    NewSchema,
+    EditSchema,
 )
 from ix.ix_users.models import User
 from ix.api.auth import get_request_user
@@ -29,7 +29,7 @@ router = APIRouter()
     response_model=SchemaPydantic,
     tags=["Schemas"],
 )
-async def create_schema(schema: NewSchema, user: User = Depends(get_request_user)):
+async def create_schema(schema: EditSchema, user: User = Depends(get_request_user)):
     schema_obj = await Schema.objects.acreate(user_id=user.id, **schema.model_dump())
     return SchemaPydantic.model_validate(schema_obj)
 
@@ -74,7 +74,7 @@ async def get_schemas(
     tags=["Schemas"],
 )
 async def update_schema(
-    schema_id: UUID, schema_data: SchemaPydantic, user: User = Depends(get_request_user)
+    schema_id: UUID, schema_data: EditSchema, user: User = Depends(get_request_user)
 ):
     try:
         schema_obj = await Schema.filtered_owners(user).aget(pk=schema_id)

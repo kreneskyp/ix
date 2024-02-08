@@ -1,4 +1,4 @@
-from pydantic import BaseModel, UUID4, Field
+from pydantic import BaseModel, UUID4, Field, model_validator
 from typing import Dict, Optional, List, Literal, Any
 from ix.utils.graphene.pagination import QueryPage
 
@@ -13,11 +13,17 @@ class SchemaBase(BaseModel):
     )
 
 
-class NewSchema(SchemaBase):
+class EditSchema(SchemaBase):
     """New schema definition"""
 
     class Config:
         from_attributes = True
+
+    @model_validator(mode="before")
+    def default_meta(cls, values):
+        if not values.get("meta", None):
+            values["meta"] = {}
+        return values
 
 
 class Schema(SchemaBase):
