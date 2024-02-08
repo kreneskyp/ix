@@ -287,6 +287,7 @@ agents: cluster components
 	$(LOAD_FIXTURE) agent/pirate
 	$(LOAD_FIXTURE) agent/wikipedia
 	$(LOAD_FIXTURE) agent/klarna
+	$(LOAD_FIXTURE) agent/schemas
 	$(LOAD_FIXTURE) agent/skills
 	$(LOAD_FIXTURE) agent/smithy
 	$(LOAD_FIXTURE) agent/metaphor
