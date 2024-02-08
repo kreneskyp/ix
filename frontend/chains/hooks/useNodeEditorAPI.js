@@ -26,7 +26,7 @@ export const useNodeEditorAPI = (node, setNode) => {
     [api.updateNode]
   );
 
-  const { callback: debouncedUpdateNode } = useDebounce(updateNode, 500);
+  const { callback: debouncedUpdateNode } = useDebounce(updateNode, 800);
   const toast = useToast();
   const handleConfigChange = React.useMemo(() => {
     function all(newNode, delay = 0) {
