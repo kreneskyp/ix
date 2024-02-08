@@ -1,66 +1,6 @@
 [
 {
   "model": "data.schema",
-  "pk": "0d60a3ca-f5b6-48c7-8944-726053b0dba7",
-  "fields": {
-    "user": 1,
-    "group": null,
-    "type": "json",
-    "name": "CatMemeSchema",
-    "description": "JSON schema for cat memes",
-    "value": {
-      "type": "object",
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "required": [
-        "id",
-        "image_url",
-        "caption"
-      ],
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the meme"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "List of tags associated with the meme"
-        },
-        "caption": {
-          "type": "string",
-          "description": "Caption for the cat meme"
-        },
-        "image_url": {
-          "type": "string",
-          "description": "URL of the cat meme image"
-        },
-        "created_at": {
-          "type": "string",
-          "format": "date-time",
-          "description": "The date and time when the meme was created"
-        }
-      }
-    },
-    "meta": {}
-  }
-},
-{
-  "model": "data.schema",
-  "pk": "4000023d-0f44-48b4-93a2-78ad95a3693c",
-  "fields": {
-    "user": 1,
-    "group": null,
-    "type": "json",
-    "name": "test",
-    "description": "testing schemas",
-    "value": {},
-    "meta": {}
-  }
-},
-{
-  "model": "data.schema",
   "pk": "55290ca3-ea37-4000-bdcf-bea6933ad3d9",
   "fields": {
     "user": 1,
@@ -524,6 +464,111 @@
             }
           }
         },
+        "/skills/": {
+          "get": {
+            "tags": [
+              "Skills"
+            ],
+            "summary": "Get Skills",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/SkillPage"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "query",
+                "name": "limit",
+                "schema": {
+                  "type": "integer",
+                  "title": "Limit",
+                  "default": 10
+                },
+                "required": false
+              },
+              {
+                "in": "query",
+                "name": "offset",
+                "schema": {
+                  "type": "integer",
+                  "title": "Offset",
+                  "default": 0
+                },
+                "required": false
+              }
+            ],
+            "operationId": "get_skills",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "title": "Tags"
+                  }
+                }
+              }
+            }
+          },
+          "post": {
+            "tags": [
+              "Skills"
+            ],
+            "summary": "Create Skill",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Skill"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "operationId": "create_skill",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/EditSkill"
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        },
         "/upload/": {
           "post": {
             "summary": "Upload File",
@@ -660,7 +705,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/NewSchema"
+                    "$ref": "#/components/schemas/EditSchema"
                   }
                 }
               },
@@ -1895,6 +1940,139 @@
             "operationId": "delete_chain"
           }
         },
+        "/skills/{skill_id}": {
+          "get": {
+            "tags": [
+              "Skills"
+            ],
+            "summary": "Get Skill",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Skill"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "skill_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Skill Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "get_skill"
+          },
+          "put": {
+            "tags": [
+              "Skills"
+            ],
+            "summary": "Update Skill",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Skill"
+                    }
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "skill_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Skill Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "update_skill",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/EditSkill"
+                  }
+                }
+              },
+              "required": true
+            }
+          },
+          "delete": {
+            "tags": [
+              "Skills"
+            ],
+            "summary": "Delete Skill",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {}
+                  }
+                },
+                "description": "Successful Response"
+              },
+              "422": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  }
+                },
+                "description": "Validation Error"
+              }
+            },
+            "parameters": [
+              {
+                "in": "path",
+                "name": "skill_id",
+                "schema": {
+                  "type": "string",
+                  "title": "Skill Id",
+                  "format": "uuid"
+                },
+                "required": true
+              }
+            ],
+            "operationId": "delete_skill"
+          }
+        },
         "/schemas/{schema_id}": {
           "get": {
             "tags": [
@@ -1981,7 +2159,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/Schema"
+                    "$ref": "#/components/schemas/EditSchema"
                   }
                 }
               },
@@ -3923,6 +4101,72 @@
               }
             }
           },
+          "Skill": {
+            "type": "object",
+            "title": "Skill",
+            "required": [
+              "name",
+              "code"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Id",
+                "format": "uuid4",
+                "description": "ID. Do not set when creating or updating"
+              },
+              "code": {
+                "type": "string",
+                "title": "Code"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name",
+                "maxLength": 128
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Tags"
+              },
+              "func_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Func Name"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Description"
+              },
+              "input_schema": {
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Input Schema"
+              }
+            },
+            "description": "JSON and OpenAPI schemas"
+          },
           "Choice": {
             "type": "object",
             "title": "Choice",
@@ -4644,44 +4888,106 @@
             },
             "description": "A connection point for a property on a node."
           },
-          "NewSchema": {
+          "EditSkill": {
             "type": "object",
-            "title": "NewSchema",
+            "title": "EditSkill",
             "required": [
-              "type",
               "name",
-              "description"
+              "code"
             ],
             "properties": {
-              "meta": {
-                "type": "object",
-                "title": "Meta",
-                "description": "schema metadata as a dict"
+              "code": {
+                "type": "string",
+                "title": "Code"
               },
               "name": {
                 "type": "string",
                 "title": "Name",
                 "maxLength": 128
               },
-              "type": {
-                "enum": [
-                  "json",
-                  "openapi"
-                ],
-                "type": "string",
-                "title": "Type"
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Tags"
               },
-              "value": {
-                "type": "object",
-                "title": "Value",
-                "description": "schema as a dict"
+              "func_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Func Name"
               },
               "description": {
-                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
                 "title": "Description"
+              },
+              "input_schema": {
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Input Schema"
               }
             },
-            "description": "New schema definition"
+            "description": "New or updated skill definition"
+          },
+          "SkillPage": {
+            "type": "object",
+            "title": "SkillPage",
+            "required": [
+              "page_number",
+              "pages",
+              "count",
+              "has_next",
+              "has_previous",
+              "objects"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "title": "Count"
+              },
+              "pages": {
+                "type": "integer",
+                "title": "Pages"
+              },
+              "objects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Skill"
+                },
+                "title": "Objects"
+              },
+              "has_next": {
+                "type": "boolean",
+                "title": "Has Next"
+              },
+              "page_number": {
+                "type": "integer",
+                "title": "Page Number"
+              },
+              "has_previous": {
+                "type": "boolean",
+                "title": "Has Previous"
+              }
+            }
           },
           "ChatUpdate": {
             "type": "object",
@@ -4768,6 +5074,45 @@
                 "format": "uuid"
               }
             }
+          },
+          "EditSchema": {
+            "type": "object",
+            "title": "EditSchema",
+            "required": [
+              "type",
+              "name",
+              "description"
+            ],
+            "properties": {
+              "meta": {
+                "type": "object",
+                "title": "Meta",
+                "description": "schema metadata as a dict"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name",
+                "maxLength": 128
+              },
+              "type": {
+                "enum": [
+                  "json",
+                  "openapi"
+                ],
+                "type": "string",
+                "title": "Type"
+              },
+              "value": {
+                "type": "object",
+                "title": "Value",
+                "description": "schema as a dict"
+              },
+              "description": {
+                "type": "string",
+                "title": "Description"
+              }
+            },
+            "description": "New schema definition"
           },
           "FieldGroup": {
             "type": "object",
@@ -4978,7 +5323,9 @@
             "title": "UpdateEdge",
             "required": [
               "source_id",
-              "target_id"
+              "target_id",
+              "target_key",
+              "source_key"
             ],
             "properties": {
               "source_id": {
@@ -4990,6 +5337,14 @@
                 "type": "string",
                 "title": "Target Id",
                 "format": "uuid"
+              },
+              "source_key": {
+                "type": "string",
+                "title": "Source Key"
+              },
+              "target_key": {
+                "type": "string",
+                "title": "Target Key"
               }
             }
           },
