@@ -40,7 +40,7 @@
         "method": "get",
         "server": "http://172.17.0.1:8000/api",
         "headers": {},
-        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d"
+        "schema_id": "55290ca3-ea37-4000-bdcf-bea6933ad3d9"
       },
       "name": "get_schemas",
       "description": "Get Schemas",
@@ -65,7 +65,7 @@
         "method": "post",
         "server": "http://172.17.0.1:8000/api",
         "headers": {},
-        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d"
+        "schema_id": "55290ca3-ea37-4000-bdcf-bea6933ad3d9"
       },
       "name": "create_schema",
       "description": "Create Schema:\n- value is the actual json schema, you must define this.\n- meta must be a dict. it stores key:value tags in the dict. Must be {} if no tags.\n- create json schema by default.",
@@ -118,7 +118,7 @@
         "method": "put",
         "server": "http://172.17.0.1:8000/api",
         "headers": {},
-        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d"
+        "schema_id": "55290ca3-ea37-4000-bdcf-bea6933ad3d9"
       },
       "name": "update_schema",
       "description": "Update Schema:\n- value is the actual json schema, you must reuse or define this.\n- meta must be a dict. it stores key:value tags in the dict. Must be {} if no tags.\n",
@@ -168,7 +168,7 @@
         "method": "get",
         "server": "http://172.17.0.1:8000/api",
         "headers": {},
-        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d"
+        "schema_id": "55290ca3-ea37-4000-bdcf-bea6933ad3d9"
       },
       "name": "get_schema",
       "description": "Get Schema",

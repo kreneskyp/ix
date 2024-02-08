@@ -72,7 +72,7 @@
         "method": "put",
         "server": "http://172.17.0.1:8000/api",
         "headers": {},
-        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d",
+        "schema_id": "55290ca3-ea37-4000-bdcf-bea6933ad3d9",
         "instructions": "- Search for skill before trying to fetch it. \n- copy all field values in update data except: \"id\"\n\n- code is python with type hinting\n- code must include at least one function\n- code function args must have type hints\n- code function must have a docstring\n- input_schema is null\n- func_name is null\n- tags must be a list. [] if no values.\n\nShow your work after."
       },
       "name": "update_skill",
@@ -99,7 +99,7 @@
         "prompt": "Create a new skill:\n- input_schema is null\n- func_name is null\n- skill.code is the code for a single python function\n- function must have type hints\n- function must have a docstring",
         "server": "http://172.17.0.1:8000/api",
         "headers": {},
-        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d"
+        "schema_id": "55290ca3-ea37-4000-bdcf-bea6933ad3d9"
       },
       "name": "get_skills",
       "description": "Get Skills",
@@ -124,7 +124,7 @@
         "method": "get",
         "server": "http://172.17.0.1:8000/api",
         "headers": {},
-        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d",
+        "schema_id": "55290ca3-ea37-4000-bdcf-bea6933ad3d9",
         "instructions": "- Search for skill before trying to fetch it. \n- skill_id is required"
       },
       "name": "get_skill",
@@ -150,7 +150,7 @@
         "method": "delete",
         "server": "http://172.17.0.1:8000/api",
         "headers": {},
-        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d"
+        "schema_id": "55290ca3-ea37-4000-bdcf-bea6933ad3d9"
       },
       "name": "delete_skill",
       "description": "Delete Skill",
@@ -254,7 +254,7 @@
         "prompt": "Create a new skill:\n- code is python with type hinting\n- input_schema is null\n- func_name is null\n- code must include at least one function\n- code function args must have type hints\n- code function must have a docstring",
         "server": "http://172.17.0.1:8000/api",
         "headers": {},
-        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d",
+        "schema_id": "55290ca3-ea37-4000-bdcf-bea6933ad3d9",
         "instructions": "Create a new skill:\n-write only python with type hinting\n- code must include at least one function\n- code function args must have type hints\n- code function must have a docstring\n- input_schema is null\n- func_name is null\n\nShow your work after."
       },
       "name": "create_skill",
