@@ -22,6 +22,13 @@ EXECUTOR_BASE_FIELDS = [
         "type": "float",
         "nullable": True,
     },
+    {
+        "name": "handle_parsing_errors",
+        "label": "Handle Parsing Errors",
+        "description": "Send parsing errors back to the agent to resolve.",
+        "type": "boolean",
+        "default": True,
+    },
     VERBOSE,
 ]
 
