@@ -29,7 +29,7 @@ jsonschema==4.19.1
 jsonschema-pydantic==0.6.0
 langchain==0.1.5
 langchain-community==0.0.17
-langchain-google-genai[images]==0.0.6
+langchain-google-genai[images]==0.0.7
 langchain-experimental==0.0.50
 langchain_mistralai==0.0.3
 llama-cpp-python==0.2.23
