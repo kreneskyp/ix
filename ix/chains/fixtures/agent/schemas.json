@@ -1,0 +1,369 @@
+[
+  {
+    "model": "agents.agent",
+    "pk": "80dff20c-dcf7-4296-97a7-beaab74c61aa",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "SchemaForge",
+      "alias": "schemas",
+      "purpose": "An assistant integrated with the Agent IX schemas API.\n\nThis agent uses OpenAPI Request components configured for the IX OpenAPI spec. It can respond to queries to search for, create, and update JSON schemas.\n\nExample queries:\n- list schemas\n- create a schemas\n- search for schemas\n\nThis agent is still a prototype. It may require verbose prompt instructions to overcome API errors.",
+      "created_at": "2024-01-26T03:12:51.168Z",
+      "model": "",
+      "config": {},
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f",
+      "is_test": false
+    }
+  },
+  {
+    "model": "chains.chain",
+    "pk": "60c79195-ab43-4854-8f0c-828ed64b643f",
+    "fields": {
+      "user": null,
+      "group": null,
+      "name": "SchemaForge",
+      "description": "An assistant integrated with the Agent IX schemas API.\n\nThis agent uses OpenAPI Request components configured for the IX OpenAPI spec. It can respond to queries to search for, create, and update JSON schemas.\n\nExample queries:\n- list schemas\n- create a schemas\n- search for schemas\n\nThis agent is still a prototype. It may require verbose prompt instructions to overcome API errors.",
+      "created_at": "2024-01-26T03:12:51.153Z",
+      "is_agent": true
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "056104d3-7749-48a1-a657-bdb4c9c23503",
+    "fields": {
+      "class_path": "ix.runnable.openapi.RunOpenAPIRequest",
+      "node_type": [
+        "ix.runnable.openapi.RunOpenAPIRequest"
+      ],
+      "config": {
+        "path": "/schemas/",
+        "method": "get",
+        "server": "http://172.17.0.1:8000/api",
+        "headers": {},
+        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d"
+      },
+      "name": "get_schemas",
+      "description": "Get Schemas",
+      "root": false,
+      "position": {
+        "x": -40.0,
+        "y": 520.0
+      },
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "0c4168a4-9401-460c-bfdc-7ca6d873a723",
+    "fields": {
+      "class_path": "ix.runnable.openapi.RunOpenAPIRequest",
+      "node_type": [
+        "ix.runnable.openapi.RunOpenAPIRequest"
+      ],
+      "config": {
+        "path": "/schemas/",
+        "method": "post",
+        "server": "http://172.17.0.1:8000/api",
+        "headers": {},
+        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d"
+      },
+      "name": "create_schema",
+      "description": "Create Schema:\n- value is the actual json schema, you must define this.\n- meta must be a dict. it stores key:value tags in the dict. Must be {} if no tags.\n- create json schema by default.",
+      "root": false,
+      "position": {
+        "x": -40.0,
+        "y": 720.0
+      },
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "10fca123-7949-42b9-b4e5-df390f19fcf7",
+    "fields": {
+      "class_path": "__ROOT__",
+      "node_type": [
+        "__ROOT__"
+      ],
+      "config": {
+        "outputs": [
+          "user_input",
+          "artifact_ids"
+        ],
+        "outputs_hash": [
+          "user_input",
+          "artifact_ids"
+        ]
+      },
+      "name": "",
+      "description": "",
+      "root": true,
+      "position": {
+        "x": -30.0,
+        "y": 270.0
+      },
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "13d8e5ea-42cb-4b2e-a81a-e95cf6d86cdf",
+    "fields": {
+      "class_path": "ix.runnable.openapi.RunOpenAPIRequest",
+      "node_type": [
+        "ix.runnable.openapi.RunOpenAPIRequest"
+      ],
+      "config": {
+        "path": "/schemas/{schema_id}",
+        "method": "put",
+        "server": "http://172.17.0.1:8000/api",
+        "headers": {},
+        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d"
+      },
+      "name": "update_schema",
+      "description": "Update Schema:\n- value is the actual json schema, you must reuse or define this.\n- meta must be a dict. it stores key:value tags in the dict. Must be {} if no tags.\n",
+      "root": false,
+      "position": {
+        "x": -40.0,
+        "y": 820.0
+      },
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "2e8964fd-72c0-4b38-959b-1af445d4bdbb",
+    "fields": {
+      "class_path": "langchain.memory.RedisChatMessageHistory",
+      "node_type": [
+        "langchain.memory.RedisChatMessageHistory"
+      ],
+      "config": {
+        "ttl": 3600,
+        "url": "redis://redis:6379/0",
+        "session_key": "session_id",
+        "session_scope": "",
+        "session_prefix": "schemas"
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 340.0,
+        "y": 520.0
+      },
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "688ac743-a828-4cb4-bfdf-be385dfb6b5c",
+    "fields": {
+      "class_path": "ix.runnable.openapi.RunOpenAPIRequest",
+      "node_type": [
+        "ix.runnable.openapi.RunOpenAPIRequest"
+      ],
+      "config": {
+        "path": "/schemas/{schema_id}",
+        "method": "get",
+        "server": "http://172.17.0.1:8000/api",
+        "headers": {},
+        "schema_id": "67dcf17e-1464-48bd-ae94-2184b7ab6a0d"
+      },
+      "name": "get_schema",
+      "description": "Get Schema",
+      "root": false,
+      "position": {
+        "x": -40.0,
+        "y": 620.0
+      },
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "6c9e0e28-6744-483f-8ab5-19a574cf1544",
+    "fields": {
+      "class_path": "langchain_community.chat_models.ChatOpenAI",
+      "node_type": [
+        "langchain_community.chat_models.ChatOpenAI"
+      ],
+      "config": {
+        "tags": [],
+        "cache": false,
+        "metadata": {},
+        "streaming": true,
+        "max_tokens": 500,
+        "model_name": "gpt-4-1106-preview",
+        "max_retries": 6,
+        "temperature": 0,
+        "openai_proxy": "",
+        "openai_api_base": "",
+        "request_timeout": 60,
+        "openai_organization": ""
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": -30.0,
+        "y": 390.0
+      },
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "92fb3c18-a8d5-4e07-a42f-fd5f6eb6eb35",
+    "fields": {
+      "class_path": "ix.chains.loaders.agents.initialize_openai_functions",
+      "node_type": [
+        "ix.chains.loaders.agents.initialize_openai_functions"
+      ],
+      "config": {
+        "verbose": true,
+        "max_iterations": 15,
+        "handle_parsing_errors": true,
+        "return_intermediate_steps": true
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 310.0,
+        "y": 330.0
+      },
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f"
+    }
+  },
+  {
+    "model": "chains.chainnode",
+    "pk": "bf1f0f20-535d-46a3-b1f2-77fe932f3f3a",
+    "fields": {
+      "class_path": "langchain.memory.ConversationBufferMemory",
+      "node_type": [
+        "langchain.memory.ConversationBufferMemory"
+      ],
+      "config": {
+        "ai_prefix": "AI",
+        "input_key": "input",
+        "memory_key": "history",
+        "output_key": "output",
+        "human_prefix": "Human",
+        "return_messages": true
+      },
+      "name": "",
+      "description": "",
+      "root": false,
+      "position": {
+        "x": 620.0,
+        "y": 520.0
+      },
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "1b9f7231-8987-4932-9795-584d3f904c1d",
+    "fields": {
+      "source": "6c9e0e28-6744-483f-8ab5-19a574cf1544",
+      "target": "92fb3c18-a8d5-4e07-a42f-fd5f6eb6eb35",
+      "source_key": "llm",
+      "target_key": "llm",
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "500869b0-7176-46f1-a1f5-c132c06b1158",
+    "fields": {
+      "source": "bf1f0f20-535d-46a3-b1f2-77fe932f3f3a",
+      "target": "92fb3c18-a8d5-4e07-a42f-fd5f6eb6eb35",
+      "source_key": "memory",
+      "target_key": "memory",
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "799be223-085d-4032-b595-cbe1e779f17a",
+    "fields": {
+      "source": "688ac743-a828-4cb4-bfdf-be385dfb6b5c",
+      "target": "92fb3c18-a8d5-4e07-a42f-fd5f6eb6eb35",
+      "source_key": "chain",
+      "target_key": "tools",
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "9a87fe27-2416-4e1e-a92c-70b23897dd0d",
+    "fields": {
+      "source": "056104d3-7749-48a1-a657-bdb4c9c23503",
+      "target": "92fb3c18-a8d5-4e07-a42f-fd5f6eb6eb35",
+      "source_key": "chain",
+      "target_key": "tools",
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "ae5021ae-4c90-477f-b31e-33d4a7fd40aa",
+    "fields": {
+      "source": "2e8964fd-72c0-4b38-959b-1af445d4bdbb",
+      "target": "bf1f0f20-535d-46a3-b1f2-77fe932f3f3a",
+      "source_key": "memory_backend",
+      "target_key": "chat_memory",
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "b7260868-0558-4183-baec-ebe0f1d63f80",
+    "fields": {
+      "source": "13d8e5ea-42cb-4b2e-a81a-e95cf6d86cdf",
+      "target": "92fb3c18-a8d5-4e07-a42f-fd5f6eb6eb35",
+      "source_key": "chain",
+      "target_key": "tools",
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "d0363951-f87d-4174-acc4-af1ecb0ac14a",
+    "fields": {
+      "source": "0c4168a4-9401-460c-bfdc-7ca6d873a723",
+      "target": "92fb3c18-a8d5-4e07-a42f-fd5f6eb6eb35",
+      "source_key": "chain",
+      "target_key": "tools",
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f",
+      "input_map": null,
+      "relation": "PROP"
+    }
+  },
+  {
+    "model": "chains.chainedge",
+    "pk": "ee109f38-65bb-447c-ab61-fdcadb84bd4f",
+    "fields": {
+      "source": "10fca123-7949-42b9-b4e5-df390f19fcf7",
+      "target": "92fb3c18-a8d5-4e07-a42f-fd5f6eb6eb35",
+      "source_key": "user_input",
+      "target_key": "in",
+      "chain": "60c79195-ab43-4854-8f0c-828ed64b643f",
+      "input_map": null,
+      "relation": "LINK"
+    }
+  }
+]
