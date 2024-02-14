@@ -102,24 +102,17 @@ async def afake_root_edge(**kwargs):
     return await sync_to_async(fake_root_edge)(**kwargs)
 
 
-def fake_runnable(name="default", value=0, **kwargs):
+def fake_runnable(name="default", value=0, config=None, **kwargs):
     """
     Create a fake runnable.
     """
     options = dict(
-        config=kwargs.get(
-            "config",
-            {
-                "class_path": MOCK_RUNNABLE_CLASS_PATH,
-                "config": {
-                    "name": name,
-                    "value": value,
-                },
-            },
-        ),
-        **kwargs,
+        config={
+            "class_path": MOCK_RUNNABLE_CLASS_PATH,
+            "config": dict(name=name, value=value, **(config or {})),
+        },
     )
-    return fake_chain_node(**options)
+    return fake_chain_node(**options, **kwargs)
 
 
 def afake_runnable(name="default", value=0, **kwargs):
