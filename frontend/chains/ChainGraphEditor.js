@@ -304,6 +304,7 @@ const ChainGraphEditor = ({ graph }) => {
       // create reactflow edge
       const id = uuid4();
       const source = reactFlowInstance.getNode(params.source);
+      const target = reactFlowInstance.getNode(params.target);
       const flowNodeType =
         source.id === "root" ? "root" : source.data.type.type;
       const style = getEdgeStyle(colorMode, flowNodeType);
@@ -314,8 +315,14 @@ const ChainGraphEditor = ({ graph }) => {
       const is_out = params.sourceHandle === "out";
       const is_in = params.targetHandle === "in";
       const from_branch = source.data.type.type === "branch";
+      const with_graph =
+        source.data.type.type === "graph" ||
+        (target.data.type.type === "graph" && params.targetHandle === "loop");
+
       const displayRelation =
-        from_root || is_out || is_in || from_branch ? "LINK" : "PROP";
+        from_root || is_out || is_in || from_branch || with_graph
+          ? "LINK"
+          : "PROP";
       setEdges((els) =>
         addEdge({ ...params, ...style[displayRelation], data: { id } }, els)
       );
@@ -330,7 +337,13 @@ const ChainGraphEditor = ({ graph }) => {
         root_node_ids.push(params.target);
         api.setRoots(chain.id, { node_ids: root_node_ids });
       } else {
-        const relation = from_root || is_out || from_branch ? "LINK" : "PROP";
+        let relation = "PROP";
+        if (with_graph) {
+          relation = "GRAPH";
+        } else if (from_root || is_out || from_branch) {
+          relation = "LINK";
+        }
+
         const data = {
           id,
           source_id: params.source,
