@@ -40,26 +40,32 @@ const useFlowConnectors = (node) => {
   }, [edges, node.id, node?.config?.branches]);
 };
 
-export const InputConnector = ({ type, node }) => {
-  const { input } = useFlowConnectors(node);
-  const intputColor = useConnectorColor(node, input);
+export const InputConnector = ({
+  type,
+  node,
+  required = true,
+  id = "in",
+  label = "Input",
+}) => {
+  const connector = useFlowConnectors(node)[id];
+  const inputColor = useConnectorColor(node, connector);
   return (
     <Box position="relative">
       <Handle
-        id="in"
+        id={id}
         type="target"
         position="left"
         style={{ top: "50%", transform: "translateY(-50%)" }}
       />
-      <Heading fontSize="xs" px={2} color={intputColor}>
+      <Heading fontSize="xs" px={2} color={inputColor}>
         <ConnectorPopover
           type={type}
           node={node}
-          connector={input}
-          label={"Input"}
+          connector={connector}
+          label={label}
           placement={"left"}
         />{" "}
-        <RequiredAsterisk color={intputColor} />
+        {required && <RequiredAsterisk color={inputColor} />}
       </Heading>
     </Box>
   );
