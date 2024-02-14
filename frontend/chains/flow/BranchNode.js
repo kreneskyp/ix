@@ -8,9 +8,19 @@ import { ConnectorPopover } from "chains/editor/ConnectorPopover";
 const useFlowConnectors = (node) => {
   const edges = useEdges();
   return useMemo(() => {
+    const input = {
+      key: "in",
+      type: "target",
+      required: true,
+      connected: edges?.find((edge) => edge.target === node.id),
+      source_type: ["root", "agent", "chain", "flow"],
+    };
+
     return {
-      input: {
-        key: "in",
+      input: input,
+      in: input,
+      loop: {
+        key: "loop",
         type: "target",
         required: true,
         connected: edges?.find((edge) => edge.target === node.id),
