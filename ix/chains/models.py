@@ -6,11 +6,13 @@ from typing import Any, Dict, Type
 
 from django.db import models
 from langchain.schema.runnable import Runnable
+from pydantic.v1 import BaseModel
 
+from ix.chains.fixture_src.flow import ROOT_CLASS_PATH
 from ix.ix_users.models import OwnedModel
 from ix.pg_vector.tests.models import PGVectorMixin
 from ix.pg_vector.utils import get_embedding
-
+from ix.utils.pydantic import create_args_model_v1
 
 logger = logging.getLogger(__name__)
 
@@ -325,3 +327,32 @@ class Chain(OwnedModel):
         """removes the chain nodes associated with this chain"""
         # clear old chain
         ChainNode.objects.filter(chain_id=self.id).delete()
+
+    @cached_property
+    def root(self):
+        return self.nodes.get(root=True, class_path=ROOT_CLASS_PATH)
+
+    @cached_property
+    def input_type(self) -> Type[BaseModel]:
+        """Build pydantic model for chain input."""
+        try:
+            root = self.root
+            input_type = create_args_model_v1(
+                root.config.get("outputs", []), name="ChainInput"
+            )
+            config_type = create_args_model_v1(
+                root.config.get("config", []), name="ChainConfig"
+            )
+        except ChainNode.DoesNotExist:
+            # fallback to old style roots:
+            # TODO: remove this fallback after all chains have been migrated
+            input_type = create_args_model_v1(
+                ["user_input", "artifact_ids"], name="ChainInput"
+            )
+            config_type = create_args_model_v1([], name="ChainConfig")
+
+        class ChainInput(BaseModel):
+            input: input_type
+            config: config_type = {}
+
+        return ChainInput
