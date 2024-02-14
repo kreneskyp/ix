@@ -122,7 +122,7 @@ class Edge(BaseModel):
     source_key: Optional[str] = None
     target_key: Optional[str] = None
     chain_id: UUID
-    relation: Literal["LINK", "PROP"]
+    relation: Literal["LINK", "PROP", "GRAPH"]
     input_map: Optional[dict] = None
 
     class Config:

@@ -277,7 +277,7 @@ class ChainEdge(models.Model):
     )
     input_map = models.JSONField(null=True)
     relation = models.CharField(
-        max_length=4, null=True, choices=RELATION_CHOICES, default="LINK"
+        max_length=5, null=True, choices=RELATION_CHOICES, default="LINK"
     )
 
     DoesNotExist: Type[models.ObjectDoesNotExist]
