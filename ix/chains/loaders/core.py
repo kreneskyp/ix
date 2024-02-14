@@ -445,7 +445,7 @@ class SequencePlaceholder:
 
     @property
     def id(self):
-        return self.steps[0][0].id
+        return self.steps[0].id
 
     def __eq__(self, other):
         if isinstance(other, SequencePlaceholder):
