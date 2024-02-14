@@ -608,6 +608,37 @@ def load_flow_map(
     return new_nodes
 
 
+def build_flow_branch(
+    node: ChainNode,
+    outgoing_links: List[ChainEdge],
+    seen: Dict[UUID, FlowPlaceholder],
+    branch_depth: Tuple[str] = None,
+):
+    branches = {}
+    for key, group in itertools.groupby(outgoing_links, lambda edge: edge.source_key):
+        _branch_depth = branch_depth + (key,) if branch_depth else (key,)
+        group_as_list = list(group)
+        if len(group_as_list) > 1:
+            targets = [edge.target for edge in group_as_list]
+            nodes = load_flow_map(targets, seen=seen, branch_depth=_branch_depth)
+        else:
+            nodes = load_flow_sequence(
+                group_as_list[0].target,
+                seen=seen,
+                branch_depth=_branch_depth,
+            )
+        branches[key] = nodes
+
+    # build sorted list from branch node's config
+    branch_keys = node.config.get("branches", [])
+    branch_uuids = node.config.get("branches_hash", [])
+    branch_tuples = [
+        (key, branches[branch_uuid])
+        for key, branch_uuid in zip(branch_keys, branch_uuids)
+    ]
+    return branches, branch_tuples
+
+
 def load_flow_branch(
     node: ChainNode,
     seen: Dict[UUID, FlowPlaceholder],
@@ -619,26 +650,10 @@ def load_flow_branch(
         .filter(relation="LINK")
         .order_by("source_key")
     )
-    branches = {}
-    for key, group in itertools.groupby(outgoing_links, lambda edge: edge.source_key):
-        _branch_depth = branch_depth + (key,) if branch_depth else (key,)
-        group_as_list = list(group)
-        if len(group_as_list) > 1:
-            targets = [edge.target for edge in group_as_list]
-            nodes = load_flow_map(targets, seen=seen, branch_depth=_branch_depth)
-        else:
-            nodes = load_flow_sequence(
-                group_as_list[0].target, seen=seen, branch_depth=_branch_depth
-            )
-        branches[key] = nodes
 
-    # build sorted list from branch node's config
-    branch_keys = node.config.get("branches", [])
-    branch_uuids = node.config.get("branches_hash", [])
-    branch_tuples = [
-        (key, branches[branch_uuid])
-        for key, branch_uuid in zip(branch_keys, branch_uuids)
-    ]
+    branches, branch_tuples = build_flow_branch(
+        node, outgoing_links, seen, branch_depth
+    )
 
     if "default" not in branches:
         raise ValueError("Branch node must have a default branch")
