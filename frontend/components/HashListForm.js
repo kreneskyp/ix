@@ -20,10 +20,10 @@ export const HashListForm = ({
 
   const handleInputChange = (e, index) => {
     const { value } = e.target;
-    const updatedItems = [...list];
-    const updatedHashes = [...hash_list];
+    const updatedItems = [...(list || [])];
+    const updatedHashes = [...(hash_list || [])];
 
-    if (index < list.length) {
+    if (index < list?.length || 0) {
       updatedItems[index] = value;
     } else {
       updatedItems.push(value);
@@ -63,8 +63,8 @@ export const HashListForm = ({
             <FontAwesomeIcon
               icon={faTrash}
               onClick={() => handleRemoveClick(index)}
-              cursor={index < list.length ? "pointer" : "default"}
-              color={index < list.length ? "inherit" : "transparent"}
+              cursor={index < list?.length ? "pointer" : "default"}
+              color={index < list?.length ? "inherit" : "transparent"}
             />
           </HStack>
         ))}
