@@ -337,31 +337,34 @@ async def afake_node_map(**kwargs) -> MapPlaceholder:
     return await sync_to_async(fake_node_map)(**kwargs)
 
 
-def fake_node_branch(
-    chain: Chain,
-    default: ChainNode = None,
+def build_branches(
+    class_path: str,
+    chain: Chain = None,
     branches: List[Tuple[str, ChainNode]] = None,
     root: bool = True,
-) -> BranchPlaceholder:
-    """Fake a branch of ChainNode connected by edges"""
+    edge_type: str = "LINK",
+    config: Dict[str, Any] = None,
+) -> Tuple[ChainNode, List[Tuple[str, ChainNode]]]:
+    """Generic method for all branching types"""
     chain = chain or fake_chain()
 
     branch_keys = ["a", "b", "c"] if branches is None else [key for key, _ in branches]
     branch_uuids = [str(uuid.uuid4()) for _ in range(len(branch_keys))]
 
-    branch_type = NodeType.objects.get(class_path=RUNNABLE_BRANCH_CLASS_PATH)
+    branch_type = NodeType.objects.get(class_path=class_path)
+    _config = {
+        "branches": branch_keys,
+        "branches_hash": branch_uuids,
+    }
+    _config.update(config or {})
     branch_node = ChainNode.objects.create(
         chain=chain,
-        class_path=RUNNABLE_BRANCH_CLASS_PATH,
+        class_path=class_path,
         node_type=branch_type,
         root=root,
-        config={
-            "branches": branch_keys,
-            "branches_hash": branch_uuids,
-        },
+        config=_config,
     )
 
-    default = default or fake_runnable(chain=chain, name="default", root=False)
     branches = branches or [
         (key, fake_runnable(chain=chain, name=key, root=False)) for key in branch_keys
     ]
@@ -371,6 +374,36 @@ def fake_node_branch(
         (branch_uuids[i], branch_node) for i, [key, branch_node] in enumerate(branches)
     ]
 
+    for branch_uuid, branch in encoded_branches:
+        for branch_root in find_roots(branch):
+            fake_chain_edge(
+                source=branch_node,
+                target=branch_root,
+                source_key=branch_uuid,
+                target_key="in",
+                relation=edge_type,
+            )
+
+    return branch_node, branches
+
+
+def fake_node_branch(
+    chain: Chain,
+    default: ChainNode = None,
+    branches: List[Tuple[str, ChainNode]] = None,
+    root: bool = True,
+) -> BranchPlaceholder:
+    """Fake a branch of ChainNode connected by edges"""
+    chain = chain or fake_chain()
+
+    branch_node, branches = build_branches(
+        RUNNABLE_BRANCH_CLASS_PATH,
+        chain,
+        branches=branches,
+        root=root,
+        edge_type="GRAPH",
+    )
+    default = default or fake_runnable(chain=chain, name="default", root=False)
     for branch_root in find_roots(default):
         fake_chain_edge(
             source=branch_node,
