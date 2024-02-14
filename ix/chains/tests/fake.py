@@ -7,7 +7,12 @@ from ix.chains.fixture_src.lcel import (
     RUNNABLE_MAP_CLASS_PATH,
     RUNNABLE_BRANCH_CLASS_PATH,
 )
-from ix.chains.loaders.core import MapPlaceholder, BranchPlaceholder
+from ix.chains.loaders.core import (
+    MapPlaceholder,
+    BranchPlaceholder,
+    StateMachinePlaceholder,
+    find_roots,
+)
 from ix.chains.models import Chain, ChainNode, ChainEdge, NodeType
 from ix.chains.tests.mock_runnable import MOCK_RUNNABLE_CLASS_PATH
 from faker import Faker
@@ -154,49 +159,6 @@ async def afake_chain_edge(**kwargs):
     Create a fake chain edge.
     """
     return await sync_to_async(fake_chain_edge)(**kwargs)
-
-
-def find_roots(
-    node: ChainNode | List[ChainNode] | MapPlaceholder | BranchPlaceholder,
-) -> List[ChainNode]:
-    """Finds the first node(s) for a node or node group.
-
-    Used to find the node that should receive the incoming edge when connecting
-    the node group to a sequence
-    """
-    if isinstance(node, list):
-        return [node[0]]
-    elif isinstance(node, MapPlaceholder):
-        nodes = []
-        for mapped_node in node.map.values():
-            nodes.extend(find_roots(mapped_node))
-        return nodes
-    elif isinstance(node, BranchPlaceholder):
-        return [node.node]
-    return [node]
-
-
-def find_leaves(
-    node: ChainNode | List[ChainNode] | MapPlaceholder | BranchPlaceholder,
-) -> List[ChainNode]:
-    """Finds the last node(s) for a node or node group.
-
-    Used to find the node that should recieve the outgoing edge when connecting
-    the node group to a sequence
-    """
-    if isinstance(node, list):
-        return [node[-1]]
-    elif isinstance(node, MapPlaceholder):
-        nodes = []
-        for mapped_node in node.map.values():
-            nodes.extend(find_leaves(mapped_node))
-        return nodes
-    elif isinstance(node, BranchPlaceholder):
-        nodes = [find_leaves(node.default)]
-        for key, branch_node in node.branches:
-            nodes.extend(find_leaves(branch_node))
-        return nodes
-    return [node]
 
 
 def fake_node_sequence(

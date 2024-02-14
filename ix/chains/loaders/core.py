@@ -466,6 +466,51 @@ FlowPlaceholder = (
 )
 
 
+def find_roots(
+    node: ChainNode | List[ChainNode] | MapPlaceholder | BranchPlaceholder,
+) -> List[ChainNode]:
+    """Finds the first node(s) for a node or node group.
+
+    Used to find the node that should receive the incoming edge when connecting
+    the node group to a sequence
+    """
+    if isinstance(node, list):
+        return [node[0]]
+    elif isinstance(node, MapPlaceholder):
+        nodes = []
+        for mapped_node in node.map.values():
+            nodes.extend(find_roots(mapped_node))
+        return nodes
+    elif isinstance(node, BranchPlaceholder):
+        return [node.node]
+    return [node]
+
+
+def find_leaves(
+    node: ChainNode | List[ChainNode] | MapPlaceholder | BranchPlaceholder,
+) -> List[ChainNode]:
+    """Finds the last node(s) for a node or node group.
+
+    Used to find the node that should recieve the outgoing edge when connecting
+    the node group to a sequence
+    """
+    if isinstance(node, list):
+        return [node[-1]]
+    elif isinstance(node, SequencePlaceholder):
+        return [node.steps[-1]]
+    elif isinstance(node, MapPlaceholder):
+        nodes = []
+        for mapped_node in node.map.values():
+            nodes.extend(find_leaves(mapped_node))
+        return nodes
+    elif isinstance(node, BranchPlaceholder):
+        nodes = [find_leaves(node.default)]
+        for key, branch_node in node.branches:
+            nodes.extend(find_leaves(branch_node))
+        return nodes
+    return [node]
+
+
 def init_chain_flow(
     chain: Chain, context: IxContext, variables: Dict[str, Any] = None
 ) -> Runnable:
