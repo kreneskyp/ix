@@ -1,5 +1,5 @@
 import uuid
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Any
 
 from asgiref.sync import sync_to_async
 
@@ -10,7 +10,6 @@ from ix.chains.fixture_src.lcel import (
 from ix.chains.loaders.core import (
     MapPlaceholder,
     BranchPlaceholder,
-    StateMachinePlaceholder,
     find_roots,
 )
 from ix.chains.models import Chain, ChainNode, ChainEdge, NodeType
@@ -363,7 +362,7 @@ def fake_node_branch(
         chain,
         branches=branches,
         root=root,
-        edge_type="GRAPH",
+        edge_type="LINK",
     )
     default = default or fake_runnable(chain=chain, name="default", root=False)
     for branch_root in find_roots(default):
@@ -374,16 +373,6 @@ def fake_node_branch(
             target_key="in",
             relation="LINK",
         )
-
-    for branch_uuid, branch in encoded_branches:
-        for branch_root in find_roots(branch):
-            fake_chain_edge(
-                source=branch_node,
-                target=branch_root,
-                source_key=branch_uuid,
-                target_key="in",
-                relation="LINK",
-            )
 
     return BranchPlaceholder(
         node=branch_node,
