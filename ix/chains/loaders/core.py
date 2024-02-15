@@ -19,7 +19,6 @@ from pydantic import BaseModel
 from ix.api.components.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic, InputConfig
 from ix.chains.components.lcel import init_sequence, init_branch
-from ix.chains.fixture_src.flow import ROOT_CLASS_PATH
 from ix.chains.loaders.context import IxContext
 
 from ix.chains.loaders.prompts import load_prompt
@@ -30,7 +29,6 @@ from ix.runnable.ix import IxNode
 from ix.secrets.models import Secret
 from ix.utils.config import format_config
 from ix.utils.importlib import import_class
-from ix.utils.pydantic import create_args_model_v1
 from jsonschema_pydantic import jsonschema_to_pydantic
 
 import_node_class = import_class
