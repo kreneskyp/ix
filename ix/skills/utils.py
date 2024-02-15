@@ -107,7 +107,9 @@ def run_code_with_repl(
 ) -> str:
     # HAX: use globals for I/O with the REPL. Hacky way to avoid serialization.
     func_output = []
-    repl = PythonREPL(_globals={"func_input": input, "func_output": func_output})
+    repl = PythonREPL(
+        _globals={"func_input": input, "func_output": func_output, "json": json}
+    )
 
     # Prepare the command to run in the REPL
     command = textwrap.dedent(
@@ -118,12 +120,6 @@ func_output.append(output)
 """
     )
 
-    print(input)
-    print(command)
-
     # Run the command in the PythonREPL
-    repl.run(command, timeout)
-
-    print(func_output)
-
-    return func_output[0]
+    response = repl.run(command, timeout)
+    return func_output[0] if func_output else response
