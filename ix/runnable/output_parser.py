@@ -23,6 +23,9 @@ class ParseFunctionCall(RunnableSerializable[AIMessage, FunctionCall]):
         config: Optional[RunnableConfig] = None,
         **kwargs: Any,
     ) -> FunctionCall:
+        if isinstance(input, dict):
+            input = AIMessage(**input)
+
         additional_kwargs = input.additional_kwargs
         if "function_call" in additional_kwargs:
             function_call = additional_kwargs["function_call"]
@@ -42,6 +45,9 @@ class ParseFunctionCall(RunnableSerializable[AIMessage, FunctionCall]):
         config: Optional[RunnableConfig] = None,
         **kwargs: Any,
     ) -> FunctionCall:
+        if isinstance(input, dict):
+            input = AIMessage(**input)
+
         additional_kwargs = input.additional_kwargs
         if "function_call" in additional_kwargs:
             function_call = additional_kwargs["function_call"]
