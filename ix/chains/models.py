@@ -333,7 +333,7 @@ class Chain(OwnedModel):
         return self.nodes.get(root=True, class_path=ROOT_CLASS_PATH)
 
     @cached_property
-    def input_type(self) -> Type[BaseModel]:
+    def types(self) -> Type[BaseModel]:
         """Build pydantic model for chain input."""
         try:
             root = self.root
@@ -351,8 +351,11 @@ class Chain(OwnedModel):
             )
             config_type = create_args_model_v1([], name="ChainConfig")
 
-        class ChainInput(BaseModel):
+        class ChainConfig(BaseModel):
             input: input_type
             config: config_type = {}
 
-        return ChainInput
+            INPUT = input_type
+            CONFIG = config_type
+
+        return ChainConfig

@@ -572,7 +572,7 @@ def load_chain_flow(chain: Chain) -> Tuple[Type[BaseModel], FlowPlaceholder]:
         nodes = chain.nodes.filter(root=True)
         logger.debug(f"Loading chain flow with roots: {nodes}")
 
-    return chain.input_type, load_flow_node(nodes)
+    return chain.types.INPUT, load_flow_node(nodes)
 
 
 async def aload_chain_flow(chain: Chain) -> Tuple[Type[BaseModel], FlowPlaceholder]:
