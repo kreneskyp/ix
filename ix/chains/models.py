@@ -6,11 +6,13 @@ from typing import Any, Dict, Type
 
 from django.db import models
 from langchain.schema.runnable import Runnable
+from pydantic.v1 import BaseModel
 
+from ix.chains.fixture_src.flow import ROOT_CLASS_PATH
 from ix.ix_users.models import OwnedModel
 from ix.pg_vector.tests.models import PGVectorMixin
 from ix.pg_vector.utils import get_embedding
-
+from ix.utils.pydantic import create_args_model_v1
 
 logger = logging.getLogger(__name__)
 
@@ -277,7 +279,7 @@ class ChainEdge(models.Model):
     )
     input_map = models.JSONField(null=True)
     relation = models.CharField(
-        max_length=4, null=True, choices=RELATION_CHOICES, default="LINK"
+        max_length=5, null=True, choices=RELATION_CHOICES, default="LINK"
     )
 
     DoesNotExist: Type[models.ObjectDoesNotExist]
@@ -311,12 +313,12 @@ class Chain(OwnedModel):
     def __str__(self):
         return f"{self.name} ({self.id})"
 
-    def load_chain(self, context) -> Runnable:
+    def load_chain(self, context: "IxContext") -> Runnable:  # noqa: F821
         from ix.chains.loaders.core import init_chain_flow
 
         return init_chain_flow(self, context=context)
 
-    async def aload_chain(self, context) -> Runnable:
+    async def aload_chain(self, context: "IxContext") -> Runnable:  # noqa: F821
         from ix.chains.loaders.core import init_chain_flow
 
         return await sync_to_async(init_chain_flow)(self, context=context)
@@ -325,3 +327,35 @@ class Chain(OwnedModel):
         """removes the chain nodes associated with this chain"""
         # clear old chain
         ChainNode.objects.filter(chain_id=self.id).delete()
+
+    @cached_property
+    def chat_root(self):
+        return self.nodes.get(root=True, class_path=ROOT_CLASS_PATH)
+
+    @cached_property
+    def types(self) -> Type[BaseModel]:
+        """Build pydantic model for chain input."""
+        try:
+            root = self.chat_root
+            input_type = create_args_model_v1(
+                root.config.get("outputs", []), name="ChainInput"
+            )
+            config_type = create_args_model_v1(
+                root.config.get("config", []), name="ChainConfig"
+            )
+        except ChainNode.DoesNotExist:
+            # fallback to old style roots:
+            # TODO: remove this fallback after all chains have been migrated
+            input_type = create_args_model_v1(
+                ["user_input", "artifact_ids"], name="ChainInput"
+            )
+            config_type = create_args_model_v1([], name="ChainConfig")
+
+        class ChainConfig(BaseModel):
+            input: input_type
+            config: config_type = {}
+
+            INPUT = input_type
+            CONFIG = config_type
+
+        return ChainConfig

@@ -19,7 +19,6 @@ from pydantic import BaseModel
 from ix.api.components.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic, InputConfig
 from ix.chains.components.lcel import init_sequence, init_branch
-from ix.chains.fixture_src.flow import ROOT_CLASS_PATH
 from ix.chains.loaders.context import IxContext
 
 from ix.chains.loaders.prompts import load_prompt
@@ -30,7 +29,6 @@ from ix.runnable.ix import IxNode
 from ix.secrets.models import Secret
 from ix.utils.config import format_config
 from ix.utils.importlib import import_class
-from ix.utils.pydantic import create_args_model_v1
 from jsonschema_pydantic import jsonschema_to_pydantic
 
 import_node_class = import_class
@@ -445,7 +443,7 @@ class SequencePlaceholder:
 
     @property
     def id(self):
-        return self.steps[0][0].id
+        return self.steps[0].id
 
     def __eq__(self, other):
         if isinstance(other, SequencePlaceholder):
@@ -464,6 +462,51 @@ FlowPlaceholder = (
     | AggPlaceholder
     | List["FlowPlaceholder"]
 )
+
+
+def find_roots(
+    node: ChainNode | List[ChainNode] | MapPlaceholder | BranchPlaceholder,
+) -> List[ChainNode]:
+    """Finds the first node(s) for a node or node group.
+
+    Used to find the node that should receive the incoming edge when connecting
+    the node group to a sequence
+    """
+    if isinstance(node, list):
+        return [node[0]]
+    elif isinstance(node, MapPlaceholder):
+        nodes = []
+        for mapped_node in node.map.values():
+            nodes.extend(find_roots(mapped_node))
+        return nodes
+    elif isinstance(node, BranchPlaceholder):
+        return [node.node]
+    return [node]
+
+
+def find_leaves(
+    node: ChainNode | List[ChainNode] | MapPlaceholder | BranchPlaceholder,
+) -> List[ChainNode]:
+    """Finds the last node(s) for a node or node group.
+
+    Used to find the node that should recieve the outgoing edge when connecting
+    the node group to a sequence
+    """
+    if isinstance(node, list):
+        return [node[-1]]
+    elif isinstance(node, SequencePlaceholder):
+        return [node.steps[-1]]
+    elif isinstance(node, MapPlaceholder):
+        nodes = []
+        for mapped_node in node.map.values():
+            nodes.extend(find_leaves(mapped_node))
+        return nodes
+    elif isinstance(node, BranchPlaceholder):
+        nodes = [find_leaves(node.default)]
+        for key, branch_node in node.branches:
+            nodes.extend(find_leaves(branch_node))
+        return nodes
+    return [node]
 
 
 def init_chain_flow(
@@ -520,21 +563,14 @@ async def ainit_flow(
 
 def load_chain_flow(chain: Chain) -> Tuple[Type[BaseModel], FlowPlaceholder]:
     try:
-        root = chain.nodes.get(root=True, class_path=ROOT_CLASS_PATH)
-        nodes = chain.nodes.filter(incoming_edges__source=root)
-        input_type = create_args_model_v1(
-            root.config.get("outputs", []), name="ChainInput"
-        )
+        nodes = chain.nodes.filter(incoming_edges__source=chain.chat_root)
     except ChainNode.DoesNotExist:
         # fallback to old style roots:
         # TODO: remove this fallback after all chains have been migrated
         nodes = chain.nodes.filter(root=True)
         logger.debug(f"Loading chain flow with roots: {nodes}")
-        input_type = create_args_model_v1(
-            ["user_input", "artifact_ids"], name="ChainInput"
-        )
 
-    return input_type, load_flow_node(nodes)
+    return chain.types.INPUT, load_flow_node(nodes)
 
 
 async def aload_chain_flow(chain: Chain) -> Tuple[Type[BaseModel], FlowPlaceholder]:
@@ -608,6 +644,37 @@ def load_flow_map(
     return new_nodes
 
 
+def build_flow_branch(
+    node: ChainNode,
+    outgoing_links: List[ChainEdge],
+    seen: Dict[UUID, FlowPlaceholder],
+    branch_depth: Tuple[str] = None,
+):
+    branches = {}
+    for key, group in itertools.groupby(outgoing_links, lambda edge: edge.source_key):
+        _branch_depth = branch_depth + (key,) if branch_depth else (key,)
+        group_as_list = list(group)
+        if len(group_as_list) > 1:
+            targets = [edge.target for edge in group_as_list]
+            nodes = load_flow_map(targets, seen=seen, branch_depth=_branch_depth)
+        else:
+            nodes = load_flow_sequence(
+                group_as_list[0].target,
+                seen=seen,
+                branch_depth=_branch_depth,
+            )
+        branches[key] = nodes
+
+    # build sorted list from branch node's config
+    branch_keys = node.config.get("branches", [])
+    branch_uuids = node.config.get("branches_hash", [])
+    branch_tuples = [
+        (key, branches[branch_uuid])
+        for key, branch_uuid in zip(branch_keys, branch_uuids)
+    ]
+    return branches, branch_tuples
+
+
 def load_flow_branch(
     node: ChainNode,
     seen: Dict[UUID, FlowPlaceholder],
@@ -619,26 +686,10 @@ def load_flow_branch(
         .filter(relation="LINK")
         .order_by("source_key")
     )
-    branches = {}
-    for key, group in itertools.groupby(outgoing_links, lambda edge: edge.source_key):
-        _branch_depth = branch_depth + (key,) if branch_depth else (key,)
-        group_as_list = list(group)
-        if len(group_as_list) > 1:
-            targets = [edge.target for edge in group_as_list]
-            nodes = load_flow_map(targets, seen=seen, branch_depth=_branch_depth)
-        else:
-            nodes = load_flow_sequence(
-                group_as_list[0].target, seen=seen, branch_depth=_branch_depth
-            )
-        branches[key] = nodes
 
-    # build sorted list from branch node's config
-    branch_keys = node.config.get("branches", [])
-    branch_uuids = node.config.get("branches_hash", [])
-    branch_tuples = [
-        (key, branches[branch_uuid])
-        for key, branch_uuid in zip(branch_keys, branch_uuids)
-    ]
+    branches, branch_tuples = build_flow_branch(
+        node, outgoing_links, seen, branch_depth
+    )
 
     if "default" not in branches:
         raise ValueError("Branch node must have a default branch")

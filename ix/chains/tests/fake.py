@@ -1,5 +1,5 @@
 import uuid
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Any
 
 from asgiref.sync import sync_to_async
 
@@ -7,7 +7,11 @@ from ix.chains.fixture_src.lcel import (
     RUNNABLE_MAP_CLASS_PATH,
     RUNNABLE_BRANCH_CLASS_PATH,
 )
-from ix.chains.loaders.core import MapPlaceholder, BranchPlaceholder
+from ix.chains.loaders.core import (
+    MapPlaceholder,
+    BranchPlaceholder,
+    find_roots,
+)
 from ix.chains.models import Chain, ChainNode, ChainEdge, NodeType
 from ix.chains.tests.mock_runnable import MOCK_RUNNABLE_CLASS_PATH
 from faker import Faker
@@ -102,24 +106,17 @@ async def afake_root_edge(**kwargs):
     return await sync_to_async(fake_root_edge)(**kwargs)
 
 
-def fake_runnable(name="default", value=0, **kwargs):
+def fake_runnable(name="default", value=0, config=None, **kwargs):
     """
     Create a fake runnable.
     """
     options = dict(
-        config=kwargs.get(
-            "config",
-            {
-                "class_path": MOCK_RUNNABLE_CLASS_PATH,
-                "config": {
-                    "name": name,
-                    "value": value,
-                },
-            },
-        ),
-        **kwargs,
+        config={
+            "class_path": MOCK_RUNNABLE_CLASS_PATH,
+            "config": dict(name=name, value=value, **(config or {})),
+        },
     )
-    return fake_chain_node(**options)
+    return fake_chain_node(**options, **kwargs)
 
 
 def afake_runnable(name="default", value=0, **kwargs):
@@ -161,49 +158,6 @@ async def afake_chain_edge(**kwargs):
     Create a fake chain edge.
     """
     return await sync_to_async(fake_chain_edge)(**kwargs)
-
-
-def find_roots(
-    node: ChainNode | List[ChainNode] | MapPlaceholder | BranchPlaceholder,
-) -> List[ChainNode]:
-    """Finds the first node(s) for a node or node group.
-
-    Used to find the node that should receive the incoming edge when connecting
-    the node group to a sequence
-    """
-    if isinstance(node, list):
-        return [node[0]]
-    elif isinstance(node, MapPlaceholder):
-        nodes = []
-        for mapped_node in node.map.values():
-            nodes.extend(find_roots(mapped_node))
-        return nodes
-    elif isinstance(node, BranchPlaceholder):
-        return [node.node]
-    return [node]
-
-
-def find_leaves(
-    node: ChainNode | List[ChainNode] | MapPlaceholder | BranchPlaceholder,
-) -> List[ChainNode]:
-    """Finds the last node(s) for a node or node group.
-
-    Used to find the node that should recieve the outgoing edge when connecting
-    the node group to a sequence
-    """
-    if isinstance(node, list):
-        return [node[-1]]
-    elif isinstance(node, MapPlaceholder):
-        nodes = []
-        for mapped_node in node.map.values():
-            nodes.extend(find_leaves(mapped_node))
-        return nodes
-    elif isinstance(node, BranchPlaceholder):
-        nodes = [find_leaves(node.default)]
-        for key, branch_node in node.branches:
-            nodes.extend(find_leaves(branch_node))
-        return nodes
-    return [node]
 
 
 def fake_node_sequence(
@@ -344,31 +298,34 @@ async def afake_node_map(**kwargs) -> MapPlaceholder:
     return await sync_to_async(fake_node_map)(**kwargs)
 
 
-def fake_node_branch(
-    chain: Chain,
-    default: ChainNode = None,
+def build_branches(
+    class_path: str,
+    chain: Chain = None,
     branches: List[Tuple[str, ChainNode]] = None,
     root: bool = True,
-) -> BranchPlaceholder:
-    """Fake a branch of ChainNode connected by edges"""
+    edge_type: str = "LINK",
+    config: Dict[str, Any] = None,
+) -> Tuple[ChainNode, List[Tuple[str, ChainNode]]]:
+    """Generic method for all branching types"""
     chain = chain or fake_chain()
 
     branch_keys = ["a", "b", "c"] if branches is None else [key for key, _ in branches]
     branch_uuids = [str(uuid.uuid4()) for _ in range(len(branch_keys))]
 
-    branch_type = NodeType.objects.get(class_path=RUNNABLE_BRANCH_CLASS_PATH)
+    branch_type = NodeType.objects.get(class_path=class_path)
+    _config = {
+        "branches": branch_keys,
+        "branches_hash": branch_uuids,
+    }
+    _config.update(config or {})
     branch_node = ChainNode.objects.create(
         chain=chain,
-        class_path=RUNNABLE_BRANCH_CLASS_PATH,
+        class_path=class_path,
         node_type=branch_type,
         root=root,
-        config={
-            "branches": branch_keys,
-            "branches_hash": branch_uuids,
-        },
+        config=_config,
     )
 
-    default = default or fake_runnable(chain=chain, name="default", root=False)
     branches = branches or [
         (key, fake_runnable(chain=chain, name=key, root=False)) for key in branch_keys
     ]
@@ -378,6 +335,36 @@ def fake_node_branch(
         (branch_uuids[i], branch_node) for i, [key, branch_node] in enumerate(branches)
     ]
 
+    for branch_uuid, branch in encoded_branches:
+        for branch_root in find_roots(branch):
+            fake_chain_edge(
+                source=branch_node,
+                target=branch_root,
+                source_key=branch_uuid,
+                target_key="in",
+                relation=edge_type,
+            )
+
+    return branch_node, branches
+
+
+def fake_node_branch(
+    chain: Chain,
+    default: ChainNode = None,
+    branches: List[Tuple[str, ChainNode]] = None,
+    root: bool = True,
+) -> BranchPlaceholder:
+    """Fake a branch of ChainNode connected by edges"""
+    chain = chain or fake_chain()
+
+    branch_node, branches = build_branches(
+        RUNNABLE_BRANCH_CLASS_PATH,
+        chain,
+        branches=branches,
+        root=root,
+        edge_type="LINK",
+    )
+    default = default or fake_runnable(chain=chain, name="default", root=False)
     for branch_root in find_roots(default):
         fake_chain_edge(
             source=branch_node,
@@ -386,16 +373,6 @@ def fake_node_branch(
             target_key="in",
             relation="LINK",
         )
-
-    for branch_uuid, branch in encoded_branches:
-        for branch_root in find_roots(branch):
-            fake_chain_edge(
-                source=branch_node,
-                target=branch_root,
-                source_key=branch_uuid,
-                target_key="in",
-                relation="LINK",
-            )
 
     return BranchPlaceholder(
         node=branch_node,

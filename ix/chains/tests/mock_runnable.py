@@ -6,6 +6,8 @@ from langchain.schema.runnable import Runnable, RunnableConfig
 from langchain.schema.runnable.utils import Output
 from pydantic.v1 import BaseModel as BaseModelV1, Field
 
+from ix.utils.importlib import import_class
+
 logger = logging.getLogger(__name__)
 
 
@@ -30,12 +32,19 @@ class MockRunnable(Runnable[MockRunnableInput, Output], BaseModelV1):
 
     name: str = "default"
     value: Any = "output"
+    func_class_path: Optional[str] = None
 
     def invoke(
         self,
         input: MockRunnableInput,
         config: Optional[RunnableConfig] = None,
     ) -> dict:
+        # conditionally use a custom function to process the input
+        if self.func_class_path:
+            func = import_class(self.func_class_path)
+            return func(input)
+
+        # default return value
         if isinstance(input, dict):
             output = deepcopy(input)
             output[self.name] = self.value
