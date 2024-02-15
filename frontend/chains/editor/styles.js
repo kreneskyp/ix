@@ -23,6 +23,8 @@ import { RootNode } from "chains/flow/RootNode";
 import { LoopIcon } from "icons/LoopIcon";
 import { SplitIcon } from "icons/SplitIcon";
 import { MergeIcon } from "icons/MergeIcon";
+import { GraphIcon } from "icons/GraphIcon";
+import { GraphNode } from "chains/flow/GraphNode";
 
 export const NODE_STYLES = {
   llm: {
@@ -104,6 +106,12 @@ export const NODE_STYLES = {
       component: SplitIcon,
     },
     component: BranchNode,
+  },
+  graph: {
+    icon: {
+      component: GraphIcon,
+    },
+    component: GraphNode,
   },
   map: {
     icon: {

@@ -72,6 +72,7 @@ export const useEditorColorMode = () => {
       memory_backend: isLight ? "purple.500" : "purple.300",
       chain: isLight ? "blue.500" : "blue.300",
       agent: isLight ? "green.500" : "green.600",
+      graph: isLight ? "green.500" : "green.600",
       parser: retrieval,
       retriever: retrieval,
       schema: data,

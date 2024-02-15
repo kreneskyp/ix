@@ -12,8 +12,6 @@ export const LinkEdge = (props) => {
   // Apply scaling in addition to the translation
   const transform = `translate(${markerOffsetX}, ${markerOffsetY}) scale(1.3)`;
 
-  console.log("props", props);
-
   return (
     <BaseEdge
       {...props}
