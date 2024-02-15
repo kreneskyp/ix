@@ -329,14 +329,14 @@ class Chain(OwnedModel):
         ChainNode.objects.filter(chain_id=self.id).delete()
 
     @cached_property
-    def root(self):
+    def chat_root(self):
         return self.nodes.get(root=True, class_path=ROOT_CLASS_PATH)
 
     @cached_property
     def types(self) -> Type[BaseModel]:
         """Build pydantic model for chain input."""
         try:
-            root = self.root
+            root = self.chat_root
             input_type = create_args_model_v1(
                 root.config.get("outputs", []), name="ChainInput"
             )

@@ -563,7 +563,7 @@ async def ainit_flow(
 
 def load_chain_flow(chain: Chain) -> Tuple[Type[BaseModel], FlowPlaceholder]:
     try:
-        nodes = chain.nodes.filter(incoming_edges__source=chain.root)
+        nodes = chain.nodes.filter(incoming_edges__source=chain.chat_root)
     except ChainNode.DoesNotExist:
         # fallback to old style roots:
         # TODO: remove this fallback after all chains have been migrated
