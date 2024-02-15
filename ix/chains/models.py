@@ -313,12 +313,12 @@ class Chain(OwnedModel):
     def __str__(self):
         return f"{self.name} ({self.id})"
 
-    def load_chain(self, context: "IxContext") -> Runnable:
+    def load_chain(self, context: "IxContext") -> Runnable:  # noqa: F821
         from ix.chains.loaders.core import init_chain_flow
 
         return init_chain_flow(self, context=context)
 
-    async def aload_chain(self, context: "IxContext") -> Runnable:
+    async def aload_chain(self, context: "IxContext") -> Runnable:  # noqa: F821
         from ix.chains.loaders.core import init_chain_flow
 
         return await sync_to_async(init_chain_flow)(self, context=context)
