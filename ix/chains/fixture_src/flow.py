@@ -67,7 +67,7 @@ AGENT_REF = {
             "name": "chain_id",
             "label": "Agent",
             "type": "string",
-            "input_type": "IX:chain",
+            "input_type": "IX:agent",
             "required": True,
             "description": "The agent to embed.",
         }

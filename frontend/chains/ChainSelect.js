@@ -29,11 +29,11 @@ const getDetail = async (id) => {
   return toOption(response.data);
 };
 
-export const ChainSelect = ({ onChange, value, is_agent = false }) => {
+export const ChainSelect = ({ onChange, value, is_agent }) => {
   const getOptions = React.useCallback(
     async (inputValue) => {
       return fetchOptions(
-        `/api/chains/?is_agent=${is_agent}&limit=20`,
+        `/api/chains/?is_agent=${is_agent === true}&limit=20`,
         inputValue
       );
     },
