@@ -31,13 +31,11 @@ export const AsyncAPIObjectSelect = ({
   // load value on initial render
   React.useEffect(() => {
     const callback = async () => {
-      if (selected === null && value) {
-        const selectedValue = await getDetail(value);
-        setSelected(selectedValue);
-      }
+      const selectedValue = await getDetail(value);
+      setSelected(selectedValue);
     };
     callback();
-  }, [value]);
+  }, [onChange, value]);
 
   const promiseOptions = (inputValue) =>
     new Promise((resolve) => {
