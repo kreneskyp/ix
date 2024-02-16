@@ -39,7 +39,7 @@ CHAIN_REF_CLASS_PATH = "ix.runnable.flow.load_chain_id"
 CHAIN_REF = {
     "class_path": CHAIN_REF_CLASS_PATH,
     "name": "Chain Reference",
-    "description": "Embed a chain in another chain. The chain is called as if it were a component in the local flow.",
+    "description": "Embed a chain in another flow. The chain is called as if it were a component in the local flow.",
     "type": "chain",
     "context": "context",
     "fields": [
@@ -54,4 +54,24 @@ CHAIN_REF = {
     ],
 }
 
-FLOW = [ROOT_NODE, CHAIN_REF]
+
+AGENT_REF_CLASS_PATH = "ix.runnable.flow.load_agent_id"
+AGENT_REF = {
+    "class_path": AGENT_REF_CLASS_PATH,
+    "name": "Agent Reference",
+    "description": "Embed an agent in another flow. The agent is called as if it were a component in the local flow.",
+    "type": "agent",
+    "context": "context",
+    "fields": [
+        {
+            "name": "chain_id",
+            "label": "Agent",
+            "type": "string",
+            "input_type": "IX:agent",
+            "required": True,
+            "description": "The agent to embed.",
+        }
+    ],
+}
+
+FLOW = [ROOT_NODE, AGENT_REF, CHAIN_REF]

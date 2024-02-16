@@ -24,16 +24,22 @@ const fetchOptions = async (url, inputValue) => {
   }
 };
 
-const getOptions = async (inputValue) => {
-  return fetchOptions(`/api/chains/?is_agent=false&limit=20`, inputValue);
-};
-
 const getDetail = async (id) => {
   const response = await axios.get(`/api/chains/${id}`);
   return toOption(response.data);
 };
 
-export const ChainSelect = ({ onChange, value, ...props }) => {
+export const ChainSelect = ({ onChange, value, is_agent }) => {
+  const getOptions = React.useCallback(
+    async (inputValue) => {
+      return fetchOptions(
+        `/api/chains/?is_agent=${is_agent === true}&limit=20`,
+        inputValue
+      );
+    },
+    [is_agent]
+  );
+
   return (
     <AsyncAPIObjectSelect
       getOptions={getOptions}

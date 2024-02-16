@@ -31,6 +31,13 @@ def load_chain_id(
     return chain_obj.load_chain(context=context)
 
 
+def load_agent_id(
+    chain_id: UUID, context: IxContext, **kwargs
+) -> Runnable[Input, Output]:
+    """Load an agent Runnable from a chain_id. Proxy to load_chain_id."""
+    return load_chain_id(chain_id, context, **kwargs)
+
+
 class RunnableEachSequential(RunnableSerializable[List[Input], List[Output]]):
     """Runs a flow for each item in a list sequentially."""
 

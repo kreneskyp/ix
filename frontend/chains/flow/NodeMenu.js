@@ -21,6 +21,7 @@ import { Overlay } from "components/Overlay";
 import { WithPortal } from "components/WithPortal";
 
 const CHAIN_REFERENCE = "ix.runnable.flow.load_chain_id";
+const AGENT_REFERENCE = "ix.runnable.flow.load_agent_id";
 
 const DeleteItem = ({ node }) => {
   const api = React.useContext(ChainEditorAPIContext);
@@ -49,7 +50,8 @@ const DeleteItem = ({ node }) => {
 
 export const NodeMenu = ({ node }) => {
   const editor = React.useContext(EditorViewState);
-  const isReference = node.class_path === CHAIN_REFERENCE;
+  const isReference =
+    node.class_path === CHAIN_REFERENCE || node.class_path === AGENT_REFERENCE;
   const style = useEditorColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
 

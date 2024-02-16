@@ -1,33 +1,33 @@
 {
     "child_field": null,
-    "class_path": "ix.runnable.flow.load_chain_id",
+    "class_path": "ix.runnable.flow.load_agent_id",
     "config_schema": {
         "display_groups": null,
         "properties": {
             "chain_id": {
-                "description": "The chain to embed.",
-                "input_type": "IX:chain",
-                "label": "Chain",
+                "description": "The agent to embed.",
+                "input_type": "IX:agent",
+                "label": "Agent",
                 "type": "string"
             }
         },
         "required": [
             "chain_id"
         ],
-        "title": "load_chain_id",
+        "title": "load_agent_id",
         "type": "object"
     },
     "connectors": null,
-    "description": "Embed a chain in another flow. The chain is called as if it were a component in the local flow.",
+    "description": "Embed an agent in another flow. The agent is called as if it were a component in the local flow.",
     "display_type": "node",
     "fields": [
         {
             "choices": null,
             "default": null,
-            "description": "The chain to embed.",
+            "description": "The agent to embed.",
             "init_type": "init",
-            "input_type": "IX:chain",
-            "label": "Chain",
+            "input_type": "IX:agent",
+            "label": "Agent",
             "max": null,
             "min": null,
             "name": "chain_id",
@@ -39,6 +39,6 @@
             "type": "string"
         }
     ],
-    "name": "Chain Reference",
-    "type": "chain"
+    "name": "Agent Reference",
+    "type": "agent"
 }
