@@ -22,6 +22,7 @@ import { SchemaServerSelect } from "schemas/openapi/SchemaServerSelect";
 import { JSONSchemaSelect } from "schemas/json/JSONSchemaSelect";
 import { OpenAPISchemaSelect } from "schemas/openapi/OpenAPISchemaSelect";
 import { SkillSelect } from "skills/SkillSelect";
+import { AgentSelect } from "chains/AgentSelect";
 
 // explicit input types
 const INPUTS = {
@@ -35,6 +36,7 @@ const INPUTS = {
   dict: Dict,
   list: List,
   "IX:chain": APISelect.for_select(ChainSelect),
+  "IX:agent": APISelect.for_select(AgentSelect),
   "IX:json_schema": APISelect.for_select(JSONSchemaSelect),
   "IX:openapi_schema": APISelect.for_select(OpenAPISchemaSelect),
   "IX:openapi_action": APISelect.for_select(SchemaActionSelect),
