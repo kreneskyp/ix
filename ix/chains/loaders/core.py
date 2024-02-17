@@ -18,7 +18,7 @@ from pydantic import BaseModel
 
 from ix.api.components.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic, InputConfig
-from ix.chains.components.lcel import init_sequence, init_branch
+from ix.chains.components.lcel import init_sequence, init_branch, init_graph
 from ix.chains.loaders.context import IxContext
 
 from ix.chains.loaders.prompts import load_prompt
@@ -438,6 +438,18 @@ class BranchPlaceholder:
 
 
 @dataclasses.dataclass
+class StateMachinePlaceholder:
+    node: ChainNode
+    branches: List[Tuple[str, "FlowPlaceholder"]]
+    loops: List[str] = dataclasses.field(default_factory=list)
+    entry_point: str = "start"
+
+    @property
+    def id(self):
+        return self.node.id
+
+
+@dataclasses.dataclass
 class SequencePlaceholder:
     steps: List["FlowPlaceholder"]
 
@@ -460,6 +472,7 @@ FlowPlaceholder = (
     | BranchPlaceholder
     | ImplicitJoin
     | AggPlaceholder
+    | StateMachinePlaceholder
     | List["FlowPlaceholder"]
 )
 
@@ -604,6 +617,7 @@ def load_flow_map(
     nodes: List[ChainNode],
     seen: Dict[UUID, FlowPlaceholder],
     branch_depth: Tuple[str] = None,
+    graph_nodes: Dict[UUID, List[Runnable]] = None,
 ) -> FlowPlaceholder | List[FlowPlaceholder]:
     """
     Load all paths starting from the given group of nodes. The returned nodes are
@@ -626,7 +640,9 @@ def load_flow_map(
         # The first branch is explored the deepest. Subsequent runs fill in missing
         # branches from the first run. The first run will always be complete after
         # all branches have been processed.
-        loaded_node = load_flow_sequence(node, seen=seen, branch_depth=branch_depth)
+        loaded_node = load_flow_sequence(
+            node, seen=seen, branch_depth=branch_depth, graph_nodes=graph_nodes
+        )
         node_id = (
             loaded_node.steps[0].id
             if isinstance(loaded_node, SequencePlaceholder)
@@ -649,6 +665,7 @@ def build_flow_branch(
     outgoing_links: List[ChainEdge],
     seen: Dict[UUID, FlowPlaceholder],
     branch_depth: Tuple[str] = None,
+    graph_nodes: Dict[UUID, List[Runnable]] = None,
 ):
     branches = {}
     for key, group in itertools.groupby(outgoing_links, lambda edge: edge.source_key):
@@ -656,12 +673,15 @@ def build_flow_branch(
         group_as_list = list(group)
         if len(group_as_list) > 1:
             targets = [edge.target for edge in group_as_list]
-            nodes = load_flow_map(targets, seen=seen, branch_depth=_branch_depth)
+            nodes = load_flow_map(
+                targets, seen=seen, branch_depth=_branch_depth, graph_nodes=graph_nodes
+            )
         else:
             nodes = load_flow_sequence(
                 group_as_list[0].target,
                 seen=seen,
                 branch_depth=_branch_depth,
+                graph_nodes=graph_nodes,
             )
         branches[key] = nodes
 
@@ -679,6 +699,7 @@ def load_flow_branch(
     node: ChainNode,
     seen: Dict[UUID, FlowPlaceholder],
     branch_depth: Tuple[str] = None,
+    graph_nodes: Dict[UUID, List[Runnable]] = None,
 ) -> BranchPlaceholder:
     # gather branches
     outgoing_links = (
@@ -688,7 +709,7 @@ def load_flow_branch(
     )
 
     branches, branch_tuples = build_flow_branch(
-        node, outgoing_links, seen, branch_depth
+        node, outgoing_links, seen, branch_depth, graph_nodes
     )
 
     if "default" not in branches:
@@ -699,14 +720,47 @@ def load_flow_branch(
     )
 
 
+def load_flow_state_machine(
+    node: ChainNode,
+    seen: Dict[UUID, FlowPlaceholder],
+    branch_depth: Tuple[str] = None,
+    graph_nodes: Dict[UUID, List[Runnable]] = None,
+) -> StateMachinePlaceholder:
+    """Load a LangGraph statemachine node into a FlowPlaceholder."""
+    graph_nodes = graph_nodes.copy() if graph_nodes else {}
+    graph_nodes[node.id] = set()
+
+    # gather branches
+    outgoing_links = (
+        node.outgoing_edges.select_related("target")
+        .filter(relation="GRAPH")
+        .order_by("source_key")
+    )
+    branches, branch_tuples = build_flow_branch(
+        node, outgoing_links, seen, branch_depth, graph_nodes
+    )
+
+    # gather loops
+    loops = []
+    loopback_links = graph_nodes[node.id]
+    for branch_key, branch_node in branch_tuples:
+        leaves = find_leaves(branch_node)
+        if any(leaf.id in loopback_links for leaf in leaves):
+            loops.append(branch_key)
+
+    return StateMachinePlaceholder(node=node, branches=branch_tuples, loops=loops)
+
+
 BRANCH_CLASS_PATH = "ix.chains.components.lcel.init_branch"
 MAP_CLASS_PATH = "ix.chains.components.lcel.init_parallel"
+STATE_MACHINE_CLASS_PATH = "ix.chains.components.lcel.init_graph"
 
 
 def load_flow_sequence(
     start: ChainNode,
     seen: Dict[UUID, FlowPlaceholder],
     branch_depth: Tuple[str] = None,
+    graph_nodes: Dict[UUID, List[Runnable]] = None,
 ) -> Runnable | SequencePlaceholder:
     sequential_nodes = []
 
@@ -720,10 +774,26 @@ def load_flow_sequence(
             current.outgoing_edges.select_related("target").filter(relation="LINK")
         )
         incoming_links = list(current.incoming_edges.filter(relation="LINK"))
+        loopback_links = current.outgoing_edges.select_related("target").filter(
+            relation="GRAPH",
+            target_id__in=graph_nodes.keys() if graph_nodes else [],
+        )
+
+        # LangGraph StateMachine
+        if current.class_path == STATE_MACHINE_CLASS_PATH:
+            state_machine_placeholder = load_flow_state_machine(
+                current, seen=seen, branch_depth=branch_depth, graph_nodes=graph_nodes
+            )
+            sequential_nodes.append(state_machine_placeholder)
+
+            # TODO: breaking here _should_ be ok since state machine graph
+            #  should be fully explored. Still an outstanding issue with
+            #  ImplicitJoin within state machine branches. (they aren't joining)
+            break
 
         # single outgoing link
         # TODO: non map nodes with multiple incoming links require a map node.
-        if current.class_path == MAP_CLASS_PATH or len(incoming_links) > 1:
+        elif current.class_path == MAP_CLASS_PATH or len(incoming_links) > 1:
             # Since MAP node comes after the branches feeding into it,
             # look at incoming LINKs
             was_seen = current.id in seen
@@ -826,7 +896,7 @@ def load_flow_sequence(
         elif current.class_path == BRANCH_CLASS_PATH:
             # start of explicitly defined branch
             branch_placeholder = load_flow_branch(
-                current, seen=seen, branch_depth=branch_depth
+                current, seen=seen, branch_depth=branch_depth, graph_nodes=graph_nodes
             )
             sequential_nodes.append(branch_placeholder)
 
@@ -844,10 +914,25 @@ def load_flow_sequence(
                     sequential_nodes.append(current)
                     seen[current.id] = current
 
+        # LangGraph StateMachine loops
+        if len(loopback_links) == 1:
+            target_id = loopback_links[0].target_id
+            try:
+                graph_nodes[target_id].add(current.id)
+            except KeyError:
+                raise KeyError(f"Graph node {target_id} not found in graph_nodes")
+
+        elif len(loopback_links) > 1:
+            raise ValueError(
+                f"Multiple loopback links not supported links={loopback_links}"
+            )
+
         if len(outgoing_links) > 1 and current.class_path != BRANCH_CLASS_PATH:
             # multiple links: start of split that will end in a map node.
             targets = [link.target for link in outgoing_links]
-            map_node = load_flow_map(targets, seen=seen, branch_depth=branch_depth)
+            map_node = load_flow_map(
+                targets, seen=seen, branch_depth=branch_depth, graph_nodes=graph_nodes
+            )
 
             # add to sequence
             if isinstance(map_node, SequencePlaceholder):
@@ -917,6 +1002,41 @@ def init_flow_node(
                 bind_points=node_type.bind_points,
             )
         return instance
+    elif isinstance(root, StateMachinePlaceholder):
+        nodes = [
+            (key, init_flow_node(node, context=context, variables=variables))
+            for key, node in root.branches
+        ]
+
+        # init action and conditional chains
+        action = None
+        if root.node.config.get("action_id"):
+            action_chain = Chain.objects.get(id=root.node.config["action_id"])
+            action = init_chain_flow(action_chain, context, variables)
+        conditional_chain = Chain.objects.get(id=root.node.config["conditional_id"])
+        conditional = init_chain_flow(conditional_chain, context, variables)
+
+        # Wrap state machine runnables in an IxNode to capture RunLog associated to
+        # the state machine node.
+        def wrap_runnable(runnable: Runnable) -> Runnable:
+            return IxNode(
+                name=root.node.name,
+                description=root.node.description,
+                node_id=root.id,
+                child=runnable,
+                context=context,
+                config={},
+                bind_points=[],
+            )
+
+        return init_graph(
+            graph_root=root.node,
+            entry_point="start",
+            action=wrap_runnable(action),
+            conditional=wrap_runnable(conditional),
+            nodes=nodes,
+            loops=root.loops,
+        )
     elif isinstance(root, BranchPlaceholder):
         return init_branch(
             default=init_flow_node(root.default, context=context, variables=variables),
