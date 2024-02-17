@@ -12,6 +12,11 @@ from langchain.schema.runnable import (
 )
 from langchain.schema.runnable.base import RunnableEach
 from langchain.schema.runnable.utils import Input, Output
+from langgraph.graph import StateGraph, END
+
+from ix.chains.models import ChainNode
+from ix.data.models import Schema
+from ix.utils.json_schema import jsonschema_to_typeddict
 
 
 def init_pass_through() -> RunnablePassthrough:
@@ -61,3 +66,48 @@ def init_branch(
         ],
         default,
     )
+
+
+def init_graph(
+    graph_root: ChainNode,
+    action: Runnable[Input, Output],
+    conditional: Runnable[Input, Output],
+    nodes: List[Tuple[str, Runnable[Input, Output]]],
+    entry_point: str = "start",
+    loops: List[str] = [],
+) -> Runnable:
+    """
+    Init a LangGraph graph
+    """
+    # Init graph using schema
+    schema_id = graph_root.config["schema_id"]
+    schema = Schema.objects.get(id=schema_id)
+    state_model = jsonschema_to_typeddict(schema.value)
+    workflow = StateGraph(state_model)
+
+    # default map. END is always available.
+    conditional_map = {"end": END}
+
+    # add all nodes to the graph
+    for name, node in nodes:
+        workflow.add_node(name, node)
+        conditional_map[name] = name
+
+    # Add the action as entry_node or a passthrough if not present
+    # The pass through turns the node into a pure conditional,
+    # i.e. a simple decision node (flowchart diamond)
+    workflow.add_node(entry_point, action or init_pass_through())
+
+    # map the entry point
+    workflow.set_entry_point(entry_point)
+    workflow.add_conditional_edges(
+        entry_point,
+        lambda input: conditional.invoke(input),
+        conditional_map,
+    )
+
+    # add loops back to the conditional
+    for node_name in loops:
+        workflow.add_edge(node_name, entry_point)
+
+    return workflow.compile()

@@ -32,6 +32,7 @@ langchain-community==0.0.17
 langchain-google-genai[images]==0.0.7
 langchain-experimental==0.0.50
 langchain_mistralai==0.0.3
+langgraph==0.0.23
 llama-cpp-python==0.2.23
 metaphor-python==0.1.16
 openai==1.11.0
