@@ -2,7 +2,15 @@ import React from "react";
 import { DictForm } from "components/DictForm";
 import { getLabel } from "json_form/utils";
 
-export const Dict = ({ name, field, isRequired, value, onChange }) => {
+export const Dict = ({
+  name,
+  field,
+  isRequired,
+  value,
+  onChange,
+  component,
+  defaultValue,
+}) => {
   const handleChange = React.useCallback(
     (newValue) => {
       // Check if newValue is null or undefined, if so, set it to an empty object
@@ -20,6 +28,8 @@ export const Dict = ({ name, field, isRequired, value, onChange }) => {
       dict={value}
       onChange={handleChange}
       label={getLabel(name)}
+      component={component}
+      defaultValue={defaultValue}
       isRequired
     />
   );
