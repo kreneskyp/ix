@@ -766,10 +766,7 @@ def load_flow_sequence(
 
     # traverse the sequence
     current = start
-    infinite_loop_safety_count = 0
-    while infinite_loop_safety_count < 1000:
-        infinite_loop_safety_count += 1
-
+    for i in range(1000):
         outgoing_links = list(
             current.outgoing_edges.select_related("target").filter(relation="LINK")
         )
