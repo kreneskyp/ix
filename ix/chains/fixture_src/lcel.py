@@ -1,4 +1,4 @@
-from ix.api.components.types import NodeTypeField
+from ix.api.components.types import NodeTypeField, NodeType, DisplayGroup
 from ix.chains.fixture_src.targets import WORKFLOW_SOURCE, RUNNABLE_TYPES
 
 RUNNABLE_PASS_THROUGH_CLASS_PATH = "ix.chains.components.lcel.init_pass_through"
@@ -105,6 +105,71 @@ RUNNABLE_PROXY = {
     "description": "Proxy to another runnable",
     "type": "proxy",
 }
+
+
+LANGGRAPH_STATE_MACHINE_CLASS_PATH = "ix.chains.components.lcel.init_graph"
+LANGGRAPH_STATE_MACHINE = NodeType(
+    class_path=LANGGRAPH_STATE_MACHINE_CLASS_PATH,
+    name="State Machine",
+    description="A state machine that can be used to model stateful workflows",
+    type="graph",
+    fields=[
+        NodeTypeField(
+            name="schema_id",
+            label="State Schema",
+            type="str",
+            input_type="IX:json_schema",
+            description="The schema that defines the state of the machine.",
+            required=True,
+        ),
+        NodeTypeField(
+            name="action_id",
+            label="Action",
+            type="str",
+            input_type="IX:chain",
+            description="Agent, Chain, or Skill that chooses the next state to execute.",
+            required=False,
+        ),
+        NodeTypeField(
+            name="conditional_id",
+            label="Conditional",
+            type="str",
+            input_type="IX:chain",
+            description="Agent, Chain, or Skill that processes the state returned by the action.",
+            required=False,
+        ),
+        NodeTypeField(
+            name="branches",
+            label="Branches",
+            type="list",
+            input_type="node_branch_list",
+            description="names of edges.",
+            required=True,
+        ),
+        NodeTypeField(
+            name="branches_hash",
+            type="list",
+            input_type="hidden",
+            description="Hashes for branches in order they should be displayed. These hashes "
+            "are used for connector identifiers. The step names may change without "
+            "requiring edges to update unless the step is removed. Must be same "
+            "length as branches.",
+            required=True,
+        ),
+    ],
+    display_groups=[
+        DisplayGroup(
+            key="Config",
+            label="Config",
+            fields=["schema_id", "action_id", "conditional_id"],
+        ),
+        DisplayGroup(
+            key="Branches",
+            label="Branches",
+            fields=["branches", "branches_hash"],
+        ),
+    ],
+)
 
 
 LANGCHAIN_RUNNABLES = [
