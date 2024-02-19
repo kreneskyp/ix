@@ -21,18 +21,27 @@ import { StyledIcon } from "components/StyledIcon";
 import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
 import { useRunLog } from "chains/editor/run_log/useRunLog";
 
-const useExecutionTree = (executions, nodes, types) => {
+const useExecutionTree = (
+  executions,
+  nodes,
+  types,
+  extra_nodes,
+  extra_types
+) => {
   const buildTree = (items, parentId = null) => {
     return (
       items
         ?.filter((item) => item.parent_id === parentId)
         ?.map((item) => {
-          const node = nodes?.[item.node_id];
+          const node = nodes?.[item.node_id] || extra_nodes?.[item.node_id];
+          const type =
+            types?.find((t) => t.id === node?.node_type_id) ||
+            extra_types?.[node?.node_type_id];
           return {
             execution: item,
             children: buildTree(items, item.id),
-            node: node,
-            type: types?.find((t) => t.id === node?.node_type_id),
+            node,
+            type,
           };
         }) || []
     );
@@ -40,7 +49,7 @@ const useExecutionTree = (executions, nodes, types) => {
 
   return React.useMemo(() => {
     return buildTree(executions);
-  }, [executions, nodes, types]);
+  }, [executions, nodes, types, extra_nodes, extra_types]);
 };
 
 const ExecutionIcon = ({ type, isLight }) => {
@@ -171,11 +180,17 @@ const ExecutionTreeNode = ({ execution, isFirst, isLast }) => {
   );
 };
 
-export const ExecutionList = ({ log }) => {
+export const ExecutionList = ({ log, extra_nodes, extra_types }) => {
   const { nodes } = React.useContext(NodeStateContext);
   const [types, setTypes] = React.useContext(ChainTypes);
 
-  const executions = useExecutionTree(log?.executions, nodes, types);
+  const executions = useExecutionTree(
+    log?.executions,
+    nodes,
+    types,
+    extra_nodes,
+    extra_types
+  );
 
   return (
     <Box width={"200px"}>
