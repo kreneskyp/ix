@@ -9,6 +9,7 @@ from pydantic import BaseModel
 class RunnableExecution(BaseModel):
     id: UUID
     node_id: UUID
+    parent_id: Optional[UUID] = None
     started_at: datetime
     finished_at: datetime
     completed: bool = False

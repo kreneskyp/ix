@@ -61,6 +61,7 @@ class RunEventSubscription(Subscription):
         elif event_type == "execution":
             event = ExecutionType(
                 id=datum.get("id"),
+                parent_id=datum.get("parent_id"),
                 user_id=datum.get("user_id"),
                 task_id=datum.get("task_id"),
                 node_id=datum.get("node_id"),

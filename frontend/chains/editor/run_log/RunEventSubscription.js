@@ -7,6 +7,7 @@ export const RunEventSubscription = graphql`
         __typename
         ... on ExecutionType {
           id
+          parentId
           nodeId
           startedAt
           finishedAt

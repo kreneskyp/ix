@@ -29,7 +29,7 @@ class Listener:
     node_id: UUID
     run: dict = {}
 
-    def __init__(self, context: "IxContext", node_id: UUID):
+    def __init__(self, context: "IxContext", parent: Optional["Listener"] = None):
         self.context = context
         self.node_id = node_id
 
