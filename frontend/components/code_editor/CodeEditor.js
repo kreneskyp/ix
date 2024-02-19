@@ -89,7 +89,11 @@ export const CodeEditor = ({ value, language, onChange }) => {
       overflowY={"auto"}
       css={style.scrollbar}
     >
-      <Slate editor={editor} value={encodedValue} onChange={handleChange}>
+      <Slate
+        editor={editor}
+        value={encodedValue}
+        onChange={onChange ? handleChange : undefined}
+      >
         <SetNodeToDecorations />
         <HStack spacing={0}>
           <LineNumbers />

@@ -36,7 +36,7 @@ class OwnedModel(models.Model):
 
     @staticmethod
     def filter_owners(
-        user: User, queryset: QuerySet, global_restricted=False
+        user: User, queryset: QuerySet, global_restricted=False, prefix=""
     ) -> QuerySet:
         """Filter a queryset to only include objects available to the given user:
 
@@ -47,16 +47,22 @@ class OwnedModel(models.Model):
         Assumes they inherit from OwnedMixin.
         """
 
-        # disable filtering for local deployments
+        # Disable filtering for local deployments
         if not settings.OWNER_FILTERING:
             return queryset
 
         if not user:
             return queryset.none()
 
-        user_owned = Q(user_id=user.id)
-        group_owned = Q(group__user=user)
-        global_owned = Q(user_id=None, group_id=None)
+        # Prepend prefix to field lookups if provided
+        user_field = f"{prefix}user_id" if prefix else "user_id"
+        group_field = f"{prefix}group__user" if prefix else "group__user"
+        global_user_field = f"{prefix}user_id" if prefix else "user_id"
+        global_group_field = f"{prefix}group_id" if prefix else "group_id"
+
+        user_owned = Q(**{user_field: user.id})
+        group_owned = Q(**{group_field: user})
+        global_owned = Q(**{global_user_field: None, global_group_field: None})
 
         if global_restricted and not user.is_superuser:
             return queryset.exclude(global_owned).filter(user_owned | group_owned)

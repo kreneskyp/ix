@@ -30,6 +30,7 @@ export const useRunEventStream = (
             if (eventType === "ExecutionType" && onExecutionUpdate) {
               const formatted = {
                 id: eventData.id,
+                parent_id: eventData.parentId,
                 node_id: eventData.nodeId,
                 started_at: eventData.startedAt,
                 finished_at: eventData.finishedAt,

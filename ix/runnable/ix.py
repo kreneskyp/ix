@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional, Iterator, AsyncIterator, List, Type
+from typing import Dict, Any, Optional, Iterator, AsyncIterator, List, Type, Tuple
 from uuid import UUID
 
 from langchain.schema.runnable import RunnableSerializable, RunnableConfig, Runnable
@@ -6,7 +6,7 @@ from langchain.schema.runnable.base import Other
 from langchain.schema.runnable.utils import Input, Output
 from pydantic import BaseModel
 
-from ix.chains.loaders.context import IxContext
+from ix.chains.loaders.context import IxContext, Listener
 
 
 class IxNode(RunnableSerializable[Input, Output]):
@@ -78,14 +78,27 @@ class IxNode(RunnableSerializable[Input, Output]):
         runnable = self.build_runnable(input)
         return runnable.invoke(input, config, **kwargs)
 
+    async def prep_run(
+        self, input: Input, config: Optional[RunnableConfig] = None
+    ) -> Tuple[RunnableConfig, Listener]:
+        # get listener and runnable unique to this execution
+        parent_listener: Listener = config.get("listener", None)
+        if parent_listener:
+            listener = parent_listener.get_child()
+        else:
+            listener = self.context.get_listener()
+        config = config.copy()
+        config["listener"] = listener
+        listener.on_start(node_id=self.node_id, input=input)
+        return config, listener
+
     async def ainvoke(
         self,
         input: Dict[str, Any],
         config: Optional[RunnableConfig] = None,
         **kwargs: Any,
     ) -> Output:
-        listener = self.context.get_listener(self.node_id)
-        listener.on_start(input=input)
+        config, listener = await self.prep_run(input, config)
         runnable = self.build_runnable(input)
 
         # unpack input if it's a dict
@@ -114,8 +127,7 @@ class IxNode(RunnableSerializable[Input, Output]):
         config: Optional[RunnableConfig] = None,
         **kwargs: Any,
     ) -> AsyncIterator[Other]:
-        listener = self.context.get_listener(self.node_id)
-        listener.on_start(input=input)
+        listener = await self.prep_run(config)
         runnable = self.build_runnable(input)
 
         buffer = ""

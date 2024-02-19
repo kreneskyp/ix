@@ -5,7 +5,7 @@ export const SVGIcon = ({ color, bg, children, svgProps, ...props }) => {
   const colorToken = useToken("colors", color || "white");
 
   return (
-    <Box display={"inline-block"} m={0} p={0} {...props}>
+    <Box display={"flex"} alignItems={"center"} m={0} p={0} {...props}>
       <svg
         width="1.2em"
         height="1.2em"
