@@ -132,7 +132,10 @@ const ExecutionTreeNode = ({ execution, isFirst, isLast }) => {
         {...(isSelected ? selectedItemStyle : itemStyle)}
         width={"100%"}
       >
-        <TreeItem isFirst={isFirst} isLast={isLast}>
+        <TreeItem
+          isFirst={isFirst}
+          isLast={isLast && (execution.children.length < 0 || !isOpen)}
+        >
           <ExecutionIcon type={execution.type} isLight={isLight} />
         </TreeItem>
         <ExecutionBrief
@@ -160,7 +163,7 @@ const ExecutionTreeNode = ({ execution, isFirst, isLast }) => {
 
       {isOpen && (
         <HStack bg={"transparent"} height={"100%"} spacing={0}>
-          <BranchLine height={execution.children.length * 60} />
+          <BranchLine height={execution.children.length * 60} isLast={isLast} />
           {children.length > 1 && <VStack spacing={0}>{children}</VStack>}
         </HStack>
       )}
