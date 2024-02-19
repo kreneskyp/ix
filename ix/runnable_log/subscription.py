@@ -18,6 +18,7 @@ class ExecutionType(graphene.ObjectType):
     """A node executing within a run. Sent when a node starts and finishes executing."""
 
     id = graphene.UUID()
+    parent_id = graphene.UUID(required=False)
     user_id = graphene.UUID()
     task_id = graphene.UUID()
     node_id = graphene.UUID()

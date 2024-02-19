@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional, Iterator, AsyncIterator, List, Type
+from typing import Dict, Any, Optional, Iterator, AsyncIterator, List, Type, Tuple
 from uuid import UUID
 
 from langchain.schema.runnable import RunnableSerializable, RunnableConfig, Runnable
@@ -6,7 +6,7 @@ from langchain.schema.runnable.base import Other
 from langchain.schema.runnable.utils import Input, Output
 from pydantic import BaseModel
 
-from ix.chains.loaders.context import IxContext
+from ix.chains.loaders.context import IxContext, Listener
 
 
 class IxNode(RunnableSerializable[Input, Output]):
