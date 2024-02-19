@@ -1,10 +1,12 @@
 import asyncio
 import logging
+from typing import List
 from uuid import UUID
 
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Q
 from fastapi import APIRouter, HTTPException, Depends
+from pydantic import UUID4
 
 from ix.agents.models import Agent
 from ix.api.auth import get_request_user
@@ -21,6 +23,7 @@ from ix.api.editor.types import (
     UpdatedRoot,
     AddNode,
     UpdateRoot,
+    GraphNodes,
 )
 from ix.chains.models import Chain, ChainNode, NodeType, ChainEdge
 
@@ -32,6 +35,7 @@ from ix.api.components.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic
 from ix.api.chains.types import Edge as EdgePydantic
 from ix.chat.models import Chat
+from ix.ix_users.models import User, OwnedModel
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -251,3 +255,26 @@ async def get_chain_chat(
     """Return test chat instance for the chain"""
     chat = await _get_test_chat(chain_id, user)
     return ChatPydantic.from_orm(chat)
+
+
+@router.post(
+    "/nodes/bulk",
+    operation_id="get_nodes",
+    response_model=GraphNodes,
+    tags=["Chain Editor"],
+)
+async def get_nodes(node_ids: List[UUID4], user: User = Depends(get_request_user)):
+    """Return single node"""
+    """Return list of nodes and their types for given node IDs"""
+    filtered_nodes = OwnedModel.filter_owners(
+        user, ChainNode.objects.all(), prefix="chain__"
+    )
+    nodes = filtered_nodes.filter(id__in=node_ids)
+    node_pydantics = [NodePydantic.model_validate(node) async for node in nodes]
+
+    # Fetch types for these nodes
+    type_ids = {node.node_type_id for node in node_pydantics}
+    types = NodeType.objects.filter(id__in=type_ids)
+    type_pydantics = [NodeTypePydantic.model_validate(type_) async for type_ in types]
+
+    return GraphNodes(nodes=node_pydantics, types=type_pydantics)
