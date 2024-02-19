@@ -40,6 +40,7 @@ import { TabState } from "chains/hooks/useTabState";
 import { NOTIFY_SAVED } from "chains/editor/constants";
 import { PropEdge } from "chains/PropEdge";
 import { LinkEdge } from "chains/LinkEdge";
+import { addNode, addType } from "chains/utils";
 
 // Nodes are either a single node or a group of nodes
 // ConfigNode renders class_path specific content
@@ -59,15 +60,6 @@ const getExpectedTypes = (connector) => {
   return Array.isArray(connector?.source_type)
     ? new Set(connector.source_type)
     : new Set([connector.source_type]);
-};
-
-const addType = (type, setTypes) => {
-  setTypes((prev) => {
-    if (!prev.some((t) => t.id === type.id)) {
-      return [...prev, type];
-    }
-    return prev;
-  });
 };
 
 const ChainGraphEditor = ({ graph }) => {

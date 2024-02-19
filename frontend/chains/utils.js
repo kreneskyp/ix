@@ -1,11 +1,35 @@
-import React from "react";
-import { LLM_NAME_MAP } from "chains/constants";
+export const addType = (type, setTypes) => {
+  setTypes((prev) => {
+    if (!prev.some((t) => t.id === type.id)) {
+      return [...prev, type];
+    }
+    return prev;
+  });
+};
 
-export function llm_name(classPath) {
-  if (classPath === undefined) {
-    return <i>inherited</i>;
-  }
+export const addTypes = (types, setTypes) => {
+  setTypes((prev) => {
+    const new_types = types.filter(
+      (type) => !prev.some((t) => t.id === type.id)
+    );
+    return [...prev, ...new_types];
+  });
+};
 
-  // lookup LLM name, default to class name if classPath isn't mapped with a label
-  return LLM_NAME_MAP[classPath] || classPath.split(".").pop();
-}
+export const addNode = (node, setNodes) => {
+  setNodes((prevNodes) => {
+    return { ...prevNodes, [node.id]: node };
+  });
+};
+
+export const addNodes = (newNodes, setNodes) => {
+  setNodes((prevNodes) => {
+    const updatedNodes = { ...prevNodes };
+    newNodes.forEach((node) => {
+      if (!prevNodes[node.id]) {
+        updatedNodes[node.id] = node;
+      }
+    });
+    return updatedNodes;
+  });
+};

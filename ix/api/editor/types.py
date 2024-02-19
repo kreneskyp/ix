@@ -75,3 +75,8 @@ class GraphModel(BaseModel):
     nodes: List[NodePydantic]
     edges: List[EdgePydantic]
     types: List[NodeTypePydantic]
+
+
+class GraphNodes(BaseModel):
+    nodes: List[NodePydantic]
+    types: List[NodeTypePydantic]

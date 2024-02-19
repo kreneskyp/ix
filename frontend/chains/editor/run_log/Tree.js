@@ -39,7 +39,7 @@ const VerticalLine = ({ flexGrow, ...props }) => {
   );
 };
 
-export const BranchLine = ({ height }) => {
+export const BranchLine = ({ height, isLast }) => {
   return (
     <Box display="flex" flexDirection="column" height={`${height}px`} ml={2}>
       <VStack
@@ -57,7 +57,7 @@ export const BranchLine = ({ height }) => {
           ml={"10px"}
           flexGrow={0}
         />
-        <VerticalLine />
+        {isLast ? <Spacer /> : <VerticalLine />}
       </VStack>
     </Box>
   );
