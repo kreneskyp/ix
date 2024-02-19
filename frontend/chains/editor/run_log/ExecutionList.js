@@ -147,10 +147,10 @@ const ExecutionTreeNode = ({ execution, isFirst, isLast }) => {
               h={5}
               px={0}
               variant="ghost"
+              onClick={onToggle}
               icon={
                 <FontAwesomeIcon
                   icon={isOpen ? faChevronDown : faChevronRight}
-                  onClick={onToggle}
                 />
               }
             />
