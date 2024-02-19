@@ -26,19 +26,25 @@ def now() -> datetime:
 
 
 class Listener:
-    node_id: UUID
     run: dict = {}
+    parent: Optional["Listener"] = None
 
     def __init__(self, context: "IxContext", parent: Optional["Listener"] = None):
         self.context = context
-        self.node_id = node_id
+        self.parent = parent
 
-    def on_start(self, input: Input) -> None:
+    def on_start(self, node_id: UUID, input: Input) -> None:
+        if self.parent:
+            parent_id = str(self.parent.run["id"])
+        else:
+            parent_id = None
+
         self.run = {
             "id": str(uuid4()),
             "user_id": str(self.context.user_id),
             "task_id": str(self.context.task_id),
-            "node_id": str(self.node_id),
+            "parent_id": parent_id,
+            "node_id": str(node_id),
             "started_at": datetime.now(tz=ZoneInfo("America/Los_Angeles")),
             "inputs": to_json_serializable(input),
             "completed": False,
@@ -88,6 +94,9 @@ class Listener:
             "on_error": self.on_error,
         }
 
+    def get_child(self):
+        return type(self)(self.context, parent=self)
+
 
 class IxContext(BaseModel):
     """
@@ -104,8 +113,8 @@ class IxContext(BaseModel):
     user_id: str
     chat_id: Optional[str] = None
 
-    def get_listener(self, node_id: UUID) -> Listener:
-        return Listener(self, node_id=node_id)
+    def get_listener(self) -> Listener:
+        return Listener(self)
 
     @classmethod
     def from_task(cls, **kwargs) -> "IxContext":
