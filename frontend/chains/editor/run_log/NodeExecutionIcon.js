@@ -8,7 +8,7 @@ export const NodeExecutionIcon = ({ node }) => {
   const execution = run_log.log_by_node[node?.id];
 
   const onClick = React.useCallback(() => {
-    run_log.setExecution(execution);
+    run_log.setExecution({ execution });
     run_log.disclosure.onOpen();
   }, [execution]);
 

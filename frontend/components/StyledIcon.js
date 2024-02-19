@@ -1,7 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export const StyledIcon = ({ style }) => {
+export const StyledIcon = ({ style, ...props }) => {
   let iconProps = {};
   let IconComponent = FontAwesomeIcon;
   if (style.icon !== undefined) {
@@ -11,5 +11,5 @@ export const StyledIcon = ({ style }) => {
   } else if (style.component !== undefined) {
     IconComponent = style.component;
   }
-  return <IconComponent {...iconProps} />;
+  return <IconComponent {...iconProps} {...props} />;
 };
