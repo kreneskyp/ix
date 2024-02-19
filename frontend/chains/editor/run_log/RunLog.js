@@ -12,7 +12,13 @@ export const RunLog = ({}) => {
 
   return (
     <HStack alignItems="start">
-      <Box overflowY={"auto"} height={"calc(100vh - 250px)"} css={scrollbar}>
+      <Box
+        overflowY={"auto"}
+        height={"calc(100vh - 250px)"}
+        css={scrollbar}
+        pl={2}
+        minWidth={"260px"}
+      >
         <ExecutionList
           log={log}
           selectedExecution={execution}
@@ -25,7 +31,7 @@ export const RunLog = ({}) => {
         height={"calc(100vh - 250px)"}
         css={scrollbar}
       >
-        <ExecutionDetail execution={execution} />
+        <ExecutionDetail execution={execution?.execution} />
       </Box>
     </HStack>
   );

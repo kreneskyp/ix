@@ -3,47 +3,95 @@ import {
   Badge,
   Box,
   HStack,
-  List,
-  ListItem,
+  IconButton,
   Text,
   VStack,
+  useDisclosure,
 } from "@chakra-ui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronDown,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 import { ExecutionStatusIcon } from "chains/editor/run_log/icons";
 import { ChainTypes, NodeStateContext } from "chains/editor/contexts";
 import { useEditorColorMode } from "chains/editor/useColorMode";
+import TreeItem, { BranchLine } from "chains/editor/run_log/Tree";
+import { StyledIcon } from "components/StyledIcon";
+import { DEFAULT_NODE_STYLE, NODE_STYLES } from "chains/editor/styles";
+import { useRunLog } from "chains/editor/run_log/useRunLog";
 
-const ExecutionBrief = ({ nodes, types, execution, onClick }) => {
-  const node = nodes?.[execution.node_id];
-  const type = types?.find((t) => t.id === node?.node_type_id);
+const useExecutionTree = (executions, nodes, types) => {
+  const buildTree = (items, parentId = null) => {
+    return (
+      items
+        ?.filter((item) => item.parent_id === parentId)
+        ?.map((item) => {
+          const node = nodes?.[item.node_id];
+          return {
+            execution: item,
+            children: buildTree(items, item.id),
+            node: node,
+            type: types?.find((t) => t.id === node?.node_type_id),
+          };
+        }) || []
+    );
+  };
+
+  return React.useMemo(() => {
+    return buildTree(executions);
+  }, [executions, nodes, types]);
+};
+
+const ExecutionIcon = ({ type, isLight }) => {
+  const styles = NODE_STYLES[type?.type] || DEFAULT_NODE_STYLE;
+  const iconStyle = isLight
+    ? {
+        color: "gray.600",
+      }
+    : {
+        color: "gray.200",
+      };
+  return (
+    <Text {...iconStyle}>
+      <StyledIcon style={styles.icon} {...iconStyle} />
+    </Text>
+  );
+};
+
+const ExecutionBrief = ({ execution, node, type }) => {
   const { badge, highlight } = useEditorColorMode();
   return (
-    <HStack cursor={"pointer"} onClick={onClick}>
-      <Box px={2}>
-        <ExecutionStatusIcon execution={execution} />
-      </Box>
-      <Box fontSize={"xs"}>
+    <Box pl={2}>
+      <HStack>
         <Badge
           bg={highlight[type?.type] || highlight.default}
-          size={"xs"}
-          mx={1}
-          my={2}
+          fontSize={10}
+          mx={0}
+          my={1}
           {...badge}
         >
           {type?.type || "unknown"}
         </Badge>
-        <Text>
-          {type?.name || node?.class_path.split(".").pop() || "unknown"}
+        <Text fontSize={10}>
+          <ExecutionStatusIcon execution={execution.execution} />{" "}
         </Text>
-      </Box>
-    </HStack>
+      </HStack>
+      <Text fontSize={12} width={120} overflowX={"hidden"}>
+        {type?.name || node?.class_path.split(".").pop() || "unknown"}
+      </Text>
+    </Box>
   );
 };
 
-export const ExecutionList = ({ log, selectedExecution, setExecution }) => {
-  const { nodes } = React.useContext(NodeStateContext);
-  const executions =
-    log?.executions.filter((e) => nodes?.[e.node_id] !== undefined) || [];
-  const [types, setTypes] = React.useContext(ChainTypes);
+const ExecutionTreeNode = ({ execution, isFirst, isLast }) => {
+  const { execution: selectedExecution, setExecution } = useRunLog();
+
+  const onClick = () => {
+    setExecution(execution);
+  };
+  const isSelected = selectedExecution?.execution.id === execution.execution.id;
+  const { isOpen, onToggle } = useDisclosure();
 
   const { isLight } = useEditorColorMode();
   const itemStyle = isLight
@@ -53,7 +101,7 @@ export const ExecutionList = ({ log, selectedExecution, setExecution }) => {
       }
     : {
         borderColor: "gray.600",
-        _hover: { bg: "blackAlpha.400" },
+        _hover: { bg: "blackAlpha.400", borderRadius: 3 },
       };
   const selectedItemStyle = isLight
     ? {
@@ -63,33 +111,80 @@ export const ExecutionList = ({ log, selectedExecution, setExecution }) => {
         bg: "blackAlpha.400",
       };
 
+  const children = execution.children.map((child, i) => (
+    <ExecutionTreeNode
+      key={i}
+      execution={child}
+      isFirst={i === 0}
+      isLast={i === execution.children.length - 1}
+    />
+  ));
+
   return (
-    <Box>
-      <VStack alignItems={"start"}>
-        <List alignItems={"start"} px={2}>
-          {executions.map((execution, i) => {
-            return (
-              <ListItem
-                key={i}
-                p={2}
-                borderBottom={
-                  i !== executions.length - 1 ? "1px solid" : "none"
-                }
-                {...itemStyle}
-                {...(selectedExecution?.id === execution.id
-                  ? selectedItemStyle
-                  : {})}
-              >
-                <ExecutionBrief
-                  nodes={nodes}
-                  types={types}
-                  execution={execution}
-                  onClick={() => setExecution(execution)}
+    <Box p={0} height={"100%"}>
+      <HStack
+        cursor={"pointer"}
+        onClick={onClick}
+        height={"60px"}
+        py={0}
+        px={2}
+        whiteSpace={"nowrap"}
+        {...(isSelected ? selectedItemStyle : itemStyle)}
+        width={"100%"}
+      >
+        <TreeItem isFirst={isFirst} isLast={isLast}>
+          <ExecutionIcon type={execution.type} isLight={isLight} />
+        </TreeItem>
+        <ExecutionBrief
+          execution={execution}
+          node={execution.node}
+          type={execution.type}
+        />
+        <Box height={"100%"} alignItems={"end"} display={"flex"} width={"35px"}>
+          {execution.children.length > 0 && (
+            <IconButton
+              fontSize={10}
+              h={5}
+              px={0}
+              variant="ghost"
+              icon={
+                <FontAwesomeIcon
+                  icon={isOpen ? faChevronDown : faChevronRight}
+                  onClick={onToggle}
                 />
-              </ListItem>
-            );
-          })}
-        </List>
+              }
+            />
+          )}
+        </Box>
+      </HStack>
+
+      {isOpen && (
+        <HStack bg={"transparent"} height={"100%"} spacing={0}>
+          <BranchLine height={execution.children.length * 60} />
+          {children.length > 1 && <VStack spacing={0}>{children}</VStack>}
+        </HStack>
+      )}
+    </Box>
+  );
+};
+
+export const ExecutionList = ({ log }) => {
+  const { nodes } = React.useContext(NodeStateContext);
+  const [types, setTypes] = React.useContext(ChainTypes);
+
+  const executions = useExecutionTree(log?.executions, nodes, types);
+
+  return (
+    <Box width={"200px"}>
+      <VStack alignItems={"start"} spacing={0}>
+        {executions.map((execution, i) => (
+          <ExecutionTreeNode
+            key={execution.execution.id}
+            execution={execution}
+            isFirst={i === 0}
+            isLast={i === executions.length - 1}
+          />
+        ))}
       </VStack>
     </Box>
   );
