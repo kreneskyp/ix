@@ -2,7 +2,9 @@ import ast
 import json
 import os
 import subprocess
+import sys
 import textwrap
+import traceback
 from typing import Dict, Any, Optional
 
 from langchain_experimental.utilities import PythonREPL
@@ -103,15 +105,11 @@ def parse_skill(
     return func_name, input_schema, description
 
 
-
 class ErrorResponse(BaseModel):
     message: str
     traceback: str
     line: int
 
-
-import traceback
-import sys
 
 def execute_function(function, raise_errors: bool = False):
     try:
@@ -119,12 +117,11 @@ def execute_function(function, raise_errors: bool = False):
         return result
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = exc_tb.tb_frame.f_code.co_filename
         line_number = exc_tb.tb_lineno
         error_response = ErrorResponse(
             message=str(e),
-            traceback=''.join(traceback.format_tb(exc_tb)),
-            line=line_number
+            traceback="".join(traceback.format_tb(exc_tb)),
+            line=line_number,
         )
         if raise_errors:
             raise e
@@ -133,7 +130,11 @@ def execute_function(function, raise_errors: bool = False):
 
 
 def run_code_with_repl(
-    code: str, function: str, input: Dict[str, Any], timeout: Optional[int] = None, raise_errors: bool = False
+    code: str,
+    function: str,
+    input: Dict[str, Any],
+    timeout: Optional[int] = None,
+    raise_errors: bool = False,
 ) -> Any:
     # HAX: use globals for I/O with the REPL. Hacky way to avoid serialization.
     func_output = []

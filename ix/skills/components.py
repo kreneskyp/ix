@@ -46,8 +46,8 @@ RUN_SKILL = NodeType(
             label="Halt on error",
             type="boolean",
             description="Halt on error by raising exception",
-            default = False,
-        )
+            default=False,
+        ),
     ],
 )
 
