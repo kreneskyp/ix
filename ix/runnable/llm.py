@@ -32,9 +32,12 @@ class IXChatOpenAI(ChatOpenAI):
         """
         kwargs = kwargs.copy()
 
-        if "function_call" in kwargs:
-            if isinstance(kwargs["function_call"], str):
-                kwargs["function_call"] = {"name": kwargs["function_call"]}
+        function_call = kwargs.pop("function_call", None)
+        if function_call:
+            if isinstance(function_call, str):
+                kwargs["function_call"] = {"name": function_call}
+            else:
+                kwargs["function_call"] = function_call
 
         if "functions" in kwargs:
             kwargs["functions"] = [to_openai_fn(obj) for obj in kwargs["functions"]]
