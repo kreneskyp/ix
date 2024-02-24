@@ -45,6 +45,16 @@ export const CodeEditor = ({ value, language, onChange }) => {
   const [editor] = useState(() => withHistory(withReact(createEditor())));
   const _value = value || "";
 
+  const [lineHeights, setLineHeights] = useState([]); // State to store line heights
+
+  const updateLineHeight = (index, height) => {
+    setLineHeights((prevHeights) => {
+      const newHeights = [...prevHeights];
+      newHeights[index] = height;
+      return newHeights;
+    });
+  };
+
   const decorate = useDecorate(editor);
   const onKeyDown = useOnKeydown(editor);
 
@@ -79,6 +89,19 @@ export const CodeEditor = ({ value, language, onChange }) => {
     [onChange]
   );
 
+  const renderElement = React.useCallback(
+    (props) => (
+      <ElementWrapper
+        key={props.element.line}
+        {...props}
+        language={language}
+        heights={lineHeights}
+        updateLineHeight={updateLineHeight}
+      />
+    ),
+    [updateLineHeight]
+  );
+
   return (
     <Box
       h={"100%"}
@@ -96,11 +119,11 @@ export const CodeEditor = ({ value, language, onChange }) => {
       >
         <SetNodeToDecorations />
         <HStack spacing={0}>
-          <LineNumbers />
+          <LineNumbers lineHeights={lineHeights} />
           <Box py={2} w={"100%"}>
             <Editable
               decorate={decorate}
-              renderElement={(props) => ElementWrapper(props, language)}
+              renderElement={renderElement}
               renderLeaf={renderLeaf}
               onKeyDown={onKeyDown}
             />
@@ -115,9 +138,10 @@ export const CodeEditor = ({ value, language, onChange }) => {
   );
 };
 
-const ElementWrapper = (props, language) => {
+const ElementWrapper = ({ language, heights, updateLineHeight, ...props }) => {
   const { attributes, children, element } = props;
   const editor = useSlateStatic();
+  const lineRef = React.useRef(null);
 
   if (element.type === CodeBlockType) {
     Transforms.setNodes(
@@ -145,10 +169,21 @@ const ElementWrapper = (props, language) => {
     );
   }
 
+  // update parent if code line size changes
+  React.useEffect(() => {
+    if (
+      element.type === CodeLineType &&
+      lineRef.current &&
+      heights[element.line] !== lineRef.current.offsetHeight
+    ) {
+      updateLineHeight(element.line, lineRef.current.offsetHeight);
+    }
+  }, [element, children]);
+
   if (element.type === CodeLineType) {
     return (
       <Box {...attributes} style={{ position: "relative" }}>
-        {children}
+        <div ref={lineRef}>{children}</div>
       </Box>
     );
   }
