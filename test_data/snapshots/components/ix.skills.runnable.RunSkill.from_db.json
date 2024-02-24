@@ -4,6 +4,12 @@
     "config_schema": {
         "display_groups": null,
         "properties": {
+            "raise_error": {
+                "default": false,
+                "description": "Halt on error by raising exception",
+                "label": "Halt on error",
+                "type": "boolean"
+            },
             "skill_id": {
                 "description": "Skill to run",
                 "input_type": "IX:skill",
@@ -35,6 +41,23 @@
             "step": null,
             "style": null,
             "type": "string"
+        },
+        {
+            "choices": null,
+            "default": false,
+            "description": "Halt on error by raising exception",
+            "init_type": "init",
+            "input_type": null,
+            "label": "Halt on error",
+            "max": null,
+            "min": null,
+            "name": "raise_error",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "boolean"
         }
     ],
     "name": "Run Skill",
