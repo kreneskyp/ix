@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 import pytest
+from langchain_core.messages import AIMessage
 from langchain_core.runnables import RunnableParallel
 
 from ix.chains.fixture_src.flow import CHAIN_REF_CLASS_PATH
@@ -110,12 +111,7 @@ class TestRunnableReference:
             }
         )
         assert result == {
-            "chat_output": {
-                "additional_kwargs": {},
-                "content": "mock llm response",
-                "example": False,
-                "type": "ai",
-            },
+            "chat_output": AIMessage(content="mock llm response"),
             "user_input": "hello",
         }
 

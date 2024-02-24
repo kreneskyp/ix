@@ -26,7 +26,10 @@
                     "html",
                     "sol",
                     "csharp",
-                    "cobol"
+                    "cobol",
+                    "c",
+                    "lua",
+                    "perl"
                 ],
                 "input_type": "select",
                 "label": "Language",
@@ -127,6 +130,18 @@
                 {
                     "label": "COBOL",
                     "value": "cobol"
+                },
+                {
+                    "label": "C",
+                    "value": "c"
+                },
+                {
+                    "label": "LUA",
+                    "value": "lua"
+                },
+                {
+                    "label": "PERL",
+                    "value": "perl"
                 }
             ],
             "default": "python",
