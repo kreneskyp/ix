@@ -41,6 +41,13 @@ RUN_SKILL = NodeType(
             description="Skill to run",
             input_type="IX:skill",
         ),
+        NodeTypeField(
+            name="raise_error",
+            label="Halt on error",
+            type="boolean",
+            description="Halt on error by raising exception",
+            default = False,
+        )
     ],
 )
 

@@ -6,6 +6,7 @@ import textwrap
 from typing import Dict, Any, Optional
 
 from langchain_experimental.utilities import PythonREPL
+from pydantic import BaseModel
 
 
 class MissingTypeHintError(Exception):
@@ -102,24 +103,78 @@ def parse_skill(
     return func_name, input_schema, description
 
 
+
+class ErrorResponse(BaseModel):
+    message: str
+    traceback: str
+    line: int
+
+
+import traceback
+import sys
+
+def execute_function(function, raise_errors: bool = False):
+    try:
+        result = function()
+        return result
+    except Exception as e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = exc_tb.tb_frame.f_code.co_filename
+        line_number = exc_tb.tb_lineno
+        error_response = ErrorResponse(
+            message=str(e),
+            traceback=''.join(traceback.format_tb(exc_tb)),
+            line=line_number
+        )
+        if raise_errors:
+            raise e
+        else:
+            return error_response
+
+
 def run_code_with_repl(
-    code: str, function: str, input: Dict[str, Any], timeout: Optional[int] = None
-) -> str:
+    code: str, function: str, input: Dict[str, Any], timeout: Optional[int] = None, raise_errors: bool = False
+) -> Any:
     # HAX: use globals for I/O with the REPL. Hacky way to avoid serialization.
     func_output = []
     repl = PythonREPL(
-        _globals={"func_input": input, "func_output": func_output, "json": json}
+        _globals={
+            "func_input": input,
+            "func_output": func_output,
+            "json": json,
+            "ErrorResponse": ErrorResponse,
+        }
     )
 
     # Prepare the command to run in the REPL
     command = textwrap.dedent(
         f"""
+import traceback
+import sys
+
 {code}
-output = {function}(**func_input)
-func_output.append(output)
+
+try:
+    output = {function}(**func_input)
+    func_output.append(output)
+except Exception as e:
+    exc_type, exc_obj, exc_tb = sys.exc_info()
+    error_response = ErrorResponse(
+        message=str(e),
+        traceback=''.join(traceback.format_tb(exc_tb)),
+        line=exc_tb.tb_lineno
+    )
+    func_output.append(error_response)
+    if raise_errors:
+        raise e
 """
     )
 
     # Run the command in the PythonREPL
     response = repl.run(command, timeout)
-    return func_output[0] if func_output else response
+    output = func_output[0] if func_output else response
+
+    if isinstance(output, ErrorResponse) and raise_errors:
+        raise Exception(output.message)
+
+    return output
