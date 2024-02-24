@@ -3,7 +3,7 @@ import { useSlate } from "slate-react";
 import { Box } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/react";
 
-export const LineNumbers = () => {
+export const LineNumbers = ({ lineHeights }) => {
   const editor = useSlate();
   const element = editor.children[0];
   const lines = element.children || [];
@@ -20,6 +20,7 @@ export const LineNumbers = () => {
       bg={bg}
       px={1}
       py={2}
+      pt={3}
       fontSize="xs"
       fontFamily="monospace"
       color={color}
@@ -28,10 +29,10 @@ export const LineNumbers = () => {
         <Box
           key={index}
           w="full"
-          h="21px"
+          h={lineHeights[index] ? `${lineHeights[index]}px` : "21px"}
           m={0}
           display="flex"
-          alignItems="end"
+          alignItems="start"
           justifyContent="flex-end"
         >
           {index + 1}
