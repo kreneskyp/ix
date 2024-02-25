@@ -2,12 +2,17 @@ import React from "react";
 import { Box, FormLabel, FormHelperText } from "@chakra-ui/react";
 import { getLabel } from "json_form/utils";
 
+export const DefaultHelp = ({ field }) => (
+  <FormHelperText fontSize={"xs"}>{field.description}</FormHelperText>
+);
+
 /**
  * Generic JSONSchemaForm field component that wraps a Select component. This is a
  * shortcut for adding integrating a custom component with JSONSchemaForm.
  */
 export const APISelect = ({
   Component,
+  HelpComponent,
   name,
   field,
   isRequired,
@@ -34,7 +39,7 @@ export const APISelect = ({
         value={value}
         width={"100%"}
       />
-      <FormHelperText fontSize={"xs"}>{field.description}</FormHelperText>
+      <HelpComponent field={field} value={value} config={config} />
     </Box>
   );
 };
@@ -46,6 +51,16 @@ export const APISelect = ({
  */
 APISelect.for_select = (component) => {
   return (props) => {
-    return <APISelect Component={component} {...props} />;
+    return (
+      <APISelect
+        Component={component}
+        HelpComponent={component.help || DefaultHelp}
+        {...props}
+      />
+    );
   };
+};
+
+APISelect.defaultProps = {
+  HelpComponent: DefaultHelp,
 };
