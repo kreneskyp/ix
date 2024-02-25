@@ -46,7 +46,7 @@ class Listener:
             "parent_id": parent_id,
             "node_id": str(node_id),
             "started_at": datetime.now(tz=ZoneInfo("America/Los_Angeles")),
-            "inputs": to_json_serializable(input),
+            "inputs": to_json_serializable(input, truncate=False),
             "completed": False,
         }
 
@@ -74,7 +74,7 @@ class Listener:
             dict(
                 completed=completed,
                 message=message,
-                outputs=to_json_serializable(output),
+                outputs=to_json_serializable(output, truncate=False),
                 finished_at=datetime.now(tz=ZoneInfo("America/Los_Angeles")),
             )
         )
