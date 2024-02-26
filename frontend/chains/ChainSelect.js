@@ -2,9 +2,7 @@ import React from "react";
 import axios from "axios";
 import { FormHelperText, Text } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowUpRightFromSquare,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 
 import { AsyncAPIObjectSelect } from "components/AsyncAPIObjectSelect";
 import { MenuList } from "components/select/MenuList";
