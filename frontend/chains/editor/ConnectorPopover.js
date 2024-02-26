@@ -25,6 +25,8 @@ const DEFAULT_DESCRIPTION = (
   </>
 );
 
+const DefaultConnectorLabel = ({ value }) => value;
+
 export const ConnectorPopover = ({
   type,
   node,
@@ -32,6 +34,7 @@ export const ConnectorPopover = ({
   label,
   placement,
   children,
+  connector_label,
 }) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
   const { highlight, isLight } = useEditorColorMode();
@@ -60,6 +63,7 @@ export const ConnectorPopover = ({
     [onToggle, selectedConnector]
   );
 
+  const ConnectorLabel = connector_label || DefaultConnectorLabel;
   const hover = isLight ? { color: "blue.400" } : { color: "blue.400" };
 
   return (
@@ -76,7 +80,9 @@ export const ConnectorPopover = ({
           title={"shift-click for help"}
           _hover={hover}
         >
-          {children || label || connector.label || connector.key}
+          <ConnectorLabel
+            value={children || label || connector.label || connector.key}
+          />
         </Box>
       </PopoverTrigger>
       <PopoverContent zIndex={99999} color={"white"}>

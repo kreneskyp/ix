@@ -6,7 +6,7 @@
         "properties": {
             "outputs": {
                 "description": "Inputs from the chat API.",
-                "input_type": "hash_list",
+                "input_type": "IX:input",
                 "items": {},
                 "maxItems": null,
                 "minItems": null,
@@ -39,7 +39,7 @@
             ],
             "description": "Inputs from the chat API.",
             "init_type": "init",
-            "input_type": "hash_list",
+            "input_type": "IX:input",
             "label": "Inputs",
             "max": null,
             "min": null,

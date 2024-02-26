@@ -46,7 +46,7 @@ export const InputsConnectors = ({ node }) => {
   );
 };
 
-export const OutputTarget = ({ node, connector }) => {
+export const OutputTarget = ({ node, connector, connector_label }) => {
   const color = useConnectorColor(node, connector);
 
   return (
@@ -58,6 +58,7 @@ export const OutputTarget = ({ node, connector }) => {
           node={node}
           connector={connector}
           placement={"right"}
+          connector_label={connector_label}
         />{" "}
         {connector.required && <RequiredAsterisk color={color} />}
       </Flex>
@@ -65,14 +66,19 @@ export const OutputTarget = ({ node, connector }) => {
   );
 };
 
-export const OutputsConnectors = ({ node }) => {
+export const OutputsConnectors = ({ node, connector_label }) => {
   const { outputs } = useFlowConnectors(node);
   return (
     <Flex justify={"space-between"}>
       <VStack spacing={0} cursor="default"></VStack>
       <VStack justifyContent="flex-end">
         {outputs?.map((connector, i) => (
-          <OutputTarget key={connector.key} node={node} connector={connector} />
+          <OutputTarget
+            key={connector.key}
+            node={node}
+            connector={connector}
+            connector_label={connector_label}
+          />
         ))}
       </VStack>
     </Flex>

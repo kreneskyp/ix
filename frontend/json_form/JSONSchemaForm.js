@@ -23,6 +23,7 @@ import { JSONSchemaSelect } from "schemas/json/JSONSchemaSelect";
 import { OpenAPISchemaSelect } from "schemas/openapi/OpenAPISchemaSelect";
 import { SkillSelect } from "skills/SkillSelect";
 import { AgentSelect } from "chains/AgentSelect";
+import { ChatInputList } from "json_form/fields/ChatInputList";
 
 // explicit input types
 const INPUTS = {
@@ -35,6 +36,7 @@ const INPUTS = {
   textarea: TextArea,
   dict: Dict,
   list: List,
+  "IX:input": ChatInputList,
   "IX:chain": APISelect.for_select(ChainSelect),
   "IX:agent": APISelect.for_select(AgentSelect),
   "IX:json_schema": APISelect.for_select(JSONSchemaSelect),

@@ -9,6 +9,8 @@ export const HashList = ({
   config,
   onChange,
   onDelete,
+  component,
+  defaultValue,
 }) => {
   const hashField = `${name}_hash`;
 
@@ -30,6 +32,8 @@ export const HashList = ({
       onChange={handleChange}
       onDelete={onDelete}
       label={getLabel(name)}
+      component={component}
+      defaultValue={defaultValue}
       isRequired
     />
   );

@@ -15,8 +15,11 @@ export const HashListForm = ({
   hash_list,
   onChange,
   onDelete,
+  component,
+  defaultValue,
 }) => {
   const colorMode = useEditorColorMode();
+  const _defaultValue = defaultValue || "";
 
   const handleInputChange = (e, index) => {
     const { value } = e.target;
@@ -46,7 +49,8 @@ export const HashListForm = ({
 
   // Add empty element here so the rendered structure and input focus sticks
   // while typing in the new item.
-  const list_plus_new = list ? [...list, ""] : [""];
+  const list_plus_new = list ? [...list, _defaultValue] : [_defaultValue];
+  const InputComponent = component || Input;
 
   return (
     <Box width="100%">
@@ -54,7 +58,7 @@ export const HashListForm = ({
       <VStack align="stretch">
         {list_plus_new?.map((value, index) => (
           <HStack key={index}>
-            <Input
+            <InputComponent
               value={value}
               onChange={(e) => handleInputChange(e, index)}
               placeholder={`Item ${index + 1}`}

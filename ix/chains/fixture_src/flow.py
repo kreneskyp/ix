@@ -15,7 +15,7 @@ ROOT_NODE = {
             "name": "outputs",
             "label": "Inputs",
             "type": "list",
-            "input_type": "hash_list",
+            "input_type": "IX:input",
             "description": "Inputs from the chat API.",
             "default": [
                 "user_input",

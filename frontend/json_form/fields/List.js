@@ -2,7 +2,15 @@ import React from "react";
 import { ListForm } from "components/ListForm";
 import { getLabel } from "json_form/utils";
 
-export const List = ({ name, field, isRequired, value, onChange }) => {
+export const List = ({
+  name,
+  field,
+  isRequired,
+  value,
+  onChange,
+  component,
+  defaultValue,
+}) => {
   const handleChange = React.useCallback(
     (newValue) => {
       // Check if newValue is null or undefined, if so, set it to an empty array
@@ -20,6 +28,8 @@ export const List = ({ name, field, isRequired, value, onChange }) => {
       list={value}
       onChange={handleChange}
       label={getLabel(name)}
+      component={component}
+      defaultValue={defaultValue}
       isRequired
     />
   );
