@@ -1,10 +1,15 @@
 import React from "react";
 import axios from "axios";
+import { FormHelperText, Text } from "@chakra-ui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 
 import { AsyncAPIObjectSelect } from "components/AsyncAPIObjectSelect";
 import { MenuList } from "components/select/MenuList";
 import { SingleValue } from "components/select/SingleValue";
 import { Option } from "components/select/Option";
+import { LinkText } from "components/LinkText";
+import { EditorViewState } from "chains/editor/contexts";
 
 const toOption = (chain) => ({
   label: chain.name,
@@ -54,3 +59,24 @@ export const ChainSelect = ({ onChange, value, is_agent }) => {
     />
   );
 };
+
+export const ChainSelectHelp = ({ value, field }) => {
+  const editor = React.useContext(EditorViewState);
+
+  return (
+    <FormHelperText fontSize={"xs"}>
+      <Text as={"span"}>{field.description}</Text>
+      {value && (
+        <LinkText
+          fontSize={"xs"}
+          pl={"3px"}
+          onClick={() => editor.selectOrOpenChain(value)}
+        >
+          Open <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+        </LinkText>
+      )}
+    </FormHelperText>
+  );
+};
+
+ChainSelect.help = ChainSelectHelp;
