@@ -8,6 +8,7 @@ from ix.chains.fixture_src.lcel import (
     RUNNABLE_MAP_CLASS_PATH,
     RUNNABLE_BRANCH_CLASS_PATH,
     LANGGRAPH_STATE_MACHINE_CLASS_PATH,
+    LANGGRAPH_END_CLASS_PATH,
 )
 from ix.chains.loaders.core import (
     MapPlaceholder,
@@ -526,6 +527,27 @@ def fake_node_state_machine(
 async def afake_node_state_machine(**kwargs) -> StateMachinePlaceholder:
     """Fake a branch of ChainNode connected by edges"""
     return await sync_to_async(fake_node_state_machine)(**kwargs)
+
+
+def fake_graph_end(**kwargs) -> ChainNode:
+    """
+    Create a fake graph END node
+    """
+    config = kwargs.pop(
+        "config",
+        {
+            "class_path": LANGGRAPH_END_CLASS_PATH,
+            "config": {},
+        },
+    )
+    return fake_chain_node(root=False, config=config, **kwargs)
+
+
+async def afake_graph_end(**kwargs) -> ChainNode:
+    """
+    Create a fake graph END node
+    """
+    return await sync_to_async(fake_graph_end)(**kwargs)
 
 
 async def afake_node_branch(**kwargs) -> BranchPlaceholder:

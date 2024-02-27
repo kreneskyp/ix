@@ -75,6 +75,7 @@ def init_graph(
     nodes: List[Tuple[str, Runnable[Input, Output]]],
     entry_point: str = "start",
     loops: List[str] = [],
+    ends: List[str] = [],
 ) -> Runnable:
     """
     Init a LangGraph graph
@@ -105,6 +106,10 @@ def init_graph(
         lambda input: conditional.invoke(input),
         conditional_map,
     )
+
+    # add edges to END nodes
+    for node_name in ends:
+        workflow.add_edge(node_name, END)
 
     # add loops back to the conditional
     for node_name in loops:

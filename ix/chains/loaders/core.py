@@ -19,6 +19,7 @@ from pydantic import BaseModel
 from ix.api.components.types import NodeType as NodeTypePydantic
 from ix.api.chains.types import Node as NodePydantic, InputConfig
 from ix.chains.components.lcel import init_sequence, init_branch, init_graph
+from ix.chains.fixture_src.lcel import LANGGRAPH_END_CLASS_PATH
 from ix.chains.loaders.context import IxContext
 
 from ix.chains.loaders.prompts import load_prompt
@@ -442,6 +443,7 @@ class StateMachinePlaceholder:
     node: ChainNode
     branches: List[Tuple[str, "FlowPlaceholder"]]
     loops: List[str] = dataclasses.field(default_factory=list)
+    ends: List[str] = dataclasses.field(default_factory=list)
     entry_point: str = "start"
 
     @property
@@ -613,11 +615,56 @@ async def aload_flow_node(
     return await sync_to_async(load_flow_node)(nodes, seen)
 
 
+@dataclasses.dataclass
+class GraphNode:
+    loopbacks: Set[UUID] = dataclasses.field(default_factory=set)
+    ends: Set[UUID] = dataclasses.field(default_factory=set)
+
+    @classmethod
+    def add_node(cls, node: ChainNode, graph_nodes: "GraphNodes"):
+        """Adds a node's loopbacks and end nodes to the graph context."""
+        loopback_links = node.outgoing_edges.select_related("target").filter(
+            relation="GRAPH",
+            target_id__in=graph_nodes.keys() if graph_nodes else [],
+        )
+        if len(loopback_links) == 1:
+            target_id = loopback_links[0].target_id
+            try:
+                graph_nodes[target_id].loopbacks.add(node.id)
+            except KeyError:
+                raise KeyError(f"Graph node {target_id} not found in graph_nodes")
+        elif len(loopback_links) > 1:
+            raise ValueError(
+                f"Multiple loopback links not supported links={loopback_links}"
+            )
+
+        end_links = node.outgoing_edges.select_related("target").filter(
+            target__class_path=LANGGRAPH_END_CLASS_PATH,
+        )
+
+        # attach end nodes to closest GraphNode.
+        if len(end_links) == 1:
+            current_graph_node_id = list(graph_nodes.keys())[-1]
+            try:
+                graph_nodes[current_graph_node_id].ends.add(node.id)
+            except KeyError:
+                raise KeyError(
+                    f"Graph node {current_graph_node_id} not found in graph_nodes"
+                )
+        elif len(end_links) > 1:
+            raise ValueError(f"Multiple end links not supported links={end_links}")
+
+        return cls(loopbacks=loopback_links, ends=end_links)
+
+
+GraphNodes = Dict[UUID, GraphNode]
+
+
 def load_flow_map(
     nodes: List[ChainNode],
     seen: Dict[UUID, FlowPlaceholder],
     branch_depth: Tuple[str] = None,
-    graph_nodes: Dict[UUID, List[Runnable]] = None,
+    graph_nodes: GraphNodes = None,
 ) -> FlowPlaceholder | List[FlowPlaceholder]:
     """
     Load all paths starting from the given group of nodes. The returned nodes are
@@ -665,7 +712,7 @@ def build_flow_branch(
     outgoing_links: List[ChainEdge],
     seen: Dict[UUID, FlowPlaceholder],
     branch_depth: Tuple[str] = None,
-    graph_nodes: Dict[UUID, List[Runnable]] = None,
+    graph_nodes: GraphNodes = None,
 ):
     branches = {}
     for key, group in itertools.groupby(outgoing_links, lambda edge: edge.source_key):
@@ -699,7 +746,7 @@ def load_flow_branch(
     node: ChainNode,
     seen: Dict[UUID, FlowPlaceholder],
     branch_depth: Tuple[str] = None,
-    graph_nodes: Dict[UUID, List[Runnable]] = None,
+    graph_nodes: GraphNodes = None,
 ) -> BranchPlaceholder:
     # gather branches
     outgoing_links = (
@@ -724,11 +771,11 @@ def load_flow_state_machine(
     node: ChainNode,
     seen: Dict[UUID, FlowPlaceholder],
     branch_depth: Tuple[str] = None,
-    graph_nodes: Dict[UUID, List[Runnable]] = None,
+    graph_nodes: GraphNodes = None,
 ) -> StateMachinePlaceholder:
     """Load a LangGraph statemachine node into a FlowPlaceholder."""
     graph_nodes = graph_nodes.copy() if graph_nodes else {}
-    graph_nodes[node.id] = set()
+    graph_nodes[node.id] = GraphNode()
 
     # gather branches
     outgoing_links = (
@@ -740,15 +787,24 @@ def load_flow_state_machine(
         node, outgoing_links, seen, branch_depth, graph_nodes
     )
 
-    # gather loops
+    # gather loops and ends
     loops = []
-    loopback_links = graph_nodes[node.id]
+    ends = []
+    loopback_links = graph_nodes[node.id].loopbacks
+    end_links = graph_nodes[node.id].ends
     for branch_key, branch_node in branch_tuples:
         leaves = find_leaves(branch_node)
         if any(leaf.id in loopback_links for leaf in leaves):
             loops.append(branch_key)
 
-    return StateMachinePlaceholder(node=node, branches=branch_tuples, loops=loops)
+        # edges from any leaf to an end node.
+        # HAX: this is cheap way to add ENDs for now. It doesn't mix well with RunnableBranch
+        if any(leaf.id in end_links for leaf in leaves):
+            ends.append(branch_key)
+
+    return StateMachinePlaceholder(
+        node=node, branches=branch_tuples, loops=loops, ends=ends
+    )
 
 
 BRANCH_CLASS_PATH = "ix.chains.components.lcel.init_branch"
@@ -760,7 +816,7 @@ def load_flow_sequence(
     start: ChainNode,
     seen: Dict[UUID, FlowPlaceholder],
     branch_depth: Tuple[str] = None,
-    graph_nodes: Dict[UUID, List[Runnable]] = None,
+    graph_nodes: GraphNodes = None,
 ) -> Runnable | SequencePlaceholder:
     sequential_nodes = []
 
@@ -771,10 +827,9 @@ def load_flow_sequence(
             current.outgoing_edges.select_related("target").filter(relation="LINK")
         )
         incoming_links = list(current.incoming_edges.filter(relation="LINK"))
-        loopback_links = current.outgoing_edges.select_related("target").filter(
-            relation="GRAPH",
-            target_id__in=graph_nodes.keys() if graph_nodes else [],
-        )
+
+        # LangGraph StateMachine loops
+        GraphNode.add_node(node=current, graph_nodes=graph_nodes)
 
         # LangGraph StateMachine
         if current.class_path == STATE_MACHINE_CLASS_PATH:
@@ -911,19 +966,6 @@ def load_flow_sequence(
                     sequential_nodes.append(current)
                     seen[current.id] = current
 
-        # LangGraph StateMachine loops
-        if len(loopback_links) == 1:
-            target_id = loopback_links[0].target_id
-            try:
-                graph_nodes[target_id].add(current.id)
-            except KeyError:
-                raise KeyError(f"Graph node {target_id} not found in graph_nodes")
-
-        elif len(loopback_links) > 1:
-            raise ValueError(
-                f"Multiple loopback links not supported links={loopback_links}"
-            )
-
         if len(outgoing_links) > 1 and current.class_path != BRANCH_CLASS_PATH:
             # multiple links: start of split that will end in a map node.
             targets = [link.target for link in outgoing_links]
@@ -1033,6 +1075,7 @@ def init_flow_node(
             conditional=wrap_runnable(conditional),
             nodes=nodes,
             loops=root.loops,
+            ends=root.ends,
         )
     elif isinstance(root, BranchPlaceholder):
         return init_branch(

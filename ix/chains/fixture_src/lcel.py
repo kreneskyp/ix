@@ -171,6 +171,14 @@ LANGGRAPH_STATE_MACHINE = NodeType(
     ],
 )
 
+LANGGRAPH_END_CLASS_PATH = "langgraph.graph.END"
+LANGGRAPH_END = {
+    "class_path": LANGGRAPH_END_CLASS_PATH,
+    "name": "End State",
+    "description": "Exit the state machine and return the prior node directly.",
+    "type": "end",
+}
+
 
 LANGCHAIN_RUNNABLES = [
     RUNNABLE_PASS_THROUGH,
@@ -179,6 +187,5 @@ LANGCHAIN_RUNNABLES = [
     RUNNABLE_BRANCH,
     RUNNABLE_EACH,
     LANGGRAPH_STATE_MACHINE,
-    # TODO:
-    # LANGGRAPH_END,
+    LANGGRAPH_END,
 ]

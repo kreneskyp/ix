@@ -309,6 +309,7 @@ const ChainGraphEditor = ({ graph }) => {
       const from_branch = source.data.type.type === "branch";
       const with_graph =
         source.data.type.type === "graph" ||
+        target.data.type.type === "end" ||
         (target.data.type.type === "graph" && params.targetHandle === "loop");
 
       const displayRelation =
