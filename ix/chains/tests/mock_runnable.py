@@ -34,6 +34,10 @@ class MockRunnable(Runnable[MockRunnableInput, Output], BaseModelV1):
     value: Any = "output"
     func_class_path: Optional[str] = None
 
+    # instance state that can be used to store data between invocations
+    # this is useful for tracking state while looping.
+    state: dict[str, Any] = Field(default_factory=dict)
+
     def invoke(
         self,
         input: MockRunnableInput,
@@ -42,7 +46,7 @@ class MockRunnable(Runnable[MockRunnableInput, Output], BaseModelV1):
         # conditionally use a custom function to process the input
         if self.func_class_path:
             func = import_class(self.func_class_path)
-            return func(input)
+            return func(input=input, config=config, state=self.state)
 
         # default return value
         if isinstance(input, dict):
