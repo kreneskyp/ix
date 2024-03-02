@@ -3,6 +3,7 @@ from typing import List, Dict, Tuple, Any
 
 from asgiref.sync import sync_to_async
 from langchain_core.messages import AIMessage
+from langchain_core.runnables.utils import Input
 
 from ix.chains.fixture_src.lcel import (
     RUNNABLE_MAP_CLASS_PATH,
@@ -441,22 +442,36 @@ def fake_state_machine_schema() -> Schema:
     )
 
 
-def _state_machine_end(input, **kwargs):
-    """mock function for state machine end"""
+def _state_machine(input: Input, config: dict, state: dict, **kwargs):
+    """mock function for state machine conditional with a predetermined sequence
+    of states.
+
+    Uses config["responses"] to determine the next state. END is sent after all
+    responses are used or if none were configured.
+    """
+    current = state.get("current", 0)
+    responses = config.get("responses", [])
+    if current < len(responses):
+        state["current"] = current + 1
+        return responses[current]
     return "end"
 
 
-def _state_machine_action(input, **kwargs):
+def _state_machine_action(**kwargs):
     """mock function for state machine action"""
     return {"messages": [AIMessage(content="mock statemachine action")]}
 
 
+STATE_MACHINE_ACTION = "ix.chains.tests.fake._state_machine_action"
+STATE_MACHINE_CONDITIONAL = "ix.chains.tests.fake._state_machine"
+
+
 def fake_state_machine_conditional() -> Chain:
-    """fake method for creating a conditional for a state machine"""
+    """fake method for creating a conditional for a state machine."""
     chain = fake_chain()
     fake_runnable(
         chain=chain,
-        config=dict(func_class_path="ix.chains.tests.fake._state_machine_end"),
+        config=dict(func_class_path=STATE_MACHINE_CONDITIONAL),
         root=True,
     )
     return chain
@@ -467,7 +482,7 @@ def fake_state_machine_action() -> Chain:
     chain = fake_chain()
     fake_runnable(
         chain=chain,
-        config=dict(func_class_path="ix.chains.tests.fake._state_machine_action"),
+        config=dict(func_class_path=STATE_MACHINE_ACTION),
         root=True,
     )
     return chain
@@ -481,9 +496,9 @@ def fake_node_state_machine(
 ) -> StateMachinePlaceholder:
     """Fake a LangGraph of ChainNode connected by edges"""
 
-    schema = fake_state_machine_schema()
-    conditional = fake_state_machine_conditional()
-    action = fake_state_machine_action()
+    schema: Schema = fake_state_machine_schema()
+    conditional: Chain = fake_state_machine_conditional()
+    action: Chain = fake_state_machine_action()
 
     chain = chain or fake_chain()
     branch_node, branches, encoded_branches = build_branches(
