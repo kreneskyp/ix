@@ -838,9 +838,7 @@ def load_flow_sequence(
             )
             sequential_nodes.append(state_machine_placeholder)
 
-            # TODO: breaking here _should_ be ok since state machine graph
-            #  should be fully explored. Still an outstanding issue with
-            #  ImplicitJoin within state machine branches. (they aren't joining)
+            # all branches explored past the state machine
             break
 
         # single outgoing link
