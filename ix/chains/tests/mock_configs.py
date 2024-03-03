@@ -127,14 +127,14 @@ CHAT_MESSAGES_WITH_CHAT_HISTORY = [
 ]
 
 PROMPT_CHAT = {
-    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "class_path": "ix.runnable.prompt.ChatPrompt",
     "config": {
         "messages": CHAT_MESSAGES,
     },
 }
 
 PROMPT_CHAT_0 = {
-    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "class_path": "ix.runnable.prompt.ChatPrompt",
     "config": {
         "messages": [
             {
@@ -146,7 +146,7 @@ PROMPT_CHAT_0 = {
 }
 
 PROMPT_CHAT_1 = {
-    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "class_path": "ix.runnable.prompt.ChatPrompt",
     "config": {
         "messages": [
             {
@@ -158,7 +158,7 @@ PROMPT_CHAT_1 = {
 }
 
 PROMPT_CHAT_2 = {
-    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "class_path": "ix.runnable.prompt.ChatPrompt",
     "config": {
         "messages": [
             {
@@ -170,7 +170,7 @@ PROMPT_CHAT_2 = {
 }
 
 PROMPT_WITH_CHAT_HISTORY = {
-    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "class_path": "ix.runnable.prompt.ChatPrompt",
     "config": {
         "messages": CHAT_MESSAGES_WITH_CHAT_HISTORY,
     },

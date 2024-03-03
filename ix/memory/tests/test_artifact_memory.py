@@ -25,7 +25,7 @@ TASK_WITH_ARTIFACT_MEMORY = {
         },
         "memory": ARTIFACT_MEMORY,
         "prompt": {
-            "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+            "class_path": "ix.runnable.prompt.ChatPrompt",
             "config": {
                 "messages": [
                     {

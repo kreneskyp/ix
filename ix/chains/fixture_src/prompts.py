@@ -6,8 +6,9 @@ DEFAULT_MESSAGES = [
     }
 ]
 
-CHAT_PROMPT_TEMPLATE = {
-    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+CHAT_PROMPT_CLASS_PATH = "ix.runnable.prompt.ChatPrompt"
+CHAT_PROMPT = {
+    "class_path": CHAT_PROMPT_CLASS_PATH,
     "type": "prompt",
     "name": "Chat Prompt Template",
     "description": "Template for Chat style LLM request. Renders System, User, and AI messages",
@@ -65,6 +66,6 @@ MULTI_MODAL_CHAT_PROMPT = {
 }
 
 PROMPTS = [
-    CHAT_PROMPT_TEMPLATE,
+    CHAT_PROMPT,
     MULTI_MODAL_CHAT_PROMPT,
 ]

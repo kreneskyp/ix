@@ -346,9 +346,9 @@
     "model": "chains.chainnode",
     "pk": "d3e882fe-ca28-4615-929a-ef52c9232451",
     "fields": {
-      "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+      "class_path": "ix.runnable.prompt.ChatPrompt",
       "node_type": [
-        "langchain.prompts.chat.ChatPromptTemplate"
+        "ix.runnable.prompt.ChatPrompt"
       ],
       "config": {
         "messages": [
@@ -419,9 +419,9 @@
     "model": "chains.chainnode",
     "pk": "f48a298d-86b8-4db7-979b-5ca4ca08c086",
     "fields": {
-      "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+      "class_path": "ix.runnable.prompt.ChatPrompt",
       "node_type": [
-        "langchain.prompts.chat.ChatPromptTemplate"
+        "ix.runnable.prompt.ChatPrompt"
       ],
       "config": {
         "messages": [

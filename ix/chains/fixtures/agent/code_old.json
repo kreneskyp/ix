@@ -123,7 +123,7 @@
                     }
                   ]
                 },
-                "class_path": "langchain.prompts.chat.ChatPromptTemplate"
+                "class_path": "ix.runnable.prompt.ChatPrompt"
               },
               "verbose": true,
               "functions": {
@@ -182,9 +182,9 @@
     "model": "chains.chainnode",
     "pk": "53fb5a69-1b14-445d-85ad-841968e3a729",
     "fields": {
-      "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+      "class_path": "ix.runnable.prompt.ChatPrompt",
       "node_type": [
-        "langchain.prompts.chat.ChatPromptTemplate"
+        "ix.runnable.prompt.ChatPrompt"
       ],
       "config": {
         "messages": [
@@ -258,7 +258,7 @@
                     }
                   ]
                 },
-                "class_path": "langchain.prompts.chat.ChatPromptTemplate"
+                "class_path": "ix.runnable.prompt.ChatPrompt"
               },
               "verbose": true,
               "functions": {
@@ -338,7 +338,7 @@
                           }
                         ]
                       },
-                      "class_path": "langchain.prompts.chat.ChatPromptTemplate"
+                      "class_path": "ix.runnable.prompt.ChatPrompt"
                     },
                     "verbose": true,
                     "functions": {
@@ -468,7 +468,7 @@
               }
             ]
           },
-          "class_path": "langchain.prompts.chat.ChatPromptTemplate"
+          "class_path": "ix.runnable.prompt.ChatPrompt"
         },
         "verbose": true,
         "functions": {
@@ -572,9 +572,9 @@
     "model": "chains.chainnode",
     "pk": "b4b7d373-1ec9-49d4-8a0f-d3295577f440",
     "fields": {
-      "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+      "class_path": "ix.runnable.prompt.ChatPrompt",
       "node_type": [
-        "langchain.prompts.chat.ChatPromptTemplate"
+        "ix.runnable.prompt.ChatPrompt"
       ],
       "config": {
         "messages": [
@@ -677,7 +677,7 @@
               }
             ]
           },
-          "class_path": "langchain.prompts.chat.ChatPromptTemplate"
+          "class_path": "ix.runnable.prompt.ChatPrompt"
         },
         "verbose": true,
         "functions": {
