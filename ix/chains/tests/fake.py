@@ -51,7 +51,7 @@ async def afake_chain(**kwargs) -> Chain:
 
 
 MOCK_RUNNABLE = {
-    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "class_path": "ix.runnable.prompt.ChatPrompt",
     "config": {
         "value": "default",
     },

@@ -260,9 +260,9 @@
     "model": "chains.chainnode",
     "pk": "8ab5ca4d-308e-431a-9fc5-c6fc8ff2c732",
     "fields": {
-      "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+      "class_path": "ix.runnable.prompt.ChatPrompt",
       "node_type": [
-        "langchain.prompts.chat.ChatPromptTemplate"
+        "ix.runnable.prompt.ChatPrompt"
       ],
       "config": {
         "messages": [

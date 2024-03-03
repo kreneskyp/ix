@@ -83,7 +83,7 @@ LLM_CHOOSE_AGENT_CONFIG = {
             },
         },
         "prompt": {
-            "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+            "class_path": "ix.runnable.prompt.ChatPrompt",
             "config": {
                 "messages": [
                     {

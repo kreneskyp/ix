@@ -12,7 +12,7 @@ import { JSONSchemaForm } from "json_form/JSONSchemaForm";
 import { JSONTransformNode } from "chains/flow/JSONTransformNode";
 
 const CONFIG_FORM_COMPONENTS = {
-  "langchain.prompts.chat.ChatPromptTemplate": PromptNode,
+  "ix.runnable.prompt.ChatPrompt": PromptNode,
   "ix.runnable.prompt.MultiModalChatPrompt": PromptNode,
   "ix.chains.functions.FunctionSchema": FunctionSchemaNode,
   "ix.runnable.schema.Schema": FunctionSchemaNode,

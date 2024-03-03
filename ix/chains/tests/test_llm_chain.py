@@ -10,7 +10,7 @@ from ix.chains.tests.mock_memory import MockMemory
 from ix.chains.tests.test_config_loader import unpack_chain_flow
 
 PROMPT_TEMPLATE = {
-    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "class_path": "ix.runnable.prompt.ChatPrompt",
     "config": {
         "messages": [
             {
