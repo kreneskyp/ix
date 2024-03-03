@@ -6,15 +6,11 @@ import {
   faFileImport,
   faFileWaveform,
   faKeyboard,
-  faList,
-  faTableList,
   faFile,
   faMemory,
   faMessage,
   faRobot,
   faTools,
-  faArrowRightToBracket,
-  faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { faCircleDot } from "@fortawesome/free-regular-svg-icons";
 import { ChainNode } from "chains/flow/ChainNode";
