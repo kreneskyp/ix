@@ -1,6 +1,6 @@
 {
     "child_field": null,
-    "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+    "class_path": "ix.runnable.prompt.ChatPrompt",
     "config_schema": {
         "display_groups": null,
         "properties": {
@@ -13,7 +13,7 @@
             }
         },
         "required": [],
-        "title": "ChatPromptTemplate",
+        "title": "ChatPrompt",
         "type": "object"
     },
     "connectors": [

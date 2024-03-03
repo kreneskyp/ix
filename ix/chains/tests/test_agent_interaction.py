@@ -9,7 +9,7 @@ DELEGATE_TO_AGENT_CHAIN = {
     "config": {
         "target_alias": "agent_1",
         "prompt": {
-            "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+            "class_path": "ix.runnable.prompt.ChatPrompt",
             "config": {
                 "messages": [
                     {
@@ -30,7 +30,7 @@ DELEGATE_TO_AGENT_CHAIN_FILTER_INPUTS = {
         "target_alias": "agent_1",
         "delegate_inputs": ["user_input"],
         "prompt": {
-            "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+            "class_path": "ix.runnable.prompt.ChatPrompt",
             "config": {
                 "messages": [
                     {

@@ -12,7 +12,7 @@ from ix.chains.loaders.context import IxContext
 from ix.chains.loaders.prompts import create_message
 from ix.chains.models import Chain
 from ix.conftest import aload_fixture
-from ix.runnable.prompt import MultiModalChatPrompt
+from ix.runnable.prompt import MultiModalChatPrompt, ChatPrompt
 from ix.task_log.tests.fake import afake_artifact
 
 TEST_MESSAGES = [
@@ -46,6 +46,42 @@ def mock_image():
         "path": TEST_IMAGE,
         "base64": base_64_url,
     }
+
+
+class TestChatPrompt:
+    async def test_invoke(self):
+        messages = [create_message(message) for message in TEST_MESSAGES]
+        template = ChatPrompt(messages=messages, input_variables=["user_input"])
+        response = await template.ainvoke(input={"user_input": "Hello, world"})
+
+        assert response == ChatPromptValue(
+            messages=[
+                SystemMessage(content="You are a test construct"),
+                AIMessage(content="I am a test construct"),
+                HumanMessage(content="Hello, world"),
+            ]
+        )
+
+    async def test_invoke_with_partials(self):
+        """Verifies partials in config are passed to the prompt"""
+        messages = [
+            create_message(
+                {
+                    "role": "system",
+                    "template": "I use {foo} from config.partials",
+                }
+            ),
+        ]
+
+        template = ChatPrompt(messages=messages, input_variables=["user_input"])
+        response = await template.ainvoke(
+            input={"user_input": "Hello, world"}, config={"partials": {"foo": "bar"}}
+        )
+        assert response == ChatPromptValue(
+            messages=[
+                SystemMessage(content="I use bar from config.partials"),
+            ]
+        )
 
 
 class TestMultiModalChatPrompt:

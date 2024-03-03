@@ -86,7 +86,7 @@ CREATE_CODE_ARTIFACTS = {
             },
         },
         "prompt": {
-            "class_path": "langchain.prompts.chat.ChatPromptTemplate",
+            "class_path": "ix.runnable.prompt.ChatPrompt",
             "config": {
                 "messages": [
                     {
