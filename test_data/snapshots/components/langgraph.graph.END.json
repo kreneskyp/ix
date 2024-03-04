@@ -1,0 +1,17 @@
+{
+    "child_field": null,
+    "class_path": "langgraph.graph.END",
+    "config_schema": {
+        "display_groups": null,
+        "properties": {},
+        "required": [],
+        "title": "END",
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "Exit the state machine and return the prior node directly.",
+    "display_type": "node",
+    "fields": null,
+    "name": "End State",
+    "type": "end"
+}

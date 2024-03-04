@@ -73,6 +73,7 @@ export const useEditorColorMode = () => {
       chain: isLight ? "blue.500" : "blue.300",
       agent: isLight ? "green.500" : "green.600",
       graph: isLight ? "green.500" : "green.600",
+      end: isLight ? "gray.800" : "gray.900",
       parser: retrieval,
       retriever: retrieval,
       schema: data,

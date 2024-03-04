@@ -1,7 +1,26 @@
 import React from "react";
-import { BranchConnectors, InputConnector } from "chains/flow/BranchNode";
+import {
+  BranchTarget,
+  InputConnector,
+  useFlowConnectors,
+} from "chains/flow/BranchNode";
 import { VStack, Flex } from "@chakra-ui/react";
 import { OutputConnector } from "chains/flow/ChainNode";
+
+export const GraphConnectors = ({ node }) => {
+  const { branches } = useFlowConnectors(node);
+
+  return (
+    <Flex justify={"space-between"}>
+      <VStack spacing={0} cursor="default"></VStack>
+      <VStack>
+        {branches?.map((connector, i) => (
+          <BranchTarget key={connector.key} node={node} connector={connector} />
+        ))}
+      </VStack>
+    </Flex>
+  );
+};
 
 export const GraphNode = ({ type, node, config, onFieldChange }) => {
   return (
@@ -18,7 +37,7 @@ export const GraphNode = ({ type, node, config, onFieldChange }) => {
           label={"Loop"}
           required={false}
         />
-        <BranchConnectors node={node} />
+        <GraphConnectors node={node} />
       </Flex>
     </VStack>
   );

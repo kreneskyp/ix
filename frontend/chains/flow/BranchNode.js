@@ -5,7 +5,7 @@ import { useConnectorColor } from "chains/flow/ConfigNode";
 import { RequiredAsterisk } from "components/RequiredAsterisk";
 import { ConnectorPopover } from "chains/editor/ConnectorPopover";
 
-const useFlowConnectors = (node) => {
+export const useFlowConnectors = (node) => {
   const edges = useEdges();
   return useMemo(() => {
     const input = {
@@ -36,16 +36,20 @@ const useFlowConnectors = (node) => {
           (edge) => edge.source === node.id && edge.sourceHandle === "default"
         ),
       },
-      branches: node?.config?.branches_hash?.map((branchKey, i) => ({
-        key: branchKey,
-        label: node?.config?.branches[i],
-        type: "source",
-        source_type: ["agent", "chain", "flow"],
-        required: true,
-        connected: edges?.find(
-          (edge) => edge.source === node.id && edge.sourceHandle === branchKey
-        ),
-      })),
+      branches: node?.config?.branches_hash?.map((branchKey, i) => {
+        const branch = node?.config?.branches[i];
+        const label = branch?.name !== undefined ? branch.name : branch;
+        return {
+          key: branchKey,
+          label: label,
+          type: "source",
+          source_type: ["agent", "chain", "flow"],
+          required: true,
+          connected: edges?.find(
+            (edge) => edge.source === node.id && edge.sourceHandle === branchKey
+          ),
+        };
+      }),
     };
   }, [edges, node.id, node?.config?.branches]);
 };

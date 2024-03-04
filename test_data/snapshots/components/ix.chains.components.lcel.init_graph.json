@@ -1,0 +1,162 @@
+{
+    "child_field": null,
+    "class_path": "ix.chains.components.lcel.init_graph",
+    "config_schema": {
+        "display_groups": [
+            {
+                "fields": [
+                    "schema_id",
+                    "action_id",
+                    "conditional_id"
+                ],
+                "key": "Config",
+                "label": "Config"
+            },
+            {
+                "fields": [
+                    "branches",
+                    "branches_hash"
+                ],
+                "key": "Branches",
+                "label": "Branches"
+            }
+        ],
+        "properties": {
+            "action_id": {
+                "description": "Agent, Chain, or Skill that chooses the next state to execute.",
+                "input_type": "IX:chain",
+                "label": "Action",
+                "type": "string"
+            },
+            "branches": {
+                "description": "names of edges.",
+                "input_type": "graph_branch_list",
+                "items": {},
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
+            "branches_hash": {
+                "description": "Hashes for branches in order they should be displayed. These hashes are used for connector identifiers. The step names may change without requiring edges to update unless the step is removed. Must be same length as branches.",
+                "input_type": "hidden",
+                "items": {},
+                "maxItems": null,
+                "minItems": null,
+                "type": "array",
+                "uniqueItems": false
+            },
+            "conditional_id": {
+                "description": "Agent, Chain, or Skill that processes the state returned by the action.",
+                "input_type": "IX:chain",
+                "label": "Conditional",
+                "type": "string"
+            },
+            "schema_id": {
+                "description": "The schema that defines the state of the machine.",
+                "input_type": "IX:json_schema",
+                "label": "State Schema",
+                "type": "string"
+            }
+        },
+        "required": [
+            "schema_id",
+            "branches",
+            "branches_hash"
+        ],
+        "title": "init_graph",
+        "type": "object"
+    },
+    "connectors": null,
+    "description": "A state machine that can be used to model stateful workflows",
+    "display_type": "node",
+    "fields": [
+        {
+            "choices": null,
+            "default": null,
+            "description": "The schema that defines the state of the machine.",
+            "init_type": "init",
+            "input_type": "IX:json_schema",
+            "label": "State Schema",
+            "max": null,
+            "min": null,
+            "name": "schema_id",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": "Agent, Chain, or Skill that chooses the next state to execute.",
+            "init_type": "init",
+            "input_type": "IX:chain",
+            "label": "Action",
+            "max": null,
+            "min": null,
+            "name": "action_id",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": "Agent, Chain, or Skill that processes the state returned by the action.",
+            "init_type": "init",
+            "input_type": "IX:chain",
+            "label": "Conditional",
+            "max": null,
+            "min": null,
+            "name": "conditional_id",
+            "parent": null,
+            "required": false,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "str"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": "names of edges.",
+            "init_type": "init",
+            "input_type": "graph_branch_list",
+            "label": "Branches",
+            "max": null,
+            "min": null,
+            "name": "branches",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        },
+        {
+            "choices": null,
+            "default": null,
+            "description": "Hashes for branches in order they should be displayed. These hashes are used for connector identifiers. The step names may change without requiring edges to update unless the step is removed. Must be same length as branches.",
+            "init_type": "init",
+            "input_type": "hidden",
+            "label": "",
+            "max": null,
+            "min": null,
+            "name": "branches_hash",
+            "parent": null,
+            "required": true,
+            "secret_key": null,
+            "step": null,
+            "style": null,
+            "type": "list"
+        }
+    ],
+    "name": "State Machine",
+    "type": "graph"
+}

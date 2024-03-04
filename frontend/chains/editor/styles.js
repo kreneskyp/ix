@@ -6,16 +6,13 @@ import {
   faFileImport,
   faFileWaveform,
   faKeyboard,
-  faList,
-  faTableList,
   faFile,
   faMemory,
   faMessage,
   faRobot,
   faTools,
-  faArrowRightToBracket,
-  faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
+import { faCircleDot } from "@fortawesome/free-regular-svg-icons";
 import { ChainNode } from "chains/flow/ChainNode";
 import { BranchNode } from "chains/flow/BranchNode";
 import { MapNode } from "chains/flow/MapNode";
@@ -25,6 +22,7 @@ import { SplitIcon } from "icons/SplitIcon";
 import { MergeIcon } from "icons/MergeIcon";
 import { GraphIcon } from "icons/GraphIcon";
 import { GraphNode } from "chains/flow/GraphNode";
+import { EndNode } from "chains/flow/EndNode";
 
 export const NODE_STYLES = {
   llm: {
@@ -112,6 +110,10 @@ export const NODE_STYLES = {
       component: GraphIcon,
     },
     component: GraphNode,
+  },
+  end: {
+    icon: faCircleDot,
+    component: EndNode,
   },
   map: {
     icon: {

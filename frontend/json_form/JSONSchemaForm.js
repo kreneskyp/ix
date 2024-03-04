@@ -23,6 +23,7 @@ import { JSONSchemaSelect } from "schemas/json/JSONSchemaSelect";
 import { OpenAPISchemaSelect } from "schemas/openapi/OpenAPISchemaSelect";
 import { SkillSelect } from "skills/SkillSelect";
 import { AgentSelect } from "chains/AgentSelect";
+import { GraphBranchesField } from "chains/editor/fields/GraphBranchesField";
 
 // explicit input types
 const INPUTS = {
@@ -44,6 +45,7 @@ const INPUTS = {
   "IX:skill": APISelect.for_select(SkillSelect),
   hash_list: HashList,
   node_branch_list: BranchesField,
+  graph_branch_list: GraphBranchesField,
   node_map_list: MapField,
 };
 

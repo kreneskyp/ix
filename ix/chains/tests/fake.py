@@ -1,20 +1,28 @@
 import uuid
-from typing import List, Dict, Tuple, Any
+from typing import List, Dict, Tuple, Any, TypedDict
 
 from asgiref.sync import sync_to_async
+from langchain_core.messages import AIMessage
+from langchain_core.runnables.utils import Input
 
 from ix.chains.fixture_src.lcel import (
     RUNNABLE_MAP_CLASS_PATH,
     RUNNABLE_BRANCH_CLASS_PATH,
+    LANGGRAPH_STATE_MACHINE_CLASS_PATH,
+    LANGGRAPH_END_CLASS_PATH,
 )
 from ix.chains.loaders.core import (
     MapPlaceholder,
     BranchPlaceholder,
     find_roots,
+    StateMachinePlaceholder,
 )
 from ix.chains.models import Chain, ChainNode, ChainEdge, NodeType
 from ix.chains.tests.mock_runnable import MOCK_RUNNABLE_CLASS_PATH
 from faker import Faker
+
+from ix.data.models import Schema
+from ix.data.tests.fake import fake_schema
 
 fake = Faker()
 
@@ -298,14 +306,25 @@ async def afake_node_map(**kwargs) -> MapPlaceholder:
     return await sync_to_async(fake_node_map)(**kwargs)
 
 
+Branch = Tuple[str, ChainNode]
+EncodedBranch = Branch
+
+
+class BranchMeta(TypedDict):
+    """Metadata to describe a branch config."""
+
+    name: str
+    description: str
+
+
 def build_branches(
     class_path: str,
     chain: Chain = None,
-    branches: List[Tuple[str, ChainNode]] = None,
+    branches: List[Tuple[str | BranchMeta, ChainNode]] = None,
     root: bool = True,
     edge_type: str = "LINK",
     config: Dict[str, Any] = None,
-) -> Tuple[ChainNode, List[Tuple[str, ChainNode]]]:
+) -> Tuple[ChainNode, List[Branch], List[EncodedBranch]]:
     """Generic method for all branching types"""
     chain = chain or fake_chain()
 
@@ -345,7 +364,7 @@ def build_branches(
                 relation=edge_type,
             )
 
-    return branch_node, branches
+    return branch_node, branches, encoded_branches
 
 
 def fake_node_branch(
@@ -357,13 +376,14 @@ def fake_node_branch(
     """Fake a branch of ChainNode connected by edges"""
     chain = chain or fake_chain()
 
-    branch_node, branches = build_branches(
+    branch_node, branches, encoded_branches = build_branches(
         RUNNABLE_BRANCH_CLASS_PATH,
         chain,
         branches=branches,
         root=root,
         edge_type="LINK",
     )
+
     default = default or fake_runnable(chain=chain, name="default", root=False)
     for branch_root in find_roots(default):
         fake_chain_edge(
@@ -379,6 +399,178 @@ def fake_node_branch(
         default=default,
         branches=branches,
     )
+
+
+AGENT_STATE_SCHEMA = {
+    "title": "AgentState",
+    "description": "State for a basic conversational agent",
+    "properties": {
+        "messages": {
+            "type": "array",
+            "items": {"type": "#/def/BaseMessage"},
+            "operation": "add",
+        },
+    },
+    "definitions": {
+        "BaseMessage": {
+            "title": "BaseMessage",
+            "description": "The base abstract Message class.\n\nMessages are the inputs and outputs of ChatModels.",
+            "class_path": "langchain_core.messages.BaseMessage",
+            "type": "object",
+            "properties": {
+                "content": {
+                    "title": "Content",
+                    "anyOf": [
+                        {"type": "string"},
+                        {
+                            "type": "array",
+                            "items": {
+                                "anyOf": [{"type": "string"}, {"type": "object"}]
+                            },
+                        },
+                    ],
+                },
+                "additional_kwargs": {"title": "Additional Kwargs", "type": "object"},
+                "type": {"title": "Type", "type": "string"},
+            },
+            "required": ["content", "type"],
+        }
+    },
+}
+
+
+def fake_state_machine_schema() -> Schema:
+    """fake method for creating a schema for a state machine"""
+    return fake_schema(
+        name=AGENT_STATE_SCHEMA["title"],
+        type="json",
+        description=AGENT_STATE_SCHEMA["description"],
+        value=AGENT_STATE_SCHEMA,
+    )
+
+
+def _state_machine(input: Input, config: dict, state: dict, **kwargs):
+    """mock function for state machine conditional with a predetermined sequence
+    of states.
+
+    Uses config["responses"] to determine the next state. END is sent after all
+    responses are used or if none were configured.
+    """
+    current = state.get("current", 0)
+    responses = config.get("responses", [])
+    if current < len(responses):
+        state["current"] = current + 1
+        return responses[current]
+    return "end"
+
+
+def _state_machine_action(config, **kwargs):
+    """mock function for state machine action"""
+    return {"messages": [AIMessage(content="mock statemachine action")]}
+
+
+STATE_MACHINE_ACTION = "ix.chains.tests.fake._state_machine_action"
+STATE_MACHINE_CONDITIONAL = "ix.chains.tests.fake._state_machine"
+
+
+def fake_state_machine_conditional() -> Chain:
+    """fake method for creating a conditional for a state machine."""
+    chain = fake_chain()
+    fake_runnable(
+        chain=chain,
+        config=dict(func_class_path=STATE_MACHINE_CONDITIONAL),
+        root=True,
+    )
+    return chain
+
+
+def fake_state_machine_action() -> Chain:
+    """fake method for creating an action for a state machine"""
+    chain = fake_chain()
+    fake_runnable(
+        chain=chain,
+        config=dict(func_class_path=STATE_MACHINE_ACTION),
+        root=True,
+    )
+    return chain
+
+
+def fake_node_state_machine(
+    chain: Chain,
+    branches: List[Tuple[str, ChainNode]] = None,
+    root: bool = True,
+    loops: List[str] = None,
+) -> StateMachinePlaceholder:
+    """Fake a LangGraph of ChainNode connected by edges"""
+
+    schema: Schema = fake_state_machine_schema()
+    conditional: Chain = fake_state_machine_conditional()
+    action: Chain = fake_state_machine_action()
+
+    chain = chain or fake_chain()
+    branch_node, branches, encoded_branches = build_branches(
+        LANGGRAPH_STATE_MACHINE_CLASS_PATH,
+        chain,
+        branches=branches,
+        root=root,
+        edge_type="GRAPH",
+        config={
+            "schema_id": str(schema.id),
+            "conditional_id": str(conditional.id),
+            "action_id": str(action.id),
+        },
+    )
+    assert len(branches) > 0, "State machine must have at least one branch"
+
+    # all branches loop by default
+    branches = [(meta["name"], node) for meta, node in branches]
+    loops = [k for k, v in branches] if loops is None else loops
+
+    # create loop edges
+    for branch_key, branch_leaf in branches:
+        if branch_key in loops:
+            if isinstance(branch_leaf, list):
+                branch_leaf = branch_leaf[-1]
+
+            fake_chain_edge(
+                source=branch_leaf,
+                target=branch_node,
+                source_key=branch_key,
+                target_key="in",
+                relation="GRAPH",
+            )
+
+    return StateMachinePlaceholder(
+        node=branch_node,
+        branches=branches,
+        loops=loops,
+    )
+
+
+async def afake_node_state_machine(**kwargs) -> StateMachinePlaceholder:
+    """Fake a branch of ChainNode connected by edges"""
+    return await sync_to_async(fake_node_state_machine)(**kwargs)
+
+
+def fake_graph_end(**kwargs) -> ChainNode:
+    """
+    Create a fake graph END node
+    """
+    config = kwargs.pop(
+        "config",
+        {
+            "class_path": LANGGRAPH_END_CLASS_PATH,
+            "config": {},
+        },
+    )
+    return fake_chain_node(root=False, config=config, **kwargs)
+
+
+async def afake_graph_end(**kwargs) -> ChainNode:
+    """
+    Create a fake graph END node
+    """
+    return await sync_to_async(fake_graph_end)(**kwargs)
 
 
 async def afake_node_branch(**kwargs) -> BranchPlaceholder:
