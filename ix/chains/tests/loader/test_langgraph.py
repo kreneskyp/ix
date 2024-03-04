@@ -11,6 +11,7 @@ from ix.chains.tests.fake import (
     afake_node_state_machine,
     afake_chain_edge,
     afake_graph_end,
+    BranchMeta,
 )
 from ix.task_log.tests.fake import afake_chain
 import pytest_asyncio
@@ -33,8 +34,8 @@ async def lcel_graph(anode_types) -> dict:
         chain=chain,
         root=True,
         branches=[
-            ("a", node1),
-            ("b", node2),
+            (BranchMeta(name="a", description="the first branch"), node1),
+            (BranchMeta(name="b", description="the second branch"), node2),
         ],
     )
 
@@ -95,8 +96,8 @@ async def lcel_sequence_in_graph(anode_types, lcel_sequence) -> dict:
         chain=chain,
         root=True,
         branches=[
-            ("a", node1),
-            ("b", sequence),
+            (BranchMeta(name="a", description="the first branch"), node1),
+            (BranchMeta(name="b", description="the second branch"), sequence),
         ],
     )
 
@@ -169,6 +170,12 @@ class TestLoadGraph:
     async def test_load_basic(self, lcel_graph, aix_context):
         fixture = lcel_graph
         chain = fixture["chain"]
+
+        # smoke test that node config was created correctly
+        assert fixture["graph"].node.config.get("branches", None) == [
+            BranchMeta(name="a", description="the first branch"),
+            BranchMeta(name="b", description="the second branch"),
+        ]
 
         # sanity check setup
         assert isinstance(fixture["graph"], StateMachinePlaceholder)

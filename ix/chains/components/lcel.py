@@ -94,10 +94,32 @@ def init_graph(
         workflow.add_node(name, node)
         conditional_map[name] = name
 
-    # Add the action as entry_node or a passthrough if not present
-    # The pass through turns the node into a pure conditional,
-    # i.e. a simple decision node (flowchart diamond)
-    workflow.add_node(entry_point, action or init_pass_through())
+    # need to format the branch config into text prompt since templates
+    # don't yet support nested lookups in variables. build by iterating over
+    # branch_name: description pairs in branch_config
+    branch_text = ""
+    branch_config = graph_root.config.get("branches", {})
+    for meta in branch_config:
+        branch_text += f"{meta['name']}: {meta['description']}\n"
+
+    if action:
+        # HAX: add partials to the config directly because it's being filtered out somehow.
+        action = action.with_config()
+        if "partials" in action.config:
+            action.config["partials"] = action.config["partials"].copy()
+        else:
+            action.config["partials"] = {}
+        action.config["partials"]["branches"] = branch_text
+    else:
+        # Default to a passthrough if no action is provided.
+        # The pass through turns this graph into a conditional node,
+        # i.e. a simple decision node (flowchart diamond)
+        action = RunnablePassthrough()
+
+    workflow.add_node(
+        entry_point,
+        action,
+    )
 
     # map the entry point
     workflow.set_entry_point(entry_point)

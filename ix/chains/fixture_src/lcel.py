@@ -142,7 +142,7 @@ LANGGRAPH_STATE_MACHINE = NodeType(
             name="branches",
             label="Branches",
             type="list",
-            input_type="node_branch_list",
+            input_type="graph_branch_list",
             description="names of edges.",
             required=True,
         ),

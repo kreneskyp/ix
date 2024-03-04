@@ -1,5 +1,5 @@
 import uuid
-from typing import List, Dict, Tuple, Any
+from typing import List, Dict, Tuple, Any, TypedDict
 
 from asgiref.sync import sync_to_async
 from langchain_core.messages import AIMessage
@@ -310,10 +310,17 @@ Branch = Tuple[str, ChainNode]
 EncodedBranch = Branch
 
 
+class BranchMeta(TypedDict):
+    """Metadata to describe a branch config."""
+
+    name: str
+    description: str
+
+
 def build_branches(
     class_path: str,
     chain: Chain = None,
-    branches: List[Tuple[str, ChainNode]] = None,
+    branches: List[Tuple[str | BranchMeta, ChainNode]] = None,
     root: bool = True,
     edge_type: str = "LINK",
     config: Dict[str, Any] = None,
@@ -457,7 +464,7 @@ def _state_machine(input: Input, config: dict, state: dict, **kwargs):
     return "end"
 
 
-def _state_machine_action(**kwargs):
+def _state_machine_action(config, **kwargs):
     """mock function for state machine action"""
     return {"messages": [AIMessage(content="mock statemachine action")]}
 
@@ -516,7 +523,8 @@ def fake_node_state_machine(
     assert len(branches) > 0, "State machine must have at least one branch"
 
     # all branches loop by default
-    loops = [k for k, _ in branches] if loops is None else loops
+    branches = [(meta["name"], node) for meta, node in branches]
+    loops = [k for k, v in branches] if loops is None else loops
 
     # create loop edges
     for branch_key, branch_leaf in branches:

@@ -736,7 +736,7 @@ def build_flow_branch(
     branch_keys = node.config.get("branches", [])
     branch_uuids = node.config.get("branches_hash", [])
     branch_tuples = [
-        (key, branches[branch_uuid])
+        (key["name"] if isinstance(key, dict) else key, branches[branch_uuid])
         for key, branch_uuid in zip(branch_keys, branch_uuids)
     ]
     return branches, branch_tuples
