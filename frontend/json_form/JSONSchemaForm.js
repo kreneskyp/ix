@@ -23,7 +23,7 @@ import { JSONSchemaSelect } from "schemas/json/JSONSchemaSelect";
 import { OpenAPISchemaSelect } from "schemas/openapi/OpenAPISchemaSelect";
 import { SkillSelect } from "skills/SkillSelect";
 import { AgentSelect } from "chains/AgentSelect";
-import {GraphBranchesField} from "chains/editor/fields/GraphBranchesField";
+import { GraphBranchesField } from "chains/editor/fields/GraphBranchesField";
 
 // explicit input types
 const INPUTS = {

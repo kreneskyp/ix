@@ -1,8 +1,11 @@
 import React from "react";
-import { BranchTarget, InputConnector, useFlowConnectors} from "chains/flow/BranchNode";
+import {
+  BranchTarget,
+  InputConnector,
+  useFlowConnectors,
+} from "chains/flow/BranchNode";
 import { VStack, Flex } from "@chakra-ui/react";
 import { OutputConnector } from "chains/flow/ChainNode";
-
 
 export const GraphConnectors = ({ node }) => {
   const { branches } = useFlowConnectors(node);
@@ -18,7 +21,6 @@ export const GraphConnectors = ({ node }) => {
     </Flex>
   );
 };
-
 
 export const GraphNode = ({ type, node, config, onFieldChange }) => {
   return (

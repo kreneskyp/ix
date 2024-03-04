@@ -1,18 +1,19 @@
 import React from "react";
 import { Box, Textarea, Input } from "@chakra-ui/react";
-import {useEditorColorMode} from "chains/editor/useColorMode";
-import {BranchesField} from "chains/editor/fields/BranchesField";
-
+import { useEditorColorMode } from "chains/editor/useColorMode";
+import { BranchesField } from "chains/editor/fields/BranchesField";
 
 const useAsEvent = (handler) => {
-  return React.useCallback((value) => handler({target: {value}}), [handler]);
-}
-
+  return React.useCallback(
+    (value) => handler({ target: { value } }),
+    [handler]
+  );
+};
 
 export const BranchField = ({ value, onChange }) => {
   const colorMode = useEditorColorMode();
 
-  const handleChange = useAsEvent(onChange)
+  const handleChange = useAsEvent(onChange);
   const handleDescriptionChange = React.useCallback(
     (e) => {
       handleChange({
@@ -40,7 +41,6 @@ export const BranchField = ({ value, onChange }) => {
         placeholder="Enter name"
         value={value?.name || ""}
         onChange={handleNameChange}
-
         {...colorMode.input}
       />
       <Textarea
@@ -53,7 +53,6 @@ export const BranchField = ({ value, onChange }) => {
     </Box>
   );
 };
-
 
 export const GraphBranchesField = ({ ...props }) => {
   return <BranchesField {...props} component={BranchField} />;
