@@ -8,6 +8,7 @@ from langchain_community.utilities.graphql import GraphQLAPIWrapper
 from langchain_community.utilities.pubmed import PubMedAPIWrapper
 from langchain_community.utilities.wikipedia import WikipediaAPIWrapper
 from langchain_community.utilities.zapier import ZapierNLAWrapper
+from ix.tools.bocha import BoChaSearchAPIWrapper
 
 from ix.chains.fixture_src.targets import (
     CHAIN_TARGET,
@@ -74,6 +75,24 @@ BING_SEARCH = {
             },
             "bing_search_url": {
                 "style": {"width": "100%"},
+            },
+        },
+    ),
+}
+
+BOCHA_SEARCH = {
+    "class_path": "ix.tools.bocha.get_bocha_search",
+    "type": "tool",
+    "name": "BoCha Search",
+    "description": "Tool that searches BoCha for a given query.",
+    "fields": TOOL_BASE_FIELDS
+    + NodeTypeField.get_fields(
+        BoChaSearchAPIWrapper,
+        include=["bocha_api_key", "k"],
+        field_options={
+            "bocha_api_key": {
+                "input_type": "secret",
+                "secret_key": "BoCha",
             },
         },
     ),
@@ -297,4 +316,5 @@ TOOLS = [
     METAPHOR_SIMILAR,
     WOLFRAM,
     ZAPIER,
+    BOCHA_SEARCH,
 ]
