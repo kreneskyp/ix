@@ -1,3 +1,4 @@
+from ix.api.chains.types import NodeTypeField
 from ix.chains.fixture_src.common import VERBOSE
 from ix.chains.fixture_src.targets import (
     PROMPT_TARGET,
@@ -5,6 +6,22 @@ from ix.chains.fixture_src.targets import (
     LLM_TARGET,
     MEMORY_TARGET,
 )
+from langchain.agents.agent_toolkits.conversational_retrieval.openai_functions import (
+    create_conversational_retrieval_agent,
+)
+
+MAX_ITERATIONS = {
+    "name": "max_iterations",
+    "type": "integer",
+    "default": 15,
+    "nullable": True,
+}
+
+MAX_EXECUTION_TIME = {
+    "name": "max_execution_time",
+    "type": "float",
+    "nullable": True,
+}
 
 EXECUTOR_BASE_FIELDS = [
     {
@@ -12,17 +29,8 @@ EXECUTOR_BASE_FIELDS = [
         "type": "boolean",
         "default": False,
     },
-    {
-        "name": "max_iterations",
-        "type": "integer",
-        "default": 15,
-        "nullable": True,
-    },
-    {
-        "name": "max_execution_time",
-        "type": "float",
-        "nullable": True,
-    },
+    MAX_ITERATIONS,
+    MAX_EXECUTION_TIME,
     VERBOSE,
 ]
 
@@ -109,6 +117,20 @@ STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION_AGENT = {
 }
 
 
+CONVERSATIONAL_RETRIEVAL_AGENT = {
+    "class_path": "langchain.agents.agent_toolkits.conversational_retrieval.openai_functions.create_conversational_retrieval_agent",
+    "type": "agent",
+    "name": "Conversational Retrieval agent",
+    "description": "Agent that generates descriptions in a structured chat context using a zero-shot approach and reaction information.",
+    "connectors": [LLM_TARGET, TOOLS_TARGET],
+    "fields": [MAX_ITERATIONS, MAX_EXECUTION_TIME, VERBOSE]
+    + NodeTypeField.get_fields(
+        create_conversational_retrieval_agent,
+        include=["remember_intermediate_steps" "memory_key" "max_token_limit"],
+    ),
+}
+
+
 AGENTS = [
     OPENAI_FUNCTIONS_AGENT,
     OPENAI_MULTIFUNCTION_AGENT,
@@ -119,4 +141,5 @@ AGENTS = [
     CHAT_ZERO_SHOT_REACT_DESCRIPTION_AGENT,
     CHAT_CONVERSATIONAL_REACT_DESCRIPTION_AGENT,
     STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION_AGENT,
+    CONVERSATIONAL_RETRIEVAL_AGENT,
 ]

@@ -47,7 +47,7 @@ image-url:
 # Set LANGCHAIN_DEV to 1 to enable dev mode in docker build
 # local copy of langchain should be checked out to ix/langchain.
 # (docker desktop on windows doesn't support shares outside the project)
-LANGCHAIN_DEV ?=
+LANGCHAIN_DEV ?= 1
 DOCKER_BUILD_ARGS = $(if ${LANGCHAIN_DEV},--build-arg LANGCHAIN_DEV=${LANGCHAIN_DEV},)
 
 # inner build target for sandbox image

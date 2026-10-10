@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "filename": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    }
+  },
+  "required": ["filename", "description", "content"]
+}

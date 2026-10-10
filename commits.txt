@@ -1,0 +1,33 @@
+
+
+AsyncIO Task:
+
+- start_agent_loop is now async
+- Callback manager updated to require Agent
+- AgentProcess updated for asyncio
+    - removed deprecated loop/auth code now handled by chains and agents
+    - flattened execution tree to remove unnecessary nesting
+    - converted queries to async
+
+
+Async loader:
+- models.py
+
+
+Async FileIO
+
+
+Test tools for async:
+- MockChatOpenAI & mock_openai now support asyncio
+- async fake methods
+- async fixtures
+- added pytest-asyncio to requirements
+
+
+Chains updated:
+- SaveArtifact
+- ArtifactMemory
+- LLMReply
+- ChatModerator
+   - include async delegate
+- MapSubchain

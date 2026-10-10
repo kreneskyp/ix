@@ -1,0 +1,50 @@
+{
+    "output_format": "PLAN",
+    "name": "Create Django project for tracking vehicles",
+    "description": "This plan will create a Django project with a database and models for tracking vehicles.",
+    "commands": [
+        {
+            "name": "Install Django",
+            "reason": "Django is required to create a Django project.",
+            "command": "execute_bash_command",
+            "args": ["pip install Django"],
+            "produces_artifacts": ["django"],
+            "prerequisite_for": ["Create Django project"]
+        },
+        {
+            "name": "Create Django project",
+            "reason": "This will create a new Django project with the name 'vehicle_tracker'.",
+            "command": "execute_bash_command",
+            "args": ["django-admin startproject vehicle_tracker"],
+            "produces_artifacts": ["vehicle_tracker"],
+            "prerequisite_for": ["Create Django app"]
+        },
+        {
+            "name": "Create Django app",
+            "reason": "This will create a new Django app with the name 'vehicles'.",
+            "command": "execute_bash_command",
+            "args": ["python manage.py startapp vehicles"],
+            "produces_artifacts": ["vehicles"],
+            "prerequisite_for": ["Create Django models"]
+        },
+        {
+            "name": "Create Django models",
+            "reason": "This will create the database tables and models for tracking vehicles.",
+            "command": "write_to_file",
+            "args": ["vehicles/models.py", "from django.db import models\n\nclass Vehicle(models.Model):\n    make = models.CharField(max_length=100)\n    model = models.CharField(max_length=100)\n    year = models.IntegerField()\n    vin = models.CharField(max_length=17)\n    license_plate = models.CharField(max_length=10)\n    date_added = models.DateTimeField(auto_now_add=True)\n\n    def __str__(self):\n        return f'{self.make} {self.model} ({self.year})'"],
+            "requires_artifacts": ["vehicles"],
+            "produces_artifacts": ["vehicles/models.py"],
+            "prerequisite_for": ["Migrate Django database"]
+        },
+        {
+            "name": "Migrate Django database",
+            "reason": "This will create the database tables for the Django models.",
+            "command": "execute_bash_command",
+            "args": ["python manage.py makemigrations vehicles", "python manage.py migrate"],
+            "requires_artifacts": ["vehicles/models.py"],
+            "prerequisite_for": [],
+            "completes_goal": "Create Django project for tracking vehicles"
+        }
+    ],
+    "goal_artifacts": ["vehicle_tracker"]
+}

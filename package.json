@@ -28,7 +28,7 @@
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
     "@chakra-ui/icons": "^2.0.18",
-    "@chakra-ui/react": "^2.5.5",
+    "@chakra-ui/react": "^2.7.2",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@testing-library/jest-dom": "^5.16.5",

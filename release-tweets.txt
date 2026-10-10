@@ -1,0 +1,255 @@
+Ix v0.1 is here!
+
+This release includes a number of new features and bug fixes, including:
+- Agent processing chains via Langchain
+- Multi-agent chat
+- Chain visual viewer
+- Coder v1 agent
+- Artifact system
+
+
+----------------
+
+The agent runner has been reworked to allow for agent processing chains. This allows
+for complex multi-step chains requiring multiple LLM requests, agent coordination, and
+parallel processing.
+
+Powered by @langchain
+
+----------------
+
+Ix adds custom langchain chain classes that integrate with Ix's services and to provide
+common flow control & processing steps. We're going to make it easy to design and run
+agent processing on top of Ix's horizontally scaling worker cluster.
+
+Read the docs: https://github.com/kreneskyp/ix/blob/master/docs/chains/chains.rst
+
+----------------
+
+A prototype chain visualizer is included in this release. It let's you view chains
+in a visual way. Work has already begun to build this into a chain editor.
+
+----------------
+
+The chat system has been reworked to allow for multi-agent chat. This means that you can now chat with multiple
+agents at once. @ mention an agent to target them or let the moderater delegate automatically.
+
+Multi-user chat will be added in a future release. The message bus already supports this, but
+user registration isn't implemented yet.
+
+----------------
+
+The Coder v1 agent is in all chats by default. This is a simple agent that uses a
+plan & solve algorithm to generate code. It will plan the set of files before generating them.
+
+It's a good example of how to build a chain that processes a user request in multiple steps.
+
+----------------
+
+This release includes an Artifact system that catalog objects created by agents. Artifacts
+are stored in the database for use in subsequent requests.
+
+More on this feature in a future thread.
+
+----------------
+
+Interested in hacking? Need help?
+
+Join me on the Ix discord!
+https://discord.gg/jtrMKxzZZQ
+
+
+
+
+----------------
+
+Ix v0.2 is here!
+
+- Langchain memory classes
+- memory/session scopes
+- ArtifactMemory for chains
+- chat input w/ auto-completions
+
+----------------
+
+First up: Chains can now be configured to use Langchain memory classes!
+
+All memory types should be supported, including chat history backends and summarizers.
+
+
+----------------
+
+Memory classes may be scoped to chats, tasks, agents, and users. Also supports shared and localized memory within a scope.
+
+Works with any memory class that expects a session_id at chain initialization.
+
+
+----------------
+
+Adding multiple memory classes to a chain automatically merges them into a CombinedMemory.
+
+
+----------------
+
+Next up: ArtifactMemory!
+
+Artifacts are a type of entity memory that reference objects such as files available to an agent.
+
+Chains with ArtifactMemory can use artifacts in requests. References in the input are loaded for use by prompt templates.
+
+----------------
+
+Artifacts created by one agent may be "passed" to another if they both support ArtifactMemory.
+
+
+----------------
+
+And last up: Chat input updates.
+
+The chat input as been updated to support auto-completing @ mentions and {artifacts} present in the chat.
+
+It also now supports multi-line inputs for entering longer text.
+
+
+----------------
+
+Interested in hacking? Need help?
+
+Join me on the Ix discord!
+https://discord.gg/jtrMKxzZZQ
+
+
+
+=================
+=================
+=================
+=================
+v0.3
+=================
+=================
+
+----------------
+
+Ix v0.3 is here!
+
+- No-code chain editor
+- Expanded support for @langchain
+- OpenAI Function support
+
+----------------
+First up: No-code chain editor! Chains can now be edited by
+dragging and dropping components into the graph.
+
+In this example, memory is added to the Ix Moderator agent and
+is then immediately avaialable in the chat.
+
+----------------
+Chains in the editor may be linked to the chat input and then to eachother.
+Connected chains are combined in an implicit SequentialChain
+
+----------------
+
+Chains that support memory may be configured with multiple memory classes.
+When multiple memory nodes are connected they are implicitly combined into a
+CombinedMemory instance.
+
+----------------
+Chains that support memory have built in sessions.  Ix will calculate a session id to scope Chat, Agent, User. It supports both localized and shared memories between agents.
+
+----------------
+Memory classes that support sessions may be configured to use a contextual
+scope. Ix will generate session_ids that restrict the scope of memory to
+Chat, Agent, Task, or User. This allows for memory to be localized or shared between
+agents and chats.
+
+----------------
+
+Next up: Expanded support for @langchain
+
+The graph model was refined to make it easier to integrate
+new components. Ix now stores component definitions that
+drive both the chain editor and the runner. Components may
+be defined and used at runtime.
+
+----------------
+
+This release adds expierimental support for Google PaLM and Anthropic, as
+well as a small set of other new components:
+
+- Additional memory classes
+- RedisVectorMemory
+- Embeddings (OpenAI, PaLM, and others)
+
+----------------
+Future releases will add more components. @langchain offers a very wide range of
+components to say the least. I prompted the import of some, but many require
+minor tweaks and wrappers to integrate seamlessly.
+
+
+----------------
+
+Last up: OpenAI Function support!
+
+LLMChain was extended to support OpenAI Functions. FunctionSchemas and Tools
+connected to the chain are added to the request.
+
+FunctionSchemas may be created throught the UX. It's an easy way to
+get structured output from LLM models.
+
+
+----------------
+
+The Ix and Coder agents were rewritten to use OpenAI Functions.
+
+The coder uses functions to obtain and map over structured output.
+It generates a list of files and then generates each file in a separate
+request to the LLM model.
+
+
+----------------
+
+Interested in hacking? Need help?
+
+Join me on the Ix discord!
+https://discord.gg/jtrMKxzZZQ
+
+
+=================================
+
+IX v0.6 is here with support for retrieval components!
+
+Retrieval components enable agents to read documents from your filesystem or the web. The additional context enables agents to expand their knowledge beyond their training set.
+
+🧵
+
+------------------
+
+The release focuses on the core loaders and a small set of components for a basic ingestion + query workflow.
+
+Parser: LanguageParser
+Loaders: FileLoader, WebLoader
+Transformers: RecursiveTextSplitter
+Embeddings: OpenAI and more
+Vectorstores: Chroma, Redis
+
+------------------
+
+A basic retrieval workflow reads from a document source, transforms (splits), embeds, and stores in a vectorstore.
+
+
+------------------
+
+Vectorstores may be used as retrievers with ConversationalRetrievalChain. The chain will query the vector database to answer your questions.
+
+
+------------------
+
+Next on the IX Roadmap:
+
+- More retrieval components, focusing on loaders
+- Ingestion tools for production workflows
+- Improved chain builder UX
+
+I'm looking for testers and hackers. Star the github repo and join us on discord!
+
+https://github.com/kreneskyp/ix

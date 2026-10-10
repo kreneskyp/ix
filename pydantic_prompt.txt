@@ -1,0 +1,79 @@
+Create a cat meme app:
+- sql alchemy models
+- pydantic models from sql alchemy models
+- crud operations with fastAPI
+
+
+
+
+
+Generate wrapper functions for each of these functions
+why: the functions don't allow kwargs to be set on the BaseTool object.
+requirements:
+- each function should return a BaseTool
+- import extract_tool_kwargs from ix.chains.loader.tools
+- do not redefined extract_tool_kwargs in the files.
+- use the load_openweathermap function as an example
+- group functions into files
+
+EXAMPLE:
+
+def load_openweathermap(**kwargs) -> BaseTool:
+    """
+    Load the OpenWeatherMap tool.
+    """
+    tool_kwargs = extract_tool_kwargs(kwargs)
+    wrapper = OpenWeatherMapAPIWrapper(**kwargs)
+    return OpenWeatherMapQueryRun(api_wrapper=wrapper, **tool_kwargs)
+
+
+SOURCE:
+
+
+def _get_lambda_api(**kwargs: Any) -> BaseTool:
+    return Tool(
+        name=kwargs["awslambda_tool_name"],
+        description=kwargs["awslambda_tool_description"],
+        func=LambdaWrapper(**kwargs).run,
+    )
+
+
+def _get_wolfram_alpha(**kwargs: Any) -> BaseTool:
+    return WolframAlphaQueryRun(api_wrapper=WolframAlphaAPIWrapper(**kwargs))
+
+
+def _get_google_search(**kwargs: Any) -> BaseTool:
+    return GoogleSearchRun(api_wrapper=GoogleSearchAPIWrapper(**kwargs))
+
+
+def _get_wikipedia(**kwargs: Any) -> BaseTool:
+    return WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper(**kwargs))
+
+
+def _get_arxiv(**kwargs: Any) -> BaseTool:
+    return ArxivQueryRun(api_wrapper=ArxivAPIWrapper(**kwargs))
+
+
+def _get_pupmed(**kwargs: Any) -> BaseTool:
+    return PubmedQueryRun(api_wrapper=PubMedAPIWrapper(**kwargs))
+
+
+def _get_google_serper(**kwargs: Any) -> BaseTool:
+    return GoogleSerperRun(api_wrapper=GoogleSerperAPIWrapper(**kwargs))
+
+
+def _get_google_serper_results_json(**kwargs: Any) -> BaseTool:
+    return GoogleSerperResults(api_wrapper=GoogleSerperAPIWrapper(**kwargs))
+
+
+def _get_google_search_results_json(**kwargs: Any) -> BaseTool:
+    return GoogleSearchResults(api_wrapper=GoogleSearchAPIWrapper(**kwargs))
+
+
+def _get_serpapi(**kwargs: Any) -> BaseTool:
+    return Tool(
+        name="Search",
+        description="A search engine. Useful for when you need to answer questions about current events. Input should be a search query.",
+        func=SerpAPIWrapper(**kwargs).run,
+        coroutine=SerpAPIWrapper(**kwargs).arun,
+    )

@@ -257,6 +257,70 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "1890914a-e481-43f0-a6de-7869a0106359",
+  "fields": {
+    "name": "LLM Tool Chain",
+    "description": "Chain that prompts an LLM for a completion. It has a set of tools available to the prompt",
+    "class_path": "ix.chains.tool_chain.LLMToolChain",
+    "type": "chain",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "source_type": "llm"
+      },
+      {
+        "key": "memory",
+        "type": "target",
+        "multiple": true,
+        "source_type": "memory"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      },
+      {
+        "key": "functions",
+        "type": "target",
+        "multiple": true,
+        "source_type": "tool"
+      }
+    ],
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "function_call",
+        "type": "string"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose",
+        "function_call"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "function_call": {
+          "type": "string",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "1b76aa58-eca9-41fa-b255-1d572de46aa8",
   "fields": {
     "name": "Zero Shot React Description Agent",
@@ -394,6 +458,47 @@
           "default": ""
         }
       }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "1f42d39e-63d5-4fa9-a491-c997263b7a4a",
+  "fields": {
+    "name": "MultiQueryRetriever",
+    "description": "MultiQueryRetriever",
+    "class_path": "libs.langchain.langchain.retrievers.multi_query.MultiQueryRetriever.from_llm",
+    "type": "retriever",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "retriever",
+        "type": "target",
+        "as_type": "retriever",
+        "required": true,
+        "source_type": [
+          "retriever",
+          "vectorstore"
+        ]
+      },
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "prompt",
+        "type": "target",
+        "source_type": "prompt"
+      }
+    ],
+    "fields": [],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
     }
   }
 },
@@ -1317,6 +1422,102 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "47a99b43-b03b-415a-9f87-9535a61d2203",
+  "fields": {
+    "name": "Web Loader",
+    "description": "Load documents from the web and parse them with BeautifulSoup.",
+    "class_path": "ix.chains.components.document_loaders.get_web_loader",
+    "type": "document_loader",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "parser",
+        "type": "target",
+        "source_type": "parser"
+      }
+    ],
+    "fields": [
+      {
+        "name": "web_path",
+        "type": "list",
+        "style": {
+          "width": "100%"
+        },
+        "description": "URL(s) of the web page"
+      },
+      {
+        "name": "verify_ssl",
+        "type": "boolean",
+        "label": "Verify_ssl",
+        "default": true,
+        "required": false
+      },
+      {
+        "name": "continue_on_failure",
+        "type": "boolean",
+        "label": "Continue_on_failure",
+        "default": false,
+        "required": false
+      },
+      {
+        "name": "requests_per_second",
+        "type": "int",
+        "label": "Requests_per_second",
+        "default": 2,
+        "required": false
+      },
+      {
+        "name": "default_parser",
+        "type": "str",
+        "label": "Default_parser",
+        "default": "html.parser",
+        "required": false
+      },
+      {
+        "name": "raise_for_status",
+        "type": "boolean",
+        "label": "Raise_for_status",
+        "default": false,
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "web_path"
+      ],
+      "properties": {
+        "web_path": {
+          "type": "object",
+          "default": null
+        },
+        "verify_ssl": {
+          "type": "boolean",
+          "default": true
+        },
+        "default_parser": {
+          "type": "string",
+          "default": "html.parser"
+        },
+        "raise_for_status": {
+          "type": "boolean",
+          "default": false
+        },
+        "continue_on_failure": {
+          "type": "boolean",
+          "default": false
+        },
+        "requests_per_second": {
+          "type": "number",
+          "default": 2
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "4bb2e0e3-d030-494d-a8f3-44ea5147bee8",
   "fields": {
     "name": "Chain Tool",
@@ -2034,6 +2235,13 @@
         "required": false
       },
       {
+        "name": "ARXIV_MAX_QUERY_LENGTH",
+        "type": "int",
+        "label": "ARXIV_MAX_QUERY_LENGTH",
+        "default": 300,
+        "required": false
+      },
+      {
         "name": "load_max_docs",
         "type": "int",
         "label": "Load_max_docs",
@@ -2083,9 +2291,72 @@
           "type": "number",
           "default": 4000
         },
+        "ARXIV_MAX_QUERY_LENGTH": {
+          "type": "number",
+          "default": 300
+        },
         "load_all_available_meta": {
           "type": "boolean",
           "default": false
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "642df6bd-1031-4bfd-b8fb-54add1f447a2",
+  "fields": {
+    "name": "VectorStoreRetriever",
+    "description": "Default vector",
+    "class_path": "langchain.vectorstores.base.VectorStoreRetriever",
+    "type": "retriever",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "vectorstore",
+        "type": "target",
+        "required": true,
+        "source_type": "vectorstore"
+      }
+    ],
+    "fields": [
+      {
+        "name": "allowed_search_types",
+        "type": "list",
+        "default": [
+          "similarity",
+          "similarity_score_threshold",
+          "mmr"
+        ],
+        "required": true
+      },
+      {
+        "name": "search_type",
+        "type": "str",
+        "label": "Search_type",
+        "default": "similarity",
+        "required": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "allowed_search_types"
+      ],
+      "properties": {
+        "search_type": {
+          "type": "string",
+          "default": "similarity"
+        },
+        "allowed_search_types": {
+          "type": "object",
+          "default": [
+            "similarity",
+            "similarity_score_threshold",
+            "mmr"
+          ]
         }
       }
     }
@@ -2732,6 +3003,66 @@
         "human_prefix": {
           "type": "string",
           "default": "Human"
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "8d9cbd30-6751-4c4c-92e3-66f7c6a7d574",
+  "fields": {
+    "name": "Retriever Tool",
+    "description": "Create a tool to do retrieval of documents.",
+    "class_path": "langchain.agents.agent_toolkits.create_retriever_tool",
+    "type": "tool",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "retriever",
+        "type": "target",
+        "as_type": "retriever",
+        "required": true,
+        "source_type": [
+          "retriever",
+          "vectorstore"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "name": "name",
+        "type": "str",
+        "style": {
+          "width": "100%"
+        },
+        "default": ""
+      },
+      {
+        "name": "description",
+        "type": "str",
+        "style": {
+          "width": "100%"
+        },
+        "default": "",
+        "input_type": "textarea"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "name",
+        "description"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "description": {
+          "type": "string",
+          "default": ""
         }
       }
     }
@@ -3455,6 +3786,274 @@
 },
 {
   "model": "chains.nodetype",
+  "pk": "a4b78af5-415f-45e5-ad6f-079384d826a0",
+  "fields": {
+    "name": "Ollama",
+    "description": "Ollama server for llama models",
+    "class_path": "langchain.llms.ollama.Ollama",
+    "type": "llm",
+    "display_type": "node",
+    "connectors": null,
+    "fields": [
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "name": "model",
+        "type": "str",
+        "label": "Model",
+        "default": "llama2",
+        "required": false
+      },
+      {
+        "name": "mirostat",
+        "type": "int",
+        "label": "Mirostat",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "mirostat_eta",
+        "type": "float",
+        "label": "Mirostat_eta",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "mirostat_tau",
+        "type": "float",
+        "label": "Mirostat_tau",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "num_ctx",
+        "type": "int",
+        "label": "Num_ctx",
+        "default": null,
+        "required": false
+      },
+      {
+        "max": 10,
+        "min": 0,
+        "name": "num_gpu",
+        "step": 1,
+        "type": "int",
+        "label": "Num_gpu",
+        "default": 1,
+        "required": false,
+        "input_type": "slider"
+      },
+      {
+        "name": "num_thread",
+        "type": "int",
+        "label": "Num_thread",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "repeat_last_n",
+        "type": "int",
+        "label": "Repeat_last_n",
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "repeat_penalty",
+        "type": "float",
+        "label": "Repeat_penalty",
+        "default": null,
+        "required": false
+      },
+      {
+        "max": 1,
+        "min": 0,
+        "name": "temperature",
+        "step": 0.05,
+        "type": "float",
+        "label": "Temperature",
+        "default": 0.8,
+        "required": false,
+        "input_type": "slider"
+      },
+      {
+        "name": "stop",
+        "type": "List",
+        "label": "Stop",
+        "style": {
+          "width": "100%"
+        },
+        "default": null,
+        "required": false
+      },
+      {
+        "name": "tfs_z",
+        "type": "float",
+        "label": "Tfs_z",
+        "default": null,
+        "required": false
+      },
+      {
+        "max": 1,
+        "min": 0,
+        "name": "top_p",
+        "step": 0.05,
+        "type": "int",
+        "label": "Top_p",
+        "default": 0.9,
+        "required": false,
+        "input_type": "slider"
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "verbose"
+      ],
+      "properties": {
+        "stop": {
+          "type": "object",
+          "default": null
+        },
+        "model": {
+          "type": "string",
+          "default": "llama2"
+        },
+        "tfs_z": {
+          "type": "number",
+          "default": null
+        },
+        "top_p": {
+          "type": "number",
+          "default": 0.9,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "num_ctx": {
+          "type": "number",
+          "default": null
+        },
+        "num_gpu": {
+          "type": "number",
+          "default": 1,
+          "maximum": 10.0,
+          "minimum": 0.0,
+          "multipleOf": 1.0
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "mirostat": {
+          "type": "number",
+          "default": null
+        },
+        "num_thread": {
+          "type": "number",
+          "default": null
+        },
+        "temperature": {
+          "type": "number",
+          "default": 0.8,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "multipleOf": 0.05
+        },
+        "mirostat_eta": {
+          "type": "number",
+          "default": null
+        },
+        "mirostat_tau": {
+          "type": "number",
+          "default": null
+        },
+        "repeat_last_n": {
+          "type": "number",
+          "default": null
+        },
+        "repeat_penalty": {
+          "type": "number",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
+  "pk": "a8b9bbeb-d46d-4ae2-9920-7b16b4a6d737",
+  "fields": {
+    "name": "Conversational Retrieval agent",
+    "description": "Agent that generates descriptions in a structured chat context using a zero-shot approach and reaction information.",
+    "class_path": "langchain.agents.agent_toolkits.conversational_retrieval.openai_functions.create_conversational_retrieval_agent",
+    "type": "agent",
+    "display_type": "node",
+    "connectors": [
+      {
+        "key": "llm",
+        "type": "target",
+        "required": true,
+        "source_type": "llm"
+      },
+      {
+        "key": "tools",
+        "type": "target",
+        "multiple": true,
+        "source_type": [
+          "tool",
+          "toolkit"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "name": "max_iterations",
+        "type": "integer",
+        "default": 15,
+        "nullable": true
+      },
+      {
+        "name": "max_execution_time",
+        "type": "float",
+        "nullable": true
+      },
+      {
+        "name": "verbose",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "child_field": null,
+    "config_schema": {
+      "type": "object",
+      "required": [
+        "max_iterations",
+        "max_execution_time",
+        "verbose"
+      ],
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_iterations": {
+          "type": "number",
+          "default": 15
+        },
+        "max_execution_time": {
+          "type": "number",
+          "default": null
+        }
+      }
+    }
+  }
+},
+{
+  "model": "chains.nodetype",
   "pk": "a8ffd3b0-dfb4-4e1b-b5bf-90a2ec959ff8",
   "fields": {
     "name": "Wikipedia",
@@ -3561,6 +4160,13 @@
         "default": false
       },
       {
+        "name": "max_retry",
+        "type": "int",
+        "label": "Max_retry",
+        "default": 5,
+        "required": false
+      },
+      {
         "name": "top_k_results",
         "type": "int",
         "label": "Top_k_results",
@@ -3597,6 +4203,10 @@
         "verbose": {
           "type": "boolean",
           "default": false
+        },
+        "max_retry": {
+          "type": "number",
+          "default": 5
         },
         "return_direct": {
           "type": "boolean",

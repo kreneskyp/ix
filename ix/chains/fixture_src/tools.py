@@ -1,4 +1,4 @@
-from ix.chains.fixture_src.targets import CHAIN_TARGET
+from ix.chains.fixture_src.targets import CHAIN_TARGET, RETRIEVER_TARGET
 from langchain import (
     GoogleSearchAPIWrapper,
     GoogleSerperAPIWrapper,
@@ -174,6 +174,15 @@ PUB_MED = {
     ),
 }
 
+RETRIEVER_TOOL = {
+    "class_path": "langchain.agents.agent_toolkits.create_retriever_tool",
+    "type": "tool",
+    "name": "Retriever Tool",
+    "description": "Create a tool to do retrieval of documents.",
+    "connectors": [RETRIEVER_TARGET],
+    "fields": [NAME, DESCRIPTION],
+}
+
 WIKIPEDIA = {
     "name": "Wikipedia",
     "description": "Wikipedia search engine",
@@ -254,6 +263,7 @@ TOOLS = [
     GRAPHQL_TOOL,
     LAMBDA_API,
     PUB_MED,
+    RETRIEVER_TOOL,
     WIKIPEDIA,
     METAPHOR_SEARCH,
     METAPHOR_CONTENTS,

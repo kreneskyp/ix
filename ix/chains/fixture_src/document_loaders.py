@@ -41,7 +41,7 @@ GENERIC_LOADER = {
 }
 
 
-WEB_BASE_LOADER_CLASS_PATH = "langchain.document_loaders.web_base.WebBaseLoader"
+WEB_BASE_LOADER_CLASS_PATH = "ix.chains.components.document_loaders.get_web_loader"
 WEB_BASE_LOADER = {
     "class_path": WEB_BASE_LOADER_CLASS_PATH,
     "type": "document_loader",
@@ -61,6 +61,14 @@ WEB_BASE_LOADER = {
         include=[
             "verify_ssl",
             "continue_on_failure",
+        ],
+    )
+    + NodeTypeField.get_fields(
+        WebBaseLoader,
+        include=[
+            "default_parser",
+            "raise_for_status",
+            "requests_per_second",
         ],
     ),
 }

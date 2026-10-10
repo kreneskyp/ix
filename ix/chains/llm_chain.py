@@ -46,7 +46,10 @@ class LLMChain(LangchainLLMChain):
     def load_functions(self) -> None:
         """Load functions for OpenAI if llm is OpenAI"""
         if not isinstance(self.llm, ChatOpenAI):
-            logger.error(f"llm is not ChatOpenAI, it is {type(self.llm)}")
+            if self.functions:
+                logger.warning(
+                    f"functions received but llm is not ChatOpenAI, it is {type(self.llm)}"
+                )
             return
 
         if not self.functions:
