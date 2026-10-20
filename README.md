@@ -167,6 +167,8 @@ may be built using the chain editor or the python API.
 #### Python API
 Chains [python API docs](docs/chains/chains.rst)
 
+[Web search and page fetching](docs/chains/search.rst) with Parallel Search MCP.
+
 
 
 ## 🧙 Development setup

@@ -76,9 +76,19 @@ SELF_ASK_WITH_SEARCH_AGENT = {
     "class_path": "ix.chains.loaders.agents.initialize_self_ask_with_search",
     "type": "agent",
     "name": "Self Ask with Search Agent",
-    "description": "Agent that asks itself queries and searches for answers in a given context.",
+    "context": "context",
+    "description": "Agent that asks itself queries and searches for answers. Uses keyless Parallel search when no tool is connected.",
     "connectors": [LLM_TARGET, TOOLS_TARGET],
-    "fields": EXECUTOR_BASE_FIELDS,
+    "fields": EXECUTOR_BASE_FIELDS
+    + [
+        {
+            "name": "default_search",
+            "label": "Enable default search",
+            "description": "Use Parallel search when no tool is connected. Disable to require an explicit tool.",
+            "type": "boolean",
+            "default": True,
+        },
+    ],
 }
 
 CONVERSATIONAL_REACT_DESCRIPTION_AGENT = {
