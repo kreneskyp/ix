@@ -281,7 +281,35 @@ ZAPIER = {
     ),
 }
 
+PARALLEL_TIMEOUT = {
+    "name": "timeout",
+    "label": "Timeout (sec)",
+    "type": "number",
+    "default": 30,
+}
+
+PARALLEL_SEARCH = {
+    "class_path": "ix.tools.parallel.get_parallel_search",
+    "type": "tool",
+    "name": "Parallel Search",
+    "description": "Search the web without an API key using Parallel Search MCP.",
+    "context": "context",
+    "fields": TOOL_BASE_FIELDS + [PARALLEL_TIMEOUT],
+}
+
+PARALLEL_FETCH = {
+    "class_path": "ix.tools.parallel.get_parallel_fetch",
+    "type": "tool",
+    "name": "Parallel Fetch",
+    "description": "Read a web page without an API key using Parallel Search MCP.",
+    "context": "context",
+    "fields": TOOL_BASE_FIELDS + [PARALLEL_TIMEOUT],
+}
+
+
 TOOLS = [
+    PARALLEL_SEARCH,
+    PARALLEL_FETCH,
     ARXIV_SEARCH,
     BING_SEARCH,
     CHAIN_AS_TOOL,

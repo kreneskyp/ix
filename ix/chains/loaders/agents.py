@@ -21,6 +21,19 @@ def initialize_agent(agent: AgentType, **kwargs) -> Chain:
     - unpacks agent_kwargs: allows agent_kwargs to be flattened into the ChainNode config
       A flattened config simplifies the UX integration such that it works with TypeAutoFields
     """
+    context = kwargs.pop("context", None)
+    default_search = kwargs.pop("default_search", True)
+    if (
+        agent == AgentType.SELF_ASK_WITH_SEARCH
+        and "tools" not in kwargs
+        and default_search
+    ):
+        from ix.tools.parallel import get_parallel_search
+
+        search = get_parallel_search(context=context)
+        search.name = "Intermediate Answer"
+        kwargs["tools"] = [search]
+
     # Inject placeholders into prompt for memory if provided
     placeholders = []
     if memories := kwargs.get("memory", None):
